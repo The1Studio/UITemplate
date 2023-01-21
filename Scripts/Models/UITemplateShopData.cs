@@ -33,8 +33,11 @@ namespace UITemplate.Scripts.Models
 
         public ItemData GetItemData(string id)
         {
-            var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
-            return this.itemIdToItemData.GetOrAdd(id, () => new ItemData(id, itemRecord));
+            return this.itemIdToItemData.GetOrAdd(id, () =>
+            {
+                var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
+                return new ItemData(id, itemRecord);
+            });
         }
     }
 

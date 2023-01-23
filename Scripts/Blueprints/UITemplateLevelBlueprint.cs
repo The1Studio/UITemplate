@@ -6,11 +6,11 @@ namespace UITemplate.Scripts.Blueprints
     [CsvHeaderKey("Level")]
     public class UITemplateLevelBlueprint : GenericBlueprintReaderByRow<int, UITemplateLevelRecord>
     {
-        
     }
 
     public class UITemplateLevelRecord
     {
         public int    Level;
+        public string PrefabName;
     }
 }

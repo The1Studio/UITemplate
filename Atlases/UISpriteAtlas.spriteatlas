@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UISpriteAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 33d2f802a6d9c774ba1514838fccf6b2, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 1bef9ec0c9844a84f888286d219a5e32, type: 3}
+  - {fileID: 21300000, guid: a24ec4e137533dd43bf6b0b93392479f, type: 3}
+  - {fileID: 21300000, guid: d5b3a562317f53b4c939713d198719b1, type: 3}
+  - {fileID: 21300000, guid: dff230347fd2b384996ba40c9fb7f358, type: 3}
+  - {fileID: 21300000, guid: d572c6977f21c4d4eac50fa3bde84850, type: 3}
+  - {fileID: 21300000, guid: 4f58a0d792fdd7a48a4e2974f8f415df, type: 3}
+  - {fileID: 21300000, guid: f9a3f1380f00dd74181dda4724fdb17e, type: 3}
+  - {fileID: 21300000, guid: 7f7fb7f98fd9a934691fd3f717ad9524, type: 3}
+  - {fileID: 21300000, guid: 6211bf3c91f90214db1c16f8e8f3c974, type: 3}
+  - {fileID: 21300000, guid: fe1b0ced04921a845ad612709d203514, type: 3}
+  - {fileID: 21300000, guid: 0f30e5ce08e550641be99da25a48fe34, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Btn_OtherButton_Square08
+  - Slider17_Frame
+  - Btn_MainButton_Yellow
+  - Icon_PictoIcon_Setting
+  - Label_BasicLabel02_White
+  - Btn_MainButton_Green
+  - Image_TitleLogo
+  - Btn_OtherButton_Circle01_d
+  - Slider17_Fill
+  - Icon_MenuIcon04_Reward
+  - StatusBarIcon_Gold
+  m_RenderDataMap: {}
+  m_Tag: UISpriteAtlas
+  m_IsVariant: 0

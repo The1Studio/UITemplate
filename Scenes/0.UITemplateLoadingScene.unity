@@ -352,7 +352,8 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras: []
+  m_Cameras:
+  - {fileID: 2143029183}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
@@ -450,6 +451,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 2061963282775586856, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
+      propertyPath: m_AllowXRRendering
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2940575172184369666, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -519,6 +524,11 @@ RectTransform:
 --- !u!4 &2143029182 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2940575172184369666, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
+  m_PrefabInstance: {fileID: 2143029179}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &2143029183 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7774450450380987845, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
   m_PrefabInstance: {fileID: 2143029179}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5457946492693818561
@@ -616,6 +626,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: UITemplateLoadingScreenView
       objectReference: {fileID: 0}
+    - target: {fileID: 7709880842335638548, guid: 2f524d308f0a3423cbbb4cd453ceae33, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7709880842335638548, guid: 2f524d308f0a3423cbbb4cd453ceae33, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f524d308f0a3423cbbb4cd453ceae33, type: 3}
 --- !u!1 &5457946492693818562 stripped
@@ -648,6 +666,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewRoot: {fileID: 0}
   screenTransition: {fileID: 5457946492693818563}
+  LoadingText: {fileID: 0}
+  LoadingSlider: {fileID: 0}
 --- !u!225 &5457946492693818565
 CanvasGroup:
   m_ObjectHideFlags: 0

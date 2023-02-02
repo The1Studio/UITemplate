@@ -12,6 +12,7 @@ namespace UITemplate.Scripts.Blueprints
     public class UITemplateFTUERecord
     {
         public string Id;
-        public string Condition;
+        public string StartCondition;
+        public string FinishCondition;
     }
 }

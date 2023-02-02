@@ -1,8 +1,11 @@
 namespace UITemplate.Scripts.Scenes.Loading
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -34,11 +37,10 @@ namespace UITemplate.Scripts.Scenes.Loading
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
     public class UITemplateLoadingScreenPresenter : BaseScreenPresenter<UITemplateLoadingScreenView>
     {
-        private const string LoadingStepName    = "Loading static data...";
-        private const string ReadingStepName    = "Reading static data...";
-        
-        private const float  MinimumLoadingTime = 0.5f; //seconds
-        private const float  MinimumReadingTime = 0.5f; //seconds
+        private const string MainSceneName            = "1.UITemplateMainScene";
+        private const string LoadingBlueprintStepName = "Loading static data...";
+
+        private const float MinimumLoadingBlueprintTime = 2f; //seconds
 
         #region inject
 
@@ -47,7 +49,9 @@ namespace UITemplate.Scripts.Scenes.Loading
 
         #endregion
 
-        private DateTime startedLoadingTime;
+        private DateTime                startedLoadingTime;
+        private Dictionary<Type, float> loadingTypeToProgressPercent;
+
 
         public UITemplateLoadingScreenPresenter(SignalBus signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector) : base(signalBus)
         {
@@ -58,43 +62,35 @@ namespace UITemplate.Scripts.Scenes.Loading
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.BindData();
+            this.OpenViewAsync();
         }
 
         public override async void BindData()
         {
-            this.SignalBus.Subscribe<LoadBlueprintDataProgressSignal>(this.OnLoadBlueprintProgress);
-            this.SignalBus.Subscribe<ReadBlueprintProgressSignal>(this.OnReadBlueprintProgress);
-            this.SignalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintDataSucceed);
+            this.startedLoadingTime = DateTime.Now;
+            this.SignalBus.Subscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
+            this.SignalBus.Subscribe<ReadBlueprintProgressSignal>(this.OnLoadProgress);
+            this.loadingTypeToProgressPercent = new Dictionary<Type, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f }, };
 
+            this.ShowLoadingProgress(LoadingBlueprintStepName);
             await this.blueprintReaderManager.LoadBlueprint();
+
         }
         
-        private void OnLoadBlueprintDataSucceed()
+        private async void ShowLoadingProgress(string loadingContent)
         {
-            this.sceneDirector.LoadSingleSceneAsync("1.UITemplateMainScene");
-        }
-
-        private void OnLoadBlueprintProgress(LoadBlueprintDataProgressSignal obj)
-        {
-            this.SetLoadingProgress(obj.Percent, LoadingStepName, MinimumLoadingTime);
-        }
-
-        private void OnReadBlueprintProgress(ReadBlueprintProgressSignal obj)
-        {
-            this.SetLoadingProgress(obj.Percent, ReadingStepName, MinimumReadingTime);
-        }
-
-        private void SetLoadingProgress(float percent, string loadingContent, float minimumLoadingTime)
-        {
-            if (percent == 0)
+            this.View.SetLoadingText(loadingContent);
+            while (Math.Abs(this.loadingTypeToProgressPercent.Values.Average() - 1) > float.Epsilon)
             {
-                this.View.SetLoadingText(loadingContent);
-                this.startedLoadingTime = DateTime.Now;
+                var maximumLoadingPercent = (float)(DateTime.Now - this.startedLoadingTime).TotalSeconds / MinimumLoadingBlueprintTime;
+                var viewPercent           = Mathf.Min(Math.Abs(this.loadingTypeToProgressPercent.Values.Average() - 1), maximumLoadingPercent);
+                Debug.Log(viewPercent);
+                this.View.SetLoadingProgressValue(viewPercent);
+                await UniTask.Yield();
             }
-            
-            var maximumLoadingPercent = (float)(DateTime.Now - this.startedLoadingTime).TotalSeconds / minimumLoadingTime;
-            this.View.SetLoadingProgressValue(Mathf.Min(percent, maximumLoadingPercent));
+            this.sceneDirector.LoadSingleSceneAsync(MainSceneName);
         }
+
+        private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
     }
 }

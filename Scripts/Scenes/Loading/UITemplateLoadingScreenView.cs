@@ -3,6 +3,7 @@ namespace UITemplate.Scripts.Scenes.Loading
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
     using Cysharp.Threading.Tasks;
@@ -73,20 +74,21 @@ namespace UITemplate.Scripts.Scenes.Loading
             this.loadingTypeToProgressPercent = new Dictionary<Type, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f }, };
 
             this.ShowLoadingProgress(LoadingBlueprintStepName);
-            await this.blueprintReaderManager.LoadBlueprint();
-
+            this.blueprintReaderManager.LoadBlueprint();
         }
         
         private async void ShowLoadingProgress(string loadingContent)
         {
             this.View.SetLoadingText(loadingContent);
-            while (Math.Abs(this.loadingTypeToProgressPercent.Values.Average() - 1) > float.Epsilon)
+            var progressInView       = 0f;
+            
+            while (progressInView < 1f)
             {
+                var currentProgress = this.loadingTypeToProgressPercent.Values.Average();
                 var maximumLoadingPercent = (float)(DateTime.Now - this.startedLoadingTime).TotalSeconds / MinimumLoadingBlueprintTime;
-                var viewPercent           = Mathf.Min(Math.Abs(this.loadingTypeToProgressPercent.Values.Average() - 1), maximumLoadingPercent);
-                Debug.Log(viewPercent);
-                this.View.SetLoadingProgressValue(viewPercent);
-                await UniTask.Yield();
+                progressInView = Mathf.Min(currentProgress, maximumLoadingPercent);
+                this.View.SetLoadingProgressValue(progressInView);
+                await UniTask.WaitForEndOfFrame();
             }
             this.sceneDirector.LoadSingleSceneAsync(MainSceneName);
         }

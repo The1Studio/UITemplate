@@ -312,8 +312,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2143029182}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -441,7 +440,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 819566170}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1165909255016377671, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
       propertyPath: m_fontAsset
@@ -457,7 +456,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2940575172184369666, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2940575172184369666, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -503,6 +502,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UITemplateRootUI
       objectReference: {fileID: 0}
+    - target: {fileID: 8494729994046808500, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
 --- !u!114 &2143029180 stripped
@@ -519,11 +522,6 @@ MonoBehaviour:
 --- !u!224 &2143029181 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1468367324441033918, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
-  m_PrefabInstance: {fileID: 2143029179}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &2143029182 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2940575172184369666, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
   m_PrefabInstance: {fileID: 2143029179}
   m_PrefabAsset: {fileID: 0}
 --- !u!20 &2143029183 stripped
@@ -636,47 +634,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f524d308f0a3423cbbb4cd453ceae33, type: 3}
---- !u!1 &5457946492693818562 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5308505466070167231, guid: 2f524d308f0a3423cbbb4cd453ceae33, type: 3}
-  m_PrefabInstance: {fileID: 5457946492693818561}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5457946492693818563 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3657031087832430787, guid: 2f524d308f0a3423cbbb4cd453ceae33, type: 3}
-  m_PrefabInstance: {fileID: 5457946492693818561}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5457946492693818562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d5e36607f6b4c40bf66172720d58ef0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5457946492693818564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5457946492693818562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d52570148544422896920fef929176b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  viewRoot: {fileID: 0}
-  screenTransition: {fileID: 5457946492693818563}
-  LoadingText: {fileID: 0}
-  LoadingSlider: {fileID: 0}
---- !u!225 &5457946492693818565
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5457946492693818562}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0

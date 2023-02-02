@@ -39,28 +39,50 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 1bef9ec0c9844a84f888286d219a5e32, type: 3}
+  - {fileID: 21300000, guid: eb165af05aa2e4ab2bcad217611774b8, type: 3}
   - {fileID: 21300000, guid: a24ec4e137533dd43bf6b0b93392479f, type: 3}
   - {fileID: 21300000, guid: d5b3a562317f53b4c939713d198719b1, type: 3}
+  - {fileID: 21300000, guid: 362cdbc283a1c43a7abec33080b04398, type: 3}
+  - {fileID: 21300000, guid: 8ad6c4e3643627b479216ce4c6dbf9a5, type: 3}
   - {fileID: 21300000, guid: dff230347fd2b384996ba40c9fb7f358, type: 3}
+  - {fileID: 21300000, guid: 9e8e2254e0d704081931984187b98db6, type: 3}
+  - {fileID: 21300000, guid: 78757b0623f3b4309b7cc69c4769ae37, type: 3}
   - {fileID: 21300000, guid: d572c6977f21c4d4eac50fa3bde84850, type: 3}
   - {fileID: 21300000, guid: 4f58a0d792fdd7a48a4e2974f8f415df, type: 3}
   - {fileID: 21300000, guid: f9a3f1380f00dd74181dda4724fdb17e, type: 3}
+  - {fileID: 21300000, guid: f6de2a7823f2e4282b6a118ee77c977e, type: 3}
+  - {fileID: 21300000, guid: 789daf59ae2a04a998499c49e940e31b, type: 3}
   - {fileID: 21300000, guid: 7f7fb7f98fd9a934691fd3f717ad9524, type: 3}
+  - {fileID: 21300000, guid: b1f42bbbfffc44202b66381ab8b622ee, type: 3}
   - {fileID: 21300000, guid: 6211bf3c91f90214db1c16f8e8f3c974, type: 3}
+  - {fileID: 21300000, guid: 901d64fc6ad9d44799c2ad0fd4f182d2, type: 3}
+  - {fileID: 21300000, guid: 9eb255bd2ed5b78498b7b4a1f2433365, type: 3}
   - {fileID: 21300000, guid: fe1b0ced04921a845ad612709d203514, type: 3}
   - {fileID: 21300000, guid: 0f30e5ce08e550641be99da25a48fe34, type: 3}
+  - {fileID: 21300000, guid: 742f52afe0a104f478d877db51a3321a, type: 3}
   m_PackedSpriteNamesToIndex:
   - Btn_OtherButton_Square08
+  - Icon_PictoIcon_Music_on
   - Slider17_Frame
   - Btn_MainButton_Yellow
+  - Btn_MainButton_Sky
+  - Btn_OtherButton_Circle01_d 1
   - Icon_PictoIcon_Setting
+  - Icon_PictoIcon_Play
+  - Icon_PictoIcon_Sound_off
   - Label_BasicLabel02_White
   - Btn_MainButton_Green
   - Image_TitleLogo
+  - Icon_PictoIcon_Haptic
   - Btn_OtherButton_Circle01_d
+  - Btn_OtherButton_Circle01_d
+  - Icon_PictoIcon_Music_off
   - Slider17_Fill
+  - Icon_PictoIcon_Sound_on
+  - Frame_CardFrame03_Dim 1
   - Icon_MenuIcon04_Reward
   - StatusBarIcon_Gold
+  - Btn_OtherButton_Circle01_n
   m_RenderDataMap: {}
   m_Tag: UISpriteAtlas
   m_IsVariant: 0

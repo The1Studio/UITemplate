@@ -66,7 +66,7 @@ namespace UITemplate.Scripts.Scenes.Loading
             this.OpenViewAsync();
         }
 
-        public override async void BindData()
+        public override void BindData()
         {
             this.startedLoadingTime = DateTime.Now;
             this.SignalBus.Subscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);

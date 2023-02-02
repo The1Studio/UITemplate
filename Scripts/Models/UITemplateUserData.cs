@@ -7,11 +7,14 @@ namespace UITemplate.Scripts.Models
         public readonly UITemplateLevelData     LevelData;
         public readonly UITemplateShopData      ShopData;
         public readonly UITemplateInventoryData InventoryData;
+        public readonly UITemplateSettingData   SettingData;
 
         public UITemplateUserData(UITemplateShopBlueprint uiTemplateShopBlueprint, UITemplateLevelBlueprint uiTemplateLevelBlueprint)
         {
-            this.ShopData  = new UITemplateShopData(uiTemplateShopBlueprint);
-            this.LevelData = new UITemplateLevelData(uiTemplateLevelBlueprint);
+            this.LevelData     = new UITemplateLevelData(uiTemplateLevelBlueprint);
+            this.ShopData      = new UITemplateShopData(uiTemplateShopBlueprint);
+            this.InventoryData = new UITemplateInventoryData();
+            this.SettingData   = new UITemplateSettingData();
         }
     }
 }

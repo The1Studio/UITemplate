@@ -131,14 +131,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cfaf60de2a84d1b9ead18c33f786951, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StarOnList:
-  - {fileID: 7178816597821710396}
-  - {fileID: 9019353821617469617}
-  - {fileID: 7394317318345641323}
-  StarOffList:
-  - {fileID: 7420753597419077886}
-  - {fileID: 5465830939516168612}
-  - {fileID: 1095949151840139347}
+  Star1On: {fileID: 7178816597821710396}
+  Star2On: {fileID: 9019353821617469617}
+  Star3On: {fileID: 7394317318345641323}
+  Star1Off: {fileID: 7420753597419077886}
+  Star2Off: {fileID: 5465830939516168612}
+  Star3Off: {fileID: 1095949151840139347}
 --- !u!1 &5465830939516168612
 GameObject:
   m_ObjectHideFlags: 0

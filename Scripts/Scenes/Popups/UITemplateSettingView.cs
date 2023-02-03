@@ -24,9 +24,9 @@
 
         protected override void OnViewReady()
         {
-            this.View.SoundButton.onClick.AddListener(this.OnClickSoundButton);
-            this.View.MusicButton.onClick.AddListener(this.OnClickMusicButton);
-            this.View.VibrationButton.onClick.AddListener(this.OnVibrationButton);
+            this.View.SoundButton.Button.onClick.AddListener(this.OnClickSoundButton);
+            this.View.MusicButton.Button.onClick.AddListener(this.OnClickMusicButton);
+            this.View.VibrationButton.Button.onClick.AddListener(this.OnVibrationButton);
         }
 
         private void OnClickSoundButton()

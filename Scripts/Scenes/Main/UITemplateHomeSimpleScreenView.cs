@@ -10,7 +10,7 @@
     {
         public Button                 PlayButton;
         public Button                 LevelButton;
-        public UITemplateCurrencyText CoinText;
+        public UITemplateCurrencyView CoinText;
     }
 
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
@@ -28,10 +28,7 @@
         private void OnClickLevel() { }
         private void OnClickPlay()  { }
 
-        public override void BindData()
-        {
-            this.View.CoinText.Subscribe(this.SignalBus);
-        }
+        public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 
         public override void Dispose()
         {

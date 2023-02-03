@@ -4,28 +4,26 @@ namespace UITemplate.Scripts.Scenes.Play.End
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
     using UITemplate.Scripts.Scenes.Popups;
+    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
     public class UITemplateWinScreenModel
     {
         public int StarRate;
-        public UITemplateWinScreenModel(int starRate)
-        {
-            this.StarRate = starRate;
-        }
+        public UITemplateWinScreenModel(int starRate) { this.StarRate = starRate; }
     }
 
     public class UITemplateWinScreenView : BaseView
     {
         public Button                 HomeButton;
-        public Button                 HomeEndgameButton;
         public Button                 ReplayEndgameButton;
         public Button                 NextEndgameButton;
-        public UITemplateCurrencyText CoinText;
-        public UITemplateStarRate     StarRate;
+        public UITemplateCurrencyView CoinText;
+        public UITemplateStarRateView     starRateView;
     }
 
+    [ScreenInfo(nameof(UITemplateWinScreenView))]
     public class UITemplateWinScreenPresenter : BaseScreenPresenter<UITemplateWinScreenView, UITemplateWinScreenModel>
     {
         public UITemplateWinScreenPresenter(SignalBus signalBus, ILogService logService) : base(signalBus, logService) { }
@@ -35,7 +33,6 @@ namespace UITemplate.Scripts.Scenes.Play.End
             base.OnViewReady();
             await this.OpenViewAsync();
             this.View.HomeButton.onClick.AddListener(this.OnClickHome);
-            this.View.HomeEndgameButton.onClick.AddListener(this.OnClickHome);
             this.View.ReplayEndgameButton.onClick.AddListener(this.OnClickReplay);
             this.View.NextEndgameButton.onClick.AddListener(this.OnClickNext);
         }
@@ -43,11 +40,14 @@ namespace UITemplate.Scripts.Scenes.Play.End
         public override void BindData(UITemplateWinScreenModel model)
         {
             this.View.CoinText.Subscribe(this.SignalBus);
-            this.View.StarRate.SetStarRate(this.Model.StarRate);
+            this.View.starRateView.SetStarRate(1);
         }
 
         private void OnClickHome()   { }
-        private void OnClickReplay() { }
+        private void OnClickReplay()
+        {
+            Debug.Log("adaakjakjhakj");
+        }
         private void OnClickNext()   { }
 
         public override void Dispose()

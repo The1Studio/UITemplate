@@ -220,10 +220,18 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+<<<<<<<< HEAD:New_Prefabfix/UITemplateHomeSimpleScreenView.prefab
   - component: {fileID: 4521470261581594587}
   - component: {fileID: 3310462544123393107}
   m_Layer: 5
   m_Name: View
+========
+  - component: {fileID: 4521470260726298775}
+  - component: {fileID: 3310462542864757535}
+  - component: {fileID: 8395927371757897425}
+  m_Layer: 5
+  m_Name: UITemplateHomeSimpleViewOld
+>>>>>>>> 38b2a1e (doing...):New_Prefabfix/UITemplateHomeSimpleViewOld.prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -264,7 +272,26 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+<<<<<<<< HEAD:New_Prefabfix/UITemplateHomeSimpleScreenView.prefab
 --- !u!1 &2991664501568300703
+========
+--- !u!114 &8395927371757897425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2602478106749067984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d5e36607f6b4c40bf66172720d58ef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  introAnimation: {fileID: 0}
+  outroAnimation: {fileID: 0}
+  lockInput: 1
+--- !u!1 &2991664500141892051
+>>>>>>>> 38b2a1e (doing...):New_Prefabfix/UITemplateHomeSimpleViewOld.prefab
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1434,6 +1461,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c985c2004efd378459afca6abac4f915, type: 3}
+<<<<<<<< HEAD:New_Prefabfix/UITemplateHomeSimpleScreenView.prefab
 --- !u!114 &7660883479736154748 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7143273640745449638, guid: c985c2004efd378459afca6abac4f915, type: 3}
@@ -1446,6 +1474,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &7772513329410907406 stripped
+========
+--- !u!224 &5022922732031452542 stripped
+>>>>>>>> 38b2a1e (doing...):New_Prefabfix/UITemplateHomeSimpleViewOld.prefab
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7111024216318238676, guid: c985c2004efd378459afca6abac4f915, type: 3}
   m_PrefabInstance: {fileID: 680867525044454106}
@@ -1914,6 +1945,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89484c180c88744459681fc592948ef0, type: 3}
+<<<<<<<< HEAD:New_Prefabfix/UITemplateHomeSimpleScreenView.prefab
 --- !u!114 &795856481964080602 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8765169356836420613, guid: 89484c180c88744459681fc592948ef0, type: 3}
@@ -1926,6 +1958,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &4663631078147738964 stripped
+========
+--- !u!224 &7984893049669514532 stripped
+>>>>>>>> 38b2a1e (doing...):New_Prefabfix/UITemplateHomeSimpleViewOld.prefab
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3609595065086856331, guid: 89484c180c88744459681fc592948ef0, type: 3}
   m_PrefabInstance: {fileID: 8263912179698663903}

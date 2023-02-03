@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 5190360006715085361}
   - component: {fileID: 6968213281551676595}
   - component: {fileID: 8097474168651568465}
+  - component: {fileID: 5887284105630178613}
   m_Layer: 5
   m_Name: Currency Main
   m_TagString: Untagged
@@ -289,3 +290,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5887284105630178613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8230695170816063694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3214f7652cfb4c48b9b9944b7e8789b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currencyValueText: {fileID: 6611803248644773032}
+  currencyId: 

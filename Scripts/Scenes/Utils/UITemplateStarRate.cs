@@ -1,40 +1,38 @@
 ﻿namespace UITemplate.Scripts.Scenes.Popups
 {
     using System.Collections.Generic;
+    using Cysharp.Threading.Tasks;
     using UnityEngine;
-    
-    public class UITemplateStarRate : MonoBehaviour
-    {
-        public GameObject Star1On;
-        public GameObject Star2On;
-        public GameObject Star3On;
-        public GameObject Star1Off;
-        public GameObject Star2Off;
-        public GameObject Star3Off;
-        private readonly Dictionary<int, List<bool>> starStates = new()
-        {
-            { 1, new List<bool> { true, false, false } },
-            { 2, new List<bool> { true, true, false } },
-            { 3, new List<bool> { true, true, true } },
-            { default, new List<bool> { false, false, false } }
-        };
+    using DG.Tweening;
 
-        public void SetStarRate(int rate)
+    public class UITemplateStarRateView : MonoBehaviour
+    {
+        [SerializeField] private List<GameObject> StarOnList;
+        [SerializeField] private List<GameObject> StarOffList;
+        private const            float            timeAnimStar = 0.5f;
+
+        public async UniTask SetStarRate(int rate)
         {
-            if (!this.starStates.TryGetValue(rate, out var starStates))
+            foreach (var starOn in this.StarOnList)
             {
-                starStates = this.starStates[default];
+                starOn.SetActive(false);
+                starOn.transform.localScale = Vector3.zero;
+            }
+            foreach (var starOff in this.StarOffList)
+            {
+                starOff.SetActive(true);
             }
 
-            this.SetOnOffStar(this.Star1On, this.Star1Off, starStates[0]);
-            this.SetOnOffStar(this.Star2On, this.Star2Off, starStates[1]);
-            this.SetOnOffStar(this.Star3On, this.Star3Off, starStates[2]);
-        }
+            for (int i = 0; i < this.StarOnList.Count; i++)
+            {
+                await UniTask.Delay(200);
+                bool isActive = i < rate;
+                this.StarOnList[i].SetActive(isActive);
+                this.StarOnList[i].transform.DORotate(new Vector3(0, 0, -360), timeAnimStar, RotateMode.FastBeyond360).SetEase(Ease.Linear);
+                this.StarOnList[i].transform.DOScale(Vector3.one, timeAnimStar).SetEase(Ease.OutBounce);
 
-        private void SetOnOffStar(GameObject onObj, GameObject offObj, bool isActive)
-        {
-            onObj.SetActive(isActive);
-            offObj.SetActive(!isActive);
+                this.StarOffList[i].SetActive(!isActive);
+            }
         }
     }
 }

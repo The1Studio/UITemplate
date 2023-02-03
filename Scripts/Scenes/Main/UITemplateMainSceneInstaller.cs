@@ -9,6 +9,9 @@ namespace UITemplate.Scripts.Scenes.Main
         {
             base.InstallBindings();
             this.Container.InitScreenManually<UITemplateHomeSimpleScreenPresenter>();
+            this.Container.InitScreenManually<UITemplateLosePresenter>();
+            this.Container.InitScreenManually<UITemplateRateGamePresenter>();
+            this.Container.InitScreenManually<UITemplateConnectErrorPresenter>();
         }
     }
 }

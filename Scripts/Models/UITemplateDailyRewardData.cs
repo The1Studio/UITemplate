@@ -6,10 +6,10 @@
 
     public class UITemplateDailyRewardData
     {
-        private readonly IOnlineTime onlineTime = new WorldTimeAPI();
+        private readonly IInternetService internetService = new InternetService();
 
         public       DateTime     BeginDate         { get; set; }
         public       int          LoginDay          { get; set; }
-        public async UniTask<int> GetUserLoginDay() => (await this.onlineTime.GetCurrentTimeAsync()).Day - this.BeginDate.Day + 1;
+        public async UniTask<int> GetUserLoginDay() => (await this.internetService.GetCurrentTimeAsync()).Day - this.BeginDate.Day + 1;
     }
 }

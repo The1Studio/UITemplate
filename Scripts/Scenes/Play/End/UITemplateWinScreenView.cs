@@ -2,9 +2,10 @@ namespace UITemplate.Scripts.Scenes.Play.End
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using UITemplate.Scripts.Scenes.Main;
     using UITemplate.Scripts.Scenes.Popups;
-    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
@@ -20,13 +21,14 @@ namespace UITemplate.Scripts.Scenes.Play.End
         public Button                 ReplayEndgameButton;
         public Button                 NextEndgameButton;
         public UITemplateCurrencyView CoinText;
-        public UITemplateStarRateView     starRateView;
+        public UITemplateStarRateView starRateView;
     }
 
     [ScreenInfo(nameof(UITemplateWinScreenView))]
     public class UITemplateWinScreenPresenter : BaseScreenPresenter<UITemplateWinScreenView, UITemplateWinScreenModel>
     {
-        public UITemplateWinScreenPresenter(SignalBus signalBus, ILogService logService) : base(signalBus, logService) { }
+        private readonly IScreenManager screenManager;
+        public UITemplateWinScreenPresenter(SignalBus signalBus, ILogService logService, IScreenManager screenManager) : base(signalBus, logService) { this.screenManager = screenManager; }
 
         protected override async void OnViewReady()
         {
@@ -40,14 +42,11 @@ namespace UITemplate.Scripts.Scenes.Play.End
         public override void BindData(UITemplateWinScreenModel model)
         {
             this.View.CoinText.Subscribe(this.SignalBus);
-            this.View.starRateView.SetStarRate(1);
+            this.View.starRateView.SetStarRate(this.Model.StarRate);
         }
 
-        private void OnClickHome()   { }
-        private void OnClickReplay()
-        {
-            Debug.Log("adaakjakjhakj");
-        }
+        private void OnClickHome()   { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        private void OnClickReplay() { }
         private void OnClickNext()   { }
 
         public override void Dispose()

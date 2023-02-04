@@ -5,8 +5,8 @@
     
     public class UITemplateStarRateView : MonoBehaviour
     {
-        public List<GameObject> StarOnList;
-        public List<GameObject> StarOffList;
+        [SerializeField] private List<GameObject> StarOnList;
+        [SerializeField] private List<GameObject> StarOffList;
 
         public void SetStarRate(int rate)
         {

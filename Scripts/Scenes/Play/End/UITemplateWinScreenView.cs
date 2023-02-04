@@ -8,6 +8,7 @@ namespace UITemplate.Scripts.Scenes.Play.End
     using GameFoundation.Scripts.Utilities.LogService;
     using UITemplate.Scripts.Scenes.Main;
     using UITemplate.Scripts.Scenes.Popups;
+    using UITemplate.Scripts.Scenes.Utils;
     using UniRx;
     using UnityEngine;
     using UnityEngine.UI;
@@ -32,16 +33,13 @@ namespace UITemplate.Scripts.Scenes.Play.End
     [ScreenInfo(nameof(UITemplateWinScreenView))]
     public class UITemplateWinScreenPresenter : BaseScreenPresenter<UITemplateWinScreenView, UITemplateWinScreenModel>
     {
-        private readonly IScreenManager                  screenManager;
-        private readonly UITemplateButtonAnimationHelper uiTemplateButtonAnimationHelper;
-        private          IDisposable                     spinDisposable;
-        private const    float                           glowSpinSpeed = -100f;
+        private readonly IScreenManager                screenManager;
+
+        private IDisposable spinDisposable;
         
-        public UITemplateWinScreenPresenter(SignalBus signalBus, ILogService logService, IScreenManager screenManager,
-            UITemplateButtonAnimationHelper uiTemplateButtonAnimationHelper) : base(signalBus, logService)
+        public UITemplateWinScreenPresenter(SignalBus signalBus, ILogService logService, IScreenManager screenManager) : base(signalBus, logService)
         {
-            this.screenManager                    = screenManager;
-            this.uiTemplateButtonAnimationHelper = uiTemplateButtonAnimationHelper;
+            this.screenManager        = screenManager;
         }
 
         protected override async void OnViewReady()
@@ -57,34 +55,19 @@ namespace UITemplate.Scripts.Scenes.Play.End
         {
             this.View.CoinText.Subscribe(this.SignalBus);
             this.View.StarRateView.SetStarRate(this.Model.StarRate);
-            this.AnimGlow();
+            this.spinDisposable = this.View.LightGlowImage.transform.Spin(-100f);
         }
 
-        private void AnimGlow()
+        private void OnClickHome()
         {
-            this.spinDisposable = Observable.EveryUpdate().Subscribe(_ => Spin());
-
-            void Spin()
-            {
-                var transform = this.View.LightGlowImage.transform;
-                var zAngle    = transform.eulerAngles.z + Time.deltaTime * glowSpinSpeed;
-                transform.eulerAngles = new Vector3(0, 0, zAngle);
-            }
-        }
-
-        private async void OnClickHome()
-        {
-            await this.uiTemplateButtonAnimationHelper.AnimationButton(this.View.HomeButton.transform);
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
-        private async void OnClickReplay()
+        private void OnClickReplay()
         {
-            await this.uiTemplateButtonAnimationHelper.AnimationButton(this.View.ReplayEndgameButton.transform);
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
-        private async void OnClickNext()
+        private void OnClickNext()
         {
-            await this.uiTemplateButtonAnimationHelper.AnimationButton(this.View.NextEndgameButton.transform);
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
 

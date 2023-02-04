@@ -3,6 +3,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using UITemplate.Scripts.Scenes.Play.End;
     using UITemplate.Scripts.Scenes.Popups;
     using UnityEngine.UI;
     using Zenject;
@@ -38,8 +39,10 @@
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
-
-        private void OnClickLevel() { }
+        private void OnClickLevel()
+        {
+            this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(2));
+        }
 
         private void OnClickPlay() { this.screenManager.OpenScreen<UITemplateWinScreenPresenter>(); }
 

@@ -42,6 +42,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: cce941708c4b9464d875add36b86d253, type: 3}
   - {fileID: 21300000, guid: 90a07a9016b59364da8cf932a7a97294, type: 3}
   - {fileID: 21300000, guid: 1bef9ec0c9844a84f888286d219a5e32, type: 3}
+  - {fileID: 21300000, guid: b6173fd0e23169c41852bee2f5e5217e, type: 3}
   - {fileID: 21300000, guid: df96932170bb21b4c85efaaff7fd66e7, type: 3}
   - {fileID: 21300000, guid: 541a41610ac018e41880c41aa5171cd4, type: 3}
   - {fileID: 21300000, guid: cf23eaa1d3e81904b96bf3b86610017f, type: 3}
@@ -53,6 +54,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 695fe762e8564764db9ec460b40872c7, type: 3}
   - {fileID: 21300000, guid: 0d99a6820a5bd3947a35fc3cb9716321, type: 3}
   - {fileID: 21300000, guid: 8be968a21770b8e4099ff7a40169730a, type: 3}
+  - {fileID: 21300000, guid: d82cd4b2dbfa5fe458a9f16bbbb16650, type: 3}
   - {fileID: 21300000, guid: 1e23d9c2d1f442c4b93a239370ea8921, type: 3}
   - {fileID: 21300000, guid: a00e4763d66b8234cab90cb2b71358bd, type: 3}
   - {fileID: 21300000, guid: dea52ac3e29f7044cb8288b88e8e6c2f, type: 3}
@@ -68,6 +70,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c4b64a971ae770a4192b2ef24353333a, type: 3}
   - {fileID: 21300000, guid: 0e7838b7c2c98ed46a57421d981d13dc, type: 3}
   - {fileID: 21300000, guid: 4f58a0d792fdd7a48a4e2974f8f415df, type: 3}
+  - {fileID: 21300000, guid: 8b7a19d73cf96cf45bb544474be17b71, type: 3}
   - {fileID: 21300000, guid: b85bf9d7faf929d4cba3ceda889c0dcb, type: 3}
   - {fileID: 21300000, guid: f9a3f1380f00dd74181dda4724fdb17e, type: 3}
   - {fileID: 21300000, guid: c806f678dd401bf4f9e162fd313132a6, type: 3}
@@ -111,6 +114,7 @@ SpriteAtlas:
   - Frame_ListFrame07_s
   - Character_Sample01_m
   - Btn_OtherButton_Square08
+  - Play_Roulette_Arrow
   - Icon_ImageIcon_Glod01_l
   - Character_Sample01_l
   - Icon_MenuIcon01_List_s
@@ -122,6 +126,7 @@ SpriteAtlas:
   - Image_TitleLogo
   - Icon_MenuIcon04_Reward
   - Icon_ImageIcon_Glod02
+  - Play_Roulette_wheel
   - Btn_OtherButton_Polygon01
   - Frame_BasicFrame_Square05
   - Icon_ImageIcon_Ad_00_l
@@ -137,6 +142,7 @@ SpriteAtlas:
   - Icon_ImageIcon_StarGrade_l_Off
   - Frame_StageFrame_n_Blue
   - Btn_MainButton_Green
+  - Play_Roulette_Btn_spin
   - Icon_PictoIcon_Close01
   - Image_TitleLogo
   - Btn_OtherButton_Hexagon01_Blue

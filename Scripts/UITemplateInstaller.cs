@@ -1,6 +1,7 @@
 namespace UITemplate.Scripts
 {
     using UITemplate.Scripts.Models;
+    using UITemplate.Scripts.Signals;
     using Zenject;
 
     public class UITemplateInstaller : Installer<UITemplateInstaller>
@@ -11,9 +12,12 @@ namespace UITemplate.Scripts
             var uiTemplateUserData = this.Container.Instantiate<UITemplateUserData>();
             this.Container.Bind<UITemplateUserData>().FromInstance(uiTemplateUserData);
             this.Container.Bind<UITemplateLevelData>().FromInstance(uiTemplateUserData.LevelData);
-            // public readonly UITemplateShopData      ShopData;
-            // public readonly UITemplateInventoryData InventoryData;
-            // public readonly UITemplateSettingData   SettingData;
+            this.Container.Bind<UITemplateShopData>().FromInstance(uiTemplateUserData.ShopData);
+            this.Container.Bind<UITemplateInventoryData>().FromInstance(uiTemplateUserData.InventoryData);
+            this.Container.Bind<UITemplateSettingData>().FromInstance(uiTemplateUserData.SettingData);
+
+            //Signal
+            this.Container.DeclareSignal<UpdateCurrencySignal>();
         }
     }
 }

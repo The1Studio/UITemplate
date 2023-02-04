@@ -8,20 +8,31 @@
 
     public class UITemplateHomeSimpleScreenView : BaseView
     {
-        public Button                 PlayButton;
-        public Button                 LevelButton;
-        public UITemplateCurrencyView CoinText;
+        public Button                      PlayButton;
+        public Button                      LevelButton;
+        public UITemplateCurrencyView      CoinText;
+        public UITemplateSettingButtonView SettingButtonView;
     }
 
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
     public class UITemplateHomeSimpleScreenPresenter : BaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus) : base(signalBus) { }
+        #region inject
+
+        private readonly DiContainer diContainer;
+
+        #endregion
+
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer) : base(signalBus)
+        {
+            this.diContainer = diContainer;
+        }
 
         protected override async void OnViewReady()
         {
             base.OnViewReady();
             await this.OpenViewAsync();
+            this.diContainer.Inject(this.View.SettingButtonView);
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }

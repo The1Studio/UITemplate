@@ -658,9 +658,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78bfc68e5a93fe44396c96d21afaaa72, type: 3}
---- !u!114 &3402772682232533594 stripped
+--- !u!114 &4418486267760241452 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2427645531978249913, guid: 78bfc68e5a93fe44396c96d21afaaa72, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3735794026427011023, guid: 78bfc68e5a93fe44396c96d21afaaa72, type: 3}
   m_PrefabInstance: {fileID: 1047554231742964963}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -802,7 +802,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewRoot: {fileID: 0}
   screenTransition: {fileID: 0}
-  HomeButton: {fileID: 3402772682232533594}
+  HomeButton: {fileID: 4418486267760241452}
   ReplayEndgameButton: {fileID: 3220554524993363843}
   NextEndgameButton: {fileID: 8564088373246189852}
   CoinText: {fileID: 4336377973032282090}

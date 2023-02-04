@@ -3,17 +3,15 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using UITemplate.Scripts.Scenes.Play.End;
     using UITemplate.Scripts.Scenes.Popups;
     using UnityEngine.UI;
     using Zenject;
 
     public class UITemplateHomeSimpleScreenView : BaseView
     {
-        public Button                      PlayButton;
-        public Button                      LevelButton;
-        public UITemplateCurrencyView      CoinText;
-        public UITemplateSettingButtonView SettingButtonView;
+        public Button                 PlayButton;
+        public Button                 LevelButton;
+        public UITemplateCurrencyView CoinText;
     }
 
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
@@ -25,7 +23,7 @@
         private readonly IScreenManager screenManager;
 
         #endregion
-
+        
         public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer) : base(signalBus)
         {
             this.diContainer   = diContainer;

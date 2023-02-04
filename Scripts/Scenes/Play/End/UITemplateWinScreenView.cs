@@ -21,7 +21,7 @@ namespace UITemplate.Scripts.Scenes.Play.End
         public Button                 ReplayEndgameButton;
         public Button                 NextEndgameButton;
         public UITemplateCurrencyView CoinText;
-        public UITemplateStarRateView starRateView;
+        public UITemplateStarRateView StarRateView;
     }
 
     [ScreenInfo(nameof(UITemplateWinScreenView))]
@@ -42,7 +42,7 @@ namespace UITemplate.Scripts.Scenes.Play.End
         public override void BindData(UITemplateWinScreenModel model)
         {
             this.View.CoinText.Subscribe(this.SignalBus);
-            this.View.starRateView.SetStarRate(this.Model.StarRate);
+            this.View.StarRateView.SetStarRate(this.Model.StarRate);
         }
 
         private void OnClickHome()   { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }

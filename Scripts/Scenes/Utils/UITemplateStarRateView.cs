@@ -13,14 +13,9 @@
             for (int i = 0; i < this.StarOnList.Count; i++)
             {
                 bool isActive = i < rate;
-                this.SetOnOffStar(this.StarOnList[i], this.StarOffList[i], isActive);
+                this.StarOnList[i].SetActive(isActive);
+                this.StarOffList[i].SetActive(!isActive);
             }
-        }
-
-        private void SetOnOffStar(GameObject onObj, GameObject offObj, bool isActive)
-        {
-            onObj.SetActive(isActive);
-            offObj.SetActive(!isActive);
         }
     }
 }

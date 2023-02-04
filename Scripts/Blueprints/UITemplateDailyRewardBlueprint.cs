@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace UITemplate.Scripts.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
@@ -12,7 +14,7 @@ namespace UITemplate.Scripts.Blueprints
     public class UITemplateDailyRewardRecord
     {
         public int    Day      { get; set; }
-        public string RewardId { get; set; }
-        public int    Amount   { get; set; }
+        public List<Dictionary<string, int>> Reward { get; set; }
+        public string RewardImage { get; set; }
     }
 }

@@ -5,6 +5,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using UITemplate.Scripts.Scenes.Play.End;
     using UITemplate.Scripts.Scenes.Popups;
+    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
@@ -42,10 +43,12 @@
         }
         private void OnClickLevel()
         {
-            this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(2));
+            Debug.Log("Test Win Screen View");
+            this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(2, "Character_Sample05_l", 50));
         }
 
-        private void OnClickPlay() { this.screenManager.OpenScreen<UITemplateWinScreenPresenter>(); }
+        private void OnClickPlay() { Debug.Log("Test Win Screen View");
+            this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(2, "Character_Sample05_l", 50)); }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 

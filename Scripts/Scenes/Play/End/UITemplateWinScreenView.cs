@@ -19,24 +19,13 @@ namespace UITemplate.Scripts.Scenes.Play.End
 
     public class UITemplateWinScreenModel
     {
-        public int    StarRate;
-        public string ItemId;
-        public float  ItemUnlockLastPercent;
-        public float  ItemUnlockPercent;
-
-        public UITemplateWinScreenModel(int starRate, string itemId, float itemUnlockLastPercent, float itemUnlockPercent)
-        {
-            this.StarRate              = starRate;
-            this.ItemId                = itemId;
-            this.ItemUnlockLastPercent = itemUnlockLastPercent;
-            this.ItemUnlockPercent     = itemUnlockPercent;
-        }
+        public int StarRate;
+        public UITemplateWinScreenModel(int starRate) { this.StarRate = starRate; }
     }
 
     public class UITemplateWinScreenView : BaseView
     {
         public Button                 HomeButton;
-        public Button                 HomeEndgameButton;
         public Button                 ReplayEndgameButton;
         public Button                 NextEndgameButton;
         public UITemplateCurrencyView CoinText;
@@ -68,12 +57,11 @@ namespace UITemplate.Scripts.Scenes.Play.End
             base.OnViewReady();
             await this.OpenViewAsync();
             this.View.HomeButton.onClick.AddListener(this.OnClickHome);
-            this.View.HomeEndgameButton.onClick.AddListener(this.OnClickHome);
             this.View.ReplayEndgameButton.onClick.AddListener(this.OnClickReplay);
             this.View.NextEndgameButton.onClick.AddListener(this.OnClickNext);
         }
 
-        public override async void BindData(UITemplateWinScreenModel model)
+        public override void BindData(UITemplateWinScreenModel model)
         {
             this.View.CoinText.Subscribe(this.SignalBus);
             this.ItemUnlockProgress(model.ItemUnlockLastPercent, model.ItemUnlockPercent);

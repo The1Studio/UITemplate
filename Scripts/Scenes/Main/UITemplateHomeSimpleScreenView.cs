@@ -11,9 +11,10 @@
 
     public class UITemplateHomeSimpleScreenView : BaseView
     {
-        public Button                 PlayButton;
-        public Button                 LevelButton;
-        public UITemplateCurrencyView CoinText;
+        public Button                      PlayButton;
+        public Button                      LevelButton;
+        public UITemplateCurrencyView      CoinText;
+        public UITemplateSettingButtonView SettingButtonView;
     }
 
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]

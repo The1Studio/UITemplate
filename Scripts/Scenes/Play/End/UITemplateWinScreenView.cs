@@ -55,7 +55,7 @@ namespace UITemplate.Scripts.Scenes.Play.End
         {
             this.View.CoinText.Subscribe(this.SignalBus);
             this.View.StarRateView.SetStarRate(this.Model.StarRate);
-            this.spinDisposable = this.View.LightGlowImage.transform.Spin(-100f);
+            this.spinDisposable = this.View.LightGlowImage.transform.Spin(-80f);
         }
 
         private void OnClickHome()

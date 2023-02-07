@@ -61,7 +61,9 @@
         private readonly UserLocalData                  localData;
         private          UITemplateDailyRewardItemModel model;
 
-        private int userLoginDay;
+        private       int    userLoginDay;
+        private const string TodayLabel  = "TODAY";
+        private const string PrefixLabel = "DAY ";
         public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UserLocalData localData) : base(gameAssets)
         {
             this.logService = logService;
@@ -87,7 +89,7 @@
                 rewardValue = this.model.DailyRewardRecord.Reward.First().Values.First() == 1 ? "" : this.model.DailyRewardRecord.Reward.First().Values.First().ToString();
             }
 
-            var rewardLabel = this.model.DailyRewardRecord.Day == this.userLoginDay ? "TODAY" : "DAY " + this.model.DailyRewardRecord.Day;
+            var rewardLabel = this.model.DailyRewardRecord.Day == this.userLoginDay ? TodayLabel : PrefixLabel + this.model.DailyRewardRecord.Day;
             this.View.SetStatus(this.localData.RewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1], rewardSprite, rewardValue, rewardLabel);
         }
 

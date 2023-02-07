@@ -20,12 +20,14 @@ namespace UITemplate.Scripts.Scenes.Play.End
     {
         public int    StarRate;
         public string ItemId;
-        public int    ItemUnlockPercent;
-        public UITemplateWinScreenModel(int starRate, string itemId, int itemUnlockPercent)
+        public float    ItemUnlockLastPercent;
+        public float    ItemUnlockPercent;
+        public UITemplateWinScreenModel(int starRate, string itemId, float itemUnlockLastPercent, float itemUnlockPercent)
         {
-            this.StarRate          = starRate;
-            this.ItemId            = itemId;
-            this.ItemUnlockPercent = itemUnlockPercent;
+            this.StarRate              = starRate;
+            this.ItemId                = itemId;
+            this.ItemUnlockLastPercent = itemUnlockLastPercent;
+            this.ItemUnlockPercent     = itemUnlockPercent;
         }
     }
 
@@ -64,22 +66,23 @@ namespace UITemplate.Scripts.Scenes.Play.End
             this.View.NextEndgameButton.onClick.AddListener(this.OnClickNext);
         }
 
-        public override void BindData(UITemplateWinScreenModel model)
+        public override async void BindData(UITemplateWinScreenModel model)
         {
             this.View.CoinText.Subscribe(this.SignalBus);
-            this.View.StarRateView.SetStarRate(this.Model.StarRate);
-            this.ItemUnlockProgress(50);
+            this.ItemUnlockProgress(model.ItemUnlockLastPercent, model.ItemUnlockPercent);
             this.spinDisposable = this.View.LightGlowImage.transform.Spin(-80f);
+            await this.View.StarRateView.SetStarRate(model.StarRate);
         }
 
-        private async void ItemUnlockProgress(int percent)
+        private async void ItemUnlockProgress(float lastPercent, float percent)
         {
             var spriteItemUnlock = await this.gameAssets.LoadAssetAsync<Sprite>(this.Model.ItemId);
             this.View.ItemUnlockImage.sprite = spriteItemUnlock;
             this.View.ItemUnlockBgImage.sprite = spriteItemUnlock;
-            
-            var value = (float)(percent / 100);
-            this.View.ItemUnlockImage.fillAmount = value;
+            float lastValue = lastPercent / 100f;
+            float value     = percent / 100f;
+            DOTween.To(() => this.View.ItemUnlockImage.fillAmount = lastValue, x => this.View.ItemUnlockImage.fillAmount = x, value, 1f)
+                .SetEase(Ease.Linear);
         }
 
         private void OnClickHome()

@@ -556,7 +556,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 1
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -886,7 +886,7 @@ MonoBehaviour:
   StarRateView: {fileID: 7612411674096888997}
   LightGlowImage: {fileID: 6275345075015062413}
   ItemUnlockBgImage: {fileID: 5737318344390299053}
-  ItemUnlockImage: {fileID: 5737318344390299053}
+  ItemUnlockImage: {fileID: 6298261941084895865}
 --- !u!224 &8242476744511311356 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4613682197113720899, guid: 2f431abb86d3b6c43af971de5b1f2833, type: 3}

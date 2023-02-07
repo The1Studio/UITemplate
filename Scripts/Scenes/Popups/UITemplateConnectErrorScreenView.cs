@@ -20,10 +20,10 @@ namespace UITemplate.Scripts.Scenes.Popups
         public Image    ConnectingImage;
     }
 
-    [PopupInfo(nameof(UITemplateConnectErrorScreenView))]
+    [PopupInfo(nameof(UITemplateConnectErrorScreenView), true, false)]
     public class UITemplateConnectErrorPresenter : BasePopupPresenter<UITemplateConnectErrorScreenView>
     {
-        private static   double         _time               = 0;
+        private static   double         checkTimeout        = 5;
         private static   string         connectingMessage   = "Trying to reconnect...\nPlease wait...";
         private static   string         connectErrorMessage = "Your connection has been lost!\nCheck your internet connection and try again";
         private readonly IScreenManager screenManager;
@@ -56,7 +56,7 @@ namespace UITemplate.Scripts.Scenes.Popups
         }
         private async void OnClickReconnect()
         {
-            _time = Time.realtimeSinceStartup;
+            var _time = Time.realtimeSinceStartup;
             var timeSinceLastConnectCheck = _time - 0.1;
             UpdateContent(isConnecting: true);
             var isConnected = false;
@@ -69,7 +69,7 @@ namespace UITemplate.Scripts.Scenes.Popups
                     timeSinceLastConnectCheck = Time.realtimeSinceStartup;
                 }
 
-                return isConnected || Time.realtimeSinceStartup - _time > 5;
+                return isConnected || Time.realtimeSinceStartup - _time > checkTimeout;
             });
 
             if (isConnected)
@@ -85,7 +85,7 @@ namespace UITemplate.Scripts.Scenes.Popups
         {
             try
             {
-                using var client = new MyWebClient();
+                using var client = new CheckInternetWebClient();
                 using (client.OpenRead("https://www.google.com/"))
                     return true;
             }
@@ -95,7 +95,7 @@ namespace UITemplate.Scripts.Scenes.Popups
             }
         }
 
-        private class MyWebClient : WebClient
+        private class CheckInternetWebClient : WebClient
         {
             protected override WebRequest GetWebRequest(Uri address)
             {

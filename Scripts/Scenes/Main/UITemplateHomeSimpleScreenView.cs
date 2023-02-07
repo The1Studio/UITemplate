@@ -26,7 +26,7 @@
         private readonly IScreenManager screenManager;
 
         #endregion
-        
+
         public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer) : base(signalBus)
         {
             this.diContainer   = diContainer;
@@ -41,14 +41,16 @@
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
+
         private void OnClickLevel()
         {
-            Debug.Log("Test Win Screen View");
-            this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(2, "Character_Sample05_l", 50));
+            // this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(2, "Character_Sample05_l", 25, 50));
         }
 
-        private void OnClickPlay() { Debug.Log("Test Win Screen View");
-            this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(2, "Character_Sample05_l", 50)); }
+        private void OnClickPlay()
+        {
+            // this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(1, "Character_Sample05_l", 0, 25));
+        }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 

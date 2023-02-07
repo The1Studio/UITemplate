@@ -263,7 +263,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8365166316910074735, guid: 49cdbaf83ba86334f83d5cac157e2cf7, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8365166316910074735, guid: 49cdbaf83ba86334f83d5cac157e2cf7, type: 3}
       propertyPath: m_AnchorMax.x
@@ -671,6 +671,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UITemplateRootUI
       objectReference: {fileID: 0}
+    - target: {fileID: 8494729994046808500, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 265777d43295040859ee0ee6339cf0d8, type: 3}
 --- !u!114 &2143029180 stripped
@@ -715,7 +719,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4364620811083809449, guid: 10534eaa694a9034985419cd9d35c18a, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4364620811083809449, guid: 10534eaa694a9034985419cd9d35c18a, type: 3}
       propertyPath: m_AnchorMax.x

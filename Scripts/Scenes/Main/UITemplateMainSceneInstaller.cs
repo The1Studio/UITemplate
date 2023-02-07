@@ -6,6 +6,7 @@ namespace UITemplate.Scripts.Scenes.Main
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.Utilities;
+    using UITemplate.Scripts.Models;
 
     public class UITemplateMainSceneInstaller : BaseSceneInstaller
     {
@@ -13,7 +14,7 @@ namespace UITemplate.Scripts.Scenes.Main
         {
             base.InstallBindings();
             this.DeclareSignals();
-            
+            this.Container.Bind<UITemplateSettingData>().AsSingle().NonLazy();
             this.Container.InitScreenManually<UITemplateHomeSimpleScreenPresenter>();
             
         }

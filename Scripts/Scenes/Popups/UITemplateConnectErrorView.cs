@@ -24,10 +24,10 @@ namespace UITemplate.Scripts.Scenes.Popups
     public class UITemplateConnectErrorPresenter : BasePopupPresenter<UITemplateConnectErrorView>
     {
         private static   double         _time               = 0;
-        private static   string         ConnectingMessage   = "Trying to reconnect...\nPlease wait...";
-        private static   string         ConnectErrorMessage = "Your connection has been lost!\nCheck your internet connection and try again";
-        private readonly IScreenManager ScreenManager;
-        public UITemplateConnectErrorPresenter(SignalBus signalBus, IScreenManager screenManager) : base(signalBus) { this.ScreenManager = screenManager; }
+        private static   string         connectingMessage   = "Trying to reconnect...\nPlease wait...";
+        private static   string         connectErrorMessage = "Your connection has been lost!\nCheck your internet connection and try again";
+        private readonly IScreenManager screenManager;
+        public UITemplateConnectErrorPresenter(SignalBus signalBus, IScreenManager screenManager) : base(signalBus) { this.screenManager = screenManager; }
 
         public override void BindData() { UpdateContent(isConnecting: false); }
         protected override async void OnViewReady()
@@ -39,7 +39,7 @@ namespace UITemplate.Scripts.Scenes.Popups
         public override void Dispose() { base.Dispose(); }
         private void OnConnectSuccess()
         {
-            this.ScreenManager.CloseCurrentScreen();
+            this.screenManager.CloseCurrentScreen();
             // this.SignalBus.Fire<>(new ContinueSignal());
         }
         private void UpdateImage(bool isConnecting)
@@ -49,7 +49,7 @@ namespace UITemplate.Scripts.Scenes.Popups
         }
         private void UpdateContent(bool isConnecting)
         {
-            this.View.Message.text           = isConnecting ? ConnectingMessage : ConnectErrorMessage;
+            this.View.Message.text           = isConnecting ? connectingMessage : connectErrorMessage;
             this.View.ButtonText.text        = isConnecting ? "Reconnecting" : "Reconnect";
             this.View.Reconnect.interactable = !isConnecting;
             this.UpdateImage(isConnecting);
@@ -65,8 +65,6 @@ namespace UITemplate.Scripts.Scenes.Popups
                 var intervalTime = Time.realtimeSinceStartup - timeSinceLastConnectCheck;
                 if (intervalTime >= 1)
                 {
-                    Debug.Log("Checking internet connection...");
-                    // isConnected = IsConnectedToInternet();
                     UniTask.RunOnThreadPool(() => isConnected = IsConnectedToInternet());
                     timeSinceLastConnectCheck = Time.realtimeSinceStartup;
                 }

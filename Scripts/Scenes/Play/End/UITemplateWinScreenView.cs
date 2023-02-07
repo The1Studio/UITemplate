@@ -21,8 +21,9 @@ namespace UITemplate.Scripts.Scenes.Play.End
     {
         public int    StarRate;
         public string ItemId;
-        public float    ItemUnlockLastPercent;
-        public float    ItemUnlockPercent;
+        public float  ItemUnlockLastPercent;
+        public float  ItemUnlockPercent;
+
         public UITemplateWinScreenModel(int starRate, string itemId, float itemUnlockLastPercent, float itemUnlockPercent)
         {
             this.StarRate              = starRate;
@@ -81,7 +82,7 @@ namespace UITemplate.Scripts.Scenes.Play.End
         private async void ItemUnlockProgress(float lastPercent, float percent)
         {
             var spriteItemUnlock = await this.gameAssets.LoadAssetAsync<Sprite>(this.Model.ItemId);
-            this.View.ItemUnlockImage.sprite   = spriteItemUnlock;
+            this.View.ItemUnlockImage.sprite = spriteItemUnlock;
             this.View.ItemUnlockBgImage.sprite = spriteItemUnlock;
             float lastValue = lastPercent / 100f;
             float value     = percent / 100f;

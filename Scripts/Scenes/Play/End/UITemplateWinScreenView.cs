@@ -19,8 +19,17 @@ namespace UITemplate.Scripts.Scenes.Play.End
 
     public class UITemplateWinScreenModel
     {
-        public int StarRate;
-        public UITemplateWinScreenModel(int starRate) { this.StarRate = starRate; }
+        public int    StarRate;
+        public string ItemId;
+        public float    ItemUnlockLastPercent;
+        public float    ItemUnlockPercent;
+        public UITemplateWinScreenModel(int starRate, string itemId, float itemUnlockLastPercent, float itemUnlockPercent)
+        {
+            this.StarRate              = starRate;
+            this.ItemId                = itemId;
+            this.ItemUnlockLastPercent = itemUnlockLastPercent;
+            this.ItemUnlockPercent     = itemUnlockPercent;
+        }
     }
 
     public class UITemplateWinScreenView : BaseView
@@ -61,7 +70,7 @@ namespace UITemplate.Scripts.Scenes.Play.End
             this.View.NextEndgameButton.onClick.AddListener(this.OnClickNext);
         }
 
-        public override void BindData(UITemplateWinScreenModel model)
+        public override async void BindData(UITemplateWinScreenModel model)
         {
             this.View.CoinText.Subscribe(this.SignalBus);
             this.ItemUnlockProgress(model.ItemUnlockLastPercent, model.ItemUnlockPercent);
@@ -83,11 +92,18 @@ namespace UITemplate.Scripts.Scenes.Play.End
             // this.userData.ShopData.UpdateStatusItemData(this.Model.ItemId, itemStatus);
         }
 
-        private void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
-
-        private void OnClickReplay() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
-
-        private void OnClickNext() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        private void OnClickHome()
+        {
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
+        private void OnClickReplay()
+        {
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
+        private void OnClickNext()
+        {
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
 
         public override void Dispose()
         {

@@ -1,7 +1,5 @@
 ﻿namespace UITemplate.Scripts.Models
 {
-    using System.Runtime.CompilerServices;
-
     public class UITemplateSettingData
     {
         public float SoundEffectVolume { get; private set; } = 1;

@@ -36,7 +36,6 @@ namespace UITemplate.Scripts.Scenes.Play.End
     public class UITemplateWinScreenView : BaseView
     {
         public Button                 HomeButton;
-        public Button                 HomeEndgameButton;
         public Button                 ReplayEndgameButton;
         public Button                 NextEndgameButton;
         public UITemplateCurrencyView CoinText;
@@ -68,7 +67,6 @@ namespace UITemplate.Scripts.Scenes.Play.End
             base.OnViewReady();
             await this.OpenViewAsync();
             this.View.HomeButton.onClick.AddListener(this.OnClickHome);
-            this.View.HomeEndgameButton.onClick.AddListener(this.OnClickHome);
             this.View.ReplayEndgameButton.onClick.AddListener(this.OnClickReplay);
             this.View.NextEndgameButton.onClick.AddListener(this.OnClickNext);
         }

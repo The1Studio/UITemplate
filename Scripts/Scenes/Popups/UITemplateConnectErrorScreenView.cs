@@ -11,7 +11,7 @@ using Zenject;
 
 namespace UITemplate.Scripts.Scenes.Popups
 {
-    public class UITemplateConnectErrorView : BaseView
+    public class UITemplateConnectErrorScreenView : BaseView
     {
         public Button   Reconnect;
         public TMP_Text Message;
@@ -20,8 +20,8 @@ namespace UITemplate.Scripts.Scenes.Popups
         public Image    ConnectingImage;
     }
 
-    [PopupInfo(nameof(UITemplateConnectErrorView))]
-    public class UITemplateConnectErrorPresenter : BasePopupPresenter<UITemplateConnectErrorView>
+    [PopupInfo(nameof(UITemplateConnectErrorScreenView))]
+    public class UITemplateConnectErrorPresenter : BasePopupPresenter<UITemplateConnectErrorScreenView>
     {
         private static   double         _time               = 0;
         private static   string         connectingMessage   = "Trying to reconnect...\nPlease wait...";

@@ -10,9 +10,9 @@
     {
         [SerializeField] private List<GameObject> StarOnList;
         [SerializeField] private List<GameObject> StarOffList;
-        private const            float            timeAnimStar = 1.5f;
-        private const            float            timeDelay    = 0.3f;
 
+        [SerializeField] private float timeAnimStar = 1.5f;
+        [SerializeField] private float timeDelay    = 0.3f;
 
         public async UniTask SetStarRate(int rate)
         {
@@ -32,8 +32,8 @@
                 await UniTask.Delay(TimeSpan.FromSeconds(timeDelay));
                 bool isActive = i < rate;
                 this.StarOnList[i].SetActive(isActive);
-                this.StarOnList[i].transform.DORotate(new Vector3(0, 0, -360), timeAnimStar, RotateMode.WorldAxisAdd).SetEase(Ease.OutBounce);
-                this.StarOnList[i].transform.DOScale(Vector3.one, timeAnimStar).SetEase(Ease.OutBounce);
+                this.StarOnList[i].transform.DORotate(new Vector3(0, 0, -360), timeAnimStar, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
+                this.StarOnList[i].transform.DOScale(Vector3.one, timeAnimStar).SetEase(Ease.OutBack);
 
                 this.StarOffList[i].SetActive(!isActive);
             }

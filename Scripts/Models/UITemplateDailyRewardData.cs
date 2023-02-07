@@ -1,6 +1,7 @@
 ﻿namespace UITemplate.Scripts.Models
 {
     using System;
+    using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using Utility;
 
@@ -8,8 +9,15 @@
     {
         private readonly IInternetService internetService = new InternetService();
 
-        public       DateTime     BeginDate         { get; set; }
-        public       int          LoginDay          { get; set; }
-        public async UniTask<int> GetUserLoginDay() => (await this.internetService.GetCurrentTimeAsync()).Day - this.BeginDate.Day + 1;
+        public       List<RewardStatus> RewardStatus = new();
+        public       DateTime           BeginDate         { get; set; }
+        public async UniTask<int>       GetUserLoginDay() => (await this.internetService.GetCurrentTimeAsync()).Day - this.BeginDate.Day + 1;
+    }
+
+    public enum RewardStatus
+    {
+        Locked = 0,
+        Unlocked = 1,
+        Claimed = 2,
     }
 }

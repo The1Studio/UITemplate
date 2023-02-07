@@ -40,7 +40,7 @@
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
         private void OnClickLevel() { }
-        private void OnClickPlay()  { this.screenManager.OpenScreen<UITemplateDailyRewardPopupPresenter>();}
+        private void OnClickPlay()  { }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 

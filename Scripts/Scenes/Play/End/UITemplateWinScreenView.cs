@@ -8,6 +8,7 @@ namespace UITemplate.Scripts.Scenes.Play.End
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using UITemplate.Scripts.Models;
     using UITemplate.Scripts.Scenes.Main;
     using UITemplate.Scripts.Scenes.Popups;
     using UITemplate.Scripts.Scenes.Utils;
@@ -20,8 +21,9 @@ namespace UITemplate.Scripts.Scenes.Play.End
     {
         public int    StarRate;
         public string ItemId;
-        public float    ItemUnlockLastPercent;
-        public float    ItemUnlockPercent;
+        public float  ItemUnlockLastPercent;
+        public float  ItemUnlockPercent;
+
         public UITemplateWinScreenModel(int starRate, string itemId, float itemUnlockLastPercent, float itemUnlockPercent)
         {
             this.StarRate              = starRate;
@@ -46,15 +48,18 @@ namespace UITemplate.Scripts.Scenes.Play.End
     [ScreenInfo(nameof(UITemplateWinScreenView))]
     public class UITemplateWinScreenPresenter : BaseScreenPresenter<UITemplateWinScreenView, UITemplateWinScreenModel>
     {
-        private readonly IScreenManager screenManager;
-        private readonly IGameAssets    gameAssets;
+        private readonly IScreenManager     screenManager;
+        private readonly IGameAssets        gameAssets;
+        private readonly UITemplateUserData userData;
 
         private IDisposable spinDisposable;
-        
-        public UITemplateWinScreenPresenter(SignalBus signalBus, ILogService logService, IScreenManager screenManager, IGameAssets gameAssets) : base(signalBus, logService)
+
+        public UITemplateWinScreenPresenter(SignalBus signalBus, ILogService logService, IScreenManager screenManager, IGameAssets gameAssets,
+            UITemplateUserData userData) : base(signalBus, logService)
         {
             this.screenManager = screenManager;
-            this.gameAssets   = gameAssets;
+            this.gameAssets    = gameAssets;
+            this.userData      = userData;
         }
 
         protected override async void OnViewReady()
@@ -77,26 +82,22 @@ namespace UITemplate.Scripts.Scenes.Play.End
         private async void ItemUnlockProgress(float lastPercent, float percent)
         {
             var spriteItemUnlock = await this.gameAssets.LoadAssetAsync<Sprite>(this.Model.ItemId);
-            this.View.ItemUnlockImage.sprite = spriteItemUnlock;
+            this.View.ItemUnlockImage.sprite   = spriteItemUnlock;
             this.View.ItemUnlockBgImage.sprite = spriteItemUnlock;
             float lastValue = lastPercent / 100f;
             float value     = percent / 100f;
             DOTween.To(() => this.View.ItemUnlockImage.fillAmount = lastValue, x => this.View.ItemUnlockImage.fillAmount = x, value, 1f)
                 .SetEase(Ease.Linear);
+
+            var itemStatus = Math.Abs(value - 1) < Mathf.Epsilon ? ItemData.Status.Owned : ItemData.Status.InProgress;
+            this.userData.ShopData.UpdateStatusItemData(this.Model.ItemId, itemStatus);
         }
 
-        private void OnClickHome()
-        {
-            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
-        }
-        private void OnClickReplay()
-        {
-            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
-        }
-        private void OnClickNext()
-        {
-            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
-        }
+        private void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+
+        private void OnClickReplay() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+
+        private void OnClickNext() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
 
         public override void Dispose()
         {

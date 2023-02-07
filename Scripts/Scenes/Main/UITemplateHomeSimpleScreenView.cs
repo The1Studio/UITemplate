@@ -25,7 +25,7 @@
         private readonly IScreenManager screenManager;
 
         #endregion
-        
+
         public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer) : base(signalBus)
         {
             this.diContainer   = diContainer;

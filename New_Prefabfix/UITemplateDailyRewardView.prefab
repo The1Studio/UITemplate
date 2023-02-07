@@ -714,6 +714,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -164.72
       objectReference: {fileID: 0}
+    - target: {fileID: 7148622004088524700, guid: 4d9535ca44cb6d44982d2cca6cf4f669, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 7514336098869361397, guid: 4d9535ca44cb6d44982d2cca6cf4f669, type: 3}
       propertyPath: m_Name
       value: UITemplateDailyRewardItemView (6)

@@ -4,6 +4,7 @@
     using System.Linq;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
+    using GameFoundation.Scripts.Utilities.LogService;
     using LocalData;
     using TMPro;
     using UITemplate.Scripts.Blueprints;
@@ -56,11 +57,16 @@
 
     public class UITemplateDailyRewardItemPresenter : BaseUIItemPresenter<UITemplateDailyRewardItemView, UITemplateDailyRewardItemModel>
     {
+        private readonly ILogService                    logService;
         private readonly UserLocalData                  localData;
         private          UITemplateDailyRewardItemModel model;
 
         private int userLoginDay;
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, UserLocalData localData) : base(gameAssets) { this.localData = localData; }
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UserLocalData localData) : base(gameAssets)
+        {
+            this.logService = logService;
+            this.localData  = localData;
+        }
 
         public override async void BindData(UITemplateDailyRewardItemModel param)
         {
@@ -88,6 +94,7 @@
         private void OnClickClaimReward()
         {
             this.localData.RewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] = RewardStatus.Claimed;
+            this.logService.LogWithColor("Add reward to local here! ", Color.yellow);
             this.InitView();
         }
     }

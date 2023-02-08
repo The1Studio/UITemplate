@@ -22,7 +22,7 @@
         public GameObject   Panel;
     }
 
-    [PopupInfo(nameof(UITemplateRateGameScreenView), isCloseWhenTapOutside: false)]
+    [PopupInfo(nameof(UITemplateRateGameScreenView))]
     public class UITemplateRateGameScreenPresenter : BasePopupPresenter<UITemplateRateGameScreenView>
     {
         #region inject
@@ -47,8 +47,6 @@
                 var star = this.View.StarImages[i];
                 star.transform.localScale = Vector3.zero;
             }
-
-            this.playAnimation();
         }
 
         public override void Dispose() { base.Dispose(); }
@@ -65,6 +63,7 @@
                 var star         = this.View.StarButtons[closureIndex];
                 star.onClick.AddListener(() => this.OnClickStar(closureIndex + 1));
             }
+            this.playAnimation();
         }
 
         private void playAnimation() { this.yesButtonAnimation(); }

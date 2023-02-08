@@ -22,7 +22,7 @@
         public GameObject   Panel;
     }
 
-    [PopupInfo(nameof(UITemplateRateGameScreenView), isCloseWhenTapOutside:false)]
+    [PopupInfo(nameof(UITemplateRateGameScreenView), isCloseWhenTapOutside: false)]
     public class UITemplateRateGameScreenPresenter : BasePopupPresenter<UITemplateRateGameScreenView>
     {
         #region inject
@@ -47,6 +47,7 @@
                 var star = this.View.StarImages[i];
                 star.transform.localScale = Vector3.zero;
             }
+
             this.playAnimation();
         }
 
@@ -64,14 +65,9 @@
                 var star         = this.View.StarButtons[closureIndex];
                 star.onClick.AddListener(() => this.OnClickStar(closureIndex + 1));
             }
-
-
         }
 
-        private void playAnimation()
-        {
-            this.yesButtonAnimation();
-        }
+        private void playAnimation() { this.yesButtonAnimation(); }
 
         private void OnClickStar(int count)
         {
@@ -84,19 +80,19 @@
         private void yesButtonAnimation()
         {
             this.View.YesButton.transform.localScale = Vector3.one;
-            this.View.YesButton.transform.DOScale(new Vector3(1.1f, 1.1f, 1.1f), 1f).SetLoops(-1, loopType: LoopType.Yoyo).SetEase(Ease.Linear);
+            this.View.YesButton.transform.DOScale(Vector3.one * 1.1f, 1f).SetLoops(-1, loopType: LoopType.Yoyo).SetEase(Ease.Linear);
         }
 
         private async void starAnimation(int index, bool WillActive = true)
         {
             if (index >= this.View.StarButtons.Count || index < 0) return;
-            
+
             var star        = this.View.StarImages[index];
             var targetScale = WillActive ? Vector3.one : Vector3.zero;
             var easeType    = WillActive ? Ease.OutElastic : Ease.OutCirc;
             var duration    = WillActive ? 0.5f : 0.3f;
 
-            star.transform.DOScale(targetScale, 0.5f).SetLoops(1, loopType: LoopType.Yoyo).SetEase(easeType);
+            star.transform.DOScale(targetScale, duration).SetLoops(1, loopType: LoopType.Yoyo).SetEase(easeType);
         }
 
 

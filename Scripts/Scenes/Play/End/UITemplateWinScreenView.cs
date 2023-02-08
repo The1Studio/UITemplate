@@ -74,7 +74,7 @@ namespace UITemplate.Scripts.Scenes.Play.End
         {
             this.View.CoinText.Subscribe(this.SignalBus);
             this.ItemUnlockProgress(model.ItemUnlockLastPercent, model.ItemUnlockPercent);
-            this.tweenSpin = this.View.LightGlowImage.transform.DORotate(new Vector3(0, 0, -360), 0.5f, RotateMode.FastBeyond360)
+            this.tweenSpin = this.View.LightGlowImage.transform.DORotate(new Vector3(0, 0, -360), 5f, RotateMode.FastBeyond360)
                 .SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
             await this.View.StarRateView.SetStarRate(model.StarRate);
         }
@@ -89,8 +89,8 @@ namespace UITemplate.Scripts.Scenes.Play.End
             DOTween.To(() => this.View.ItemUnlockImage.fillAmount = lastValue, x => this.View.ItemUnlockImage.fillAmount = x, value, 1f)
                 .SetEase(Ease.Linear);
 
-            // var itemStatus = Math.Abs(value - 1) < Mathf.Epsilon ? ItemData.Status.Owned : ItemData.Status.InProgress;
-            // this.userData.ShopData.UpdateStatusItemData(this.Model.ItemId, itemStatus);
+            var itemStatus = Math.Abs(value - 1) < Mathf.Epsilon ? ItemData.Status.Owned : ItemData.Status.InProgress;
+            this.userData.ShopData.UpdateStatusItemData(this.Model.ItemId, itemStatus);
         }
 
         private void OnClickHome()

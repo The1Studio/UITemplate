@@ -3,9 +3,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using UITemplate.Scripts.Scenes.Play.End;
     using UITemplate.Scripts.Scenes.Popups;
-    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
@@ -42,15 +40,9 @@
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
 
-        private void OnClickLevel()
-        {
-            // this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(2, "Character_Sample05_l", 25, 50));
-        }
+        private void OnClickLevel() { }
 
-        private void OnClickPlay()
-        {
-            // this.screenManager.OpenScreen<UITemplateWinScreenPresenter, UITemplateWinScreenModel>(new UITemplateWinScreenModel(1, "Character_Sample05_l", 0, 25));
-        }
+        private void OnClickPlay() { }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 

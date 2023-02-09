@@ -10,12 +10,12 @@ namespace UITemplate.Scripts.Scenes.Main
     {
         public override void InstallBindings()
         {
-            base.InstallBindings(); 
+            base.InstallBindings();
             this.DeclareSignals();
             this.Container.Bind<UITemplateSettingData>().AsSingle().NonLazy();
             this.Container.InitScreenManually<UITemplateHomeSimpleScreenPresenter>();
         }
-
+        
         private void DeclareSignals() { this.Container.DeclareSignal<UpdateCurrencySignal>(); }
     }
 }

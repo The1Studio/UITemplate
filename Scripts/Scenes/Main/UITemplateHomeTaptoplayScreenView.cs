@@ -9,8 +9,9 @@
 
     public class UITemplateHomeTaptoplayScreenView : BaseView
     {
-        public Button                 TaptoplayButton;
-        public UITemplateCurrencyView CoinText;
+        public Button                      TaptoplayButton;
+        public UITemplateCurrencyView      CoinText;
+        public UITemplateSettingButtonView SettingButtonView;
     }
 
     [ScreenInfo(nameof(UITemplateHomeTaptoplayScreenView))]
@@ -29,6 +30,7 @@
         {
             base.OnViewReady();
             this.View.TaptoplayButton.onClick.AddListener(this.OnClickTaptoplayBtn);
+            this.diContainer.Inject(this.View.SettingButtonView);
         }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }

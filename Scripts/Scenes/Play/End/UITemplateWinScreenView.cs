@@ -90,8 +90,8 @@
             DOTween.To(() => this.View.ItemUnlockImage.fillAmount = lastValue, x => this.View.ItemUnlockImage.fillAmount = x, value, 1f)
                 .SetEase(Ease.Linear);
 
-            // var itemStatus = Math.Abs(value - 1) < Mathf.Epsilon ? ItemData.Status.Owned : ItemData.Status.InProgress;
-            // this.userData.ShopData.UpdateStatusItemData(this.Model.ItemId, itemStatus);
+            var itemStatus = Math.Abs(value - 1) < Mathf.Epsilon ? ItemData.Status.Owned : ItemData.Status.InProgress;
+            this.userData.ShopData.UpdateStatusItemData(this.Model.ItemId, itemStatus);
         }
 
         private void OnClickHome()

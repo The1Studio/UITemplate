@@ -3,7 +3,9 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using UITemplate.Scripts.Scenes.Play.End;
     using UITemplate.Scripts.Scenes.Popups;
+    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
@@ -20,7 +22,7 @@
     {
         #region inject
 
-        private readonly DiContainer diContainer;
+        private readonly DiContainer    diContainer;
         private readonly IScreenManager screenManager;
 
         #endregion
@@ -39,8 +41,10 @@
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
+
         private void OnClickLevel() { }
-        private void OnClickPlay()  { }
+
+        private void OnClickPlay() { }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 

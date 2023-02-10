@@ -39,6 +39,15 @@ namespace UITemplate.Scripts.Models
                 return new ItemData(id, itemRecord);
             });
         }
+        
+        public ItemData UpdateStatusItemData(string id, ItemData.Status status)
+        {
+            return this.itemIdToItemData.GetOrAdd(id, () =>
+            {
+                var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
+                return new ItemData(id, itemRecord, status);
+            });
+        }
     }
 
     public class ItemData

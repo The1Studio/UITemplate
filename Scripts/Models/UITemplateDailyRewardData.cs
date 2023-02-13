@@ -7,7 +7,9 @@
 
     public class UITemplateDailyRewardData
     {
-        private readonly IInternetService internetService = new InternetService();
+        private readonly IInternetService internetService;
+
+        public UITemplateDailyRewardData() { this.internetService = new InternetService(); }
 
         public       List<RewardStatus> RewardStatus = new();
         public       DateTime           BeginDate         { get; set; }
@@ -16,8 +18,8 @@
 
     public enum RewardStatus
     {
-        Locked = 0,
+        Locked   = 0,
         Unlocked = 1,
-        Claimed = 2,
+        Claimed  = 2,
     }
 }

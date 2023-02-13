@@ -40,7 +40,7 @@
         {
             this.userLoginDay                                             = await this.localData.RewardData.GetUserLoginDay();
             this.localData.RewardData.RewardStatus[this.userLoginDay - 1] = RewardStatus.Unlocked;
-            for (var i = 0; i < 7; i++)
+            for (var i = 0; i < this.View.DailyRewardItemViews.Count; i++)
             {
                 this.dailyRewardItemPresenters.Add(this.diContainer.Instantiate<UITemplateDailyRewardItemPresenter>());
                 this.dailyRewardItemPresenters[i].SetView(this.View.DailyRewardItemViews[i]);

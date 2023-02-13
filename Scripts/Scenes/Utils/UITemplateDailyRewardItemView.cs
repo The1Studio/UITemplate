@@ -1,6 +1,6 @@
 ﻿namespace UITemplate.Scripts.Scenes.Utils
 {
-    using System;
+    using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
@@ -28,6 +28,18 @@
         [SerializeField] private TextMeshProUGUI txtDayLabel;
         [SerializeField] private Button          btnClaim;
 
+        private Dictionary<RewardStatus, List<GameObject>> statusToGameObjectsMap;
+
+        private void Start()
+        {
+            this.statusToGameObjectsMap = new()
+            {
+                { RewardStatus.Locked, new List<GameObject> { this.objLockReward } },
+                { RewardStatus.Unlocked, new List<GameObject> { } },
+                { RewardStatus.Claimed, new List<GameObject> { this.objClaimed } }
+            };
+        }
+
         public Button BtnClaim => this.btnClaim;
 
         public void SetStatus(RewardStatus rewardStatus, Sprite rewardSprite, string value, string label)
@@ -35,35 +47,31 @@
             this.txtDayLabel.text = label;
             this.txtValue.text    = value;
             this.imgReward.sprite = rewardSprite;
-            switch (rewardStatus)
+
+            foreach (var kvp in statusToGameObjectsMap)
             {
-                case RewardStatus.Locked:
-                    this.objLockReward.SetActive(true);
-                    this.objClaimed.SetActive(false);
-                    break;
-                case RewardStatus.Unlocked:
-                    this.objLockReward.SetActive(false);
-                    this.objClaimed.SetActive(false);
-                    break;
-                case RewardStatus.Claimed:
-                    this.objLockReward.SetActive(false);
-                    this.objClaimed.SetActive(true);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(rewardStatus), rewardStatus, null);
+                foreach (var go in kvp.Value)
+                {
+                    go.SetActive(kvp.Key == rewardStatus);
+                }
             }
         }
     }
 
     public class UITemplateDailyRewardItemPresenter : BaseUIItemPresenter<UITemplateDailyRewardItemView, UITemplateDailyRewardItemModel>
     {
+        #region inject
+
         private readonly ILogService                    logService;
         private readonly UserLocalData                  localData;
         private          UITemplateDailyRewardItemModel model;
 
-        private       int    userLoginDay;
+        #endregion
+
         private const string TodayLabel  = "TODAY";
         private const string PrefixLabel = "DAY ";
+        private       int    userLoginDay;
+
         public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UserLocalData localData) : base(gameAssets)
         {
             this.logService = logService;

@@ -3,6 +3,8 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using UITemplate.Scripts.Scenes.Main.Collection;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using UITemplate.Scripts.Scenes.Play.End;
     using UITemplate.Scripts.Scenes.Popups;
     using UnityEngine;
@@ -44,7 +46,10 @@
 
         private void OnClickLevel() { }
 
-        private void OnClickPlay() { }
+        private void OnClickPlay()
+        {
+            this.screenManager.OpenScreen<UITemplateCollectionScreenPresenter>();
+        }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 

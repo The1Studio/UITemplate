@@ -2,6 +2,8 @@
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using UITemplate.Scripts.Scenes.Main.Collection;
     using UITemplate.Scripts.Scenes.Popups;
     using UnityEngine.UI;
     using Zenject;
@@ -19,13 +21,15 @@
     {
         #region inject
 
-        private readonly DiContainer diContainer;
+        private readonly DiContainer    diContainer;
+        private readonly IScreenManager screenManager;
 
         #endregion
 
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer) : base(signalBus)
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
         {
-            this.diContainer = diContainer;
+            this.diContainer    = diContainer;
+            this.screenManager = screenManager;
         }
 
         protected override async void OnViewReady()
@@ -37,7 +41,11 @@
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
         private void OnClickLevel() { }
-        private void OnClickPlay()  { }
+
+        private void OnClickPlay()
+        {
+            this.screenManager.OpenScreen<UITemplateCollectionScreenPresenter>();
+        }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 

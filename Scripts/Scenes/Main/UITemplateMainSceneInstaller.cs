@@ -2,6 +2,9 @@ namespace UITemplate.Scripts.Scenes.Main
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.Utilities;
+    using UITemplate.Scripts.Models;
+    using UITemplate.Scripts.Signals;
+    using Zenject;
 
     public class UITemplateMainSceneInstaller : BaseSceneInstaller
     {
@@ -9,6 +12,16 @@ namespace UITemplate.Scripts.Scenes.Main
         {
             base.InstallBindings();
             this.Container.InitScreenManually<UITemplateHomeSimpleScreenPresenter>();
+
+            var uiTemplateUserData = this.Container.Instantiate<UITemplateUserData>();
+            this.Container.Bind<UITemplateUserData>().FromInstance(uiTemplateUserData);
+            this.Container.Bind<UITemplateLevelData>().FromInstance(uiTemplateUserData.LevelData);
+            this.Container.Bind<UITemplateShopData>().FromInstance(uiTemplateUserData.ShopData);
+            this.Container.Bind<UITemplateInventoryData>().FromInstance(uiTemplateUserData.InventoryData);
+            this.Container.Bind<UITemplateSettingData>().FromInstance(uiTemplateUserData.SettingData);
+
+            //Signal
+            this.Container.DeclareSignal<UpdateCurrencySignal>();
         }
     }
 }

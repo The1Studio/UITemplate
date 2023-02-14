@@ -1,21 +1,24 @@
 ﻿namespace UITemplate.Scripts.Scenes.Main.Collection
 {
     using System;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
+    using TMPro;
     using UITemplate.Scripts.Models;
     using UnityEngine;
     using UnityEngine.UI;
 
     public class UITemplateCollectionItemView : TViewMono
     {
-        [SerializeField] private GameObject objUnlocked, objLocked, objOwned;
-        [SerializeField] private Image      imgItem;
-        
-        public                   Image      ImgItem     => this.imgItem;
-        public                   GameObject ObjUnlocked => this.objUnlocked;
-        public                   GameObject ObjLocked   => this.objLocked;
-        public                   GameObject ObjOwned    => this.objOwned;
+        public GameObject      UnlockedObj;
+        public GameObject      LockedObj;
+        public GameObject      OwnedObj;
+        public GameObject      ChoosedObj;
+        public Image           ItemImage;
+        public TextMeshProUGUI PriceText;
+        public Button          SelectButton;
+        public Button          BuyItemButton;
 
         public void Init(ItemData.Status status)
         {
@@ -35,24 +38,24 @@
 
         private void Init()
         {
-            this.objLocked.SetActive(false);
-            this.objOwned.SetActive(false);
-            this.objUnlocked.SetActive(false);
+            this.LockedObj.SetActive(false);
+            this.OwnedObj.SetActive(false);
+            this.UnlockedObj.SetActive(false);
         }
 
         private void InitItemLocked()
         {
-            this.objLocked.SetActive(true);
+            this.LockedObj.SetActive(true);
         }
 
         private void InitItemUnLocked()
         {
-            this.objUnlocked.SetActive(true);
+            this.UnlockedObj.SetActive(true);
         }
 
         private void InitItemOwned()
         {
-            this.objOwned.SetActive(true);
+            this.OwnedObj.SetActive(true);
         }
     }
 
@@ -73,15 +76,38 @@
         private readonly IGameAssets        gameAssets;
         private readonly UITemplateUserData userData;
 
+        private UITemplateCollectionItemModel model;
+
         public UITemplateCollectionItemPresenter(IGameAssets gameAssets, UITemplateUserData userData) : base(gameAssets)
         {
             this.gameAssets = gameAssets;
             this.userData   = userData;
         }
 
-        public override void BindData(UITemplateCollectionItemModel param)
+        public override async void BindData(UITemplateCollectionItemModel param)
         {
             this.View.Init(param.ItemData.CurrentStatus);
+            this.View.ItemImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.model.ItemData.BlueprintRecord.Name);
+            this.InitButton();
+        }
+
+        private void InitButton()
+        {
+            this.View.SelectButton.onClick.AddListener(this.OnSelect);
+            this.View.BuyItemButton.onClick.AddListener(this.OnBuyItem);
+        }
+
+        private void OnSelect() {  }
+
+        private void OnBuyItem() {  }
+
+        private void OnWatchAds() {  }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.View.SelectButton.onClick.RemoveAllListeners();
+            this.View.BuyItemButton.onClick.RemoveAllListeners();
         }
     }
 }

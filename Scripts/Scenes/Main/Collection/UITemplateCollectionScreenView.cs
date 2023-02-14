@@ -67,8 +67,6 @@
             this.InitDataForCollection(CollectionTab.Characters);
         }
         
-        
-
         private void OnClickItem()
         {
             this.InitDataForCollection(CollectionTab.Items);

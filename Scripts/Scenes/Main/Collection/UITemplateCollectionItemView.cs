@@ -24,8 +24,6 @@
             {
                 case ItemData.Status.Owned: this.InitItemOwned();
                     break;
-                case ItemData.Status.InProgress:
-                    break;
                 case ItemData.Status.Unlocked: this.InitItemUnLocked();
                     break;
                 case ItemData.Status.Locked: this.InitItemLocked();
@@ -72,8 +70,13 @@
 
     public class UITemplateCollectionItemPresenter : BaseUIItemPresenter<UITemplateCollectionItemView, UITemplateCollectionItemModel>
     {
-        public UITemplateCollectionItemPresenter(IGameAssets gameAssets) : base(gameAssets)
+        private readonly IGameAssets        gameAssets;
+        private readonly UITemplateUserData userData;
+
+        public UITemplateCollectionItemPresenter(IGameAssets gameAssets, UITemplateUserData userData) : base(gameAssets)
         {
+            this.gameAssets = gameAssets;
+            this.userData   = userData;
         }
 
         public override void BindData(UITemplateCollectionItemModel param)

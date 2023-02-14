@@ -30,23 +30,25 @@
         private readonly IScreenManager          screenManager;
         private readonly DiContainer             diContainer;
         private readonly UITemplateShopBlueprint shopBlueprint;
+        private readonly UITemplateUserData      userData;
 
         #endregion
         
         private enum CollectionTab
         {
-            Character,
-            Item
+            Characters,
+            Items
         }
 
         private List<UITemplateCollectionItemModel> collectionItemModels = new();
 
         public UITemplateCollectionScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer,
-            UITemplateShopBlueprint shopBlueprint) : base(signalBus)
+            UITemplateShopBlueprint shopBlueprint, UITemplateUserData userData) : base(signalBus)
         {
-            this.screenManager  = screenManager;
-            this.diContainer    = diContainer;
+            this.screenManager = screenManager;
+            this.diContainer   = diContainer;
             this.shopBlueprint = shopBlueprint;
+            this.userData     = userData;
         }
 
         protected override void OnViewReady()
@@ -62,21 +64,21 @@
         {
             this.View.CollectionAdapter.InitItemAdapter(this.collectionItemModels, this.diContainer);
             this.View.CoinText.Subscribe(this.SignalBus);
-            this.BindDataForCollection(CollectionTab.Character);
+            this.InitDataForCollection(CollectionTab.Characters);
         }
         
         
 
         private void OnClickItem()
         {
-            this.BindDataForCollection(CollectionTab.Item);
+            this.InitDataForCollection(CollectionTab.Items);
             this.ConfigBtnStatus(false, true);
             Debug.Log("click item");
         }
 
         private void OnClickCharacters()
         {
-            this.BindDataForCollection(CollectionTab.Character);
+            this.InitDataForCollection(CollectionTab.Characters);
             this.ConfigBtnStatus(true, false);
             Debug.Log("click character");
         }
@@ -85,32 +87,35 @@
 
         private void OnClickWatchAds() { }
 
-        private void BindDataForCollection(CollectionTab collectionTab)
+        private void InitDataForCollection(CollectionTab collectionTab)
         {
             switch (collectionTab)
             {
-                case CollectionTab.Character:
+                case CollectionTab.Characters:
                     this.ConfigBtnStatus(true, false);
-                    this.BindDataForCharacters();
+                    this.InitDataForCharacters();
                     break;
-                case CollectionTab.Item:
+                case CollectionTab.Items:
                     this.ConfigBtnStatus(false, true);
-                    this.BindDataForItems();
+                    this.InitDataForItems();
                     break;
             }
         }
 
-        private void BindDataForCharacters()
+        private void InitDataForCharacters()
         {
-            // this.collectionItemModels.Clear();
-            // this.collectionItemModels = this.shopBlueprint.Values.Where(item => item.Category.Equals(CollectionTab.Character.ToString()))
-            //     .Select(item => new UITemplateCollectionItemModel(item, CollectionTab.Character))
-            //     .ToList();
+            this.collectionItemModels.Clear();
+            this.collectionItemModels = this.shopBlueprint.Values.Where(item => item.Category.Equals(CollectionTab.Characters.ToString()))
+                .Select(item => new UITemplateCollectionItemModel(this.userData.ShopData.GetItemData(item.Name), CollectionTab.Characters.ToString()))
+                .ToList();
         }
 
-        private void BindDataForItems()
+        private void InitDataForItems()
         {
-            // items
+            this.collectionItemModels.Clear();
+            this.collectionItemModels = this.shopBlueprint.Values.Where(item => item.Category.Equals(CollectionTab.Items.ToString()))
+                .Select(item => new UITemplateCollectionItemModel(this.userData.ShopData.GetItemData(item.Name), CollectionTab.Items.ToString()))
+                .ToList();
         }
 
         private void ConfigBtnStatus(bool isCharacterActive, bool isItemActive)

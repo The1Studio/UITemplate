@@ -86,11 +86,12 @@
 
         public override async void BindData(UITemplateCollectionItemModel param)
         {
+            this.model = param;
             this.View.Init(param.ItemData.CurrentStatus);
             this.View.ItemImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.model.ItemData.BlueprintRecord.Name);
             this.InitButton();
         }
-
+        
         private void InitButton()
         {
             this.View.SelectButton.onClick.AddListener(this.OnSelect);
@@ -100,8 +101,6 @@
         private void OnSelect() {  }
 
         private void OnBuyItem() {  }
-
-        private void OnWatchAds() {  }
 
         public override void Dispose()
         {

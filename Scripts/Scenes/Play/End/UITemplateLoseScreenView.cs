@@ -91,15 +91,14 @@
             return true;
         }
 
-        private async void adsNotificationAnimation(bool willActive)
+        private void adsNotificationAnimation(bool willActive)
         {
             var adsNotification = this.View.AdsNotification.gameObject;
             var targetScale     = willActive ? Vector3.one : Vector3.zero;
             var easeType        = willActive ? Ease.OutElastic : Ease.InElastic;
             var duration        = willActive ? 0.5f : 0.3f;
             
-            await adsNotification.transform.DOScale(targetScale, duration).SetEase(easeType).AsyncWaitForCompletion();
-            isAdsAvailable = willActive;
+            adsNotification.transform.DOScale(targetScale, duration).SetEase(easeType).OnComplete(() => isAdsAvailable = willActive);
         }
     }
 }

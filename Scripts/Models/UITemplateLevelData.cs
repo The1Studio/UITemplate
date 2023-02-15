@@ -49,7 +49,6 @@ namespace UITemplate.Scripts.Models
             Locked,
             Passed,
             Skipped,
-            Now,
         }
     }
 }

@@ -38,7 +38,6 @@ namespace UITemplate.Scripts.Scenes.Loading
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
     public class UITemplateLoadingScreenPresenter : BaseScreenPresenter<UITemplateLoadingScreenView>
     {
-        protected virtual string NextSceneName { get; set; }          
         private const     string LoadingBlueprintStepName = "Loading static data...";
 
         private const float MinimumLoadingBlueprintTime = 2f; //seconds
@@ -59,6 +58,8 @@ namespace UITemplate.Scripts.Scenes.Loading
             this.blueprintReaderManager = blueprintReaderManager;
             this.sceneDirector          = sceneDirector;
         }
+
+        protected virtual string NextSceneName => "1.UITemplateMainScene";  
 
         protected override void OnViewReady()
         {

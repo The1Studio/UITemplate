@@ -38,8 +38,8 @@ namespace UITemplate.Scripts.Scenes.Loading
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
     public class UITemplateLoadingScreenPresenter : BaseScreenPresenter<UITemplateLoadingScreenView>
     {
-        private const string MainSceneName            = "1.UITemplateMainScene";
-        private const string LoadingBlueprintStepName = "Loading static data...";
+        protected virtual string NextSceneName { get; set; }          
+        private const     string LoadingBlueprintStepName = "Loading static data...";
 
         private const float MinimumLoadingBlueprintTime = 2f; //seconds
 
@@ -90,7 +90,7 @@ namespace UITemplate.Scripts.Scenes.Loading
                 this.View.SetLoadingProgressValue(progressInView);
                 await UniTask.WaitForEndOfFrame();
             }
-            this.sceneDirector.LoadSingleSceneAsync(MainSceneName);
+            this.sceneDirector.LoadSingleSceneAsync(NextSceneName);
         }
 
         private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }

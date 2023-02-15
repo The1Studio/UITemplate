@@ -4,8 +4,6 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using UITemplate.Scripts.Scenes.Main.Collection;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using UITemplate.Scripts.Scenes.Play.End;
     using UITemplate.Scripts.Scenes.Popups;
     using UnityEngine;
     using UnityEngine.UI;

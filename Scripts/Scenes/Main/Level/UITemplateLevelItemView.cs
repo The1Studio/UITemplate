@@ -14,32 +14,30 @@
 
     public class UITemplateLevelItemModel : LevelData
     {
-        public UITemplateLevelItemModel(UITemplateLevelRecord record, int level, Models.LevelData.Status levelStatus, int starCount ) : base(record)
+        public UITemplateLevelItemModel(UITemplateLevelRecord record, int level, Models.LevelData.Status levelStatus, int starCount) : base(record)
         {
             base.LevelStatus = levelStatus;
             base.StarCount   = starCount;
             base.Level       = level;
         }
-        
     }
 
     public class UITemplateLevelItemView : TViewMono
     {
-        public TMP_Text         LevelText;
-        public Image            BackgroundImage;
-        public Button           LevelButton;
+        public TMP_Text LevelText;
+        public Image    BackgroundImage;
+        public Button   LevelButton;
 
         [SerializeField] private Sprite LockedSprite;
         [SerializeField] private Sprite NowSprite;
         [SerializeField] private Sprite PassedSprite;
         [SerializeField] private Sprite SkippedSprite;
 
-        [Inject] private UITemplateLevelData levelData;
-        public virtual void InitView(UITemplateLevelItemModel data)
+        public virtual void InitView(UITemplateLevelItemModel data, UITemplateLevelData levelData)
         {
-            this.LevelText.text           = data.Level.ToString();
-            this.BackgroundImage.sprite   = this.GetStatusBackground(data.LevelStatus);
-            if (data.Level == this.levelData.CurrentLevel) this.BackgroundImage.sprite = this.NowSprite;
+            this.LevelText.text         = data.Level.ToString();
+            this.BackgroundImage.sprite = this.GetStatusBackground(data.LevelStatus);
+            if (data.Level == levelData.CurrentLevel) this.BackgroundImage.sprite = this.NowSprite;
             this.LevelButton.interactable = data.LevelStatus != Models.LevelData.Status.Locked;
         }
 
@@ -59,18 +57,23 @@
 
         private readonly IGameAssets gameAssets;
 
-        [Inject] private readonly SignalBus      signalBus;
-        [Inject] private readonly IScreenManager screenManager;
-        // [Inject] private readonly ILocalData     levelData;
+        private readonly SignalBus           signalBus;
+        private readonly IScreenManager      screenManager;
+        private          UITemplateLevelData levelData;
 
         #endregion
 
         private UITemplateLevelItemModel _model;
-        public UITemplateLevelItemPresenter(IGameAssets gameAssets) : base(gameAssets) { }
+        public UITemplateLevelItemPresenter(IGameAssets gameAssets, SignalBus signalBus, IScreenManager screenManager, UITemplateLevelData levelData) : base(gameAssets)
+        {
+            this.signalBus     = signalBus;
+            this.screenManager = screenManager;
+            this.levelData     = levelData;
+        }
         public override void BindData(UITemplateLevelItemModel param)
         {
             this._model = param;
-            this.View.InitView(param);
+            this.View.InitView(param, this.levelData);
             this.View.LevelButton.onClick.RemoveAllListeners();
             this.View.LevelButton.onClick.AddListener(this.OnClick);
         }

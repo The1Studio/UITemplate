@@ -24,13 +24,18 @@
     {
         #region inject
 
-        [Inject] private readonly DiContainer         diContainer;
-        [Inject] private readonly IScreenManager      screenManager;
-        [Inject] private readonly UITemplateLevelData levelData;
+        private readonly DiContainer         diContainer;
+        private readonly IScreenManager      screenManager;
+        private readonly UITemplateLevelData levelData;
 
         #endregion
 
-        public UITemplateLevelSelectScreenPresenter(SignalBus signalBus) : base(signalBus) { }
+        public UITemplateLevelSelectScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateLevelData levelData) : base(signalBus)
+        {
+            this.levelData    = levelData;
+            this.diContainer  = diContainer;
+            this.screenManager = screenManager;
+        }
 
         protected override void OnViewReady()
         {
@@ -59,36 +64,36 @@
             // get level list from local data
             var levelList = this.levelData.LevelToLevelData.Values.Cast<UITemplateLevelItemModel>().ToList();
             var allLevels = this.levelData.GetAllLevels().Cast<UITemplateLevelItemModel>().ToList();
-            // add to list the rest of the levels as closed levels
+            // add to list the rest of the levels as locked levels
             levelList.AddRange(allLevels.GetRange(levelList.Count, allLevels.Count - levelList.Count));
-            return levelList;
+            // return levelList;
             return getLevelListTest(0, 10000);
         }
-        private List<UITemplateLevelItemModel> getLevelListTest(int from, int to)
+        private List<UITemplateLevelItemModel> getLevelListTest(int from, int to) // Temporary method for testing. Remove it when you have a real data source
         {
             var list = new List<UITemplateLevelItemModel>();
 
             #region test data
 
-            for (int i = from; i < to; i++) 
+            for (int i = from; i < to; i++)
                 list.Add(
                     new UITemplateLevelItemModel(
-                        new UITemplateLevelRecord(), 
-                        i+1,
+                        new UITemplateLevelRecord(),
+                        i + 1,
                         Models.LevelData.Status.Locked,
                         0
-                        )
-                    );
-            list[0].LevelStatus    = Models.LevelData.Status.Passed;
-            list[0].StarCount      = 3;
-            list[1].LevelStatus    = Models.LevelData.Status.Passed;
-            list[1].StarCount      = 2;
-            list[2].LevelStatus    = Models.LevelData.Status.Passed;
-            list[2].StarCount      = 1;
-            list[3].LevelStatus    = Models.LevelData.Status.Skipped;
-            list[3].StarCount      = 3;
-            list[4].LevelStatus    = Models.LevelData.Status.Passed;
-            list[4].StarCount      = 3;
+                    )
+                );
+            list[0].LevelStatus = Models.LevelData.Status.Passed;
+            list[0].StarCount   = 3;
+            list[1].LevelStatus = Models.LevelData.Status.Passed;
+            list[1].StarCount   = 2;
+            list[2].LevelStatus = Models.LevelData.Status.Passed;
+            list[2].StarCount   = 1;
+            list[3].LevelStatus = Models.LevelData.Status.Skipped;
+            list[3].StarCount   = 3;
+            list[4].LevelStatus = Models.LevelData.Status.Passed;
+            list[4].StarCount   = 3;
 
             #endregion
 

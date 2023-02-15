@@ -1,7 +1,11 @@
 ﻿namespace UITemplate.Scripts.Scenes.Main.Collection.Elements
 {
+    using System;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
+    using UITemplate.Scripts.Models;
     using UITemplate.Scripts.Scenes.Main.Collection.Base;
+    using UnityEngine;
 
     public class ItemCollectionItemModel : BaseItemCollectionModel
     {
@@ -13,13 +17,75 @@
 
     public class ItemCollectionItemPresenter : BaseItemCollectionPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
+        private readonly IGameAssets        gameAssets;
+        private readonly UITemplateUserData userData;
+
+        private ItemCollectionItemModel model;
+        
         protected override string CategoryType => "Item";
 
-        public ItemCollectionItemPresenter(IGameAssets gameAssets) : base(gameAssets) { }
-
-        public override void BindData(ItemCollectionItemModel param)
+        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateUserData userData) : base(gameAssets)
         {
-            
+            this.gameAssets = gameAssets;
+            this.userData  = userData;
+        }
+
+        public override async void BindData(ItemCollectionItemModel param)
+        {
+            this.model = param;
+            this.Init(param.ItemData.CurrentStatus);
+            this.View.ChoosedObj.SetActive(this.model.ItemData.BlueprintRecord.Name.Equals(this.userData.UserPackageData.CurrentSelectCharacterId.Value));
+            this.View.ItemImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.model.ItemData.BlueprintRecord.Name);
+            this.View.PriceText.text   = $"{param.ItemData.BlueprintRecord.Price}";
+            this.View.SelectButton.onClick.AddListener(this.OnSelect);
+            this.View.BuyItemButton.onClick.AddListener(this.OnBuyItem);
+        }
+
+        private void OnSelect() {  }
+
+        private void OnBuyItem() {  }
+
+        private void Init(ItemData.Status status)
+        {
+            this.Init();
+            switch (status)
+            {
+                case ItemData.Status.Owned:
+                    this.InitItemOwned();
+
+                    break;
+                case ItemData.Status.Unlocked:
+                    this.InitItemUnLocked();
+
+                    break;
+                case ItemData.Status.Locked:
+                    this.InitItemLocked();
+
+                    break;
+                case ItemData.Status.InProgress:
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, null);
+            }
+        }
+
+        private void Init()
+        {
+            this.View.LockedObj.SetActive(false);
+            this.View.OwnedObj.SetActive(false);
+            this.View.UnlockedObj.SetActive(false);
+        }
+
+        private void InitItemLocked() { this.View.LockedObj.SetActive(true); }
+
+        private void InitItemUnLocked() { this.View.UnlockedObj.SetActive(true); }
+
+        private void InitItemOwned() { this.View.OwnedObj.SetActive(true); }
+        
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.View.SelectButton.onClick.RemoveAllListeners();
+            this.View.BuyItemButton.onClick.RemoveAllListeners();
         }
     }
 }

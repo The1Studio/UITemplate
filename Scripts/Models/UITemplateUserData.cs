@@ -1,8 +1,9 @@
 namespace UITemplate.Scripts.Models
 {
+    using GameFoundation.Scripts.Interfaces;
     using UITemplate.Scripts.Blueprints;
 
-    public class UITemplateUserData
+    public class UITemplateUserData : ILocalData
     {
         public readonly UITemplateLevelData       LevelData;
         public readonly UITemplateShopData        ShopData;
@@ -17,6 +18,14 @@ namespace UITemplate.Scripts.Models
             this.InventoryData   = new UITemplateInventoryData();
             this.SettingData     = new UITemplateSettingData();
             this.DailyRewardData = new UITemplateDailyRewardData();
+        }
+        
+        public UITemplateUserData()
+        {
+        }
+        
+        public void Init()
+        {
         }
     }
 }

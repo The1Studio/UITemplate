@@ -12,7 +12,8 @@
         "Unity.TextMeshPro",
         "Unity.ResourceManager",
         "Unity.Addressables",
-        "UniTask.Addressables"
+        "UniTask.Addressables",
+        "GameFoundation.Models"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

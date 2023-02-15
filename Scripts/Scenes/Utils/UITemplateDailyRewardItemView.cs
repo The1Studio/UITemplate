@@ -5,7 +5,6 @@
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.Utilities.LogService;
-    using LocalData;
     using TMPro;
     using UITemplate.Scripts.Blueprints;
     using UITemplate.Scripts.Models;
@@ -33,11 +32,11 @@
         private void Start()
         {
             this.statusToGameObjectsMap = new()
-            {
-                { RewardStatus.Locked, new List<GameObject> { this.objLockReward } },
-                { RewardStatus.Unlocked, new List<GameObject> { } },
-                { RewardStatus.Claimed, new List<GameObject> { this.objClaimed } }
-            };
+                                          {
+                                              { RewardStatus.Locked, new List<GameObject> { this.objLockReward } },
+                                              { RewardStatus.Unlocked, new List<GameObject> { } },
+                                              { RewardStatus.Claimed, new List<GameObject> { this.objClaimed } }
+                                          };
         }
 
         public Button BtnClaim => this.btnClaim;
@@ -62,17 +61,18 @@
     {
         #region inject
 
-        private readonly ILogService                    logService;
-        private readonly UserLocalData                  localData;
-        private          UITemplateDailyRewardItemModel model;
+        private readonly ILogService        logService;
+        private readonly UITemplateUserData localData;
 
         #endregion
 
         private const string TodayLabel  = "TODAY";
         private const string PrefixLabel = "DAY ";
-        private       int    userLoginDay;
 
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UserLocalData localData) : base(gameAssets)
+        private UITemplateDailyRewardItemModel model;
+        private int                            userLoginDay;
+
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UITemplateUserData localData) : base(gameAssets)
         {
             this.logService = logService;
             this.localData  = localData;
@@ -82,9 +82,9 @@
         {
             this.View.BtnClaim.onClick.RemoveAllListeners();
             this.View.BtnClaim.onClick.AddListener(this.OnClickClaimReward);
-            this.userLoginDay               = await this.localData.RewardData.GetUserLoginDay();
+            this.userLoginDay               = await this.localData.DailyRewardData.GetUserLoginDay();
             this.model                      = param;
-            this.View.BtnClaim.interactable = this.localData.RewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] != RewardStatus.Locked;
+            this.View.BtnClaim.interactable = this.localData.DailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] != RewardStatus.Locked;
             this.InitView();
         }
 
@@ -98,12 +98,12 @@
             }
 
             var rewardLabel = this.model.DailyRewardRecord.Day == this.userLoginDay ? TodayLabel : PrefixLabel + this.model.DailyRewardRecord.Day;
-            this.View.SetStatus(this.localData.RewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1], rewardSprite, rewardValue, rewardLabel);
+            this.View.SetStatus(this.localData.DailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1], rewardSprite, rewardValue, rewardLabel);
         }
 
         private void OnClickClaimReward()
         {
-            this.localData.RewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] = RewardStatus.Claimed;
+            this.localData.DailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] = RewardStatus.Claimed;
             this.logService.LogWithColor("Add reward to local here! ", Color.yellow);
             this.InitView();
         }

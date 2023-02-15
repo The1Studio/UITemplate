@@ -1,5 +1,6 @@
 namespace UITemplate.Scripts
 {
+    using GameFoundation.Scripts.Utilities;
     using UITemplate.Scripts.Models;
     using UITemplate.Scripts.Signals;
     using Zenject;
@@ -18,6 +19,9 @@ namespace UITemplate.Scripts
 
             //Signal
             this.Container.DeclareSignal<UpdateCurrencySignal>();
+            
+            //Local data
+            this.Container.Bind<UITemplateUserData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<UITemplateUserData>()).AsCached();
         }
     }
 }

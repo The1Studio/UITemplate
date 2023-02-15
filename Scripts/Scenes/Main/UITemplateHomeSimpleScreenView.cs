@@ -42,7 +42,7 @@
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
 
-        private void OnClickLevel() { }
+        private void OnClickLevel() { this.screenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>(); }
 
         private void OnClickPlay() { }
 

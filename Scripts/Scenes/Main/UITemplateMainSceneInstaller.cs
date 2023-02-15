@@ -13,6 +13,7 @@ namespace UITemplate.Scripts.Scenes.Main
             base.InstallBindings();
             this.DeclareSignals();
             this.Container.Bind<UITemplateSettingData>().AsSingle().NonLazy();
+            this.Container.Bind<UITemplateLevelData>().AsSingle().NonLazy();
             this.Container.InitScreenManually<UITemplateHomeSimpleScreenPresenter>();
         }
         

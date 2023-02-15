@@ -23,14 +23,12 @@
         #region inject
 
         private readonly DiContainer    diContainer;
-        private readonly IScreenManager screenManager;
 
         #endregion
 
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer) : base(signalBus)
         {
             this.diContainer   = diContainer;
-            this.screenManager = screenManager;
         }
 
         protected override async void OnViewReady()

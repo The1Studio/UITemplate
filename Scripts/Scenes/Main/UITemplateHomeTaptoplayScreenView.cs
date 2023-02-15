@@ -4,6 +4,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using UITemplate.Scripts.Scenes.Popups;
+    using UITemplate.Scripts.Scenes.Utils;
     using UnityEngine.UI;
     using Zenject;
 

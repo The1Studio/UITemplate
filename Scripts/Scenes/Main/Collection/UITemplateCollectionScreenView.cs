@@ -9,7 +9,6 @@
     using UITemplate.Scripts.Models;
     using UITemplate.Scripts.Scenes.Popups;
     using UnityEngine;
-    using UnityEngine.Serialization;
     using UnityEngine.UI;
     using Zenject;
 
@@ -28,6 +27,7 @@
     {
         #region Inject
 
+        private readonly SignalBus               signalBus;
         private readonly IScreenManager          screenManager;
         private readonly DiContainer             diContainer;
         private readonly UITemplateShopBlueprint shopBlueprint;
@@ -35,17 +35,15 @@
 
         #endregion
 
-        private enum CollectionTab
-        {
-            Character,
-            Item
-        }
+      
 
-        private List<UITemplateCollectionItemModel> collectionItemModels = new();
+        private List<UITemplateCollectionItemModel> characterListItems = new();
+        private List<UITemplateCollectionItemModel> itemLists          = new();
 
         public UITemplateCollectionScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer,
             UITemplateShopBlueprint shopBlueprint, UITemplateUserData userData) : base(signalBus)
         {
+            this.signalBus     = signalBus;
             this.screenManager = screenManager;
             this.diContainer   = diContainer;
             this.shopBlueprint = shopBlueprint;
@@ -64,19 +62,60 @@
         public override void BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus);
-            this.InitDataForCollection(CollectionTab.Character);
+            // this.PrePareModel(this.characterListItems, CategoryTab.Character);
+            // this.PrePareModel(this.itemLists, CategoryTab.Item);
+            // this.SelectTabCategory(CategoryTab.Character);
         }
+
+        private void PrePareModel(List<UITemplateCollectionItemModel> source, string category)
+        {
+            source.Clear();
+            for (var i = 0; i < this.shopBlueprint.Values.Count; i++)
+            {
+                var currentElement = this.shopBlueprint.Values.ElementAt(i);
+
+                if (!currentElement.Category.Equals(category.ToString())) continue;
+                var model = new UITemplateCollectionItemModel()
+                {
+                    Index               = i,
+                    ItemData            = this.userData.ShopData.GetItemData(currentElement.Name),
+                    Category            = category,
+                    OnBuy               = this.OnBuy,
+                    OnSelected          = this.OnSelected,
+                    OnNotEnoughMoney    = this.OnNotEnoughMoney,
+                };
+                source.Add(model);
+            }
+        }
+
+        private async void SelectTabCategory(string categoryTab)
+        {
+            if (categoryTab == "Character")
+            {
+                await this.View.ItemCollectionAdapter.InitItemAdapter(this.characterListItems, this.diContainer);
+            }
+            else
+            {
+                await this.View.ItemCollectionAdapter.InitItemAdapter(this.itemLists, this.diContainer);
+            }
+        }
+
+        private void OnBuy(UITemplateCollectionItemModel obj) { }
+
+        private void OnSelected(UITemplateCollectionItemModel obj) { }
+
+        private void OnNotEnoughMoney() { }
 
         private void OnClickItem()
         {
-            this.InitDataForCollection(CollectionTab.Item);
+            this.SelectTabCategory("CategoryTab.Item");
             this.ConfigBtnStatus(false, true);
             Debug.Log("click item");
         }
 
         private void OnClickCharacters()
         {
-            this.InitDataForCollection(CollectionTab.Character);
+            this.SelectTabCategory("CategoryTab.Character");
             this.ConfigBtnStatus(true, false);
             Debug.Log("click character");
         }
@@ -84,39 +123,6 @@
         private void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
 
         private void OnClickWatchAds() { }
-
-        private void InitDataForCollection(CollectionTab collectionTab)
-        {
-            switch (collectionTab)
-            {
-                case CollectionTab.Character:
-                    this.ConfigBtnStatus(true, false);
-                    this.InitDataForCharacters();
-                    break;
-                case CollectionTab.Item:
-                    this.ConfigBtnStatus(false, true);
-                    this.InitDataForItems();
-                    break;
-            }
-        }
-
-        private void InitDataForCharacters()
-        {
-            this.collectionItemModels.Clear();
-            this.collectionItemModels = this.shopBlueprint.Values.Where(item => item.Category.Equals(CollectionTab.Character.ToString()))
-                .Select(item => new UITemplateCollectionItemModel(this.userData.ShopData.GetItemData(item.Name), CollectionTab.Character.ToString()))
-                .ToList();
-            this.View.ItemCollectionAdapter.InitItemAdapter(this.collectionItemModels, this.diContainer);
-        }
-
-        private void InitDataForItems()
-        {
-            this.collectionItemModels.Clear();
-            this.collectionItemModels = this.shopBlueprint.Values.Where(item => item.Category.Equals(CollectionTab.Item.ToString()))
-                .Select(item => new UITemplateCollectionItemModel(this.userData.ShopData.GetItemData(item.Name), CollectionTab.Item.ToString()))
-                .ToList();
-            this.View.ItemCollectionAdapter.InitItemAdapter(this.collectionItemModels, this.diContainer);
-        }
 
         private void ConfigBtnStatus(bool isCharacterActive, bool isItemActive)
         {

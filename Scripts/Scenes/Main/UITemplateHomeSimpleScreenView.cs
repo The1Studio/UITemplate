@@ -5,7 +5,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using UITemplate.Scripts.Scenes.Main.Collection;
     using UITemplate.Scripts.Scenes.Popups;
-    using UnityEngine;
+    using UITemplate.Scripts.Scenes.Utils;
     using UnityEngine.UI;
     using Zenject;
 
@@ -44,10 +44,7 @@
 
         private void OnClickLevel() { }
 
-        private void OnClickPlay()
-        {
-            this.screenManager.OpenScreen<UITemplateCollectionScreenPresenter>();
-        }
+        private void OnClickPlay() { this.screenManager.OpenScreen<UITemplateCollectionScreenPresenter>(); }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 

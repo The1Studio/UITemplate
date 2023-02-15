@@ -12,7 +12,7 @@ namespace UITemplate.Scripts.Scenes.Main
         {
             base.InstallBindings();
             this.DeclareSignals();
-            this.Container.Bind<UITemplateSettingData>().AsSingle().NonLazy();
+            // this.Container.Bind<UITemplateSettingData>().AsSingle().NonLazy();
             this.Container.InitScreenManually<UITemplateHomeSimpleScreenPresenter>();
 
             var uiTemplateUserData = this.Container.Instantiate<UITemplateUserData>();
@@ -21,11 +21,11 @@ namespace UITemplate.Scripts.Scenes.Main
             this.Container.Bind<UITemplateShopData>().FromInstance(uiTemplateUserData.ShopData);
             this.Container.Bind<UITemplateInventoryData>().FromInstance(uiTemplateUserData.InventoryData);
             this.Container.Bind<UITemplateSettingData>().FromInstance(uiTemplateUserData.SettingData);
+        }
 
-            //Signal
+        private void DeclareSignals()
+        {
             this.Container.DeclareSignal<UpdateCurrencySignal>();
         }
-        
-        private void DeclareSignals() { this.Container.DeclareSignal<UpdateCurrencySignal>(); }
     }
 }

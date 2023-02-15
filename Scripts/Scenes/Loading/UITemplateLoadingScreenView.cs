@@ -38,8 +38,8 @@ namespace UITemplate.Scripts.Scenes.Loading
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
     public class UITemplateLoadingScreenPresenter : BaseScreenPresenter<UITemplateLoadingScreenView>
     {
-        private const string MainSceneName            = "1.UITemplateMainScene";
-        private const string LoadingBlueprintStepName = "Loading static data...";
+        protected virtual string MainSceneName { get; set; }          
+        private const     string LoadingBlueprintStepName = "Loading static data...";
 
         private const float MinimumLoadingBlueprintTime = 2f; //seconds
 

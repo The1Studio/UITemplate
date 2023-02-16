@@ -26,6 +26,9 @@
     [ScreenInfo(nameof(UITemplateCollectionScreenView))]
     public class UITemplateCollectionScreenPresenter : BaseScreenPresenter<UITemplateCollectionScreenView>
     {
+        private const string CatCharacter = "Character";
+        private const string CatItem      = "Item";
+        
         #region Inject
 
         private readonly SignalBus               signalBus;
@@ -38,8 +41,6 @@
 
         private       List<CharacterCollectionItemModel> characterLists = new();
         private       List<ItemCollectionItemModel>      itemLists      = new();
-        private const string                             CatCharacter   = "Character";
-        private const string                             CatItem        = "Item";
 
         public UITemplateCollectionScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer,
             UITemplateShopBlueprint shopBlueprint, UITemplateUserData userData) : base(signalBus)

@@ -1,0 +1,31 @@
+{
+    "name": "UITemplate.Scripts",
+    "rootNamespace": "",
+    "references": [
+        "GameFoundation.UIModule",
+        "GameFoundation.AssetLibrary",
+        "Zenject-Signals",
+        "GameFoundation.Utilities",
+        "GameFoundation.BlueprintFlow",
+        "Zenject-Source",
+        "UniTask",
+        "Unity.TextMeshPro",
+        "Unity.ResourceManager",
+        "Unity.Addressables",
+        "UniTask.Addressables",
+        "GameFoundation.Models"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "DOTween.dll",
+        "Newtonsoft.Json.dll",
+        "Zenject-usage.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

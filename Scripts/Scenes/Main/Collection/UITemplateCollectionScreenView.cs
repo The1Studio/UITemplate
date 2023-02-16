@@ -9,7 +9,6 @@
     using UITemplate.Scripts.Models;
     using UITemplate.Scripts.Scenes.Main.Collection.Elements;
     using UITemplate.Scripts.Scenes.Popups;
-    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
@@ -90,9 +89,26 @@
             }
         }
 
-        private void OnBuyCharacter(UITemplateCollectionItemModel obj) { }
+        private void OnNotEnoughMoney()
+        {
+            // show popup not enough money here
+        }
 
-        private void OnSelectedCharacter(UITemplateCollectionItemModel obj) { }
+        private void OnBuyCharacter(CharacterCollectionItemModel obj)
+        {
+            obj.ItemData.CurrentStatus                                   = ItemData.Status.Owned;
+            this.userData.UserPackageData.CurrentSelectCharacterId.Value = obj.ItemData.BlueprintRecord.Name;
+            this.userData.ShopData.UpdateStatusItemData(obj.ItemData.BlueprintRecord.Name, ItemData.Status.Owned);
+            // update payment coin here
+
+            this.View.CharacterCollectionAdapter.Refresh();
+        }
+
+        private void OnSelectedCharacter(CharacterCollectionItemModel obj)
+        {
+            this.userData.UserPackageData.CurrentSelectCharacterId.Value = obj.ItemData.BlueprintRecord.Name;
+            this.View.CharacterCollectionAdapter.Refresh();
+        }
 
         private void PrePareItemModel(List<ItemCollectionItemModel> source)
         {
@@ -115,9 +131,21 @@
             }
         }
 
-        private void OnBuyItem(UITemplateCollectionItemModel obj) { }
+        private void OnBuyItem(ItemCollectionItemModel obj)
+        {
+            obj.ItemData.CurrentStatus                              = ItemData.Status.Owned;
+            this.userData.UserPackageData.CurrentSelectItemId.Value = obj.ItemData.BlueprintRecord.Name;
+            this.userData.ShopData.UpdateStatusItemData(obj.ItemData.BlueprintRecord.Name, ItemData.Status.Owned);
+            // update payment coin here
 
-        private void OnSelectedItem(UITemplateCollectionItemModel obj) { }
+            this.View.ItemCollectionAdapter.Refresh();
+        }
+
+        private void OnSelectedItem(ItemCollectionItemModel obj)
+        {
+            this.userData.UserPackageData.CurrentSelectItemId.Value = obj.ItemData.BlueprintRecord.Name;
+            this.View.ItemCollectionAdapter.Refresh();
+        }
 
         private async void SelectTabCategory(string categoryTab)
         {
@@ -129,27 +157,21 @@
             {
                 await this.View.CharacterCollectionAdapter.InitItemAdapter(this.characterLists, this.diContainer);
             }
+
             this.View.ItemCollectionAdapter.gameObject.SetActive(categoryTab.Equals(CatItem));
             this.View.CharacterCollectionAdapter.gameObject.SetActive(categoryTab.Equals(CatCharacter));
-        }
-
-        private void OnNotEnoughMoney()
-        {
-            // show popup not enough money here
         }
 
         private void OnClickItem()
         {
             this.SelectTabCategory(CatItem);
             this.ConfigBtnStatus(false, true);
-            Debug.Log("click item");
         }
 
         private void OnClickCharacters()
         {
             this.SelectTabCategory(CatCharacter);
             this.ConfigBtnStatus(true, false);
-            Debug.Log("click character");
         }
 
         private void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }

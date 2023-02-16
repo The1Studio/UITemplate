@@ -14,8 +14,6 @@
         public ItemData                              ItemData         { get; set; }
         public string                                Category         { get; set; }
         public Action                                OnNotEnoughMoney { get; set; }
-        public Action<UITemplateCollectionItemModel> OnSelected       { get; set; }
-        public Action<UITemplateCollectionItemModel> OnBuy            { get; set; }
     }
 
     public abstract class BaseItemCollectionView : TViewMono

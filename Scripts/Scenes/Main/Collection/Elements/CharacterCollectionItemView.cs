@@ -9,6 +9,8 @@
 
     public class CharacterCollectionItemModel : BaseItemCollectionModel
     {
+        public Action<CharacterCollectionItemModel> OnSelected { get; set; }
+        public Action<CharacterCollectionItemModel> OnBuy      { get; set; }
     }
 
     public class CharacterCollectionItemView : BaseItemCollectionView
@@ -26,11 +28,11 @@
         public CharacterCollectionItemPresenter(IGameAssets gameAssets, UITemplateUserData userData) : base(gameAssets)
         {
             this.gameAssets = gameAssets;
-            this.userData    = userData;
+            this.userData   = userData;
         }
 
         public override async void BindData(CharacterCollectionItemModel param)
-        {   
+        {
             this.model = param;
             this.Init(param.ItemData.CurrentStatus);
             this.View.ChoosedObj.SetActive(this.model.ItemData.BlueprintRecord.Name.Equals(this.userData.UserPackageData.CurrentSelectCharacterId.Value));
@@ -40,9 +42,16 @@
             this.View.BuyItemButton.onClick.AddListener(this.OnBuyItem);
         }
 
-        private void OnSelect() {  }
+        private void OnSelect() { this.model.OnSelected?.Invoke(this.model); }
 
-        private void OnBuyItem() {  }
+        private void OnBuyItem()
+        {
+            // if have enough money
+            this.model.OnBuy?.Invoke(this.model);
+            // if not enough money
+            // this.model.OnNotEnoughMoney?.Invoke();
+            // endif
+        }
 
         private void Init(ItemData.Status status)
         {
@@ -79,7 +88,7 @@
         private void InitItemUnLocked() { this.View.UnlockedObj.SetActive(true); }
 
         private void InitItemOwned() { this.View.OwnedObj.SetActive(true); }
-        
+
         public override void Dispose()
         {
             base.Dispose();

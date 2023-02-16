@@ -35,8 +35,6 @@ namespace UITemplate.Scripts.Models
     {
         public int    Level;
         public Status LevelStatus;
-        public int    StarCount;
-
 
         [JsonIgnore] public UITemplateLevelRecord Record;
 

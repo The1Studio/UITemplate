@@ -14,10 +14,9 @@
 
     public class UITemplateLevelItemModel : LevelData
     {
-        public UITemplateLevelItemModel(UITemplateLevelRecord record, int level, Models.LevelData.Status levelStatus, int starCount) : base(record)
+        public UITemplateLevelItemModel(UITemplateLevelRecord record, int level, Models.LevelData.Status levelStatus) : base(record)
         {
             base.LevelStatus = levelStatus;
-            base.StarCount   = starCount;
             base.Level       = level;
         }
     }
@@ -33,7 +32,7 @@
         [SerializeField] private Sprite PassedSprite;
         [SerializeField] private Sprite SkippedSprite;
 
-        public virtual void InitView(UITemplateLevelItemModel data, UITemplateLevelData levelData)
+        public void InitView(UITemplateLevelItemModel data, UITemplateLevelData levelData)
         {
             this.LevelText.text         = data.Level.ToString();
             this.BackgroundImage.sprite = this.GetStatusBackground(data.LevelStatus);

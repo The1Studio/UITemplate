@@ -14,13 +14,12 @@
 
     public class UITemplateCollectionScreenView : BaseView
     {
-        public UITemplateCurrencyView     CoinText;
-        public Button                     HomeButton;
-        public UITemplateOnOffButton      CharactersButton;
-        public UITemplateOnOffButton      ItemsButton;
-        public Button                     WatchAdsButton;
-        public CharacterCollectionAdapter CharacterCollectionAdapter;
-        public ItemCollectionAdapter      ItemCollectionAdapter;
+        public UITemplateCurrencyView CoinText;
+        public Button                 HomeButton;
+        public UITemplateOnOffButton  CharactersButton;
+        public UITemplateOnOffButton  ItemsButton;
+        public Button                 WatchAdsButton;
+        public ItemCollectionAdapter  ItemCollectionAdapter;
     }
 
     [ScreenInfo(nameof(UITemplateCollectionScreenView))]
@@ -28,7 +27,7 @@
     {
         private const string CatCharacter = "Character";
         private const string CatItem      = "Item";
-        
+
         #region Inject
 
         private readonly SignalBus               signalBus;
@@ -39,11 +38,10 @@
 
         #endregion
 
-        private       List<CharacterCollectionItemModel> characterLists = new();
-        private       List<ItemCollectionItemModel>      itemLists      = new();
+        private List<ItemCollectionItemModel> itemLists = new();
 
-        public UITemplateCollectionScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer,
-            UITemplateShopBlueprint shopBlueprint, UITemplateUserData userData) : base(signalBus)
+        public UITemplateCollectionScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateShopBlueprint shopBlueprint, UITemplateUserData userData) :
+            base(signalBus)
         {
             this.signalBus     = signalBus;
             this.screenManager = screenManager;
@@ -64,30 +62,8 @@
         public override void BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus);
-            this.PrePareCharacterModel(this.characterLists);
-            this.PrePareItemModel(this.itemLists);
+            this.GetItemDataList(this.itemLists);
             this.SelectTabCategory(CatCharacter);
-        }
-
-        private void PrePareCharacterModel(List<CharacterCollectionItemModel> source)
-        {
-            source.Clear();
-            for (var i = 0; i < this.shopBlueprint.Values.Count; i++)
-            {
-                var currentElement = this.shopBlueprint.Values.ElementAt(i);
-
-                if (!currentElement.Category.Equals(CatCharacter)) continue;
-                var model = new CharacterCollectionItemModel()
-                {
-                    Index            = i,
-                    ItemData         = this.userData.ShopData.GetItemData(currentElement.Name),
-                    Category         = CatCharacter,
-                    OnBuy            = this.OnBuyCharacter,
-                    OnSelected       = this.OnSelectedCharacter,
-                    OnNotEnoughMoney = this.OnNotEnoughMoney,
-                };
-                source.Add(model);
-            }
         }
 
         private void OnNotEnoughMoney()
@@ -95,23 +71,7 @@
             // show popup not enough money here
         }
 
-        private void OnBuyCharacter(CharacterCollectionItemModel obj)
-        {
-            obj.ItemData.CurrentStatus                                   = ItemData.Status.Owned;
-            this.userData.UserPackageData.CurrentSelectCharacterId.Value = obj.ItemData.BlueprintRecord.Name;
-            this.userData.ShopData.UpdateStatusItemData(obj.ItemData.BlueprintRecord.Name, ItemData.Status.Owned);
-            // update payment coin here
-
-            this.View.CharacterCollectionAdapter.Refresh();
-        }
-
-        private void OnSelectedCharacter(CharacterCollectionItemModel obj)
-        {
-            this.userData.UserPackageData.CurrentSelectCharacterId.Value = obj.ItemData.BlueprintRecord.Name;
-            this.View.CharacterCollectionAdapter.Refresh();
-        }
-
-        private void PrePareItemModel(List<ItemCollectionItemModel> source)
+        private void GetItemDataList(List<ItemCollectionItemModel> source)
         {
             source.Clear();
             for (var i = 0; i < this.shopBlueprint.Values.Count; i++)
@@ -120,23 +80,23 @@
 
                 if (!currentElement.Category.Equals(CatItem)) continue;
                 var model = new ItemCollectionItemModel()
-                {
-                    Index            = i,
-                    ItemData         = this.userData.ShopData.GetItemData(currentElement.Name),
-                    Category         = CatItem,
-                    OnBuy            = this.OnBuyItem,
-                    OnSelected       = this.OnSelectedItem,
-                    OnNotEnoughMoney = this.OnNotEnoughMoney,
-                };
+                            {
+                                Index              = i,
+                                UITemplateItemData = this.userData.ShopData.GetItemData(currentElement.Name),
+                                Category           = CatItem,
+                                OnBuy              = this.OnBuyItem,
+                                OnSelected         = this.OnSelectedItem,
+                                OnNotEnoughMoney   = this.OnNotEnoughMoney,
+                            };
                 source.Add(model);
             }
         }
 
         private void OnBuyItem(ItemCollectionItemModel obj)
         {
-            obj.ItemData.CurrentStatus                              = ItemData.Status.Owned;
-            this.userData.UserPackageData.CurrentSelectItemId.Value = obj.ItemData.BlueprintRecord.Name;
-            this.userData.ShopData.UpdateStatusItemData(obj.ItemData.BlueprintRecord.Name, ItemData.Status.Owned);
+            obj.UITemplateItemData.CurrentStatus                  = UITemplateItemData.Status.Owned;
+            // this.userData.InventoryData.CurrentSelectItemId.Value = obj.UITemplateItemData.BlueprintRecord.Name;
+            this.userData.ShopData.UpdateStatusItemData(obj.UITemplateItemData.BlueprintRecord.Name, UITemplateItemData.Status.Owned);
             // update payment coin here
 
             this.View.ItemCollectionAdapter.Refresh();
@@ -144,7 +104,7 @@
 
         private void OnSelectedItem(ItemCollectionItemModel obj)
         {
-            this.userData.UserPackageData.CurrentSelectItemId.Value = obj.ItemData.BlueprintRecord.Name;
+            // this.userData.UserPackageData.CurrentSelectItemId.Value = obj.UITemplateItemData.BlueprintRecord.Name;
             this.View.ItemCollectionAdapter.Refresh();
         }
 
@@ -156,11 +116,11 @@
             }
             else
             {
-                await this.View.CharacterCollectionAdapter.InitItemAdapter(this.characterLists, this.diContainer);
+                // await this.View.CharacterCollectionAdapter.InitItemAdapter(this.characterLists, this.diContainer);
             }
 
             this.View.ItemCollectionAdapter.gameObject.SetActive(categoryTab.Equals(CatItem));
-            this.View.CharacterCollectionAdapter.gameObject.SetActive(categoryTab.Equals(CatCharacter));
+            // this.View.CharacterCollectionAdapter.gameObject.SetActive(categoryTab.Equals(CatCharacter));
         }
 
         private void OnClickItem()

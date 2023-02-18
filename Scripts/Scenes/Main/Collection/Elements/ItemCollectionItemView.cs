@@ -1,6 +1,7 @@
 ﻿namespace UITemplate.Scripts.Scenes.Main.Collection.Elements
 {
     using System;
+    using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using UITemplate.Scripts.Models;
@@ -20,25 +21,25 @@
     public class ItemCollectionItemPresenter : BaseItemCollectionPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
         private readonly IGameAssets        gameAssets;
-        private readonly UITemplateUserData userData;
+        private readonly UITemplateUserData uiTemplateUserData;
 
         private ItemCollectionItemModel model;
 
         protected override string CategoryType => "Item";
 
-        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateUserData userData) : base(gameAssets)
+        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateUserData uiTemplateUserData) : base(gameAssets)
         {
             this.gameAssets = gameAssets;
-            this.userData   = userData;
+            this.uiTemplateUserData   = uiTemplateUserData;
         }
 
         public override async void BindData(ItemCollectionItemModel param)
         {
             this.model = param;
-            this.Init(param.ItemData.CurrentStatus);
-            this.View.ChoosedObj.SetActive(this.model.ItemData.BlueprintRecord.Name.Equals(this.userData.UserPackageData.CurrentSelectItemId.Value));
-            this.View.ItemImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.model.ItemData.BlueprintRecord.Name);
-            this.View.PriceText.text   = $"{param.ItemData.BlueprintRecord.Price}";
+            this.Init(param.UITemplateItemData.CurrentStatus);
+            this.uiTemplateUserData.InventoryData.CategoryToCurrentItem.Values.Any(value => value.Equals(this.model.UITemplateItemData.Id));
+            this.View.ItemImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.model.UITemplateItemData.BlueprintRecord.Name);
+            this.View.PriceText.text   = $"{param.UITemplateItemData.BlueprintRecord.Price}";
             this.View.SelectButton.onClick.AddListener(this.OnSelect);
             this.View.BuyItemButton.onClick.AddListener(this.OnBuyItem);
         }
@@ -54,24 +55,24 @@
             // endif
         }
 
-        private void Init(ItemData.Status status)
+        private void Init(UITemplateItemData.Status status)
         {
             this.Init();
             switch (status)
             {
-                case ItemData.Status.Owned:
+                case UITemplateItemData.Status.Owned:
                     this.InitItemOwned();
 
                     break;
-                case ItemData.Status.Unlocked:
+                case UITemplateItemData.Status.Unlocked:
                     this.InitItemUnLocked();
 
                     break;
-                case ItemData.Status.Locked:
+                case UITemplateItemData.Status.Locked:
                     this.InitItemLocked();
 
                     break;
-                case ItemData.Status.InProgress:
+                case UITemplateItemData.Status.InProgress:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, null);
             }

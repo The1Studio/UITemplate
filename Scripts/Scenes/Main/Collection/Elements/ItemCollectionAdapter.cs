@@ -4,6 +4,5 @@
 
     public class ItemCollectionAdapter : BasicGridAdapter<ItemCollectionItemModel, ItemCollectionItemView, ItemCollectionItemPresenter>
     {
-        
     }
 }

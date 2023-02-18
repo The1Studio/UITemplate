@@ -40,9 +40,9 @@
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
 
-        private void OnClickLevel() { this.screenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>(); }
+        protected virtual void OnClickLevel() { }
 
-        private void OnClickPlay() { this.screenManager.OpenScreen<UITemplateCollectionScreenPresenter>(); }
+        protected virtual void OnClickPlay() { }
 
         public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
 

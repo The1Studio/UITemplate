@@ -10,10 +10,10 @@
 
     public abstract class BaseItemCollectionModel
     {
-        public int                                   Index            { get; set; }
-        public ItemData                              ItemData         { get; set; }
-        public string                                Category         { get; set; }
-        public Action                                OnNotEnoughMoney { get; set; }
+        public int                Index            { get; set; }
+        public UITemplateItemData UITemplateItemData         { get; set; }
+        public string             Category         { get; set; }
+        public Action             OnNotEnoughMoney { get; set; }
     }
 
     public abstract class BaseItemCollectionView : TViewMono

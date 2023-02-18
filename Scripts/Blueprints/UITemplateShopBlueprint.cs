@@ -16,7 +16,7 @@ namespace UITemplate.Scripts.Blueprints
         public string              Name;
         public string              Description;
         public string              Category;
-        public ItemData.UnlockType UnlockType;
+        public UITemplateItemData.UnlockType UnlockType;
         public float               Price;
     }
 }

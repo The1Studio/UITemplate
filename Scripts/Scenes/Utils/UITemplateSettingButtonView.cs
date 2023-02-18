@@ -1,10 +1,11 @@
-﻿namespace UITemplate.Scripts.Scenes.Popups
+﻿namespace UITemplate.Scripts.Scenes.Utils
 {
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using UITemplate.Scripts.Models;
+    using UITemplate.Scripts.Scenes.Popups;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;

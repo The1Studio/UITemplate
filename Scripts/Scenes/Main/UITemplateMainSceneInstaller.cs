@@ -15,8 +15,18 @@ namespace UITemplate.Scripts.Scenes.Main
             this.Container.Bind<UITemplateSettingData>().AsSingle().NonLazy();
             this.Container.Bind<UITemplateLevelData>().AsSingle().NonLazy();
             this.Container.InitScreenManually<UITemplateHomeSimpleScreenPresenter>();
+
+            var uiTemplateUserData = this.Container.Instantiate<UITemplateUserData>();
+            this.Container.Bind<UITemplateUserData>().FromInstance(uiTemplateUserData);
+            this.Container.Bind<UITemplateLevelData>().FromInstance(uiTemplateUserData.LevelData);
+            this.Container.Bind<UITemplateShopData>().FromInstance(uiTemplateUserData.ShopData);
+            this.Container.Bind<UITemplateInventoryData>().FromInstance(uiTemplateUserData.InventoryData);
+            this.Container.Bind<UITemplateSettingData>().FromInstance(uiTemplateUserData.SettingData);
         }
-        
-        private void DeclareSignals() { this.Container.DeclareSignal<UpdateCurrencySignal>(); }
+
+        private void DeclareSignals()
+        {
+            this.Container.DeclareSignal<UpdateCurrencySignal>();
+        }
     }
 }

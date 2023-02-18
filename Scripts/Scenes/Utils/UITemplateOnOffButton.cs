@@ -14,8 +14,6 @@
         private void Awake()
         {
             this.Button = this.GetComponent<Button>();
-            this.offObjects.GetComponentInChildren<Button>().onClick.AddListener(() => this.Button.onClick.Invoke());
-            this.onObjects.GetComponentInChildren<Button>().onClick.AddListener(() => this.Button.onClick.Invoke());
         }
 
         public void SetOnOff(bool isOn)

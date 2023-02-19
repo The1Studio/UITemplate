@@ -1,9 +1,9 @@
-namespace UITemplate.Scripts.Models
+namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using System;
     using System.Collections.Generic;
     using Newtonsoft.Json;
-    using UITemplate.Scripts.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
 
     public class UITemplateItemData
     {

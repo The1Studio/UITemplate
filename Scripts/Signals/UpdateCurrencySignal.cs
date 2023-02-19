@@ -1,4 +1,4 @@
-namespace UITemplate.Scripts.Signals
+namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
     public class UpdateCurrencySignal
     {

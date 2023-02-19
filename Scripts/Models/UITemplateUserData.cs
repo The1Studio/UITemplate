@@ -1,7 +1,7 @@
-namespace UITemplate.Scripts.Models
+namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using GameFoundation.Scripts.Interfaces;
-    using UITemplate.Scripts.Blueprints;
+    using Zenject;
 
     public class UITemplateUserData : ILocalData
     {
@@ -11,17 +11,14 @@ namespace UITemplate.Scripts.Models
         public readonly UITemplateSettingData     SettingData;
         public readonly UITemplateDailyRewardData DailyRewardData;
 
-
-        public UITemplateUserData(UITemplateShopBlueprint uiTemplateShopBlueprint, UITemplateLevelBlueprint uiTemplateLevelBlueprint)
+        public UITemplateUserData(DiContainer diContainer)
         {
-            this.LevelData       = new UITemplateLevelData(uiTemplateLevelBlueprint);
-            this.ShopData        = new UITemplateShopData(uiTemplateShopBlueprint);
-            this.InventoryData   = new UITemplateInventoryData();
-            this.SettingData     = new UITemplateSettingData();
-            this.DailyRewardData = new UITemplateDailyRewardData();
+            this.LevelData       = diContainer.Instantiate<UITemplateLevelData>();
+            this.ShopData        = diContainer.Instantiate<UITemplateShopData>();
+            this.InventoryData   = diContainer.Instantiate<UITemplateInventoryData>();
+            this.SettingData     = diContainer.Instantiate<UITemplateSettingData>();
+            this.DailyRewardData = diContainer.Instantiate<UITemplateDailyRewardData>();
         }
-
-        public UITemplateUserData() { }
 
         public void Init() { }
     }

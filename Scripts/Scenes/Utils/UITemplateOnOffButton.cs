@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Scripts.Scenes.Popups
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
     using UnityEngine;
     using UnityEngine.UI;

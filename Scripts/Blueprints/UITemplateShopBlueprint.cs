@@ -1,7 +1,7 @@
-namespace UITemplate.Scripts.Blueprints
+namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
-    using UITemplate.Scripts.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models;
 
     [BlueprintReader("UITemplateShop", true)]
     [CsvHeaderKey("Id")]

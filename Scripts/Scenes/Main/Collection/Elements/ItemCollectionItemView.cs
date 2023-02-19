@@ -1,11 +1,11 @@
-﻿namespace UITemplate.Scripts.Scenes.Main.Collection.Elements
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Elements
 {
     using System;
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
-    using UITemplate.Scripts.Models;
-    using UITemplate.Scripts.Scenes.Main.Collection.Base;
+    using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Base;
     using UnityEngine;
 
     public class ItemCollectionItemModel : BaseItemCollectionModel

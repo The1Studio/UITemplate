@@ -1,15 +1,15 @@
-﻿namespace UITemplate.Scripts.Scenes.Play.End
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play.End
 {
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
-    using UnityEngine.UI;
-    using Zenject;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using UITemplate.Scripts.Scenes.Main;
-    using UITemplate.Scripts.Scenes.Popups;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
+    using UnityEngine.UI;
+    using Zenject;
 
     public class UITemplateLoseScreenView : BaseView
     {

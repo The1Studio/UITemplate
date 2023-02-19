@@ -1,4 +1,4 @@
-namespace UITemplate.Scripts.Models
+namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using System.Collections.Generic;
 

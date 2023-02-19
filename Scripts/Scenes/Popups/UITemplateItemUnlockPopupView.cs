@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Scripts.Scenes.Popups
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
     using System.Linq;
     using Cysharp.Threading.Tasks;
@@ -6,7 +6,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
-    using UITemplate.Scripts.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;

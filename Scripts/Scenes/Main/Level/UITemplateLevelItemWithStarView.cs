@@ -1,10 +1,10 @@
-﻿namespace UITemplate.Scripts.Scenes.Main.Level
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Level
 {
-    using UnityEngine;
-    using TMPro;
     using System.Collections.Generic;
-    using UITemplate.Scripts.Blueprints;
-    using UITemplate.Scripts.Models;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models;
+    using TMPro;
+    using UnityEngine;
 
     public class UITemplateLevelItemWithStarModel : UITemplateLevelItemModel
     {

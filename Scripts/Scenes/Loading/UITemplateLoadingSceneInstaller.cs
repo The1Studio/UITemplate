@@ -1,8 +1,8 @@
-namespace UITemplate.Scripts.Scenes.Loading
+namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.Utilities;
-    using Utility;
+    using TheOneStudio.UITemplate.UITemplate.Services;
 
     public class UITemplateLoadingSceneInstaller : BaseSceneInstaller
     {

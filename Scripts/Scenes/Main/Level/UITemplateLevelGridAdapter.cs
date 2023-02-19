@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Scripts.Scenes.Main.Level
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Level
 {
     using GameFoundation.Scripts.UIModule.Adapter;
 

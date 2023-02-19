@@ -1,14 +1,14 @@
-﻿namespace UITemplate.Scripts.Scenes.Main.Collection
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection
 {
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using UITemplate.Scripts.Blueprints;
-    using UITemplate.Scripts.Models;
-    using UITemplate.Scripts.Scenes.Main.Collection.Elements;
-    using UITemplate.Scripts.Scenes.Popups;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Elements;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
     using Zenject;
 

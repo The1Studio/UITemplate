@@ -1,10 +1,10 @@
-﻿namespace UITemplate.Scripts.Scenes.Main.Collection.Base
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Base
 {
     using System;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
+    using TheOneStudio.UITemplate.UITemplate.Models;
     using TMPro;
-    using UITemplate.Scripts.Models;
     using UnityEngine;
     using UnityEngine.UI;
 

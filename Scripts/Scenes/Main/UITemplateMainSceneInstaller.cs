@@ -1,9 +1,9 @@
-namespace UITemplate.Scripts.Scenes.Main
+namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.Utilities;
-    using UITemplate.Scripts.Models;
-    using UITemplate.Scripts.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
     public class UITemplateMainSceneInstaller : BaseSceneInstaller

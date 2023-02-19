@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Scripts.Scenes.Main.Collection.Elements
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Elements
 {
     using GameFoundation.Scripts.UIModule.Adapter;
 

@@ -1,13 +1,13 @@
-﻿namespace UITemplate.Scripts.Scenes.Utils
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.Utilities.LogService;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models;
     using TMPro;
-    using UITemplate.Scripts.Blueprints;
-    using UITemplate.Scripts.Models;
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -47,7 +47,7 @@
             this.txtValue.text    = value;
             this.imgReward.sprite = rewardSprite;
 
-            foreach (var kvp in statusToGameObjectsMap)
+            foreach (var kvp in this.statusToGameObjectsMap)
             {
                 foreach (var go in kvp.Value)
                 {

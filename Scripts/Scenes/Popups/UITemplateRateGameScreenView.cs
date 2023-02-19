@@ -1,7 +1,6 @@
-﻿namespace UITemplate.Scripts.Scenes.Popups
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
     using System.Collections.Generic;
-    using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -10,7 +9,6 @@
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
-
 
     public class UITemplateRateGameScreenView : BaseView
     {
@@ -72,9 +70,9 @@
         {
             lastStarCount = count;
             for (int i = 0; i < count; i++)
-                starAnimation(i, true);
+                this.starAnimation(i, true);
             for (int i = count; i < this.View.StarButtons.Count; i++)
-                starAnimation(i, false);
+                this.starAnimation(i, false);
         }
         private void yesButtonAnimation()
         {

@@ -1,17 +1,17 @@
-﻿using System;
-using System.Net;
-using Cysharp.Threading.Tasks;
-using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
-using Zenject;
-
-namespace UITemplate.Scripts.Scenes.Popups
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
-    public class UITemplateConnectErrorScreenView : BaseView
+    using System;
+    using System.Net;
+    using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using TMPro;
+    using UnityEngine;
+    using UnityEngine.UI;
+    using Zenject;
+
+    public class UITemplateConnectErrorPopupView : BaseView
     {
         public Button   Reconnect;
         public TMP_Text Message;
@@ -20,8 +20,8 @@ namespace UITemplate.Scripts.Scenes.Popups
         public Image    ConnectingImage;
     }
 
-    [PopupInfo(nameof(UITemplateConnectErrorScreenView), true, false)]
-    public class UITemplateConnectErrorPresenter : BasePopupPresenter<UITemplateConnectErrorScreenView>
+    [PopupInfo(nameof(UITemplateConnectErrorPopupView), true, false)]
+    public class UITemplateConnectErrorPresenter : BasePopupPresenter<UITemplateConnectErrorPopupView>
     {
         private static   double         checkTimeout        = 5;
         private static   string         connectingMessage   = "Trying to reconnect...\nPlease wait...";
@@ -29,7 +29,7 @@ namespace UITemplate.Scripts.Scenes.Popups
         private readonly IScreenManager screenManager;
         public UITemplateConnectErrorPresenter(SignalBus signalBus, IScreenManager screenManager) : base(signalBus) { this.screenManager = screenManager; }
 
-        public override void BindData() { UpdateContent(isConnecting: false); }
+        public override void BindData() { this.UpdateContent(isConnecting: false); }
         protected override async void OnViewReady()
         {
             base.OnViewReady();
@@ -58,14 +58,14 @@ namespace UITemplate.Scripts.Scenes.Popups
         {
             var _time = Time.realtimeSinceStartup;
             var timeSinceLastConnectCheck = _time - 0.1;
-            UpdateContent(isConnecting: true);
+            this.UpdateContent(isConnecting: true);
             var isConnected = false;
             await UniTask.WaitUntil(() =>
             {
                 var intervalTime = Time.realtimeSinceStartup - timeSinceLastConnectCheck;
                 if (intervalTime >= 1)
                 {
-                    UniTask.RunOnThreadPool(() => isConnected = IsConnectedToInternet());
+                    UniTask.RunOnThreadPool(() => isConnected = this.IsConnectedToInternet());
                     timeSinceLastConnectCheck = Time.realtimeSinceStartup;
                 }
 
@@ -74,11 +74,11 @@ namespace UITemplate.Scripts.Scenes.Popups
 
             if (isConnected)
             {
-                OnConnectSuccess();
+                this.OnConnectSuccess();
                 return;
             }
 
-            UpdateContent(isConnecting: false);
+            this.UpdateContent(isConnecting: false);
         }
 
         bool IsConnectedToInternet()

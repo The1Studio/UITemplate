@@ -1,6 +1,6 @@
 {
     "name": "UITemplate.Scripts",
-    "rootNamespace": "",
+    "rootNamespace": "TheOneStudio.UITemplate",
     "references": [
         "GameFoundation.UIModule",
         "GameFoundation.AssetLibrary",
@@ -14,7 +14,8 @@
         "Unity.Addressables",
         "UniTask.Addressables",
         "GameFoundation.Models",
-        "OSA.Core"
+        "OSA.Core",
+        "UniRx"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

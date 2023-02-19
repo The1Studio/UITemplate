@@ -1,9 +1,8 @@
-namespace UITemplate.Scripts.Scenes.Loading
+namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading.Tasks;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
     using Cysharp.Threading.Tasks;
@@ -91,7 +90,7 @@ namespace UITemplate.Scripts.Scenes.Loading
                 this.View.SetLoadingProgressValue(progressInView);
                 await UniTask.WaitForEndOfFrame();
             }
-            this.sceneDirector.LoadSingleSceneAsync(NextSceneName);
+            this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
         }
 
         private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }

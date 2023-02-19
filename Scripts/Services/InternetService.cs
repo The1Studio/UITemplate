@@ -1,4 +1,4 @@
-﻿namespace Utility
+﻿namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using Cysharp.Threading.Tasks;

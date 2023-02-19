@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Scripts.Scenes.Utils
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
     using System;
     using System.Collections.Generic;

@@ -1,4 +1,4 @@
-namespace UITemplate.Scripts.Blueprints
+namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
 

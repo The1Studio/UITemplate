@@ -1,12 +1,12 @@
-﻿namespace UITemplate.Scripts.Scenes.Popups
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using UITemplate.Scripts.Blueprints;
-    using UITemplate.Scripts.Models;
-    using UITemplate.Scripts.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using Zenject;
 

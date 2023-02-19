@@ -1,10 +1,10 @@
-namespace UITemplate.Scripts.Models
+namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
-    using UITemplate.Scripts.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
 
     public class UITemplateLevelData
     {

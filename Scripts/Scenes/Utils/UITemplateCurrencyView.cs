@@ -1,7 +1,7 @@
-﻿namespace UITemplate.Scripts.Scenes.Popups
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
-    using UITemplate.Scripts.Signals;
     using UnityEngine;
     using Zenject;
 

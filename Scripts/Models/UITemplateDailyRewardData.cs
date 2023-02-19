@@ -1,9 +1,9 @@
-﻿namespace UITemplate.Scripts.Models
+﻿namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using System;
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
-    using Utility;
+    using TheOneStudio.UITemplate.UITemplate.Services;
 
     public class UITemplateDailyRewardData
     {

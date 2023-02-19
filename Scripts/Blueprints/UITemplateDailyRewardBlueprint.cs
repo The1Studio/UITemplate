@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-
-namespace UITemplate.Scripts.Blueprints
+namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
+    using System.Collections.Generic;
     using BlueprintFlow.BlueprintReader;
 
     [CsvHeaderKey("Day")]

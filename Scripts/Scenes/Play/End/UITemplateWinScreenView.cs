@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Scripts.Scenes.Play.End
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play.End
 {
     using System;
     using Cysharp.Threading.Tasks;
@@ -8,10 +8,9 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
-    using UITemplate.Scripts.Models;
-    using UITemplate.Scripts.Scenes.Main;
-    using UITemplate.Scripts.Scenes.Popups;
-    using UITemplate.Scripts.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;

@@ -80,14 +80,20 @@
                     new UITemplateLevelItemModel(
                         new UITemplateLevelRecord(),
                         i + 1,
-                        Models.LevelData.Status.Locked
+                        Models.LevelData.Status.Locked,
+                        0
                     )
                 );
             list[0].LevelStatus = Models.LevelData.Status.Passed;
+            list[0].StarCount   = 3;
             list[1].LevelStatus = Models.LevelData.Status.Passed;
+            list[1].StarCount   = 2;
             list[2].LevelStatus = Models.LevelData.Status.Passed;
+            list[2].StarCount   = 1;
             list[3].LevelStatus = Models.LevelData.Status.Skipped;
+            list[3].StarCount   = 3;
             list[4].LevelStatus = Models.LevelData.Status.Passed;
+            list[4].StarCount   = 3;
 
             #endregion
 

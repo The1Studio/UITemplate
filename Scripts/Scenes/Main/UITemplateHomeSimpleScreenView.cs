@@ -2,6 +2,7 @@
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
     using Zenject;
@@ -20,24 +21,26 @@
         #region inject
 
         private readonly DiContainer    diContainer;
+        private readonly IScreenManager screenManager;
 
         #endregion
 
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer) : base(signalBus)
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
         {
             this.diContainer   = diContainer;
+            this.screenManager = screenManager;
         }
 
         protected override async void OnViewReady()
         {
             base.OnViewReady();
             await this.OpenViewAsync();
-            this.diContainer.Inject(this.View.SettingButtonView);
+            // this.diContainer.Inject(this.View.SettingButtonView);
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
 
-        protected virtual void OnClickLevel() { }
+        protected virtual void OnClickLevel() { this.screenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>(); }
 
         protected virtual void OnClickPlay() { }
 

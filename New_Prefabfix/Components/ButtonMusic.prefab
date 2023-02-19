@@ -112,6 +112,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ButtonMusic
       objectReference: {fileID: 0}
+    - target: {fileID: 1267378078880457415, guid: 1526f8f35766c734ca25312c9693cad1, type: 3}
+      propertyPath: offObjects
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1748782849498160125, guid: 1526f8f35766c734ca25312c9693cad1, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

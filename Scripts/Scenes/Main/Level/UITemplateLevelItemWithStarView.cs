@@ -6,20 +6,12 @@
     using TMPro;
     using UnityEngine;
 
-    public class UITemplateLevelItemWithStarModel : UITemplateLevelItemModel
-    {
-        public int StarCount;
-        public UITemplateLevelItemWithStarModel(UITemplateLevelRecord record, int level, Status levelStatus, int starCount) : base(record, level, levelStatus)
-        {
-            this.StarCount = starCount;
-        }
-    }
     public class UITemplateLevelItemWithStarView : UITemplateLevelItemView
     {
         
         public List<GameObject> StarList;
         
-        public void InitView(UITemplateLevelItemWithStarModel data, UITemplateLevelData levelData)
+        public override void InitView(UITemplateLevelItemModel data, UITemplateLevelData levelData)
         {
             base.InitView(data, levelData);
             data.StarCount = data.LevelStatus != Models.LevelData.Status.Passed ? 0 : data.StarCount;

@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -21, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -21, y: 4.6}
+  m_SizeDelta: {x: 99, y: 102}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &661942636877862207
 CanvasRenderer:
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 33effd6735e414dc7b70ded5e8bb47f8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c267ca29be09cec4fa06db52f5b8bd9d, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -114,8 +114,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 224, y: 648}
-  m_SizeDelta: {x: 261.2107, y: 75}
+  m_AnchoredPosition: {x: 252.99158, y: 648}
+  m_SizeDelta: {x: 203.2275, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1823790903302401125
 CanvasRenderer:
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5458175504c3442729c2d39a4201eb30, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 830b7f5a2617be24d876ba695da307d6, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -202,10 +202,10 @@ RectTransform:
   m_Father: {fileID: 9149358604189279782}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -20.197, y: 0}
-  m_SizeDelta: {x: 159.61, y: 50}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 67.789085, y: 0}
+  m_SizeDelta: {x: 125.8286, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5961381675925136514
 CanvasRenderer:
@@ -237,8 +237,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 9999
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
-  m_sharedMaterial: {fileID: 7374927986402738804, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 80a767e8ed14bdb429a93c8f9d18377c, type: 2}
+  m_sharedMaterial: {fileID: 5477496247317617413, guid: 80a767e8ed14bdb429a93c8f9d18377c,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -269,7 +270,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0

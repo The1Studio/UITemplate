@@ -7,20 +7,21 @@
     using UnityEngine.UI;
     using Zenject;
 
-    public class UITemplateHomeTaptoplayScreenView : BaseView
+    public class UITemplateHomeTapToPlayScreenView : BaseView
     {
         public Button                      TaptoplayButton;
+        public Button                      ShopButton;
         public UITemplateCurrencyView      CoinText;
         public UITemplateSettingButtonView SettingButtonView;
     }
 
-    [ScreenInfo(nameof(UITemplateHomeTaptoplayScreenView))]
-    public class UITemplateHomeTaptoplayScreenPresenter : BaseScreenPresenter<UITemplateHomeTaptoplayScreenView>
+    [ScreenInfo(nameof(UITemplateHomeTapToPlayScreenView))]
+    public class UITemplateHomeTapToPlayScreenPresenter : BaseScreenPresenter<UITemplateHomeTapToPlayScreenView>
     {
         private readonly IScreenManager screenManager;
         private readonly DiContainer    diContainer;
 
-        public UITemplateHomeTaptoplayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer) : base(signalBus)
+        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer) : base(signalBus)
         {
             this.screenManager = screenManager;
             this.diContainer   = diContainer;
@@ -29,17 +30,21 @@
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.View.TaptoplayButton.onClick.AddListener(this.OnClickTaptoplayBtn);
+            this.OpenViewAsync();
+            this.View.TaptoplayButton.onClick.AddListener(this.OnClickTapToPlayButton);
+            this.View.ShopButton.onClick.AddListener(this.OnClickShopButton);
             this.diContainer.Inject(this.View.SettingButtonView);
         }
 
-        public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
-
-        private void OnClickTaptoplayBtn()
+        public override void BindData()
         {
-            // load play screen
+            this.View.CoinText.Subscribe(this.SignalBus);
         }
-
+        
+        protected virtual void OnClickShopButton()      { }
+        
+        protected virtual void OnClickTapToPlayButton() { }
+        
         public override void Dispose()
         {
             base.Dispose();

@@ -57,9 +57,9 @@
             this.View.NextEndgameButton.Button.onClick.AddListener(this.OnClickNextEndgame);
         }
 
-        private void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        protected virtual void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
 
-        private void OnClickReplay()
+        protected virtual void OnClickReplay()
         {
             // Reuse WinScreen
         }

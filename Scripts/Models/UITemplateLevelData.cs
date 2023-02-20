@@ -14,7 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         #endregion
 
-        public int                        CurrentLevel;
+        public int                        CurrentLevel = 1;
         public Dictionary<int, LevelData> LevelToLevelData = new();
 
         public UITemplateLevelData(UITemplateLevelBlueprint uiTemplateLevelBlueprint) { this.uiTemplateLevelBlueprint = uiTemplateLevelBlueprint; }
@@ -26,7 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             return this.LevelToLevelData.GetOrAdd(level, () =>
             {
                 var record = this.uiTemplateLevelBlueprint.GetDataById(level);
-                return new LevelData(record);
+                return new LevelData(record, level, LevelData.Status.Locked);
             });
         }
     }
@@ -38,10 +38,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public int    StarCount;
 
         [JsonIgnore] public UITemplateLevelRecord Record;
-
-        public LevelData(UITemplateLevelRecord record) { this.Record = record; }
         
-        
+        public LevelData(UITemplateLevelRecord record,int level, Status levelStatus, int starCount = 0)
+        {
+            Record = record;
+            Level = level;
+            LevelStatus = levelStatus;
+            StarCount = starCount;
+        }
 
         public enum Status
         {

@@ -35,7 +35,7 @@
         {
             base.OnViewReady();
             await this.OpenViewAsync();
-            // this.diContainer.Inject(this.View.SettingButtonView);
+            this.diContainer.Inject(this.View.SettingButtonView);
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }

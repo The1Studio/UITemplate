@@ -11,7 +11,7 @@
         
         public List<GameObject> StarList;
         
-        public override void InitView(UITemplateLevelItemModel data, UITemplateLevelData levelData)
+        public override void InitView(LevelData data, UITemplateLevelData levelData)
         {
             base.InitView(data, levelData);
             data.StarCount = data.LevelStatus != Models.LevelData.Status.Passed ? 0 : data.StarCount;

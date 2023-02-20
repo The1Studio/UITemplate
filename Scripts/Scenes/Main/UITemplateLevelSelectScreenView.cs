@@ -24,9 +24,9 @@
     {
         #region inject
 
-        private readonly DiContainer         diContainer;
-        private readonly IScreenManager      screenManager;
-        private readonly UITemplateLevelData levelData;
+        protected readonly DiContainer         diContainer;
+        protected readonly IScreenManager      screenManager;
+        protected readonly UITemplateLevelData levelData;
 
         #endregion
 
@@ -43,7 +43,7 @@
             this.View.HomeButton.onClick.AddListener(this.OnClickHome);
         }
 
-        private void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        protected virtual void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
 
         public override async void BindData()
         {
@@ -59,45 +59,9 @@
             this.View.CoinText.Unsubscribe(this.SignalBus);
         }
 
-        private List<UITemplateLevelItemModel> getLevelList()
+        private List<LevelData> getLevelList()
         {
-            // get level list from local data
-            var levelList = this.levelData.LevelToLevelData.Values.Cast<UITemplateLevelItemModel>().ToList();
-            var allLevels = this.levelData.GetAllLevels().Cast<UITemplateLevelItemModel>().ToList();
-            // add to list the rest of the levels as locked levels
-            levelList.AddRange(allLevels.GetRange(levelList.Count, allLevels.Count - levelList.Count));
-            // return levelList;
-            return this.getLevelListWithoutStarTest(0, 10000);
-        }
-        private List<UITemplateLevelItemModel> getLevelListWithoutStarTest(int from, int to) // Temporary method for testing. Remove it when you have a real data source
-        {
-            var list = new List<UITemplateLevelItemModel>();
-
-            #region test data
-
-            for (int i = from; i < to; i++)
-                list.Add(
-                    new UITemplateLevelItemModel(
-                        new UITemplateLevelRecord(),
-                        i + 1,
-                        Models.LevelData.Status.Locked,
-                        0
-                    )
-                );
-            list[0].LevelStatus = Models.LevelData.Status.Passed;
-            list[0].StarCount   = 3;
-            list[1].LevelStatus = Models.LevelData.Status.Passed;
-            list[1].StarCount   = 2;
-            list[2].LevelStatus = Models.LevelData.Status.Passed;
-            list[2].StarCount   = 1;
-            list[3].LevelStatus = Models.LevelData.Status.Skipped;
-            list[3].StarCount   = 3;
-            list[4].LevelStatus = Models.LevelData.Status.Passed;
-            list[4].StarCount   = 3;
-
-            #endregion
-
-            return list;
+            return this.levelData.GetAllLevels();
         }
     }
 }

@@ -10,14 +10,20 @@
         [SerializeField] private TMP_Text currencyValueText;
         [SerializeField] private string   currencyId;
 
-        public void Subscribe(SignalBus signalBus) { signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrency); }
+        public void Subscribe(SignalBus signalBus, int initValue)
+        {
+            signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrency);
+            this.UpdateData(initValue);
+        }
+
+        private void UpdateData(int initValue) { this.currencyValueText.text = initValue.ToString(); }
 
         public void Unsubscribe(SignalBus signalBus) { signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrency); }
 
         private void UpdateCurrency(UpdateCurrencySignal obj)
         {
             if (!this.currencyId.Equals(obj.Id)) return;
-            this.currencyValueText.text = obj.FinalValue.ToString();
+            this.UpdateData(obj.FinalValue);
         }
     }
 }

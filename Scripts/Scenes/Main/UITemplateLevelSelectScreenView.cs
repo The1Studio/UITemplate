@@ -24,17 +24,19 @@
     {
         #region inject
 
-        protected readonly DiContainer         diContainer;
-        protected readonly IScreenManager      screenManager;
-        protected readonly UITemplateLevelData levelData;
+        protected readonly DiContainer                 diContainer;
+        protected readonly IScreenManager              screenManager;
+        private readonly   UITemplateUserInventoryData userInventoryData;
+        protected readonly UITemplateUserLevelData     UserLevelData;
 
         #endregion
 
-        public UITemplateLevelSelectScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateLevelData levelData) : base(signalBus)
+        public UITemplateLevelSelectScreenPresenter(SignalBus signalBus,UITemplateUserInventoryData userInventoryData, DiContainer diContainer, IScreenManager screenManager, UITemplateUserLevelData userLevelData) : base(signalBus)
         {
-            this.levelData    = levelData;
-            this.diContainer  = diContainer;
-            this.screenManager = screenManager;
+            this.userInventoryData = userInventoryData;
+            this.UserLevelData     = userLevelData;
+            this.diContainer       = diContainer;
+            this.screenManager     = screenManager;
         }
 
         protected override void OnViewReady()
@@ -47,9 +49,10 @@
 
         public override async void BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus);
+            this.View.CoinText.Subscribe(this.SignalBus,
+                this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
             var levelList    = this.getLevelList();
-            var currentLevel = this.levelData.CurrentLevel;
+            var currentLevel = this.UserLevelData.CurrentLevel;
             await this.View.LevelGridAdapter.InitItemAdapter(levelList, this.diContainer);
             this.View.LevelGridAdapter.SmoothScrollTo(currentLevel, 1);
         }
@@ -61,7 +64,7 @@
 
         private List<LevelData> getLevelList()
         {
-            return this.levelData.GetAllLevels();
+            return this.UserLevelData.GetAllLevels();
         }
     }
 }

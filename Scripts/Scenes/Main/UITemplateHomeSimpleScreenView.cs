@@ -3,6 +3,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
     using Zenject;
@@ -20,15 +21,17 @@
     {
         #region inject
 
-        private readonly DiContainer    diContainer;
-        private readonly IScreenManager screenManager;
+        private readonly   UITemplateUserInventoryData userInventoryData;
+        private readonly   DiContainer                 diContainer;
+        protected readonly IScreenManager              ScreenManager;
 
         #endregion
 
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, UITemplateUserInventoryData userInventoryData, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
         {
-            this.diContainer   = diContainer;
-            this.screenManager = screenManager;
+            this.userInventoryData = userInventoryData;
+            this.diContainer       = diContainer;
+            this.ScreenManager     = screenManager;
         }
 
         protected override async void OnViewReady()
@@ -40,11 +43,15 @@
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
 
-        protected virtual void OnClickLevel() { this.screenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>(); }
+        protected virtual void OnClickLevel() { this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>(); }
 
         protected virtual void OnClickPlay() { }
 
-        public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus); }
+        public override void BindData()
+        {
+            this.View.CoinText.Subscribe(this.SignalBus,
+                this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+        }
 
         public override void Dispose()
         {

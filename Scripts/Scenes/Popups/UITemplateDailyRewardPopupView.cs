@@ -20,25 +20,25 @@
     [PopupInfo(nameof(UITemplateDailyRewardPopupView))]
     public class UITemplateDailyRewardPopupPresenter : BasePopupPresenter<UITemplateDailyRewardPopupView>
     {
+        private readonly UITemplateUserDailyRewardData  dailyRewardData;
         private readonly DiContainer                    diContainer;
-        private readonly UITemplateUserData             localData;
         private readonly UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint;
 
         private int                                      userLoginDay;
         private List<UITemplateDailyRewardItemPresenter> dailyRewardItemPresenters = new();
 
-        public UITemplateDailyRewardPopupPresenter(SignalBus signalBus, DiContainer diContainer, UITemplateUserData localData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint) :
+        public UITemplateDailyRewardPopupPresenter(SignalBus signalBus,UITemplateUserDailyRewardData dailyRewardData, DiContainer diContainer, UITemplateUserDailyRewardData userDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint) :
             base(signalBus)
         {
+            this.dailyRewardData                = dailyRewardData;
             this.diContainer                    = diContainer;
-            this.localData                      = localData;
             this.uiTemplateDailyRewardBlueprint = uiTemplateDailyRewardBlueprint;
         }
 
         public override async void BindData()
         {
-            this.userLoginDay                                                  = await this.localData.DailyRewardData.GetUserLoginDay();
-            this.localData.DailyRewardData.RewardStatus[this.userLoginDay - 1] = RewardStatus.Unlocked;
+            this.userLoginDay                                        = await this.dailyRewardData.GetUserLoginDay();
+            this.dailyRewardData.RewardStatus[this.userLoginDay - 1] = RewardStatus.Unlocked;
             for (var i = 0; i < this.View.DailyRewardItemViews.Count; i++)
             {
                 this.dailyRewardItemPresenters.Add(this.diContainer.Instantiate<UITemplateDailyRewardItemPresenter>());

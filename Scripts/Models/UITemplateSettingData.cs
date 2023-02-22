@@ -2,7 +2,7 @@
 {
     using GameFoundation.Scripts.Models;
 
-    public class UITemplateSettingData : SoundSetting
+    public class UITemplateUserSettingData : SoundSetting
     {
         public bool IsVibrationEnable = true;
 

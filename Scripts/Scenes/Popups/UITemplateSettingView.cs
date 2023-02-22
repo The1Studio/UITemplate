@@ -22,11 +22,11 @@
     {
         #region inject
 
-        private readonly UITemplateSettingData uiTemplateSettingData;
+        private readonly UITemplateUserSettingData uiTemplateUserSettingData;
 
         #endregion
 
-        public UITemplateSettingPopupPresenter(SignalBus signalBus, UITemplateSettingData uiTemplateSettingData) : base(signalBus) { this.uiTemplateSettingData = uiTemplateSettingData; }
+        public UITemplateSettingPopupPresenter(SignalBus signalBus, UITemplateUserSettingData uiTemplateUserSettingData) : base(signalBus) { this.uiTemplateUserSettingData = uiTemplateUserSettingData; }
 
         protected override void OnViewReady()
         {
@@ -37,27 +37,27 @@
 
         private void OnClickSoundButton()
         {
-            this.uiTemplateSettingData.SetSoundOnOff();
+            this.uiTemplateUserSettingData.SetSoundOnOff();
             this.InitButton();
         }
 
         private void OnClickMusicButton()
         {
-            this.uiTemplateSettingData.SetMusicOnOff();
+            this.uiTemplateUserSettingData.SetMusicOnOff();
             this.InitButton();
         }
 
         private void OnVibrationButton()
         {
-            this.uiTemplateSettingData.IsVibrationEnable = !this.uiTemplateSettingData.IsVibrationEnable;
+            this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable;
             this.InitButton();
         }
 
         private void InitButton()
         {
-            this.View.SoundButton.SetOnOff(this.uiTemplateSettingData.IsSoundOn);
-            this.View.MusicButton.SetOnOff(this.uiTemplateSettingData.IsMusicOn);
-            this.View.VibrationButton.SetOnOff(this.uiTemplateSettingData.IsVibrationEnable);
+            this.View.SoundButton.SetOnOff(this.uiTemplateUserSettingData.IsSoundOn);
+            this.View.MusicButton.SetOnOff(this.uiTemplateUserSettingData.IsMusicOn);
+            this.View.VibrationButton.SetOnOff(this.uiTemplateUserSettingData.IsVibrationEnable);
         }
 
         public override void BindData()

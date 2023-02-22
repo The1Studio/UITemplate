@@ -1,0 +1,316 @@
+namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.AssetLibrary;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOneStudio.UITemplate.UITemplate.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using UnityEngine;
+    using UnityEngine.EventSystems;
+    using UnityEngine.UI;
+    using Zenject;
+
+    public class UITemplateNewCollectionScreen : BaseView
+    {
+        public Button                    btnHome;
+        public Button                    btnUnlockRandom;
+        public Button                    btnAddMoreCoin;
+        public TopButtonBarAdapter       topButtonBarAdapter;
+        public ItemCollectionGridAdapter itemCollectionGridAdapter;
+        public UITemplateCurrencyView    coinText;
+    }
+
+    [ScreenInfo(nameof(UITemplateNewCollectionScreen))]
+    public class UITemplateNewCollectionScreenPresenter : BaseScreenPresenter<UITemplateNewCollectionScreen>
+    {
+        private readonly   DiContainer                     diContainer;
+        private readonly   UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint;
+        private readonly   UITemplateItemBlueprint         uiTemplateItemBlueprint;
+        private readonly   EventSystem                     eventSystem;
+        private readonly   IIapSystem                      iapSystem;
+        private readonly   ILogService                     logger;
+        private readonly   UITemplateUserInventoryData     userInventoryData;
+        private readonly   IAdsSystem                      adsSystem;
+        private readonly   IGameAssets                     gameAssets;
+        private readonly   UITemplateUserShopData          userShopData;
+        protected readonly IScreenManager                  ScreenManager;
+        private            int                             currentSelectedCategoryIndex;
+
+        private List<TopButtonItemModel> topButtonItemModels = new();
+
+        private List<ItemCollectionItemModel> itemCollectionItemModels = new();
+        private IDisposable                   randomTimerDispose;
+
+        protected virtual int CoinAddAmount => 500;
+
+        public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapSystem iapSystem, ILogService logger, UITemplateUserInventoryData userInventoryData,
+            IAdsSystem adsSystem,
+            IGameAssets gameAssets, UITemplateUserShopData userShopData, ScreenManager screenManager, DiContainer diContainer,
+            UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
+            UITemplateItemBlueprint uiTemplateItemBlueprint) :
+            base(signalBus)
+        {
+            this.eventSystem                     = eventSystem;
+            this.iapSystem                       = iapSystem;
+            this.logger                          = logger;
+            this.userInventoryData               = userInventoryData;
+            this.adsSystem                       = adsSystem;
+            this.gameAssets                      = gameAssets;
+            this.userShopData                    = userShopData;
+            this.ScreenManager                   = screenManager;
+            this.diContainer                     = diContainer;
+            this.uiTemplateCategoryItemBlueprint = uiTemplateCategoryItemBlueprint;
+            this.uiTemplateItemBlueprint         = uiTemplateItemBlueprint;
+        }
+
+        protected override void OnViewReady()
+        {
+            base.OnViewReady();
+            this.View.btnHome.onClick.AddListener(this.OnClickHomeButton);
+            this.View.btnUnlockRandom.onClick.AddListener(this.OnClickUnlockRandomButton);
+            this.View.btnAddMoreCoin.onClick.AddListener(this.OnClickAddMoreCoinButton);
+        }
+
+        public override async void BindData()
+        {
+            this.View.coinText.Subscribe(this.SignalBus,
+                this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+
+            this.itemCollectionItemModels.Clear();
+            this.PrePareModel();
+            await this.BindDataCollectionForAdapter();
+            this.OnButtonCategorySelected(this.topButtonItemModels[0]);
+        }
+
+        protected virtual void OnClickAddMoreCoinButton()
+        {
+            this.adsSystem.ShowRewardedVideo(() =>
+            {
+                var currencyData = this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString());
+                currencyData.Value += this.CoinAddAmount;
+                this.userInventoryData.UpdateCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString(), currencyData);
+            });
+        }
+
+        protected virtual void OnClickUnlockRandomButton()
+        {
+            this.adsSystem.ShowRewardedVideo(() =>
+            {
+                this.eventSystem.enabled = false;
+                var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
+
+                var collectionModel = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)
+                                                                               && !this.userInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
+
+                foreach (var model in this.itemCollectionItemModels)
+                {
+                    model.IndexItemSelected = -1;
+                }
+
+                var maxTime = collectionModel.Count == 1 ? 0.3f : 3;
+
+                collectionModel.GachaItemWithTimer(this.randomTimerDispose, (model) =>
+                {
+                    foreach (var itemCollectionItemModel in collectionModel)
+                    {
+                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+                    }
+
+                    this.OnRandomItemComplete(model);
+                    this.BuyItemCompleted(model);
+                    this.eventSystem.enabled = true;
+                }, model =>
+                {
+                    foreach (var itemCollectionItemModel in collectionModel)
+                    {
+                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+                    }
+
+                    this.View.itemCollectionGridAdapter.Refresh();
+                }, maxTime, 0.1f);
+            });
+        }
+
+        protected virtual       void OnRandomItemComplete(ItemCollectionItemModel model) { }
+        protected virtual async void OnClickHomeButton()                                 { await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>(); }
+
+        private void PrePareModel()
+        {
+            this.itemCollectionItemModels.Clear();
+
+            foreach (var record in this.uiTemplateItemBlueprint.Values)
+            {
+                var itemData = this.userInventoryData.HasItem(record.Id) ? this.userInventoryData.GetItemData(record.Id) : this.userShopData.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
+
+                var model = new ItemCollectionItemModel()
+                {
+                    UITemplateItemRecord = record,
+                    OnBuyItem            = this.OnBuyItem,
+                    OnSelectItem         = this.OnSelectItem,
+                    ItemData             = itemData,
+                };
+
+                this.itemCollectionItemModels.Add(model);
+            }
+        }
+
+        private async UniTask BindDataCollectionForAdapter()
+        {
+            //TopBar
+            this.currentSelectedCategoryIndex = 0;
+            this.topButtonItemModels.Clear();
+
+            var index = 0;
+
+            foreach (var record in this.uiTemplateCategoryItemBlueprint.Values)
+            {
+                var icon = await this.gameAssets.LoadAssetAsync<Sprite>(record.Icon);
+
+                this.topButtonItemModels.Add(new TopButtonItemModel()
+                {
+                    Icon          = icon,
+                    OnSelected    = this.OnButtonCategorySelected,
+                    SelectedIndex = this.currentSelectedCategoryIndex,
+                    Index         = index
+                });
+
+                index++;
+            }
+
+            //Collection
+            for (var i = 0; i < this.uiTemplateCategoryItemBlueprint.Count; i++)
+            {
+                var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(i).Value.Id;
+                var collectionModel = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
+
+                var itemSelected = this.userInventoryData.GetCurrentItemSelected(currentCategory);
+
+                var indexSelected = collectionModel.FindIndex(x => x.ItemData.Id.Equals(itemSelected));
+
+                for (var j = 0; j < collectionModel.Count; j++)
+                {
+                    var currentModel = collectionModel[j];
+                    currentModel.ItemIndex         = j;
+                    currentModel.IndexItemSelected = indexSelected == -1 ? 0 : indexSelected;
+                }
+            }
+
+            await this.View.topButtonBarAdapter.InitItemAdapter(this.topButtonItemModels, this.diContainer);
+        }
+
+        private async void OnButtonCategorySelected(TopButtonItemModel obj)
+        {
+            //refresh top button bar
+            this.currentSelectedCategoryIndex = obj.Index;
+
+            foreach (var topButtonItemModel in this.topButtonItemModels)
+            {
+                topButtonItemModel.SelectedIndex = this.currentSelectedCategoryIndex;
+            }
+
+            //Bind Data Collection
+            var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
+            var tempModel       = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
+
+            await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel, this.diContainer);
+            this.View.topButtonBarAdapter.Refresh();
+            var hasOwnAllItem = tempModel.All(x => this.userInventoryData.HasItem(x.ItemData.Id));
+            this.View.btnUnlockRandom.gameObject.SetActive(!hasOwnAllItem);
+        }
+
+        private void OnSelectItem(ItemCollectionItemModel obj)
+        {
+            var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
+            var tempModel       = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
+
+            foreach (var model in tempModel)
+            {
+                model.IndexItemSelected = obj.ItemIndex;
+            }
+
+            if (this.userInventoryData.HasItem(obj.ItemData.Id))
+            {
+            }
+
+            this.View.itemCollectionGridAdapter.Refresh();
+        }
+
+        private void OnBuyItem(ItemCollectionItemModel obj)
+        {
+            switch (obj.UITemplateItemRecord.UnlockType)
+            {
+                case UITemplateItemData.UnlockType.Ads:
+                    this.BuyWithAds(obj);
+
+                    break;
+                case UITemplateItemData.UnlockType.SoftCurrency:
+                    this.BuyWithCoin(obj);
+
+                    break;
+                case UITemplateItemData.UnlockType.None:
+                    break;
+                case UITemplateItemData.UnlockType.IAP:
+                    this.BuyWithIAP(obj);
+
+                    break;
+                case UITemplateItemData.UnlockType.Progression:
+                    break;
+                case UITemplateItemData.UnlockType.Gift:
+                    break;
+                case UITemplateItemData.UnlockType.All:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        #region Buy Item
+
+        private void BuyWithCoin(ItemCollectionItemModel obj)
+        {
+            var currentCoin = this.userInventoryData.GetCurrency(obj.UITemplateItemRecord.UnlockType.ToString());
+
+            if (currentCoin.Value < obj.UITemplateItemRecord.Price)
+            {
+                this.logger.Log($"Not Enough Coin");
+
+                return;
+            }
+
+            currentCoin.Value -= obj.UITemplateItemRecord.Price;
+            this.userInventoryData.UpdateCurrency(obj.UITemplateItemRecord.UnlockType.ToString(), currentCoin);
+            this.BuyItemCompleted(obj);
+        }
+
+        private void BuyWithAds(ItemCollectionItemModel obj) { this.adsSystem.ShowRewardedVideo(() => { this.BuyItemCompleted(obj); }); }
+
+        private void BuyWithIAP(ItemCollectionItemModel obj) { this.iapSystem.BuyProduct(obj.UITemplateItemRecord.IapPackId, () => { this.BuyItemCompleted(obj); }); }
+
+        private void BuyItemCompleted(ItemCollectionItemModel obj)
+        {
+            obj.ItemData.CurrentStatus = UITemplateItemData.Status.Owned;
+            this.userInventoryData.AddItemData(obj.ItemData);
+            this.userInventoryData.CategoryToChosenItem[obj.UITemplateItemRecord.Category] = obj.UITemplateItemRecord.Id;
+            this.userInventoryData.UpdateCurrentSelectedItem(obj.UITemplateItemRecord.Category, obj.UITemplateItemRecord.Id);
+            this.OnSelectItem(obj);
+        }
+
+        #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.randomTimerDispose?.Dispose();
+            this.View.coinText.Unsubscribe(this.SignalBus);
+        }
+    }
+}

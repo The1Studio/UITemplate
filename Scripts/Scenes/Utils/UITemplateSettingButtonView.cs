@@ -13,7 +13,7 @@
     public class UITemplateSettingButtonView : MonoBehaviour
     {
         private IScreenManager        screenManager;
-        private UITemplateSettingData uiTemplateSettingData;
+        private UITemplateUserSettingData uiTemplateUserSettingData;
 
         public UITemplateOnOffButton MusicButton;
         public UITemplateOnOffButton SoundButton;
@@ -45,36 +45,36 @@
 
         private void OnClickSoundButton()
         {
-            this.uiTemplateSettingData.SetSoundOnOff();
+            this.uiTemplateUserSettingData.SetSoundOnOff();
             this.InitButton();
         }
 
         private void OnClickMusicButton()
         {
-            this.uiTemplateSettingData.SetMusicOnOff();
+            this.uiTemplateUserSettingData.SetMusicOnOff();
             this.InitButton();
         }
 
         private void OnVibrationButton()
         {
-            this.uiTemplateSettingData.IsVibrationEnable = !this.uiTemplateSettingData.IsVibrationEnable;
+            this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable;
             this.InitButton();
         }
 
         [Inject]
-        public void Init(IScreenManager screenManager, UITemplateSettingData uiTemplateSettingData)
+        public void Init(IScreenManager screenManager, UITemplateUserSettingData uiTemplateUserSettingData)
         {
             this.screenManager         = screenManager;
-            this.uiTemplateSettingData = uiTemplateSettingData;
+            this.uiTemplateUserSettingData = uiTemplateUserSettingData;
             this.InitDropdown();
             this.InitButton();
         }
 
         private void InitButton()
         {
-            this.SoundButton.SetOnOff(this.uiTemplateSettingData.IsSoundOn);
-            this.MusicButton.SetOnOff(this.uiTemplateSettingData.IsMusicOn);
-            this.VibrateButton.SetOnOff(this.uiTemplateSettingData.IsVibrationEnable);
+            this.SoundButton.SetOnOff(this.uiTemplateUserSettingData.IsSoundOn);
+            this.MusicButton.SetOnOff(this.uiTemplateUserSettingData.IsMusicOn);
+            this.VibrateButton.SetOnOff(this.uiTemplateUserSettingData.IsVibrationEnable);
         }
 
         private void InitDropdown()

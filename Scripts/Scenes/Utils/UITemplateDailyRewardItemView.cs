@@ -61,8 +61,8 @@
     {
         #region inject
 
-        private readonly ILogService        logService;
-        private readonly UITemplateUserData localData;
+        private readonly ILogService               logService;
+        private readonly UITemplateUserDailyRewardData userDailyRewardData;
 
         #endregion
 
@@ -72,19 +72,19 @@
         private UITemplateDailyRewardItemModel model;
         private int                            userLoginDay;
 
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UITemplateUserData localData) : base(gameAssets)
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService,UITemplateUserDailyRewardData userDailyRewardData) : base(gameAssets)
         {
-            this.logService = logService;
-            this.localData  = localData;
+            this.logService      = logService;
+            this.userDailyRewardData = userDailyRewardData;
         }
 
         public override async void BindData(UITemplateDailyRewardItemModel param)
         {
             this.View.BtnClaim.onClick.RemoveAllListeners();
             this.View.BtnClaim.onClick.AddListener(this.OnClickClaimReward);
-            this.userLoginDay               = await this.localData.DailyRewardData.GetUserLoginDay();
+            this.userLoginDay               = await this.userDailyRewardData.GetUserLoginDay();
             this.model                      = param;
-            this.View.BtnClaim.interactable = this.localData.DailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] != RewardStatus.Locked;
+            this.View.BtnClaim.interactable = this.userDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] != RewardStatus.Locked;
             this.InitView();
         }
 
@@ -98,12 +98,12 @@
             }
 
             var rewardLabel = this.model.DailyRewardRecord.Day == this.userLoginDay ? TodayLabel : PrefixLabel + this.model.DailyRewardRecord.Day;
-            this.View.SetStatus(this.localData.DailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1], rewardSprite, rewardValue, rewardLabel);
+            this.View.SetStatus(this.userDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1], rewardSprite, rewardValue, rewardLabel);
         }
 
         private void OnClickClaimReward()
         {
-            this.localData.DailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] = RewardStatus.Claimed;
+            this.userDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] = RewardStatus.Claimed;
             this.logService.LogWithColor("Add reward to local here! ", Color.yellow);
             this.InitView();
         }

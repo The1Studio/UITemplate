@@ -20,24 +20,24 @@
 
     public class ItemCollectionItemPresenter : BaseItemCollectionPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
-        private readonly IGameAssets        gameAssets;
-        private readonly UITemplateUserData uiTemplateUserData;
+        private readonly IGameAssets                 gameAssets;
+        private readonly UITemplateUserInventoryData inventoryData;
 
         private ItemCollectionItemModel model;
 
         protected override string CategoryType => "Item";
 
-        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateUserData uiTemplateUserData) : base(gameAssets)
+        public ItemCollectionItemPresenter(IGameAssets gameAssets,UITemplateUserInventoryData inventoryData ) : base(gameAssets)
         {
-            this.gameAssets = gameAssets;
-            this.uiTemplateUserData   = uiTemplateUserData;
+            this.gameAssets    = gameAssets;
+            this.inventoryData = inventoryData;
         }
 
         public override async void BindData(ItemCollectionItemModel param)
         {
             this.model = param;
             this.Init(param.UITemplateItemData.CurrentStatus);
-            this.uiTemplateUserData.InventoryData.CategoryToCurrentItem.Values.Any(value => value.Equals(this.model.UITemplateItemData.Id));
+            this.inventoryData.CategoryToChosenItem.Values.Any(value => value.Equals(this.model.UITemplateItemData.Id));
             this.View.ItemImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.model.UITemplateItemData.BlueprintRecord.Name);
             this.View.PriceText.text   = $"{param.UITemplateItemData.BlueprintRecord.Price}";
             this.View.SelectButton.onClick.AddListener(this.OnSelect);

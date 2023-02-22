@@ -46,19 +46,21 @@
     [ScreenInfo(nameof(UITemplateWinScreenView))]
     public class UITemplateWinScreenPresenter : BaseScreenPresenter<UITemplateWinScreenView, UITemplateWinScreenModel>
     {
-        private readonly IScreenManager     screenManager;
-        private readonly IGameAssets        gameAssets;
-        private readonly UITemplateUserData userData;
+        private readonly UITemplateUserInventoryData userInventoryData;
+        private readonly IScreenManager              screenManager;
+        private readonly IGameAssets                 gameAssets;
+        private readonly UITemplateUserShopData      shopData;
 
         private IDisposable spinDisposable;
         private Tween       tweenSpin;
 
-        public UITemplateWinScreenPresenter(SignalBus signalBus, ILogService logService, IScreenManager screenManager, IGameAssets gameAssets,
-            UITemplateUserData userData) : base(signalBus, logService)
+        public UITemplateWinScreenPresenter(SignalBus signalBus,UITemplateUserInventoryData userInventoryData, ILogService logService, IScreenManager screenManager, IGameAssets gameAssets,UITemplateUserShopData shopData
+           ) : base(signalBus, logService)
         {
-            this.screenManager = screenManager;
-            this.gameAssets    = gameAssets;
-            this.userData      = userData;
+            this.userInventoryData = userInventoryData;
+            this.screenManager     = screenManager;
+            this.gameAssets        = gameAssets;
+            this.shopData          = shopData;
         }
 
         protected override async void OnViewReady()
@@ -72,7 +74,8 @@
 
         public override async void BindData(UITemplateWinScreenModel model)
         {
-            this.View.CoinText.Subscribe(this.SignalBus);
+            this.View.CoinText.Subscribe(this.SignalBus,
+                this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
             this.ItemUnlockProgress(model.ItemUnlockLastPercent, model.ItemUnlockPercent);
             this.tweenSpin = this.View.LightGlowImage.transform.DORotate(new Vector3(0, 0, -360), 5f, RotateMode.FastBeyond360)
                 .SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
@@ -84,13 +87,13 @@
             var spriteItemUnlock = await this.gameAssets.LoadAssetAsync<Sprite>(this.Model.ItemId);
             this.View.ItemUnlockImage.sprite = spriteItemUnlock;
             this.View.ItemUnlockBgImage.sprite = spriteItemUnlock;
-            float lastValue = lastPercent / 100f;
-            float value     = percent / 100f;
+            var lastValue = lastPercent / 100f;
+            var value     = percent / 100f;
             DOTween.To(() => this.View.ItemUnlockImage.fillAmount = lastValue, x => this.View.ItemUnlockImage.fillAmount = x, value, 1f)
                 .SetEase(Ease.Linear);
 
             var itemStatus = Math.Abs(value - 1) < Mathf.Epsilon ? UITemplateItemData.Status.Owned : UITemplateItemData.Status.InProgress;
-            this.userData.ShopData.UpdateStatusItemData(this.Model.ItemId, itemStatus);
+            this.shopData.UpdateStatusItemData(this.Model.ItemId, itemStatus);
         }
 
         private void OnClickHome()

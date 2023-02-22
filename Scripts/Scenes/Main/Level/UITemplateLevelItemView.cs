@@ -29,12 +29,12 @@
         [SerializeField]
         private Sprite SkippedSprite;
 
-        public virtual void InitView(LevelData data, UITemplateLevelData levelData)
+        public virtual void InitView(LevelData data, UITemplateUserLevelData userLevelData)
         {
             this.LevelText.text         = data.Level.ToString();
             this.BackgroundImage.sprite = this.GetStatusBackground(data.LevelStatus);
-            if (data.Level == levelData.CurrentLevel) this.BackgroundImage.sprite = this.NowSprite;
-            this.LevelButton.interactable = data.Level <= levelData.CurrentLevel;
+            if (data.Level == userLevelData.CurrentLevel) this.BackgroundImage.sprite = this.NowSprite;
+            this.LevelButton.interactable = data.Level <= userLevelData.CurrentLevel;
         }
 
         private Sprite GetStatusBackground(Models.LevelData.Status levelStatus) =>
@@ -55,21 +55,21 @@
 
         private readonly SignalBus           signalBus;
         private readonly IScreenManager      screenManager;
-        private          UITemplateLevelData levelData;
+        private          UITemplateUserLevelData userLevelData;
 
         #endregion
 
         private LevelData _model;
-        public UITemplateLevelItemPresenter(IGameAssets gameAssets, SignalBus signalBus, IScreenManager screenManager, UITemplateLevelData levelData) : base(gameAssets)
+        public UITemplateLevelItemPresenter(IGameAssets gameAssets, SignalBus signalBus, IScreenManager screenManager, UITemplateUserLevelData userLevelData) : base(gameAssets)
         {
             this.signalBus     = signalBus;
             this.screenManager = screenManager;
-            this.levelData     = levelData;
+            this.userLevelData     = userLevelData;
         }
         public override void BindData(LevelData param)
         {
             this._model = param;
-            this.View.InitView(param, this.levelData);
+            this.View.InitView(param, this.userLevelData);
             this.View.LevelButton.onClick.RemoveAllListeners();
             this.View.LevelButton.onClick.AddListener(this.OnClick);
         }
@@ -78,9 +78,9 @@
         {
             #region test
             
-            this.levelData.LevelToLevelData[this.levelData.CurrentLevel].LevelStatus = LevelData.Status.Passed;
-            this.levelData.LevelToLevelData[this.levelData.CurrentLevel].StarCount = Random.Range(1, 4);
-            this.levelData.CurrentLevel++;
+            this.userLevelData.LevelToLevelData[this.userLevelData.CurrentLevel].LevelStatus = LevelData.Status.Passed;
+            this.userLevelData.LevelToLevelData[this.userLevelData.CurrentLevel].StarCount = Random.Range(1, 4);
+            this.userLevelData.CurrentLevel++;
 
             #endregion
         }

@@ -1,8 +1,10 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
-    using GameFoundation.Scripts.Models;
+    using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities;
+    using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
@@ -10,19 +12,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         public override void InstallBindings()
         {
-            this.Container.Bind<UITemplateUserData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<UITemplateUserData>()).AsCached().NonLazy();
+            this.BindLocalData<UITemplateUserLevelData>();
+            this.BindLocalData<UITemplateUserShopData>();
+            this.BindLocalData<UITemplateUserInventoryData>();
+            this.BindLocalData<UITemplateUserSettingData>();
+            this.BindLocalData<UITemplateUserDailyRewardData>();
 
-            var uiTemplateUserData = this.Container.Resolve<UITemplateUserData>();
-
-            this.Container.Bind<UITemplateLevelData>().FromInstance(uiTemplateUserData.LevelData);
-            this.Container.Bind<UITemplateShopData>().FromInstance(uiTemplateUserData.ShopData);
-            this.Container.Bind<UITemplateInventoryData>().FromInstance(uiTemplateUserData.InventoryData);
-            this.Container.Bind<UITemplateSettingData>().FromInstance(uiTemplateUserData.SettingData);
-            this.Container.Bind<UITemplateDailyRewardData>().FromInstance(uiTemplateUserData.DailyRewardData);
-            this.Container.Rebind<SoundSetting>().FromInstance(uiTemplateUserData.SettingData);
-
+            this.Container.Bind<IAdsSystem>().To<UITemPlateAdsSystem>().AsCached().NonLazy();
+            this.Container.Bind<IIapSystem>().To<UITemplateIAPSystem>().AsCached().NonLazy();
             //Signal
             this.Container.DeclareSignal<UpdateCurrencySignal>();
+        }
+
+        private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData
+        {
+            this.Container.Bind<TLocalData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();
         }
     }
 }

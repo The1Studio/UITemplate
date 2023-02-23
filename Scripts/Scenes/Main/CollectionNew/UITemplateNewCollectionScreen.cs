@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
@@ -32,6 +33,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     [ScreenInfo(nameof(UITemplateNewCollectionScreen))]
     public class UITemplateNewCollectionScreenPresenter : BaseScreenPresenter<UITemplateNewCollectionScreen>
     {
+        private static string placement = "collection";
+
+        #region inject
+
         private readonly   DiContainer                     diContainer;
         private readonly   UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint;
         private readonly   UITemplateItemBlueprint         uiTemplateItemBlueprint;
@@ -39,11 +44,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   IIapSystem                      iapSystem;
         private readonly   ILogService                     logger;
         private readonly   UITemplateUserInventoryData     userInventoryData;
-        private readonly   IAdsSystem                      adsSystem;
+        private readonly   AdServiceWrapper                adServiceWrapper;
         private readonly   IGameAssets                     gameAssets;
         private readonly   UITemplateUserShopData          userShopData;
         protected readonly IScreenManager                  ScreenManager;
-        private            int                             currentSelectedCategoryIndex;
+
+        #endregion
+
+        private int currentSelectedCategoryIndex;
 
         private List<TopButtonItemModel> topButtonItemModels = new();
 
@@ -53,7 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         protected virtual int CoinAddAmount => 500;
 
         public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapSystem iapSystem, ILogService logger, UITemplateUserInventoryData userInventoryData,
-            IAdsSystem adsSystem,
+            AdServiceWrapper adServiceWrapper,
             IGameAssets gameAssets, UITemplateUserShopData userShopData, ScreenManager screenManager, DiContainer diContainer,
             UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
             UITemplateItemBlueprint uiTemplateItemBlueprint) :
@@ -63,7 +71,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.iapSystem                       = iapSystem;
             this.logger                          = logger;
             this.userInventoryData               = userInventoryData;
-            this.adsSystem                       = adsSystem;
+            this.adServiceWrapper                = adServiceWrapper;
             this.gameAssets                      = gameAssets;
             this.userShopData                    = userShopData;
             this.ScreenManager                   = screenManager;
@@ -91,9 +99,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.OnButtonCategorySelected(this.topButtonItemModels[0]);
         }
 
+
         protected virtual void OnClickAddMoreCoinButton()
         {
-            this.adsSystem.ShowRewardedVideo(() =>
+            this.adServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 var currencyData = this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString());
                 currencyData.Value += this.CoinAddAmount;
@@ -103,7 +112,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void OnClickUnlockRandomButton()
         {
-            this.adsSystem.ShowRewardedVideo(() =>
+            this.adServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 this.eventSystem.enabled = false;
                 var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
@@ -291,7 +300,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.BuyItemCompleted(obj);
         }
 
-        private void BuyWithAds(ItemCollectionItemModel obj) { this.adsSystem.ShowRewardedVideo(() => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithAds(ItemCollectionItemModel obj) { this.adServiceWrapper.ShowRewardedAd(placement, () => { this.BuyItemCompleted(obj); }); }
 
         private void BuyWithIAP(ItemCollectionItemModel obj) { this.iapSystem.BuyProduct(obj.UITemplateItemRecord.IapPackId, () => { this.BuyItemCompleted(obj); }); }
 

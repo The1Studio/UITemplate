@@ -17,7 +17,8 @@
         "OSA.Core",
         "UniRx",
         "3rdCore.Ads",
-        "3rdCore.Analytic"
+        "3rdCore.Analytic",
+        "3rd.ServiceImplementation.Ads"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

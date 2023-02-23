@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using Zenject;
 
     public class UITemplateUserLevelData : ILocalData
     {
@@ -18,7 +19,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public int                        CurrentLevel     = 1;
         public Dictionary<int, LevelData> LevelToLevelData = new();
 
-        public UITemplateUserLevelData(UITemplateLevelBlueprint uiTemplateLevelBlueprint) { this.uiTemplateLevelBlueprint = uiTemplateLevelBlueprint; }
+        public UITemplateUserLevelData(UITemplateLevelBlueprint uiTemplateLevelBlueprint)
+        {
+            this.uiTemplateLevelBlueprint = uiTemplateLevelBlueprint;
+        }
 
         public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
 

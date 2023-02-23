@@ -21,7 +21,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.View.btnContinue.onClick.AddListener(this.OnContinue);
         }
 
-        private void OnContinue() { this.AdsSystem.ShowRewardedVideo(() => { }); }
+        protected virtual void OnContinue() { this.AdsSystem.ShowRewardedVideo(this.AfterWatchAd); }
+        
+        protected virtual void AfterWatchAd() { }
 
         protected override void OnClickNext() { }
     }

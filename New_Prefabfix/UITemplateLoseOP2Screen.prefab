@@ -1000,5 +1000,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewRoot: {fileID: 0}
   screenTransition: {fileID: 0}
-  btnNext: {fileID: 8751712000843763419}
-  btnContinue: {fileID: 338934663118453899}
+  btnNext: {fileID: 338934663118453899}
+  btnContinue: {fileID: 8751712000843763419}

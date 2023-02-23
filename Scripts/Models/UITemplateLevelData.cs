@@ -7,7 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
 
-    public class UITemplateUserLevelData:ILocalData
+    public class UITemplateUserLevelData : ILocalData
     {
         #region inject
 
@@ -15,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         #endregion
 
-        public int                        CurrentLevel = 1;
+        public int                        CurrentLevel     = 1;
         public Dictionary<int, LevelData> LevelToLevelData = new();
 
         public UITemplateUserLevelData(UITemplateLevelBlueprint uiTemplateLevelBlueprint) { this.uiTemplateLevelBlueprint = uiTemplateLevelBlueprint; }
@@ -25,13 +25,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public LevelData GetLevelData(int level)
         {
             return this.LevelToLevelData.GetOrAdd(level, () =>
-            {
-                var record = this.uiTemplateLevelBlueprint.GetDataById(level);
-                return new LevelData(record, level, LevelData.Status.Locked);
-            });
+                                                         {
+                                                             var record = this.uiTemplateLevelBlueprint.GetDataById(level);
+                                                             return new LevelData(record, level, LevelData.Status.Locked);
+                                                         });
         }
 
-        public void Init() {  }
+        public void Init() { }
     }
 
     public class LevelData
@@ -41,13 +41,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public int    StarCount;
 
         [JsonIgnore] public UITemplateLevelRecord Record;
-        
-        public LevelData(UITemplateLevelRecord record,int level, Status levelStatus, int starCount = 0)
+
+        public LevelData(UITemplateLevelRecord record, int level, Status levelStatus, int starCount = 0)
         {
-            Record = record;
-            Level = level;
+            Record      = record;
+            Level       = level;
             LevelStatus = levelStatus;
-            StarCount = starCount;
+            StarCount   = starCount;
         }
 
         public enum Status

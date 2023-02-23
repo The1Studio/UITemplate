@@ -15,7 +15,9 @@
         "UniTask.Addressables",
         "GameFoundation.Models",
         "OSA.Core",
-        "UniRx"
+        "UniRx",
+        "3rdCore.Ads",
+        "3rdCore.Analytic"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -81,7 +81,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
         {
             this.aoaAdService.LoadAOAAd();
         }
-        public bool IsAppOpenAdLoaded() { return this.aoaAdService.IsAppOpenAdLoaded(); }
         public void ShowAdIfAvailable() { this.aoaAdService.ShowAdIfAvailable(); }
     }
 }

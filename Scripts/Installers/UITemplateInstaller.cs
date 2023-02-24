@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using ServiceImplementation.AdsServices;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
@@ -45,6 +46,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #else
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
 #endif
+            
+            //Manager
+            this.Container.BindInterfacesAndSelfTo<GameSeasonManager>().AsCached().NonLazy();
         }
 
         private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData

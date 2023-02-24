@@ -1,25 +1,24 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
 {
-    using GameFoundation.Scripts.Utilities.ApplicationServices;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using Zenject;
 
-    public class GameSeasonManager
+    public class GameSeasonManager : IInitializable
     {
         private readonly SignalBus        signalBus;
         private readonly AdServiceWrapper adServiceWrapper;
+        private readonly ILogService      logService;
 
-        public GameSeasonManager(SignalBus signalBus, AdServiceWrapper adServiceWrapper)
+        public GameSeasonManager(SignalBus signalBus, AdServiceWrapper adServiceWrapper, ILogService logService)
         {
             this.signalBus        = signalBus;
             this.adServiceWrapper = adServiceWrapper;
-            this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnAppPause);
+            this.logService       = logService;
         }
 
-        private void OnAppPause(ApplicationPauseSignal obj)
+        public void Initialize()
         {
-            if (!obj.PauseStatus) return;
-            this.adServiceWrapper.ShowAppOpenAd();
         }
     }
 }

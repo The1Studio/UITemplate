@@ -46,7 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
             }
 
             this.signalBus.Fire(new InterstitialAdShowedSignal(place));
-            this.adServices.ShowInterstitialAd(place);
+            this.adServices.ShowInterstitialAd(string.Empty);
         }
 
         public event Action<InterstitialAdNetwork, string> RewardedAdCompleted;
@@ -63,7 +63,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
             }
 
             this.signalBus.Fire(new RewardedAdShowedSignal(place));
-            this.adServices.ShowRewardedAd(place);
+            this.adServices.ShowRewardedAd(string.Empty);
         }
 
         public void                                        ShowRewardedAd(string place, Action onCompleted) { this.adServices.ShowRewardedAd(place, onCompleted); }
@@ -76,7 +76,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
         public void                                        RemoveAds(bool revokeConsent = false) { this.adServices.RemoveAds(revokeConsent); }
         public bool                                        IsAdsInitialized()                    { return this.adServices.IsAdsInitialized(); }
 
-        public bool                                        IsAppOpenAdLoaded() { return this.aoaAdService.IsAppOpenAdLoaded(); }
-        public void                                        ShowAppOpenAd()     { this.aoaAdService.ShowAppOpenAd(); }
+        public bool IsAppOpenAdLoaded() { return this.aoaAdService.IsAppOpenAdLoaded(); }
+        public void ShowAppOpenAd()     { this.aoaAdService.ShowAppOpenAd(); }
     }
 }

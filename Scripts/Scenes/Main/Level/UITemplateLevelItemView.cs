@@ -80,7 +80,6 @@
             
             this.userLevelData.LevelToLevelData[this.userLevelData.CurrentLevel].LevelStatus = LevelData.Status.Passed;
             this.userLevelData.LevelToLevelData[this.userLevelData.CurrentLevel].StarCount = Random.Range(1, 4);
-            this.userLevelData.CurrentLevel++;
 
             #endregion
         }

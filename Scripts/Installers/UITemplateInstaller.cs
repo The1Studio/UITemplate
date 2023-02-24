@@ -25,10 +25,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             this.Container.Bind<IIapSystem>().To<UITemplateIAPSystem>().AsCached().NonLazy();
             //Signal
+            this.Container.DeclareSignal<RewardedAdShowedSignal>();
             this.Container.DeclareSignal<UpdateCurrencySignal>();
-
+            this.Container.DeclareSignal<LevelStartedSignal>();
+            this.Container.DeclareSignal<LevelEndedSignal>();
+            this.Container.DeclareSignal<LevelSkippedSignal>();
+            this.Container.DeclareSignal<InterstitialAdShowedSignal>();
             //Third party service
             AdServiceInstaller.Install(this.Container);
+            
             AnalyticServicesInstaller.Install(this.Container);
             this.Container.Bind<AdServiceWrapper>().AsCached();
             

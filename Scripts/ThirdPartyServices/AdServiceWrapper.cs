@@ -17,8 +17,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
 
         #endregion
 
-        public AdServiceWrapper(IAOAAdService aoaAdService, ILogService logService, SignalBus signalBus)
+        public AdServiceWrapper(IAOAAdService aoaAdService, ILogService logService, SignalBus signalBus, IAdServices adServices)
         {
+            this.adServices   = adServices;
             this.aoaAdService = aoaAdService;
             this.logService   = logService;
             this.signalBus    = signalBus;
@@ -34,31 +35,37 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
         public void                                        DestroyBannerAd()                                                            { this.adServices.DestroyBannerAd(); }
         public event Action<InterstitialAdNetwork, string> InterstitialAdCompleted;
         public bool                                        IsInterstitialAdReady() { return this.adServices.IsInterstitialAdReady(); }
+
         public void ShowInterstitialAd(string place)
         {
             if (!this.IsInterstitialAdReady())
             {
                 this.logService.Warning("InterstitialAd was not loaded");
+
                 return;
             }
 
             this.signalBus.Fire(new InterstitialAdShowedSignal(place));
             this.adServices.ShowInterstitialAd(place);
         }
+
         public event Action<InterstitialAdNetwork, string> RewardedAdCompleted;
         public event Action<InterstitialAdNetwork, string> RewardedAdSkipped;
         public bool                                        IsRewardedAdReady() { return this.adServices.IsRewardedAdReady(); }
+
         public void ShowRewardedAd(string place)
         {
             if (!this.IsRewardedAdReady())
             {
                 this.logService.Warning("Rewarded was not loaded");
+
                 return;
             }
 
             this.signalBus.Fire(new RewardedAdShowedSignal(place));
             this.adServices.ShowRewardedAd(place);
         }
+
         public void                                        ShowRewardedAd(string place, Action onCompleted) { this.adServices.ShowRewardedAd(place, onCompleted); }
         public event Action<InterstitialAdNetwork, string> RewardedInterstitialAdCompleted;
         public event Action<InterstitialAdNetwork, string> RewardedInterstitialAdSkipped;

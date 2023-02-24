@@ -74,7 +74,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
         public void                                        ShowRewardedInterstitialAd(string place, Action onCompleted) { this.adServices.ShowRewardedInterstitialAd(place, onCompleted); }
         public event Action                                AdsRemoved;
         public void                                        RemoveAds(bool revokeConsent = false) { this.adServices.RemoveAds(revokeConsent); }
-        public bool                                        IsAppOpenAdLoaded()                   { return this.aoaAdService.IsAppOpenAdLoaded(); }
-        public void                                        ShowAppOpenAd()                       { this.aoaAdService.ShowAppOpenAd(); }
+        public bool                                        IsAdsInitialized()                    { return this.adServices.IsAdsInitialized(); }
+
+        public bool                                        IsAppOpenAdLoaded() { return this.aoaAdService.IsAppOpenAdLoaded(); }
+        public void                                        ShowAppOpenAd()     { this.aoaAdService.ShowAppOpenAd(); }
     }
 }

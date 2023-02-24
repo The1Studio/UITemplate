@@ -2,7 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using TheOneStudio.UITemplate.UITemplate.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine.UI;
     using Zenject;
 
@@ -13,8 +13,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 
     public abstract class BaseEndGameScreenPresenter<TView> : BaseScreenPresenter<TView> where TView : BaseEndGameScreenView
     {
-        protected readonly IAdsSystem AdsSystem;
-        protected BaseEndGameScreenPresenter(SignalBus signalBus, IAdsSystem adsSystem) : base(signalBus) { this.AdsSystem = adsSystem; }
+        protected readonly AdServiceWrapper AdService;
+        protected BaseEndGameScreenPresenter(SignalBus signalBus, AdServiceWrapper adService) : base(signalBus) { this.AdService = adService; }
 
         protected override void OnViewReady()
         {

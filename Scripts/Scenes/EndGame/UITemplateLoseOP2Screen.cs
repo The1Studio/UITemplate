@@ -1,7 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-    using TheOneStudio.UITemplate.UITemplate.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine.UI;
     using Zenject;
 
@@ -13,7 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateLoseOP2Screen))]
     public class UITemplateLoseOp2Presenter : BaseEndGameScreenPresenter<UITemplateLoseOP2Screen>
     {
-        public UITemplateLoseOp2Presenter(SignalBus signalBus, IAdsSystem adsSystem) : base(signalBus, adsSystem) { }
+        public UITemplateLoseOp2Presenter(SignalBus signalBus, AdServiceWrapper adService) : base(signalBus, adService) { }
 
         protected override void OnViewReady()
         {
@@ -21,8 +21,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.View.btnContinue.onClick.AddListener(this.OnContinue);
         }
 
-        protected virtual void OnContinue() { this.AdsSystem.ShowRewardedVideo(this.AfterWatchAd); }
-        
+        protected virtual void OnContinue() { this.AdService.ShowRewardedAd("lose", this.AfterWatchAd); }
+
         protected virtual void AfterWatchAd() { }
 
         protected override void OnClickNext() { }

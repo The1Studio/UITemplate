@@ -10,7 +10,7 @@ namespace EasyMobile.Editor
         public const string Copyright = "© 2017-2022 SgLib Games LLC. All Rights Reserved.";
 
         // Folder
-        public const string RootPath = "Assets/EasyMobile";
+        public const string RootPath = "Assets/UITemplate/EasyMobile";
         public const string EditorFolder = RootPath + "/Editor";
         public const string TemplateFolder = EditorFolder + "/Templates";
         public const string GeneratedFolder = RootPath + "/Generated";

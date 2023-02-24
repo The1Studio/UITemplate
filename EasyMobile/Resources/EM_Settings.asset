@@ -371,4 +371,4 @@ MonoBehaviour:
   mIsNotificationModuleEnable: 0
   mIsSharingModuleEnable: 0
   mActiveModuleIndex: 0
-  mIsSelectingModule: 0
+  mIsSelectingModule: 1

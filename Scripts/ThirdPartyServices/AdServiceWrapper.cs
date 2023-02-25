@@ -53,7 +53,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
             }
 
             this.signalBus.Fire(new RewardedAdShowedSignal(place));
-            this.aoaAdService.OpenInterstitialAdHandler();
             this.adServices.ShowRewardedAd(place, onComplete);
         }
     }

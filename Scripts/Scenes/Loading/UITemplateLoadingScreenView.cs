@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using System.Linq;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
+    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -37,7 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
     public class UITemplateLoadingScreenPresenter : BaseScreenPresenter<UITemplateLoadingScreenView>
     {
-        private const     string LoadingBlueprintStepName = "Loading static data...";
+        private const string LoadingBlueprintStepName = "Loading static data...";
 
         private const float MinimumLoadingBlueprintTime = 2f; //seconds
 
@@ -45,20 +46,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         private readonly BlueprintReaderManager blueprintReaderManager;
         private readonly SceneDirector          sceneDirector;
+        private readonly IAOAAdService          aoaAdService;
 
         #endregion
 
-        private DateTime                startedLoadingTime;
+        private DateTime startedLoadingTime;
+        private DateTime startedShowingAOATime;
+
         private Dictionary<Type, float> loadingTypeToProgressPercent;
 
 
-        public UITemplateLoadingScreenPresenter(SignalBus signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector) : base(signalBus)
+        public UITemplateLoadingScreenPresenter(SignalBus signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService) : base(signalBus)
         {
             this.blueprintReaderManager = blueprintReaderManager;
             this.sceneDirector          = sceneDirector;
+            this.aoaAdService           = aoaAdService;
         }
 
-        protected virtual string NextSceneName => "1.UITemplateMainScene";  
+        protected virtual string NextSceneName => "1.UITemplateMainScene";
 
         protected override void OnViewReady()
         {
@@ -71,25 +76,38 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.startedLoadingTime = DateTime.Now;
             this.SignalBus.Subscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
             this.SignalBus.Subscribe<ReadBlueprintProgressSignal>(this.OnLoadProgress);
+
             this.loadingTypeToProgressPercent = new Dictionary<Type, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f }, };
 
             this.ShowLoadingProgress(LoadingBlueprintStepName);
             this.blueprintReaderManager.LoadBlueprint();
         }
-        
+
         private async void ShowLoadingProgress(string loadingContent)
         {
             this.View.SetLoadingText(loadingContent);
-            var progressInView       = 0f;
-            
+            var progressInView = 0f;
+
             while (progressInView < 1f)
             {
-                var currentProgress = this.loadingTypeToProgressPercent.Values.Average();
+                if (this.aoaAdService.IsShowingAd)
+                {
+                    if (this.startedShowingAOATime == default)
+                    {
+                        this.startedShowingAOATime = DateTime.Now;
+                    }
+                    
+                    await UniTask.WaitUntil(() => !this.aoaAdService.IsShowingAd);
+                    this.startedLoadingTime = this.startedLoadingTime.Add(DateTime.Now - this.startedShowingAOATime);
+                }
+
+                var currentProgress       = this.loadingTypeToProgressPercent.Values.Average();
                 var maximumLoadingPercent = (float)(DateTime.Now - this.startedLoadingTime).TotalSeconds / MinimumLoadingBlueprintTime;
                 progressInView = Mathf.Min(currentProgress, maximumLoadingPercent);
                 this.View.SetLoadingProgressValue(progressInView);
                 await UniTask.WaitForEndOfFrame();
             }
+
             this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
         }
 

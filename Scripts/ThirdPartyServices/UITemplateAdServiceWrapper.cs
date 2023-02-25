@@ -1,4 +1,4 @@
-namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
+namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
     using Core.AdsServices;
@@ -6,21 +6,19 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
-    public class AdServiceWrapper
+    public class UITemplateAdServiceWrapper
     {
         #region inject
 
         private readonly IAdServices   adServices;
-        private readonly IAOAAdService aoaAdService;
         private readonly ILogService   logService;
         private readonly SignalBus     signalBus;
 
         #endregion
 
-        public AdServiceWrapper(IAOAAdService aoaAdService, ILogService logService, SignalBus signalBus, IAdServices adServices)
+        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices)
         {
             this.adServices   = adServices;
-            this.aoaAdService = aoaAdService;
             this.logService   = logService;
             this.signalBus    = signalBus;
         }

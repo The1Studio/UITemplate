@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
@@ -36,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             AdServiceInstaller.Install(this.Container);
             
             AnalyticServicesInstaller.Install(this.Container);
-            this.Container.Bind<AdServiceWrapper>().AsCached();
+            this.Container.Bind<UITemplateAdServiceWrapper>().AsCached();
             
             //Analytic
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();

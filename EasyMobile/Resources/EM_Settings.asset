@@ -15,8 +15,8 @@ MonoBehaviour:
   mAdvertisingSettings:
     mAutoInit: 1
     mAutoLoadAdsMode: 2
-    mAdCheckingInterval: 10
-    mAdLoadingInterval: 20
+    mAdCheckingInterval: 5
+    mAdLoadingInterval: 5
     mIosDefaultAdNetworks:
       bannerAdNetwork: 0
       interstitialAdNetwork: 0
@@ -106,11 +106,27 @@ MonoBehaviour:
         keys: []
         values: []
       mCustomInterstitialAdIds:
-        keys: []
-        values: []
+        keys:
+        - mName: Inventory
+          mUseCustomName: 1
+        - mName: Reload_Weapon
+          mUseCustomName: 1
+        - mName: First_Open_App
+          mUseCustomName: 1
+        values:
+        - mIosId: 
+          mAndroidId: ed2f91dd11dc134b
+        - mIosId: 
+          mAndroidId: ed2f91dd11dc134b
+        - mIosId: 
+          mAndroidId: ed2f91dd11dc134b
       mCustomRewardedAdIds:
-        keys: []
-        values: []
+        keys:
+        - mName: Spin
+          mUseCustomName: 1
+        values:
+        - mIosId: 
+          mAndroidId: 0275dec05ba13b8c
     mFBAudience:
       mEnable: 0
       mBannerAdSize: 0
@@ -371,4 +387,4 @@ MonoBehaviour:
   mIsNotificationModuleEnable: 0
   mIsSharingModuleEnable: 0
   mActiveModuleIndex: 0
-  mIsSelectingModule: 1
+  mIsSelectingModule: 0

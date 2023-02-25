@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.EventSystems;
@@ -44,7 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   IIapSystem                      iapSystem;
         private readonly   ILogService                     logger;
         private readonly   UITemplateUserInventoryData     userInventoryData;
-        private readonly   AdServiceWrapper                adServiceWrapper;
+        private readonly   UITemplateAdServiceWrapper                uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                     gameAssets;
         private readonly   UITemplateUserShopData          userShopData;
         protected readonly IScreenManager                  ScreenManager;
@@ -61,7 +62,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         protected virtual int CoinAddAmount => 500;
 
         public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapSystem iapSystem, ILogService logger, UITemplateUserInventoryData userInventoryData,
-            AdServiceWrapper adServiceWrapper,
+            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
             IGameAssets gameAssets, UITemplateUserShopData userShopData, ScreenManager screenManager, DiContainer diContainer,
             UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
             UITemplateItemBlueprint uiTemplateItemBlueprint) :
@@ -71,7 +72,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.iapSystem                       = iapSystem;
             this.logger                          = logger;
             this.userInventoryData               = userInventoryData;
-            this.adServiceWrapper                = adServiceWrapper;
+            this.uiTemplateAdServiceWrapper                = uiTemplateAdServiceWrapper;
             this.gameAssets                      = gameAssets;
             this.userShopData                    = userShopData;
             this.ScreenManager                   = screenManager;
@@ -102,7 +103,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void OnClickAddMoreCoinButton()
         {
-            this.adServiceWrapper.ShowRewardedAd(placement, () =>
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 var currencyData = this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString());
                 currencyData.Value += this.CoinAddAmount;
@@ -112,7 +113,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void OnClickUnlockRandomButton()
         {
-            this.adServiceWrapper.ShowRewardedAd(placement, () =>
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 this.eventSystem.enabled = false;
                 var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
@@ -300,7 +301,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.BuyItemCompleted(obj);
         }
 
-        private void BuyWithAds(ItemCollectionItemModel obj) { this.adServiceWrapper.ShowRewardedAd(placement, () => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithAds(ItemCollectionItemModel obj) { this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () => { this.BuyItemCompleted(obj); }); }
 
         private void BuyWithIAP(ItemCollectionItemModel obj) { this.iapSystem.BuyProduct(obj.UITemplateItemRecord.IapPackId, () => { this.BuyItemCompleted(obj); }); }
 

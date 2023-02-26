@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using Core.AnalyticServices;
+    using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
@@ -25,6 +26,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticEventFactory    = analyticEventFactory;
             this.uiTemplateUserLevelData = uiTemplateUserLevelData;
         }
+        
+        private void Track(IEvent trackEvent)
+        {
+            this.analyticEventFactory.ForceUpdateAllProperties();
+            this.analyticServices.Track(trackEvent);
+        }
 
         public void Initialize()
         {
@@ -38,20 +45,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         }
         private void RewardedAdShowedHandler(RewardedAdShowedSignal obj)
         {
-            this.analyticServices.Track(this.analyticEventFactory.RewardedVideoShow(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
+            this.Track(this.analyticEventFactory.RewardedVideoShow(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
         }
         private void InterstitialAdShowedHandler(InterstitialAdShowedSignal obj)
         {
-            this.analyticServices.Track(this.analyticEventFactory.InterstitialShow(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
+            this.Track(this.analyticEventFactory.InterstitialShow(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
         }
 
 
-        private void LevelSkippedHandler(LevelSkippedSignal obj) { this.analyticServices.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time)); }
+        private void LevelSkippedHandler(LevelSkippedSignal obj) { this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time)); }
         private void LevelEndedHandler(LevelEndedSignal obj)
         {
-            this.analyticServices.Track(obj.IsWin ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time) : this.analyticEventFactory.LevelLose(obj.Level, obj.Time));
+            this.Track(obj.IsWin ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time) : this.analyticEventFactory.LevelLose(obj.Level, obj.Time));
         }
-        private void LevelStartedHandler(LevelStartedSignal obj) { this.analyticServices.Track(this.analyticEventFactory.LevelStart(obj.Level)); }
+        private void LevelStartedHandler(LevelStartedSignal obj) { this.Track(this.analyticEventFactory.LevelStart(obj.Level)); }
 
         public void Dispose()
         {

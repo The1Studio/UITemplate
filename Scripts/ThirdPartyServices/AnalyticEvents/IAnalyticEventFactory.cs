@@ -10,5 +10,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent LevelStart(int level);
         IEvent LevelWin(int level, int time);
         IEvent LevelSkipped(int level, int time);
+        void ForceUpdateAllProperties();
     }
 }

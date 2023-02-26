@@ -13,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
     using Zenject;
 
     public class UITemplateInstaller : Installer<UITemplateInstaller>
@@ -35,21 +36,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<InterstitialAdShowedSignal>();
             //Third party service
             AdServiceInstaller.Install(this.Container);
-            
             AnalyticServicesInstaller.Install(this.Container);
             this.Container.Bind<UITemplateAdServiceWrapper>().AsCached();
-            
-            //Analytic
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
 #if ONE_SOFT
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
 #elif WIDO
+            this.Container.Bind<IAnalyticEventFactory>().To<WidoAnalyticEventFactory>().AsCached();
 #else
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
 #endif
-            
             //Manager
             this.Container.BindInterfacesAndSelfTo<GameSeasonManager>().AsCached().NonLazy();
+            //Build-in service
+            this.Container.Bind<IInternetService>().To<InternetService>().AsSingle().NonLazy();
         }
 
         private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData

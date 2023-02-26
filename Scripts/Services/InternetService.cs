@@ -2,19 +2,52 @@
 {
     using System;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.Utilities.LogService;
     using Newtonsoft.Json;
-    using UnityEngine;
     using UnityEngine.Networking;
+    using Zenject;
 
     public interface IInternetService
     {
         UniTask<DateTime> GetCurrentTimeAsync();
-        bool              CheckInternet(string url);
+        UniTask<DateTime> GetCurrentUTCTimeAsync();
+        bool              IsInternetAvailable { get; }
     }
 
-    public class InternetService : IInternetService
+    public class InternetService : IInternetService, IInitializable
     {
-        public static string WorldTimeAPIUrl => "http://worldtimeapi.org/api";
+        private readonly ILogService logService;
+
+        public static string WorldTimeAPIUrl  => "http://worldtimeapi.org/api";
+        public static string CheckInternetUrl => "https://www.google.com/";
+
+
+        private bool cachedInternetStatus;
+
+        public InternetService(ILogService logService) { this.logService = logService; }
+
+
+        public void Initialize() { this.CheckInternetInterval(); }
+
+        private async void CheckInternetInterval()
+        {
+            this.CheckInternet();
+            await UniTask.Delay(TimeSpan.FromSeconds(2));
+            this.CheckInternetInterval();
+        }
+
+        private async UniTask<WorldTimeAPIResponse> GetTimeIPAsync()
+        {
+            var url     = $"{WorldTimeAPIUrl}/ip";
+            var request = UnityWebRequest.Get(url);
+            await request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.ConnectionError)
+            {
+                this.logService.Error("No internet!");
+            }
+
+            return JsonConvert.DeserializeObject<WorldTimeAPIResponse>(request.downloadHandler.text);
+        }
 
         public async UniTask<DateTime> GetCurrentTimeAsync()
         {
@@ -24,13 +57,30 @@
             }
             catch
             {
-                Debug.LogError("No internet!");
+                this.logService.Error("No internet!");
             }
 
             return default;
         }
 
-        public bool CheckInternet(string url) { return UnityWebRequest.Get(url).result == UnityWebRequest.Result.ConnectionError; }
+        public async UniTask<DateTime> GetCurrentUTCTimeAsync()
+        {
+            try
+            {
+                return (await this.GetTimeIPAsync()).GetUTCDateTime().GetValueOrDefault();
+            }
+            catch
+            {
+                this.logService.Error("No internet!");
+            }
+
+            return default;
+        }
+
+        public bool IsInternetAvailable => this.cachedInternetStatus;
+
+        private void CheckInternet() { this.cachedInternetStatus = UnityWebRequest.Get(CheckInternetUrl).result == UnityWebRequest.Result.ConnectionError; }
+
 
         public class WorldTimeAPIResponse
         {
@@ -47,7 +97,7 @@
                 return null;
             }
 
-            public DateTime? GetUtcDateTime()
+            public DateTime? GetUTCDateTime()
             {
                 if (DateTime.TryParse(this.UtcDatetime, out var time))
                 {
@@ -56,20 +106,6 @@
 
                 return null;
             }
-        }
-
-        public async UniTask<WorldTimeAPIResponse> GetTimeIPAsync(string ip = null)
-        {
-            var url = $"{WorldTimeAPIUrl}/ip";
-
-            if (ip is not null)
-            {
-                url += $"/{ip}";
-            }
-
-            using var webRequest = UnityWebRequest.Get(url);
-
-            return JsonConvert.DeserializeObject<WorldTimeAPIResponse>((await webRequest.SendWebRequest()).downloadHandler.text);
         }
     }
 }

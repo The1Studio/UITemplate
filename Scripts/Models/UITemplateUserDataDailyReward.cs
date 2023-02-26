@@ -10,16 +10,13 @@
     {
         private readonly IInternetService internetService;
 
-        public UITemplateUserDailyRewardData() { this.internetService = new InternetService(); }
+        public UITemplateUserDailyRewardData(IInternetService internetService) { this.internetService = internetService; }
 
         public       List<RewardStatus> RewardStatus = new();
         public       DateTime           BeginDate         { get; set; }
         public async UniTask<int>       GetUserLoginDay() => (await this.internetService.GetCurrentTimeAsync()).Day - this.BeginDate.Day + 1;
 
-        public void Init()
-        {
-            
-        }
+        public void Init() { }
     }
 
     public enum RewardStatus

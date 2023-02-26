@@ -4,12 +4,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
     public interface IAnalyticEventFactory
     {
-        IEvent InterstitialShow(int level, string place);
-        IEvent RewardedVideoShow(int level, string place);
-        IEvent LevelLose(int level, int time);
-        IEvent LevelStart(int level);
-        IEvent LevelWin(int level, int time);
-        IEvent LevelSkipped(int level, int time);
-        void ForceUpdateAllProperties();
+        IEvent InterstitialShow(int           level, string place);
+        IEvent InterstitialShowCompleted(int  level, string place);
+        IEvent RewardedVideoShow(int          level, string place);
+        IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded);
+        IEvent LevelLose(int                  level, int    timeSpent);
+        IEvent LevelStart(int                 level);
+        IEvent LevelWin(int                   level, int timeSpent);
+        IEvent LevelSkipped(int               level, int timeSpent);
+        void   ForceUpdateAllProperties();
     }
 }

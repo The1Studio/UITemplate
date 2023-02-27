@@ -13,5 +13,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent LevelWin(int                   level, int timeSpent);
         IEvent LevelSkipped(int               level, int timeSpent);
         void   ForceUpdateAllProperties();
+        string LevelMaxProperty { get; }
+        string LastLevelProperty { get; }
+        string LastAdsPlacementProperty { get; }
+        string TotalInterstitialAdsProperty { get; }
+        string TotalRewardedAdsProperty { get; }
     }
 }

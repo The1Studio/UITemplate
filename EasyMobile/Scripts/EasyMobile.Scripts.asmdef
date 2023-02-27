@@ -4,7 +4,8 @@
     "references": [
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.RenderPipelines.Core.Runtime",
-        "MaxSdk.Scripts"
+        "MaxSdk.Scripts",
+        "IronSource.Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

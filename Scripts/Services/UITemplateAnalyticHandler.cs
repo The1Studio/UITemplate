@@ -24,7 +24,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
-        public UITemplateAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateUserLevelData uiTemplateUserLevelData, IAdServices adServices, ILogService logService)
+        public UITemplateAnalyticHandler(SignalBus   signalBus,  IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateUserLevelData uiTemplateUserLevelData,
+                                         IAdServices adServices, ILogService       logService)
         {
             this.signalBus               = signalBus;
             this.analyticServices        = analyticServices;
@@ -33,11 +34,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.adServices              = adServices;
             this.logService              = logService;
         }
-        
+
         private void Track(IEvent trackEvent)
         {
-                this.analyticEventFactory.ForceUpdateAllProperties();
-                this.analyticServices.Track(trackEvent);
+            this.analyticEventFactory.ForceUpdateAllProperties();
+            this.analyticServices.Track(trackEvent);
         }
 
         public void Initialize()
@@ -51,50 +52,48 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<InterstitialAdShowedSignal>(this.InterstitialAdShowedHandler);
             this.signalBus.Subscribe<RewardedAdShowedSignal>(this.RewardedAdShowedHandler);
             this.signalBus.Subscribe<PopupShowedSignal>(this.PopupShowedHandler);
-            
+
             //Ads events
-            this.adServices.RewardedAdCompleted += this.RewardedAdCompletedHandler;
-            this.adServices.RewardedAdSkipped   += this.RewardedAdSkippedHandler;
+            this.adServices.RewardedAdCompleted     += this.RewardedAdCompletedHandler;
+            this.adServices.RewardedAdSkipped       += this.RewardedAdSkippedHandler;
             this.adServices.InterstitialAdCompleted += this.InterstitialAdCompletedHandler;
         }
-        
-        private void PopupShowedHandler(PopupShowedSignal obj)
-        {
-        }
 
-        private void InterstitialAdCompletedHandler(InterstitialAdNetwork arg1, string arg2)
-        {
-            this.Track(this.analyticEventFactory.InterstitialShowCompleted(0, arg2));
-        }
-        
-        private void RewardedAdSkippedHandler(InterstitialAdNetwork arg1, string arg2)
-        {
-            this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, false));
-        }
-        
-        private void RewardedAdCompletedHandler(InterstitialAdNetwork arg1, string arg2)
-        {
-            this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, true));
-        }
-        
+        private void PopupShowedHandler(PopupShowedSignal obj) { }
+
+        private void InterstitialAdCompletedHandler(InterstitialAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.InterstitialShowCompleted(0, arg2)); }
+
+        private void RewardedAdSkippedHandler(InterstitialAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, false)); }
+
+        private void RewardedAdCompletedHandler(InterstitialAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, true)); }
+
         private void RewardedAdShowedHandler(RewardedAdShowedSignal obj)
         {
+            this.analyticServices.UserProperties[this.analyticEventFactory.LastAdsPlacementProperty] = obj.place;
+            this.analyticServices.UserProperties[this.analyticEventFactory.TotalRewardedAdsProperty] = obj.place;
             this.Track(this.analyticEventFactory.RewardedVideoShow(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
         }
-        
+
         private void InterstitialAdShowedHandler(InterstitialAdShowedSignal obj)
         {
+            this.analyticServices.UserProperties[this.analyticEventFactory.LastAdsPlacementProperty]     = obj.place;
+            this.analyticServices.UserProperties[this.analyticEventFactory.TotalInterstitialAdsProperty] = obj.place;
             this.Track(this.analyticEventFactory.InterstitialShow(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
         }
 
         private void LevelSkippedHandler(LevelSkippedSignal obj) { this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time)); }
-        
+
         private void LevelEndedHandler(LevelEndedSignal obj)
         {
+            this.analyticServices.UserProperties[this.analyticEventFactory.LevelMaxProperty] = this.uiTemplateUserLevelData.MaxLevel;
             this.Track(obj.IsWin ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time) : this.analyticEventFactory.LevelLose(obj.Level, obj.Time));
         }
-        
-        private void LevelStartedHandler(LevelStartedSignal obj) { this.Track(this.analyticEventFactory.LevelStart(obj.Level)); }
+
+        private void LevelStartedHandler(LevelStartedSignal obj)
+        {
+            this.analyticServices.UserProperties[this.analyticEventFactory.LastLevelProperty] = this.uiTemplateUserLevelData.CurrentLevel;
+            this.Track(this.analyticEventFactory.LevelStart(obj.Level));
+        }
 
         public void Dispose()
         {
@@ -103,7 +102,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Unsubscribe<InterstitialAdShowedSignal>(this.InterstitialAdShowedHandler);
             this.signalBus.Unsubscribe<RewardedAdShowedSignal>(this.RewardedAdShowedHandler);
-            
+
             this.adServices.RewardedAdCompleted     -= this.RewardedAdCompletedHandler;
             this.adServices.RewardedAdSkipped       -= this.RewardedAdSkippedHandler;
             this.adServices.InterstitialAdCompleted -= this.InterstitialAdCompletedHandler;

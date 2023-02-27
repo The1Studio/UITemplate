@@ -90,7 +90,7 @@ MonoBehaviour:
         keys: []
         values: []
     mAppLovin:
-      mEnable: 1
+      mEnable: 0
       mAgeRestrictMode: 0
       mSDKKey: 7PspscCcbGd6ohttmPcZTwGmZCihCW-Jwr7nSJN2a_9Mg0ERPs0tmGdKTK1gs__nr6XHQvK0vTNaTb1uR1mCIN
       mDefaultBannerAdId:
@@ -165,10 +165,10 @@ MonoBehaviour:
       mCustomInterstitialPlacements: []
       mCustomRewardedPlacements: []
     mIronSource:
-      mEnable: 0
+      mEnable: 1
       mAppId:
         mIosId: 
-        mAndroidId: 
+        mAndroidId: 18bb9ca15
       mUseAdvancedSetting: 0
       mSegments:
         age: 0

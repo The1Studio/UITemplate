@@ -1,19 +1,19 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+    using System.Collections.Generic;
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities;
     using ServiceImplementation.AdsServices;
+    using ServiceImplementation.AdsServices.EasyMobile;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
     using Zenject;
 
     public class UITemplateInstaller : Installer<UITemplateInstaller>
@@ -25,6 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.BindLocalData<UITemplateUserInventoryData>();
             this.BindLocalData<UITemplateUserSettingData>();
             this.BindLocalData<UITemplateUserDailyRewardData>();
+            this.BindLocalData<UITemplateAdsData>();
 
             this.Container.Bind<IIapSystem>().To<UITemplateIAPSystem>().AsCached().NonLazy();
             //Signal
@@ -55,6 +56,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData
         {
             this.Container.Bind<TLocalData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();
+        }
+
+        public static void BindAOAAdConfig(DiContainer container, List<string> aoaId)
+        {
+            var AdMobWrapperConfig = new AdModWrapper.Config(aoaId);
+            container.Bind<AdModWrapper.Config>().FromInstance(AdMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
         }
     }
 }

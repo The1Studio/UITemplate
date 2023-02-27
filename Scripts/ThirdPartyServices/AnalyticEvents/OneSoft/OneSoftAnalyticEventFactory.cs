@@ -15,5 +15,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.O
         public void ForceUpdateAllProperties()
         {
         }
+        public string LevelMaxProperty             => "level_max";
+        public string LastLevelProperty            => "last_level";
+        public string LastAdsPlacementProperty     => "last_placement";
+        public string TotalInterstitialAdsProperty => "total_interstitial_ads";
+        public string TotalRewardedAdsProperty     => "total_rewarded_ads";
     }
 }

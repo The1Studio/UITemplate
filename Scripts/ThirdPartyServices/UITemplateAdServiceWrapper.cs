@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using System;
     using Core.AdsServices;
     using GameFoundation.Scripts.Utilities.LogService;
+    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
@@ -10,17 +11,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     {
         #region inject
 
-        private readonly IAdServices adServices;
-        private readonly ILogService logService;
-        private readonly SignalBus   signalBus;
+        private readonly IAdServices       adServices;
+        private readonly UITemplateAdsData uiTemplateAdsData;
+        private readonly ILogService       logService;
+        private readonly SignalBus         signalBus;
 
         #endregion
 
-        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices)
+        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices, UITemplateAdsData uiTemplateAdsData)
         {
-            this.adServices = adServices;
-            this.logService = logService;
-            this.signalBus  = signalBus;
+            this.adServices        = adServices;
+            this.uiTemplateAdsData = uiTemplateAdsData;
+            this.logService        = logService;
+            this.signalBus         = signalBus;
         }
 
         public void ShowBannerAd() { this.adServices.ShowBannerAd(); }
@@ -35,6 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.signalBus.Fire(new InterstitialAdShowedSignal(place));
+            this.uiTemplateAdsData.WatchedInterstitialAds++;;
             this.adServices.ShowInterstitialAd(place);
         }
 
@@ -48,6 +52,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.signalBus.Fire(new RewardedAdShowedSignal(place));
+            this.uiTemplateAdsData.WatchedRewardedAds++;;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 

@@ -46,6 +46,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             this.signalBus.Fire(new LevelStartedSignal(this.CurrentLevel));
         }
 
+        public int MaxLevel => this.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus == LevelData.Status.Passed).Max(data => data.Level);
+
         public void Init() { }
     }
 

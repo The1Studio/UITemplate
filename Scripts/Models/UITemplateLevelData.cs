@@ -29,10 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
 
-        public LevelData GetLevelData(int level)
-        {
-            return this.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked));
-        }
+        public LevelData GetLevelData(int level) { return this.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked)); }
 
         public void SelectLevel(int level)
         {
@@ -46,7 +43,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             this.signalBus.Fire(new LevelStartedSignal(this.CurrentLevel));
         }
 
-        public int MaxLevel => this.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus == LevelData.Status.Passed).Max(data => data.Level);
+        public int MaxLevel
+        {
+            get
+            {
+                var levelDatas = this.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus == LevelData.Status.Passed).ToList();
+
+                return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
+            }
+        }
 
         public void Init() { }
     }
@@ -61,7 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         {
             this.Level       = level;
             this.LevelStatus = levelStatus;
-            this.StarCount      = starCount;
+            this.StarCount   = starCount;
         }
 
         public enum Status

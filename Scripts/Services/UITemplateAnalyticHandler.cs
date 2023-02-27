@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices;
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
@@ -19,22 +20,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly IAnalyticEventFactory   analyticEventFactory;
         private readonly UITemplateUserLevelData uiTemplateUserLevelData;
         private readonly IAdServices             adServices;
+        private readonly ILogService             logService;
 
         #endregion
 
-        public UITemplateAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateUserLevelData uiTemplateUserLevelData, IAdServices adServices)
+        public UITemplateAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateUserLevelData uiTemplateUserLevelData, IAdServices adServices, ILogService logService)
         {
             this.signalBus               = signalBus;
             this.analyticServices        = analyticServices;
             this.analyticEventFactory    = analyticEventFactory;
             this.uiTemplateUserLevelData = uiTemplateUserLevelData;
             this.adServices              = adServices;
+            this.logService              = logService;
         }
         
         private void Track(IEvent trackEvent)
         {
-            this.analyticEventFactory.ForceUpdateAllProperties();
-            this.analyticServices.Track(trackEvent);
+                this.analyticEventFactory.ForceUpdateAllProperties();
+                this.analyticServices.Track(trackEvent);
         }
 
         public void Initialize()

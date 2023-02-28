@@ -66,9 +66,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void InterstitialAdCompletedHandler(InterstitialAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.InterstitialShowCompleted(0, arg2)); }
 
-        private void RewardedAdSkippedHandler(InterstitialAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, false)); }
+        private void RewardedAdSkippedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, false)); }
 
-        private void RewardedAdCompletedHandler(InterstitialAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, true)); }
+        private void RewardedAdCompletedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, true)); }
 
         private void RewardedAdShowedHandler(RewardedAdShowedSignal obj)
         {

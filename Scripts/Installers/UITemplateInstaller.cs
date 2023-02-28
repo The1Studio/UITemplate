@@ -60,8 +60,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public static void BindAOAAdConfig(DiContainer container, List<string> aoaId)
         {
+#if EM_ADMOD
             var AdMobWrapperConfig = new AdModWrapper.Config(aoaId);
             container.Bind<AdModWrapper.Config>().FromInstance(AdMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
+#endif
         }
     }
 }

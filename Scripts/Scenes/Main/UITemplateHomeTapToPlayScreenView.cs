@@ -4,6 +4,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Play;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -21,15 +22,20 @@
     [ScreenInfo(nameof(UITemplateHomeTapToPlayScreenView))]
     public class UITemplateHomeTapToPlayScreenPresenter : BaseScreenPresenter<UITemplateHomeTapToPlayScreenView>
     {
-        private readonly   UITemplateUserInventoryData userInventoryData;
-        protected readonly IScreenManager              ScreenManager;
-        protected readonly DiContainer                 DiContainer;
+        #region inject
 
-        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, UITemplateUserInventoryData userInventoryData, IScreenManager screenManager, DiContainer diContainer) : base(signalBus)
+        protected readonly IScreenManager                    ScreenManager;
+        protected readonly DiContainer                       DiContainer;
+        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
+
+        #endregion
+        
+
+        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
         {
-            this.userInventoryData = userInventoryData;
-            this.ScreenManager     = screenManager;
-            this.DiContainer       = diContainer;
+            this.ScreenManager                     = screenManager;
+            this.DiContainer                       = diContainer;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
         protected override async void OnViewReady()
@@ -44,7 +50,7 @@
         public override void BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus,
-                this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+                this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
         }
 
         protected virtual void OnClickShopButton() { this.ScreenManager.OpenScreen<UITemplateNewCollectionScreenPresenter>(); }

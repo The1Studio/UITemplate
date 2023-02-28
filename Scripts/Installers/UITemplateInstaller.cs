@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using ServiceImplementation.AdsServices.EasyMobile;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -21,10 +22,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         public override void InstallBindings()
         {
             this.BindLocalData<UITemplateUserLevelData>();
-            this.BindLocalData<UITemplateUserShopData>();
-            this.BindLocalData<UITemplateUserInventoryData>();
+            this.BindLocalData<UITemplateInventoryData>();
             this.BindLocalData<UITemplateUserSettingData>();
-            this.BindLocalData<UITemplateUserDailyRewardData>();
+            this.BindLocalData<UITemplateDailyRewardData>();
             this.BindLocalData<UITemplateAdsData>();
 
             this.Container.Bind<IIapSystem>().To<UITemplateIAPSystem>().AsCached().NonLazy();
@@ -51,9 +51,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<GameSeasonManager>().AsCached().NonLazy();
             //Build-in service
             this.Container.Bind<IInternetService>().To<InternetService>().AsSingle().NonLazy();
+            
+            //Data controller
+            this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardController>().AsCached();
+            this.Container.BindInterfacesAndSelfTo<UITemplateInventoryDataController>().AsCached();
+            this.Container.BindInterfacesAndSelfTo<UITemplateLevelDataController>().AsCached();
         }
 
-        private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData
+        private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData, new()
         {
             this.Container.Bind<TLocalData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();
         }

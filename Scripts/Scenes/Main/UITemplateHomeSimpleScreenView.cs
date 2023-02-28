@@ -4,6 +4,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
     using Zenject;
@@ -21,17 +22,20 @@
     {
         #region inject
 
-        private readonly   UITemplateUserInventoryData userInventoryData;
-        private readonly   DiContainer                 diContainer;
-        protected readonly IScreenManager              ScreenManager;
+        private readonly   UITemplateInventoryData           inventoryData;
+        private readonly   DiContainer                       diContainer;
+        protected readonly IScreenManager                    ScreenManager;
+        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
 
         #endregion
 
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, UITemplateUserInventoryData userInventoryData, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
+        public UITemplateHomeSimpleScreenPresenter(SignalBus                         signalBus, UITemplateInventoryData inventoryData, DiContainer diContainer, IScreenManager screenManager,
+                                                   UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
         {
-            this.userInventoryData = userInventoryData;
-            this.diContainer       = diContainer;
-            this.ScreenManager     = screenManager;
+            this.inventoryData                     = inventoryData;
+            this.diContainer                       = diContainer;
+            this.ScreenManager                     = screenManager;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
         protected override async void OnViewReady()
@@ -49,8 +53,7 @@
 
         public override void BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus,
-                this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
         }
 
         public override void Dispose()

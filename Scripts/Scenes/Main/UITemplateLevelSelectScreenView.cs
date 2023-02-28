@@ -1,12 +1,11 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
 {
     using System.Collections.Generic;
-    using System.Linq;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Level;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
@@ -24,19 +23,22 @@
     {
         #region inject
 
-        protected readonly DiContainer                 diContainer;
-        protected readonly IScreenManager              screenManager;
-        private readonly   UITemplateUserInventoryData userInventoryData;
-        protected readonly UITemplateUserLevelData     UserLevelData;
+        protected readonly DiContainer                       diContainer;
+        protected readonly IScreenManager                    screenManager;
+        protected readonly UITemplateUserLevelData           UserLevelData;
+        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly   UITemplateLevelDataController     uiTemplateLevelDataController;
 
         #endregion
 
-        public UITemplateLevelSelectScreenPresenter(SignalBus signalBus,UITemplateUserInventoryData userInventoryData, DiContainer diContainer, IScreenManager screenManager, UITemplateUserLevelData userLevelData) : base(signalBus)
+        public UITemplateLevelSelectScreenPresenter(SignalBus                         signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateUserLevelData userLevelData,
+                                                    UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateLevelDataController uiTemplateLevelDataController) : base(signalBus)
         {
-            this.userInventoryData = userInventoryData;
-            this.UserLevelData     = userLevelData;
-            this.diContainer       = diContainer;
-            this.screenManager     = screenManager;
+            this.UserLevelData                     = userLevelData;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.uiTemplateLevelDataController     = uiTemplateLevelDataController;
+            this.diContainer                       = diContainer;
+            this.screenManager                     = screenManager;
         }
 
         protected override void OnViewReady()
@@ -49,8 +51,7 @@
 
         public override async void BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus,
-                this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
             var levelList    = this.getLevelList();
             var currentLevel = this.UserLevelData.CurrentLevel;
             await this.View.LevelGridAdapter.InitItemAdapter(levelList, this.diContainer);
@@ -62,9 +63,6 @@
             this.View.CoinText.Unsubscribe(this.SignalBus);
         }
 
-        private List<LevelData> getLevelList()
-        {
-            return this.UserLevelData.GetAllLevels();
-        }
+        private List<LevelData> getLevelList() { return this.uiTemplateLevelDataController.GetAllLevels(); }
     }
 }

@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using Zenject;
@@ -15,24 +16,26 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     {
         #region inject
 
-        private readonly SignalBus               signalBus;
-        private readonly IAnalyticServices       analyticServices;
-        private readonly IAnalyticEventFactory   analyticEventFactory;
-        private readonly UITemplateUserLevelData uiTemplateUserLevelData;
-        private readonly IAdServices             adServices;
-        private readonly ILogService             logService;
+        private readonly SignalBus                     signalBus;
+        private readonly IAnalyticServices             analyticServices;
+        private readonly IAnalyticEventFactory         analyticEventFactory;
+        private readonly UITemplateUserLevelData       uiTemplateUserLevelData;
+        private readonly IAdServices                   adServices;
+        private readonly ILogService                   logService;
+        private readonly UITemplateLevelDataController uiTemplateLevelDataController;
 
         #endregion
 
         public UITemplateAnalyticHandler(SignalBus   signalBus,  IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateUserLevelData uiTemplateUserLevelData,
-                                         IAdServices adServices, ILogService       logService)
+                                         IAdServices adServices, ILogService       logService, UITemplateLevelDataController uiTemplateLevelDataController)
         {
-            this.signalBus               = signalBus;
-            this.analyticServices        = analyticServices;
-            this.analyticEventFactory    = analyticEventFactory;
-            this.uiTemplateUserLevelData = uiTemplateUserLevelData;
-            this.adServices              = adServices;
-            this.logService              = logService;
+            this.signalBus                     = signalBus;
+            this.analyticServices              = analyticServices;
+            this.analyticEventFactory          = analyticEventFactory;
+            this.uiTemplateUserLevelData       = uiTemplateUserLevelData;
+            this.adServices                    = adServices;
+            this.logService                    = logService;
+            this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 
         private void Track(IEvent trackEvent)
@@ -85,7 +88,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void LevelEndedHandler(LevelEndedSignal obj)
         {
-            this.analyticServices.UserProperties[this.analyticEventFactory.LevelMaxProperty] = this.uiTemplateUserLevelData.MaxLevel;
+            this.analyticServices.UserProperties[this.analyticEventFactory.LevelMaxProperty] = this.uiTemplateLevelDataController.MaxLevel;
             this.Track(obj.IsWin ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time) : this.analyticEventFactory.LevelLose(obj.Level, obj.Time));
         }
 

@@ -7,6 +7,7 @@
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -61,8 +62,9 @@
     {
         #region inject
 
-        private readonly ILogService               logService;
-        private readonly UITemplateUserDailyRewardData userDailyRewardData;
+        private readonly ILogService                     logService;
+        private readonly UITemplateDailyRewardData       uiTemplateDailyRewardData;
+        private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
 
         #endregion
 
@@ -72,19 +74,20 @@
         private UITemplateDailyRewardItemModel model;
         private int                            userLoginDay;
 
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService,UITemplateUserDailyRewardData userDailyRewardData) : base(gameAssets)
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService,UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardController uiTemplateDailyRewardController) : base(gameAssets)
         {
-            this.logService      = logService;
-            this.userDailyRewardData = userDailyRewardData;
+            this.logService                      = logService;
+            this.uiTemplateDailyRewardData                 = uiTemplateDailyRewardData;
+            this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
         }
 
         public override async void BindData(UITemplateDailyRewardItemModel param)
         {
             this.View.BtnClaim.onClick.RemoveAllListeners();
             this.View.BtnClaim.onClick.AddListener(this.OnClickClaimReward);
-            this.userLoginDay               = await this.userDailyRewardData.GetUserLoginDay();
+            this.userLoginDay               = await this.uiTemplateDailyRewardController.GetUserLoginDay();
             this.model                      = param;
-            this.View.BtnClaim.interactable = this.userDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] != RewardStatus.Locked;
+            this.View.BtnClaim.interactable = this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] != RewardStatus.Locked;
             this.InitView();
         }
 
@@ -98,12 +101,12 @@
             }
 
             var rewardLabel = this.model.DailyRewardRecord.Day == this.userLoginDay ? TodayLabel : PrefixLabel + this.model.DailyRewardRecord.Day;
-            this.View.SetStatus(this.userDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1], rewardSprite, rewardValue, rewardLabel);
+            this.View.SetStatus(this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1], rewardSprite, rewardValue, rewardLabel);
         }
 
         private void OnClickClaimReward()
         {
-            this.userDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] = RewardStatus.Claimed;
+            this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] = RewardStatus.Claimed;
             this.logService.LogWithColor("Add reward to local here! ", Color.yellow);
             this.InitView();
         }

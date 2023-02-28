@@ -13,9 +13,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
@@ -38,17 +38,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         #region inject
 
-        private readonly   DiContainer                     diContainer;
-        private readonly   UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint;
-        private readonly   UITemplateItemBlueprint         uiTemplateItemBlueprint;
-        private readonly   EventSystem                     eventSystem;
-        private readonly   IIapSystem                      iapSystem;
-        private readonly   ILogService                     logger;
-        private readonly   UITemplateUserInventoryData     userInventoryData;
-        private readonly   UITemplateAdServiceWrapper                uiTemplateAdServiceWrapper;
-        private readonly   IGameAssets                     gameAssets;
-        private readonly   UITemplateUserShopData          userShopData;
-        protected readonly IScreenManager                  ScreenManager;
+        private readonly   DiContainer                       diContainer;
+        private readonly   UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
+        private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
+        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly   UITemplateInventoryData           uiTemplateInventoryData;
+        private readonly   EventSystem                       eventSystem;
+        private readonly   IIapSystem                        iapSystem;
+        private readonly   ILogService                       logger;
+        private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
+        private readonly   IGameAssets                       gameAssets;
+        protected readonly IScreenManager                    ScreenManager;
 
         #endregion
 
@@ -61,24 +61,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual int CoinAddAmount => 500;
 
-        public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapSystem iapSystem, ILogService logger, UITemplateUserInventoryData userInventoryData,
-            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            IGameAssets gameAssets, UITemplateUserShopData userShopData, ScreenManager screenManager, DiContainer diContainer,
-            UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
-            UITemplateItemBlueprint uiTemplateItemBlueprint) :
-            base(signalBus)
+        public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapSystem iapSystem, ILogService logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+                                                      IGameAssets gameAssets, ScreenManager screenManager, DiContainer diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
+                                                      UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController,
+                                                      UITemplateInventoryData uiTemplateInventoryData) : base(signalBus)
         {
-            this.eventSystem                     = eventSystem;
-            this.iapSystem                       = iapSystem;
-            this.logger                          = logger;
-            this.userInventoryData               = userInventoryData;
-            this.uiTemplateAdServiceWrapper                = uiTemplateAdServiceWrapper;
-            this.gameAssets                      = gameAssets;
-            this.userShopData                    = userShopData;
-            this.ScreenManager                   = screenManager;
-            this.diContainer                     = diContainer;
-            this.uiTemplateCategoryItemBlueprint = uiTemplateCategoryItemBlueprint;
-            this.uiTemplateItemBlueprint         = uiTemplateItemBlueprint;
+            this.eventSystem                       = eventSystem;
+            this.iapSystem                         = iapSystem;
+            this.logger                            = logger;
+            this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
+            this.gameAssets                        = gameAssets;
+            this.ScreenManager                     = screenManager;
+            this.diContainer                       = diContainer;
+            this.uiTemplateCategoryItemBlueprint   = uiTemplateCategoryItemBlueprint;
+            this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.uiTemplateInventoryData           = uiTemplateInventoryData;
         }
 
         protected override void OnViewReady()
@@ -91,8 +89,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         public override async void BindData()
         {
-            this.View.coinText.Subscribe(this.SignalBus,
-                this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+            this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
 
             this.itemCollectionItemModels.Clear();
             this.PrePareModel();
@@ -104,50 +101,51 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         protected virtual void OnClickAddMoreCoinButton()
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
-            {
-                var currencyData = this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString());
-                currencyData.Value += this.CoinAddAmount;
-                this.userInventoryData.UpdateCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString(), currencyData);
-            });
+                                                                      {
+                                                                          var currencyData = this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString());
+                                                                          currencyData.Value += this.CoinAddAmount;
+                                                                          this.uiTemplateInventoryDataController.UpdateCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString(), currencyData);
+                                                                      });
         }
 
         protected virtual void OnClickUnlockRandomButton()
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
-            {
-                this.eventSystem.enabled = false;
-                var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
+                                                                      {
+                                                                          this.eventSystem.enabled = false;
+                                                                          var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
 
-                var collectionModel = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)
-                                                                               && !this.userInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
+                                                                          var collectionModel = this.itemCollectionItemModels
+                                                                                                    .Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory) &&
+                                                                                                                !this.uiTemplateInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
 
-                foreach (var model in this.itemCollectionItemModels)
-                {
-                    model.IndexItemSelected = -1;
-                }
+                                                                          foreach (var model in this.itemCollectionItemModels)
+                                                                          {
+                                                                              model.IndexItemSelected = -1;
+                                                                          }
 
-                var maxTime = collectionModel.Count == 1 ? 0.3f : 3;
+                                                                          var maxTime = collectionModel.Count == 1 ? 0.3f : 3;
 
-                collectionModel.GachaItemWithTimer(this.randomTimerDispose, (model) =>
-                {
-                    foreach (var itemCollectionItemModel in collectionModel)
-                    {
-                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
-                    }
+                                                                          collectionModel.GachaItemWithTimer(this.randomTimerDispose, (model) =>
+                                                                                                             {
+                                                                                                                 foreach (var itemCollectionItemModel in collectionModel)
+                                                                                                                 {
+                                                                                                                     itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+                                                                                                                 }
 
-                    this.OnRandomItemComplete(model);
-                    this.BuyItemCompleted(model);
-                    this.eventSystem.enabled = true;
-                }, model =>
-                {
-                    foreach (var itemCollectionItemModel in collectionModel)
-                    {
-                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
-                    }
+                                                                                                                 this.OnRandomItemComplete(model);
+                                                                                                                 this.BuyItemCompleted(model);
+                                                                                                                 this.eventSystem.enabled = true;
+                                                                                                             }, model =>
+                                                                                                                {
+                                                                                                                    foreach (var itemCollectionItemModel in collectionModel)
+                                                                                                                    {
+                                                                                                                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+                                                                                                                    }
 
-                    this.View.itemCollectionGridAdapter.Refresh();
-                }, maxTime, 0.1f);
-            });
+                                                                                                                    this.View.itemCollectionGridAdapter.Refresh();
+                                                                                                                }, maxTime, 0.1f);
+                                                                      });
         }
 
         protected virtual       void OnRandomItemComplete(ItemCollectionItemModel model) { }
@@ -159,15 +157,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
             foreach (var record in this.uiTemplateItemBlueprint.Values)
             {
-                var itemData = this.userInventoryData.HasItem(record.Id) ? this.userInventoryData.GetItemData(record.Id) : this.userShopData.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
+                var itemData = this.uiTemplateInventoryDataController.HasItem(record.Id)
+                                   ? this.uiTemplateInventoryDataController.GetItemData(record.Id)
+                                   : this.uiTemplateInventoryDataController.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
 
                 var model = new ItemCollectionItemModel()
-                {
-                    UITemplateItemRecord = record,
-                    OnBuyItem            = this.OnBuyItem,
-                    OnSelectItem         = this.OnSelectItem,
-                    ItemData             = itemData,
-                };
+                            {
+                                UITemplateItemRecord = record, OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, ItemData = itemData,
+                            };
 
                 this.itemCollectionItemModels.Add(model);
             }
@@ -185,13 +182,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             {
                 var icon = await this.gameAssets.LoadAssetAsync<Sprite>(record.Icon);
 
-                this.topButtonItemModels.Add(new TopButtonItemModel()
-                {
-                    Icon          = icon,
-                    OnSelected    = this.OnButtonCategorySelected,
-                    SelectedIndex = this.currentSelectedCategoryIndex,
-                    Index         = index
-                });
+                this.topButtonItemModels.Add(new TopButtonItemModel() { Icon = icon, OnSelected = this.OnButtonCategorySelected, SelectedIndex = this.currentSelectedCategoryIndex, Index = index });
 
                 index++;
             }
@@ -202,7 +193,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(i).Value.Id;
                 var collectionModel = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
 
-                var itemSelected = this.userInventoryData.GetCurrentItemSelected(currentCategory);
+                var itemSelected = this.uiTemplateInventoryDataController.GetCurrentItemSelected(currentCategory);
 
                 var indexSelected = collectionModel.FindIndex(x => x.ItemData.Id.Equals(itemSelected));
 
@@ -233,7 +224,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
             await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel, this.diContainer);
             this.View.topButtonBarAdapter.Refresh();
-            var hasOwnAllItem = tempModel.All(x => this.userInventoryData.HasItem(x.ItemData.Id));
+            var hasOwnAllItem = tempModel.All(x => this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id));
             this.View.btnUnlockRandom.gameObject.SetActive(!hasOwnAllItem);
         }
 
@@ -247,7 +238,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 model.IndexItemSelected = obj.ItemIndex;
             }
 
-            if (this.userInventoryData.HasItem(obj.ItemData.Id))
+            if (this.uiTemplateInventoryDataController.HasItem(obj.ItemData.Id))
             {
             }
 
@@ -287,7 +278,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private void BuyWithCoin(ItemCollectionItemModel obj)
         {
-            var currentCoin = this.userInventoryData.GetCurrency(obj.UITemplateItemRecord.UnlockType.ToString());
+            var currentCoin = this.uiTemplateInventoryDataController.GetCurrency(obj.UITemplateItemRecord.UnlockType.ToString());
 
             if (currentCoin.Value < obj.UITemplateItemRecord.Price)
             {
@@ -297,7 +288,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             }
 
             currentCoin.Value -= obj.UITemplateItemRecord.Price;
-            this.userInventoryData.UpdateCurrency(obj.UITemplateItemRecord.UnlockType.ToString(), currentCoin);
+            this.uiTemplateInventoryDataController.UpdateCurrency(obj.UITemplateItemRecord.UnlockType.ToString(), currentCoin);
             this.BuyItemCompleted(obj);
         }
 
@@ -308,9 +299,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private void BuyItemCompleted(ItemCollectionItemModel obj)
         {
             obj.ItemData.CurrentStatus = UITemplateItemData.Status.Owned;
-            this.userInventoryData.AddItemData(obj.ItemData);
-            this.userInventoryData.CategoryToChosenItem[obj.UITemplateItemRecord.Category] = obj.UITemplateItemRecord.Id;
-            this.userInventoryData.UpdateCurrentSelectedItem(obj.UITemplateItemRecord.Category, obj.UITemplateItemRecord.Id);
+            this.uiTemplateInventoryDataController.AddItemData(obj.ItemData);
+            this.uiTemplateInventoryData.CategoryToChosenItem[obj.UITemplateItemRecord.Category] = obj.UITemplateItemRecord.Id;
+            this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(obj.UITemplateItemRecord.Category, obj.UITemplateItemRecord.Id);
             this.OnSelectItem(obj);
         }
 

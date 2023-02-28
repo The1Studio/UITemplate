@@ -7,6 +7,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Elements;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
@@ -30,26 +31,22 @@
 
         #region Inject
 
-        private readonly SignalBus                   signalBus;
-        private readonly UITemplateUserInventoryData userInventoryData;
-        private readonly UITemplateUserShopData      shopData;
-        private readonly IScreenManager              screenManager;
-        private readonly DiContainer                 diContainer;
-        private readonly UITemplateShopBlueprint     shopBlueprint;
+        private readonly IScreenManager                     screenManager;
+        private readonly DiContainer                        diContainer;
+        private readonly UITemplateShopBlueprint            shopBlueprint;
+        private readonly UITemplateInventoryDataController  uiTemplateInventoryDataController;
 
         #endregion
 
         private List<ItemCollectionItemModel> itemLists = new();
 
-        public UITemplateCollectionScreenPresenter(SignalBus signalBus,UITemplateUserInventoryData userInventoryData,UITemplateUserShopData shopData, IScreenManager screenManager, DiContainer diContainer, UITemplateShopBlueprint shopBlueprint) :
+        public UITemplateCollectionScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateShopBlueprint shopBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController) :
             base(signalBus)
         {
-            this.signalBus         = signalBus;
-            this.userInventoryData = userInventoryData;
-            this.shopData          = shopData;
-            this.screenManager     = screenManager;
-            this.diContainer       = diContainer;
-            this.shopBlueprint     = shopBlueprint;
+            this.screenManager                      = screenManager;
+            this.diContainer                        = diContainer;
+            this.shopBlueprint                      = shopBlueprint;
+            this.uiTemplateInventoryDataController  = uiTemplateInventoryDataController;
         }
 
         protected override void OnViewReady()
@@ -64,7 +61,7 @@
         public override void BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus,
-                this.userInventoryData.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+                this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
             this.GetItemDataList(this.itemLists);
             this.SelectTabCategory(CatCharacter);
         }
@@ -85,7 +82,7 @@
                 var model = new ItemCollectionItemModel()
                             {
                                 Index              = i,
-                                UITemplateItemData = this.shopData.GetItemData(currentElement.Name),
+                                UITemplateItemData = this.uiTemplateInventoryDataController.GetItemData(currentElement.Name),
                                 Category           = CatItem,
                                 OnBuy              = this.OnBuyItem,
                                 OnSelected         = this.OnSelectedItem,
@@ -99,7 +96,7 @@
         {
             obj.UITemplateItemData.CurrentStatus                  = UITemplateItemData.Status.Owned;
             // this.userData.InventoryData.CurrentSelectItemId.Value = obj.UITemplateItemData.BlueprintRecord.Name;
-            this.shopData.UpdateStatusItemData(obj.UITemplateItemData.BlueprintRecord.Name, UITemplateItemData.Status.Owned);
+            this.uiTemplateInventoryDataController.UpdateStatusItemData(obj.UITemplateItemData.BlueprintRecord.Name, UITemplateItemData.Status.Owned);
             // update payment coin here
 
             this.View.ItemCollectionAdapter.Refresh();

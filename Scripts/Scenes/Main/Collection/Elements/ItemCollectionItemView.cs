@@ -21,13 +21,13 @@
     public class ItemCollectionItemPresenter : BaseItemCollectionPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
         private readonly IGameAssets                 gameAssets;
-        private readonly UITemplateUserInventoryData inventoryData;
+        private readonly UITemplateInventoryData inventoryData;
 
         private ItemCollectionItemModel model;
 
         protected override string CategoryType => "Item";
 
-        public ItemCollectionItemPresenter(IGameAssets gameAssets,UITemplateUserInventoryData inventoryData ) : base(gameAssets)
+        public ItemCollectionItemPresenter(IGameAssets gameAssets,UITemplateInventoryData inventoryData ) : base(gameAssets)
         {
             this.gameAssets    = gameAssets;
             this.inventoryData = inventoryData;

@@ -1,9 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
-    using System.Collections.Generic;
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities;
+    using global::Models;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.AdsServices.EasyMobile;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
@@ -51,24 +51,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<GameSeasonManager>().AsCached().NonLazy();
             //Build-in service
             this.Container.Bind<IInternetService>().To<InternetService>().AsSingle().NonLazy();
-            
+
             //Data controller
             this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateInventoryDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateLevelDataController>().AsCached();
+#if EM_ADMOB
+            var adMobWrapperConfig = new AdModWrapper.Config(this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId);
+            this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
+#endif
         }
 
         private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData, new()
         {
             this.Container.Bind<TLocalData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();
-        }
-
-        public static void BindAOAAdConfig(DiContainer container, List<string> aoaId)
-        {
-#if EM_ADMOD
-            var AdMobWrapperConfig = new AdModWrapper.Config(aoaId);
-            container.Bind<AdModWrapper.Config>().FromInstance(AdMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
-#endif
         }
     }
 }

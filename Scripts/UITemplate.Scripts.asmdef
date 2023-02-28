@@ -27,7 +27,8 @@
     "precompiledReferences": [
         "DOTween.dll",
         "Newtonsoft.Json.dll",
-        "Zenject-usage.dll"
+        "Zenject-usage.dll",
+        "Sirenix.Serialization.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

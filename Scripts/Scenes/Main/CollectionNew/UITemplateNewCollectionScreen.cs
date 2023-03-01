@@ -104,7 +104,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                                                                       {
                                                                           var currencyData = this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString());
                                                                           currencyData.Value += this.CoinAddAmount;
-                                                                          this.uiTemplateInventoryDataController.UpdateCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString(), currencyData);
+                                                                          this.uiTemplateInventoryDataController.UpdateCurrency(currencyData.Value);
                                                                       });
         }
 
@@ -288,7 +288,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             }
 
             currentCoin.Value -= obj.UITemplateItemRecord.Price;
-            this.uiTemplateInventoryDataController.UpdateCurrency(obj.UITemplateItemRecord.UnlockType.ToString(), currentCoin);
+            this.uiTemplateInventoryDataController.UpdateCurrency(currentCoin.Value, obj.UITemplateItemRecord.UnlockType.ToString());
             this.BuyItemCompleted(obj);
         }
 

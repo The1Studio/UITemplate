@@ -41,7 +41,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public UITemplateCurrencyData GetCurrency(string id)
+        public UITemplateCurrencyData GetCurrency(string id = "Coin")
         {
             return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () =>
                                                                                   {
@@ -65,16 +65,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public void AddItemData(UITemplateItemData itemData) { this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData); }
 
-        public void UpdateCurrency(string id, UITemplateCurrencyData currentCoin)
+        public void UpdateCurrency(int currentCoin, string id = "Coin")
         {
             this.signalBus.Fire(new UpdateCurrencySignal()
                                 {
                                     Id         = id,
-                                    Amount     = Math.Abs(this.uiTemplateInventoryData.IDToCurrencyData[id].Value - currentCoin.Value),
-                                    FinalValue = currentCoin.Value,
+                                    Amount     = currentCoin - this.uiTemplateInventoryData.IDToCurrencyData[id].Value,
+                                    FinalValue = currentCoin,
                                 });
 
-            this.uiTemplateInventoryData.IDToCurrencyData[id] = currentCoin;
+            this.uiTemplateInventoryData.IDToCurrencyData[id].Value = currentCoin;
         }
         
         public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All)

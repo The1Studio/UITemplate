@@ -19,6 +19,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         #endregion
 
+        private const string DEFAULT_SHOP_CURRENCY_ID = "Coin";
+        
         public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus)
         {
             this.uiTemplateInventoryData = uiTemplateInventoryData;
@@ -41,7 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public UITemplateCurrencyData GetCurrency(string id = "Coin")
+        public UITemplateCurrencyData GetCurrency(string id = DEFAULT_SHOP_CURRENCY_ID)
         {
             return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () =>
                                                                                   {

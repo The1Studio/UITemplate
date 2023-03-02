@@ -67,7 +67,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public void AddItemData(UITemplateItemData itemData) { this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData); }
 
-        public void UpdateCurrency(int currentCoin, string id = "Coin")
+        public void AddCurrency(int addingValue, string id = DEFAULT_SHOP_CURRENCY_ID)
+        {
+            this.signalBus.Fire(new UpdateCurrencySignal()
+                                {
+                                    Id         = id,
+                                    Amount     = addingValue,
+                                    FinalValue = this.uiTemplateInventoryData.IDToCurrencyData[id].Value + addingValue,
+                                });
+
+            this.uiTemplateInventoryData.IDToCurrencyData[id].Value += addingValue;
+        }
+
+        public void UpdateCurrency(int currentCoin, string id = DEFAULT_SHOP_CURRENCY_ID)
         {
             this.signalBus.Fire(new UpdateCurrencySignal()
                                 {

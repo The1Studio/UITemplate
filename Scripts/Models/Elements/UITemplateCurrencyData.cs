@@ -2,8 +2,8 @@
 {
     public class UITemplateCurrencyData
     {
-        public string Id    { get; set; }
-        public int    Value { get; set; }
+        internal string Id    { get; private set; }
+        public   int    Value { get; internal set; }
 
         public UITemplateCurrencyData(string id, int value)
         {

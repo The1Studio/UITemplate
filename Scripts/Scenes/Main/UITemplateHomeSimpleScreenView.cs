@@ -25,7 +25,7 @@
         private readonly   UITemplateInventoryData           inventoryData;
         private readonly   DiContainer                       diContainer;
         protected readonly IScreenManager                    ScreenManager;
-        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
+        protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
 
         #endregion
 
@@ -51,10 +51,7 @@
 
         protected virtual void OnClickPlay() { }
 
-        public override void BindData()
-        {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
-        }
+        public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value); }
 
         public override void Dispose()
         {

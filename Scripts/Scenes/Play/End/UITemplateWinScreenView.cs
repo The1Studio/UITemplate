@@ -98,9 +98,9 @@
             this.uiTemplateInventoryDataController.UpdateStatusItemData(this.Model.ItemId, itemStatus);
         }
 
-        private void OnClickHome()   { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
-        private void OnClickReplay() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
-        private void OnClickNext()   { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        protected virtual void OnClickHome()   { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        protected virtual void OnClickReplay() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        protected virtual void OnClickNext()   { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
 
         public override void Dispose()
         {

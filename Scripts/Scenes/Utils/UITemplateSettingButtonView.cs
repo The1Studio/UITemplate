@@ -4,7 +4,9 @@
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using UnityEngine;
     using UnityEngine.UI;
@@ -12,8 +14,8 @@
 
     public class UITemplateSettingButtonView : MonoBehaviour
     {
-        private IScreenManager        screenManager;
-        private UITemplateUserSettingData uiTemplateUserSettingData;
+        private IScreenManager                  screenManager;
+        private UITemplateSettingDataController uiTemplateSettingDataController;
 
         public UITemplateOnOffButton MusicButton;
         public UITemplateOnOffButton SoundButton;
@@ -45,36 +47,36 @@
 
         private void OnClickSoundButton()
         {
-            this.uiTemplateUserSettingData.SetSoundOnOff();
+            this.uiTemplateSettingDataController.SetSoundOnOff();
             this.InitButton();
         }
 
         private void OnClickMusicButton()
         {
-            this.uiTemplateUserSettingData.SetMusicOnOff();
+            this.uiTemplateSettingDataController.SetMusicOnOff();
             this.InitButton();
         }
 
         private void OnVibrationButton()
         {
-            this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable;
+            this.uiTemplateSettingDataController.SetVibrationOnOff();
             this.InitButton();
         }
 
         [Inject]
-        public void Init(IScreenManager screenManager, UITemplateUserSettingData uiTemplateUserSettingData)
+        public void Init(IScreenManager screenManager, UITemplateSettingDataController uiTemplateSettingDataController)
         {
-            this.screenManager         = screenManager;
-            this.uiTemplateUserSettingData = uiTemplateUserSettingData;
+            this.screenManager                   = screenManager;
+            this.uiTemplateSettingDataController = uiTemplateSettingDataController;
             this.InitDropdown();
             this.InitButton();
         }
 
         private void InitButton()
         {
-            this.SoundButton.SetOnOff(this.uiTemplateUserSettingData.IsSoundOn);
-            this.MusicButton.SetOnOff(this.uiTemplateUserSettingData.IsMusicOn);
-            this.VibrateButton.SetOnOff(this.uiTemplateUserSettingData.IsVibrationEnable);
+            this.SoundButton.SetOnOff(this.uiTemplateSettingDataController.IsSoundOn);
+            this.MusicButton.SetOnOff(this.uiTemplateSettingDataController.IsMusicOn);
+            this.VibrateButton.SetOnOff(this.uiTemplateSettingDataController.IsVibrationOn);
         }
 
         private void InitDropdown()

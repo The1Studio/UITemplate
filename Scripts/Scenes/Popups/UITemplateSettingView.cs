@@ -3,6 +3,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
     using Zenject;
@@ -22,11 +23,11 @@
     {
         #region inject
 
-        private readonly UITemplateUserSettingData uiTemplateUserSettingData;
+        private readonly UITemplateSettingDataController uiTemplateSettingDataController;
 
         #endregion
 
-        public UITemplateSettingPopupPresenter(SignalBus signalBus, UITemplateUserSettingData uiTemplateUserSettingData) : base(signalBus) { this.uiTemplateUserSettingData = uiTemplateUserSettingData; }
+        public UITemplateSettingPopupPresenter(SignalBus signalBus, UITemplateSettingDataController uiTemplateSettingDataController) : base(signalBus) { this.uiTemplateSettingDataController = uiTemplateSettingDataController; }
 
         protected override void OnViewReady()
         {
@@ -37,27 +38,27 @@
 
         private void OnClickSoundButton()
         {
-            this.uiTemplateUserSettingData.SetSoundOnOff();
+            this.uiTemplateSettingDataController.SetSoundOnOff();
             this.InitButton();
         }
 
         private void OnClickMusicButton()
         {
-            this.uiTemplateUserSettingData.SetMusicOnOff();
+            this.uiTemplateSettingDataController.SetMusicOnOff();
             this.InitButton();
         }
 
         private void OnVibrationButton()
         {
-            this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable;
+            this.uiTemplateSettingDataController.SetVibrationOnOff();
             this.InitButton();
         }
 
         private void InitButton()
         {
-            this.View.SoundButton.SetOnOff(this.uiTemplateUserSettingData.IsSoundOn);
-            this.View.MusicButton.SetOnOff(this.uiTemplateUserSettingData.IsMusicOn);
-            this.View.VibrationButton.SetOnOff(this.uiTemplateUserSettingData.IsVibrationEnable);
+            this.View.SoundButton.SetOnOff(this.uiTemplateSettingDataController.IsSoundOn);
+            this.View.MusicButton.SetOnOff(this.uiTemplateSettingDataController.IsMusicOn);
+            this.View.VibrationButton.SetOnOff(this.uiTemplateSettingDataController.IsVibrationOn);
         }
 
         public override void BindData()

@@ -23,7 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.View.btnX2Reward.onClick.AddListener(this.OnX2Reward);
         }
 
-        protected virtual void OnX2Reward()            { this.UITemplateAdService.ShowRewardedAd("win", this.AfterWatchAdsX2Reward); }
+        protected virtual void OnX2Reward()            { this.UITemplateAdService.ShowRewardedAd("x2Reward", this.AfterWatchAdsX2Reward); }
         protected virtual void AfterWatchAdsX2Reward() { }
 
         protected override void OnClickNext() { }

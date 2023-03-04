@@ -22,7 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.View.btnContinue.onClick.AddListener(this.OnContinue);
         }
 
-        protected virtual void OnContinue() { this.UITemplateAdService.ShowRewardedAd("lose", this.AfterWatchAd); }
+        protected virtual void OnContinue() { this.UITemplateAdService.ShowRewardedAd("Lose_Continue", this.AfterWatchAd); }
 
         protected virtual void AfterWatchAd() { }
 

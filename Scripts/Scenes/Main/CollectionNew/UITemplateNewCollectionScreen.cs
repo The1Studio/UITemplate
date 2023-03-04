@@ -34,7 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     [ScreenInfo(nameof(UITemplateNewCollectionScreen))]
     public class UITemplateNewCollectionScreenPresenter : BaseScreenPresenter<UITemplateNewCollectionScreen>
     {
-        private static string placement = "collection";
+        private static string placement = "Collection";
 
         #region inject
 

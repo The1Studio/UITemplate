@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -44,9 +45,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         #region inject
 
-        private readonly BlueprintReaderManager blueprintReaderManager;
-        private readonly SceneDirector          sceneDirector;
-        private readonly IAOAAdService          aoaAdService;
+        private readonly BlueprintReaderManager     blueprintReaderManager;
+        private readonly SceneDirector              sceneDirector;
+        private readonly IAOAAdService              aoaAdService;
+        private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
 
         #endregion
 
@@ -56,11 +58,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private Dictionary<Type, float> loadingTypeToProgressPercent;
 
 
-        public UITemplateLoadingScreenPresenter(SignalBus signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService) : base(signalBus)
+        public UITemplateLoadingScreenPresenter(SignalBus signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper) : base(signalBus)
         {
-            this.blueprintReaderManager = blueprintReaderManager;
-            this.sceneDirector          = sceneDirector;
-            this.aoaAdService           = aoaAdService;
+            this.blueprintReaderManager     = blueprintReaderManager;
+            this.sceneDirector              = sceneDirector;
+            this.aoaAdService               = aoaAdService;
+            this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
         }
 
         protected virtual string NextSceneName => "1.UITemplateMainScene";
@@ -108,9 +111,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 await UniTask.WaitForEndOfFrame();
             }
 
-            this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
+            await this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
+            this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
-
+        
         private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
     }
 }

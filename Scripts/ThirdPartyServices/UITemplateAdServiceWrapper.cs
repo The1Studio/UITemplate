@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
     using Core.AdsServices;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -26,7 +27,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus         = signalBus;
         }
 
-        public void ShowBannerAd() { this.adServices.ShowBannerAd(); }
+        public async void ShowBannerAd()
+        {
+            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
+            this.adServices.ShowBannerAd();
+        }
 
         public void ShowInterstitialAd(string place)
         {

@@ -1,7 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using GameFoundation.Scripts.Utilities;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine.UI;
     using Zenject;
@@ -14,7 +16,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateLoseOP2Screen))]
     public class UITemplateLoseOp2Presenter : BaseEndGameScreenPresenter<UITemplateLoseOP2Screen>
     {
-        public UITemplateLoseOp2Presenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService) : base(signalBus, uiTemplateAdService) { }
+        private readonly UITemplateSoundService soundService;
+
+        public UITemplateLoseOp2Presenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundService soundService) : base(signalBus, uiTemplateAdService)
+        {
+            this.soundService = soundService;
+        }
 
         protected override void OnViewReady()
         {
@@ -22,10 +29,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.View.btnContinue.onClick.AddListener(this.OnContinue);
         }
 
-        protected virtual void OnContinue() { this.UITemplateAdService.ShowRewardedAd("Lose_Continue", this.AfterWatchAd); }
+        public override void BindData()
+        {
+            base.BindData();
+            this.soundService.PlaySoundLose();
+        }
 
-        protected virtual void AfterWatchAd() { }
+        protected virtual void OnContinue()
+        {
+            this.UITemplateAdService.ShowRewardedAd("Lose_Continue", this.AfterWatchAd);
+        }
 
-        protected override void OnClickNext() { }
+        protected virtual void AfterWatchAd()
+        {
+        }
+
+        protected override void OnClickNext()
+        {
+        }
     }
 }

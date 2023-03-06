@@ -1,8 +1,10 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using GameFoundation.Scripts.Utilities;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine.UI;
     using Zenject;
@@ -15,7 +17,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateWinOP2Screen))]
     public class UITemPlateWinOp2ScreenPresenter : BaseEndGameScreenPresenter<UITemplateWinOP2Screen>
     {
-        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService) : base(signalBus, uiTemplateAdService) { }
+        private readonly UITemplateSoundService soundService;
+
+        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundService soundService) : base(signalBus, uiTemplateAdService)
+        {
+            this.soundService = soundService;
+        }
 
         protected override void OnViewReady()
         {
@@ -23,9 +30,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.View.btnX2Reward.onClick.AddListener(this.OnX2Reward);
         }
 
-        protected virtual void OnX2Reward()            { this.UITemplateAdService.ShowRewardedAd("x2Reward", this.AfterWatchAdsX2Reward); }
-        protected virtual void AfterWatchAdsX2Reward() { }
+        public override void BindData()
+        {
+            base.BindData();
+            this.soundService.PlaySoundWin();
+        }
 
-        protected override void OnClickNext() { }
+        protected virtual void OnX2Reward()
+        {
+            this.UITemplateAdService.ShowRewardedAd("x2Reward", this.AfterWatchAdsX2Reward);
+        }
+
+        protected virtual void AfterWatchAdsX2Reward()
+        {
+        }
+
+        protected override void OnClickNext()
+        {
+        }
     }
 }

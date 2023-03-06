@@ -16,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
@@ -48,6 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;
+        protected readonly UITemplateSoundService            SoundService;
         protected readonly IScreenManager                    ScreenManager;
 
         #endregion
@@ -61,10 +63,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual int CoinAddAmount => 500;
 
-        public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapSystem iapSystem, ILogService logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-                                                      IGameAssets gameAssets, ScreenManager screenManager, DiContainer diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
+        public UITemplateNewCollectionScreenPresenter(SignalBus               signalBus,               EventSystem                       eventSystem,   IIapSystem  iapSystem,   ILogService                     logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+                                                      IGameAssets             gameAssets,              ScreenManager                     screenManager, DiContainer diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
                                                       UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController,
-                                                      UITemplateInventoryData uiTemplateInventoryData) : base(signalBus)
+                                                      UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundService            soundService) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
             this.iapSystem                         = iapSystem;
@@ -77,6 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
+            this.SoundService                      = soundService;
         }
 
         protected override void OnViewReady()
@@ -100,56 +103,65 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void OnClickAddMoreCoinButton()
         {
+            this.SoundService.PlaySoundClick();
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
-                                                                      {
-                                                                          var currencyData = this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString());
-                                                                          currencyData.Value += this.CoinAddAmount;
-                                                                          this.uiTemplateInventoryDataController.UpdateCurrency(currencyData.Value);
-                                                                      });
+            {
+                var currencyData = this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString());
+                currencyData.Value += this.CoinAddAmount;
+                this.uiTemplateInventoryDataController.UpdateCurrency(currencyData.Value);
+            });
         }
 
         protected virtual void OnClickUnlockRandomButton()
         {
+            this.SoundService.PlaySoundClick();
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
-                                                                      {
-                                                                          this.eventSystem.enabled = false;
-                                                                          var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
+            {
+                this.eventSystem.enabled = false;
+                var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
 
-                                                                          var collectionModel = this.itemCollectionItemModels
-                                                                                                    .Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory) &&
-                                                                                                                !this.uiTemplateInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
+                var collectionModel = this.itemCollectionItemModels
+                                          .Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory) &&
+                                                      !this.uiTemplateInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
 
-                                                                          foreach (var model in this.itemCollectionItemModels)
-                                                                          {
-                                                                              model.IndexItemSelected = -1;
-                                                                          }
+                foreach (var model in this.itemCollectionItemModels)
+                {
+                    model.IndexItemSelected = -1;
+                }
 
-                                                                          var maxTime = collectionModel.Count == 1 ? 0.3f : 3;
+                var maxTime = collectionModel.Count == 1 ? 0.3f : 3;
 
-                                                                          collectionModel.GachaItemWithTimer(this.randomTimerDispose, (model) =>
-                                                                                                             {
-                                                                                                                 foreach (var itemCollectionItemModel in collectionModel)
-                                                                                                                 {
-                                                                                                                     itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
-                                                                                                                 }
+                collectionModel.GachaItemWithTimer(this.randomTimerDispose, (model) =>
+                {
+                    foreach (var itemCollectionItemModel in collectionModel)
+                    {
+                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+                    }
 
-                                                                                                                 this.OnRandomItemComplete(model);
-                                                                                                                 this.BuyItemCompleted(model);
-                                                                                                                 this.eventSystem.enabled = true;
-                                                                                                             }, model =>
-                                                                                                                {
-                                                                                                                    foreach (var itemCollectionItemModel in collectionModel)
-                                                                                                                    {
-                                                                                                                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
-                                                                                                                    }
+                    this.OnRandomItemComplete(model);
+                    this.BuyItemCompleted(model);
+                    this.eventSystem.enabled = true;
+                }, model =>
+                {
+                    foreach (var itemCollectionItemModel in collectionModel)
+                    {
+                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+                    }
 
-                                                                                                                    this.View.itemCollectionGridAdapter.Refresh();
-                                                                                                                }, maxTime, 0.1f);
-                                                                      });
+                    this.View.itemCollectionGridAdapter.Refresh();
+                }, maxTime, 0.1f);
+            });
         }
 
-        protected virtual       void OnRandomItemComplete(ItemCollectionItemModel model) { }
-        protected virtual async void OnClickHomeButton()                                 { await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>(); }
+        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model)
+        {
+        }
+
+        protected virtual async void OnClickHomeButton()
+        {
+            this.SoundService.PlaySoundClick();
+            await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
+        }
 
         private void PrePareModel()
         {
@@ -158,13 +170,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             foreach (var record in this.uiTemplateItemBlueprint.Values)
             {
                 var itemData = this.uiTemplateInventoryDataController.HasItem(record.Id)
-                                   ? this.uiTemplateInventoryDataController.GetItemData(record.Id)
-                                   : this.uiTemplateInventoryDataController.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
+                    ? this.uiTemplateInventoryDataController.GetItemData(record.Id)
+                    : this.uiTemplateInventoryDataController.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
 
                 var model = new ItemCollectionItemModel()
-                            {
-                                UITemplateItemRecord = record, OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, ItemData = itemData,
-                            };
+                {
+                    UITemplateItemRecord = record, OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, ItemData = itemData,
+                };
 
                 this.itemCollectionItemModels.Add(model);
             }
@@ -292,9 +304,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.BuyItemCompleted(obj);
         }
 
-        private void BuyWithAds(ItemCollectionItemModel obj) { this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithAds(ItemCollectionItemModel obj)
+        {
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
+            {
+                this.BuyItemCompleted(obj);
+            });
+        }
 
-        private void BuyWithIAP(ItemCollectionItemModel obj) { this.iapSystem.BuyProduct(obj.UITemplateItemRecord.IapPackId, () => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithIAP(ItemCollectionItemModel obj)
+        {
+            this.iapSystem.BuyProduct(obj.UITemplateItemRecord.IapPackId, () =>
+            {
+                this.BuyItemCompleted(obj);
+            });
+        }
 
         private void BuyItemCompleted(ItemCollectionItemModel obj)
         {

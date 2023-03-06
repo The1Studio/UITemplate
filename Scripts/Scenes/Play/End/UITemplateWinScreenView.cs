@@ -12,6 +12,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -53,6 +54,7 @@
         private readonly IScreenManager                    screenManager;
         private readonly IGameAssets                       gameAssets;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly UITemplateSoundService            soundService;
 
         #endregion
        
@@ -60,12 +62,13 @@
         private IDisposable spinDisposable;
         private Tween       tweenSpin;
 
-        public UITemplateWinScreenPresenter(SignalBus signalBus, UITemplateInventoryData inventoryData, ILogService logService, IScreenManager screenManager, IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus, logService)
+        public UITemplateWinScreenPresenter(SignalBus signalBus, UITemplateInventoryData inventoryData, ILogService logService, IScreenManager screenManager, IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundService soundService) : base(signalBus, logService)
         {
             this.inventoryData                     = inventoryData;
             this.screenManager                     = screenManager;
             this.gameAssets                        = gameAssets;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.soundService                      = soundService;
         }
 
         protected override async void OnViewReady()
@@ -98,9 +101,23 @@
             this.uiTemplateInventoryDataController.UpdateStatusItemData(this.Model.ItemId, itemStatus);
         }
 
-        protected virtual void OnClickHome()   { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
-        protected virtual void OnClickReplay() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
-        protected virtual void OnClickNext()   { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        protected virtual void OnClickHome()
+        {
+            this.soundService.PlaySoundClick();
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
+
+        protected virtual void OnClickReplay()
+        {
+            this.soundService.PlaySoundClick();
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
+
+        protected virtual void OnClickNext()
+        {
+            this.soundService.PlaySoundClick();
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
 
         public override void Dispose()
         {

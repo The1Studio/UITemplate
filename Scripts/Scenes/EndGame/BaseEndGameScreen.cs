@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine.UI;
     using Zenject;
@@ -15,7 +16,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     public abstract class BaseEndGameScreenPresenter<TView> : BaseScreenPresenter<TView> where TView : BaseEndGameScreenView
     {
         protected readonly UITemplateAdServiceWrapper UITemplateAdService;
-        protected BaseEndGameScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService) : base(signalBus) { this.UITemplateAdService = uiTemplateAdService; }
+        protected readonly UITemplateSoundService     SoundService;
+        protected BaseEndGameScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundService soundService) : base(signalBus)
+        {
+            this.UITemplateAdService = uiTemplateAdService;
+            this.SoundService        = soundService;
+        }
 
         protected override void OnViewReady()
         {
@@ -25,6 +31,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 
         public override void BindData() { }
 
-        protected virtual void OnClickNext() { }
+        protected virtual void OnClickNext()
+        {
+            this.SoundService.PlaySoundClick();
+        }
     }
 }

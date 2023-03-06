@@ -8,6 +8,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Play;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.UI;
     using Zenject;
 
@@ -27,15 +28,17 @@
         protected readonly IScreenManager                    ScreenManager;
         protected readonly DiContainer                       DiContainer;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
+        protected readonly UITemplateSoundService            SoundService;
 
         #endregion
-        
 
-        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
+
+        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundService soundService) : base(signalBus)
         {
             this.ScreenManager                     = screenManager;
             this.DiContainer                       = diContainer;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.SoundService                      = soundService;
         }
 
         protected override async void OnViewReady()
@@ -50,12 +53,20 @@
         public override void BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus,
-                this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+                                         this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
         }
 
-        protected virtual void OnClickShopButton() { this.ScreenManager.OpenScreen<UITemplateNewCollectionScreenPresenter>(); }
+        protected virtual void OnClickShopButton()
+        {
+            this.SoundService.PlaySoundClick();
+            this.ScreenManager.OpenScreen<UITemplateNewCollectionScreenPresenter>();
+        }
 
-        protected virtual void OnClickTapToPlayButton() { this.ScreenManager.OpenScreen<UITemplateGameplayScreenPresenter>(); }
+        protected virtual void OnClickTapToPlayButton()
+        {
+            this.SoundService.PlaySoundClick();
+            this.ScreenManager.OpenScreen<UITemplateGameplayScreenPresenter>();
+        }
 
         public override void Dispose()
         {

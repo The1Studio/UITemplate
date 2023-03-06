@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.UIModule.Utilities.LoadImage;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -31,7 +32,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
     public class TopButtonPresenter : BaseUIItemPresenter<TopButtonBarItemView, TopButtonItemModel>
     {
-        public TopButtonPresenter(IGameAssets gameAssets) : base(gameAssets) { }
+        private readonly UITemplateSoundService soundService;
+        public TopButtonPresenter(IGameAssets gameAssets, UITemplateSoundService soundService) : base(gameAssets)
+        {
+            this.soundService = soundService;
+        }
 
         public override async void BindData(TopButtonItemModel param)
         {
@@ -39,7 +44,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.btnChoose.gameObject.SetActive(param.Index == param.SelectedIndex);
             this.View.btnNormal.gameObject.SetActive(param.Index != param.SelectedIndex);
 
-            this.View.OnButtonClick = () => param.OnSelected?.Invoke(param);
+            this.View.OnButtonClick = () =>
+            {
+                this.soundService.PlaySoundClick();
+                param.OnSelected?.Invoke(param);
+            };
         }
 
         public override void Dispose() { base.Dispose(); }

@@ -15,10 +15,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft;
+    using UnityEngine;
     using Zenject;
 
-    public class UITemplateInstaller : Installer<UITemplateInstaller>
+    public class UITemplateInstaller : Installer<GameObject, UITemplateInstaller>
     {
+        private readonly GameObject soundGroupPrefab;
+
+        public UITemplateInstaller(GameObject soundGroupPrefab)
+        {
+            this.soundGroupPrefab = soundGroupPrefab;
+        }
+
         public override void InstallBindings()
         {
             this.BindLocalData<UITemplateUserLevelData>();
@@ -61,6 +69,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             var adMobWrapperConfig = new AdModWrapper.Config(this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId);
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
 #endif
+            // Master Audio
+            this.Container.InstantiatePrefab(this.soundGroupPrefab);
+            this.Container.Bind<UITemplateSoundService>().AsCached();
         }
 
         private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData, new()

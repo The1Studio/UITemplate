@@ -38,7 +38,7 @@
 
         #endregion
 
-        private List<ItemCollectionItemModel> itemLists = new();
+        protected List<ItemCollectionItemModel> itemLists = new();
 
         public UITemplateCollectionScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateShopBlueprint shopBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController) :
             base(signalBus)
@@ -61,12 +61,12 @@
         public override void BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus,
-                this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+                this.uiTemplateInventoryDataController.GetCurrency().Value);
             this.GetItemDataList(this.itemLists);
             this.SelectTabCategory(CatCharacter);
         }
 
-        private void OnNotEnoughMoney()
+        protected virtual void OnNotEnoughMoney()
         {
             // show popup not enough money here
         }
@@ -92,7 +92,7 @@
             }
         }
 
-        private void OnBuyItem(ItemCollectionItemModel obj)
+        protected void OnBuyItem(ItemCollectionItemModel obj)
         {
             obj.UITemplateItemData.CurrentStatus                  = UITemplateItemData.Status.Owned;
             // this.userData.InventoryData.CurrentSelectItemId.Value = obj.UITemplateItemData.BlueprintRecord.Name;
@@ -102,7 +102,7 @@
             this.View.ItemCollectionAdapter.Refresh();
         }
 
-        private void OnSelectedItem(ItemCollectionItemModel obj)
+        protected void OnSelectedItem(ItemCollectionItemModel obj)
         {
             // this.userData.UserPackageData.CurrentSelectItemId.Value = obj.UITemplateItemData.BlueprintRecord.Name;
             this.View.ItemCollectionAdapter.Refresh();
@@ -135,9 +135,9 @@
             this.ConfigBtnStatus(true, false);
         }
 
-        private void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        protected virtual void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
 
-        private void OnClickWatchAds() { }
+        protected virtual void OnClickWatchAds() { }
 
         private void ConfigBtnStatus(bool isCharacterActive, bool isItemActive)
         {

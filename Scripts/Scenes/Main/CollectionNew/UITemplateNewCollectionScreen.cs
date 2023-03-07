@@ -92,7 +92,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         public override async void BindData()
         {
-            this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+            this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
 
             this.itemCollectionItemModels.Clear();
             this.PrePareModel();
@@ -106,7 +106,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.SoundService.PlaySoundClick();
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
-                var currencyData = this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString());
+                var currencyData = this.uiTemplateInventoryDataController.GetCurrency();
                 currencyData.Value += this.CoinAddAmount;
                 this.uiTemplateInventoryDataController.UpdateCurrency(currencyData.Value);
             });

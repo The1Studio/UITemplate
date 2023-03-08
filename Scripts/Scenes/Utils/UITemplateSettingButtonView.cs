@@ -8,6 +8,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -16,6 +17,7 @@
     {
         private IScreenManager                  screenManager;
         private UITemplateSettingDataController uiTemplateSettingDataController;
+        private UITemplateSoundService          soundService;
 
         public UITemplateOnOffButton MusicButton;
         public UITemplateOnOffButton SoundButton;
@@ -64,10 +66,11 @@
         }
 
         [Inject]
-        public void Init(IScreenManager screenManager, UITemplateSettingDataController uiTemplateSettingDataController)
+        public void Init(IScreenManager screenManager, UITemplateSettingDataController uiTemplateSettingDataController, UITemplateSoundService soundService)
         {
             this.screenManager                   = screenManager;
             this.uiTemplateSettingDataController = uiTemplateSettingDataController;
+            this.soundService                    = soundService;
             this.InitDropdown();
             this.InitButton();
         }
@@ -90,7 +93,8 @@
         }
 
         private async void OnClick()
-        {
+        { 
+            this.soundService.PlaySoundClick();
             if (this.IsDropdown)
             {
                 //TODO need to to animation here

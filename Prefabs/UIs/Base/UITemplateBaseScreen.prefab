@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3490610340683094571, guid: 2f431abb86d3b6c43af971de5b1f2833, type: 3}
       propertyPath: m_Name
-      value: UIBaseScreen
+      value: UITemplateBaseScreen
       objectReference: {fileID: 0}
     - target: {fileID: 4613682197113720899, guid: 2f431abb86d3b6c43af971de5b1f2833, type: 3}
       propertyPath: m_Pivot.x

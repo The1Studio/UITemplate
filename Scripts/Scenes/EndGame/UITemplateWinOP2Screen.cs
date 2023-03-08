@@ -1,11 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-    using GameFoundation.Scripts.Utilities;
-    using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine.UI;
     using Zenject;
 
@@ -17,7 +14,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateWinOP2Screen))]
     public class UITemPlateWinOp2ScreenPresenter : BaseEndGameScreenPresenter<UITemplateWinOP2Screen>
     {
-        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundService soundService) : base(signalBus, uiTemplateAdService, soundService)
+        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundService soundService) :
+            base(signalBus, uiTemplateAdService, soundService)
         {
         }
 
@@ -33,17 +31,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.SoundService.PlaySoundWin();
         }
 
-        protected virtual void OnX2Reward()
-        {
-            this.UITemplateAdService.ShowRewardedAd("x2Reward", this.AfterWatchAdsX2Reward);
-        }
+        protected virtual void OnX2Reward() { this.UITemplateAdService.ShowRewardedAd("x2Reward", this.AfterWatchAdsX2Reward); }
 
-        protected virtual void AfterWatchAdsX2Reward()
-        {
-        }
+        protected virtual void AfterWatchAdsX2Reward() { }
 
-        protected override void OnClickNext()
-        {
-        }
+        protected override void OnClickNext() { }
     }
 }

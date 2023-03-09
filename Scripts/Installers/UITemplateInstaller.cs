@@ -74,6 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if CREATIVE
             adMobWrapperConfig.IsShowAOAAtOpenApp = false;
             adMobWrapperConfig.OpenAfterResuming  = false;
+            this.Container.BindInterfacesAndSelfTo<CreativeService>().AsCached().NonLazy();
 #endif
             
             // Master Audio

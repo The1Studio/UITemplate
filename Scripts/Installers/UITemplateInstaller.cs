@@ -22,10 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         private readonly GameObject soundGroupPrefab;
 
-        public UITemplateInstaller(GameObject soundGroupPrefab)
-        {
-            this.soundGroupPrefab = soundGroupPrefab;
-        }
+        public UITemplateInstaller(GameObject soundGroupPrefab) { this.soundGroupPrefab = soundGroupPrefab; }
 
         public override void InstallBindings()
         {
@@ -46,7 +43,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Third party service
             AdServiceInstaller.Install(this.Container);
             AnalyticServicesInstaller.Install(this.Container);
+#if CREATIVE
+            this.Container.Bind<UITemplateAdServiceWrapper>().To<UITemplateAdServiceWrapperDummy>().AsCached();
+#else
             this.Container.Bind<UITemplateAdServiceWrapper>().AsCached();
+#endif
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
 #if ONE_SOFT
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
@@ -65,7 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateInventoryDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateLevelDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateSettingDataController>().AsCached();
-#if EM_ADMOB
+#if EM_ADMOB && !CREATIVE
             var adMobWrapperConfig = new AdModWrapper.Config(this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId);
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
 #endif

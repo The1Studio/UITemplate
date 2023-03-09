@@ -27,13 +27,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus         = signalBus;
         }
 
-        public async void ShowBannerAd()
+        public virtual async void ShowBannerAd()
         {
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             this.adServices.ShowBannerAd();
         }
 
-        public void ShowInterstitialAd(string place)
+        public virtual void ShowInterstitialAd(string place)
         {
             if (!this.adServices.IsInterstitialAdReady(place))
             {
@@ -47,7 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.adServices.ShowInterstitialAd(place);
         }
 
-        public void ShowRewardedAd(string place, Action onComplete)
+        public virtual void ShowRewardedAd(string place, Action onComplete)
         {
             if (!this.adServices.IsRewardedAdReady(place))
             {
@@ -61,8 +61,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 
-        public bool IsRewardedAdReady(string place) { return this.adServices.IsRewardedAdReady(place); }
+        public virtual bool IsRewardedAdReady(string place) { return this.adServices.IsRewardedAdReady(place); }
 
-        public bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
+        public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
     }
 }

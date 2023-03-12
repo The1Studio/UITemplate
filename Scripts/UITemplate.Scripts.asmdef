@@ -18,7 +18,8 @@
         "UniRx",
         "3rdCore.Ads",
         "3rdCore.Analytic",
-        "3rd.ServiceImplementation.Ads"
+        "3rd.ServiceImplementation.Ads",
+        "NVJOBNameGenerator"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

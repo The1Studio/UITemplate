@@ -6,30 +6,34 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using UnityEngine;
     using Zenject;
 
     public class UITemplateInventoryDataController : IInitializable
     {
         #region inject
 
-        private readonly UITemplateInventoryData uiTemplateInventoryData;
+        private readonly UITemplateInventoryData     uiTemplateInventoryData;
         private readonly UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint;
         private readonly UITemplateShopBlueprint     uiTemplateShopBlueprint;
         private readonly SignalBus                   signalBus;
 
         #endregion
 
-        private const string DEFAULT_SHOP_CURRENCY_ID = "Coin";
-        
+        private const string DefaultSoftCurrencyID = "Coin";
+
         public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus)
         {
-            this.uiTemplateInventoryData = uiTemplateInventoryData;
+            this.uiTemplateInventoryData     = uiTemplateInventoryData;
             this.uiTemplateCurrencyBlueprint = uiTemplateCurrencyBlueprint;
             this.uiTemplateShopBlueprint     = uiTemplateShopBlueprint;
             this.signalBus                   = signalBus;
         }
 
-        public string GetCurrentItemSelected(string category) { return this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null; }
+        public string GetCurrentItemSelected(string category)
+        {
+            return this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null;
+        }
 
         public void UpdateCurrentSelectedItem(string category, string id)
         {
@@ -43,54 +47,74 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public UITemplateCurrencyData GetCurrency(string id = DEFAULT_SHOP_CURRENCY_ID)
+        public UITemplateCurrencyData GetCurrency(string id = DefaultSoftCurrencyID)
         {
             return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () =>
-                                                                                  {
-                                                                                      var currencyRecord = this.uiTemplateCurrencyBlueprint.GetDataById(id);
+            {
+                var currencyRecord = this.uiTemplateCurrencyBlueprint.GetDataById(id);
 
-                                                                                      return new UITemplateCurrencyData(id, currencyRecord.Max);
-                                                                                  });
+                return new UITemplateCurrencyData(id, currencyRecord.Max);
+            });
         }
 
-        public bool HasItem(string id) { return this.uiTemplateInventoryData.IDToItemData.ContainsKey(id); }
+        public bool HasItem(string id)
+        {
+            return this.uiTemplateInventoryData.IDToItemData.ContainsKey(id);
+        }
+
+        public bool TryGetItemData(string id, out UITemplateItemData itemData)
+        {
+            return this.uiTemplateInventoryData.IDToItemData.TryGetValue(id, out itemData);
+        }
 
         public UITemplateItemData GetItemData(string id)
         {
             return this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () =>
-                                                                              {
-                                                                                  var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
+            {
+                var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
 
-                                                                                  return new UITemplateItemData(id, itemRecord);
-                                                                              });
+                return new UITemplateItemData(id, itemRecord);
+            });
         }
 
-        public void AddItemData(UITemplateItemData itemData) { this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData); }
+        public void AddItemData(UITemplateItemData itemData)
+        {
+            if (this.uiTemplateInventoryData.IDToItemData.TryGetValue(itemData.Id, out var data))
+            {
+                if (data != itemData)
+                {
+                    this.uiTemplateInventoryData.IDToItemData.Remove(itemData.Id);
+                }
+                else return;
+            }
 
-        public void AddCurrency(int addingValue, string id = DEFAULT_SHOP_CURRENCY_ID)
+            this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData);
+        }
+
+        public void AddCurrency(int addingValue, string id = DefaultSoftCurrencyID)
         {
             this.signalBus.Fire(new UpdateCurrencySignal()
-                                {
-                                    Id         = id,
-                                    Amount     = addingValue,
-                                    FinalValue = this.uiTemplateInventoryData.IDToCurrencyData[id].Value + addingValue,
-                                });
+            {
+                Id         = id,
+                Amount     = addingValue,
+                FinalValue = this.uiTemplateInventoryData.IDToCurrencyData[id].Value + addingValue,
+            });
 
             this.uiTemplateInventoryData.IDToCurrencyData[id].Value += addingValue;
         }
 
-        public void UpdateCurrency(int currentCoin, string id = DEFAULT_SHOP_CURRENCY_ID)
+        public void UpdateCurrency(int currentCoin, string id = DefaultSoftCurrencyID)
         {
             this.signalBus.Fire(new UpdateCurrencySignal()
-                                {
-                                    Id         = id,
-                                    Amount     = currentCoin - this.uiTemplateInventoryData.IDToCurrencyData[id].Value,
-                                    FinalValue = currentCoin,
-                                });
+            {
+                Id         = id,
+                Amount     = currentCoin - this.uiTemplateInventoryData.IDToCurrencyData[id].Value,
+                FinalValue = currentCoin,
+            });
 
             this.uiTemplateInventoryData.IDToCurrencyData[id].Value = currentCoin;
         }
-        
+
         public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All)
         {
             return this.uiTemplateShopBlueprint.Values.Select(itemRecord => this.GetItemData(itemRecord.Id))
@@ -107,23 +131,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public UITemplateItemData GetItemData(string id, UITemplateItemData.Status defaultStatusWhenCreateNew = UITemplateItemData.Status.Locked)
         {
             return this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () =>
-                                                                          {
-                                                                              var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
+            {
+                var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
 
-                                                                              return new UITemplateItemData(id, itemRecord, defaultStatusWhenCreateNew);
-                                                                          });
+                return new UITemplateItemData(id, itemRecord, defaultStatusWhenCreateNew);
+            });
         }
 
         public UITemplateItemData UpdateStatusItemData(string id, UITemplateItemData.Status status)
         {
             return this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () =>
-                                                                          {
-                                                                              var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
+            {
+                var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
 
-                                                                              return new UITemplateItemData(id, itemRecord, status);
-                                                                          });
+                return new UITemplateItemData(id, itemRecord, status);
+            });
         }
 
-        public void Initialize() { }
+        public void Initialize()
+        {
+        }
     }
 }

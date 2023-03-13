@@ -242,6 +242,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private void OnSelectItem(ItemCollectionItemModel obj)
         {
+            // If the item is not owned, do not select it
+            if (!this.uiTemplateInventoryDataController.TryGetItemData(obj.ItemData.Id, out var itemData) || itemData.CurrentStatus != UITemplateItemData.Status.Owned) return;
+            
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
             var tempModel       = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
 
@@ -249,12 +252,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             {
                 model.IndexItemSelected = obj.ItemIndex;
             }
-
-            if (this.uiTemplateInventoryDataController.HasItem(obj.ItemData.Id))
-            {
-            }
+            
+            // Save the selected item
+            this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(currentCategory, obj.ItemData.Id);
+            this.OnSelectedItem(obj.ItemData);
 
             this.View.itemCollectionGridAdapter.Refresh();
+        }
+        
+        protected virtual void OnSelectedItem(UITemplateItemData itemData)
+        {
         }
 
         private void OnBuyItem(ItemCollectionItemModel obj)
@@ -266,7 +273,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
                     break;
                 case UITemplateItemData.UnlockType.SoftCurrency:
-                    this.BuyWithCoin(obj);
+                    this.BuyWithSoftCurrency(obj);
 
                     break;
                 case UITemplateItemData.UnlockType.None:
@@ -288,19 +295,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         #region Buy Item
 
-        private void BuyWithCoin(ItemCollectionItemModel obj)
+        private void BuyWithSoftCurrency(ItemCollectionItemModel obj)
         {
-            var currentCoin = this.uiTemplateInventoryDataController.GetCurrency(obj.UITemplateItemRecord.UnlockType.ToString());
+            var currentCoin = this.uiTemplateInventoryDataController.GetCurrency(obj.UITemplateItemRecord.CurrencyID);
 
             if (currentCoin.Value < obj.UITemplateItemRecord.Price)
             {
-                this.logger.Log($"Not Enough Coin");
+                this.logger.Log($"Not Enough {obj.UITemplateItemRecord.CurrencyID}\nCurrent: {currentCoin.Value}, Needed: {obj.UITemplateItemRecord.Price}");
 
                 return;
             }
 
             currentCoin.Value -= obj.UITemplateItemRecord.Price;
-            this.uiTemplateInventoryDataController.UpdateCurrency(currentCoin.Value, obj.UITemplateItemRecord.UnlockType.ToString());
+            this.uiTemplateInventoryDataController.UpdateCurrency(currentCoin.Value, obj.UITemplateItemRecord.CurrencyID);
             this.BuyItemCompleted(obj);
         }
 
@@ -314,7 +321,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private void BuyWithIAP(ItemCollectionItemModel obj)
         {
-            this.iapSystem.BuyProduct(obj.UITemplateItemRecord.IapPackId, () =>
+            this.iapSystem.BuyProduct(obj.UITemplateItemRecord.CurrencyID, () =>
             {
                 this.BuyItemCompleted(obj);
             });

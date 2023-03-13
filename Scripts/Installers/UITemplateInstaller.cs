@@ -32,7 +32,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.BindLocalData<UITemplateDailyRewardData>();
             this.BindLocalData<UITemplateAdsData>();
 
-            this.Container.Bind<IIapSystem>().To<UITemplateIAPSystem>().AsCached().NonLazy();
+#if !TEMPLATE_IAP
+            this.Container.Bind<IIapServices>().To<UITemplateDummyIAPServices>().AsCached().NonLazy();
+#else
+            this.Container.Bind<IIapServices>().To<UITemplateIapServices>().AsCached().NonLazy();
+#endif
             //Signal
             this.Container.DeclareSignal<RewardedAdShowedSignal>();
             this.Container.DeclareSignal<UpdateCurrencySignal>();
@@ -93,7 +97,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
 #if UNITY_IOS
         this.Container.Bind<IFlashLight>().To<FlashlightPluginIOS>().AsSingle().NonLazy();
-#endif  
+#endif
         }
 
         private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData, new()

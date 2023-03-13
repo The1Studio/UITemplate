@@ -19,7 +19,11 @@
         "3rdCore.Ads",
         "3rdCore.Analytic",
         "3rd.ServiceImplementation.Ads",
-        "NVJOBNameGenerator"
+        "NVJOBNameGenerator",
+        "UnityEngine.Purchasing",
+        "Unity.Services.Core",
+        "UnityEngine.Purchasing.Stores",
+        "Unity.Services.Core.Environments"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

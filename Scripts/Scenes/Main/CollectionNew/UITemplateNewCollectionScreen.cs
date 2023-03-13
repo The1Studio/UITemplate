@@ -45,11 +45,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly   UITemplateInventoryData           uiTemplateInventoryData;
         private readonly   EventSystem                       eventSystem;
-        private readonly   IIapSystem                        iapSystem;
+        private readonly   IIapServices                      iapServices;
         private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;
-        protected readonly UITemplateSoundServices            SoundServices;
+        protected readonly UITemplateSoundServices           SoundServices;
         protected readonly IScreenManager                    ScreenManager;
 
         #endregion
@@ -63,13 +63,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual int CoinAddAmount => 500;
 
-        public UITemplateNewCollectionScreenPresenter(SignalBus               signalBus,               EventSystem                       eventSystem,   IIapSystem  iapSystem,   ILogService                     logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-                                                      IGameAssets             gameAssets,              ScreenManager                     screenManager, DiContainer diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
-                                                      UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController,
-                                                      UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundServices            soundServices) : base(signalBus)
+        public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapServices iapServices, ILogService logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+            IGameAssets gameAssets, ScreenManager screenManager, DiContainer diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
+            UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController,
+            UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundServices soundServices) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
-            this.iapSystem                         = iapSystem;
+            this.iapServices                       = iapServices;
             this.logger                            = logger;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.gameAssets                        = gameAssets;
@@ -79,7 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
-            this.SoundServices                      = soundServices;
+            this.SoundServices                     = soundServices;
         }
 
         protected override void OnViewReady()
@@ -100,10 +100,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.OnButtonCategorySelected(this.topButtonItemModels[0]);
         }
 
-
         protected virtual void OnClickAddMoreCoinButton()
         {
             this.SoundServices.PlaySoundClick();
+
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 var currencyData = this.uiTemplateInventoryDataController.GetCurrency();
@@ -115,14 +115,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         protected virtual void OnClickUnlockRandomButton()
         {
             this.SoundServices.PlaySoundClick();
+
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 this.eventSystem.enabled = false;
                 var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
 
                 var collectionModel = this.itemCollectionItemModels
-                                          .Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory) &&
-                                                      !this.uiTemplateInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
+                    .Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory) &&
+                                !this.uiTemplateInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
 
                 foreach (var model in this.itemCollectionItemModels)
                 {
@@ -153,9 +154,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             });
         }
 
-        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model)
-        {
-        }
+        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model) { }
 
         protected virtual async void OnClickHomeButton()
         {
@@ -244,7 +243,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
             // If the item is not owned, do not select it
             if (!this.uiTemplateInventoryDataController.TryGetItemData(obj.ItemData.Id, out var itemData) || itemData.CurrentStatus != UITemplateItemData.Status.Owned) return;
-            
+
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
             var tempModel       = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
 
@@ -252,17 +251,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             {
                 model.IndexItemSelected = obj.ItemIndex;
             }
-            
+
             // Save the selected item
             this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(currentCategory, obj.ItemData.Id);
             this.OnSelectedItem(obj.ItemData);
 
             this.View.itemCollectionGridAdapter.Refresh();
         }
-        
-        protected virtual void OnSelectedItem(UITemplateItemData itemData)
-        {
-        }
+
+        protected virtual void OnSelectedItem(UITemplateItemData itemData) { }
 
         private void OnBuyItem(ItemCollectionItemModel obj)
         {
@@ -311,21 +308,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.BuyItemCompleted(obj);
         }
 
-        private void BuyWithAds(ItemCollectionItemModel obj)
-        {
-            this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
-            {
-                this.BuyItemCompleted(obj);
-            });
-        }
+        private void BuyWithAds(ItemCollectionItemModel obj) { this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () => { this.BuyItemCompleted(obj); }); }
 
-        private void BuyWithIAP(ItemCollectionItemModel obj)
-        {
-            this.iapSystem.BuyProduct(obj.UITemplateItemRecord.CurrencyID, () =>
-            {
-                this.BuyItemCompleted(obj);
-            });
-        }
+        private void BuyWithIAP(ItemCollectionItemModel obj) { this.iapServices.BuyProductID(obj.UITemplateItemRecord.CurrencyID, (x) => { this.BuyItemCompleted(obj); }); }
 
         private void BuyItemCompleted(ItemCollectionItemModel obj)
         {

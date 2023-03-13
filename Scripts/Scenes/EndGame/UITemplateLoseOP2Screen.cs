@@ -16,7 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateLoseOP2Screen))]
     public class UITemplateLoseOp2Presenter : BaseEndGameScreenPresenter<UITemplateLoseOP2Screen>
     {
-        public UITemplateLoseOp2Presenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundService soundService) : base(signalBus, uiTemplateAdService, soundService)
+        public UITemplateLoseOp2Presenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus, uiTemplateAdService, soundServices)
         {
         }
 
@@ -29,12 +29,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         public override void BindData()
         {
             base.BindData();
-            this.SoundService.PlaySoundLose();
+            this.SoundServices.PlaySoundLose();
         }
 
         protected virtual void OnContinue()
         {
-            this.SoundService.PlaySoundClick();
+            this.SoundServices.PlaySoundClick();
             this.UITemplateAdService.ShowRewardedAd("Lose_Continue", this.AfterWatchAd);
         }
 

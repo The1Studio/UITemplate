@@ -18,15 +18,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
     {
         protected readonly SceneDirector          SceneDirector;
         protected readonly ScreenManager          ScreenManager;
-        protected readonly UITemplateSoundService SoundService;
+        protected readonly UITemplateSoundServices SoundServices;
 
         protected virtual string NextSceneToLoad => "1.MainScene";
 
-        public UITemplateGameplayScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, ScreenManager screenManager, UITemplateSoundService soundService) : base(signalBus)
+        public UITemplateGameplayScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, ScreenManager screenManager, UITemplateSoundServices soundServices) : base(signalBus)
         {
             this.SceneDirector = sceneDirector;
             this.ScreenManager = screenManager;
-            this.SoundService  = soundService;
+            this.SoundServices  = soundServices;
         }
 
         protected override void OnViewReady()
@@ -37,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
 
         protected virtual async void OnOpenHome()
         {
-            this.SoundService.PlaySoundClick();
+            this.SoundServices.PlaySoundClick();
             await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
         }
 

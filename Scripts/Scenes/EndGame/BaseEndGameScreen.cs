@@ -16,11 +16,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     public abstract class BaseEndGameScreenPresenter<TView> : BaseScreenPresenter<TView> where TView : BaseEndGameScreenView
     {
         protected readonly UITemplateAdServiceWrapper UITemplateAdService;
-        protected readonly UITemplateSoundService     SoundService;
-        protected BaseEndGameScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundService soundService) : base(signalBus)
+        protected readonly UITemplateSoundServices     SoundServices;
+        protected BaseEndGameScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus)
         {
             this.UITemplateAdService = uiTemplateAdService;
-            this.SoundService        = soundService;
+            this.SoundServices        = soundServices;
         }
 
         protected override void OnViewReady()
@@ -33,7 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 
         protected virtual void OnClickNext()
         {
-            this.SoundService.PlaySoundClick();
+            this.SoundServices.PlaySoundClick();
         }
     }
 }

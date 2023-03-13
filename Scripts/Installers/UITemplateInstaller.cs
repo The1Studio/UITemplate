@@ -70,16 +70,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             var adMobWrapperConfig = new AdModWrapper.Config(this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId);
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
 #endif
-            
+
 #if CREATIVE
             adMobWrapperConfig.IsShowAOAAtOpenApp = false;
-            adMobWrapperConfig.OpenAfterResuming  = false;
+            adMobWrapperConfig.OpenAfterResuming = false;
             this.Container.BindInterfacesAndSelfTo<CreativeService>().AsCached().NonLazy();
 #endif
-            
+
             // Master Audio
             this.Container.InstantiatePrefab(this.soundGroupPrefab);
-            this.Container.Bind<UITemplateSoundService>().AsCached();
+            this.Container.Bind<UITemplateSoundServices>().AsCached();
+            //vibration
+            this.Container.Bind<IVibrate>().To<UITemPlateVibrateServices>().AsCached();
         }
 
         private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData, new()

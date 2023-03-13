@@ -14,8 +14,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateWinOP2Screen))]
     public class UITemPlateWinOp2ScreenPresenter : BaseEndGameScreenPresenter<UITemplateWinOP2Screen>
     {
-        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundService soundService) :
-            base(signalBus, uiTemplateAdService, soundService)
+        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) :
+            base(signalBus, uiTemplateAdService, soundServices)
         {
         }
 
@@ -28,7 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         public override void BindData()
         {
             base.BindData();
-            this.SoundService.PlaySoundWin();
+            this.SoundServices.PlaySoundWin();
         }
 
         protected virtual void OnX2Reward() { this.UITemplateAdService.ShowRewardedAd("x2Reward", this.AfterWatchAdsX2Reward); }

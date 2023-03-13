@@ -54,7 +54,7 @@
         private readonly IScreenManager                    screenManager;
         private readonly IGameAssets                       gameAssets;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly UITemplateSoundService            soundService;
+        private readonly UITemplateSoundServices            soundServices;
 
         #endregion
        
@@ -62,13 +62,13 @@
         private IDisposable spinDisposable;
         private Tween       tweenSpin;
 
-        public UITemplateWinScreenPresenter(SignalBus signalBus, UITemplateInventoryData inventoryData, ILogService logService, IScreenManager screenManager, IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundService soundService) : base(signalBus, logService)
+        public UITemplateWinScreenPresenter(SignalBus signalBus, UITemplateInventoryData inventoryData, ILogService logService, IScreenManager screenManager, IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundServices soundServices) : base(signalBus, logService)
         {
             this.inventoryData                     = inventoryData;
             this.screenManager                     = screenManager;
             this.gameAssets                        = gameAssets;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.soundService                      = soundService;
+            this.soundServices                      = soundServices;
         }
 
         protected override async void OnViewReady()
@@ -103,19 +103,19 @@
 
         protected virtual void OnClickHome()
         {
-            this.soundService.PlaySoundClick();
+            this.soundServices.PlaySoundClick();
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
 
         protected virtual void OnClickReplay()
         {
-            this.soundService.PlaySoundClick();
+            this.soundServices.PlaySoundClick();
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
 
         protected virtual void OnClickNext()
         {
-            this.soundService.PlaySoundClick();
+            this.soundServices.PlaySoundClick();
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
 

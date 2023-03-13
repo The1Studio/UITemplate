@@ -1,35 +1,35 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
-    using GameFoundation.Scripts.Utilities;
+    using GameFoundation.Scripts.Models;
 
     public class UITemplateSettingDataController
     {
         #region Inject
 
-        private readonly  UITemplateUserSettingData uiTemplateUserSettingData;
+        private readonly UITemplateUserSettingData uiTemplateUserSettingData;
+        private readonly SoundSetting              soundSetting;
 
         #endregion
 
-        public UITemplateSettingDataController(UITemplateUserSettingData uiTemplateUserSettingData)
+        public bool IsSoundOn => this.soundSetting.SoundValue.Value > 0;
+
+        public bool IsMusicOn     => this.soundSetting.MusicValue.Value > 0;
+        public bool IsVibrationOn => this.uiTemplateUserSettingData.IsVibrationEnable;
+
+        public bool IsFlashLightOn => this.uiTemplateUserSettingData.IsFlashLightEnable;
+
+        public UITemplateSettingDataController(UITemplateUserSettingData uiTemplateUserSettingData, SoundSetting soundSetting)
         {
             this.uiTemplateUserSettingData = uiTemplateUserSettingData;
+            this.soundSetting              = soundSetting;
         }
 
-        public void SetSoundOnOff()
-        {
-            this.uiTemplateUserSettingData.SoundValue.Value = this.IsSoundOn ? 0 : 1; 
-        }
+        public void SetSoundOnOff() { this.soundSetting.SoundValue.Value = this.IsSoundOn ? 0 : 1; }
 
-        public void SetMusicOnOff()
-        {
-            this.uiTemplateUserSettingData.MusicValue.Value = this.IsMusicOn ? 0 : 1; 
-        }
+        public void SetMusicOnOff() { this.soundSetting.MusicValue.Value = this.IsMusicOn ? 0 : 1; }
 
         public void SetVibrationOnOff() { this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable; }
-        
-        public bool IsSoundOn => this.uiTemplateUserSettingData.SoundValue.Value > 0;
 
-        public bool IsMusicOn     => this.uiTemplateUserSettingData.MusicValue.Value > 0;
-        public bool IsVibrationOn => this.uiTemplateUserSettingData.IsVibrationEnable;
+        public void SetFlashLightOnOff() { this.uiTemplateUserSettingData.IsFlashLightEnable = !this.uiTemplateUserSettingData.IsFlashLightEnable; }
     }
 }

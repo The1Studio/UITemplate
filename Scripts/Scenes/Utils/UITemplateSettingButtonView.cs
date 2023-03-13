@@ -17,7 +17,7 @@
     {
         private IScreenManager                  screenManager;
         private UITemplateSettingDataController uiTemplateSettingDataController;
-        private UITemplateSoundService          soundService;
+        private UITemplateSoundServices          soundServices;
 
         public UITemplateOnOffButton MusicButton;
         public UITemplateOnOffButton SoundButton;
@@ -66,11 +66,11 @@
         }
 
         [Inject]
-        public void Init(IScreenManager screenManager, UITemplateSettingDataController uiTemplateSettingDataController, UITemplateSoundService soundService)
+        public void Init(IScreenManager screenManager, UITemplateSettingDataController uiTemplateSettingDataController, UITemplateSoundServices soundServices)
         {
             this.screenManager                   = screenManager;
             this.uiTemplateSettingDataController = uiTemplateSettingDataController;
-            this.soundService                    = soundService;
+            this.soundServices                    = soundServices;
             this.InitDropdown();
             this.InitButton();
         }
@@ -94,7 +94,7 @@
 
         private async void OnClick()
         { 
-            this.soundService.PlaySoundClick();
+            this.soundServices.PlaySoundClick();
             if (this.IsDropdown)
             {
                 //TODO need to to animation here

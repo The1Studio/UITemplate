@@ -28,17 +28,17 @@
         protected readonly IScreenManager                    ScreenManager;
         protected readonly DiContainer                       DiContainer;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
-        protected readonly UITemplateSoundService            SoundService;
+        protected readonly UITemplateSoundServices            SoundServices;
 
         #endregion
 
 
-        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundService soundService) : base(signalBus)
+        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundServices soundServices) : base(signalBus)
         {
             this.ScreenManager                     = screenManager;
             this.DiContainer                       = diContainer;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.SoundService                      = soundService;
+            this.SoundServices                      = soundServices;
         }
 
         protected override async void OnViewReady()
@@ -58,13 +58,13 @@
 
         protected virtual void OnClickShopButton()
         {
-            this.SoundService.PlaySoundClick();
+            this.SoundServices.PlaySoundClick();
             this.ScreenManager.OpenScreen<UITemplateNewCollectionScreenPresenter>();
         }
 
         protected virtual void OnClickTapToPlayButton()
         {
-            this.SoundService.PlaySoundClick();
+            this.SoundServices.PlaySoundClick();
             this.ScreenManager.OpenScreen<UITemplateGameplayScreenPresenter>();
         }
 

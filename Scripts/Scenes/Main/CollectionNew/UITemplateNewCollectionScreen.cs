@@ -49,7 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;
-        protected readonly UITemplateSoundService            SoundService;
+        protected readonly UITemplateSoundServices            SoundServices;
         protected readonly IScreenManager                    ScreenManager;
 
         #endregion
@@ -66,7 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         public UITemplateNewCollectionScreenPresenter(SignalBus               signalBus,               EventSystem                       eventSystem,   IIapSystem  iapSystem,   ILogService                     logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
                                                       IGameAssets             gameAssets,              ScreenManager                     screenManager, DiContainer diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
                                                       UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController,
-                                                      UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundService            soundService) : base(signalBus)
+                                                      UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundServices            soundServices) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
             this.iapSystem                         = iapSystem;
@@ -79,7 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
-            this.SoundService                      = soundService;
+            this.SoundServices                      = soundServices;
         }
 
         protected override void OnViewReady()
@@ -103,7 +103,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void OnClickAddMoreCoinButton()
         {
-            this.SoundService.PlaySoundClick();
+            this.SoundServices.PlaySoundClick();
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 var currencyData = this.uiTemplateInventoryDataController.GetCurrency();
@@ -114,7 +114,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void OnClickUnlockRandomButton()
         {
-            this.SoundService.PlaySoundClick();
+            this.SoundServices.PlaySoundClick();
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 this.eventSystem.enabled = false;
@@ -159,7 +159,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual async void OnClickHomeButton()
         {
-            this.SoundService.PlaySoundClick();
+            this.SoundServices.PlaySoundClick();
             await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
         }
 

@@ -32,10 +32,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
     public class TopButtonPresenter : BaseUIItemPresenter<TopButtonBarItemView, TopButtonItemModel>
     {
-        private readonly UITemplateSoundService soundService;
-        public TopButtonPresenter(IGameAssets gameAssets, UITemplateSoundService soundService) : base(gameAssets)
+        private readonly UITemplateSoundServices soundServices;
+        public TopButtonPresenter(IGameAssets gameAssets, UITemplateSoundServices soundServices) : base(gameAssets)
         {
-            this.soundService = soundService;
+            this.soundServices = soundServices;
         }
 
         public override async void BindData(TopButtonItemModel param)
@@ -46,7 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
             this.View.OnButtonClick = () =>
             {
-                this.soundService.PlaySoundClick();
+                this.soundServices.PlaySoundClick();
                 param.OnSelected?.Invoke(param);
             };
         }

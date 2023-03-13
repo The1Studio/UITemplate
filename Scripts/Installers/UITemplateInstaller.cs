@@ -80,8 +80,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             // Master Audio
             this.Container.InstantiatePrefab(this.soundGroupPrefab);
             this.Container.Bind<UITemplateSoundServices>().AsCached();
-            //vibration
+            //Vibration
             this.Container.Bind<IVibrate>().To<UITemPlateVibrateServices>().AsCached();
+            //FlashLight
+#if UNITY_EDITOR
+            this.Container.Bind<IFlashLight>().To<FlashLightEditor>().AsSingle().NonLazy();
+#endif
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        this.Container.Bind<IFlashLight>().To<FlashlightPluginAndroid>().AsSingle().NonLazy();
+#endif
+
+#if UNITY_IOS
+        this.Container.Bind<IFlashLight>().To<FlashlightPluginIOS>().AsSingle().NonLazy();
+#endif  
         }
 
         private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData, new()

@@ -16,9 +16,13 @@
         {
             //TODO change this to more significant behaviour
             //Get three continuous mouse down in time
-            if (Input.touchCount == 3)
+            if (Input.GetMouseButtonDown(0))
             {
-                this.screenManager.RootUICanvas.gameObject.SetActive(!this.screenManager.RootUICanvas.gameObject.activeSelf);
+                if (Input.touchCount == 3)
+
+                {
+                    this.screenManager.RootUICanvas.gameObject.SetActive(!this.screenManager.RootUICanvas.gameObject.activeSelf);
+                }
             }
         }
     }

@@ -8,20 +8,17 @@
     {
         private readonly IScreenManager screenManager;
 
-        private int mouseDownCounter;
-
         public CreativeService(IScreenManager screenManager) { this.screenManager = screenManager; }
 
         public void Tick()
         {
-            //TODO change this to more significant behaviour
-            //Get three continuous mouse down in time
-            if (Input.GetMouseButtonDown(0))
+            for (var i = 0; i < Input.touchCount; ++i)
             {
-                if (Input.touchCount == 3)
+                if (Input.GetTouch(i).phase != TouchPhase.Began) continue;
 
+                if (Input.touchCount == 3)
                 {
-                    this.screenManager.RootUICanvas.gameObject.SetActive(!this.screenManager.RootUICanvas.gameObject.activeSelf);
+                    this.screenManager.RootUICanvas.gameObject.SetActive(!this.screenManager.RootUICanvas.gameObject.activeInHierarchy);
                 }
             }
         }

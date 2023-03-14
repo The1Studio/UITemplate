@@ -7,8 +7,11 @@
 
     public class UITemplateCurrencyView : MonoBehaviour
     {
-        [SerializeField] private TMP_Text currencyValueText;
-        [SerializeField] private string   currencyId;
+        [SerializeField]
+        private TMP_Text currencyValueText;
+
+        [SerializeField]
+        private string currencyId;
 
         public void Subscribe(SignalBus signalBus, int initValue)
         {
@@ -16,9 +19,15 @@
             this.UpdateData(initValue);
         }
 
-        private void UpdateData(int initValue) { this.currencyValueText.text = initValue.ToString(); }
+        private void UpdateData(int initValue)
+        {
+            this.currencyValueText.text = initValue.ToString();
+        }
 
-        public void Unsubscribe(SignalBus signalBus) { signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrency); }
+        public void Unsubscribe(SignalBus signalBus)
+        {
+            signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrency);
+        }
 
         private void UpdateCurrency(UpdateCurrencySignal obj)
         {

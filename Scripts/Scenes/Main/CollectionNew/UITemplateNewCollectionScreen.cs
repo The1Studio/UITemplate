@@ -33,40 +33,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     }
 
     [ScreenInfo(nameof(UITemplateNewCollectionScreen))]
-    public class UITemplateNewCollectionScreenPresenter : BaseScreenPresenter<UITemplateNewCollectionScreen>
+    public class UITemplateNewCollectionScreenPresenter : UITemplateBaseScreenPresenter<UITemplateNewCollectionScreen>
     {
-        private static string placement = "Collection";
+        private static readonly string placement = "Collection";
 
-        #region inject
+        private readonly List<ItemCollectionItemModel> itemCollectionItemModels = new();
 
-        private readonly   DiContainer                       diContainer;
-        private readonly   UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
-        private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
-        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly   UITemplateInventoryData           uiTemplateInventoryData;
-        private readonly   EventSystem                       eventSystem;
-        private readonly   IIapServices                      iapServices;
-        private readonly   ILogService                       logger;
-        private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
-        private readonly   IGameAssets                       gameAssets;
-        protected readonly UITemplateSoundServices           SoundServices;
-        protected readonly IScreenManager                    ScreenManager;
+        private readonly List<TopButtonItemModel> topButtonItemModels = new();
 
-        #endregion
+        private int         currentSelectedCategoryIndex;
+        private IDisposable randomTimerDispose;
 
-        private int currentSelectedCategoryIndex;
-
-        private List<TopButtonItemModel> topButtonItemModels = new();
-
-        private List<ItemCollectionItemModel> itemCollectionItemModels = new();
-        private IDisposable                   randomTimerDispose;
-
-        protected virtual int CoinAddAmount => 500;
-
-        public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapServices iapServices, ILogService logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            IGameAssets gameAssets, ScreenManager screenManager, DiContainer diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
-            UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundServices soundServices) : base(signalBus)
+        public UITemplateNewCollectionScreenPresenter(SignalBus               signalBus,               EventSystem                       eventSystem,   IIapServices iapServices, ILogService                     logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+                                                      IGameAssets             gameAssets,              ScreenManager                     screenManager, DiContainer  diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
+                                                      UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController,
+                                                      UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundServices           soundServices) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
             this.iapServices                       = iapServices;
@@ -81,6 +62,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
             this.SoundServices                     = soundServices;
         }
+
+        protected virtual int CoinAddAmount => 500;
 
         protected override void OnViewReady()
         {
@@ -102,8 +85,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void OnClickAddMoreCoinButton()
         {
-            this.SoundServices.PlaySoundClick();
-
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 var currencyData = this.uiTemplateInventoryDataController.GetCurrency();
@@ -114,51 +95,41 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void OnClickUnlockRandomButton()
         {
-            this.SoundServices.PlaySoundClick();
-
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
                 this.eventSystem.enabled = false;
                 var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
 
                 var collectionModel = this.itemCollectionItemModels
-                    .Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory) &&
-                                !this.uiTemplateInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
+                                          .Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory) &&
+                                                      !this.uiTemplateInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
 
-                foreach (var model in this.itemCollectionItemModels)
-                {
-                    model.IndexItemSelected = -1;
-                }
+                foreach (var model in this.itemCollectionItemModels) model.IndexItemSelected = -1;
 
                 var maxTime = collectionModel.Count == 1 ? 0.3f : 3;
 
-                collectionModel.GachaItemWithTimer(this.randomTimerDispose, (model) =>
+                collectionModel.GachaItemWithTimer(this.randomTimerDispose, model =>
                 {
-                    foreach (var itemCollectionItemModel in collectionModel)
-                    {
-                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
-                    }
+                    foreach (var itemCollectionItemModel in collectionModel) itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
 
                     this.OnRandomItemComplete(model);
                     this.BuyItemCompleted(model);
                     this.eventSystem.enabled = true;
                 }, model =>
                 {
-                    foreach (var itemCollectionItemModel in collectionModel)
-                    {
-                        itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
-                    }
+                    foreach (var itemCollectionItemModel in collectionModel) itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
 
                     this.View.itemCollectionGridAdapter.Refresh();
                 }, maxTime, 0.1f);
             });
         }
 
-        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model) { }
+        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model)
+        {
+        }
 
         protected virtual async void OnClickHomeButton()
         {
-            this.SoundServices.PlaySoundClick();
             await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
         }
 
@@ -172,9 +143,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                     ? this.uiTemplateInventoryDataController.GetItemData(record.Id)
                     : this.uiTemplateInventoryDataController.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
 
-                var model = new ItemCollectionItemModel()
+                var model = new ItemCollectionItemModel
                 {
-                    UITemplateItemRecord = record, OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, ItemData = itemData,
+                    UITemplateItemRecord = record, OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, ItemData = itemData
                 };
 
                 this.itemCollectionItemModels.Add(model);
@@ -193,7 +164,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             {
                 var icon = await this.gameAssets.LoadAssetAsync<Sprite>(record.Icon);
 
-                this.topButtonItemModels.Add(new TopButtonItemModel() { Icon = icon, OnSelected = this.OnButtonCategorySelected, SelectedIndex = this.currentSelectedCategoryIndex, Index = index });
+                this.topButtonItemModels.Add(new TopButtonItemModel { Icon = icon, OnSelected = this.OnButtonCategorySelected, SelectedIndex = this.currentSelectedCategoryIndex, Index = index });
 
                 index++;
             }
@@ -224,10 +195,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             //refresh top button bar
             this.currentSelectedCategoryIndex = obj.Index;
 
-            foreach (var topButtonItemModel in this.topButtonItemModels)
-            {
-                topButtonItemModel.SelectedIndex = this.currentSelectedCategoryIndex;
-            }
+            foreach (var topButtonItemModel in this.topButtonItemModels) topButtonItemModel.SelectedIndex = this.currentSelectedCategoryIndex;
 
             //Bind Data Collection
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
@@ -247,10 +215,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
             var tempModel       = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
 
-            foreach (var model in tempModel)
-            {
-                model.IndexItemSelected = obj.ItemIndex;
-            }
+            foreach (var model in tempModel) model.IndexItemSelected = obj.ItemIndex;
 
             // Save the selected item
             this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(currentCategory, obj.ItemData.Id);
@@ -259,7 +224,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.itemCollectionGridAdapter.Refresh();
         }
 
-        protected virtual void OnSelectedItem(UITemplateItemData itemData) { }
+        protected virtual void OnSelectedItem(UITemplateItemData itemData)
+        {
+        }
 
         private void OnBuyItem(ItemCollectionItemModel obj)
         {
@@ -290,6 +257,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             }
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.randomTimerDispose?.Dispose();
+            this.View.coinText.Unsubscribe(this.SignalBus);
+        }
+
+        #region inject
+
+        private readonly   DiContainer                       diContainer;
+        private readonly   UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
+        private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
+        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly   UITemplateInventoryData           uiTemplateInventoryData;
+        private readonly   EventSystem                       eventSystem;
+        private readonly   IIapServices                      iapServices;
+        private readonly   ILogService                       logger;
+        private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
+        private readonly   IGameAssets                       gameAssets;
+        protected readonly UITemplateSoundServices           SoundServices;
+        protected readonly IScreenManager                    ScreenManager;
+
+        #endregion
+
         #region Buy Item
 
         private void BuyWithSoftCurrency(ItemCollectionItemModel obj)
@@ -308,9 +299,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.BuyItemCompleted(obj);
         }
 
-        private void BuyWithAds(ItemCollectionItemModel obj) { this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithAds(ItemCollectionItemModel obj)
+        {
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
+            {
+                this.BuyItemCompleted(obj);
+            });
+        }
 
-        private void BuyWithIAP(ItemCollectionItemModel obj) { this.iapServices.BuyProductID(obj.UITemplateItemRecord.CurrencyID, (x) => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithIAP(ItemCollectionItemModel obj)
+        {
+            this.iapServices.BuyProductID(obj.UITemplateItemRecord.CurrencyID, x =>
+            {
+                this.BuyItemCompleted(obj);
+            });
+        }
 
         private void BuyItemCompleted(ItemCollectionItemModel obj)
         {
@@ -322,12 +325,5 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         }
 
         #endregion
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            this.randomTimerDispose?.Dispose();
-            this.View.coinText.Unsubscribe(this.SignalBus);
-        }
     }
 }

@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.UI;
     using Zenject;
@@ -14,20 +15,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
     }
 
     [ScreenInfo(nameof(UITemplateGameplayScreen))]
-    public class UITemplateGameplayScreenPresenter : BaseScreenPresenter<UITemplateGameplayScreen>
+    public class UITemplateGameplayScreenPresenter : UITemplateBaseScreenPresenter<UITemplateGameplayScreen>
     {
-        protected readonly SceneDirector          SceneDirector;
-        protected readonly ScreenManager          ScreenManager;
+        protected readonly SceneDirector           SceneDirector;
+        protected readonly ScreenManager           ScreenManager;
         protected readonly UITemplateSoundServices SoundServices;
-
-        protected virtual string NextSceneToLoad => "1.MainScene";
 
         public UITemplateGameplayScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, ScreenManager screenManager, UITemplateSoundServices soundServices) : base(signalBus)
         {
             this.SceneDirector = sceneDirector;
             this.ScreenManager = screenManager;
-            this.SoundServices  = soundServices;
+            this.SoundServices = soundServices;
         }
+
+        protected virtual string NextSceneToLoad => "1.MainScene";
 
         protected override void OnViewReady()
         {
@@ -37,12 +38,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
 
         protected virtual async void OnOpenHome()
         {
-            this.SoundServices.PlaySoundClick();
             await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
         }
 
-        protected virtual void OpenNextScene() { this.SceneDirector.LoadSingleSceneAsync(this.NextSceneToLoad); }
+        protected virtual void OpenNextScene()
+        {
+            this.SceneDirector.LoadSingleSceneAsync(this.NextSceneToLoad);
+        }
 
-        public override void BindData() { }
+        public override void BindData()
+        {
+        }
     }
 }

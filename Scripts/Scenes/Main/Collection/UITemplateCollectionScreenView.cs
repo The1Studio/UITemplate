@@ -24,29 +24,20 @@
     }
 
     [ScreenInfo(nameof(UITemplateCollectionScreenView))]
-    public class UITemplateCollectionScreenPresenter : BaseScreenPresenter<UITemplateCollectionScreenView>
+    public class UITemplateCollectionScreenPresenter : UITemplateBaseScreenPresenter<UITemplateCollectionScreenView>
     {
         private const string CatCharacter = "Character";
         private const string CatItem      = "Item";
 
-        #region Inject
-
-        private readonly IScreenManager                     screenManager;
-        private readonly DiContainer                        diContainer;
-        private readonly UITemplateShopBlueprint            shopBlueprint;
-        private readonly UITemplateInventoryDataController  uiTemplateInventoryDataController;
-
-        #endregion
-
-        private List<ItemCollectionItemModel> itemLists = new();
+        private readonly List<ItemCollectionItemModel> itemLists = new();
 
         public UITemplateCollectionScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateShopBlueprint shopBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController) :
             base(signalBus)
         {
-            this.screenManager                      = screenManager;
-            this.diContainer                        = diContainer;
-            this.shopBlueprint                      = shopBlueprint;
-            this.uiTemplateInventoryDataController  = uiTemplateInventoryDataController;
+            this.screenManager                     = screenManager;
+            this.diContainer                       = diContainer;
+            this.shopBlueprint                     = shopBlueprint;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
         protected override void OnViewReady()
@@ -61,7 +52,7 @@
         public override void BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus,
-                this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+                                         this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
             this.GetItemDataList(this.itemLists);
             this.SelectTabCategory(CatCharacter);
         }
@@ -79,22 +70,22 @@
                 var currentElement = this.shopBlueprint.Values.ElementAt(i);
 
                 if (!currentElement.Category.Equals(CatItem)) continue;
-                var model = new ItemCollectionItemModel()
-                            {
-                                Index              = i,
-                                UITemplateItemData = this.uiTemplateInventoryDataController.GetItemData(currentElement.Name),
-                                Category           = CatItem,
-                                OnBuy              = this.OnBuyItem,
-                                OnSelected         = this.OnSelectedItem,
-                                OnNotEnoughMoney   = this.OnNotEnoughMoney,
-                            };
+                var model = new ItemCollectionItemModel
+                {
+                    Index              = i,
+                    UITemplateItemData = this.uiTemplateInventoryDataController.GetItemData(currentElement.Name),
+                    Category           = CatItem,
+                    OnBuy              = this.OnBuyItem,
+                    OnSelected         = this.OnSelectedItem,
+                    OnNotEnoughMoney   = this.OnNotEnoughMoney
+                };
                 source.Add(model);
             }
         }
 
         private void OnBuyItem(ItemCollectionItemModel obj)
         {
-            obj.UITemplateItemData.CurrentStatus                  = UITemplateItemData.Status.Owned;
+            obj.UITemplateItemData.CurrentStatus = UITemplateItemData.Status.Owned;
             // this.userData.InventoryData.CurrentSelectItemId.Value = obj.UITemplateItemData.BlueprintRecord.Name;
             this.uiTemplateInventoryDataController.UpdateStatusItemData(obj.UITemplateItemData.BlueprintRecord.Name, UITemplateItemData.Status.Owned);
             // update payment coin here
@@ -110,15 +101,9 @@
 
         private async void SelectTabCategory(string categoryTab)
         {
-            if (categoryTab.Equals(CatItem))
-            {
-                await this.View.ItemCollectionAdapter.InitItemAdapter(this.itemLists, this.diContainer);
-            }
-            else
-            {
-                // await this.View.CharacterCollectionAdapter.InitItemAdapter(this.characterLists, this.diContainer);
-            }
+            if (categoryTab.Equals(CatItem)) await this.View.ItemCollectionAdapter.InitItemAdapter(this.itemLists, this.diContainer);
 
+            // await this.View.CharacterCollectionAdapter.InitItemAdapter(this.characterLists, this.diContainer);
             this.View.ItemCollectionAdapter.gameObject.SetActive(categoryTab.Equals(CatItem));
             // this.View.CharacterCollectionAdapter.gameObject.SetActive(categoryTab.Equals(CatCharacter));
         }
@@ -135,9 +120,14 @@
             this.ConfigBtnStatus(true, false);
         }
 
-        private void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        private void OnClickHome()
+        {
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
 
-        private void OnClickWatchAds() { }
+        private void OnClickWatchAds()
+        {
+        }
 
         private void ConfigBtnStatus(bool isCharacterActive, bool isItemActive)
         {
@@ -150,5 +140,14 @@
             base.Dispose();
             this.View.CoinText.Unsubscribe(this.SignalBus);
         }
+
+        #region Inject
+
+        private readonly IScreenManager                    screenManager;
+        private readonly DiContainer                       diContainer;
+        private readonly UITemplateShopBlueprint           shopBlueprint;
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+
+        #endregion
     }
 }

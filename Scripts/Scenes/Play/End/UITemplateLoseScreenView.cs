@@ -22,14 +22,9 @@
     }
 
     [ScreenInfo(nameof(UITemplateLoseScreenView))]
-    public class UITemplateLoseScreenPresenter : BaseScreenPresenter<UITemplateLoseScreenView>
+    public class UITemplateLoseScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoseScreenView>
     {
-        #region inject
-
-        private readonly DiContainer    diContainer;
-        private readonly IScreenManager screenManager;
-
-        #endregion
+        private static bool isAdsAvailable = true;
 
         public UITemplateLoseScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
         {
@@ -37,15 +32,17 @@
             this.screenManager = screenManager;
         }
 
-        private static bool isAdsAvailable = true;
         public override void BindData()
         {
             this.View.AdsNotification.gameObject.transform.localScale = Vector3.zero;
             this.adsNotificationAnimation(isAdsAvailable = this.checkAdsAvailable());
-            this.View.NextEndgameButton.SetOnOff(isOn: false);
+            this.View.NextEndgameButton.SetOnOff(false);
         }
 
-        public override void Dispose() { base.Dispose(); }
+        public override void Dispose()
+        {
+            base.Dispose();
+        }
 
         protected override async void OnViewReady()
         {
@@ -57,7 +54,10 @@
             this.View.NextEndgameButton.Button.onClick.AddListener(this.OnClickNextEndgame);
         }
 
-        protected virtual void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        protected virtual void OnClickHome()
+        {
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
 
         protected virtual void OnClickReplay()
         {
@@ -67,16 +67,14 @@
         private async void OnClickNextEndgame()
         {
             if (isAdsAvailable)
-            {
                 //show ads 
                 if (this.hasWatchedAds())
                 {
                     this.adsNotificationAnimation(false);
                     await UniTask.WaitUntil(() => !isAdsAvailable);
-                    this.View.NextEndgameButton.SetOnOff(isOn: true);
+                    this.View.NextEndgameButton.SetOnOff(true);
                     // Reuse WinScreen
                 }
-            }
         }
 
         private bool checkAdsAvailable()
@@ -97,8 +95,15 @@
             var targetScale     = willActive ? Vector3.one : Vector3.zero;
             var easeType        = willActive ? Ease.OutElastic : Ease.InElastic;
             var duration        = willActive ? 0.5f : 0.3f;
-            
+
             adsNotification.transform.DOScale(targetScale, duration).SetEase(easeType).OnComplete(() => isAdsAvailable = willActive);
         }
+
+        #region inject
+
+        private readonly DiContainer    diContainer;
+        private readonly IScreenManager screenManager;
+
+        #endregion
     }
 }

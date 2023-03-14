@@ -10,10 +10,10 @@
 
     public abstract class BaseItemCollectionModel
     {
-        public int                Index            { get; set; }
-        public UITemplateItemData UITemplateItemData         { get; set; }
-        public string             Category         { get; set; }
-        public Action             OnNotEnoughMoney { get; set; }
+        public int                Index              { get; set; }
+        public UITemplateItemData UITemplateItemData { get; set; }
+        public string             Category           { get; set; }
+        public Action             OnNotEnoughMoney   { get; set; }
     }
 
     public abstract class BaseItemCollectionView : TViewMono
@@ -30,8 +30,10 @@
 
     public abstract class BaseItemCollectionPresenter<TView, TModel> : BaseUIItemPresenter<TView, TModel> where TView : BaseItemCollectionView where TModel : BaseItemCollectionModel
     {
-        protected abstract string CategoryType { get; }
+        protected BaseItemCollectionPresenter(IGameAssets gameAssets) : base(gameAssets)
+        {
+        }
 
-        protected BaseItemCollectionPresenter(IGameAssets gameAssets) : base(gameAssets) { }
+        protected abstract string CategoryType { get; }
     }
 }

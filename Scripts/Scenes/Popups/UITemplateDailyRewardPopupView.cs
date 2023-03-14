@@ -13,27 +13,20 @@
 
     public class UITemplateDailyRewardPopupView : BaseView
     {
-        [SerializeField] private List<UITemplateDailyRewardItemView> dailyRewardItemViews;
+        [SerializeField]
+        private List<UITemplateDailyRewardItemView> dailyRewardItemViews;
 
         public List<UITemplateDailyRewardItemView> DailyRewardItemViews => this.dailyRewardItemViews;
     }
 
     [PopupInfo(nameof(UITemplateDailyRewardPopupView))]
-    public class UITemplateDailyRewardPopupPresenter : BasePopupPresenter<UITemplateDailyRewardPopupView>
+    public class UITemplateDailyRewardPopupPresenter : UITemplateBasePopupPresenter<UITemplateDailyRewardPopupView>
     {
-        #region inject
+        private readonly List<UITemplateDailyRewardItemPresenter> dailyRewardItemPresenters = new();
 
-        private readonly DiContainer                     diContainer;
-        private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
-        private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
-        private readonly UITemplateDailyRewardData       uiTemplateDailyRewardData;
+        private int userLoginDay;
 
-        #endregion
-
-        private int                                      userLoginDay;
-        private List<UITemplateDailyRewardItemPresenter> dailyRewardItemPresenters = new();
-
-        public UITemplateDailyRewardPopupPresenter(SignalBus                       signalBus, DiContainer diContainer, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
+        public UITemplateDailyRewardPopupPresenter(SignalBus                       signalBus,                       DiContainer               diContainer, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
                                                    UITemplateDailyRewardController uiTemplateDailyRewardController, UITemplateDailyRewardData uiTemplateDailyRewardData) : base(signalBus)
         {
             this.diContainer                     = diContainer;
@@ -53,5 +46,14 @@
                 this.dailyRewardItemPresenters[i].BindData(new UITemplateDailyRewardItemModel(this.uiTemplateDailyRewardBlueprint.Values.First(record => record.Day == i + 1)));
             }
         }
+
+        #region inject
+
+        private readonly DiContainer                     diContainer;
+        private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
+        private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
+        private readonly UITemplateDailyRewardData       uiTemplateDailyRewardData;
+
+        #endregion
     }
 }

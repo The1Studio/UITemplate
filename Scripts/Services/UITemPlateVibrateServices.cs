@@ -7,7 +7,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     {
         private readonly UITemplateUserSettingData uiTemplateUserSettingData;
 
-        public UITemPlateVibrateServices(UITemplateUserSettingData uiTemplateUserSettingData) { this.uiTemplateUserSettingData = uiTemplateUserSettingData; }
+        public UITemPlateVibrateServices(UITemplateUserSettingData uiTemplateUserSettingData)
+        {
+            this.uiTemplateUserSettingData = uiTemplateUserSettingData;
+            Vibration.Init();
+        }
 
         public void VibratePop()
         {

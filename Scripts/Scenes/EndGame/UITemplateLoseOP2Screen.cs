@@ -1,10 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-    using GameFoundation.Scripts.Utilities;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine.UI;
     using Zenject;
 
@@ -34,7 +32,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 
         protected virtual void OnContinue()
         {
-            this.SoundServices.PlaySoundClick();
             this.UITemplateAdService.ShowRewardedAd("Lose_Continue", this.AfterWatchAd);
         }
 

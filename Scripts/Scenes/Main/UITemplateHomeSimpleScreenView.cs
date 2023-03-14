@@ -18,17 +18,8 @@
     }
 
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
-    public class UITemplateHomeSimpleScreenPresenter : BaseScreenPresenter<UITemplateHomeSimpleScreenView>
+    public class UITemplateHomeSimpleScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
-        #region inject
-
-        private readonly   UITemplateInventoryData           inventoryData;
-        private readonly   DiContainer                       diContainer;
-        protected readonly IScreenManager                    ScreenManager;
-        protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-
-        #endregion
-
         public UITemplateHomeSimpleScreenPresenter(SignalBus                         signalBus, UITemplateInventoryData inventoryData, DiContainer diContainer, IScreenManager screenManager,
                                                    UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
         {
@@ -47,16 +38,33 @@
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
         }
 
-        protected virtual void OnClickLevel() { this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>(); }
+        protected virtual void OnClickLevel()
+        {
+            this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>();
+        }
 
-        protected virtual void OnClickPlay() { }
+        protected virtual void OnClickPlay()
+        {
+        }
 
-        public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value); }
+        public override void BindData()
+        {
+            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
+        }
 
         public override void Dispose()
         {
             base.Dispose();
             this.View.CoinText.Unsubscribe(this.SignalBus);
         }
+
+        #region inject
+
+        private readonly   UITemplateInventoryData           inventoryData;
+        private readonly   DiContainer                       diContainer;
+        protected readonly IScreenManager                    ScreenManager;
+        protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+
+        #endregion
     }
 }

@@ -13,7 +13,7 @@
     public class ItemCollectionItemModel
     {
         public int                  ItemIndex            { get; set; }
-        public int                 IndexItemSelected           { get; set; }
+        public int                  IndexItemSelected    { get; set; }
         public UITemplateItemRecord UITemplateItemRecord { get; set; }
         public UITemplateItemData   ItemData             { get; set; }
 
@@ -32,23 +32,37 @@
 
         private void Awake()
         {
-            this.btnBuyCoin.onClick.AddListener(() => { this.OnBuyCoin?.Invoke(); });
-            this.btnBuyAds.onClick.AddListener(() => { this.OnBuyAds?.Invoke(); });
-            this.btnBuyIap.onClick.AddListener(() => { this.OnBuyIap?.Invoke(); });
-            this.btnSelect.onClick.AddListener(() => { this.OnSelect?.Invoke(); });
+            this.btnBuyCoin.onClick.AddListener(() =>
+            {
+                this.OnBuyCoin?.Invoke();
+            });
+            this.btnBuyAds.onClick.AddListener(() =>
+            {
+                this.OnBuyAds?.Invoke();
+            });
+            this.btnBuyIap.onClick.AddListener(() =>
+            {
+                this.OnBuyIap?.Invoke();
+            });
+            this.btnSelect.onClick.AddListener(() =>
+            {
+                this.OnSelect?.Invoke();
+            });
         }
     }
 
     public class ItemCollectionItemPresenter : BaseUIItemPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
-        public ItemCollectionItemPresenter(IGameAssets gameAssets) : base(gameAssets) { }
+        public ItemCollectionItemPresenter(IGameAssets gameAssets) : base(gameAssets)
+        {
+        }
 
         public override async void BindData(ItemCollectionItemModel param)
         {
             this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.UITemplateItemRecord.ImageAddress);
             this.View.txtPrice.text  = $"{param.UITemplateItemRecord.Price}";
-            this.View.objChoose.SetActive(param.ItemIndex==param.IndexItemSelected);
-            this.View.objNormal.SetActive(param.ItemIndex!=param.IndexItemSelected);
+            this.View.objChoose.SetActive(param.ItemIndex == param.IndexItemSelected);
+            this.View.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected);
 
             this.View.OnBuyAds  = () => param.OnBuyItem?.Invoke(param);
             this.View.OnBuyCoin = () => param.OnBuyItem?.Invoke(param);

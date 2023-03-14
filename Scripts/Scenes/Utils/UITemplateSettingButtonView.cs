@@ -4,8 +4,6 @@
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities;
-    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -15,27 +13,31 @@
 
     public class UITemplateSettingButtonView : MonoBehaviour
     {
-        private IScreenManager                  screenManager;
-        private UITemplateSettingDataController uiTemplateSettingDataController;
-        private UITemplateSoundServices          soundServices;
-
         public UITemplateOnOffButton MusicButton;
         public UITemplateOnOffButton SoundButton;
         public UITemplateOnOffButton VibrateButton;
 
-        [SerializeField] private Button SettingButton;
-        [SerializeField] private bool   IsDropdown;
+        [SerializeField]
+        private Button SettingButton;
+
+        [SerializeField]
+        private bool IsDropdown;
+
+        /// <summary>
+        ///     Dropdown animation
+        /// </summary>
+        [SerializeField]
+        private RectTransform BG;
+
+        [SerializeField]
+        private List<RectTransform> ButtonList;
 
         private bool IsDropped;
 
-        /// <summary>
-        /// Dropdown animation
-        /// </summary>
-        [SerializeField] private RectTransform BG;
-
-        [SerializeField] private List<RectTransform> ButtonList;
-
-        private List<RectTransform> ReverseButtonList;
+        private List<RectTransform>             ReverseButtonList;
+        private IScreenManager                  screenManager;
+        private UITemplateSoundServices         soundServices;
+        private UITemplateSettingDataController uiTemplateSettingDataController;
 
         private void Awake()
         {
@@ -70,7 +72,7 @@
         {
             this.screenManager                   = screenManager;
             this.uiTemplateSettingDataController = uiTemplateSettingDataController;
-            this.soundServices                    = soundServices;
+            this.soundServices                   = soundServices;
             this.InitDropdown();
             this.InitButton();
         }
@@ -86,15 +88,11 @@
         {
             this.IsDropped     = false;
             this.BG.localScale = new Vector3(1, 0, 1);
-            foreach (var rectTransform in this.ButtonList)
-            {
-                rectTransform.localScale = Vector3.zero;
-            }
+            foreach (var rectTransform in this.ButtonList) rectTransform.localScale = Vector3.zero;
         }
 
         private async void OnClick()
-        { 
-            this.soundServices.PlaySoundClick();
+        {
             if (this.IsDropdown)
             {
                 //TODO need to to animation here

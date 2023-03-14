@@ -19,10 +19,10 @@
 
     public class UITemplateWinScreenModel
     {
-        public int    StarRate;
         public string ItemId;
         public float  ItemUnlockLastPercent;
         public float  ItemUnlockPercent;
+        public int    StarRate;
 
         public UITemplateWinScreenModel(int starRate, string itemId, float itemUnlockLastPercent, float itemUnlockPercent)
         {
@@ -46,19 +46,8 @@
     }
 
     [ScreenInfo(nameof(UITemplateWinScreenView))]
-    public class UITemplateWinScreenPresenter : BaseScreenPresenter<UITemplateWinScreenView, UITemplateWinScreenModel>
+    public class UITemplateWinScreenPresenter : UITemplateBaseScreenPresenter<UITemplateWinScreenView, UITemplateWinScreenModel>
     {
-        #region inject
-
-        private readonly UITemplateInventoryData           inventoryData;
-        private readonly IScreenManager                    screenManager;
-        private readonly IGameAssets                       gameAssets;
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly UITemplateSoundServices            soundServices;
-
-        #endregion
-       
-
         private IDisposable spinDisposable;
         private Tween       tweenSpin;
 
@@ -68,7 +57,7 @@
             this.screenManager                     = screenManager;
             this.gameAssets                        = gameAssets;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.soundServices                      = soundServices;
+            this.soundServices                     = soundServices;
         }
 
         protected override async void OnViewReady()
@@ -94,7 +83,7 @@
             this.View.ItemUnlockImage.sprite   = spriteItemUnlock;
             this.View.ItemUnlockBgImage.sprite = spriteItemUnlock;
             var lastValue = lastPercent / 100f;
-            var value     = percent     / 100f;
+            var value     = percent / 100f;
             DOTween.To(() => this.View.ItemUnlockImage.fillAmount = lastValue, x => this.View.ItemUnlockImage.fillAmount = x, value, 1f).SetEase(Ease.Linear);
 
             var itemStatus = Math.Abs(value - 1) < Mathf.Epsilon ? UITemplateItemData.Status.Owned : UITemplateItemData.Status.InProgress;
@@ -103,19 +92,16 @@
 
         protected virtual void OnClickHome()
         {
-            this.soundServices.PlaySoundClick();
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
 
         protected virtual void OnClickReplay()
         {
-            this.soundServices.PlaySoundClick();
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
 
         protected virtual void OnClickNext()
         {
-            this.soundServices.PlaySoundClick();
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
 
@@ -125,5 +111,15 @@
             DOTween.Kill(this.tweenSpin);
             this.View.CoinText.Unsubscribe(this.SignalBus);
         }
+
+        #region inject
+
+        private readonly UITemplateInventoryData           inventoryData;
+        private readonly IScreenManager                    screenManager;
+        private readonly IGameAssets                       gameAssets;
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly UITemplateSoundServices           soundServices;
+
+        #endregion
     }
 }

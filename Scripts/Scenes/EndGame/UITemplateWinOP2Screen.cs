@@ -31,10 +31,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.SoundServices.PlaySoundWin();
         }
 
-        protected virtual void OnX2Reward() { this.UITemplateAdService.ShowRewardedAd("x2Reward", this.AfterWatchAdsX2Reward); }
+        protected virtual void OnX2Reward()
+        {
+            this.UITemplateAdService.ShowRewardedAd("x2Reward", this.AfterWatchAdsX2Reward);
+        }
 
-        protected virtual void AfterWatchAdsX2Reward() { }
+        protected virtual void AfterWatchAdsX2Reward()
+        {
+        }
 
-        protected override void OnClickNext() { }
+        protected override void OnClickNext()
+        {
+        }
     }
 }

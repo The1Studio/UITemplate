@@ -5,7 +5,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
     public class UITemplateLoadingSceneInstaller : BaseSceneInstaller
     {
-
         public override void InstallBindings()
         {
             base.InstallBindings();

@@ -1,11 +1,10 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
-    using System;
-    using System.Net;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
     using UnityEngine;
@@ -22,18 +21,11 @@
     }
 
     [PopupInfo(nameof(UITemplateConnectErrorPopupView), true, false)]
-    public class UITemplateConnectErrorPresenter : BasePopupPresenter<UITemplateConnectErrorPopupView>
+    public class UITemplateConnectErrorPresenter : UITemplateBasePopupPresenter<UITemplateConnectErrorPopupView>
     {
-        private static   double           checkTimeout        = 5;
-        private static   string           connectingMessage   = "Trying to reconnect...\nPlease wait...";
-        private static   string           connectErrorMessage = "Your connection has been lost!\nCheck your internet connection and try again";
-
-        #region MyRegion
-
-        private readonly IScreenManager   screenManager;
-        private readonly IInternetService internetService;
-
-        #endregion
+        private static readonly double checkTimeout        = 5;
+        private static readonly string connectingMessage   = "Trying to reconnect...\nPlease wait...";
+        private static readonly string connectErrorMessage = "Your connection has been lost!\nCheck your internet connection and try again";
 
         public UITemplateConnectErrorPresenter(SignalBus signalBus, IScreenManager screenManager, IInternetService internetService) : base(signalBus)
         {
@@ -41,7 +33,11 @@
             this.internetService = internetService;
         }
 
-        public override void BindData() { this.UpdateContent(isConnecting: false); }
+        public override void BindData()
+        {
+            this.UpdateContent(false);
+        }
+
         protected override async void OnViewReady()
         {
             base.OnViewReady();
@@ -52,11 +48,13 @@
         {
             this.screenManager.CloseCurrentScreen();
         }
+
         private void UpdateImage(bool isConnecting)
         {
             this.View.ConnectingImage.gameObject.SetActive(isConnecting);
             this.View.ConnectErrorImage.gameObject.SetActive(!isConnecting);
         }
+
         private void UpdateContent(bool isConnecting)
         {
             this.View.Message.text           = isConnecting ? connectingMessage : connectErrorMessage;
@@ -64,11 +62,12 @@
             this.View.Reconnect.interactable = !isConnecting;
             this.UpdateImage(isConnecting);
         }
+
         private async void OnClickReconnect()
         {
-            var time = Time.realtimeSinceStartup;
+            var time                      = Time.realtimeSinceStartup;
             var timeSinceLastConnectCheck = time - 0.1;
-            this.UpdateContent(isConnecting: true);
+            this.UpdateContent(true);
             var isConnected = false;
             await UniTask.WaitUntil(() =>
             {
@@ -88,7 +87,14 @@
                 return;
             }
 
-            this.UpdateContent(isConnecting: false);
+            this.UpdateContent(false);
         }
+
+        #region MyRegion
+
+        private readonly IScreenManager   screenManager;
+        private readonly IInternetService internetService;
+
+        #endregion
     }
 }

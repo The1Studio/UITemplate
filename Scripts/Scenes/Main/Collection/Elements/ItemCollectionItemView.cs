@@ -20,18 +20,18 @@
 
     public class ItemCollectionItemPresenter : BaseItemCollectionPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
-        private readonly IGameAssets                 gameAssets;
+        private readonly IGameAssets             gameAssets;
         private readonly UITemplateInventoryData inventoryData;
 
         private ItemCollectionItemModel model;
 
-        protected override string CategoryType => "Item";
-
-        public ItemCollectionItemPresenter(IGameAssets gameAssets,UITemplateInventoryData inventoryData ) : base(gameAssets)
+        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateInventoryData inventoryData) : base(gameAssets)
         {
             this.gameAssets    = gameAssets;
             this.inventoryData = inventoryData;
         }
+
+        protected override string CategoryType => "Item";
 
         public override async void BindData(ItemCollectionItemModel param)
         {
@@ -44,7 +44,10 @@
             this.View.BuyItemButton.onClick.AddListener(this.OnBuyItem);
         }
 
-        private void OnSelect() { this.model.OnSelected?.Invoke(this.model); }
+        private void OnSelect()
+        {
+            this.model.OnSelected?.Invoke(this.model);
+        }
 
         private void OnBuyItem()
         {
@@ -85,11 +88,20 @@
             this.View.UnlockedObj.SetActive(false);
         }
 
-        private void InitItemLocked() { this.View.LockedObj.SetActive(true); }
+        private void InitItemLocked()
+        {
+            this.View.LockedObj.SetActive(true);
+        }
 
-        private void InitItemUnLocked() { this.View.UnlockedObj.SetActive(true); }
+        private void InitItemUnLocked()
+        {
+            this.View.UnlockedObj.SetActive(true);
+        }
 
-        private void InitItemOwned() { this.View.OwnedObj.SetActive(true); }
+        private void InitItemOwned()
+        {
+            this.View.OwnedObj.SetActive(true);
+        }
 
         public override void Dispose()
         {

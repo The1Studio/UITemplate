@@ -2,7 +2,6 @@
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
@@ -19,7 +18,7 @@
     }
 
     [PopupInfo(nameof(UITemplateSettingPopupView))]
-    public class UITemplateSettingPopupPresenter : BasePopupPresenter<UITemplateSettingPopupView>
+    public class UITemplateSettingPopupPresenter : UITemplateBasePopupPresenter<UITemplateSettingPopupView>
     {
         #region inject
 
@@ -27,7 +26,10 @@
 
         #endregion
 
-        public UITemplateSettingPopupPresenter(SignalBus signalBus, UITemplateSettingDataController uiTemplateSettingDataController) : base(signalBus) { this.uiTemplateSettingDataController = uiTemplateSettingDataController; }
+        public UITemplateSettingPopupPresenter(SignalBus signalBus, UITemplateSettingDataController uiTemplateSettingDataController) : base(signalBus)
+        {
+            this.uiTemplateSettingDataController = uiTemplateSettingDataController;
+        }
 
         protected override void OnViewReady()
         {

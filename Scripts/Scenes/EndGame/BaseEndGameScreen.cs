@@ -1,10 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
-    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices;
     using UnityEngine.UI;
     using Zenject;
 
@@ -13,14 +12,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         public Button btnNext;
     }
 
-    public abstract class BaseEndGameScreenPresenter<TView> : BaseScreenPresenter<TView> where TView : BaseEndGameScreenView
+    public abstract class BaseEndGameScreenPresenter<TView> : UITemplateBaseScreenPresenter<TView> where TView : BaseEndGameScreenView
     {
+        protected readonly UITemplateSoundServices    SoundServices;
         protected readonly UITemplateAdServiceWrapper UITemplateAdService;
-        protected readonly UITemplateSoundServices     SoundServices;
+
         protected BaseEndGameScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus)
         {
             this.UITemplateAdService = uiTemplateAdService;
-            this.SoundServices        = soundServices;
+            this.SoundServices       = soundServices;
         }
 
         protected override void OnViewReady()
@@ -29,11 +29,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.View.btnNext.onClick.AddListener(this.OnClickNext);
         }
 
-        public override void BindData() { }
+        public override void BindData()
+        {
+        }
 
         protected virtual void OnClickNext()
         {
-            this.SoundServices.PlaySoundClick();
         }
     }
 }

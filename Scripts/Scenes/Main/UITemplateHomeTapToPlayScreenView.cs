@@ -21,24 +21,14 @@
     }
 
     [ScreenInfo(nameof(UITemplateHomeTapToPlayScreenView))]
-    public class UITemplateHomeTapToPlayScreenPresenter : BaseScreenPresenter<UITemplateHomeTapToPlayScreenView>
+    public class UITemplateHomeTapToPlayScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeTapToPlayScreenView>
     {
-        #region inject
-
-        protected readonly IScreenManager                    ScreenManager;
-        protected readonly DiContainer                       DiContainer;
-        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
-        protected readonly UITemplateSoundServices            SoundServices;
-
-        #endregion
-
-
         public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundServices soundServices) : base(signalBus)
         {
             this.ScreenManager                     = screenManager;
             this.DiContainer                       = diContainer;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.SoundServices                      = soundServices;
+            this.SoundServices                     = soundServices;
         }
 
         protected override async void OnViewReady()
@@ -58,13 +48,11 @@
 
         protected virtual void OnClickShopButton()
         {
-            this.SoundServices.PlaySoundClick();
             this.ScreenManager.OpenScreen<UITemplateNewCollectionScreenPresenter>();
         }
 
         protected virtual void OnClickTapToPlayButton()
         {
-            this.SoundServices.PlaySoundClick();
             this.ScreenManager.OpenScreen<UITemplateGameplayScreenPresenter>();
         }
 
@@ -73,5 +61,14 @@
             base.Dispose();
             this.View.CoinText.Unsubscribe(this.SignalBus);
         }
+
+        #region inject
+
+        protected readonly IScreenManager                    ScreenManager;
+        protected readonly DiContainer                       DiContainer;
+        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
+        protected readonly UITemplateSoundServices           SoundServices;
+
+        #endregion
     }
 }

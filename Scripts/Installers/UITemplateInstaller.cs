@@ -53,7 +53,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<UITemplateAdServiceWrapper>().AsCached();
 #endif
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
-#if ONE_SOFT
+#if ONESOFT
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
 #elif WIDO
             this.Container.Bind<IAnalyticEventFactory>().To<WidoAnalyticEventFactory>().AsCached();

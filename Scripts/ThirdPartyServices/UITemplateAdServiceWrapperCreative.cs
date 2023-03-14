@@ -6,9 +6,9 @@
     using TheOneStudio.UITemplate.UITemplate.Models;
     using Zenject;
 
-    public class UITemplateAdServiceWrapperDummy : UITemplateAdServiceWrapper
+    public class UITemplateAdServiceWrapperCreative : UITemplateAdServiceWrapper
     {
-        public UITemplateAdServiceWrapperDummy(ILogService logService, SignalBus signalBus, IAdServices adServices, UITemplateAdsData uiTemplateAdsData) : base(logService, signalBus, adServices, uiTemplateAdsData)
+        public UITemplateAdServiceWrapperCreative(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData) : base(logService, signalBus, adServices, mrecAdService, uiTemplateAdsData)
         {
         }
         
@@ -20,5 +20,12 @@
         }
         public override bool IsRewardedAdReady(string     place) { return true; }
         public override bool IsInterstitialAdReady(string place) { return true; }
+
+        public override void ShowMREC(AdViewPosition adViewPosition)
+        {
+        }
+        public override void HideMREC(AdViewPosition adViewPosition)
+        {
+        }
     }
 }

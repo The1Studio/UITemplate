@@ -13,15 +13,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region inject
 
         private readonly IAdServices       adServices;
+        private readonly IMRECAdService    mrecAdService;
         private readonly UITemplateAdsData uiTemplateAdsData;
         private readonly ILogService       logService;
         private readonly SignalBus         signalBus;
 
         #endregion
 
-        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices, UITemplateAdsData uiTemplateAdsData)
+        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData)
         {
             this.adServices        = adServices;
+            this.mrecAdService     = mrecAdService;
             this.uiTemplateAdsData = uiTemplateAdsData;
             this.logService        = logService;
             this.signalBus         = signalBus;
@@ -64,5 +66,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual bool IsRewardedAdReady(string place) { return this.adServices.IsRewardedAdReady(place); }
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
+
+        public virtual void ShowMREC(AdViewPosition adViewPosition)
+        {
+            if (adViewPosition == AdViewPosition.BottomCenter)
+            {
+                this.adServices.HideBannedAd();
+            }
+
+            this.mrecAdService.ShowMREC(adViewPosition);
+        }
+
+        public virtual void HideMREC(AdViewPosition adViewPosition)
+        {
+            this.mrecAdService.HideMREC(adViewPosition);
+
+            if (adViewPosition == AdViewPosition.BottomCenter)
+            {
+                this.adServices.ShowBannerAd();
+            }
+        }
     }
 }

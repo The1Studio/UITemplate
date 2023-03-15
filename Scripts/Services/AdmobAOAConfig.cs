@@ -10,5 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
     public class AdmobAOAConfig : ScriptableObject, IGameConfig
     {
         public List<string> listAoaAppId = new();
+        public List<string> listNativeAds = new();
+
     }
 }

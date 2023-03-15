@@ -42,6 +42,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
         }
 
+        public LevelData GetCurrentLevelData()
+        {
+            return this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);
+        }
+
         public int MaxLevel
         {
             get

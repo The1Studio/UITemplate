@@ -16,11 +16,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public int    Level;
         public Status LevelStatus;
         public int    StarCount;
+        public int    LoseCount;
+        public int    WinCount;
 
-        public LevelData(int level, Status levelStatus, int starCount = 0)
+        public LevelData(int level, Status levelStatus, int loseCount = 0, int winCount = 0, int starCount = 0)
         {
             this.Level       = level;
             this.LevelStatus = levelStatus;
+            this.LoseCount   = loseCount;
+            this.WinCount    = winCount;
             this.StarCount   = starCount;
         }
 

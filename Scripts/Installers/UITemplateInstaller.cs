@@ -57,9 +57,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
 #elif WIDO
             this.Container.Bind<IAnalyticEventFactory>().To<WidoAnalyticEventFactory>().AsCached();
+#elif ABI_FIREBASE
+            this.Container.Bind<IAnalyticEventFactory>().To<ABIFirebaseAnalyticEventFactory>().AsCached();
 #else
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
 #endif
+            
             //Manager
             this.Container.BindInterfacesAndSelfTo<GameSeasonManager>().AsCached().NonLazy();
             //Build-in service
@@ -92,7 +95,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        this.Container.Bind<IFlashLight>().To<FlashlightPluginAndroid>().AsSingle().NonLazy();
+            this.Container.Bind<IFlashLight>().To<FlashlightPluginAndroid>().AsSingle().NonLazy();
 #endif
 
 #if UNITY_IOS

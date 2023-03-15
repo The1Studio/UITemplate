@@ -31,6 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 Vibration.VibrateNope();
         }
 
+#if UNITY_ANDROID
         public void VibrateAndroid(long milliseconds)
         {
             if (this.uiTemplateUserSettingData.IsVibrationEnable)
@@ -44,6 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         }
 
         public void CancelAndroid() { Vibration.CancelAndroid(); }
+#endif
 
         public bool HasVibrator() { return Vibration.HasVibrator(); }
 

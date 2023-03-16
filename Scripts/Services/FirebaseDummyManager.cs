@@ -2,7 +2,7 @@
 {
     using TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces;
 
-    public class FirebaseDummyRemoteConfig : IFirebaseRemoteConfig
+    public class FirebaseDummyManager : IFirebaseRemoteConfig
     {
         public string GetRemoteConfigStringValue(string key) { return ""; }
 

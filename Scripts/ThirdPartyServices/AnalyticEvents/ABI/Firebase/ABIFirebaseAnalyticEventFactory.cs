@@ -14,9 +14,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
         public IEvent InterstitialClick(string place) => new AdInterClick(place);
 
+        public IEvent RewardedVideoOffer(string place) => new AdsRewardOffer(place);
+
         public IEvent RewardedVideoShow(int level, string place) => new AdsRewardOffer(place);
 
-        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded, string msg) { return isRewarded ? new AdsRewardShow(place) : new AdsRewardFail(place, msg); }
+        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) => new AdsRewardShow(place);
 
         public IEvent RewardedVideoClick(string place) => new AdsRewardClick(place);
 

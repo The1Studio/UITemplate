@@ -122,12 +122,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void LevelEndedHandler(LevelEndedSignal obj)
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LevelMaxProperty] = this.uiTemplateLevelDataController.MaxLevel;
+            var levelData = this.uiTemplateLevelDataController.GetLevelData(obj.Level);
             this.Track(obj.IsWin
-                ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time, this.uiTemplateLevelDataController.GetCurrentLevelData().WinCount)
-                : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, this.uiTemplateLevelDataController.GetCurrentLevelData().LoseCount));
-            if (obj.IsWin && obj.Level == this.uiTemplateLevelDataController.MaxLevel)
+                ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time, levelData.WinCount)
+                : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount));
+
+            if (obj.IsWin && levelData.WinCount == 1)
             {
                 this.analyticEventFactory.FirstWin(obj.Level, obj.Time);
+            }
+
+            if (!obj.IsWin)
+            {
+                this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount);
             }
         }
 

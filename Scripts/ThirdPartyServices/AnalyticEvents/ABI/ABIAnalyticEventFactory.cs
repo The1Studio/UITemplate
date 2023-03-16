@@ -18,11 +18,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
         public IEvent RewardedVideoOffer(string place) => new AdsRewardOffer(place);
 
-        public IEvent RewardedVideoLoaded(string place) => new AfRewardedAdCompleted();
+        public IEvent RewardedVideoLoaded(string place) => new AdsRewardedLoaded();
 
         public IEvent RewardedVideoShow(int level, string place) => new AdsRewardOffer(place);
 
-        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) => new AdsRewardShow(place);
+        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) => new AdsRewardComplete(place);
 
         public IEvent RewardedVideoClick(string place) => new AdsRewardClick(place);
 

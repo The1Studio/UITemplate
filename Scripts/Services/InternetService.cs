@@ -21,11 +21,9 @@
         public static string WorldTimeAPIUrl  => "http://worldtimeapi.org/api";
         public static string CheckInternetUrl => "https://www.google.com/";
 
-
-        private bool cachedInternetStatus;
+        private bool isInternetAvailable = true;
 
         public InternetService(ILogService logService) { this.logService = logService; }
-
 
         public void Initialize() { this.CheckInternetInterval(); }
 
@@ -41,6 +39,7 @@
             var url     = $"{WorldTimeAPIUrl}/ip";
             var request = UnityWebRequest.Get(url);
             await request.SendWebRequest();
+
             if (request.result == UnityWebRequest.Result.ConnectionError)
             {
                 this.logService.Error("No internet!");
@@ -77,10 +76,9 @@
             return default;
         }
 
-        public bool IsInternetAvailable => this.cachedInternetStatus;
+        public bool IsInternetAvailable => this.isInternetAvailable;
 
-        private void CheckInternet() { this.cachedInternetStatus = UnityWebRequest.Get(CheckInternetUrl).result == UnityWebRequest.Result.ConnectionError; }
-
+        private void CheckInternet() { this.isInternetAvailable = UnityWebRequest.Get(CheckInternetUrl).result != UnityWebRequest.Result.ConnectionError; }
 
         public class WorldTimeAPIResponse
         {

@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -62,11 +63,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #else
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
 #endif
-            
+
             //Manager
             this.Container.BindInterfacesAndSelfTo<GameSeasonManager>().AsCached().NonLazy();
             //Build-in service
-            this.Container.Bind<IInternetService>().To<InternetService>().AsSingle().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<InternetService>().AsSingle().NonLazy();
 
             //Data controller
             this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardController>().AsCached();
@@ -100,6 +101,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
 #if UNITY_IOS
         this.Container.Bind<IFlashLight>().To<FlashlightPluginIOS>().AsSingle().NonLazy();
+#endif
+
+#if FIREBASE_REMOTE_CONFIG
+            this.Container.Bind<IFirebaseRemoteConfig>().To<FirebaseRemoteConfig>().AsCached().NonLazy();
+
+#else
+            this.Container.Bind<IFirebaseManager>().To<FirebaseManagerDummy>().AsCached().NonLazy();
 #endif
         }
 

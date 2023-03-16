@@ -33,7 +33,10 @@
         "DOTween.dll",
         "Newtonsoft.Json.dll",
         "Zenject-usage.dll",
-        "Sirenix.Serialization.dll"
+        "Sirenix.Serialization.dll",
+        "Firebase.RemoteConfig.dll",
+        "Firebase.TaskExtension.dll",
+        "Firebase.App.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

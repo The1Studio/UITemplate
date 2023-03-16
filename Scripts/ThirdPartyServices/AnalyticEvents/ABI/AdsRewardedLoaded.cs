@@ -2,7 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 {
     using Core.AnalyticServices.Data;
 
-    public class AfRewardedAdCompleted : IEvent
+    public class AdsRewardedLoaded : IEvent
     {
     }
 }

@@ -8,11 +8,16 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent InterstitialShowCompleted(int level, string place);
 
+        IEvent InterstitialShowFail(string place, string msg);
+
+        IEvent InterstitialClick(string place);
+
         IEvent RewardedVideoShow(int level, string place);
 
-        IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded);
+        IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded, string msg);
 
         IEvent RewardedVideoClick(string place);
+        IEvent RewardedVideoShowFail(string place, string msg);
 
         IEvent LevelLose(int level, int timeSpent, int loseCount);
 

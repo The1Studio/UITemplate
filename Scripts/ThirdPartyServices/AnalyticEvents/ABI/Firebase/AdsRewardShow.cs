@@ -4,13 +4,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
     public class AdsRewardShow: IEvent
     {
-        public int    Level;
-        public string Place;
+        public string Placement;
 
-        public AdsRewardShow(int level, string place)
+        public AdsRewardShow(string placement)
         {
-            this.Level = level;
-            this.Place = place;
+            this.Placement = placement;
         }
     }
 }

@@ -26,11 +26,17 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.W
 
         public IEvent InterstitialShowCompleted(int level, string place) { return new InterstitialAdsSuccess(place); }
 
+        public IEvent InterstitialShowFail(string place, string msg) { return new CustomEvent(); }
+
+        public IEvent InterstitialClick(string place) { return new CustomEvent(); }
+
         public IEvent RewardedVideoShow(int level, string place) { return new ShowRewardedAds(this.internetService.IsInternetAvailable, place); }
 
-        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) { return new RewardedAdsSuccess(place, isRewarded ? "success" : "skip"); }
+        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded, string msg) { return new RewardedAdsSuccess(place, isRewarded ? "success" : "skip"); }
 
         public IEvent RewardedVideoClick(string place) { return new CustomEvent(); }
+
+        public IEvent RewardedVideoShowFail(string place, string msg) { return new CustomEvent(); }
 
         public IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelFailed(level, timeSpent); }
 

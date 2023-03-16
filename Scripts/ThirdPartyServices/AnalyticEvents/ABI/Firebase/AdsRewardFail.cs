@@ -4,8 +4,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
     public class AdsRewardFail: IEvent
     {
-        public string Place;
+        public string Placement;
+        public string Message;
 
-        public AdsRewardFail(string place) { this.Place = place; }
+        public AdsRewardFail(string placement, string message)
+        {
+            this.Placement   = placement;
+            this.Message = message;
+        }
     }
 }

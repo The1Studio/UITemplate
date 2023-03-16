@@ -4,8 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
     public class AdInterLoad : IEvent
     {
-        public string Place;
+        public string Placement;
 
-        public AdInterLoad(string place) { this.Place = place; }
+        public AdInterLoad(string placement) { this.Placement = placement; }
     }
 }

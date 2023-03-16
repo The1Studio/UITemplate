@@ -2,15 +2,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 {
     using Core.AnalyticServices.Data;
 
-    public class AdInterShow: IEvent
+    public class AdInterShow : IEvent
     {
-        public int    Level;
-        public string Place;
+        public string Placement;
 
-        public AdInterShow(int level, string place)
-        {
-            this.Level = level;
-            this.Place = place;
-        }
+        public AdInterShow(string placement) { this.Placement = placement; }
     }
 }

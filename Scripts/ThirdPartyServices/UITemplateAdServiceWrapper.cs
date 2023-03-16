@@ -45,7 +45,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.signalBus.Fire(new InterstitialAdShowedSignal(place));
-            this.uiTemplateAdsData.WatchedInterstitialAds++;;
+            this.uiTemplateAdsData.WatchedInterstitialAds++;
+            ;
             this.adServices.ShowInterstitialAd(place);
         }
 
@@ -59,7 +60,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.signalBus.Fire(new RewardedAdShowedSignal(place));
-            this.uiTemplateAdsData.WatchedRewardedAds++;;
+            this.uiTemplateAdsData.WatchedRewardedAds++;
+            ;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 

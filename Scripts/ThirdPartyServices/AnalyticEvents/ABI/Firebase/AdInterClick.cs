@@ -4,6 +4,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
     public class AdInterClick: IEvent
     {
-        
+        public string Placement;
+
+        public AdInterClick(string placement)
+        {
+            this.Placement = placement;
+        }
     }
 }

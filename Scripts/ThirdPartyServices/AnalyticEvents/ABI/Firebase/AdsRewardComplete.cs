@@ -4,8 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
     public class AdsRewardComplete : IEvent
     {
-        public string Place;
+        public string Placement;
 
-        public AdsRewardComplete(string place) { this.Place = place; }
+        public AdsRewardComplete(string placement) { this.Placement = placement; }
     }
 }

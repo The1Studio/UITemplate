@@ -4,6 +4,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
     public class AdsRewardOffer: IEvent
     {
-        
+        public string Placement;
+
+        public AdsRewardOffer(string placement)
+        {
+            this.Placement = placement;
+        }
     }
 }

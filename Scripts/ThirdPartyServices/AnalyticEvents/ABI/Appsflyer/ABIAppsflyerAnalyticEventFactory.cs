@@ -8,11 +8,17 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
         public IEvent InterstitialShowCompleted(int level, string place) { throw new System.NotImplementedException(); }
 
+        public IEvent InterstitialShowFail(string place, string msg) { throw new System.NotImplementedException(); }
+
+        public IEvent InterstitialClick(string place) { throw new System.NotImplementedException(); }
+
         public IEvent RewardedVideoShow(int level, string place) { throw new System.NotImplementedException(); }
 
-        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) { throw new System.NotImplementedException(); }
+        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded, string msg) { throw new System.NotImplementedException(); }
 
         public IEvent RewardedVideoClick(string place) { throw new System.NotImplementedException(); }
+
+        public IEvent RewardedVideoShowFail(string place, string msg) { throw new System.NotImplementedException(); }
 
         public IEvent LevelLose(int level, int timeSpent, int loseCount) { throw new System.NotImplementedException(); }
 

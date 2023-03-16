@@ -8,13 +8,19 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
     {
         public IEvent InterstitialShow(int level, string place) => new AdInterLoad(place);
 
-        public IEvent InterstitialShowCompleted(int level, string place) => new AdInterShow(level, place);
+        public IEvent InterstitialShowCompleted(int level, string place) => new AdInterShow(place);
 
-        public IEvent RewardedVideoShow(int level, string place) => new AdsRewardShow(level, place);
+        public IEvent InterstitialShowFail(string place, string msg) => new AdInterFail(msg);
 
-        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) { return isRewarded ? new AdsRewardComplete(place) : new AdsRewardFail(place); }
+        public IEvent InterstitialClick(string place) => new AdInterClick(place);
+
+        public IEvent RewardedVideoShow(int level, string place) => new AdsRewardOffer(place);
+
+        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded, string msg) { return isRewarded ? new AdsRewardShow(place) : new AdsRewardFail(place, msg); }
 
         public IEvent RewardedVideoClick(string place) => new AdsRewardClick(place);
+
+        public IEvent RewardedVideoShowFail(string place, string msg) => new AdsRewardFail(place, msg);
 
         public IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelFail(level, loseCount);
 

@@ -4,6 +4,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
     public class AdInterFail: IEvent
     {
-        
+        public string errormsg;
+
+        public AdInterFail(string pErrormsg)
+        {
+            this.errormsg = pErrormsg;
+        }
     }
 }

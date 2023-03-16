@@ -16,26 +16,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     {
         #region inject
 
-        private readonly SignalBus                     signalBus;
-        private readonly IAnalyticServices             analyticServices;
-        private readonly IAnalyticEventFactory         analyticEventFactory;
-        private readonly UITemplateUserLevelData       uiTemplateUserLevelData;
-        private readonly IAdServices                   adServices;
-        private readonly ILogService                   logService;
-        private readonly UITemplateLevelDataController uiTemplateLevelDataController;
+        private readonly SignalBus                         signalBus;
+        private readonly IAnalyticServices                 analyticServices;
+        private readonly IAnalyticEventFactory             analyticEventFactory;
+        private readonly UITemplateUserLevelData           uiTemplateUserLevelData;
+        private readonly IAdServices                       adServices;
+        private readonly ILogService                       logService;
+        private readonly UITemplateLevelDataController     uiTemplateLevelDataController;
+        private readonly UITemplateInventoryDataController uITemplateInventoryDataController;
 
         #endregion
 
-        public UITemplateAnalyticHandler(SignalBus   signalBus,  IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateUserLevelData uiTemplateUserLevelData,
-                                         IAdServices adServices, ILogService       logService, UITemplateLevelDataController uiTemplateLevelDataController)
+        public UITemplateAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateUserLevelData uiTemplateUserLevelData,
+            IAdServices adServices, ILogService logService, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateInventoryDataController uITemplateInventoryDataController)
         {
-            this.signalBus                     = signalBus;
-            this.analyticServices              = analyticServices;
-            this.analyticEventFactory          = analyticEventFactory;
-            this.uiTemplateUserLevelData       = uiTemplateUserLevelData;
-            this.adServices                    = adServices;
-            this.logService                    = logService;
-            this.uiTemplateLevelDataController = uiTemplateLevelDataController;
+            this.signalBus                         = signalBus;
+            this.analyticServices                  = analyticServices;
+            this.analyticEventFactory              = analyticEventFactory;
+            this.uiTemplateUserLevelData           = uiTemplateUserLevelData;
+            this.adServices                        = adServices;
+            this.logService                        = logService;
+            this.uiTemplateLevelDataController     = uiTemplateLevelDataController;
+            this.uITemplateInventoryDataController = uITemplateInventoryDataController;
         }
 
         private void Track(IEvent trackEvent)
@@ -62,13 +64,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.adServices.InterstitialAdCompleted += this.InterstitialAdCompletedHandler;
         }
 
+        private void OnRewardedAdFailed(RewardedAdNetwork arg1, string arg2, string arg3) { this.analyticEventFactory.RewardedVideoShowFail(arg2, arg3); }
+
+        private void OnRewardedAdClicked(RewardedAdNetwork arg1, string arg2) { this.analyticEventFactory.RewardedVideoClick(arg2); }
+
         private void PopupShowedHandler(PopupShowedSignal obj) { }
 
-        private void InterstitialAdCompletedHandler(InterstitialAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.InterstitialShowCompleted(0, arg2)); }
+        private void RewardedAdSkippedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, false, "Skip")); }
 
-        private void RewardedAdSkippedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, false)); }
-
-        private void RewardedAdCompletedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, true)); }
+        private void RewardedAdCompletedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, true, string.Empty)); }
 
         private void RewardedAdShowedHandler(RewardedAdShowedSignal obj)
         {
@@ -81,21 +85,29 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LastAdsPlacementProperty]     = obj.place;
             this.analyticServices.UserProperties[this.analyticEventFactory.TotalInterstitialAdsProperty] = obj.place;
-            this.Track(this.analyticEventFactory.InterstitialShow(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
+            this.Track(this.analyticEventFactory.InterstitialShowCompleted(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
         }
+
+        private void InterstitialAdCompletedHandler(InterstitialAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.InterstitialShowCompleted(0, arg2)); }
 
         private void LevelSkippedHandler(LevelSkippedSignal obj) { this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time)); }
 
         private void LevelEndedHandler(LevelEndedSignal obj)
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LevelMaxProperty] = this.uiTemplateLevelDataController.MaxLevel;
-            this.Track(obj.IsWin ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time) : this.analyticEventFactory.LevelLose(obj.Level, obj.Time));
+            this.Track(obj.IsWin
+                ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time, this.uiTemplateLevelDataController.GetCurrentLevelData().WinCount)
+                : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, this.uiTemplateLevelDataController.GetCurrentLevelData().LoseCount));
+            if (obj.IsWin && obj.Level == this.uiTemplateLevelDataController.MaxLevel)
+            {
+                this.analyticEventFactory.FirstWin(obj.Level, obj.Time);
+            }
         }
 
         private void LevelStartedHandler(LevelStartedSignal obj)
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LastLevelProperty] = this.uiTemplateUserLevelData.CurrentLevel;
-            this.Track(this.analyticEventFactory.LevelStart(obj.Level));
+            this.Track(this.analyticEventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrency().Value));
         }
 
         public void Dispose()

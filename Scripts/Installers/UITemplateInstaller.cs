@@ -15,6 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft;
     using UnityEngine;
     using Zenject;
@@ -45,17 +46,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
             //Signal
             this.Container.DeclareSignal<RewardedAdShowedSignal>();
-            this.Container.DeclareSignal<RewardedAdClickedSignal>();
-            this.Container.DeclareSignal<RewardedAdFailedSignal>();
             this.Container.DeclareSignal<RewardedAdOfferSignal>();
             this.Container.DeclareSignal<UpdateCurrencySignal>();
             this.Container.DeclareSignal<LevelStartedSignal>();
             this.Container.DeclareSignal<LevelEndedSignal>();
             this.Container.DeclareSignal<LevelSkippedSignal>();
             this.Container.DeclareSignal<InterstitialAdShowedSignal>();
-            this.Container.DeclareSignal<InterstitialAdClickedSignal>();
-            this.Container.DeclareSignal<InterstitialAdFailedSignal>();
-            this.Container.DeclareSignal<InterstitialAdLoadedSignal>();
             //Third party service
             AdServiceInstaller.Install(this.Container);
             AnalyticServicesInstaller.Install(this.Container);
@@ -70,8 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #elif WIDO
             this.Container.Bind<IAnalyticEventFactory>().To<WidoAnalyticEventFactory>().AsCached();
 #elif ABI
-            this.Container.Bind<IAnalyticEventFactory>().To<ABIFirebaseAnalyticEventFactory>().AsCached();
-            this.Container.Bind<IAnalyticEventFactory>().To<ABIAppsflyerAnalyticEventFactory>().AsCached();
+            this.Container.Bind<IAnalyticEventFactory>().To<ABIAnalyticEventFactory>().AsCached();
 #else
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
 #endif

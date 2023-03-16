@@ -1,10 +1,10 @@
-namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI.Firebase
+namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI
 {
     using System.Collections.Generic;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
 
-    public class ABIFirebaseAnalyticEventFactory : IAnalyticEventFactory
+    public class ABIAnalyticEventFactory : IAnalyticEventFactory
     {
         public IEvent InterstitialShow(int level, string place) => new AdInterLoad(place);
 
@@ -14,7 +14,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
         public IEvent InterstitialClick(string place) => new AdInterClick(place);
 
+        public IEvent InterstitialRequest(string place) => new AdInterRequest();
+
         public IEvent RewardedVideoOffer(string place) => new AdsRewardOffer(place);
+
+        public IEvent RewardedVideoLoaded(string place) => new AfRewardedAdCompleted();
 
         public IEvent RewardedVideoShow(int level, string place) => new AdsRewardOffer(place);
 

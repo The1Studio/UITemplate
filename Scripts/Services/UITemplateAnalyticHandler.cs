@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using Core.AdsServices;
+    using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
@@ -61,12 +62,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<InterstitialAdShowedSignal>(this.InterstitialAdShowedHandler);
             this.signalBus.Subscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);
             this.signalBus.Subscribe<InterstitialAdLoadedSignal>(this.InterstitialAdLoadedHandler);
-            this.signalBus.Subscribe<InterstitialAdFailedSignal>(this.InterstitialAdFailedHandler);
+            this.signalBus.Subscribe<InterstitialAdLoadFailedSignal>(this.InterstitialAdFailedHandler);
             this.signalBus.Subscribe<RewardedAdShowedSignal>(this.RewardedAdShowedHandler);
             this.signalBus.Subscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
-            this.signalBus.Subscribe<RewardedAdClickedSignal>(this.RewardedAdClickedHandler);
-            this.signalBus.Subscribe<RewardedAdFailedSignal>(this.RewardedAdFailedHandler);
-
+            this.signalBus.Subscribe<RewardedAdLoadClickedSignal>(this.RewardedAdClickedHandler);
+            this.signalBus.Subscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
+            this.signalBus.Subscribe<RewardedAdLoadedSignal>(this.RewardedAdLoadedHandler);
             this.signalBus.Subscribe<PopupShowedSignal>(this.PopupShowedHandler);
 
             //Ads events
@@ -77,11 +78,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region Interstitial Ads Signal Handler
 
-        private void InterstitialAdClickedHandler(InterstitialAdClickedSignal obj) { this.Track(this.analyticEventFactory.InterstitialClick(obj.Place)); }
+        private void InterstitialAdClickedHandler(InterstitialAdClickedSignal obj) { this.Track(this.analyticEventFactory.InterstitialClick(obj.Placement)); }
 
-        private void InterstitialAdLoadedHandler(InterstitialAdLoadedSignal obj) { this.Track(this.analyticEventFactory.InterstitialShow(0, obj.Place)); }
+        private void InterstitialAdLoadedHandler(InterstitialAdLoadedSignal obj) { this.Track(this.analyticEventFactory.InterstitialShow(0, obj.Placement)); }
 
-        private void InterstitialAdFailedHandler(InterstitialAdFailedSignal obj) { this.Track(this.analyticEventFactory.InterstitialShowFail(obj.Place, obj.ErrorMessage)); }
+        private void InterstitialAdFailedHandler(InterstitialAdLoadFailedSignal obj) { this.Track(this.analyticEventFactory.InterstitialShowFail(obj.Placement, obj.Message)); }
 
         private void InterstitialAdShowedHandler(InterstitialAdShowedSignal obj)
         {
@@ -96,11 +97,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region Rewarded Ads Signal Handler
 
-        private void RewardedAdFailedHandler(RewardedAdFailedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoShowFail(obj.Place, obj.ErrorMessage)); }
+        private void RewardedAdFailedHandler(RewardedAdLoadFailedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoShowFail(obj.Placement, obj.Message)); }
 
         private void RewardedAdOfferHandler(RewardedAdOfferSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoOffer(obj.Place)); }
+        
+        private void RewardedAdLoadedHandler(RewardedAdLoadedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoLoaded(obj.Placement)); }
 
-        private void RewardedAdClickedHandler(RewardedAdClickedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoClick(obj.Place)); }
+        private void RewardedAdClickedHandler(RewardedAdLoadClickedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoClick(obj.Placement)); }
 
         private void RewardedAdSkippedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, false)); }
 

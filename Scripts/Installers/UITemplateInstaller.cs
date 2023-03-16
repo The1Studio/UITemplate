@@ -107,7 +107,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<IFirebaseRemoteConfig>().To<FirebaseRemoteConfig>().AsCached().NonLazy();
 
 #else
-            this.Container.Bind<IFirebaseManager>().To<FirebaseManagerDummy>().AsCached().NonLazy();
+            this.Container.Bind<IFirebaseRemoteConfig>().To<FirebaseManagerDummy>().AsCached().NonLazy();
 #endif
         }
 

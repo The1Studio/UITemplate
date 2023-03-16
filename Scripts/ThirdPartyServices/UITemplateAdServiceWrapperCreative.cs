@@ -8,8 +8,8 @@
 
     public class UITemplateAdServiceWrapperCreative : UITemplateAdServiceWrapper
     {
-        public UITemplateAdServiceWrapperCreative(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData) : base(
-            logService, signalBus, adServices, mrecAdService, uiTemplateAdsData)
+        public UITemplateAdServiceWrapperCreative(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData, UITemplateAdServiceConfig config) : base(
+            logService, signalBus, adServices, mrecAdService, uiTemplateAdsData, config)
         {
         }
 

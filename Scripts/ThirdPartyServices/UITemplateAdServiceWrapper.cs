@@ -8,23 +8,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
+    public class UITemplateAdServiceConfig
+    {
+        public long InterstitialAdInterval { get; set; }
+    }
+
     public class UITemplateAdServiceWrapper
     {
         #region inject
 
-        private readonly IAdServices       adServices;
-        private readonly IMRECAdService    mrecAdService;
-        private readonly UITemplateAdsData uiTemplateAdsData;
-        private readonly ILogService       logService;
-        private readonly SignalBus         signalBus;
+        private readonly IAdServices               adServices;
+        private readonly IMRECAdService            mrecAdService;
+        private readonly UITemplateAdsData         uiTemplateAdsData;
+        private readonly UITemplateAdServiceConfig config;
+        private readonly ILogService               logService;
+        private readonly SignalBus                 signalBus;
 
         #endregion
 
-        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData)
+        private long lastInterstitialAdTime;
+
+        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData, UITemplateAdServiceConfig config)
         {
             this.adServices        = adServices;
             this.mrecAdService     = mrecAdService;
             this.uiTemplateAdsData = uiTemplateAdsData;
+            this.config            = config;
             this.logService        = logService;
             this.signalBus         = signalBus;
         }
@@ -43,6 +52,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowInterstitialAd(string place)
         {
+            var currentTimestamp = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
+            if (this.lastInterstitialAdTime + this.config.InterstitialAdInterval > currentTimestamp)
+            {
+                this.logService.Warning("InterstitialAd was not passed interval");
+                return;
+            }
+
+            this.lastInterstitialAdTime = currentTimestamp;
+
             if (!this.adServices.IsInterstitialAdReady(place))
             {
                 this.logService.Warning("InterstitialAd was not loaded");
@@ -52,7 +70,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.signalBus.Fire(new InterstitialAdShowedSignal(place));
             this.uiTemplateAdsData.WatchedInterstitialAds++;
-            ;
             this.adServices.ShowInterstitialAd(place);
         }
 

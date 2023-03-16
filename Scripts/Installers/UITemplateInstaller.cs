@@ -3,9 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities;
-    using global::Models;
     using ServiceImplementation.AdsServices;
-    using ServiceImplementation.AdsServices.EasyMobile;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -60,7 +58,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             AdServiceInstaller.Install(this.Container);
             AnalyticServicesInstaller.Install(this.Container);
 #if CREATIVE
-            this.Container.Bind<UITemplateAdServiceWrapper>().To<UITemplateAdServiceWrapperDummy>().AsCached();
+            this.Container.Bind<UITemplateAdServiceWrapper>().To<UITemplateAdServiceWrapperCreative>().AsCached();
 #else
             this.Container.Bind<UITemplateAdServiceWrapper>().AsCached();
 #endif
@@ -91,12 +89,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
 #endif
 
-#if CREATIVE
+#if CREATIVE && EM_ADMOB
             adMobWrapperConfig.IsShowAOAAtOpenApp = false;
             adMobWrapperConfig.OpenAfterResuming = false;
-            this.Container.BindInterfacesAndSelfTo<CreativeService>().AsCached().NonLazy();
 #endif
 
+#if CREATIVE
+            this.Container.BindInterfacesAndSelfTo<CreativeService>().AsCached().NonLazy();
+#endif
             // Master Audio
             this.Container.InstantiatePrefab(this.soundGroupPrefab);
             this.Container.Bind<UITemplateSoundServices>().AsCached();

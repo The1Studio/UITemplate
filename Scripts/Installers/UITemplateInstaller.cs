@@ -23,7 +23,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         private readonly GameObject soundGroupPrefab;
 
-        public UITemplateInstaller(GameObject soundGroupPrefab) { this.soundGroupPrefab = soundGroupPrefab; }
+        public UITemplateInstaller(GameObject soundGroupPrefab)
+        {
+            this.soundGroupPrefab = soundGroupPrefab;
+        }
 
         public override void InstallBindings()
         {
@@ -32,6 +35,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.BindLocalData<UITemplateUserSettingData>();
             this.BindLocalData<UITemplateDailyRewardData>();
             this.BindLocalData<UITemplateAdsData>();
+
+            this.Container.Bind<UITemplateAdServiceConfig>().AsCached().NonLazy();
 
 #if !TEMPLATE_IAP
             this.Container.Bind<IIapServices>().To<UITemplateDummyIAPServices>().AsCached().NonLazy();

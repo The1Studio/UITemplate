@@ -30,9 +30,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.W
 
         public IEvent InterstitialClick(string place) { return new CustomEvent(); }
 
+        public IEvent RewardedVideoOffer(string place) { return new CustomEvent(); }
+
         public IEvent RewardedVideoShow(int level, string place) { return new ShowRewardedAds(this.internetService.IsInternetAvailable, place); }
 
-        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded, string msg) { return new RewardedAdsSuccess(place, isRewarded ? "success" : "skip"); }
+        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) { return new RewardedAdsSuccess(place, isRewarded ? "success" : "skip"); }
 
         public IEvent RewardedVideoClick(string place) { return new CustomEvent(); }
 

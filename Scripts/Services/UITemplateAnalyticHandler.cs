@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System;
     using Core.AdsServices;
     using Core.AnalyticServices;
+    using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.LogService;
@@ -43,6 +44,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void Track(IEvent trackEvent)
         {
             this.analyticEventFactory.ForceUpdateAllProperties();
+
+            if (trackEvent is CustomEvent customEvent && string.IsNullOrEmpty(customEvent.EventName))
+                return;
             this.analyticServices.Track(trackEvent);
         }
 
@@ -55,7 +59,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Subscribe<InterstitialAdShowedSignal>(this.InterstitialAdShowedHandler);
+            this.signalBus.Subscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);
+            this.signalBus.Subscribe<InterstitialAdLoadedSignal>(this.InterstitialAdLoadedHandler);
+            this.signalBus.Subscribe<InterstitialAdFailedSignal>(this.InterstitialAdFailedHandler);
             this.signalBus.Subscribe<RewardedAdShowedSignal>(this.RewardedAdShowedHandler);
+            this.signalBus.Subscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
+            this.signalBus.Subscribe<RewardedAdClickedSignal>(this.RewardedAdClickedHandler);
+            this.signalBus.Subscribe<RewardedAdFailedSignal>(this.RewardedAdFailedHandler);
+
             this.signalBus.Subscribe<PopupShowedSignal>(this.PopupShowedHandler);
 
             //Ads events
@@ -64,22 +75,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.adServices.InterstitialAdCompleted += this.InterstitialAdCompletedHandler;
         }
 
-        private void OnRewardedAdFailed(RewardedAdNetwork arg1, string arg2, string arg3) { this.analyticEventFactory.RewardedVideoShowFail(arg2, arg3); }
+        #region Interstitial Ads Signal Handler
 
-        private void OnRewardedAdClicked(RewardedAdNetwork arg1, string arg2) { this.analyticEventFactory.RewardedVideoClick(arg2); }
+        private void InterstitialAdClickedHandler(InterstitialAdClickedSignal obj) { this.Track(this.analyticEventFactory.InterstitialClick(obj.Place)); }
 
-        private void PopupShowedHandler(PopupShowedSignal obj) { }
+        private void InterstitialAdLoadedHandler(InterstitialAdLoadedSignal obj) { this.Track(this.analyticEventFactory.InterstitialShow(0, obj.Place)); }
 
-        private void RewardedAdSkippedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, false, "Skip")); }
-
-        private void RewardedAdCompletedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, true, string.Empty)); }
-
-        private void RewardedAdShowedHandler(RewardedAdShowedSignal obj)
-        {
-            this.analyticServices.UserProperties[this.analyticEventFactory.LastAdsPlacementProperty] = obj.place;
-            this.analyticServices.UserProperties[this.analyticEventFactory.TotalRewardedAdsProperty] = obj.place;
-            this.Track(this.analyticEventFactory.RewardedVideoShow(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
-        }
+        private void InterstitialAdFailedHandler(InterstitialAdFailedSignal obj) { this.Track(this.analyticEventFactory.InterstitialShowFail(obj.Place, obj.ErrorMessage)); }
 
         private void InterstitialAdShowedHandler(InterstitialAdShowedSignal obj)
         {
@@ -89,6 +91,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         }
 
         private void InterstitialAdCompletedHandler(InterstitialAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.InterstitialShowCompleted(0, arg2)); }
+
+        #endregion
+
+        #region Rewarded Ads Signal Handler
+
+        private void RewardedAdFailedHandler(RewardedAdFailedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoShowFail(obj.Place, obj.ErrorMessage)); }
+
+        private void RewardedAdOfferHandler(RewardedAdOfferSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoOffer(obj.Place)); }
+
+        private void RewardedAdClickedHandler(RewardedAdClickedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoClick(obj.Place)); }
+
+        private void RewardedAdSkippedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, false)); }
+
+        private void RewardedAdCompletedHandler(RewardedAdNetwork arg1, string arg2) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, arg2, true)); }
+
+        private void RewardedAdShowedHandler(RewardedAdShowedSignal obj)
+        {
+            this.analyticServices.UserProperties[this.analyticEventFactory.LastAdsPlacementProperty] = obj.place;
+            this.analyticServices.UserProperties[this.analyticEventFactory.TotalRewardedAdsProperty] = obj.place;
+            this.Track(this.analyticEventFactory.RewardedVideoShow(this.uiTemplateUserLevelData.CurrentLevel, obj.place));
+        }
+
+        #endregion
+
+        private void PopupShowedHandler(PopupShowedSignal obj) { }
 
         private void LevelSkippedHandler(LevelSkippedSignal obj) { this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time)); }
 

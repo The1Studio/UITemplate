@@ -35,12 +35,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.adServices.ShowBannerAd();
         }
 
+        #region InterstitialAd
+
+        public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
+
+        public virtual void ClickInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdClickedSignal(place)); }
+
         public virtual void ShowInterstitialAd(string place)
         {
             if (!this.adServices.IsInterstitialAdReady(place))
             {
                 this.logService.Warning("InterstitialAd was not loaded");
-
+                this.signalBus.Fire(new InterstitialAdFailedSignal(place, "FailToLoad"));
                 return;
             }
 
@@ -50,24 +56,39 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.adServices.ShowInterstitialAd(place);
         }
 
+        public virtual void LoadInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdLoadedSignal(place)); }
+
+        public virtual void InterstitialAdFail(string place, string errorMessage) { this.signalBus.Fire(new InterstitialAdFailedSignal(place, errorMessage)); }
+
+        #endregion
+
+        #region RewardAd
+
         public virtual void ShowRewardedAd(string place, Action onComplete)
         {
+            this.signalBus.Fire(new RewardedAdClickedSignal(place));
             if (!this.adServices.IsRewardedAdReady(place))
             {
                 this.logService.Warning("Rewarded was not loaded");
+                this.signalBus.Fire(new RewardedAdFailedSignal(place, "InvalidRequest"));
 
                 return;
             }
 
             this.signalBus.Fire(new RewardedAdShowedSignal(place));
             this.uiTemplateAdsData.WatchedRewardedAds++;
-            ;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 
         public virtual bool IsRewardedAdReady(string place) { return this.adServices.IsRewardedAdReady(place); }
 
-        public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
+        public virtual void RewardedAdOffer(string place) { this.signalBus.Fire(new RewardedAdOfferSignal(place)); }
+
+        public virtual void RewardedAdClicked(string place) { this.signalBus.Fire(new RewardedAdClickedSignal(place)); }
+
+        public virtual void RewardedAdFailed(string place, string errorMessage) { this.signalBus.Fire(new RewardedAdFailedSignal(place, errorMessage)); }
+
+        #endregion
 
         public virtual void ShowMREC(AdViewPosition adViewPosition)
         {

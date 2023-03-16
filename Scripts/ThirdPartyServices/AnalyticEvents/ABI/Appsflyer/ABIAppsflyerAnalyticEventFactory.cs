@@ -12,9 +12,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
         public IEvent InterstitialClick(string place) { throw new System.NotImplementedException(); }
 
+        public IEvent RewardedVideoOffer(string place) { throw new System.NotImplementedException(); }
+
         public IEvent RewardedVideoShow(int level, string place) { throw new System.NotImplementedException(); }
 
-        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded, string msg) { throw new System.NotImplementedException(); }
+        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) { throw new System.NotImplementedException(); }
 
         public IEvent RewardedVideoClick(string place) { throw new System.NotImplementedException(); }
 

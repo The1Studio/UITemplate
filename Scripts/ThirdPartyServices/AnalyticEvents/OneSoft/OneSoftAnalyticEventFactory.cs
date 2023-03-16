@@ -13,7 +13,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.O
 
         public IEvent InterstitialClick(string place) => new CustomEvent();
 
+        public IEvent InterstitialRequest(string place) => new CustomEvent();
+
         public IEvent RewardedVideoOffer(string place) => new CustomEvent();
+
+        public IEvent RewardedVideoLoaded(string place) => new CustomEvent();
 
         public IEvent RewardedVideoShow(int level, string place) => new RewardedVideoShow(level, place);
 

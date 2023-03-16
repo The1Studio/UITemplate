@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
     using Core.AdsServices;
+    using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -28,7 +29,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private long lastInterstitialAdTime;
 
-        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData, UITemplateAdServiceConfig config)
+        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData,
+            UITemplateAdServiceConfig config)
         {
             this.adServices        = adServices;
             this.mrecAdService     = mrecAdService;
@@ -48,14 +50,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
 
-        public virtual void ClickInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdClickedSignal(place)); }
-
         public virtual void ShowInterstitialAd(string place)
         {
             var currentTimestamp = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
             if (this.lastInterstitialAdTime + this.config.InterstitialAdInterval > currentTimestamp)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
+
                 return;
             }
 
@@ -64,7 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServices.IsInterstitialAdReady(place))
             {
                 this.logService.Warning("InterstitialAd was not loaded");
-                this.signalBus.Fire(new InterstitialAdFailedSignal(place, "FailToLoad"));
+
                 return;
             }
 
@@ -75,19 +76,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void LoadInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdLoadedSignal(place)); }
 
-        public virtual void InterstitialAdFail(string place, string errorMessage) { this.signalBus.Fire(new InterstitialAdFailedSignal(place, errorMessage)); }
-
         #endregion
 
         #region RewardAd
 
         public virtual void ShowRewardedAd(string place, Action onComplete)
         {
-            this.signalBus.Fire(new RewardedAdClickedSignal(place));
             if (!this.adServices.IsRewardedAdReady(place))
             {
                 this.logService.Warning("Rewarded was not loaded");
-                this.signalBus.Fire(new RewardedAdFailedSignal(place, "InvalidRequest"));
 
                 return;
             }
@@ -100,10 +97,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual bool IsRewardedAdReady(string place) { return this.adServices.IsRewardedAdReady(place); }
 
         public virtual void RewardedAdOffer(string place) { this.signalBus.Fire(new RewardedAdOfferSignal(place)); }
-
-        public virtual void RewardedAdClicked(string place) { this.signalBus.Fire(new RewardedAdClickedSignal(place)); }
-
-        public virtual void RewardedAdFailed(string place, string errorMessage) { this.signalBus.Fire(new RewardedAdFailedSignal(place, errorMessage)); }
 
         #endregion
 

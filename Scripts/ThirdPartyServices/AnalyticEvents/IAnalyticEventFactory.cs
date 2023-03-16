@@ -11,8 +11,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent InterstitialShowFail(string place, string msg);
 
         IEvent InterstitialClick(string place);
+        IEvent InterstitialRequest(string place);
 
         IEvent RewardedVideoOffer(string place);
+        IEvent RewardedVideoLoaded(string place);
 
         IEvent RewardedVideoShow(int level, string place);
 

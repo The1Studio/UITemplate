@@ -42,6 +42,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
         }
 
+        public void SkipCurrentLevel()
+        {
+            this.signalBus.Fire(new LevelSkippedSignal
+            {
+                Level = this.uiTemplateUserLevelData.CurrentLevel,
+                Time  = 0
+            });
+            this.GoToNextLevel();
+        }
+
         public LevelData GetCurrentLevelData()
         {
             return this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);

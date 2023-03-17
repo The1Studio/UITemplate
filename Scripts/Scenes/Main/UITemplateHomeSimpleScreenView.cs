@@ -36,7 +36,6 @@
             this.diContainer.Inject(this.View.SettingButtonView);
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
         }
 
         protected virtual void OnClickLevel()
@@ -50,7 +49,7 @@
 
         public override void BindData()
         {
-            
+            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
         }
 
         public override void Dispose()

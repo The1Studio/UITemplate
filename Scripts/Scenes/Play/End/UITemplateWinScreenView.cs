@@ -114,11 +114,11 @@
 
         #region inject
 
-        private readonly UITemplateInventoryData           inventoryData;
-        private readonly IScreenManager                    screenManager;
-        private readonly IGameAssets                       gameAssets;
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly UITemplateSoundServices           soundServices;
+        protected readonly UITemplateInventoryData           inventoryData;
+        protected readonly IScreenManager                    screenManager;
+        protected readonly IGameAssets                       gameAssets;
+        protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        protected readonly UITemplateSoundServices           soundServices;
 
         #endregion
     }

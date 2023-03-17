@@ -101,8 +101,8 @@
 
         #region inject
 
-        private readonly DiContainer    diContainer;
-        private readonly IScreenManager screenManager;
+        protected readonly DiContainer    diContainer;
+        protected readonly IScreenManager screenManager;
 
         #endregion
     }

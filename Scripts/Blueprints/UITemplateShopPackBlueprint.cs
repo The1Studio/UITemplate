@@ -4,8 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     using BlueprintFlow.BlueprintReader;
 
     [CsvHeaderKey("Id")]
-    [BlueprintReader("ShopPack", true)]
-    public class ShopPackBlueprint : GenericBlueprintReaderByRow<string, ShopPackRecord>
+    [BlueprintReader("UITemplateShopPack", true)]
+    public class UITemplateShopPackBlueprint : GenericBlueprintReaderByRow<string, ShopPackRecord>
     {
     }
 

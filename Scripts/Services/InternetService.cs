@@ -29,9 +29,9 @@
 
         public void Initialize() { this.CheckInternetInterval(); }
 
-        private async void CheckInternetInterval()
+        private async UniTask CheckInternetInterval()
         {
-            this.CheckInternet();
+            await this.CheckInternet();
             await UniTask.Delay(TimeSpan.FromSeconds(2));
             this.CheckInternetInterval();
         }
@@ -80,12 +80,12 @@
 
         public bool IsInternetAvailable => this.isInternetAvailable;
 
-        private void CheckInternet()
+        private async UniTask CheckInternet()
         {
             try
             {
                 var req = (HttpWebRequest)WebRequest.Create(CheckInternetUrl);
-                using (var resp = (HttpWebResponse)req.GetResponse())
+                using (var resp = (HttpWebResponse)await req.GetResponseAsync())
                 {
                     this.isInternetAvailable = (int)resp.StatusCode < 299 && (int)resp.StatusCode >= 200;
                 }

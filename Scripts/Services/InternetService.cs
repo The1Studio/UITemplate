@@ -1,9 +1,11 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
+    using System.Net;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using Newtonsoft.Json;
+    using UnityEngine;
     using UnityEngine.Networking;
     using Zenject;
 
@@ -78,7 +80,21 @@
 
         public bool IsInternetAvailable => this.isInternetAvailable;
 
-        private void CheckInternet() { this.isInternetAvailable = UnityWebRequest.Get(CheckInternetUrl).result != UnityWebRequest.Result.ConnectionError; }
+        private void CheckInternet()
+        {
+            try
+            {
+                var req = (HttpWebRequest)WebRequest.Create(CheckInternetUrl);
+                using (var resp = (HttpWebResponse)req.GetResponse())
+                {
+                    this.isInternetAvailable = (int)resp.StatusCode < 299 && (int)resp.StatusCode >= 200;
+                }
+            }
+            catch (Exception)
+            {
+                this.isInternetAvailable = false;
+            }
+        }
 
         public class WorldTimeAPIResponse
         {

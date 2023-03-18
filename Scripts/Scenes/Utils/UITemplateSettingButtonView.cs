@@ -97,7 +97,7 @@
             {
                 //TODO need to to animation here
                 const float duration          = 0.15f;
-                const float endValue          = 0.47f;
+                const float endValue          = 1f;
                 const float droppingTime      = 0.4f;
                 const int   millisecondsDelay = 100;
 

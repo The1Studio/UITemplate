@@ -45,7 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     {
         private const string LoadingBlueprintStepName = "Loading static data...";
 
-        private const float MinimumLoadingBlueprintTime = 2f; //seconds
+        private const float MinimumLoadingBlueprintTime = 1f; //seconds
 
         private Dictionary<Type, float> loadingTypeToProgressPercent;
 

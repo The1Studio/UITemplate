@@ -9,16 +9,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
     using Firebase.RemoteConfig;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
+    using Zenject;
 
     public class FirebaseRemoteConfig : IFirebaseRemoteConfig
     {
         private readonly ILogService logger;
+        private readonly SignalBus   signalBus;
         public           bool        IsFirebaseReady { get; private set; }
 
-        public FirebaseRemoteConfig(ILogService logger)
+        public FirebaseRemoteConfig(ILogService logger, SignalBus signalBus)
         {
             this.logger = logger;
             this.InitFirebase();
+            this.signalBus = signalBus;
         }
 
         private void InitFirebase()
@@ -44,7 +48,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
         {
             var fetchTask =
                 Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(
-                    TimeSpan.Zero);
+                                                                                      TimeSpan.Zero);
 
             return fetchTask.ContinueWithOnMainThread(this.FetchComplete);
         }
@@ -62,6 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
             else if (fetchTask.IsCompleted)
             {
                 this.logger.Log("Fetch completed successfully!");
+                this.signalBus.Fire<FirebaseInitializeSucceededSignal>();
             }
 
             var info = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.Info;

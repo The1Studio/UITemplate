@@ -79,9 +79,10 @@
             var isOwner    = param.ItemData.CurrentStatus == UITemplateItemData.Status.Owned;
             var isUnlocked = param.ItemData.CurrentStatus == UITemplateItemData.Status.Unlocked;
             var isLocked   = param.ItemData.CurrentStatus == UITemplateItemData.Status.Locked;
+            var isChoose   = param.ItemIndex == param.IndexItemSelected;
 
             this.View.btnBuyCoin.gameObject.SetActive(isCoin && !isOwner && isUnlocked);
-            this.View.btnSelect.gameObject.SetActive(!isLocked);
+            this.View.btnSelect.gameObject.SetActive(isOwner && !isChoose);
             this.View.btnBuyAds.gameObject.SetActive(isAds && !isOwner && isUnlocked);
             this.View.btnBuyIap.gameObject.SetActive(isIap && !isOwner && isUnlocked);
         }

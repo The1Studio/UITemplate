@@ -44,10 +44,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private int         currentSelectedCategoryIndex;
         private IDisposable randomTimerDispose;
 
-        public UITemplateNewCollectionScreenPresenter(SignalBus               signalBus,               EventSystem                       eventSystem,   IIapServices iapServices, ILogService                     logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-                                                      IGameAssets             gameAssets,              ScreenManager                     screenManager, DiContainer  diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
+        public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapServices iapServices, ILogService logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+                                                      IGameAssets gameAssets, ScreenManager screenManager, DiContainer diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
                                                       UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController,
-                                                      UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundServices           soundServices) : base(signalBus)
+                                                      UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundServices soundServices) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
             this.iapServices                       = iapServices;
@@ -145,7 +145,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
                 var model = new ItemCollectionItemModel
                 {
-                    UITemplateItemRecord = record, OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, ItemData = itemData
+                    UITemplateItemRecord = record, OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, OnUseItem = this.OnUseItem, ItemData = itemData
                 };
 
                 this.itemCollectionItemModels.Add(model);
@@ -175,15 +175,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(i).Value.Id;
                 var collectionModel = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
 
-                var itemSelected = this.uiTemplateInventoryDataController.GetCurrentItemSelected(currentCategory);
+                var currentItemUsed = this.uiTemplateInventoryDataController.GetCurrentItemSelected(currentCategory);
 
-                var indexSelected = collectionModel.FindIndex(x => x.ItemData.Id.Equals(itemSelected));
+                var indexUsed = collectionModel.FindIndex(x => x.ItemData.Id.Equals(currentItemUsed));
 
                 for (var j = 0; j < collectionModel.Count; j++)
                 {
                     var currentModel = collectionModel[j];
-                    currentModel.ItemIndex         = j;
-                    currentModel.IndexItemSelected = indexSelected == -1 ? 0 : indexSelected;
+                    currentModel.ItemIndex     = j;
+                    currentModel.IndexItemUsed = currentModel.IndexItemSelected = indexUsed == -1 ? 0 : indexUsed;
                 }
             }
 
@@ -207,18 +207,35 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.btnUnlockRandom.gameObject.SetActive(!hasOwnAllItem);
         }
 
-        private void OnSelectItem(ItemCollectionItemModel obj)
+        private void OnUseItem(ItemCollectionItemModel obj)
         {
-            // If the item is not owned, do not select it
+            // If the item is not owned, do not use it
             if (!this.uiTemplateInventoryDataController.TryGetItemData(obj.ItemData.Id, out var itemData) || itemData.CurrentStatus != UITemplateItemData.Status.Owned) return;
 
+            var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
+            var tempModel       = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
+
+            foreach (var model in tempModel) model.IndexItemUsed = model.IndexItemSelected = obj.ItemIndex;
+
+            // Save the selected item
+            this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(currentCategory, obj.ItemData.Id);
+            this.OnUsedItem(obj.ItemData);
+
+            this.View.itemCollectionGridAdapter.Refresh();
+        }
+
+        protected virtual void OnUsedItem(UITemplateItemData itemData)
+        {
+        }
+
+        private void OnSelectItem(ItemCollectionItemModel obj)
+        {
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
             var tempModel       = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(currentCategory)).ToList();
 
             foreach (var model in tempModel) model.IndexItemSelected = obj.ItemIndex;
 
             // Save the selected item
-            this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(currentCategory, obj.ItemData.Id);
             this.OnSelectedItem(obj.ItemData);
 
             this.View.itemCollectionGridAdapter.Refresh();

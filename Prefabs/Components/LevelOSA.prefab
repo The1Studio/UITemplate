@@ -173,7 +173,7 @@ MonoBehaviour:
       _KeepItemsPoolOnLayoutRebuild: 0
       _KeepItemsSizesOnLayoutRebuild: 0
     _Grid:
-      _MaxCellsPerGroup: -1
+      _MaxCellsPerGroup: 5
       _UseDefaultItemSizeForCellGroupSize: 0
       _CellPrefab: {fileID: 6244895390640973266}
       _AlignmentOfCellsInGroup: 4
@@ -700,10 +700,80 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1752445422078987407}
     m_Modifications:
+    - target: {fileID: 1070081870352983030, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1070081870352983030, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1070081870352983030, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1070081870352983030, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -17.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012873107466878533, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012873107466878533, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012873107466878533, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 77
+      objectReference: {fileID: 0}
+    - target: {fileID: 2012873107466878533, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -17.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3683276416096357577, guid: 3228664c07601c84783628c2cf8fa5bd,
         type: 3}
       propertyPath: m_Name
       value: LevelItemWithStar
+      objectReference: {fileID: 0}
+    - target: {fileID: 4276889175781448372, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4276889175781448372, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4276889175781448372, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 46
+      objectReference: {fileID: 0}
+    - target: {fileID: 4276889175781448372, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -17.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5130042213171872771, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 92
+      objectReference: {fileID: 0}
+    - target: {fileID: 5130042213171872771, guid: 3228664c07601c84783628c2cf8fa5bd,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 8302998109016009839, guid: 3228664c07601c84783628c2cf8fa5bd,
         type: 3}

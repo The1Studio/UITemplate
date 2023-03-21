@@ -347,7 +347,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6edd7055bd296e34488baf6ff14f17aa, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 994d2c16d24aeef4bbc38e8eb6386c77, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -372,10 +372,10 @@ MonoBehaviour:
   LevelText: {fileID: 1886976347789755653}
   BackgroundImage: {fileID: 5756479409555695498}
   LevelButton: {fileID: 8722819569673163018}
-  LockedSprite: {fileID: 21300000, guid: 6edd7055bd296e34488baf6ff14f17aa, type: 3}
-  NowSprite: {fileID: 21300000, guid: 0e7838b7c2c98ed46a57421d981d13dc, type: 3}
-  PassedSprite: {fileID: 21300000, guid: 8c36fda9c963ba94288967256a456ea1, type: 3}
-  SkippedSprite: {fileID: 21300000, guid: 6edd7055bd296e34488baf6ff14f17aa, type: 3}
+  LockedSprite: {fileID: 21300000, guid: e12269ad8ac8365489ba1a1de6516703, type: 3}
+  NowSprite: {fileID: 21300000, guid: 3e565b4414978084d80a045cec2eb9ea, type: 3}
+  PassedSprite: {fileID: 21300000, guid: 994d2c16d24aeef4bbc38e8eb6386c77, type: 3}
+  SkippedSprite: {fileID: 21300000, guid: e12269ad8ac8365489ba1a1de6516703, type: 3}
   StarList:
   - {fileID: 5322069171893894231}
   - {fileID: 961649287920447236}

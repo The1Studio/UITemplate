@@ -50,5 +50,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.O
         public string LastAdsPlacementProperty     => "last_placement";
         public string TotalInterstitialAdsProperty => "total_interstitial_ads";
         public string TotalRewardedAdsProperty     => "total_rewarded_ads";
+
+        public AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig => new AnalyticsEventCustomizationConfig()
+        {
+        };
     }
 }

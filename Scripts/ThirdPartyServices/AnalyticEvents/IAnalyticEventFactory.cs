@@ -40,10 +40,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         void ForceUpdateAllProperties();
 
-        string LevelMaxProperty             { get; }
-        string LastLevelProperty            { get; }
-        string LastAdsPlacementProperty     { get; }
-        string TotalInterstitialAdsProperty { get; }
-        string TotalRewardedAdsProperty     { get; }
+        string                            LevelMaxProperty                           { get; }
+        string                            LastLevelProperty                          { get; }
+        string                            LastAdsPlacementProperty                   { get; }
+        string                            TotalInterstitialAdsProperty               { get; }
+        string                            TotalRewardedAdsProperty                   { get; }
+        AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; }
     }
 }

@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using BlueprintFlow.Signals;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -17,17 +18,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint;
         private readonly UITemplateShopBlueprint     uiTemplateShopBlueprint;
         private readonly SignalBus                   signalBus;
+        private readonly UITemplateItemBlueprint     uiTemplateItemBlueprint;
 
         #endregion
 
         private const string DefaultSoftCurrencyID = "Coin";
 
-        public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus)
+        public UITemplateInventoryDataController(UITemplateInventoryData     uiTemplateInventoryData,
+                                                 UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint,
+                                                 UITemplateShopBlueprint     uiTemplateShopBlueprint,
+                                                 SignalBus                   signalBus,
+                                                 UITemplateItemBlueprint     uiTemplateItemBlueprint)
         {
             this.uiTemplateInventoryData     = uiTemplateInventoryData;
             this.uiTemplateCurrencyBlueprint = uiTemplateCurrencyBlueprint;
             this.uiTemplateShopBlueprint     = uiTemplateShopBlueprint;
             this.signalBus                   = signalBus;
+            this.uiTemplateItemBlueprint     = uiTemplateItemBlueprint;
+
+            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
         }
 
         public string GetCurrentItemSelected(string category)
@@ -150,6 +159,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public void Initialize()
         {
+        }
+
+        private void OnLoadBlueprintSuccess()
+        {
+            this.signalBus.Unsubscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
+
+            foreach (var item in this.uiTemplateItemBlueprint.Values)
+            {
+                // Add item to inventory
+                // if item exist in shop blueprint, it's status will be unlocked or owned if IsDefaultItem is true
+                // else it's status will be locked
+
+                var status = UITemplateItemData.Status.Locked;
+
+                if (this.uiTemplateShopBlueprint.TryGetValue(item.Id, out var shopRecord))
+                {
+                    status = UITemplateItemData.Status.Unlocked;
+                }
+
+                if (item.IsDefaultItem)
+                {
+                    status = UITemplateItemData.Status.Owned;
+                }
+
+                this.AddItemData(new UITemplateItemData(item.Id, shopRecord, status));
+            }
         }
     }
 }

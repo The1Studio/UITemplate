@@ -5,9 +5,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
     public class UITemplateInventoryData : ILocalData
     {
-        internal Dictionary<string, string>                 CategoryToChosenItem { get; set; } = new();
-        internal Dictionary<string, UITemplateItemData>     IDToItemData         { get; set; } = new();
-        internal Dictionary<string, UITemplateCurrencyData> IDToCurrencyData     { get; set; } = new();
+        public Dictionary<string, string>                 CategoryToChosenItem { get; set; } = new();
+        public Dictionary<string, UITemplateItemData>     IDToItemData         { get; set; } = new();
+        public Dictionary<string, UITemplateCurrencyData> IDToCurrencyData     { get; set; } = new();
 
         public void Init() { }
     }

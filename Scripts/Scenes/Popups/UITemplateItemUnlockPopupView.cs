@@ -1,12 +1,16 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
     using System.Linq;
+    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
@@ -24,31 +28,48 @@
 
     public class UITemplateItemUnlockPopupView : BaseView
     {
-        [SerializeField]
-        private Image imgItem;
+        [SerializeField] private UITemplateCurrencyView currencyView;
+        [SerializeField] private Image                  imgItem;
+        [SerializeField] private Button                 btnHome;
+        [SerializeField] private Button                 btnSkip;
+        [SerializeField] private Button                 btnGet;
 
-        [SerializeField]
-        private Button btnGet;
-
-        public Button BtnGet => this.btnGet;
-
-        public void SetView(Sprite itemSprite)
-        {
-            this.imgItem.sprite = itemSprite;
-        }
+        public UITemplateCurrencyView CurrencyView => this.currencyView;
+        public Image                  ImgItem      => this.imgItem;
+        public Button                 BtnHome      => this.btnHome;
+        public Button                 BtnGet       => this.btnGet;
+        public Button                 BtnSkip      => this.btnSkip;
     }
 
     [PopupInfo(nameof(UITemplateItemUnlockPopupView))]
     public class UITemplateItemUnlockPopupPresenter : UITemplateBasePopupPresenter<UITemplateItemUnlockPopupView, UITemplateItemUnlockPopupModel>
     {
-        private readonly IGameAssets             gameAssets;
-        private readonly UITemplateItemBlueprint uiTemplateItemBlueprint;
+        #region Inject
 
-        public UITemplateItemUnlockPopupPresenter(IGameAssets gameAssets, SignalBus signalBus, ILogService logService, UITemplateItemBlueprint uiTemplateItemBlueprint) : base(signalBus, logService)
+        protected readonly IScreenManager                    screenManager;
+        protected readonly IGameAssets                       gameAssets;
+        protected readonly IAdServices                       adService;
+        protected readonly UITemplateItemBlueprint           itemBlueprint;
+        protected readonly UITemplateInventoryDataController inventoryDataController;
+
+        public UITemplateItemUnlockPopupPresenter(
+            SignalBus signalBus,
+            ILogService logService,
+            IScreenManager screenManager,
+            IGameAssets gameAssets,
+            IAdServices adService,
+            UITemplateItemBlueprint itemBlueprint,
+            UITemplateInventoryDataController inventoryDataController
+        ) : base(signalBus, logService)
         {
+            this.screenManager           = screenManager;
             this.gameAssets              = gameAssets;
-            this.uiTemplateItemBlueprint = uiTemplateItemBlueprint;
+            this.adService               = adService;
+            this.itemBlueprint           = itemBlueprint;
+            this.inventoryDataController = inventoryDataController;
         }
+
+        #endregion
 
         protected override void OnViewReady()
         {
@@ -59,20 +80,43 @@
 
         public override async void BindData(UITemplateItemUnlockPopupModel popupModel)
         {
-            var itemImageAddress = this.uiTemplateItemBlueprint.Values.First(record => record.Id.Equals(popupModel.ItemId)).ImageAddress;
+            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrency().Value);
+            var itemImageAddress = this.itemBlueprint.Values.First(record => record.Id.Equals(popupModel.ItemId)).ImageAddress;
             var itemSprite       = await this.gameAssets.LoadAssetAsync<Sprite>(itemImageAddress);
-            this.View.SetView(itemSprite);
+            this.View.ImgItem.sprite = itemSprite;
         }
 
-        private void OnGetItem()
+        public override void Dispose()
         {
-            this.logService.LogWithColor("Open ads here!", Color.yellow);
-            this.logService.LogWithColor("Add to user data here", Color.yellow);
+            this.View.CurrencyView.Unsubscribe(this.SignalBus);
+        }
+
+        protected virtual void OnClickHome()
+        {
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
+
+        protected virtual void OnClickGet()
+        {
+            if (!this.adService.IsRewardedAdReady(""))
+            {
+                this.CloseView();
+                return;
+            }
+
+            this.adService.ShowRewardedAd("", this.CloseView);
+        }
+
+        protected virtual void OnClickSkip()
+        {
+            this.CloseView();
         }
 
         private void InitButtonListener()
         {
-            this.View.BtnGet.onClick.AddListener(this.OnGetItem);
+            this.View.BtnHome.onClick.AddListener(this.OnClickHome);
+            this.View.BtnGet.onClick.AddListener(this.OnClickGet);
+            this.View.BtnSkip.onClick.AddListener(this.OnClickSkip);
         }
     }
 }

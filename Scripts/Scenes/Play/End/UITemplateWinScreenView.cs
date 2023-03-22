@@ -43,6 +43,10 @@
         public Image                  LightGlowImage;
         public Image                  ItemUnlockBgImage;
         public Image                  ItemUnlockImage;
+
+        [SerializeField] private Slider itemUnlockProgressBar;
+
+        public Slider ItemUnlockProgressBar => this.itemUnlockProgressBar;
     }
 
     [ScreenInfo(nameof(UITemplateWinScreenView))]
@@ -77,17 +81,39 @@
             await this.View.StarRateView.SetStarRate(model.StarRate);
         }
 
-        private async void ItemUnlockProgress(float lastPercent, float percent)
+        protected async void ItemUnlockProgress(float lastPercent, float percent)
         {
             var spriteItemUnlock = await this.gameAssets.LoadAssetAsync<Sprite>(this.Model.ItemId);
             this.View.ItemUnlockImage.sprite   = spriteItemUnlock;
             this.View.ItemUnlockBgImage.sprite = spriteItemUnlock;
             var lastValue = lastPercent / 100f;
             var value     = percent / 100f;
-            DOTween.To(() => this.View.ItemUnlockImage.fillAmount = lastValue, x => this.View.ItemUnlockImage.fillAmount = x, value, 1f).SetEase(Ease.Linear);
 
-            var itemStatus = Math.Abs(value - 1) < Mathf.Epsilon ? UITemplateItemData.Status.Owned : UITemplateItemData.Status.InProgress;
+            var sequence = DOTween.Sequence();
+            sequence.Append(
+                DOTween.To(
+                    getter: () => this.View.ItemUnlockImage.fillAmount = lastValue,
+                    setter: x => this.View.ItemUnlockImage.fillAmount  = x,
+                    endValue: value,
+                    duration: 1f
+                ).SetEase(Ease.Linear)
+            );
+            sequence.Join(
+                DOTween.To(
+                    getter: () => this.View.ItemUnlockProgressBar.value = lastValue,
+                    setter: x => this.View.ItemUnlockProgressBar.value  = x,
+                    endValue: value,
+                    duration: .5f
+                ).SetEase(Ease.Linear)
+            );
+
+            var itemStatus = value >= 1f ? UITemplateItemData.Status.Owned : UITemplateItemData.Status.InProgress;
             this.uiTemplateInventoryDataController.UpdateStatusItemData(this.Model.ItemId, itemStatus);
+
+            if (itemStatus == UITemplateItemData.Status.Owned)
+            {
+                sequence.onComplete += this.OnItemUnlock;
+            }
         }
 
         protected virtual void OnClickHome()
@@ -103,6 +129,10 @@
         protected virtual void OnClickNext()
         {
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
+
+        protected virtual void OnItemUnlock()
+        {
         }
 
         public override void Dispose()

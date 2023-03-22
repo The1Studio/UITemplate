@@ -51,7 +51,7 @@
 
             this.View.HomeButton.onClick.AddListener(this.OnClickHome);
             this.View.ReplayButton.onClick.AddListener(this.OnClickReplay);
-            this.View.NextEndgameButton.Button.onClick.AddListener(this.OnClickNextEndgame);
+            this.View.NextEndgameButton.Button.onClick.AddListener(this.OnClickNext);
         }
 
         protected virtual void OnClickHome()
@@ -64,7 +64,7 @@
             // Reuse WinScreen
         }
 
-        private async void OnClickNextEndgame()
+        protected virtual async void OnClickNext()
         {
             if (isAdsAvailable)
                 //show ads 

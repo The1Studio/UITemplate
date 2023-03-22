@@ -5,6 +5,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
     using Zenject;
@@ -40,7 +41,8 @@
 
         protected virtual void OnClickLevel()
         {
-            this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>();
+            //this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>();
+            this.ScreenManager.OpenScreen<UITemplateGachaPopupPresenter, UITemplateGachaPopupModel>(new UITemplateGachaPopupModel().FakePageData());
         }
 
         protected virtual void OnClickPlay()

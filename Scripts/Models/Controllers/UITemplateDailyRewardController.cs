@@ -7,7 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     {
         #region inject
 
-        private readonly IInternetService              internetService;
+        private readonly IInternetService          internetService;
         private readonly UITemplateDailyRewardData uiTemplateDailyRewardData;
 
         #endregion

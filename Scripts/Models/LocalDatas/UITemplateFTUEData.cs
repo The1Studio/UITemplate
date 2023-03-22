@@ -4,7 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
     public class UITemplateFTUEData
     {
-        public HashSet<string> FinishedStep = new();
-        public string          CurrentStep;
+        internal HashSet<string> FinishedStep { get; set; } = new();
+        internal string          CurrentStep  { get; set; }
     }
 }

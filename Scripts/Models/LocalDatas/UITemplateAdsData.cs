@@ -4,8 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
     public class UITemplateAdsData : ILocalData
     {
-        public int WatchedInterstitialAds { get; set; }
-        public int WatchedRewardedAds     { get; set; }
+        internal int WatchedInterstitialAds { get; set; }
+        internal int WatchedRewardedAds     { get; set; }
 
         public void Init() { }
     }

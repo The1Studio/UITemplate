@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI
 {
+    using System;
     using System.Collections.Generic;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
@@ -54,8 +55,28 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
         public string TotalInterstitialAdsProperty => "total_interstitial_ads";
         public string TotalRewardedAdsProperty     => "total_rewarded_ads";
 
-        public AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig => new AnalyticsEventCustomizationConfig()
+        public AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig => new()
         {
+            IgnoreEvents = new HashSet<Type>()
+            {
+                typeof(GameStarted),
+                typeof(AdInterClick),
+                typeof(AdInterFail),
+                typeof(AdsRewardFail),
+                typeof(AdsRewardOffer),
+            },
+            CustomEventKeys = new Dictionary<string, string>()
+            {
+                { nameof(BannerShown), "af_banner_shown" },
+                { nameof(LevelComplete), "af_level_achieved" },
+                { nameof(AdInterLoad), "af_inters_api_called" },
+                { nameof(AdInterShow), "af_inters_displayed" },
+                { nameof(AdInterRequest), "af_inters_ad_eligible" },
+                { nameof(AdsRewardClick), "af_rewarded_ad_eligible" },
+                { nameof(AdsRewardedLoaded), "af_rewarded_api_called" },
+                { nameof(AdsRewardShow), "af_rewarded_displayed" },
+                { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
+            }
         };
     }
 }

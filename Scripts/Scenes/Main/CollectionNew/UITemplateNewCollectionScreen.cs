@@ -44,10 +44,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private int         currentSelectedCategoryIndex;
         private IDisposable randomTimerDispose;
 
-        public UITemplateNewCollectionScreenPresenter(SignalBus signalBus, EventSystem eventSystem, IIapServices iapServices, ILogService logger, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-                                                      IGameAssets gameAssets, ScreenManager screenManager, DiContainer diContainer, UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
-                                                      UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController,
-                                                      UITemplateInventoryData uiTemplateInventoryData, UITemplateSoundServices soundServices) : base(signalBus)
+        public UITemplateNewCollectionScreenPresenter(SignalBus                         signalBus,
+                                                      EventSystem                       eventSystem,
+                                                      IIapServices                      iapServices,
+                                                      ILogService                       logger,
+                                                      UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
+                                                      IGameAssets                       gameAssets,
+                                                      ScreenManager                     screenManager,
+                                                      DiContainer                       diContainer,
+                                                      UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint,
+                                                      UITemplateItemBlueprint           uiTemplateItemBlueprint,
+                                                      UITemplateInventoryDataController uiTemplateInventoryDataController,
+                                                      UITemplateInventoryData           uiTemplateInventoryData,
+                                                      UITemplateSoundServices           soundServices
+        ) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
             this.iapServices                       = iapServices;

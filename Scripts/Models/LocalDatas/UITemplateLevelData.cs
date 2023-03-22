@@ -5,8 +5,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
     public class UITemplateUserLevelData : ILocalData
     {
-        internal int                        CurrentLevel     { get; set; } = 1;
-        internal Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
+        public int                        CurrentLevel { get; set; } = 1;
+        public Dictionary<int, LevelData> LevelToLevelData = new();
 
         public void Init() { }
     }

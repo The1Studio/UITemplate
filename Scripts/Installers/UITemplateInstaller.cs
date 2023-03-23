@@ -3,7 +3,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities;
+    using global::Models;
     using ServiceImplementation.AdsServices;
+    using ServiceImplementation.AdsServices.EasyMobile;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;

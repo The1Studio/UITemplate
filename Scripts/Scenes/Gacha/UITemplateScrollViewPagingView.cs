@@ -27,6 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha
         public override void BindData(UITemplateScrollViewPagingModel param)
         {
             this.ClearChildInGameObject(this.View.gameObject);
+            this.listPagingDotItemPresenter.Clear();
             foreach (var pagingDotItemModel in param.ListPagingDotItemModel)
             {
                 var presenter = this.diContainer.Instantiate<UITemplatePagingDotItemPresenter>();
@@ -39,6 +40,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha
 
         public void SetActiveDot(int index)
         {
+            if (index < 0 || index >= this.listPagingDotItemPresenter.Count)
+                return;
+            
             foreach (var pageItemPresenter in this.listPagingDotItemPresenter)
             {
                 pageItemPresenter.SetDotActive(false);

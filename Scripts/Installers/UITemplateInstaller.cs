@@ -16,7 +16,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft;
     using UnityEngine;
     using Zenject;

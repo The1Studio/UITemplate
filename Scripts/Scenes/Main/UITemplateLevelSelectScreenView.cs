@@ -44,7 +44,7 @@
 
         public override async void BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
             var levelList    = this.getLevelList();
             var currentLevel = this.UserLevelData.CurrentLevel;
             await this.View.LevelGridAdapter.InitItemAdapter(levelList, this.diContainer);

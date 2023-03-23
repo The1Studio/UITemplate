@@ -9,6 +9,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -98,13 +99,12 @@
 
         protected virtual void OnClickGet()
         {
-            if (!this.adService.IsRewardedAdReady(""))
+            if (!this.adService.IsRewardedAdReady("")) return;
+            this.adService.ShowRewardedAd("", () =>
             {
+                this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.Owned);
                 this.CloseView();
-                return;
-            }
-
-            this.adService.ShowRewardedAd("", this.CloseView);
+            });
         }
 
         protected virtual void OnClickSkip()

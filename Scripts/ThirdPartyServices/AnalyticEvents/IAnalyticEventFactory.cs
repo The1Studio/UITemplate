@@ -45,6 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         string                            LastAdsPlacementProperty                   { get; }
         string                            TotalInterstitialAdsProperty               { get; }
         string                            TotalRewardedAdsProperty                   { get; }
-        AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; }
+        AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; }
+        AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; }
     }
 }

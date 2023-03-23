@@ -1,4 +1,4 @@
-namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.Wido
+namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.AdOne
 {
     using System;
     using System.Collections.Generic;
@@ -6,14 +6,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
-    using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido.LevelStart;
 
-    public class WidoAnalyticEventFactory : IAnalyticEventFactory
+    public class AdOneAnalyticEventFactory : IAnalyticEventFactory
     {
         #region inject
 
@@ -22,7 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         #endregion
 
-        public WidoAnalyticEventFactory(IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController)
+        public AdOneAnalyticEventFactory(IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController)
         {
             this.internetService               = internetService;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
@@ -84,18 +80,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             },
             CustomEventKeys = new Dictionary<string, string>()
             {
-                { nameof(BannerShown), "af_banner_shown" },
-                { nameof(LevelComplete), "af_level_achieved" },
-                { nameof(AdInterLoad), "af_inters_api_called" },
-                { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdInterRequest), "af_inters_ad_eligible" },
-                { nameof(AdsRewardClick), "af_rewarded_ad_eligible" },
-                { nameof(AdsRewardedLoaded), "af_rewarded_api_called" },
-                { nameof(AdsRewardShow), "af_rewarded_displayed" },
-                { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
+                { nameof(AdInterShow), "af_inters" },
+                { nameof(AdsRewardShow), "af_reward" }
             }
         };
 
-        public AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new();
+        public AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
+        {
+            IgnoreEvents = new HashSet<Type>(),
+            CustomEventKeys = new Dictionary<string, string>()
+            {
+                { nameof(InterstitialAdsSuccess), "af_inters" },
+                { nameof(AdsRewardShow), "reward_attempt" },
+                { nameof(AdInterShow), "inter_attempt" },
+                { nameof(AdsRewardComplete), "af_reward" }
+            }
+        };
     }
 }

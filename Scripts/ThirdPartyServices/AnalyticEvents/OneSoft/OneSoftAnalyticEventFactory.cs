@@ -1,10 +1,15 @@
-namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft
+namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.OneSoft
 {
     using System;
     using System.Collections.Generic;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft;
+    using LevelSkipped = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft.LevelSkipped;
+    using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft.LevelStart;
 
     public class OneSoftAnalyticEventFactory : IAnalyticEventFactory
     {
@@ -48,13 +53,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.O
 
         public void ForceUpdateAllProperties() { }
 
-        public string LevelMaxProperty             => "level_max";
-        public string LastLevelProperty            => "last_level";
-        public string LastAdsPlacementProperty     => "last_placement";
-        public string TotalInterstitialAdsProperty => "total_interstitial_ads";
-        public string TotalRewardedAdsProperty     => "total_rewarded_ads";
+        public string                            LevelMaxProperty                           => "level_max";
+        public string                            LastLevelProperty                          => "last_level";
+        public string                            LastAdsPlacementProperty                   => "last_placement";
+        public string                            TotalInterstitialAdsProperty               => "total_interstitial_ads";
+        public string                            TotalRewardedAdsProperty                   => "total_rewarded_ads";
+      
 
-        public AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig => new ()
+        public AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IgnoreEvents = new HashSet<Type>()
             {
@@ -77,5 +83,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.O
                 { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
             }
         };
+
+        public AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new();
     }
 }

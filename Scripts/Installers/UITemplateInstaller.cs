@@ -13,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.AdOne;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
@@ -25,10 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         private readonly GameObject soundGroupPrefab;
 
-        public UITemplateInstaller(GameObject soundGroupPrefab)
-        {
-            this.soundGroupPrefab = soundGroupPrefab;
-        }
+        public UITemplateInstaller(GameObject soundGroupPrefab) { this.soundGroupPrefab = soundGroupPrefab; }
 
         public override void InstallBindings()
         {
@@ -69,6 +67,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<IAnalyticEventFactory>().To<WidoAnalyticEventFactory>().AsCached();
 #elif ABI
             this.Container.Bind<IAnalyticEventFactory>().To<ABIAnalyticEventFactory>().AsCached();
+#elif ADONE
+            this.Container.Bind<IAnalyticEventFactory>().To<AdOneAnalyticEventFactory>().AsCached();
 #else
             this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
 #endif

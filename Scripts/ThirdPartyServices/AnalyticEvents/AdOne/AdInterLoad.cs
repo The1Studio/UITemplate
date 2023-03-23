@@ -1,8 +1,8 @@
-namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.AdOne
 {
     using Core.AnalyticServices.Data;
 
-    public class AdInterLoad : IEvent
+    public class AdInterLoad:IEvent
     {
         public string Placement;
 

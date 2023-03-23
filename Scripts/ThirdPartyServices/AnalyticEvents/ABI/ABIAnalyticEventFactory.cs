@@ -1,9 +1,11 @@
-namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI
+namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI
 {
     using System;
     using System.Collections.Generic;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
 
     public class ABIAnalyticEventFactory : IAnalyticEventFactory
     {
@@ -55,7 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
         public string TotalInterstitialAdsProperty => "total_interstitial_ads";
         public string TotalRewardedAdsProperty     => "total_rewarded_ads";
 
-        public AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig => new()
+        public AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IgnoreEvents = new HashSet<Type>()
             {
@@ -78,5 +80,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
                 { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
             }
         };
+
+        public AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new();
     }
 }

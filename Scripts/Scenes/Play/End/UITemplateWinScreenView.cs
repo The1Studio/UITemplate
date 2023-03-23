@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play.End
 {
     using System;
+    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
@@ -40,6 +41,7 @@
         [SerializeField] private Button                 btnHome;
         [SerializeField] private Button                 btnReplay;
         [SerializeField] private Button                 btnNext;
+        [SerializeField] private Button                 btnAds;
         [SerializeField] private UITemplateCurrencyView currencyView;
 
         [SerializeField] private bool useItemUnlockProgressText;
@@ -73,6 +75,7 @@
         public Button                 BtnHome                         => this.btnHome;
         public Button                 BtnReplay                       => this.btnReplay;
         public Button                 BtnNext                         => this.btnNext;
+        public Button                 BtnAds                          => this.btnAds;
         public UITemplateCurrencyView CurrencyView                    => this.currencyView;
         public bool                   UseItemUnlockProgressText       => this.useItemUnlockProgressText;
         public TMP_Text               TxtItemUnlockProgress           => this.txtItemUnlockProgress;
@@ -92,27 +95,27 @@
     {
         #region Inject
 
-        protected readonly UITemplateInventoryData           inventoryData;
         protected readonly IScreenManager                    screenManager;
         protected readonly IGameAssets                       gameAssets;
-        protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        protected readonly UITemplateSoundServices           soundServices;
+        protected readonly UITemplateInventoryDataController inventoryDataController;
+        protected readonly UITemplateSoundServices           soundService;
+        protected readonly IAdServices                       adService;
 
         public UITemplateWinScreenPresenter(
             SignalBus signalBus,
             ILogService logService,
-            UITemplateInventoryData inventoryData,
             IScreenManager screenManager,
             IGameAssets gameAssets,
-            UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateSoundServices soundServices
+            UITemplateInventoryDataController inventoryDataController,
+            UITemplateSoundServices soundService,
+            IAdServices adService
         ) : base(signalBus, logService)
         {
-            this.inventoryData                     = inventoryData;
-            this.screenManager                     = screenManager;
-            this.gameAssets                        = gameAssets;
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.soundServices                     = soundServices;
+            this.screenManager           = screenManager;
+            this.gameAssets              = gameAssets;
+            this.inventoryDataController = inventoryDataController;
+            this.soundService            = soundService;
+            this.adService               = adService;
         }
 
         #endregion
@@ -127,11 +130,12 @@
             this.View.BtnHome.onClick.AddListener(this.OnClickHome);
             this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
             this.View.BtnNext.onClick.AddListener(this.OnClickNext);
+            this.View.BtnAds.onClick.AddListener(this.OnClickAds);
         }
 
         public override async void BindData(UITemplateWinScreenModel model)
         {
-            this.View.CurrencyView.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency(UITemplateItemData.UnlockType.SoftCurrency.ToString()).Value);
+            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrency().Value);
             this.ItemUnlockProgress(model.ItemUnlockLastValue, model.ItemUnlockNewValue);
 
             if (this.View.UseLightGlow)
@@ -196,7 +200,7 @@
 
             if (newValue < 1f)
             {
-                this.uiTemplateInventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.InProgress);
+                this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.InProgress);
             }
             else
             {
@@ -219,9 +223,16 @@
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
 
+        protected virtual void OnClickAds()
+        {
+            this.adService.ShowRewardedAd("", () =>
+            {
+            });
+        }
+
         protected virtual void OnItemUnlock()
         {
-            this.uiTemplateInventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.Owned);
+            this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.Owned);
         }
 
         public override void Dispose()

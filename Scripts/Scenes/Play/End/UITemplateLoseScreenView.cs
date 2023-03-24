@@ -5,6 +5,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
@@ -15,43 +16,37 @@
     {
         public Button                 HomeButton;
         public Button                 ReplayButton;
-        public UITemplateOnOffButton  NextEndgameButton;
+        public Button                 SkipButton;
         public UITemplateCurrencyView CurrencyView;
-        public Image                  AdsNotification;
-        public GameObject             Character;
     }
 
     [ScreenInfo(nameof(UITemplateLoseScreenView))]
     public class UITemplateLoseScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoseScreenView>
     {
-        private static bool isAdsAvailable = true;
-
-        public UITemplateLoseScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
+        public UITemplateLoseScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
         {
-            this.diContainer   = diContainer;
-            this.screenManager = screenManager;
+            this.diContainer                       = diContainer;
+            this.screenManager                     = screenManager;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
         public override void BindData()
         {
-            this.View.AdsNotification.gameObject.transform.localScale = Vector3.zero;
-            this.adsNotificationAnimation(isAdsAvailable = this.checkAdsAvailable());
-            this.View.NextEndgameButton.SetOnOff(false);
+            this.View.CurrencyView.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
         }
 
         public override void Dispose()
         {
             base.Dispose();
+            this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }
 
-        protected override async void OnViewReady()
+        protected override void OnViewReady()
         {
             base.OnViewReady();
-            await this.OpenViewAsync();
-
-            this.View.HomeButton.onClick.AddListener(this.OnClickHome);
-            this.View.ReplayButton.onClick.AddListener(this.OnClickReplay);
-            this.View.NextEndgameButton.Button.onClick.AddListener(this.OnClickNext);
+            this.View.HomeButton?.onClick.AddListener(this.OnClickHome);
+            this.View.ReplayButton?.onClick.AddListener(this.OnClickReplay);
+            this.View.SkipButton?.onClick.AddListener(this.OnClickSkip);
         }
 
         protected virtual void OnClickHome()
@@ -61,48 +56,19 @@
 
         protected virtual void OnClickReplay()
         {
-            // Reuse WinScreen
+            
         }
 
-        protected virtual async void OnClickNext()
+        protected virtual void OnClickSkip()
         {
-            if (isAdsAvailable)
-                //show ads 
-                if (this.hasWatchedAds())
-                {
-                    this.adsNotificationAnimation(false);
-                    await UniTask.WaitUntil(() => !isAdsAvailable);
-                    this.View.NextEndgameButton.SetOnOff(true);
-                    // Reuse WinScreen
-                }
+            
         }
-
-        private bool checkAdsAvailable()
-        {
-            // Do something
-            return true;
-        }
-
-        private bool hasWatchedAds()
-        {
-            // Do something
-            return true;
-        }
-
-        private void adsNotificationAnimation(bool willActive)
-        {
-            var adsNotification = this.View.AdsNotification.gameObject;
-            var targetScale     = willActive ? Vector3.one : Vector3.zero;
-            var easeType        = willActive ? Ease.OutElastic : Ease.InElastic;
-            var duration        = willActive ? 0.5f : 0.3f;
-
-            adsNotification.transform.DOScale(targetScale, duration).SetEase(easeType).OnComplete(() => isAdsAvailable = willActive);
-        }
-
+        
         #region inject
 
-        protected readonly DiContainer    diContainer;
-        protected readonly IScreenManager screenManager;
+        protected readonly DiContainer                       diContainer;
+        protected readonly IScreenManager                    screenManager;
+        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
 
         #endregion
     }

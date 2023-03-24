@@ -3031,6 +3031,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 166000582020089038}
     m_Modifications:
+    - target: {fileID: 104827445246518328, guid: 294d6d10ffaad254784c104e26e2703e,
+        type: 3}
+      propertyPath: txtCoin
+      value: 
+      objectReference: {fileID: 7271017965618212674}
+    - target: {fileID: 2082458276697350770, guid: 294d6d10ffaad254784c104e26e2703e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2082458276697350770, guid: 294d6d10ffaad254784c104e26e2703e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2082458276697350770, guid: 294d6d10ffaad254784c104e26e2703e,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2660783972113936951, guid: 294d6d10ffaad254784c104e26e2703e,
         type: 3}
       propertyPath: m_AnchorMax.y

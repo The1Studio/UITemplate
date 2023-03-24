@@ -45,13 +45,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<IIapServices>().To<UITemplateIapServices>().AsCached().NonLazy();
 #endif
             //Signal
+            this.Container.DeclareSignal<RewardedAdEligibleSignal>();
             this.Container.DeclareSignal<RewardedAdShowedSignal>();
             this.Container.DeclareSignal<RewardedAdOfferSignal>();
             this.Container.DeclareSignal<UpdateCurrencySignal>();
+            this.Container.DeclareSignal<TutorialCompletionSignal>();
             this.Container.DeclareSignal<LevelStartedSignal>();
             this.Container.DeclareSignal<LevelEndedSignal>();
             this.Container.DeclareSignal<LevelSkippedSignal>();
             this.Container.DeclareSignal<InterstitialAdShowedSignal>();
+            this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
             this.Container.DeclareSignal<FirebaseInitializeSucceededSignal>();
             //Third party service
             AdServiceInstaller.Install(this.Container);

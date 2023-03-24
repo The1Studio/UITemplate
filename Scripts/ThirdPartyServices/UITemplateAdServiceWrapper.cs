@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
@@ -62,6 +63,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.lastInterstitialAdTime = currentTimestamp;
 
+            this.signalBus.Fire(new InterstitialAdEligibleSignal(place));
             if (!this.adServices.IsInterstitialAdReady(place))
             {
                 this.logService.Warning("InterstitialAd was not loaded");
@@ -82,6 +84,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowRewardedAd(string place, Action onComplete)
         {
+            this.signalBus.Fire(new RewardedAdEligibleSignal(place));
             if (!this.adServices.IsRewardedAdReady(place))
             {
                 this.logService.Warning("Rewarded was not loaded");

@@ -14,23 +14,33 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     {
         private readonly SignalBus         signalBus;
         private readonly IAnalyticServices analyticEvents;
-        public           IEvent            InterstitialShow(int level, string place) => new AdInterLoad(place);
 
-        public IEvent InterstitialShowCompleted(int level, string place) => new AdInterShow(place);
+        public IEvent InterstitialEligible(string place) => new AdsIntersEligible(place);
+
+        public IEvent InterstitialShow(int level, string place) => new AdInterShow(place);
+
+        public IEvent InterstitialShowCompleted(int level, string place) => new CustomEvent();
 
         public IEvent InterstitialShowFail(string place, string msg) => new AdInterFail(msg);
 
         public IEvent InterstitialClick(string place) => new AdInterClick(place);
 
-        public IEvent InterstitialRequest(string place) => new AdInterRequest();
+        public IEvent InterstitialLoaded(string place) => new AdInterLoaded();
+
+        public IEvent RewardedVideoEligible(string place) => new AdsRewardEligible(place);
 
         public IEvent RewardedVideoOffer(string place) => new AdsRewardOffer(place);
 
         public IEvent RewardedVideoLoaded(string place) => new AdsRewardedLoaded();
 
-        public IEvent RewardedVideoShow(int level, string place) => new AdsRewardOffer(place);
+        public IEvent RewardedVideoShow(int level, string place) => new AdsRewardShow(place);
 
-        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) => new AdsRewardComplete(place);
+        public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)
+        {
+            if (!isRewarded) return new CustomEvent();
+
+            return new AdsRewardComplete(place);
+        }
 
         public IEvent RewardedVideoClick(string place) => new AdsRewardClick(place);
 
@@ -54,6 +64,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) => new SpendVirtualCurrency(virtualCurrencyName, value, itemName);
 
+        public IEvent TutorialCompletion(bool success, string tutorialId) => new TutorialCompletion(success, tutorialId);
+
         public void ForceUpdateAllProperties() { }
 
         public string LevelMaxProperty             => "level_max";
@@ -75,11 +87,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(BannerShown), "af_banner_shown" },
+                { nameof(TutorialCompletion), "af_tutorial_completion" },
                 { nameof(LevelComplete), "af_level_achieved" },
-                { nameof(AdInterLoad), "af_inters_api_called" },
+                { nameof(AdsIntersEligible), "af_inters_ad_eligible" },
+                { nameof(AdInterLoaded), "af_inters_api_called" },
                 { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdInterRequest), "af_inters_ad_eligible" },
-                { nameof(AdsRewardClick), "af_rewarded_ad_eligible" },
+                { nameof(AdsRewardEligible), "af_rewarded_ad_eligible" },
                 { nameof(AdsRewardedLoaded), "af_rewarded_api_called" },
                 { nameof(AdsRewardShow), "af_rewarded_displayed" },
                 { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },

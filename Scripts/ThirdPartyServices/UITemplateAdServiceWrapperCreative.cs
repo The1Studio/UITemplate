@@ -18,8 +18,6 @@
 
         public override void ShowInterstitialAd(string place) { }
 
-        public override void LoadInterstitialAd(string place) { }
-
         public override void ShowRewardedAd(string place, Action onComplete) { onComplete.Invoke(); }
 
         public override void RewardedAdOffer(string place) { }

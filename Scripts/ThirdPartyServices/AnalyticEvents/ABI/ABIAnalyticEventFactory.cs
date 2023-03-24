@@ -2,14 +2,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 {
     using System;
     using System.Collections.Generic;
+    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using Core.AnalyticServices.Signal;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
+    using Zenject;
 
     public class ABIAnalyticEventFactory : IAnalyticEventFactory
     {
-        public IEvent InterstitialShow(int level, string place) => new AdInterLoad(place);
+        private readonly SignalBus         signalBus;
+        private readonly IAnalyticServices analyticEvents;
+        public           IEvent            InterstitialShow(int level, string place) => new AdInterLoad(place);
 
         public IEvent InterstitialShowCompleted(int level, string place) => new AdInterShow(place);
 
@@ -81,6 +86,37 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             }
         };
 
-        public AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new();
+        public AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
+        {
+            IgnoreEvents = new HashSet<Type>(),
+            CustomEventKeys = new Dictionary<string, string>()
+            {
+                { nameof(AdsRevenueEvent), "ad_impression_abi" }
+            }
+        };
+
+        public ABIAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticEvents)
+        {
+            this.signalBus      = signalBus;
+            this.analyticEvents = analyticEvents;
+            this.signalBus.Subscribe<AdRevenueSignal>(this.OnAdRevenueEvent);
+        }
+
+        private void OnAdRevenueEvent(AdRevenueSignal obj)
+        {
+            this.analyticEvents.Track(new CustomEvent()
+            {
+                EventName = "ad_impression",
+                EventProperties = new Dictionary<string, object>()
+                {
+                    { "source_id", obj.AdsRevenueEvent.AdsRevenueSourceId },
+                    { "ad_network", obj.AdsRevenueEvent.AdNetwork },
+                    { "ad_unit", obj.AdsRevenueEvent.AdUnit },
+                    { "placement", obj.AdsRevenueEvent.Placement },
+                    { "currency", obj.AdsRevenueEvent.Currency },
+                    { "revenue", obj.AdsRevenueEvent.Revenue },
+                }
+            });
+        }
     }
 }

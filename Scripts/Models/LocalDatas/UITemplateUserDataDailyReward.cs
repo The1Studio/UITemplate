@@ -8,8 +8,7 @@
     {
         public       List<RewardStatus> RewardStatus = new();
         public       DateTime           BeginDate         { get; set; }
-       
-
+        
         public void Init() { }
     }
 

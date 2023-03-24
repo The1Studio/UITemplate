@@ -28,7 +28,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 
-        public IEvent InterstitialShow(int level, string place) { return new ShowInterstitialAds(this.internetService.IsInternetAvailable, place); }
+        public IEvent InterstitialEligible(string place)               => new CustomEvent();
+        public IEvent InterstitialShow(int        level, string place) { return new ShowInterstitialAds(this.internetService.IsInternetAvailable, place); }
 
         public IEvent InterstitialShowCompleted(int level, string place) { return new InterstitialAdsSuccess(place); }
 
@@ -36,7 +37,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent InterstitialClick(string place) { return new CustomEvent(); }
 
-        public IEvent InterstitialRequest(string place) { return new CustomEvent(); }
+        public IEvent InterstitialLoaded(string   place) { return new CustomEvent(); }
+        public IEvent RewardedVideoEligible(string place) => new CustomEvent();
 
         public IEvent RewardedVideoOffer(string place) { return new CustomEvent(); }
 
@@ -88,7 +90,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 { nameof(LevelComplete), "af_level_achieved" },
                 { nameof(AdInterLoad), "af_inters_api_called" },
                 { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdInterRequest), "af_inters_ad_eligible" },
+                { nameof(AdInterLoaded), "af_inters_ad_eligible" },
                 { nameof(AdsRewardClick), "af_rewarded_ad_eligible" },
                 { nameof(AdsRewardedLoaded), "af_rewarded_api_called" },
                 { nameof(AdsRewardShow), "af_rewarded_displayed" },

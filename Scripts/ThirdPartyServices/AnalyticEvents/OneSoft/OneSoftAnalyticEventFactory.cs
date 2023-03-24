@@ -13,7 +13,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
     public class OneSoftAnalyticEventFactory : IAnalyticEventFactory
     {
-        public IEvent InterstitialShow(int level, string place) => new InterstitialShow(level, place);
+        public IEvent InterstitialEligible(string place)               => new CustomEvent();
+        public IEvent InterstitialShow(int        level, string place) => new InterstitialShow(level, place);
 
         public IEvent InterstitialShowCompleted(int level, string place) => new InterstitialShowCompleted(place);
 
@@ -21,7 +22,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent InterstitialClick(string place) => new CustomEvent();
 
-        public IEvent InterstitialRequest(string place) => new CustomEvent();
+        public IEvent InterstitialLoaded(string   place) => new CustomEvent();
+        public IEvent RewardedVideoEligible(string place) => new CustomEvent();
 
         public IEvent RewardedVideoOffer(string place) => new CustomEvent();
 
@@ -76,7 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 { nameof(LevelComplete), "af_level_achieved" },
                 { nameof(AdInterLoad), "af_inters_api_called" },
                 { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdInterRequest), "af_inters_ad_eligible" },
+                { nameof(AdInterLoaded), "af_inters_ad_eligible" },
                 { nameof(AdsRewardClick), "af_rewarded_ad_eligible" },
                 { nameof(AdsRewardedLoaded), "af_rewarded_api_called" },
                 { nameof(AdsRewardShow), "af_rewarded_displayed" },

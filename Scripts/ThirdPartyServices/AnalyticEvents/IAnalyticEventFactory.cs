@@ -4,14 +4,16 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
     public interface IAnalyticEventFactory
     {
-        IEvent InterstitialShow(int level, string place);
+        IEvent InterstitialEligible(string place);
+        IEvent InterstitialShow(int        level, string place);
 
         IEvent InterstitialShowCompleted(int level, string place);
 
         IEvent InterstitialShowFail(string place, string msg);
 
-        IEvent InterstitialClick(string place);
-        IEvent InterstitialRequest(string place);
+        IEvent InterstitialClick(string    place);
+        IEvent InterstitialLoaded(string  place);
+        IEvent RewardedVideoEligible(string place);
 
         IEvent RewardedVideoOffer(string place);
         IEvent RewardedVideoLoaded(string place);

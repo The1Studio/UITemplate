@@ -57,6 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticServices.Start();
 
             //Game events
+            this.signalBus.Subscribe<TutorialCompletionSignal>(this.TutorialCompletionHandler);
             this.signalBus.Subscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
@@ -150,6 +151,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount);
             }
+        }
+
+        public void TutorialCompletionHandler(TutorialCompletionSignal obj)
+        {
+            this.Track(this.analyticEventFactory.TutorialCompletion(obj.Success, obj.TutorialId));
         }
 
         private void LevelStartedHandler(LevelStartedSignal obj)

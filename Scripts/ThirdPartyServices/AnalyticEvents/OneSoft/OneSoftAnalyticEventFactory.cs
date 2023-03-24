@@ -51,6 +51,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) { return new CustomEvent(); }
 
+        public IEvent TutorialCompletion(bool success, string tutorialId) { return new CustomEvent(); }
+
         public IEvent EarnVirtualCurrency(string type, int amount) { return new CustomEvent(); }
 
         public void ForceUpdateAllProperties() { }

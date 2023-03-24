@@ -14,8 +14,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     {
         private readonly SignalBus         signalBus;
         private readonly IAnalyticServices analyticEvents;
-        public           IEvent            InterstitialEligible(string place)               => new AdsIntersEligible(place);
-        public           IEvent            InterstitialShow(int        level, string place) => new AdInterShow(place);
+
+        public IEvent InterstitialEligible(string place) => new AdsIntersEligible(place);
+
+        public IEvent InterstitialShow(int level, string place) => new AdInterShow(place);
 
         public IEvent InterstitialShowCompleted(int level, string place) => new CustomEvent();
 
@@ -23,7 +25,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent InterstitialClick(string place) => new AdInterClick(place);
 
-        public IEvent InterstitialLoaded(string   place) => new AdInterLoaded();
+        public IEvent InterstitialLoaded(string place) => new AdInterLoaded();
+
         public IEvent RewardedVideoEligible(string place) => new AdsRewardEligible(place);
 
         public IEvent RewardedVideoOffer(string place) => new AdsRewardOffer(place);
@@ -35,6 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         public IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)
         {
             if (!isRewarded) return new CustomEvent();
+
             return new AdsRewardComplete(place);
         }
 
@@ -60,6 +64,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) => new SpendVirtualCurrency(virtualCurrencyName, value, itemName);
 
+        public IEvent TutorialCompletion(bool success, string tutorialId) => new TutorialCompletion(success, tutorialId);
+
         public void ForceUpdateAllProperties() { }
 
         public string LevelMaxProperty             => "level_max";
@@ -81,6 +87,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(BannerShown), "af_banner_shown" },
+                { nameof(TutorialCompletion), "af_tutorial_completion" },
                 { nameof(LevelComplete), "af_level_achieved" },
                 { nameof(AdsIntersEligible), "af_inters_ad_eligible" },
                 { nameof(AdInterLoaded), "af_inters_api_called" },

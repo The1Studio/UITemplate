@@ -40,6 +40,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName);
 
+        IEvent TutorialCompletion(bool success, string tutorialId);
+
         void ForceUpdateAllProperties();
 
         string                            LevelMaxProperty                           { get; }

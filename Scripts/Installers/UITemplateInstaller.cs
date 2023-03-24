@@ -49,6 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<RewardedAdShowedSignal>();
             this.Container.DeclareSignal<RewardedAdOfferSignal>();
             this.Container.DeclareSignal<UpdateCurrencySignal>();
+            this.Container.DeclareSignal<TutorialCompletionSignal>();
             this.Container.DeclareSignal<LevelStartedSignal>();
             this.Container.DeclareSignal<LevelEndedSignal>();
             this.Container.DeclareSignal<LevelSkippedSignal>();

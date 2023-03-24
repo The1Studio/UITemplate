@@ -28,8 +28,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 
-        public IEvent InterstitialEligible(string place)               => new CustomEvent();
-        public IEvent InterstitialShow(int        level, string place) { return new ShowInterstitialAds(this.internetService.IsInternetAvailable, place); }
+        public IEvent InterstitialEligible(string place) => new CustomEvent();
+
+        public IEvent InterstitialShow(int level, string place) { return new ShowInterstitialAds(this.internetService.IsInternetAvailable, place); }
 
         public IEvent InterstitialShowCompleted(int level, string place) { return new InterstitialAdsSuccess(place); }
 
@@ -37,7 +38,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent InterstitialClick(string place) { return new CustomEvent(); }
 
-        public IEvent InterstitialLoaded(string   place) { return new CustomEvent(); }
+        public IEvent InterstitialLoaded(string place) { return new CustomEvent(); }
+
         public IEvent RewardedVideoEligible(string place) => new CustomEvent();
 
         public IEvent RewardedVideoOffer(string place) { return new CustomEvent(); }
@@ -65,6 +67,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         public IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) { return new CustomEvent(); }
 
         public IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) { return new CustomEvent(); }
+
+        public IEvent TutorialCompletion(bool success, string tutorialId) { return new CustomEvent(); }
 
         public void ForceUpdateAllProperties() { }
 

@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.AssetLibrary;
@@ -14,9 +15,14 @@
 
     public class UITemplateDailyRewardItemModel
     {
-        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord) { this.DailyRewardRecord = dailyRewardRecord; }
+        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord, Action onClickClaim)
+        {
+            this.DailyRewardRecord = dailyRewardRecord;
+            this.OnClickClaim      = onClickClaim;
+        }
 
         public UITemplateDailyRewardRecord DailyRewardRecord { get; set; }
+        public Action                      OnClickClaim      { get; set; }
     }
 
     public class UITemplateDailyRewardItemView : TViewMono
@@ -82,6 +88,7 @@
             this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] = RewardStatus.Claimed;
             this.logService.LogWithColor("Add reward to local here! ", Color.yellow);
             this.InitView();
+            this.model.OnClickClaim?.Invoke();
         }
 
         public override void Dispose()

@@ -29,7 +29,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public void SetRewardStatus(int day, RewardStatus status)
         {
-            this.uiTemplateDailyRewardData.BeginDate             = status == RewardStatus.Unlocked ? DateTime.Now : this.uiTemplateDailyRewardData.BeginDate;
+            if (this.uiTemplateDailyRewardData.RewardStatus[day] == RewardStatus.Claimed)
+                return;
+
+            this.uiTemplateDailyRewardData.BeginDate = status == RewardStatus.Unlocked
+                ? DateTime.Now
+                : this.uiTemplateDailyRewardData.BeginDate;
             this.uiTemplateDailyRewardData.RewardStatus[day] = status;
         }
 
@@ -39,6 +44,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             {
                 this.uiTemplateDailyRewardData.RewardStatus.Add(RewardStatus.Locked);
             }
+
             this.uiTemplateDailyRewardData.BeginDate = DateTime.Now;
         }
     }

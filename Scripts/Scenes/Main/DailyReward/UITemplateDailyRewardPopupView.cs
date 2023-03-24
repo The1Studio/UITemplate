@@ -15,6 +15,7 @@
     {
         public UITemplateDailyRewardAdapter dailyRewardAdapter;
         public Button                       btnClaim;
+        public Button                       btnClose;
     }
 
     [PopupInfo(nameof(UITemplateDailyRewardPopupView))]
@@ -44,22 +45,43 @@
         {
             base.OnViewReady();
             this.View.btnClaim.onClick.AddListener(this.ClaimReward);
+            this.View.btnClose.onClick.AddListener(this.CloseView);
         }
 
         public override async void BindData()
         {
             var listRewardBlueprint = this.uiTemplateDailyRewardBlueprint.Values.ToList();
-            var listRewardModel     = listRewardBlueprint.Select(t => new UITemplateDailyRewardItemModel(t)).ToList();
+            var listRewardModel     = listRewardBlueprint.Select(t => new UITemplateDailyRewardItemModel(t, this.OnItemClickClaim)).ToList();
             this.userLoginDay = await this.uiTemplateDailyRewardController.GetUserLoginDay();
-            if (this.uiTemplateDailyRewardData.RewardStatus.Count == 0)
+            if (this.uiTemplateDailyRewardData.RewardStatus.Count == 0 || this.CheckUserClaimAllReward())
                 this.uiTemplateDailyRewardController.ResetRewardStatus(listRewardBlueprint.Count);
             this.uiTemplateDailyRewardController.SetRewardStatus(this.userLoginDay, RewardStatus.Unlocked);
 
             this.InitListDailyReward(listRewardModel);
+            
+            var hasRewardCanClaim = this.uiTemplateDailyRewardData.RewardStatus.Any(t => t == RewardStatus.Unlocked);
+            this.View.btnClaim.gameObject.SetActive(hasRewardCanClaim);
+            this.View.btnClose.gameObject.SetActive(!hasRewardCanClaim);
+        }
+
+        private void OnItemClickClaim()
+        {
+            this.View.btnClose.gameObject.SetActive(true); 
+            this.View.btnClaim.gameObject.SetActive(false);
         }
 
         private async void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels) { await this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer); }
 
-        private async void ClaimReward() { this.uiTemplateDailyRewardController.SetRewardStatus(await this.uiTemplateDailyRewardController.GetUserLoginDay(), RewardStatus.Claimed); }
+        private async void ClaimReward()
+        {
+            this.uiTemplateDailyRewardController.SetRewardStatus(await this.uiTemplateDailyRewardController.GetUserLoginDay(), RewardStatus.Claimed);
+            this.View.dailyRewardAdapter.Refresh();
+            this.CloseView();
+        }
+        
+        private bool CheckUserClaimAllReward()
+        {
+            return !(this.uiTemplateDailyRewardData.RewardStatus.Any(t => t != RewardStatus.Claimed));
+        }
     }
 }

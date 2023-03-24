@@ -149,12 +149,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public UITemplateItemData UpdateStatusItemData(string id, UITemplateItemData.Status status)
         {
-            return this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () =>
+            var itemData = this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () =>
             {
                 var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
 
                 return new UITemplateItemData(id, itemRecord, status);
             });
+            itemData.CurrentStatus = status;
+            return itemData;
         }
 
         public void Initialize()

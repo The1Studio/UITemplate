@@ -155,15 +155,13 @@
 
             if (this.View.UseItemUnlockProgressText)
             {
-                var currentValue = lastValue;
-                this.View.TxtItemUnlockProgress.text = $"{currentValue * 100:N0}%";
+                this.View.TxtItemUnlockProgress.text = $"{lastValue * 100:N0}%";
                 sequence.Join(
                     DOTween.To(
-                        getter: () => currentValue,
+                        getter: () => lastValue,
                         setter: value =>
                         {
-                            currentValue                         = value;
-                            this.View.TxtItemUnlockProgress.text = $"{currentValue * 100:N0}%";
+                            this.View.TxtItemUnlockProgress.text = $"{value * 100:N0}%";
                         },
                         endValue: newValue,
                         duration: .5f

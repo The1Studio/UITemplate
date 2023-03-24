@@ -15,13 +15,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
     public class UITemplateGameplayScreen : BaseView
     {
         [SerializeField] private Button                 btnHome;
-        [SerializeField] private Button                 btnReplay;
-        [SerializeField] private Button                 btnSkip;
         [SerializeField] private UITemplateCurrencyView currencyView;
 
         public Button                 BtnHome      => this.btnHome;
-        public Button                 BtnReplay    => this.btnReplay;
-        public Button                 BtnSkip      => this.btnSkip;
         public UITemplateCurrencyView CurrencyView => this.currencyView;
     }
 
@@ -60,8 +56,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         {
             base.OnViewReady();
             this.View.BtnHome.onClick.AddListener(this.OnOpenHome);
-            this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
-            this.View.BtnSkip.onClick.AddListener(this.OnClickSkip);
         }
 
         public override void BindData()
@@ -77,14 +71,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         protected virtual async void OnOpenHome()
         {
             await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
-        }
-
-        protected virtual void OnClickReplay()
-        {
-        }
-
-        protected virtual void OnClickSkip()
-        {
         }
 
         protected virtual void OpenNextScene()

@@ -46,14 +46,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
             //Signal
             this.Container.DeclareSignal<RewardedAdEligibleSignal>();
-            this.Container.DeclareSignal<RewardedAdShowedSignal>();
+            this.Container.DeclareSignal<RewardedAdCalledSignal>();
             this.Container.DeclareSignal<RewardedAdOfferSignal>();
             this.Container.DeclareSignal<UpdateCurrencySignal>();
             this.Container.DeclareSignal<TutorialCompletionSignal>();
             this.Container.DeclareSignal<LevelStartedSignal>();
             this.Container.DeclareSignal<LevelEndedSignal>();
             this.Container.DeclareSignal<LevelSkippedSignal>();
-            this.Container.DeclareSignal<InterstitialAdShowedSignal>();
+            this.Container.DeclareSignal<InterstitialAdCalledSignal>();
             this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
             this.Container.DeclareSignal<FirebaseInitializeSucceededSignal>();
             //Third party service

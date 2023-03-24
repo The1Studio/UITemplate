@@ -5,18 +5,26 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
     public interface IAnalyticEventFactory
     {
         IEvent InterstitialEligible(string place);
-        IEvent InterstitialShow(int        level, string place);
+
+        IEvent InterstitialShow(int level, string place);
 
         IEvent InterstitialShowCompleted(int level, string place);
 
         IEvent InterstitialShowFail(string place, string msg);
 
-        IEvent InterstitialClick(string    place);
-        IEvent InterstitialLoaded(string  place);
+        IEvent InterstitialClick(string place);
+
+        IEvent InterstitialDownloaded(string place);
+
+        IEvent InterstitialCalled(string place);
+
         IEvent RewardedVideoEligible(string place);
 
         IEvent RewardedVideoOffer(string place);
-        IEvent RewardedVideoLoaded(string place);
+
+        IEvent RewardedVideoDownloaded(string place);
+
+        IEvent RewardedVideoCalled(string place);
 
         IEvent RewardedVideoShow(int level, string place);
 
@@ -50,6 +58,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         string                            TotalInterstitialAdsProperty               { get; }
         string                            TotalRewardedAdsProperty                   { get; }
         AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; }
-        AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; }
+        AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig  { get; set; }
     }
 }

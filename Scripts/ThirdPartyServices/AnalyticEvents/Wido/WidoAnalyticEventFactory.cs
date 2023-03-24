@@ -38,13 +38,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent InterstitialClick(string place) { return new CustomEvent(); }
 
-        public IEvent InterstitialLoaded(string place) { return new CustomEvent(); }
+        public IEvent InterstitialDownloaded(string place) { return new CustomEvent(); }
+
+        public IEvent InterstitialCalled(string place) { return new CustomEvent(); }
 
         public IEvent RewardedVideoEligible(string place) => new CustomEvent();
 
         public IEvent RewardedVideoOffer(string place) { return new CustomEvent(); }
 
-        public IEvent RewardedVideoLoaded(string place) { return new CustomEvent(); }
+        public IEvent RewardedVideoDownloaded(string place) { return new CustomEvent(); }
+
+        public IEvent RewardedVideoCalled(string place) { return new CustomEvent(); }
 
         public IEvent RewardedVideoShow(int level, string place) { return new ShowRewardedAds(this.internetService.IsInternetAvailable, place); }
 
@@ -94,9 +98,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 { nameof(LevelComplete), "af_level_achieved" },
                 { nameof(AdInterLoad), "af_inters_api_called" },
                 { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdInterLoaded), "af_inters_ad_eligible" },
+                { nameof(AdInterDownloaded), "af_inters_ad_eligible" },
                 { nameof(AdsRewardClick), "af_rewarded_ad_eligible" },
-                { nameof(AdsRewardedLoaded), "af_rewarded_api_called" },
+                { nameof(AdsRewardedDownloaded), "af_rewarded_api_called" },
                 { nameof(AdsRewardShow), "af_rewarded_displayed" },
                 { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
             }

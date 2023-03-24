@@ -71,12 +71,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            this.signalBus.Fire(new InterstitialAdShowedSignal(place));
+            this.signalBus.Fire(new InterstitialAdCalledSignal(place));
             this.uiTemplateAdsData.WatchedInterstitialAds++;
             this.adServices.ShowInterstitialAd(place);
         }
 
-        public virtual void LoadInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdLoadedSignal(place)); }
+        public virtual void LoadInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdDownloadedSignal(place)); }
 
         #endregion
 
@@ -92,7 +92,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            this.signalBus.Fire(new RewardedAdShowedSignal(place));
+            this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsData.WatchedRewardedAds++;
             this.adServices.ShowRewardedAd(place, onComplete);
         }

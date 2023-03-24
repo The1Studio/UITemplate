@@ -13,8 +13,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
     public class OneSoftAnalyticEventFactory : IAnalyticEventFactory
     {
-        public IEvent InterstitialEligible(string place)               => new CustomEvent();
-        public IEvent InterstitialShow(int        level, string place) => new InterstitialShow(level, place);
+        public IEvent InterstitialEligible(string place) => new CustomEvent();
+
+        public IEvent InterstitialShow(int level, string place) => new InterstitialShow(level, place);
 
         public IEvent InterstitialShowCompleted(int level, string place) => new InterstitialShowCompleted(place);
 
@@ -22,12 +23,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent InterstitialClick(string place) => new CustomEvent();
 
-        public IEvent InterstitialLoaded(string   place) => new CustomEvent();
+        public IEvent InterstitialDownloaded(string place) => new CustomEvent();
+
+        public IEvent InterstitialCalled(string place) => new CustomEvent();
+
         public IEvent RewardedVideoEligible(string place) => new CustomEvent();
 
         public IEvent RewardedVideoOffer(string place) => new CustomEvent();
 
-        public IEvent RewardedVideoLoaded(string place) => new CustomEvent();
+        public IEvent RewardedVideoDownloaded(string place) => new CustomEvent();
+
+        public IEvent RewardedVideoCalled(string place) => new CustomEvent();
 
         public IEvent RewardedVideoShow(int level, string place) => new RewardedVideoShow(level, place);
 
@@ -57,12 +63,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public void ForceUpdateAllProperties() { }
 
-        public string                            LevelMaxProperty                           => "level_max";
-        public string                            LastLevelProperty                          => "last_level";
-        public string                            LastAdsPlacementProperty                   => "last_placement";
-        public string                            TotalInterstitialAdsProperty               => "total_interstitial_ads";
-        public string                            TotalRewardedAdsProperty                   => "total_rewarded_ads";
-      
+        public string LevelMaxProperty             => "level_max";
+        public string LastLevelProperty            => "last_level";
+        public string LastAdsPlacementProperty     => "last_placement";
+        public string TotalInterstitialAdsProperty => "total_interstitial_ads";
+        public string TotalRewardedAdsProperty     => "total_rewarded_ads";
 
         public AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
@@ -80,9 +85,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 { nameof(LevelComplete), "af_level_achieved" },
                 { nameof(AdInterLoad), "af_inters_api_called" },
                 { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdInterLoaded), "af_inters_ad_eligible" },
+                { nameof(AdInterDownloaded), "af_inters_ad_eligible" },
                 { nameof(AdsRewardClick), "af_rewarded_ad_eligible" },
-                { nameof(AdsRewardedLoaded), "af_rewarded_api_called" },
+                { nameof(AdsRewardedDownloaded), "af_rewarded_api_called" },
                 { nameof(AdsRewardShow), "af_rewarded_displayed" },
                 { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
             }

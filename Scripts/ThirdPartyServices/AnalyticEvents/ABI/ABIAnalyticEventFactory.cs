@@ -25,13 +25,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent InterstitialClick(string place) => new AdInterClick(place);
 
-        public IEvent InterstitialLoaded(string place) => new AdInterLoaded();
+        public IEvent InterstitialDownloaded(string place) => new AdInterDownloaded();
+
+        public IEvent InterstitialCalled(string place) => new AdInterCalled();
 
         public IEvent RewardedVideoEligible(string place) => new AdsRewardEligible(place);
 
         public IEvent RewardedVideoOffer(string place) => new AdsRewardOffer(place);
 
-        public IEvent RewardedVideoLoaded(string place) => new AdsRewardedLoaded();
+        public IEvent RewardedVideoDownloaded(string place) => new AdsRewardedDownloaded();
+
+        public IEvent RewardedVideoCalled(string place) => new AdsRewardedCalled();
 
         public IEvent RewardedVideoShow(int level, string place) => new AdsRewardShow(place);
 
@@ -64,7 +68,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) => new SpendVirtualCurrency(virtualCurrencyName, value, itemName);
 
-        public IEvent TutorialCompletion(bool success, string tutorialId) => new TutorialCompletion(success, tutorialId);
+        public IEvent TutorialCompletion(bool success, string tutorialId) => new GameTutorialCompletion(success, tutorialId);
 
         public void ForceUpdateAllProperties() { }
 
@@ -81,19 +85,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 typeof(GameStarted),
                 typeof(AdInterClick),
                 typeof(AdInterFail),
+                typeof(AdInterDownloaded),
                 typeof(AdsRewardFail),
                 typeof(AdsRewardOffer),
+                typeof(AdsRewardedDownloaded),
             },
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(BannerShown), "af_banner_shown" },
-                { nameof(TutorialCompletion), "af_tutorial_completion" },
+                { nameof(GameTutorialCompletion), "af_tutorial_completion" },
                 { nameof(LevelComplete), "af_level_achieved" },
                 { nameof(AdsIntersEligible), "af_inters_ad_eligible" },
-                { nameof(AdInterLoaded), "af_inters_api_called" },
+                { nameof(AdInterCalled), "af_inters_api_called" },
                 { nameof(AdInterShow), "af_inters_displayed" },
                 { nameof(AdsRewardEligible), "af_rewarded_ad_eligible" },
-                { nameof(AdsRewardedLoaded), "af_rewarded_api_called" },
+                { nameof(AdsRewardedCalled), "af_rewarded_api_called" },
                 { nameof(AdsRewardShow), "af_rewarded_displayed" },
                 { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
             }

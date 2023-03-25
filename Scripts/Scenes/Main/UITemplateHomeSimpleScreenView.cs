@@ -8,6 +8,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
@@ -44,7 +45,8 @@
 
         protected virtual void OnClickLevel()
         {
-            this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>();
+            //this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>();
+            this.ScreenManager.OpenScreen<UITemplateDailyRewardPopupPresenter>();
             //this.ScreenManager.OpenScreen<UITemplateGachaPopupPresenter, UITemplateGachaPopupModel>(this.FakeGachaPage());
         }
 

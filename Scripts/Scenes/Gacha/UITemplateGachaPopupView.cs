@@ -6,7 +6,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.EventSystems;

@@ -45,9 +45,7 @@
 
         protected virtual void OnClickLevel()
         {
-            //this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>();
-            this.ScreenManager.OpenScreen<UITemplateDailyRewardPopupPresenter>();
-            //this.ScreenManager.OpenScreen<UITemplateGachaPopupPresenter, UITemplateGachaPopupModel>(this.FakeGachaPage());
+            this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>();
         }
 
         private UITemplateGachaPopupModel FakeGachaPage()

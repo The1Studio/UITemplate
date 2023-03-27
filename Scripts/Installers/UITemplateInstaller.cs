@@ -7,7 +7,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using global::Models;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.AdsServices.EasyMobile;
+#if APPSFLYER
     using ServiceImplementation.AppsflyerAnalyticTracker;
+#endif
     using ServiceImplementation.FirebaseAnalyticTracker;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -30,7 +32,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         private readonly GameObject soundGroupPrefab;
 
-        public UITemplateInstaller(GameObject soundGroupPrefab) { this.soundGroupPrefab = soundGroupPrefab; }
+        public UITemplateInstaller(GameObject soundGroupPrefab)
+        {
+            this.soundGroupPrefab = soundGroupPrefab;
+        }
 
         public override void InstallBindings()
         {

@@ -26,7 +26,7 @@
 
         public void Unsubscribe(SignalBus signalBus)
         {
-            signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrency);
+            signalBus.TryUnsubscribe<UpdateCurrencySignal>(this.UpdateCurrency);
         }
 
         private void UpdateCurrency(UpdateCurrencySignal obj)

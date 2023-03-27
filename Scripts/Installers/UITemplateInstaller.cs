@@ -76,9 +76,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<IAnalyticEventFactory>().To<WidoAnalyticEventFactory>().AsCached();
 #elif ABI
             this.Container.Bind<IAnalyticEventFactory>().To<ABIAnalyticEventFactory>().AsCached();
-            var analyticFactory = this.Container.Resolve<IAnalyticEventFactory>();
-            this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
-            this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
 #elif ADONE
             this.Container.Bind<IAnalyticEventFactory>().To<AdOneAnalyticEventFactory>().AsCached();
 #else
@@ -131,6 +128,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
 #else
             this.Container.Bind<IFirebaseRemoteConfig>().To<FirebaseDummyManager>().AsCached().NonLazy();
+#endif
+            
+#if APPSFLYER
+            var analyticFactory = this.Container.Resolve<IAnalyticEventFactory>();
+            this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
+            this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
 #endif
 
             //Daily Reward

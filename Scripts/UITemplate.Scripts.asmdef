@@ -25,7 +25,8 @@
         "UnityEngine.Purchasing.Stores",
         "Unity.Services.Core.Environments",
         "3rd.ServiceImplementation.Appsflyer",
-        "FirebaseTracker"
+        "FirebaseTracker",
+        "EasyMobile.Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

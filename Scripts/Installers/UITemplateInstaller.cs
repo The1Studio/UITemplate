@@ -28,14 +28,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using UnityEngine;
     using Zenject;
 
+#if NOTIFICATION_ENABLE
+    using NotificationServices = TheOneStudio.UITemplate.UITemplate.Services.NotificationServices;
+#endif
+
     public class UITemplateInstaller : Installer<GameObject, UITemplateInstaller>
     {
         private readonly GameObject soundGroupPrefab;
 
-        public UITemplateInstaller(GameObject soundGroupPrefab)
-        {
-            this.soundGroupPrefab = soundGroupPrefab;
-        }
+        public UITemplateInstaller(GameObject soundGroupPrefab) { this.soundGroupPrefab = soundGroupPrefab; }
 
         public override void InstallBindings()
         {
@@ -141,6 +142,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             //Daily Reward
             this.Container.Bind<UITemplateDailyRewardService>().AsCached();
+
+#if NOTIFICATION_ENABLE
+            this.Container.BindInterfacesAndSelfTo<NotificationServices>().AsCached().NonLazy();
+#endif
         }
 
         private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData, new()

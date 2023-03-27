@@ -24,13 +24,14 @@
     [PopupInfo(nameof(UITemplateRateGameScreenView))]
     public class UITemplateRateGameScreenPresenter : UITemplateBasePopupPresenter<UITemplateRateGameScreenView>
     {
-        public static string StoreUrl = "https://play.google.com/store/games";
-        private int lastStarCount;
+        private readonly string storeUrl;
+        private          int    lastStarCount;
 
-        public UITemplateRateGameScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
+        public UITemplateRateGameScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, string storeUrl) : base(signalBus)
         {
             this.diContainer   = diContainer;
             this.screenManager = screenManager;
+            this.storeUrl      = storeUrl;
         }
 
         public override void BindData()
@@ -45,7 +46,7 @@
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            
+
             this.View.YesButton.onClick.AddListener(this.OnClickYes);
             this.View.LaterButton.onClick.AddListener(this.OnClickLater);
             for (var i = 0; i < this.View.StarButtons.Count; i++)
@@ -86,14 +87,11 @@
         }
 
 
-        protected void OnClickLater()
-        {
-            this.screenManager.CloseCurrentScreen();
-        }
+        protected virtual void OnClickLater() { this.screenManager.CloseCurrentScreen(); }
 
-        protected void OnClickYes()
+        protected virtual void OnClickYes()
         {
-            if (this.lastStarCount == this.View.StarButtons.Count) Application.OpenURL(StoreUrl);
+            if (this.lastStarCount == this.View.StarButtons.Count) Application.OpenURL(this.storeUrl);
             this.screenManager.CloseCurrentScreen();
         }
 

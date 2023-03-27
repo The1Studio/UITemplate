@@ -2815,7 +2815,7 @@ PrefabInstance:
     - target: {fileID: 1685162116223536764, guid: 1438d283515ee4637b1d0bbdd782865e,
         type: 3}
       propertyPath: m_Name
-      value: UITemplateDailyrewardPopupView
+      value: UITemplateDailyRewardPopupView
       objectReference: {fileID: 0}
     - target: {fileID: 7427792702643258388, guid: 1438d283515ee4637b1d0bbdd782865e,
         type: 3}

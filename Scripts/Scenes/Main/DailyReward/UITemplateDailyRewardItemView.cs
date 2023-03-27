@@ -1,7 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward
 {
-    using System;
-    using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
@@ -15,14 +13,9 @@
 
     public class UITemplateDailyRewardItemModel
     {
-        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord, Action onClickClaim)
-        {
-            this.DailyRewardRecord = dailyRewardRecord;
-            this.OnClickClaim      = onClickClaim;
-        }
+        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord) { this.DailyRewardRecord = dailyRewardRecord; }
 
         public UITemplateDailyRewardRecord DailyRewardRecord { get; set; }
-        public Action                      OnClickClaim      { get; set; }
     }
 
     public class UITemplateDailyRewardItemView : TViewMono
@@ -32,7 +25,6 @@
         public GameObject      objClaimed;
         public TextMeshProUGUI txtValue;
         public TextMeshProUGUI txtDayLabel;
-        public Button          btnClaim;
     }
 
     public class UITemplateDailyRewardItemPresenter : BaseUIItemPresenter<UITemplateDailyRewardItemView, UITemplateDailyRewardItemModel>
@@ -58,11 +50,9 @@
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
         }
 
-        public override async void BindData(UITemplateDailyRewardItemModel param)
+        public override void BindData(UITemplateDailyRewardItemModel param)
         {
-            this.View.btnClaim.onClick.AddListener(this.OnClickClaimReward);
-            this.model                      = param;
-            this.View.btnClaim.interactable = this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] != RewardStatus.Locked;
+            this.model = param;
             this.InitView();
         }
 
@@ -81,20 +71,6 @@
                 : $"{PrefixLabel}{this.model.DailyRewardRecord.Day}";
             this.View.objLockReward.SetActive(this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] == RewardStatus.Locked);
             this.View.objClaimed.SetActive(this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] == RewardStatus.Claimed);
-        }
-
-        private void OnClickClaimReward()
-        {
-            this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] = RewardStatus.Claimed;
-            this.logService.LogWithColor("Add reward to local here! ", Color.yellow);
-            this.InitView();
-            this.model.OnClickClaim?.Invoke();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            this.View.btnClaim.onClick.RemoveAllListeners();
         }
     }
 }

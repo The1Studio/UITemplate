@@ -23,7 +23,9 @@
         "UnityEngine.Purchasing",
         "Unity.Services.Core",
         "UnityEngine.Purchasing.Stores",
-        "Unity.Services.Core.Environments"
+        "Unity.Services.Core.Environments",
+        "3rd.ServiceImplementation.Appsflyer",
+        "FirebaseTracker"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

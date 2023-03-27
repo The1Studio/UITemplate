@@ -10,6 +10,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -25,13 +26,14 @@
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
     public class UITemplateHomeSimpleScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
-        public UITemplateHomeSimpleScreenPresenter(SignalBus                         signalBus, UITemplateInventoryData inventoryData, DiContainer diContainer, IScreenManager screenManager,
-                                                   UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, UITemplateInventoryData inventoryData, DiContainer diContainer, IScreenManager screenManager,
+            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateDailyRewardService dailyRewardService) : base(signalBus)
         {
             this.inventoryData                     = inventoryData;
             this.diContainer                       = diContainer;
             this.ScreenManager                     = screenManager;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.dailyRewardService                = dailyRewardService;
         }
 
         protected override async void OnViewReady()
@@ -46,6 +48,14 @@
         protected virtual void OnClickLevel()
         {
             this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>();
+        }
+
+        protected virtual void OnOpenDailyReward()
+        {
+            this.dailyRewardService.ShowDailyRewardPopup(() =>
+            {
+                Debug.Log($"Get all rewards finish");
+            });
         }
 
         private UITemplateGachaPopupModel FakeGachaPage()
@@ -63,7 +73,7 @@
 
             return result;
         }
-        
+
         private List<UITemplateGachaItemModel> FakeListItemInPageData()
         {
             var result = new List<UITemplateGachaItemModel>();
@@ -81,14 +91,9 @@
             return result.OrderBy(o => o.IsLocked).ToList();
         }
 
-        protected virtual void OnClickPlay()
-        {
-        }
+        protected virtual void OnClickPlay() { }
 
-        public override void BindData()
-        {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
-        }
+        public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value); }
 
         public override void Dispose()
         {
@@ -102,6 +107,7 @@
         private readonly   DiContainer                       diContainer;
         protected readonly IScreenManager                    ScreenManager;
         protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly   UITemplateDailyRewardService      dailyRewardService;
 
         #endregion
     }

@@ -23,16 +23,16 @@
     [ScreenInfo(nameof(UITemplateLoseScreenView))]
     public class UITemplateLoseScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoseScreenView>
     {
-        public UITemplateLoseScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
+        public UITemplateLoseScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateInventoryDataController inventoryDataController) : base(signalBus)
         {
-            this.diContainer                       = diContainer;
-            this.screenManager                     = screenManager;
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.diContainer             = diContainer;
+            this.screenManager           = screenManager;
+            this.inventoryDataController = inventoryDataController;
         }
 
         public override void BindData()
         {
-            this.View.CurrencyView.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
+            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrency().Value);
         }
 
         public override void Dispose()
@@ -56,19 +56,17 @@
 
         protected virtual void OnClickReplay()
         {
-            
         }
 
         protected virtual void OnClickSkip()
         {
-            
         }
-        
+
         #region inject
 
         protected readonly DiContainer                       diContainer;
         protected readonly IScreenManager                    screenManager;
-        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
+        protected readonly UITemplateInventoryDataController inventoryDataController;
 
         #endregion
     }

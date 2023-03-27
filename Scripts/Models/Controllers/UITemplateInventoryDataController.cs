@@ -126,8 +126,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All)
         {
-            return this.uiTemplateShopBlueprint.Values.Select(itemRecord => this.GetItemData(itemRecord.Id))
-                       .Where(itemData => string.IsNullOrEmpty(category) || itemData.BlueprintRecord.Category.Equals(category) && itemData.BlueprintRecord.UnlockType == unlockType)
+            return this.uiTemplateShopBlueprint.Values
+                       .Select(itemRecord => this.GetItemData(itemRecord.Id))
+                       .Where(itemData =>
+                                  string.IsNullOrEmpty(category)
+                                  || itemData.BlueprintRecord.Category.Equals(category)
+                                  && (itemData.BlueprintRecord.UnlockType & unlockType) != 0
+                       )
                        .ToList();
         }
 
@@ -185,9 +190,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                     status = UITemplateItemData.Status.Owned;
                 }
 
-                if (!this.uiTemplateInventoryData.IDToItemData.TryGetValue(item.Id, out _))
+                if (!this.uiTemplateInventoryData.IDToItemData.TryGetValue(item.Id, out var existedItemData))
                 {
                     this.uiTemplateInventoryData.IDToItemData.Add(item.Id, new UITemplateItemData(item.Id, shopRecord, status));
+                }
+                else
+                {
+                    existedItemData.BlueprintRecord = shopRecord;
                 }
             }
         }

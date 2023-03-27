@@ -32,7 +32,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         private readonly GameObject soundGroupPrefab;
 
-        public UITemplateInstaller(GameObject soundGroupPrefab) { this.soundGroupPrefab = soundGroupPrefab; }
+        public UITemplateInstaller(GameObject soundGroupPrefab)
+        {
+            this.soundGroupPrefab = soundGroupPrefab;
+        }
 
         public override void InstallBindings()
         {

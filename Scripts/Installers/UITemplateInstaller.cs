@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
@@ -48,6 +49,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.BindLocalData<UITemplateAdsData>();
 
             this.Container.Bind<UITemplateAdServiceConfig>().AsCached().NonLazy();
+
+            var storeUrl = $"https://play.google.com/store/apps/details?id={Application.identifier}";
+            this.Container.Bind<string>().FromInstance(storeUrl).WhenInjectedInto<UITemplateRateGameScreenPresenter>();
 
 #if !TEMPLATE_IAP
             this.Container.Bind<IIapServices>().To<UITemplateDummyIAPServices>().AsCached().NonLazy();

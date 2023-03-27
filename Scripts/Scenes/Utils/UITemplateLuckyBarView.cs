@@ -1,14 +1,19 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
     using DG.Tweening;
+    using Sirenix.OdinInspector;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
 
     public class UITemplateLuckyBarView : MonoBehaviour
     {
-        [SerializeField] private Slider   pointer;
-        [SerializeField] private TMP_Text txtCoin;
+        [SerializeField]                private Slider   pointer;
+        [SerializeField]                private TMP_Text txtCoin;
+        [SerializeField] [MinValue(0f)] private float    duration;
+
+        [SerializeField] [MinMaxSlider(0f, 1f, true)]
+        private Vector2 sliderRange;
 
         private Tweener sliderTweener;
 
@@ -16,20 +21,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
         public void BindData(float minCoin, float maxCoin)
         {
-            const float min   = .05f;
-            const float max   = .95f;
-            const float mid   = (min + max) / 2;
-            const float range = max - min;
+            var min   = this.sliderRange.x;
+            var max   = this.sliderRange.y;
+            var mid   = (min + max) / 2;
+            var range = max - min;
             this.sliderTweener = DOTween.To(
                 getter: () => min,
                 setter: value =>
                 {
                     this.pointer.value = value;
                     this.Coin          = maxCoin - (maxCoin - minCoin) * Mathf.Abs(value - mid) / (range / 2);
-                    this.txtCoin.text  = $"+{this.Coin:N0}";
+                    if (this.txtCoin) this.txtCoin.text = $"+{this.Coin:N0}";
                 },
                 endValue: max,
-                duration: 1f
+                duration: this.duration
             ).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutQuart);
         }
 

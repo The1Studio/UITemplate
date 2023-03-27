@@ -864,6 +864,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointer: {fileID: 3561250106896150900}
   txtCoin: {fileID: 0}
+  duration: 1
+  sliderRange: {x: 0.05, y: 0.95}
 --- !u!1 &3089905951513195488
 GameObject:
   m_ObjectHideFlags: 0

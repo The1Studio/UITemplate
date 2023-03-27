@@ -21,10 +21,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public async UniTask<int> GetUserLoginDay()
         {
-            var currentDay = (await this.internetService.GetCurrentTimeAsync()).Day;
-            var beginDay   = this.uiTemplateDailyRewardData.BeginDate.Day;
+            var currentDay      = (await this.internetService.GetCurrentTimeAsync()).Day;
+            var beginDay        = this.uiTemplateDailyRewardData.BeginDate.Day;
+            var differenceOfDay = currentDay - beginDay;
 
-            return (currentDay - beginDay) > 0 ? (currentDay - beginDay) : 0;
+            return differenceOfDay > 0
+                ? differenceOfDay >= this.uiTemplateDailyRewardData.RewardStatus.Count
+                    ? this.uiTemplateDailyRewardData.RewardStatus.Count - 1
+                    : differenceOfDay
+                : 0;
         }
 
         public void SetRewardStatus(int day, RewardStatus status)
@@ -36,6 +41,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 ? DateTime.Now
                 : this.uiTemplateDailyRewardData.BeginDate;
             this.uiTemplateDailyRewardData.RewardStatus[day] = status;
+        }
+
+        public void GetAllAvailableReward()
+        {
+            for (var i = 0; i < this.uiTemplateDailyRewardData.RewardStatus.Count; i++)
+            {
+                if (this.uiTemplateDailyRewardData.RewardStatus[i] == RewardStatus.Unlocked)
+                    this.uiTemplateDailyRewardData.RewardStatus[i] = RewardStatus.Claimed;
+            }
         }
 
         public void ResetRewardStatus(int count)

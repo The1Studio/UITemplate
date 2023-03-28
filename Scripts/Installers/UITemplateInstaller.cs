@@ -117,14 +117,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //FlashLight
 #if UNITY_EDITOR
             this.Container.Bind<IFlashLight>().To<FlashLightEditor>().AsSingle().NonLazy();
-#endif
-
-#if UNITY_ANDROID && !UNITY_EDITOR
+#elif UNITY_ANDROID && !UNITY_EDITOR
             this.Container.Bind<IFlashLight>().To<FlashlightPluginAndroid>().AsSingle().NonLazy();
-#endif
-
-#if UNITY_IOS &&!UNITY_EDITOR
-        this.Container.Bind<IFlashLight>().To<FlashlightPluginIOS>().AsSingle().NonLazy();
+#elif UNITY_IOS && !UNITY_EDITOR
+            this.Container.Bind<IFlashLight>().To<FlashLightPluginIOS>().AsSingle().NonLazy();
 #endif
 
 #if FIREBASE_REMOTE_CONFIG

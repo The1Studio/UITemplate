@@ -2,18 +2,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using Cysharp.Threading.Tasks;
+    using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
+    using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
 
     public class UITemplateLeaderboardPopupView : BaseView
     {
         public UITemplateLeaderboardAdapter Adapter;
         public Button                       CloseButton;
+        public Transform                    YourRankerParentTransform;
     }
 
     [PopupInfo(nameof(UITemplateLeaderboardPopupView))]
@@ -24,7 +28,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         private readonly DiContainer diContainer;
 
         #endregion
-        
+
+        private GameObject yourClone;
+
         public UITemplateLeaderBoardPopupPresenter(SignalBus signalBus, DiContainer diContainer) : base(signalBus) { this.diContainer = diContainer; }
 
         protected override void OnViewReady()
@@ -35,16 +41,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
         public override async void BindData()
         {
-            var TestList = new List<UITemplateLeaderboardItemModel>();
-            for (var i = 0; i < 100; i++)
+            var TestList       = new List<UITemplateLeaderboardItemModel>();
+            var rankerAmount   = 100;
+            var indexPadding   = 4;
+            var newIndex       = 6;
+            var oldIndex       = rankerAmount - 10 - indexPadding;
+            var scrollDuration = 3;
+            var scaleTime      = 1f;
+
+
+            for (var i = 0; i < rankerAmount; i++)
             {
                 TestList.Add(new UITemplateLeaderboardItemModel(i, "VN", NVJOBNameGen.GiveAName(Random.Range(1, 8)), false));
             }
 
-            var newIndex = 6;
-            var oldIndex = 97;
 
-            var currentRegion = System.Globalization.RegionInfo.CurrentRegion;
+            var currentRegion = RegionInfo.CurrentRegion;
             Debug.Log(currentRegion);
 
 
@@ -52,10 +64,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             TestList[oldIndex].IsYou = true;
 
             await this.View.Adapter.InitItemAdapter(TestList, this.diContainer);
-            this.View.Adapter.ScrollTo(99);
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
-            this.View.Adapter.SmoothScrollTo(newIndex - 2, 3);
-            //Do animation
+            this.View.Adapter.ScrollTo(oldIndex - indexPadding);
+            this.yourClone                                   = Object.Instantiate(this.View.Adapter.GetItemViewsHolderIfVisible(oldIndex).root.gameObject, this.View.YourRankerParentTransform);
+            this.yourClone.GetComponent<CanvasGroup>().alpha = 1;
+            var cloneView = this.yourClone.GetComponent<UITemplateLeaderboardItemView>();
+            
+            this.yourClone.transform.DOScale(Vector3.one * 1.1f, scaleTime).SetEase(Ease.InOutBack);
+            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime));
+            DOTween.To(() => oldIndex, setValue => cloneView.SetRank(setValue), newIndex, scrollDuration);
+            this.View.Adapter.SmoothScrollTo(newIndex - indexPadding, scrollDuration);
+            await UniTask.Delay(TimeSpan.FromSeconds(scrollDuration));
+            this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            Object.Destroy(this.yourClone);
         }
     }
 }

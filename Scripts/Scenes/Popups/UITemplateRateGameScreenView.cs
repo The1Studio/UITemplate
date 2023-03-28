@@ -24,14 +24,20 @@
     [PopupInfo(nameof(UITemplateRateGameScreenView))]
     public class UITemplateRateGameScreenPresenter : UITemplateBasePopupPresenter<UITemplateRateGameScreenView>
     {
-        private readonly string storeUrl;
+        private readonly string storeUrl = $"https://play.google.com/store/apps/details?id={Application.identifier}";
         private          int    lastStarCount;
 
-        public UITemplateRateGameScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, string storeUrl) : base(signalBus)
+        public UITemplateRateGameScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager
+#if UNITY_IOS
+            , string storeUrl
+#endif
+        ) : base(signalBus)
         {
             this.diContainer   = diContainer;
             this.screenManager = screenManager;
-            this.storeUrl      = storeUrl;
+#if UNITY_IOS
+            this.storeUrl = storeUrl;
+#endif
         }
 
         public override void BindData()

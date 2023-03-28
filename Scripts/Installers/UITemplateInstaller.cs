@@ -50,9 +50,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             this.Container.Bind<UITemplateAdServiceConfig>().AsCached().NonLazy();
 
-            var storeUrl = $"https://play.google.com/store/apps/details?id={Application.identifier}";
-            this.Container.Bind<string>().FromInstance(storeUrl).WhenInjectedInto<UITemplateRateGameScreenPresenter>();
-
 #if !TEMPLATE_IAP
             this.Container.Bind<IIapServices>().To<UITemplateDummyIAPServices>().AsCached().NonLazy();
 #else

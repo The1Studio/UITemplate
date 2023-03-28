@@ -7,40 +7,42 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
 
-    [Serializable]
-    public class CountryCodeToFlagSprite : UnitySerializedDictionary<string, Sprite>
-    {
-    }
-
     public class UITemplateLeaderboardPopupView : BaseView
     {
         public UITemplateLeaderboardAdapter Adapter;
         public Button                       CloseButton;
         public Transform                    YourRankerParentTransform;
-
-        [SerializeField]
-        public CountryCodeToFlagSprite CountryCodeToFlagSprite;
+        public CountryFlags                 CountryFlags;
+        public int                          MaxLevel    = 200;
+        public int                          LowestRank  = 68365;
+        public int                          HighestRank = 156;
     }
 
-    [PopupInfo(nameof(UITemplateLeaderboardPopupView))]
+    [PopupInfo(nameof(UITemplateLeaderboardPopupView), false)]
     public class UITemplateLeaderBoardPopupPresenter : BasePopupPresenter<UITemplateLeaderboardPopupView>
     {
         #region inject
 
-        private readonly DiContainer diContainer;
+        private readonly DiContainer                   diContainer;
+        private readonly UITemplateLevelDataController uiTemplateLevelDataController;
 
         #endregion
 
         private GameObject yourClone;
 
-        public UITemplateLeaderBoardPopupPresenter(SignalBus signalBus, DiContainer diContainer) : base(signalBus) { this.diContainer = diContainer; }
+        public UITemplateLeaderBoardPopupPresenter(SignalBus signalBus, DiContainer diContainer, UITemplateLevelDataController uiTemplateLevelDataController) : base(signalBus)
+        {
+            this.diContainer                   = diContainer;
+            this.uiTemplateLevelDataController = uiTemplateLevelDataController;
+        }
 
         protected override void OnViewReady()
         {
@@ -48,26 +50,35 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             this.View.CloseButton.onClick.AddListener(() => this.CloseView());
         }
 
+        private int GetRankWithLevel(int level) => (int)(this.View.LowestRank - 1f * level / this.View.MaxLevel * this.View.LowestRank + this.View.HighestRank);
+
         public override async void BindData()
         {
-            var TestList       = new List<UITemplateLeaderboardItemModel>();
-            var rankerAmount   = 100;
             var indexPadding   = 4;
-            var newIndex       = 6;
-            var oldIndex       = rankerAmount - 10 - indexPadding;
             var scrollDuration = 3;
             var scaleTime      = 1f;
 
-            for (var i = 0; i < rankerAmount; i++)
+            var TestList = new List<UITemplateLeaderboardItemModel>();
+
+            var currentLevel = this.uiTemplateLevelDataController.GetCurrentLevelData().Level;
+            currentLevel = Random.Range(1, 200);
+            var oldRank  = this.GetRankWithLevel(currentLevel - 1);
+            var newRank  = this.GetRankWithLevel(currentLevel);
+            var newIndex = indexPadding;
+            var oldIndex = (oldRank - newRank - indexPadding);
+
+            for (var i = newRank - indexPadding; i < oldRank + indexPadding; i++)
             {
-                TestList.Add(new UITemplateLeaderboardItemModel(i, "VN", NVJOBNameGen.GiveAName(Random.Range(1, 8)), false));
+                TestList.Add(new UITemplateLeaderboardItemModel(i, this.View.CountryFlags.GetRandomFlag(), NVJOBNameGen.GiveAName(Random.Range(1, 8)), false));
             }
 
             var currentRegion = RegionInfo.CurrentRegion.ThreeLetterISORegionName;
-            Debug.Log(currentRegion);
 
-            TestList[newIndex].IsYou = true;
-            TestList[oldIndex].IsYou = true;
+
+            TestList[newIndex].IsYou       = true;
+            TestList[oldIndex].IsYou       = true;
+            TestList[oldIndex].CountryFlag = this.View.CountryFlags.GetLocalDeviceFlagByDeviceLang();
+            TestList[oldIndex].Name        = "You";
 
             await this.View.Adapter.InitItemAdapter(TestList, this.diContainer);
             this.View.Adapter.ScrollTo(oldIndex - indexPadding);
@@ -77,7 +88,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
             this.yourClone.transform.DOScale(Vector3.one * 1.1f, scaleTime).SetEase(Ease.InOutBack);
             await UniTask.Delay(TimeSpan.FromSeconds(scaleTime));
-            DOTween.To(() => oldIndex, setValue => cloneView.SetRank(setValue), newIndex, scrollDuration);
+            DOTween.To(() => oldRank, setValue => cloneView.SetRank(setValue), newRank, scrollDuration);
             this.View.Adapter.SmoothScrollTo(newIndex - indexPadding, scrollDuration);
             await UniTask.Delay(TimeSpan.FromSeconds(scrollDuration));
             this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack);

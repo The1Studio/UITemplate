@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-
-namespace GenifyStudio.Scripts.Libs.Leaderboard.CountryFlags.Scripts
+﻿namespace TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts
 {
+    using System.Collections.Generic;
+    using UnityEngine;
+    using UnityEngine.UI;
+
     public class CountryFlags : MonoBehaviour
     {
         public List<Sprite> listFlagSpite;
@@ -67,20 +67,20 @@ namespace GenifyStudio.Scripts.Libs.Leaderboard.CountryFlags.Scripts
 
         private void Awake()
         {
-            InitialResources();
+            this.InitialResources();
         }
 
         public void InitialResources()
         {
-            if (listCountryCode.Count != 0) return;
+            if (this.listCountryCode.Count != 0) return;
 
-            foreach (var sp in listFlagSpite)
+            foreach (var sp in this.listFlagSpite)
             {
-                dictFlags.Add(sp.name, sp);
-                listCountryCode.Add(sp.name);
+                this.dictFlags.Add(sp.name, sp);
+                this.listCountryCode.Add(sp.name);
             }
 
-            spFlagDefault = dictFlags[COUNTRY_CODE_DEFAULT];
+            this.spFlagDefault = this.dictFlags[COUNTRY_CODE_DEFAULT];
         }
 
         //
@@ -114,7 +114,7 @@ namespace GenifyStudio.Scripts.Libs.Leaderboard.CountryFlags.Scripts
         //     The country code the user's operating system is running in.
         public string GetCountryCodeByDeviceLang()
         {
-            return GetCountryCode(Application.systemLanguage.ToString());
+            return this.GetCountryCode(Application.systemLanguage.ToString());
         }
 
         //
@@ -122,8 +122,8 @@ namespace GenifyStudio.Scripts.Libs.Leaderboard.CountryFlags.Scripts
         //     Get the sprite country flags of operating system is running in.
         public Sprite GetLocalDeviceFlagByDeviceLang()
         {
-            var countryCode = GetCountryCodeByDeviceLang();
-            return dictFlags.TryGetValue(countryCode, out var spriteReturn) ? spriteReturn : spFlagDefault;
+            var countryCode = this.GetCountryCodeByDeviceLang();
+            return this.dictFlags.TryGetValue(countryCode, out var spriteReturn) ? spriteReturn : this.spFlagDefault;
         }
 
         //
@@ -131,8 +131,8 @@ namespace GenifyStudio.Scripts.Libs.Leaderboard.CountryFlags.Scripts
         //     Get the sprite country flags of country code
         public Sprite GetFlag(string countryCode)
         {
-            if (string.IsNullOrEmpty(countryCode)) return spFlagDefault;
-            return dictFlags.TryGetValue(countryCode, out var spriteReturn) ? spriteReturn : spFlagDefault;
+            if (string.IsNullOrEmpty(countryCode)) return this.spFlagDefault;
+            return this.dictFlags.TryGetValue(countryCode, out var spriteReturn) ? spriteReturn : this.spFlagDefault;
         }
 
         //
@@ -140,8 +140,8 @@ namespace GenifyStudio.Scripts.Libs.Leaderboard.CountryFlags.Scripts
         //     Get random the sprite country flags
         public Sprite GetRandomFlag()
         {
-            var randCountryCode = listCountryCode[Random.Range(0, listCountryCode.Count)];
-            return dictFlags.TryGetValue(randCountryCode, out var spriteReturn) ? spriteReturn : spFlagDefault;
+            var randCountryCode = this.listCountryCode[Random.Range(0, this.listCountryCode.Count)];
+            return this.dictFlags.TryGetValue(randCountryCode, out var spriteReturn) ? spriteReturn : this.spFlagDefault;
         }
 
         //
@@ -150,11 +150,11 @@ namespace GenifyStudio.Scripts.Libs.Leaderboard.CountryFlags.Scripts
         public Sprite GetRandomFlag(out string countryCode)
         {
             var randCountryCode = Random.Range(0, 100) < RATE_PREFER_COUNTRY
-                ? ListPreferCountry[Random.Range(0, ListPreferCountry.Count)]
-                : listCountryCode[Random.Range(0, listCountryCode.Count)];
+                ? ListPreferCountry[Random.Range(0,    ListPreferCountry.Count)]
+                : this.listCountryCode[Random.Range(0, this.listCountryCode.Count)];
 
             countryCode = randCountryCode;
-            return dictFlags.TryGetValue(randCountryCode, out var spriteReturn) ? spriteReturn : spFlagDefault;
+            return this.dictFlags.TryGetValue(randCountryCode, out var spriteReturn) ? spriteReturn : this.spFlagDefault;
         }
 
         public static void ApplyFlagToImage(Image imgTarget, Sprite spFlag)

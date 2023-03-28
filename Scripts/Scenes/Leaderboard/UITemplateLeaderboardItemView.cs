@@ -9,16 +9,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     public class UITemplateLeaderboardItemModel
     {
         public int    Rank;
-        public string Country;
+        public Sprite CountryFlag;
         public string Name;
         public bool   IsYou;
 
-        public UITemplateLeaderboardItemModel(int rank, string country, string name, bool isYou)
+        public UITemplateLeaderboardItemModel(int rank, Sprite countryFlag, string name, bool isYou)
         {
-            this.Rank    = rank;
-            this.Country = country;
-            this.Name    = name;
-            this.IsYou   = isYou;
+            this.Rank        = rank;
+            this.CountryFlag = countryFlag;
+            this.Name        = name;
+            this.IsYou       = isYou;
         }
     }
 
@@ -35,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         
         public void SetRank(int rank)
         {
-            this.RankText.text = $"{rank}.";
+            this.RankText.text = $"#{rank}";
         }
     }
 
@@ -47,13 +47,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         {
             this.View.SetRank(param.Rank);
             this.View.NameText.text                     = param.Name;
-            this.View.FlagImage.sprite                  = this.GetFlagSprite(param.Country);
+            this.View.FlagImage.sprite                  = param.CountryFlag;
             this.View.BackGround.sprite                 = param.IsYou ? this.View.YourSpriteBg : this.View.OtherSpriteBg;
             this.View.GetComponent<CanvasGroup>().alpha = param.IsYou ? 0 : 1;
         }
-
-       
-
-        private Sprite GetFlagSprite(string paramCountry) { return null; }
     }
 }

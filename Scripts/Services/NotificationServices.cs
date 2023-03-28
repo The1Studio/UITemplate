@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using EasyMobile;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using UnityEngine;
     using Zenject;
     using LocalNotification = EasyMobile.LocalNotification;
@@ -36,15 +37,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticHandler                     = analyticServices;
 #if FIREBASE_REMOTE_CONFIG
             this.signalBus.Subscribe<FirebaseInitializeSucceededSignal>(this.InitNotification);
-#else
-            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintComplete);
 #endif
+            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintComplete);
         }
 
         private void OnLoadBlueprintComplete(LoadBlueprintDataSucceedSignal obj)
         {
             this.isLoadBlueprintComplete = true;
+#if !FIREBASE_REMOTE_CONFIG
             this.InitNotification();
+#endif
         }
 
         #region Initial

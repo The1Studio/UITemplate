@@ -42,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     }
 #endif
 
-#if UNITY_IOS
+#if UNITY_IOS &&!UNITY_EDITOR
     public class FlashLightPluginIOS : IFlashLight
     {
        public void TurnOn() {  }

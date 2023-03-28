@@ -7,17 +7,26 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.Utilities.Extension;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
 
+    [Serializable]
+    public class CountryCodeToFlagSprite : UnitySerializedDictionary<string, Sprite>
+    {
+    }
+
     public class UITemplateLeaderboardPopupView : BaseView
     {
         public UITemplateLeaderboardAdapter Adapter;
         public Button                       CloseButton;
         public Transform                    YourRankerParentTransform;
+
+        [SerializeField]
+        public CountryCodeToFlagSprite CountryCodeToFlagSprite;
     }
 
     [PopupInfo(nameof(UITemplateLeaderboardPopupView))]
@@ -49,16 +58,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             var scrollDuration = 3;
             var scaleTime      = 1f;
 
-
             for (var i = 0; i < rankerAmount; i++)
             {
                 TestList.Add(new UITemplateLeaderboardItemModel(i, "VN", NVJOBNameGen.GiveAName(Random.Range(1, 8)), false));
             }
 
-
-            var currentRegion = RegionInfo.CurrentRegion;
+            var currentRegion = RegionInfo.CurrentRegion.ThreeLetterISORegionName;
             Debug.Log(currentRegion);
-
 
             TestList[newIndex].IsYou = true;
             TestList[oldIndex].IsYou = true;
@@ -68,7 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             this.yourClone                                   = Object.Instantiate(this.View.Adapter.GetItemViewsHolderIfVisible(oldIndex).root.gameObject, this.View.YourRankerParentTransform);
             this.yourClone.GetComponent<CanvasGroup>().alpha = 1;
             var cloneView = this.yourClone.GetComponent<UITemplateLeaderboardItemView>();
-            
+
             this.yourClone.transform.DOScale(Vector3.one * 1.1f, scaleTime).SetEase(Ease.InOutBack);
             await UniTask.Delay(TimeSpan.FromSeconds(scaleTime));
             DOTween.To(() => oldIndex, setValue => cloneView.SetRank(setValue), newIndex, scrollDuration);

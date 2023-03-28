@@ -1766,3 +1766,6 @@ MonoBehaviour:
   Adapter: {fileID: 2407699682861407663}
   CloseButton: {fileID: 2915884069788839094}
   YourRankerParentTransform: {fileID: 8362191942521937221}
+  CountryCodeToFlagSprite:
+    keyData: []
+    valueData: []

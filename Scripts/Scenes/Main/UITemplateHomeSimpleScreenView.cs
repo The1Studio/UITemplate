@@ -8,6 +8,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -27,13 +28,12 @@
     public class UITemplateHomeSimpleScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
         public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, UITemplateInventoryData inventoryData, DiContainer diContainer, IScreenManager screenManager,
-            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateDailyRewardService dailyRewardService) : base(signalBus)
+            UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
         {
             this.inventoryData                     = inventoryData;
             this.diContainer                       = diContainer;
             this.ScreenManager                     = screenManager;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.dailyRewardService                = dailyRewardService;
         }
 
         protected override async void OnViewReady()
@@ -47,15 +47,7 @@
 
         protected virtual void OnClickLevel()
         {
-            this.ScreenManager.OpenScreen<UITemplateLevelSelectScreenPresenter>();
-        }
-
-        protected virtual void OnOpenDailyReward()
-        {
-            this.dailyRewardService.ShowDailyRewardPopup(() =>
-            {
-                Debug.Log($"Get all rewards finish");
-            });
+            this.ScreenManager.OpenScreen<UITemplateLeaderBoardPopupPresenter>();
         }
 
         private UITemplateGachaPopupModel FakeGachaPage()
@@ -107,7 +99,6 @@
         private readonly   DiContainer                       diContainer;
         protected readonly IScreenManager                    ScreenManager;
         protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly   UITemplateDailyRewardService      dailyRewardService;
 
         #endregion
     }

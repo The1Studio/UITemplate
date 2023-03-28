@@ -33,10 +33,10 @@ RectTransform:
   m_Father: {fileID: 7178046634983856539}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -1625}
-  m_SizeDelta: {x: 800, y: 138.00003}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &590625371865438245
 GameObject:
@@ -616,7 +616,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1000, y: 1200}
+  m_SizeDelta: {x: 1000, y: 1078.9863}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4634594895303740923
 GameObject:
@@ -627,6 +627,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7178046634983856539}
+  - component: {fileID: 8267493891229430825}
   m_Layer: 5
   m_Name: BasicListAdapterItem
   m_TagString: Untagged
@@ -650,11 +651,29 @@ RectTransform:
   m_Father: {fileID: 8362191942521937221}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: -1000}
+  m_SizeDelta: {x: 800, y: 140}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8267493891229430825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4634594895303740923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56ea54575a44fd58d8a01f3e603cc49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RankText: {fileID: 2539119845064238449}
+  NameText: {fileID: 3196291444548680352}
+  FlagImage: {fileID: 4472586191774144897}
+  BackGround: {fileID: 4527762138440384798}
+  OtherSpriteBg: {fileID: 21300000, guid: d18479172b9379d499aacb735b289951, type: 3}
+  YourSpriteBg: {fileID: 21300000, guid: 4204fced726a48640a00224fc3e95430, type: 3}
 --- !u!1 &5419235583275426989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1327,7 +1346,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 922.4905, y: 752}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7447759300678598767
 CanvasRenderer:
@@ -1350,7 +1369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.13}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.13}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1572,7 +1591,7 @@ PrefabInstance:
     - target: {fileID: 1685162116223536764, guid: 1438d283515ee4637b1d0bbdd782865e,
         type: 3}
       propertyPath: m_Name
-      value: UITemplateLeaderBoardPopupView
+      value: UITemplateLeaderboardPopupView
       objectReference: {fileID: 0}
     - target: {fileID: 7427792702643258388, guid: 1438d283515ee4637b1d0bbdd782865e,
         type: 3}
@@ -1687,3 +1706,37 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 5512803943204916406}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6621294199346627274 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1685162116223536764, guid: 1438d283515ee4637b1d0bbdd782865e,
+    type: 3}
+  m_PrefabInstance: {fileID: 5512803943204916406}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &613212743701948154
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6621294199346627274}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &5711876113126508392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6621294199346627274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43739bfc936731e469cdb4bd6ed2d6d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewRoot: {fileID: 0}
+  screenTransition: {fileID: 0}
+  Adapter: {fileID: 2407699682861407663}
+  CloseButton: {fileID: 2915884069788839094}

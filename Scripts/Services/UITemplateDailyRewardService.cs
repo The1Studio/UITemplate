@@ -3,8 +3,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
+    using Zenject;
 
-    public class UITemplateDailyRewardService
+    public class UITemplateDailyRewardService : IInitializable
     {
         #region inject
 
@@ -23,6 +24,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 OnClaim = onClaimReward
             });
+        }
+        
+        public void Initialize()
+        {
+            
         }
     }
 }

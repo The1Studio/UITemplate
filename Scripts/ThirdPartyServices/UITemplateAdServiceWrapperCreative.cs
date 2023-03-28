@@ -16,7 +16,7 @@
 
         public override void ShowBannerAd() { }
 
-        public override void ShowInterstitialAd(string place) { }
+        public override void ShowInterstitialAd(string place, bool force = false) { }
 
         public override void ShowRewardedAd(string place, Action onComplete) { onComplete.Invoke(); }
 

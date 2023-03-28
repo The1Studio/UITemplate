@@ -44,6 +44,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.BindLocalData<UITemplateInventoryData>();
             this.BindLocalData<UITemplateUserSettingData>();
             this.BindLocalData<UITemplateDailyRewardData>();
+            this.BindLocalData<UITemplateUserJackpotData>();
             this.BindLocalData<UITemplateAdsData>();
 
             this.Container.Bind<UITemplateAdServiceConfig>().AsCached().NonLazy();
@@ -96,6 +97,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateInventoryDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateLevelDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateSettingDataController>().AsCached();
+            this.Container.BindInterfacesAndSelfTo<UITemplateJackpotController>().AsCached();
 #if EM_ADMOB
             var adMobWrapperConfig = new AdModWrapper.Config(this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId);
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();

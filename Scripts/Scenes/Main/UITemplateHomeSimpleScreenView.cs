@@ -5,11 +5,13 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;

@@ -123,7 +123,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<IFlashLight>().To<FlashlightPluginAndroid>().AsSingle().NonLazy();
 #endif
 
-#if UNITY_IOS
+#if UNITY_IOS &&!UNITY_EDITOR
         this.Container.Bind<IFlashLight>().To<FlashlightPluginIOS>().AsSingle().NonLazy();
 #endif
 
@@ -133,7 +133,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #else
             this.Container.Bind<IFirebaseRemoteConfig>().To<FirebaseDummyManager>().AsCached().NonLazy();
 #endif
-            
+
 #if APPSFLYER
             var analyticFactory = this.Container.Resolve<IAnalyticEventFactory>();
             this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();

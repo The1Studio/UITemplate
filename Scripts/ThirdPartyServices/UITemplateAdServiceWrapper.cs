@@ -51,10 +51,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
 
-        public virtual void ShowInterstitialAd(string place)
+        public virtual void ShowInterstitialAd(string place, bool force = false)
         {
             var currentTimestamp = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
-            if (this.lastInterstitialAdTime + this.config.InterstitialAdInterval > currentTimestamp)
+            if (this.lastInterstitialAdTime + this.config.InterstitialAdInterval > currentTimestamp && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 

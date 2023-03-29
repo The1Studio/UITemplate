@@ -6,15 +6,19 @@
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
-    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
 
     public class UITemplateDailyRewardItemModel
     {
-        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord) { this.DailyRewardRecord = dailyRewardRecord; }
+        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord, RewardStatus rewardStatus)
+        {
+            this.DailyRewardRecord = dailyRewardRecord;
+            this.RewardStatus      = rewardStatus;
+        }
 
+        public RewardStatus                RewardStatus      { get; set; }
         public UITemplateDailyRewardRecord DailyRewardRecord { get; set; }
     }
 
@@ -31,9 +35,8 @@
     {
         #region inject
 
-        private readonly ILogService                     logService;
-        private readonly UITemplateDailyRewardData       uiTemplateDailyRewardData;
-        private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
+        private readonly ILogService               logService;
+        private readonly UITemplateDailyRewardData uiTemplateDailyRewardData;
 
         #endregion
 
@@ -42,12 +45,10 @@
 
         private UITemplateDailyRewardItemModel model;
 
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UITemplateDailyRewardData uiTemplateDailyRewardData,
-            UITemplateDailyRewardController uiTemplateDailyRewardController) : base(gameAssets)
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UITemplateDailyRewardData uiTemplateDailyRewardData) : base(gameAssets)
         {
-            this.logService                      = logService;
-            this.uiTemplateDailyRewardData       = uiTemplateDailyRewardData;
-            this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
+            this.logService                = logService;
+            this.uiTemplateDailyRewardData = uiTemplateDailyRewardData;
         }
 
         public override void BindData(UITemplateDailyRewardItemModel param)
@@ -61,16 +62,16 @@
             var rewardSprite = this.GameAssets.ForceLoadAsset<Sprite>($"{this.model.DailyRewardRecord.RewardImage}");
             var rewardValue  = string.Empty;
             if (this.model.DailyRewardRecord.Reward.Count == 1)
-                rewardValue = this.model.DailyRewardRecord.Reward.First().Values.First() == 1
+                rewardValue = this.model.DailyRewardRecord.Reward.Values.First() == 1
                     ? rewardValue
-                    : this.model.DailyRewardRecord.Reward.First().Values.First().ToString();
+                    : this.model.DailyRewardRecord.Reward.Values.First().ToString();
             this.View.imgReward.sprite = rewardSprite;
             this.View.txtValue.text    = rewardValue;
             this.View.txtDayLabel.text = this.model.DailyRewardRecord.Day == this.uiTemplateDailyRewardData.RewardStatus.Count
                 ? TodayLabel
                 : $"{PrefixLabel}{this.model.DailyRewardRecord.Day}";
-            this.View.objLockReward.SetActive(this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] == RewardStatus.Locked);
-            this.View.objClaimed.SetActive(this.uiTemplateDailyRewardData.RewardStatus[this.model.DailyRewardRecord.Day - 1] == RewardStatus.Claimed);
+            this.View.objLockReward.SetActive(this.model.RewardStatus == RewardStatus.Locked);
+            this.View.objClaimed.SetActive(this.model.RewardStatus == RewardStatus.Claimed);
         }
     }
 }

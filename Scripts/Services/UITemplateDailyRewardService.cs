@@ -22,7 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             await this.screenManager.OpenScreen<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()
             {
-                OnClaim = onClaimReward
+                OnClaimFinish = onClaimReward
             });
         }
         

@@ -11,9 +11,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     [CsvHeaderKey("Id")]
     public class UITemplateGachaJackpotRecord
     {
-        public string                        Id     { get; set; }
-        public string                        Icon   { get; set; }
-        public List<Dictionary<string, int>> Reward { get; set; }
-        public float                         Weight { get; set; }
+        public string                  Id     { get; set; }
+        public string                  Icon   { get; set; }
+        public Dictionary<string, int> Reward { get; set; }
+        public float                   Weight { get; set; }
     }
 }

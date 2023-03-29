@@ -7,13 +7,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     [BlueprintReader("UITemplateDailyReward", true)]
     public class UITemplateDailyRewardBlueprint : GenericBlueprintReaderByRow<string, UITemplateDailyRewardRecord>
     {
-        
     }
 
     public class UITemplateDailyRewardRecord
     {
-        public int    Day      { get; set; }
-        public List<Dictionary<string, int>> Reward { get; set; }
-        public string RewardImage { get; set; }
+        public int                     Day         { get; set; }
+        public Dictionary<string, int> Reward      { get; set; }
+        public string                  RewardImage { get; set; }
     }
 }

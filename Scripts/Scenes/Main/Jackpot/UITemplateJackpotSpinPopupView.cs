@@ -128,22 +128,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
         {
             this.View.btnClaim.gameObject.SetActive(false);
             this.CheckButtonStatusByRemainingSpin();
-            foreach (var rewardDict in gachaJackpotRecord.Reward)
+            foreach (var reward in gachaJackpotRecord.Reward)
             {
-                foreach (var reward in rewardDict)
+                if (reward.Key.Equals("Coin"))
                 {
-                    if (reward.Key.Equals("Coin"))
-                    {
-                        this.uiTemplateInventoryDataController.AddCurrency(reward.Value, reward.Key);
-                        // Do coin's reward animation
-                    }
-                    else
-                    {
-                        for (var i = 0; i < reward.Value; i++)
-                            this.uiTemplateInventoryDataController.AddItemData(
-                                new UITemplateItemData(reward.Key, this.uiTemplateShopBlueprint.GetDataById(reward.Key), UITemplateItemData.Status.Owned));
-                        // Do item's reward animation
-                    }
+                    this.uiTemplateInventoryDataController.AddCurrency(reward.Value, reward.Key);
+                    // Do coin's reward animation
+                }
+                else
+                {
+                    for (var i = 0; i < reward.Value; i++)
+                        this.uiTemplateInventoryDataController.AddItemData(
+                            new UITemplateItemData(reward.Key, this.uiTemplateShopBlueprint.GetDataById(reward.Key), UITemplateItemData.Status.Owned));
+                    // Do item's reward animation
                 }
             }
         }

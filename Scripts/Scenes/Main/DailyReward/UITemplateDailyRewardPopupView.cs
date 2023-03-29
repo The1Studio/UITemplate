@@ -31,7 +31,6 @@
         #region inject
 
         private readonly DiContainer                       diContainer;
-        private readonly UITemplateDailyRewardBlueprint    uiTemplateDailyRewardBlueprint;
         private readonly UITemplateDailyRewardController   uiTemplateDailyRewardController;
         private readonly UITemplateDailyRewardData         uiTemplateDailyRewardData;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
@@ -43,12 +42,11 @@
         private UITemplateDailyRewardPopupModel      popupModel;
         private List<UITemplateDailyRewardItemModel> listRewardCanClaim = new();
 
-        public UITemplateDailyRewardPopupPresenter(SignalBus signalBus, ILogService logger, DiContainer diContainer, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
+        public UITemplateDailyRewardPopupPresenter(SignalBus signalBus, ILogService logger, DiContainer diContainer,
             UITemplateDailyRewardController uiTemplateDailyRewardController, UITemplateDailyRewardData uiTemplateDailyRewardData,
             UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateShopBlueprint uiTemplateShopBlueprint) : base(signalBus, logger)
         {
             this.diContainer                       = diContainer;
-            this.uiTemplateDailyRewardBlueprint    = uiTemplateDailyRewardBlueprint;
             this.uiTemplateDailyRewardController   = uiTemplateDailyRewardController;
             this.uiTemplateDailyRewardData         = uiTemplateDailyRewardData;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
@@ -65,11 +63,8 @@
         public override async void BindData(UITemplateDailyRewardPopupModel param)
         {
             this.popupModel = param;
-            var listRewardBlueprint = this.uiTemplateDailyRewardBlueprint.Values.ToList();
-            if (this.uiTemplateDailyRewardData.RewardStatus.Count == 0 || this.CheckUserClaimAllReward())
-                this.uiTemplateDailyRewardController.ResetRewardStatus(listRewardBlueprint.Count);
 
-            var listRewardModel = listRewardBlueprint.Select(t =>
+            var listRewardModel = this.uiTemplateDailyRewardController.ListRewardBlueprint.Select(t =>
                 new UITemplateDailyRewardItemModel(t, this.uiTemplateDailyRewardData.RewardStatus[t.Day - 1])).ToList();
             this.userLoginDay = await this.uiTemplateDailyRewardController.GetUserLoginDay();
 

@@ -20,17 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     public class UITemplateLoadingScreenView : BaseView
     {
         [SerializeField]
-        private TMP_Text LoadingText;
-
-        [SerializeField]
         private Slider LoadingSlider;
-
-        public void SetLoadingText(string content)
-        {
-            if (this.LoadingText == null) return;
-
-            this.LoadingText.text = content;
-        }
 
         public void SetLoadingProgressValue(float value)
         {
@@ -83,7 +73,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         private async void ShowLoadingProgress(string loadingContent)
         {
-            this.View.SetLoadingText(loadingContent);
             var progressInView = 0f;
 
             while (progressInView < 1f)

@@ -68,7 +68,6 @@
         protected readonly DiContainer                       DiContainer;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         protected readonly UITemplateSoundServices           SoundServices;
-        private readonly   UITemplateDailyRewardService      uiTemplateDailyRewardService;
 
         #endregion
     }

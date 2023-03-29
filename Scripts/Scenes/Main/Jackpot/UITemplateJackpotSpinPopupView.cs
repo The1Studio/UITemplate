@@ -47,7 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
         private readonly ILogService                       logger;
         private readonly EventSystem                       eventSystem;
         private readonly DiContainer                       diContainer;
-        private readonly UITemplateGachaJackpotBlueprint    uiTemplateGachaJackpotBlueprint;
+        private readonly UITemplateGachaJackpotBlueprint   uiTemplateGachaJackpotBlueprint;
         private readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly UITemplateJackpotController       uiTemplateJackpotController;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
@@ -58,15 +58,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
         private UITemplateJackpotItemModel       currentJackpotItem;
         private IDisposable                      randomTimerDispose;
 
-        public UITemplateJackpotSpinPopupPresenter(SignalBus signalBus,                      ILogService                logger,                     EventSystem                 eventSystem, DiContainer diContainer,
-            UITemplateGachaJackpotBlueprint                   uiTemplateGachaJackpotBlueprint, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UITemplateJackpotController uiTemplateJackpotController,
-            UITemplateInventoryDataController                uiTemplateInventoryDataController,
-            UITemplateShopBlueprint                          uiTemplateShopBlueprint) : base(signalBus, logger)
+        public UITemplateJackpotSpinPopupPresenter(SignalBus signalBus, ILogService logger, EventSystem eventSystem, DiContainer diContainer,
+            UITemplateGachaJackpotBlueprint uiTemplateGachaJackpotBlueprint, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UITemplateJackpotController uiTemplateJackpotController,
+            UITemplateInventoryDataController uiTemplateInventoryDataController,
+            UITemplateShopBlueprint uiTemplateShopBlueprint) : base(signalBus, logger)
         {
             this.logger                            = logger;
             this.eventSystem                       = eventSystem;
             this.diContainer                       = diContainer;
-            this.uiTemplateGachaJackpotBlueprint    = uiTemplateGachaJackpotBlueprint;
+            this.uiTemplateGachaJackpotBlueprint   = uiTemplateGachaJackpotBlueprint;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.uiTemplateJackpotController       = uiTemplateJackpotController;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;

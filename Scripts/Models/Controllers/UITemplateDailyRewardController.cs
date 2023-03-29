@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using UnityEngine;
 
     public class UITemplateDailyRewardController
     {
@@ -72,5 +73,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public bool CanClaimReward => this.uiTemplateDailyRewardData.RewardStatus.Any(t => t == RewardStatus.Unlocked);
 
         public List<UITemplateDailyRewardRecord> ListRewardBlueprint => this.uiTemplateDailyRewardBlueprint.Values.ToList();
+
+        public bool IsFirstOpenGame()
+        {
+            if (PlayerPrefs.GetInt("FirstOpenApp") != 0) return false;
+            PlayerPrefs.SetInt("FirstOpenApp", 1);
+            return true;
+
+        }
     }
 }

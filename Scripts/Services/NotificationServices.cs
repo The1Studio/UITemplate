@@ -11,7 +11,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using EasyMobile;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using UnityEngine;
     using Zenject;
     using LocalNotification = EasyMobile.LocalNotification;
@@ -142,21 +141,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             var title = record.Title == -1
                 ? this.uiTemplateNotificationDataBlueprint[Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count)].GetTitle(new object[]
                 {
-                    Application.identifier
+                    Application.productName
                 })
                 : this.uiTemplateNotificationDataBlueprint[record.Title].GetTitle(new object[]
                 {
-                    Application.identifier
+                    Application.productName
                 });
 
             var body = record.Body == -1
                 ? this.uiTemplateNotificationDataBlueprint[Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count)].GetBody(new object[]
                 {
-                    Application.identifier
+                    Application.productName
                 })
                 : this.uiTemplateNotificationDataBlueprint[record.Body].GetBody(new object[]
                 {
-                    Application.identifier
+                    Application.productName
                 });
 
             var content = new NotificationContent

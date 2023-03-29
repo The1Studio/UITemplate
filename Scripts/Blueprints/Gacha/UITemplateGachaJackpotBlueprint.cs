@@ -3,13 +3,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     using System.Collections.Generic;
     using BlueprintFlow.BlueprintReader;
 
-    [BlueprintReader("UITemplateJackpotItem", true)]
-    public class UITemplateJackpotItemBlueprint : GenericBlueprintReaderByRow<string, UITemplateJackpotItemRecord>
+    [BlueprintReader("UITemplateGachaJackpot", true)]
+    public class UITemplateGachaJackpotBlueprint : GenericBlueprintReaderByRow<string, UITemplateGachaJackpotRecord>
     {
     }
 
     [CsvHeaderKey("Id")]
-    public class UITemplateJackpotItemRecord
+    public class UITemplateGachaJackpotRecord
     {
         public string                        Id     { get; set; }
         public string                        Icon   { get; set; }

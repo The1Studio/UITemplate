@@ -21,17 +21,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
     public class UITemplateJackpotItemPresenter : BaseUIItemPresenter<UITemplateJackpotItemView, UITemplateJackpotItemModel>
     {
         private readonly LoadImageHelper                loadImageHelper;
-        private readonly UITemplateJackpotItemBlueprint jackpotItemBlueprint;
+        private readonly UITemplateGachaJackpotBlueprint gachaJackpotBlueprint;
 
-        public UITemplateJackpotItemPresenter(IGameAssets gameAssets, LoadImageHelper loadImageHelper, UITemplateJackpotItemBlueprint jackpotItemBlueprint) : base(gameAssets)
+        public UITemplateJackpotItemPresenter(IGameAssets gameAssets, LoadImageHelper loadImageHelper, UITemplateGachaJackpotBlueprint gachaJackpotBlueprint) : base(gameAssets)
         {
             this.loadImageHelper      = loadImageHelper;
-            this.jackpotItemBlueprint = jackpotItemBlueprint;
+            this.gachaJackpotBlueprint = gachaJackpotBlueprint;
         }
 
         public override async void BindData(UITemplateJackpotItemModel param)
         {
-            var itemRecord = this.jackpotItemBlueprint.GetDataById(param.Id);
+            var itemRecord = this.gachaJackpotBlueprint.GetDataById(param.Id);
             this.View.imgIcon.sprite = await this.loadImageHelper.LoadLocalSprite(itemRecord.Icon);
         }
     }

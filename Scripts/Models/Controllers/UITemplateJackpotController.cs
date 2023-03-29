@@ -9,13 +9,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     {
         private readonly InternetService                internetService;
         private readonly UITemplateUserJackpotData      userJackpotData;
-        private readonly UITemplateJackpotItemBlueprint jackpotItemBlueprint;
+        private readonly UITemplateGachaJackpotBlueprint gachaJackpotBlueprint;
 
-        public UITemplateJackpotController(InternetService internetService, UITemplateUserJackpotData userJackpotData, UITemplateJackpotItemBlueprint jackpotItemBlueprint)
+        public UITemplateJackpotController(InternetService internetService, UITemplateUserJackpotData userJackpotData, UITemplateGachaJackpotBlueprint gachaJackpotBlueprint)
         {
             this.internetService      = internetService;
             this.userJackpotData      = userJackpotData;
-            this.jackpotItemBlueprint = jackpotItemBlueprint;
+            this.gachaJackpotBlueprint = gachaJackpotBlueprint;
         }
         
         public void DoJackpotSpin()
@@ -23,7 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             if (this.userJackpotData.RemainingJackpotSpin <= 0)
                 return;
             
-            if (this.userJackpotData.CurrentJackpotSpin >= this.jackpotItemBlueprint.Values.Count)
+            if (this.userJackpotData.CurrentJackpotSpin >= this.gachaJackpotBlueprint.Values.Count)
                 this.userJackpotData.CurrentJackpotSpin = 0;
             
             this.userJackpotData.CurrentJackpotSpin++;

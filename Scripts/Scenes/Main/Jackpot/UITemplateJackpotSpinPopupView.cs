@@ -47,12 +47,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
         private readonly ILogService                       logger;
         private readonly EventSystem                       eventSystem;
         private readonly DiContainer                       diContainer;
-        private readonly UITemplateJackpotItemBlueprint    uiTemplateJackpotItemBlueprint;
+        private readonly UITemplateGachaJackpotBlueprint    uiTemplateGachaJackpotBlueprint;
         private readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
-        private readonly UITemplateJackpotRewardBlueprint  uiTemplateJackpotRewardBlueprint;
         private readonly UITemplateJackpotController       uiTemplateJackpotController;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
         private readonly UITemplateShopBlueprint           uiTemplateShopBlueprint;
 
         private Snapper8                         snapper8;
@@ -60,21 +58,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
         private UITemplateJackpotItemModel       currentJackpotItem;
         private IDisposable                      randomTimerDispose;
 
-        public UITemplateJackpotSpinPopupPresenter(SignalBus signalBus, ILogService logger, EventSystem eventSystem, DiContainer diContainer,
-            UITemplateJackpotItemBlueprint uiTemplateJackpotItemBlueprint, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            UITemplateJackpotRewardBlueprint uiTemplateJackpotRewardBlueprint, UITemplateJackpotController uiTemplateJackpotController,
-            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateItemBlueprint uiTemplateItemBlueprint,
-            UITemplateShopBlueprint uiTemplateShopBlueprint) : base(signalBus, logger)
+        public UITemplateJackpotSpinPopupPresenter(SignalBus signalBus,                      ILogService                logger,                     EventSystem                 eventSystem, DiContainer diContainer,
+            UITemplateGachaJackpotBlueprint                   uiTemplateGachaJackpotBlueprint, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UITemplateJackpotController uiTemplateJackpotController,
+            UITemplateInventoryDataController                uiTemplateInventoryDataController,
+            UITemplateShopBlueprint                          uiTemplateShopBlueprint) : base(signalBus, logger)
         {
             this.logger                            = logger;
             this.eventSystem                       = eventSystem;
             this.diContainer                       = diContainer;
-            this.uiTemplateJackpotItemBlueprint    = uiTemplateJackpotItemBlueprint;
+            this.uiTemplateGachaJackpotBlueprint    = uiTemplateGachaJackpotBlueprint;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
-            this.uiTemplateJackpotRewardBlueprint  = uiTemplateJackpotRewardBlueprint;
             this.uiTemplateJackpotController       = uiTemplateJackpotController;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.uiTemplateShopBlueprint           = uiTemplateShopBlueprint;
         }
 
@@ -122,17 +117,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
         private void OnClickClaim()
         {
             if (this.currentJackpotItem == null) return;
-            var jackpotItemRecord = this.uiTemplateJackpotItemBlueprint.GetDataById(this.currentJackpotItem.Id);
+            var jackpotItemRecord = this.uiTemplateGachaJackpotBlueprint.GetDataById(this.currentJackpotItem.Id);
             this.Claim(jackpotItemRecord);
             this.FakeListJackpotItem();
             this.Model.OnClaim?.Invoke();
         }
 
-        private void Claim(UITemplateJackpotItemRecord jackpotItemRecord)
+        private void Claim(UITemplateGachaJackpotRecord gachaJackpotRecord)
         {
             this.View.btnClaim.gameObject.SetActive(false);
             this.CheckButtonStatusByRemainingSpin();
-            foreach (var rewardDict in jackpotItemRecord.Reward)
+            foreach (var rewardDict in gachaJackpotRecord.Reward)
             {
                 foreach (var reward in rewardDict)
                 {
@@ -157,17 +152,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
             this.View.btnWatchAds.gameObject.SetActive(false);
             this.uiTemplateAdServiceWrapper.ShowRewardedAd("Jackpot", async () =>
             {
-                await UniTask.Delay(1000);
+                await UniTask.Delay(TimeSpan.FromSeconds(1));
                 this.DoSpin();
             });
         }
 
         private void FakeListJackpotItem()
         {
-            this.listJackpotItemModels = this.uiTemplateJackpotItemBlueprint.Values.Select(record => new UITemplateJackpotItemModel(record.Id)).Shuffle().ToList();
+            this.listJackpotItemModels = this.uiTemplateGachaJackpotBlueprint.Values.Select(record => new UITemplateJackpotItemModel(record.Id)).Shuffle().ToList();
             for (var i = 0; i < MultipleTime; i++)
             {
-                this.listJackpotItemModels.AddRange(this.uiTemplateJackpotItemBlueprint.Values.Select(record => new UITemplateJackpotItemModel(record.Id)).Shuffle());
+                this.listJackpotItemModels.AddRange(this.uiTemplateGachaJackpotBlueprint.Values.Select(record => new UITemplateJackpotItemModel(record.Id)).Shuffle());
             }
 
             this.InitListJackpotItem();
@@ -184,8 +179,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
             this.View.btnSpin.gameObject.SetActive(false);
             this.uiTemplateJackpotController.DoJackpotSpin();
             this.snapper8.enabled = false;
-            var itemIdScrollTo    = this.uiTemplateJackpotRewardBlueprint.GetDataById(this.uiTemplateJackpotController.UserCurrentJackpotSpin().ToString());
-            var itemIndexScrollTo = this.listJackpotItemModels.FindLastIndex(item => item.Id == itemIdScrollTo.JackpotItem);
+            var itemIdScrollTo    = this.uiTemplateGachaJackpotBlueprint.GetDataById(this.uiTemplateJackpotController.UserCurrentJackpotSpin().ToString());
+            var itemIndexScrollTo = this.listJackpotItemModels.FindLastIndex(item => item.Id == itemIdScrollTo.Id);
             this.currentJackpotItem = this.listJackpotItemModels[itemIndexScrollTo];
             this.View.jackpotItemAdapter.SmoothScrollTo(itemIndexScrollTo, 4f, onDone: this.OnSpinFinish);
         }

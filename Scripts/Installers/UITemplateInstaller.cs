@@ -145,9 +145,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
 #endif
 
-            //Daily Reward
-            this.Container.Bind<UITemplateDailyRewardService>().AsCached();
-
 #if NOTIFICATION_ENABLE
             this.Container.BindInterfacesAndSelfTo<NotificationServices>().AsCached().NonLazy();
 #endif

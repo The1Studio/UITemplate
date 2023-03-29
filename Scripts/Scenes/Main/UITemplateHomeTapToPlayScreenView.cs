@@ -8,6 +8,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scenes.Play;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
@@ -22,12 +23,15 @@
     [ScreenInfo(nameof(UITemplateHomeTapToPlayScreenView))]
     public class UITemplateHomeTapToPlayScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeTapToPlayScreenView>
     {
-        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundServices soundServices) : base(signalBus)
+        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, 
+            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundServices soundServices,
+            UITemplateDailyRewardService uiTemplateDailyRewardService) : base(signalBus)
         {
             this.ScreenManager                     = screenManager;
             this.DiContainer                       = diContainer;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.SoundServices                     = soundServices;
+            this.uiTemplateDailyRewardService      = uiTemplateDailyRewardService;
         }
 
         protected override async void OnViewReady()
@@ -37,6 +41,10 @@
             this.View.TaptoplayButton.onClick.AddListener(this.OnClickTapToPlayButton);
             this.View.ShopButton.onClick.AddListener(this.OnClickShopButton);
             this.DiContainer.Inject(this.View.SettingButtonView);
+            this.uiTemplateDailyRewardService.ShowDailyRewardPopup(() =>
+            {
+                Debug.Log($"Get daily reward finish");
+            });
         }
 
         public override void BindData()
@@ -66,6 +74,7 @@
         protected readonly DiContainer                       DiContainer;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         protected readonly UITemplateSoundServices           SoundServices;
+        private readonly   UITemplateDailyRewardService      uiTemplateDailyRewardService;
 
         #endregion
     }

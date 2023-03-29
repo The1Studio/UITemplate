@@ -24,34 +24,35 @@
     [PopupInfo(nameof(UITemplateRateGameScreenView))]
     public class UITemplateRateGameScreenPresenter : UITemplateBasePopupPresenter<UITemplateRateGameScreenView>
     {
-        private static readonly string storeUrl = "https://play.google.com/store/apps/details?id=com.unity3d.player";
-        private static          int    lastStarCount;
+        private readonly string storeUrl = $"https://play.google.com/store/apps/details?id={Application.identifier}";
+        private          int    lastStarCount;
 
-        public UITemplateRateGameScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) : base(signalBus)
+        public UITemplateRateGameScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager
+#if UNITY_IOS
+            , string storeUrl
+#endif
+        ) : base(signalBus)
         {
             this.diContainer   = diContainer;
             this.screenManager = screenManager;
+#if UNITY_IOS
+            this.storeUrl = storeUrl;
+#endif
         }
 
         public override void BindData()
         {
-            lastStarCount = 0;
+            this.lastStarCount = 0;
             for (var i = 0; i < this.View.StarImages.Count; i++)
             {
                 var star = this.View.StarImages[i];
                 star.transform.localScale = Vector3.zero;
             }
         }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
-        protected override async void OnViewReady()
+        protected override void OnViewReady()
         {
             base.OnViewReady();
-            await this.OpenViewAsync();
+
             this.View.YesButton.onClick.AddListener(this.OnClickYes);
             this.View.LaterButton.onClick.AddListener(this.OnClickLater);
             for (var i = 0; i < this.View.StarButtons.Count; i++)
@@ -61,30 +62,25 @@
                 star.onClick.AddListener(() => this.OnClickStar(closureIndex + 1));
             }
 
-            this.playAnimation();
-        }
-
-        private void playAnimation()
-        {
-            this.yesButtonAnimation();
+            this.YesButtonAnimation();
         }
 
         private void OnClickStar(int count)
         {
-            lastStarCount = count;
+            this.lastStarCount = count;
             for (var i = 0; i < count; i++)
-                this.starAnimation(i);
+                this.StarAnimation(i);
             for (var i = count; i < this.View.StarButtons.Count; i++)
-                this.starAnimation(i, false);
+                this.StarAnimation(i, false);
         }
 
-        private void yesButtonAnimation()
+        private void YesButtonAnimation()
         {
             this.View.YesButton.transform.localScale = Vector3.one;
             this.View.YesButton.transform.DOScale(Vector3.one * 1.1f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
         }
 
-        private async void starAnimation(int index, bool WillActive = true)
+        private void StarAnimation(int index, bool WillActive = true)
         {
             if (index >= this.View.StarButtons.Count || index < 0) return;
 
@@ -97,21 +93,18 @@
         }
 
 
-        private void OnClickLater()
-        {
-            this.screenManager.CloseCurrentScreen();
-        }
+        protected virtual void OnClickLater() { this.screenManager.CloseCurrentScreen(); }
 
-        private void OnClickYes()
+        protected virtual void OnClickYes()
         {
-            if (lastStarCount == this.View.StarButtons.Count) Application.OpenURL(storeUrl);
+            if (this.lastStarCount == this.View.StarButtons.Count) Application.OpenURL(this.storeUrl);
             this.screenManager.CloseCurrentScreen();
         }
 
         #region inject
 
-        private readonly DiContainer    diContainer;
-        private readonly IScreenManager screenManager;
+        protected readonly DiContainer    diContainer;
+        protected readonly IScreenManager screenManager;
 
         #endregion
     }

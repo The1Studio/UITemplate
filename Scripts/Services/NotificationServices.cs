@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using BlueprintFlow.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -139,7 +140,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private NotificationContent PrepareRemind(UITemplateNotificationRecord record)
         {
             var title = record.Title == -1
-                ? this.uiTemplateNotificationDataBlueprint[Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count)].GetTitle(new object[]
+                ? this.uiTemplateNotificationDataBlueprint.ElementAt(Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count)).Value.GetTitle(new object[]
                 {
                     Application.productName
                 })
@@ -149,7 +150,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 });
 
             var body = record.Body == -1
-                ? this.uiTemplateNotificationDataBlueprint[Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count)].GetBody(new object[]
+                ? this.uiTemplateNotificationDataBlueprint.ElementAt(Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count)).Value.GetBody(new object[]
                 {
                     Application.productName
                 })

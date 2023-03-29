@@ -14,28 +14,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private readonly SignalBus                       signalBus;
         private readonly ScreenManager                   screenManager;
-        private readonly UITemplateUserDataController    uiTemplateUserDataController;
         private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
 
         #endregion
 
-        public UITemplateDailyRewardService(SignalBus signalBus, ScreenManager screenManager, UITemplateUserDataController uiTemplateUserDataController,
+        private bool canShowReward = true;
+
+        public UITemplateDailyRewardService(SignalBus signalBus, ScreenManager screenManager,
             UITemplateDailyRewardController uiTemplateDailyRewardController)
         {
             this.signalBus                       = signalBus;
             this.screenManager                   = screenManager;
-            this.uiTemplateUserDataController    = uiTemplateUserDataController;
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
         }
 
+        public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
+
         private void ShowDailyRewardPopup(Action onClaimReward)
         {
-            if (this.uiTemplateUserDataController.IsFirstOpenGame)
+            if (!this.canShowReward)
+                return;
+            
+            if (this.uiTemplateDailyRewardController.IsFirstOpenGame())
             {
-                this.uiTemplateUserDataController.SetIsFirstOpenGame(false);
                 onClaimReward?.Invoke();
                 this.uiTemplateDailyRewardController.ResetRewardStatus();
-
+                this.canShowReward = false;
                 return;
             }
 
@@ -47,8 +51,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 OnClaimFinish = onClaimReward
             });
         }
-
-        public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
 
         private void OnScreenShow(ScreenShowSignal obj)
         {

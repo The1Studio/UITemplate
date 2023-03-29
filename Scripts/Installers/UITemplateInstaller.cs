@@ -41,7 +41,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
-            this.BindLocalData<UITemplateUserData>();
             this.BindLocalData<UITemplateUserLevelData>();
             this.BindLocalData<UITemplateInventoryData>();
             this.BindLocalData<UITemplateUserSettingData>();
@@ -99,7 +98,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<InternetService>().AsSingle().NonLazy();
 
             //Data controller
-            this.Container.BindInterfacesAndSelfTo<UITemplateUserDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateInventoryDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateLevelDataController>().AsCached();

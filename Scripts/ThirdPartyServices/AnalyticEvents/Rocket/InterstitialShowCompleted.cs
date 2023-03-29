@@ -1,4 +1,4 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft
+﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket
 {
     using Core.AnalyticServices.Data;
 

@@ -32,11 +32,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
         public Sprite OtherSpriteBg;
         public Sprite YourSpriteBg;
-        
-        public void SetRank(int rank)
-        {
-            this.RankText.text = $"#{rank}";
-        }
+
+        public void SetRank(int rank) { this.RankText.text = $"#{rank}"; }
     }
 
     public class UITemplateLeaderboardItemPresenter : BaseUIItemPresenter<UITemplateLeaderboardItemView, UITemplateLeaderboardItemModel>
@@ -46,8 +43,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         public override void BindData(UITemplateLeaderboardItemModel param)
         {
             this.View.SetRank(param.Rank);
-            this.View.NameText.text                     = param.Name;
-            this.View.FlagImage.sprite                  = param.CountryFlag;
+            this.View.NameText.text     = param.Name;
+            this.View.NameText.text     = param.Name;
+            this.View.NameText.fontSize = param.IsYou ? 50 : 30;
+            this.View.FlagImage.sprite  = param.CountryFlag;
+            this.View.FlagImage.gameObject.SetActive(!param.IsYou);
+
             this.View.BackGround.sprite                 = param.IsYou ? this.View.YourSpriteBg : this.View.OtherSpriteBg;
             this.View.GetComponent<CanvasGroup>().alpha = param.IsYou ? 0 : 1;
         }

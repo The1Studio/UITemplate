@@ -66,15 +66,15 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7620474431468459557}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 538.8018, y: 0}
-  m_SizeDelta: {x: 482.5861, y: 0}
+  m_AnchoredPosition: {x: 538.8018, y: 4.2422}
+  m_SizeDelta: {x: 482.59, y: -8.49}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4469264339062222249
 CanvasRenderer:
@@ -104,7 +104,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Username1234ssdmfsdfsdf
+  m_text: you
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ac3f2fbd01b2dda418c7f6f2f5656422, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 6eb1cd840dc1ac848a31209ff54230a5, type: 2}
@@ -131,8 +131,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1261,7 +1261,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1984670963442573253
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1767,7 +1767,7 @@ MonoBehaviour:
   CloseButton: {fileID: 2915884069788839094}
   YourRankerParentTransform: {fileID: 8362191942521937221}
   CountryFlags: {fileID: 6600063881386319562}
-  MaxLevel: 200
+  MaxLevel: 100
   LowestRank: 68365
   HighestRank: 156
 --- !u!1001 &6489433465610140338

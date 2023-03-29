@@ -20,11 +20,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.AdOne;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.OneSoft;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.Wido;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket;
     using TheOneStudio.UITemplate.UITemplate.Utils;
     using UnityEngine;
     using Zenject;
@@ -80,8 +80,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<UITemplateAdServiceWrapper>().AsCached();
 #endif
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
-#if ONESOFT
-            this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
+#if ROCKET
+            this.Container.Bind<IAnalyticEventFactory>().To<RocketAnalyticEventFactory>().AsCached();
 #elif WIDO
             this.Container.Bind<IAnalyticEventFactory>().To<WidoAnalyticEventFactory>().AsCached();
 #elif ABI
@@ -89,7 +89,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #elif ADONE
             this.Container.Bind<IAnalyticEventFactory>().To<AdOneAnalyticEventFactory>().AsCached();
 #else
-            this.Container.Bind<IAnalyticEventFactory>().To<OneSoftAnalyticEventFactory>().AsCached();
+            this.Container.Bind<IAnalyticEventFactory>().To<RocketAnalyticEventFactory>().AsCached();
 #endif
 
             //Manager

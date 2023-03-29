@@ -1,4 +1,4 @@
-namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.OneSoft
+namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket
 {
     using System;
     using System.Collections.Generic;
@@ -7,11 +7,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft;
-    using LevelSkipped = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft.LevelSkipped;
-    using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.OneSoft.LevelStart;
 
-    public class OneSoftAnalyticEventFactory : IAnalyticEventFactory
+    public class RocketAnalyticEventFactory : IAnalyticEventFactory
     {
         public IEvent InterstitialEligible(string place) => new CustomEvent();
 
@@ -45,13 +42,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
 
-        public IEvent LevelStart(int level, int gold) => new LevelStart(level);
+        public IEvent LevelStart(int level, int gold) => new Rocket.LevelStart(level);
 
         public IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelWin(level, timeSpent);
 
         public IEvent FirstWin(int level, int timeSpent) => new CustomEvent();
 
-        public IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
+        public IEvent LevelSkipped(int level, int timeSpent) => new Rocket.LevelSkipped(level, timeSpent);
 
         public IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) { return new CustomEvent(); }
 

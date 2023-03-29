@@ -72,9 +72,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
                 TestList.Add(new UITemplateLeaderboardItemModel(i, this.View.CountryFlags.GetRandomFlag(), NVJOBNameGen.GiveAName(Random.Range(1, 8)), false));
             }
 
-            var currentRegion = RegionInfo.CurrentRegion.ThreeLetterISORegionName;
-
-
             TestList[newIndex].IsYou       = true;
             TestList[oldIndex].IsYou       = true;
             TestList[oldIndex].CountryFlag = this.View.CountryFlags.GetLocalDeviceFlagByDeviceLang();

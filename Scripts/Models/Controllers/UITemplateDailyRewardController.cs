@@ -43,7 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateDailyRewardData.RewardStatus[day] = status;
         }
 
-        public void GetAllAvailableReward()
+        public void ClaimAllAvailableReward()
         {
             for (var i = 0; i < this.uiTemplateDailyRewardData.RewardStatus.Count; i++)
             {
@@ -58,7 +58,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             {
                 this.uiTemplateDailyRewardData.RewardStatus.Add(RewardStatus.Locked);
             }
-
+            this.uiTemplateDailyRewardData.RewardStatus[0] = RewardStatus.Unlocked;
             this.uiTemplateDailyRewardData.BeginDate = DateTime.Now;
         }
     }

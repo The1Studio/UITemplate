@@ -14,6 +14,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public string                        Id     { get; set; }
         public string                        Icon   { get; set; }
         public List<Dictionary<string, int>> Reward { get; set; }
-        public string                        Weight { get; set; }
+        public float                         Weight { get; set; }
     }
 }

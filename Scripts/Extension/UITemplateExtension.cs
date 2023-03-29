@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using UniRx;
     using Random = UnityEngine.Random;
 
@@ -25,6 +26,35 @@
 
                 currentCooldownTime -= currentCycle;
             });
+        }
+
+        public static T GetRandomElement<T>(this IList<T> elements, IList<float> weights)
+        {
+            //Validate the weights
+            if (elements == null || weights == null || elements.Count != weights.Count || elements.Count == 0)
+            {
+                throw new ArgumentException("The elements and weights must be non-null and of equal length.");
+            }
+
+            // Normalize the weights
+            var totalWeight       = weights.Sum();
+            var normalizedWeights = weights.Select(w => w / totalWeight).ToList();
+
+            // Generate a random number between 0 and 1
+            var randomValue = Random.value;
+
+            // Select element based on the weights
+            for (var i = 0; i < elements.Count; i++)
+            {
+                if (randomValue < normalizedWeights[i])
+                {
+                    return elements[i];
+                }
+
+                randomValue -= normalizedWeights[i];
+            }
+
+            return elements[^1];
         }
     }
 }

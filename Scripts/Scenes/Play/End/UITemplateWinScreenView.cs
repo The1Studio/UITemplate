@@ -41,7 +41,7 @@
         [SerializeField] private Button                 btnHome;
         [SerializeField] private Button                 btnReplay;
         [SerializeField] private Button                 btnNext;
-        [SerializeField] private Button                 btnAds;
+        [SerializeField] private UITemplateAdsButton    btnAds;
         [SerializeField] private UITemplateCurrencyView currencyView;
 
         [SerializeField] private bool useItemUnlockProgressText;
@@ -75,7 +75,7 @@
         public Button                 BtnHome                         => this.btnHome;
         public Button                 BtnReplay                       => this.btnReplay;
         public Button                 BtnNext                         => this.btnNext;
-        public Button                 BtnAds                          => this.btnAds;
+        public UITemplateAdsButton    BtnAds                          => this.btnAds;
         public UITemplateCurrencyView CurrencyView                    => this.currencyView;
         public bool                   UseItemUnlockProgressText       => this.useItemUnlockProgressText;
         public TMP_Text               TxtItemUnlockProgress           => this.txtItemUnlockProgress;
@@ -127,6 +127,7 @@
         {
             base.OnViewReady();
             await this.OpenViewAsync();
+            this.View.BtnAds.OnViewReady(this.adService);
             this.View.BtnHome.onClick.AddListener(this.OnClickHome);
             this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
             this.View.BtnNext.onClick.AddListener(this.OnClickNext);
@@ -135,6 +136,7 @@
 
         public override async void BindData(UITemplateWinScreenModel model)
         {
+            this.View.BtnAds.BindData();
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrency().Value);
             this.ItemUnlockProgress(model.ItemUnlockLastValue, model.ItemUnlockNewValue);
 
@@ -236,6 +238,7 @@
         public override void Dispose()
         {
             base.Dispose();
+            this.View.BtnAds.Dispose();
             DOTween.Kill(this.tweenSpin);
             this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }

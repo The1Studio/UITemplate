@@ -33,12 +33,12 @@
         [SerializeField] private Image                  imgItem;
         [SerializeField] private Button                 btnHome;
         [SerializeField] private Button                 btnSkip;
-        [SerializeField] private Button                 btnGet;
+        [SerializeField] private UITemplateAdsButton    btnGet;
 
         public UITemplateCurrencyView CurrencyView => this.currencyView;
         public Image                  ImgItem      => this.imgItem;
         public Button                 BtnHome      => this.btnHome;
-        public Button                 BtnGet       => this.btnGet;
+        public UITemplateAdsButton    BtnGet       => this.btnGet;
         public Button                 BtnSkip      => this.btnSkip;
     }
 
@@ -75,12 +75,13 @@
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.OpenViewAsync();
+            this.View.BtnGet.OnViewReady(this.adService);
             this.InitButtonListener();
         }
 
         public override async void BindData(UITemplateItemUnlockPopupModel popupModel)
         {
+            this.View.BtnGet.BindData();
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrency().Value);
             var itemImageAddress = this.itemBlueprint.Values.First(record => record.Id.Equals(popupModel.ItemId)).ImageAddress;
             var itemSprite       = await this.gameAssets.LoadAssetAsync<Sprite>(itemImageAddress);
@@ -89,6 +90,7 @@
 
         public override void Dispose()
         {
+            this.View.BtnGet.Dispose();
             this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }
 

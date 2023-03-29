@@ -49,7 +49,10 @@
 
         protected virtual void OnClickLevel()
         {
-            this.ScreenManager.OpenScreen<UITemplateLeaderBoardPopupPresenter>();
+            this.ScreenManager.OpenScreen<UITemplateJackpotSpinPopupPresenter, UITemplateJackpotSpinPopupModel>(new UITemplateJackpotSpinPopupModel(() =>
+            {
+                Debug.Log($"Get Reward from Jackpot Complete");
+            }));
         }
 
         private UITemplateGachaPopupModel FakeGachaPage()

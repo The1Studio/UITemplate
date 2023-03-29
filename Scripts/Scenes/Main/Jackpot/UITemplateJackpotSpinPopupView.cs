@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.Utils;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
@@ -179,8 +180,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
             this.View.btnSpin.gameObject.SetActive(false);
             this.uiTemplateJackpotController.DoJackpotSpin();
             this.snapper8.enabled = false;
-            var itemIdScrollTo    = this.uiTemplateGachaJackpotBlueprint.GetDataById(this.uiTemplateJackpotController.UserCurrentJackpotSpin().ToString());
-            var itemIndexScrollTo = this.listJackpotItemModels.FindLastIndex(item => item.Id == itemIdScrollTo.Id);
+            var weights            = this.uiTemplateGachaJackpotBlueprint.Values.Select(record => record.Weight).ToList();
+            var randomItemByWeight = this.uiTemplateGachaJackpotBlueprint.Values.ToList().GetRandomElement(weights);
+            var itemIndexScrollTo  = this.listJackpotItemModels.FindLastIndex(item => item.Id == randomItemByWeight.Id);
             this.currentJackpotItem = this.listJackpotItemModels[itemIndexScrollTo];
             this.View.jackpotItemAdapter.SmoothScrollTo(itemIndexScrollTo, 4f, onDone: this.OnSpinFinish);
         }

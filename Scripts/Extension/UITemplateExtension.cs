@@ -28,33 +28,36 @@
             });
         }
 
-        public static T GetRandomElement<T>(this IList<T> elements, IList<float> weights)
+        public static T RandomGachaWithWeight<T>(this IList<T> elements, IList<float> weights)
         {
-            //Validate the weights
+            // Validate input
             if (elements == null || weights == null || elements.Count != weights.Count || elements.Count == 0)
             {
-                throw new ArgumentException("The elements and weights must be non-null and of equal length.");
+                throw new ArgumentException("Invalid input");
             }
 
-            // Normalize the weights
-            var totalWeight       = weights.Sum();
-            var normalizedWeights = weights.Select(w => w / totalWeight).ToList();
+            // Normalize weights
+            var sum               = weights.Sum();
+            var normalizedWeights = weights.Select(w => w / sum).ToList();
 
-            // Generate a random number between 0 and 1
-            var randomValue = Random.value;
+            // Generate random number between 0 and 1
+            var rnd          = new System.Random();
+            var randomNumber = rnd.NextDouble();
 
-            // Select element based on the weights
+            // Select element based on weights
             for (var i = 0; i < elements.Count; i++)
             {
-                if (randomValue < normalizedWeights[i])
+                if (randomNumber < normalizedWeights[i])
                 {
                     return elements[i];
                 }
 
-                randomValue -= normalizedWeights[i];
+                randomNumber -= normalizedWeights[i];
             }
 
             return elements[^1];
         }
+
+        public static bool IsNullOrEmpty(this string str) { return string.IsNullOrEmpty(str); }
     }
 }

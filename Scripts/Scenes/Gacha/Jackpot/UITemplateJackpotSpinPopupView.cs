@@ -1,20 +1,19 @@
-namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
+namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Com.TheFallenGames.OSA.Core;
     using Cysharp.Threading.Tasks;
-    using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.Utils;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
@@ -128,6 +127,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
         {
             this.View.btnClaim.gameObject.SetActive(false);
             this.CheckButtonStatusByRemainingSpin();
+
             foreach (var reward in gachaJackpotRecord.Reward)
             {
                 if (reward.Key.Equals("Coin"))
@@ -148,6 +148,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
         private void WatchAdsToSpin()
         {
             this.View.btnWatchAds.gameObject.SetActive(false);
+
             this.uiTemplateAdServiceWrapper.ShowRewardedAd("Jackpot", async () =>
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(1));
@@ -158,6 +159,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
         private void FakeListJackpotItem()
         {
             this.listJackpotItemModels = this.uiTemplateGachaJackpotBlueprint.Values.Select(record => new UITemplateJackpotItemModel(record.Id)).Shuffle().ToList();
+
             for (var i = 0; i < MultipleTime; i++)
             {
                 this.listJackpotItemModels.AddRange(this.uiTemplateGachaJackpotBlueprint.Values.Select(record => new UITemplateJackpotItemModel(record.Id)).Shuffle());
@@ -178,7 +180,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot
             this.uiTemplateJackpotController.DoJackpotSpin();
             this.snapper8.enabled = false;
             var weights            = this.uiTemplateGachaJackpotBlueprint.Values.Select(record => record.Weight).ToList();
-            var randomItemByWeight = this.uiTemplateGachaJackpotBlueprint.Values.ToList().GetRandomElement(weights);
+            var randomItemByWeight = this.uiTemplateGachaJackpotBlueprint.Values.ToList().RandomGachaWithWeight(weights);
             var itemIndexScrollTo  = this.listJackpotItemModels.FindLastIndex(item => item.Id == randomItemByWeight.Id);
             this.currentJackpotItem = this.listJackpotItemModels[itemIndexScrollTo];
             this.View.jackpotItemAdapter.SmoothScrollTo(itemIndexScrollTo, 4f, onDone: this.OnSpinFinish);

@@ -16,12 +16,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
     {
         [SerializeField] private Button                 btnHome;
         [SerializeField] private Button                 btnReplay;
-        [SerializeField] private Button                 btnSkip;
+        [SerializeField] private UITemplateAdsButton    btnSkip;
         [SerializeField] private UITemplateCurrencyView currencyView;
 
         public Button                 BtnHome      => this.btnHome;
         public Button                 BtnReplay    => this.btnReplay;
-        public Button                 BtnSkip      => this.btnSkip;
+        public UITemplateAdsButton    BtnSkip      => this.btnSkip;
         public UITemplateCurrencyView CurrencyView => this.currencyView;
     }
 
@@ -59,6 +59,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         protected override void OnViewReady()
         {
             base.OnViewReady();
+            this.View.BtnSkip?.OnViewReady(this.adService);
             this.View.BtnHome.onClick.AddListener(this.OnOpenHome);
             this.View.BtnReplay?.onClick.AddListener(this.OnClickReplay);
             this.View.BtnSkip?.onClick.AddListener(this.OnClickSkip);
@@ -66,11 +67,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
 
         public override void BindData()
         {
+            this.View.BtnSkip?.BindData();
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrency().Value);
         }
 
         public override void Dispose()
         {
+            this.View.BtnSkip?.Dispose();
             this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }
 
@@ -78,7 +81,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         {
             await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
         }
-        
+
         protected virtual void OnClickReplay()
         {
         }

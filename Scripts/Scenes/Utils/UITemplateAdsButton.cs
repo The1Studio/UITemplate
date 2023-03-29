@@ -24,8 +24,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
         public void Dispose()
         {
-            this.interactable = false;
             this.cts.Cancel();
+            this.interactable = false;
         }
     }
 }

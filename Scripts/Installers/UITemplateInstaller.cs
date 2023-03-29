@@ -25,6 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using TheOneStudio.UITemplate.UITemplate.Utils;
     using UnityEngine;
     using Zenject;
 
@@ -66,6 +67,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<InterstitialAdCalledSignal>();
             this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
             this.Container.DeclareSignal<FirebaseInitializeSucceededSignal>();
+            
+            //Utils
+            this.Container.Bind<GameAssetUtil>().AsCached();
+            
             //Third party service
             AdServiceInstaller.Install(this.Container);
             AnalyticServicesInstaller.Install(this.Container);

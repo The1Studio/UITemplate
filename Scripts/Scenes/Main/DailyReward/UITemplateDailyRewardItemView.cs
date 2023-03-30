@@ -9,6 +9,7 @@
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -39,8 +40,8 @@
     {
         #region inject
 
-        private readonly ILogService               logService;
-        private readonly UITemplateDailyRewardData uiTemplateDailyRewardData;
+        private readonly ILogService                     logService;
+        private readonly UITemplateDailyRewardController dailyRewardController;
 
         #endregion
 
@@ -49,10 +50,10 @@
 
         private UITemplateDailyRewardItemModel model;
 
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UITemplateDailyRewardData uiTemplateDailyRewardData) : base(gameAssets)
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UITemplateDailyRewardController dailyRewardController) : base(gameAssets)
         {
-            this.logService                = logService;
-            this.uiTemplateDailyRewardData = uiTemplateDailyRewardData;
+            this.logService            = logService;
+            this.dailyRewardController = dailyRewardController;
         }
 
         public override void BindData(UITemplateDailyRewardItemModel param)
@@ -71,7 +72,7 @@
                     : this.model.DailyRewardRecord.Reward.Values.First().ToString();
             this.View.imgReward.sprite = rewardSprite;
             this.View.txtValue.text    = rewardValue;
-            this.View.txtDayLabel.text = this.model.DailyRewardRecord.Day == this.uiTemplateDailyRewardData.RewardStatus.Count
+            this.View.txtDayLabel.text = this.model.DailyRewardRecord.Day == this.dailyRewardController.GetCurrentDayIndex() + 1
                 ? TodayLabel
                 : $"{PrefixLabel}{this.model.DailyRewardRecord.Day}";
             this.View.objLockReward.SetActive(this.model.RewardStatus == RewardStatus.Locked);

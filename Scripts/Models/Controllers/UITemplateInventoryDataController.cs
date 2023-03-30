@@ -24,7 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private const string DefaultSoftCurrencyID = "Coin";
 
         public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint,
-                                                 UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus                   signalBus, UITemplateItemBlueprint uiTemplateItemBlueprint)
+                                                 UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus, UITemplateItemBlueprint uiTemplateItemBlueprint)
         {
             this.uiTemplateInventoryData     = uiTemplateInventoryData;
             this.uiTemplateCurrencyBlueprint = uiTemplateCurrencyBlueprint;
@@ -35,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
         }
 
-        public string GetCurrentItemSelected(string category) { return this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null; }
+        public string GetCurrentItemSelected(string category) => this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null;
 
         public void UpdateCurrentSelectedItem(string category, string id)
         {
@@ -51,18 +51,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public int GetCurrencyValue(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0)).Value;
 
-        public bool HasItem(string id) { return this.uiTemplateInventoryData.IDToItemData.ContainsKey(id); }
+        public bool HasItem(string id) => this.uiTemplateInventoryData.IDToItemData.ContainsKey(id);
 
-        public bool TryGetItemData(string id, out UITemplateItemData itemData) { return this.uiTemplateInventoryData.IDToItemData.TryGetValue(id, out itemData); }
+        public bool TryGetItemData(string id, out UITemplateItemData itemData) => this.uiTemplateInventoryData.IDToItemData.TryGetValue(id, out itemData);
 
-        public UITemplateItemData GetItemData(string id)
+        public UITemplateItemData GetItemData(string id, UITemplateItemData.Status defaultStatusWhenCreateNew = UITemplateItemData.Status.Locked)
         {
-            return this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () =>
-                                                                          {
-                                                                              var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
-
-                                                                              return new UITemplateItemData(id, itemRecord);
-                                                                          });
+            var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
+            var item       = this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () => new UITemplateItemData(id, itemRecord, defaultStatusWhenCreateNew));
+            item.BlueprintRecord = itemRecord;
+            return item;
         }
 
         public void AddItemData(UITemplateItemData itemData)
@@ -93,36 +91,40 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToCurrencyData[id].Value = currentCoin;
         }
 
-        public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All)
+        public UITemplateItemData FindOneItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
         {
-            return this.uiTemplateShopBlueprint.Values.Select(itemRecord => this.GetItemData(itemRecord.Id))
-                       .Where(itemData => string.IsNullOrEmpty(category) || itemData.BlueprintRecord.Category.Equals(category) && (itemData.BlueprintRecord.UnlockType & unlockType) != 0).ToList();
+            return this.FindAllItems(category, unlockType, orderBy, statuses).FirstOrDefault();
         }
 
-        public List<UITemplateItemData> GetAllItemWithOrder(string                        category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
+        public IEnumerable<UITemplateItemData> FindAllItems(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
+        {
+            var                                                  query = this.uiTemplateInventoryData.IDToItemData.Values.AsQueryable();
+            if (category is not null)                            query = query.Where(itemData => itemData.BlueprintRecord.Category.Equals(category));
+            if (unlockType != UITemplateItemData.UnlockType.All) query = query.Where(itemData => (itemData.BlueprintRecord.UnlockType & unlockType) != 0);
+            if (statuses.Length > 0)                             query = query.Where(itemData => statuses.Contains(itemData.CurrentStatus));
+            if (orderBy is not null)                             query = query.OrderBy(itemData => itemData, orderBy);
+            return query;
+        }
+
+        public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
+        {
+            return this.FindAllItems(category, unlockType, orderBy, statuses).ToList();
+        }
+
+        public List<UITemplateItemData> GetAllItemWithOrder(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
                                                             IComparer<UITemplateItemData> comparer = null)
         {
             return this.GetAllItem(category, unlockType).OrderBy(itemData => itemData, comparer ?? UITemplateItemData.DefaultComparerInstance).ToList();
         }
 
-        public UITemplateItemData GetItemData(string id, UITemplateItemData.Status defaultStatusWhenCreateNew = UITemplateItemData.Status.Locked)
-        {
-            return this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () =>
-                                                                          {
-                                                                              var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
-
-                                                                              return new UITemplateItemData(id, itemRecord, defaultStatusWhenCreateNew);
-                                                                          });
-        }
-
         public UITemplateItemData UpdateStatusItemData(string id, UITemplateItemData.Status status)
         {
             var itemData = this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () =>
-                                                                                  {
-                                                                                      var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
+            {
+                var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
 
-                                                                                      return new UITemplateItemData(id, itemRecord, status);
-                                                                                  });
+                return new UITemplateItemData(id, itemRecord, status);
+            });
             itemData.CurrentStatus = status;
             return itemData;
         }

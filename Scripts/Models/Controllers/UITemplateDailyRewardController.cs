@@ -4,11 +4,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services;
 
     public class UITemplateDailyRewardController
     {
+        private const int TotalDayInWeek = 7;
+
         #region inject
 
         private readonly IInternetService                  internetService;
@@ -27,23 +30,45 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
-        public async UniTask<int> GetUserLoginDay()
+        public async UniTask CheckRewardStatus()
         {
-            var currentDay      = (await this.internetService.GetCurrentTimeAsync()).Day;
-            var beginDay        = this.uiTemplateDailyRewardData.BeginDate.Day;
-            var differenceOfDay = currentDay - beginDay;
+            var currentTimeAsync = await this.internetService.GetCurrentTimeAsync();
+            var diffDay          = (currentTimeAsync - this.uiTemplateDailyRewardData.LastRewardedDate).TotalDays;
 
-            return differenceOfDay > 0 ? differenceOfDay >= this.uiTemplateDailyRewardData.RewardStatus.Count ? this.uiTemplateDailyRewardData.RewardStatus.Count - 1 : differenceOfDay : 0;
+            if (!(diffDay >= 1)) return;
+
+            var firstLockedDayIndex = this.FindFirstLockedDayIndex();
+            if (firstLockedDayIndex == -1)
+            {
+                if (!this.CanClaimReward)
+                {
+                    this.InitRewardStatus();
+                }
+            }
+            else
+            {
+                if (firstLockedDayIndex / TotalDayInWeek == (firstLockedDayIndex) / TotalDayInWeek)
+                {
+                    this.uiTemplateDailyRewardData.RewardStatus[firstLockedDayIndex] = RewardStatus.Unlocked;
+                    this.uiTemplateDailyRewardData.LastRewardedDate                  = await this.internetService.GetCurrentTimeAsync();
+                }
+            }
         }
 
-        public void SetRewardStatus(int day, RewardStatus status)
+        private int FindFirstLockedDayIndex()
         {
-            if (this.uiTemplateDailyRewardData.RewardStatus[day] == RewardStatus.Claimed)
-                return;
-
-            this.uiTemplateDailyRewardData.BeginDate         = status == RewardStatus.Unlocked ? DateTime.Now : this.uiTemplateDailyRewardData.BeginDate;
-            this.uiTemplateDailyRewardData.RewardStatus[day] = status;
+            return this.uiTemplateDailyRewardData.RewardStatus.FirstIndex(status => status is RewardStatus.Locked);
         }
+
+        public int GetCurrentDayIndex()
+        {
+            var firstLockedDayIndex = this.FindFirstLockedDayIndex();
+            return firstLockedDayIndex == -1 ? this.uiTemplateDailyRewardData.RewardStatus.Count - 1 : firstLockedDayIndex - 1;
+        }
+
+        /// <param name="day"> start from 1</param>
+        /// <returns></returns>
+        public RewardStatus GetDateRewardStatus(int day) => this.uiTemplateDailyRewardData.RewardStatus[day - 1];
 
         public void ClaimAllAvailableReward()
         {
@@ -65,15 +90,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public void ResetRewardStatus()
+        public async void InitRewardStatus()
         {
+            this.uiTemplateDailyRewardData.RewardStatus = new();
             for (var i = 0; i < this.uiTemplateDailyRewardBlueprint.Values.Count; i++)
             {
                 this.uiTemplateDailyRewardData.RewardStatus.Add(RewardStatus.Locked);
             }
 
-            this.uiTemplateDailyRewardData.RewardStatus[0] = RewardStatus.Unlocked;
-            this.uiTemplateDailyRewardData.BeginDate       = DateTime.Now;
+            this.uiTemplateDailyRewardData.RewardStatus[0]  = RewardStatus.Unlocked;
+            this.uiTemplateDailyRewardData.LastRewardedDate = await this.internetService.GetCurrentTimeAsync();
         }
 
         public bool CanClaimReward => this.uiTemplateDailyRewardData.RewardStatus.Any(t => t == RewardStatus.Unlocked);

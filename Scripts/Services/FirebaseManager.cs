@@ -12,7 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using Zenject;
 
-    public class FirebaseRemoteConfig : IFirebaseRemoteConfig
+    public class FirebaseRemoteConfig : IFirebaseRemoteConfig, IInitializable
     {
         private readonly ILogService logger;
         private readonly SignalBus   signalBus;
@@ -21,8 +21,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
         public FirebaseRemoteConfig(ILogService logger, SignalBus signalBus)
         {
             this.logger = logger;
-            this.InitFirebase();
+
             this.signalBus = signalBus;
+        }
+
+        public void Initialize()
+        {
+            this.InitFirebase();
         }
 
         private void InitFirebase()
@@ -48,7 +53,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
         {
             var fetchTask =
                 Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(
-                                                                                      TimeSpan.Zero);
+                    TimeSpan.Zero);
 
             return fetchTask.ContinueWithOnMainThread(this.FetchComplete);
         }
@@ -74,7 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
             switch (info.LastFetchStatus)
             {
                 case LastFetchStatus.Success:
-                    await Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.ActivateAsync();
+                    Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.ActivateAsync().ContinueWithOnMainThread(_ => { });
 
                     break;
                 case LastFetchStatus.Failure:
@@ -168,7 +173,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
             return float.TryParse(value, out var result) ? result : 0f;
         }
 
-        private bool HasKey(string key) { return Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.Keys != null && Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.Keys.Contains(key); }
+        private bool HasKey(string key)
+        {
+            return Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.Keys != null && Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.Keys.Contains(key);
+        }
 
         #endregion
     }

@@ -46,7 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             switch (analyticEventList.Count)
             {
                 case > 1:
-                    throw new Exception("Error: More than one analytic event factory found. Please remove one of them.");
+                    throw new Exception("Error: More than one analytic event factory found. Please remove one of them (Project Setting/Script Define Symbols).");
                 case 0:
                     throw new Exception("Error: Please add one of publisher name THE_ONE, WIDO, ROCKET, ABI, .... into scripting definition");
 

@@ -5,7 +5,7 @@
 
     [BlueprintReader("UITemplateNotification", true)]
     [CsvHeaderKey("Id")]
-    public class UITemplateNotificationBlueprint : GenericBlueprintReaderByRow<int, UITemplateNotificationRecord>
+    public class UITemplateNotificationBlueprint : GenericBlueprintReaderByRow<string, UITemplateNotificationRecord>
     {
     }
 
@@ -15,7 +15,8 @@
         public List<int> HourRangeShow { get; set; } = new();
         public List<int> TimeToShow    { get; set; } = new();
         public string    Repeat        { get; set; } = "None";
-        public int       Title         { get; set; } = new();
-        public int       Body          { get; set; } = new();
+        public bool      RandomAble    { get; set; }
+        public string    Title         { get; set; } = "";
+        public string    Body          { get; set; } = "";
     }
 }

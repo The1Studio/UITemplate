@@ -47,7 +47,7 @@
         public override void BindData()
         {
             this.View.SkipButton?.BindData();
-            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrency().Value);
+            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
         }
 
         public override void Dispose()

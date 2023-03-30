@@ -85,7 +85,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         public override async void BindData()
         {
-            this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
+            this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
 
             this.itemCollectionItemModels.Clear();
             this.PrePareModel();
@@ -310,11 +310,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private void BuyWithSoftCurrency(ItemCollectionItemModel obj)
         {
-            var currentCoin = this.uiTemplateInventoryDataController.GetCurrency(obj.UITemplateItemRecord.CurrencyID);
+            var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(obj.UITemplateItemRecord.CurrencyID);
 
-            if (currentCoin.Value < obj.UITemplateItemRecord.Price)
+            if (currentCoin < obj.UITemplateItemRecord.Price)
             {
-                this.logger.Log($"Not Enough {obj.UITemplateItemRecord.CurrencyID}\nCurrent: {currentCoin.Value}, Needed: {obj.UITemplateItemRecord.Price}");
+                this.logger.Log($"Not Enough {obj.UITemplateItemRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.UITemplateItemRecord.Price}");
 
                 return;
             }

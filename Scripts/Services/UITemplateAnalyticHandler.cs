@@ -166,7 +166,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void LevelStartedHandler(LevelStartedSignal obj)
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LastLevelProperty] = this.uiTemplateUserLevelData.CurrentLevel;
-            this.Track(this.analyticEventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrency().Value));
+            this.Track(this.analyticEventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
         }
 
         public void Dispose()

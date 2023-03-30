@@ -43,7 +43,7 @@
 
         public override void BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
+            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
         }
 
         protected virtual void OnClickShopButton()

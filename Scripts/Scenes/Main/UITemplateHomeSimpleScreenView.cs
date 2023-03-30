@@ -89,7 +89,7 @@
 
         protected virtual void OnClickPlay() { }
 
-        public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value); }
+        public override void BindData() { this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue()); }
 
         public override void Dispose()
         {

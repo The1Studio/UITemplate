@@ -137,7 +137,7 @@
         public override async void BindData(UITemplateWinScreenModel model)
         {
             this.View.BtnAds.BindData();
-            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrency().Value);
+            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
             this.ItemUnlockProgress(model.ItemUnlockLastValue, model.ItemUnlockNewValue);
 
             if (this.View.UseLightGlow)

@@ -49,15 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public UITemplateCurrencyData GetCurrency(string id = DefaultSoftCurrencyID)
-        {
-            return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () =>
-                                                                              {
-                                                                                  var currencyRecord = this.uiTemplateCurrencyBlueprint.GetDataById(id);
-
-                                                                                  return new UITemplateCurrencyData(id, currencyRecord.Max);
-                                                                              });
-        }
+        public int GetCurrencyValue(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0)).Value;
 
         public bool HasItem(string id) { return this.uiTemplateInventoryData.IDToItemData.ContainsKey(id); }
 

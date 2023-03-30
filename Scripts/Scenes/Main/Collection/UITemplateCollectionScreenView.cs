@@ -51,7 +51,7 @@
 
         public override void BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrency().Value);
+            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             this.GetItemDataList(this.itemLists);
             this.SelectTabCategory(CatCharacter);
         }

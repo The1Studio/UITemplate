@@ -68,7 +68,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         public override void BindData()
         {
             this.View.BtnSkip?.BindData();
-            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrency().Value);
+            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
         }
 
         public override void Dispose()

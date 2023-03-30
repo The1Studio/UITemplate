@@ -30,10 +30,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using UnityEngine;
     using Zenject;
 
-#if NOTIFICATION_ENABLE
-    using NotificationServices = TheOneStudio.UITemplate.UITemplate.Services.NotificationServices;
-#endif
-
     public class UITemplateInstaller : Installer<GameObject, UITemplateInstaller>
     {
         private readonly GameObject soundGroupPrefab;
@@ -142,10 +138,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             var analyticFactory = this.Container.Resolve<IAnalyticEventFactory>();
             this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
             this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
-#endif
-
-#if NOTIFICATION_ENABLE
-            this.Container.BindInterfacesAndSelfTo<NotificationServices>().AsCached().NonLazy();
 #endif
         }
 

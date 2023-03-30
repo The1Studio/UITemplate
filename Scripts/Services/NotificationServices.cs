@@ -1,5 +1,3 @@
-#if NOTIFICATION_ENABLE
-
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
@@ -18,6 +16,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Random = UnityEngine.Random;
     using RemoteNotification = EasyMobile.RemoteNotification;
 
+    /// <summary>
+    /// For handle notification
+    /// </summary>
     public class NotificationServices
     {
         private readonly SignalBus                           signalBus;
@@ -171,5 +172,3 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         #endregion
     }
 }
-
-#endif

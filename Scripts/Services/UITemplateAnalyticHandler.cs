@@ -48,7 +48,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 case > 1:
                     throw new Exception("Error: More than one analytic event factory found. Please remove one of them.");
                 case 0:
-                    throw new Exception("Error: No analytic event factory found. Please add one of them.");
+                    throw new Exception("Error: Please add one of publisher name THE_ONE, WIDO, ROCKET, ABI, .... into scripting definition");
 
                     break;
             }

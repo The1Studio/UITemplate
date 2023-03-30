@@ -50,6 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 if (firstLockedDayIndex / TotalDayInWeek == (firstLockedDayIndex) / TotalDayInWeek)
                 {
                     this.uiTemplateDailyRewardData.RewardStatus[firstLockedDayIndex] = RewardStatus.Unlocked;
+                    this.uiTemplateDailyRewardData.LastRewardedDate                  = await this.internetService.GetCurrentTimeAsync();
                 }
             }
         }

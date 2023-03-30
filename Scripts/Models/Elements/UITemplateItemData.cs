@@ -9,11 +9,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     {
         public static readonly DefaultComparer DefaultComparerInstance = new();
 
-        public string Id;
-        public Status CurrentStatus;
-        public float  ProgressValue;
+        public readonly string Id;
+        public          Status CurrentStatus;
+        public          float  ProgressValue;
 
-        [JsonIgnore] public UITemplateShopRecord BlueprintRecord;
+        [JsonIgnore] public UITemplateShopRecord BlueprintRecord { get; internal set; }
 
         public UITemplateItemData(string id, UITemplateShopRecord blueprintRecord, Status currentStatus = Status.Locked)
         {

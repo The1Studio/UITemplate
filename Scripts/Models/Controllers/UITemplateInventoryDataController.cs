@@ -91,10 +91,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToCurrencyData[id].Value = currentCoin;
         }
 
-        public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All)
+        public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, params UITemplateItemData.Status[] statuses)
         {
-            return this.uiTemplateShopBlueprint.Values.Select(itemRecord => this.GetItemData(itemRecord.Id))
-                       .Where(itemData => string.IsNullOrEmpty(category) || itemData.BlueprintRecord.Category.Equals(category) && (itemData.BlueprintRecord.UnlockType & unlockType) != 0).ToList();
+            var                                                  query = this.uiTemplateInventoryData.IDToItemData.Values.AsQueryable();
+            if (category is not null)                            query = query.Where(itemData => itemData.BlueprintRecord.Category.Equals(category));
+            if (unlockType != UITemplateItemData.UnlockType.All) query = query.Where(itemData => (itemData.BlueprintRecord.UnlockType & unlockType) != 0);
+            if (statuses.Length > 0)                             query = query.Where(itemData => statuses.Contains(itemData.CurrentStatus));
+            return query.ToList();
         }
 
         public List<UITemplateItemData> GetAllItemWithOrder(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,

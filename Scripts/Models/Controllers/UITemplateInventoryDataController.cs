@@ -91,10 +91,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToCurrencyData[id].Value = currentCoin;
         }
 
-        public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All)
+        public UITemplateItemData FindOneItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
         {
-            return this.uiTemplateShopBlueprint.Values.Select(itemRecord => this.GetItemData(itemRecord.Id))
-                       .Where(itemData => string.IsNullOrEmpty(category) || itemData.BlueprintRecord.Category.Equals(category) && (itemData.BlueprintRecord.UnlockType & unlockType) != 0).ToList();
+            return this.FindAllItems(category, unlockType, orderBy, statuses).FirstOrDefault();
+        }
+
+        public IEnumerable<UITemplateItemData> FindAllItems(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
+        {
+            var                                                  query = this.uiTemplateInventoryData.IDToItemData.Values.AsQueryable();
+            if (category is not null)                            query = query.Where(itemData => itemData.BlueprintRecord.Category.Equals(category));
+            if (unlockType != UITemplateItemData.UnlockType.All) query = query.Where(itemData => (itemData.BlueprintRecord.UnlockType & unlockType) != 0);
+            if (statuses.Length > 0)                             query = query.Where(itemData => statuses.Contains(itemData.CurrentStatus));
+            if (orderBy is not null)                             query = query.OrderBy(itemData => itemData, orderBy);
+            return query;
+        }
+
+        public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
+        {
+            return this.FindAllItems(category, unlockType, orderBy, statuses).ToList();
         }
 
         public List<UITemplateItemData> GetAllItemWithOrder(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,

@@ -53,7 +53,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             if (this.IsFirstOpenGame())
             {
                 onClaimReward?.Invoke();
-                this.uiTemplateDailyRewardController.ResetRewardStatus();
+                this.uiTemplateDailyRewardController.InitRewardStatus();
                 this.canShowReward = false;
                 return;
             }
@@ -67,10 +67,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             });
         }
 
-        private void OnScreenShow(ScreenShowSignal obj)
+        private async void OnScreenShow(ScreenShowSignal obj)
         {
             if (obj.ScreenPresenter is UITemplateHomeSimpleScreenPresenter or UITemplateHomeTapToPlayScreenPresenter)
             {
+                await this.uiTemplateDailyRewardController.CheckRewardStatus();
                 this.ShowDailyRewardPopup(this.OnClaimDailyRewardFinish);
             }
         }

@@ -33,7 +33,6 @@
 
         private readonly DiContainer                     diContainer;
         private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
-        private readonly UITemplateDailyRewardData       uiTemplateDailyRewardData;
         private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
 
         #endregion
@@ -42,12 +41,11 @@
         private UITemplateDailyRewardPopupModel      popupModel;
         private List<UITemplateDailyRewardItemModel> listRewardModel;
 
-        public UITemplateDailyRewardPopupPresenter(SignalBus                 signalBus, ILogService logger, DiContainer diContainer, UITemplateDailyRewardController uiTemplateDailyRewardController,
-                                                   UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint) : base(signalBus, logger)
+        public UITemplateDailyRewardPopupPresenter(SignalBus signalBus, ILogService logger, DiContainer diContainer, UITemplateDailyRewardController uiTemplateDailyRewardController,
+                                                   UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint) : base(signalBus, logger)
         {
             this.diContainer                     = diContainer;
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
-            this.uiTemplateDailyRewardData       = uiTemplateDailyRewardData;
             this.uiTemplateDailyRewardBlueprint  = uiTemplateDailyRewardBlueprint;
         }
 
@@ -64,15 +62,11 @@
 
             this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values.Select(uiTemplateDailyRewardRecord =>
                                                                                          new UITemplateDailyRewardItemModel(uiTemplateDailyRewardRecord,
-                                                                                                                            this.uiTemplateDailyRewardData.RewardStatus
-                                                                                                                                [uiTemplateDailyRewardRecord.Day - 1])).ToList();
-            this.userLoginDay = await this.uiTemplateDailyRewardController.GetUserLoginDay();
-
-            this.uiTemplateDailyRewardController.SetRewardStatus(this.userLoginDay, RewardStatus.Unlocked);
-
+                                                                                                                            this.uiTemplateDailyRewardController
+                                                                                                                                .GetDateRewardStatus(uiTemplateDailyRewardRecord.Day))).ToList();
             this.InitListDailyReward(this.listRewardModel);
 
-            var hasRewardCanClaim = this.uiTemplateDailyRewardData.RewardStatus.Any(t => t == RewardStatus.Unlocked);
+            var hasRewardCanClaim = this.uiTemplateDailyRewardController.CanClaimReward;
             this.View.btnClaim.gameObject.SetActive(hasRewardCanClaim);
             this.View.btnClose.gameObject.SetActive(!hasRewardCanClaim);
         }

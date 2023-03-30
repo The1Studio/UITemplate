@@ -7,7 +7,7 @@
     public class UITemplateDailyRewardData : ILocalData
     {
         public List<RewardStatus> RewardStatus = new();
-        public DateTime           BeginDate { get; set; }
+        public DateTime           LastRewardedDate { get; set; }
 
         public void Init() { }
     }

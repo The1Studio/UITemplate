@@ -169,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currencyValueText: {fileID: 8921256228301687418}
   currencyId: Coin
+  CurrencyIcon: {fileID: 825177334867264997}
 --- !u!1 &6534029451031239917
 GameObject:
   m_ObjectHideFlags: 0

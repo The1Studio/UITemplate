@@ -88,7 +88,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateSettingDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateJackpotController>().AsCached();
 #if EM_ADMOB
-            var adMobWrapperConfig = new AdModWrapper.Config(this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId);
+            var listAoaAppId       = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId;
+#if UNITY_IOS
+            listAoaAppId       = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaIOSAppId;
+#endif
+            var adMobWrapperConfig = new AdModWrapper.Config(listAoaAppId);
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
 #endif
 

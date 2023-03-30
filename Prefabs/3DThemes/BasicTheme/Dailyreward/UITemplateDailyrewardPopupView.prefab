@@ -1346,6 +1346,7 @@ MonoBehaviour:
   objClaimed: {fileID: 3233596979484530435}
   txtValue: {fileID: 2124228447935274525}
   txtDayLabel: {fileID: 8789573695325132041}
+  objClaimedCheckIcon: {fileID: 4872767801829375979}
 --- !u!1 &3651650132898753933
 GameObject:
   m_ObjectHideFlags: 0
@@ -2527,7 +2528,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -40}
-  m_SizeDelta: {x: -50, y: -160}
+  m_SizeDelta: {x: -50, y: -80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7005114898713580284
 CanvasRenderer:
@@ -2878,7 +2879,7 @@ PrefabInstance:
     - target: {fileID: 1685162116223536764, guid: 1438d283515ee4637b1d0bbdd782865e,
         type: 3}
       propertyPath: m_Name
-      value: UITemplateDailyrewardPopupView
+      value: UITemplateDailyRewardPopupView
       objectReference: {fileID: 0}
     - target: {fileID: 7427792702643258388, guid: 1438d283515ee4637b1d0bbdd782865e,
         type: 3}

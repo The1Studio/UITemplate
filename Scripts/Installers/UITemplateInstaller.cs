@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities;
+    using GameFoundation.Scripts.Utilities.Extension;
     using global::Models;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.AdsServices.EasyMobile;
@@ -19,13 +20,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.AdOne;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.Wido;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket;
     using TheOneStudio.UITemplate.UITemplate.Utils;
     using UnityEngine;
     using Zenject;
@@ -64,10 +61,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<InterstitialAdCalledSignal>();
             this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
             this.Container.DeclareSignal<FirebaseInitializeSucceededSignal>();
-            
+
             //Utils
             this.Container.Bind<GameAssetUtil>().AsCached();
-            
+
             //Third party service
             AdServiceInstaller.Install(this.Container);
             AnalyticServicesInstaller.Install(this.Container);
@@ -77,17 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<UITemplateAdServiceWrapper>().AsCached();
 #endif
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
-#if ROCKET
-            this.Container.Bind<IAnalyticEventFactory>().To<RocketAnalyticEventFactory>().AsCached();
-#elif WIDO
-            this.Container.Bind<IAnalyticEventFactory>().To<WidoAnalyticEventFactory>().AsCached();
-#elif ABI
-            this.Container.Bind<IAnalyticEventFactory>().To<ABIAnalyticEventFactory>().AsCached();
-#elif ADONE
-            this.Container.Bind<IAnalyticEventFactory>().To<AdOneAnalyticEventFactory>().AsCached();
-#else
-            this.Container.Bind<IAnalyticEventFactory>().To<RocketAnalyticEventFactory>().AsCached();
-#endif
+            this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<BaseAnalyticEventFactory>();
 
             //Manager
             this.Container.BindInterfacesAndSelfTo<GameSeasonManager>().AsCached().NonLazy();
@@ -135,9 +122,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
 
 #if APPSFLYER
-            var analyticFactory = this.Container.Resolve<IAnalyticEventFactory>();
-            this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
-            this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
+            var listFactory = this.Container.ResolveAll<IAnalyticEventFactory>();
+            if (listFactory is { Count: > 0 })
+            {
+                var analyticFactory = listFactory[0];
+                this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
+                this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
+            }
 #endif
         }
 

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
@@ -25,32 +26,29 @@
         public Action OnClaimFinish;
     }
 
-    [PopupInfo(nameof(UITemplateDailyRewardPopupView))]
+    [PopupInfo(nameof(UITemplateDailyRewardPopupView), false)]
     public class UITemplateDailyRewardPopupPresenter : UITemplateBasePopupPresenter<UITemplateDailyRewardPopupView, UITemplateDailyRewardPopupModel>
     {
         #region inject
 
-        private readonly DiContainer                       diContainer;
-        private readonly UITemplateDailyRewardController   uiTemplateDailyRewardController;
-        private readonly UITemplateDailyRewardData         uiTemplateDailyRewardData;
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly UITemplateShopBlueprint           uiTemplateShopBlueprint;
+        private readonly DiContainer                     diContainer;
+        private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
+        private readonly UITemplateDailyRewardData       uiTemplateDailyRewardData;
+        private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
 
         #endregion
 
         private int                                  userLoginDay;
         private UITemplateDailyRewardPopupModel      popupModel;
-        private List<UITemplateDailyRewardItemModel> listRewardCanClaim = new();
+        private List<UITemplateDailyRewardItemModel> listRewardModel;
 
-        public UITemplateDailyRewardPopupPresenter(SignalBus signalBus, ILogService logger, DiContainer diContainer,
-            UITemplateDailyRewardController uiTemplateDailyRewardController, UITemplateDailyRewardData uiTemplateDailyRewardData,
-            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateShopBlueprint uiTemplateShopBlueprint) : base(signalBus, logger)
+        public UITemplateDailyRewardPopupPresenter(SignalBus                 signalBus, ILogService logger, DiContainer diContainer, UITemplateDailyRewardController uiTemplateDailyRewardController,
+                                                   UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint) : base(signalBus, logger)
         {
-            this.diContainer                       = diContainer;
-            this.uiTemplateDailyRewardController   = uiTemplateDailyRewardController;
-            this.uiTemplateDailyRewardData         = uiTemplateDailyRewardData;
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.uiTemplateShopBlueprint           = uiTemplateShopBlueprint;
+            this.diContainer                     = diContainer;
+            this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
+            this.uiTemplateDailyRewardData       = uiTemplateDailyRewardData;
+            this.uiTemplateDailyRewardBlueprint  = uiTemplateDailyRewardBlueprint;
         }
 
         protected override void OnViewReady()
@@ -64,52 +62,40 @@
         {
             this.popupModel = param;
 
-            var listRewardModel = this.uiTemplateDailyRewardController.ListRewardBlueprint.Select(t =>
-                new UITemplateDailyRewardItemModel(t, this.uiTemplateDailyRewardData.RewardStatus[t.Day - 1])).ToList();
+            this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values.Select(uiTemplateDailyRewardRecord =>
+                                                                                         new UITemplateDailyRewardItemModel(uiTemplateDailyRewardRecord,
+                                                                                                                            this.uiTemplateDailyRewardData.RewardStatus
+                                                                                                                                [uiTemplateDailyRewardRecord.Day - 1])).ToList();
             this.userLoginDay = await this.uiTemplateDailyRewardController.GetUserLoginDay();
 
             this.uiTemplateDailyRewardController.SetRewardStatus(this.userLoginDay, RewardStatus.Unlocked);
 
-            this.InitListDailyReward(listRewardModel);
+            this.InitListDailyReward(this.listRewardModel);
 
             var hasRewardCanClaim = this.uiTemplateDailyRewardData.RewardStatus.Any(t => t == RewardStatus.Unlocked);
             this.View.btnClaim.gameObject.SetActive(hasRewardCanClaim);
             this.View.btnClose.gameObject.SetActive(!hasRewardCanClaim);
-
-            this.listRewardCanClaim = listRewardModel.Where(t => t.RewardStatus == RewardStatus.Unlocked).ToList();
         }
 
         private async void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels) { await this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer); }
 
-        private void ClaimReward()
+        private async void ClaimReward()
         {
-            var listRewards = this.listRewardCanClaim.Select(t => t.DailyRewardRecord.Reward).ToList();
-            foreach (var rewardDict in listRewards)
+            this.uiTemplateDailyRewardController.ClaimAllAvailableReward();
+            this.View.dailyRewardAdapter.Refresh();
+            this.logService.Log($"Do Animation Claim Reward");
+            this.popupModel.OnClaimFinish?.Invoke();
+            foreach (var uiTemplateDailyRewardItemModel in this.listRewardModel)
             {
-                foreach (var reward in rewardDict)
+                if (uiTemplateDailyRewardItemModel.RewardStatus == RewardStatus.Unlocked)
                 {
-                    if (reward.Key.Equals("Coin"))
-                    {
-                        this.uiTemplateInventoryDataController.AddCurrency(reward.Value, reward.Key);
-                        // Do coin's reward animation
-                    }
-                    else
-                    {
-                        for (var i = 0; i < reward.Value; i++)
-                            this.uiTemplateInventoryDataController.AddItemData(
-                                new UITemplateItemData(reward.Key, this.uiTemplateShopBlueprint.GetDataById(reward.Key), UITemplateItemData.Status.Owned));
-                        // Do item's reward animation
-                    }
+                    uiTemplateDailyRewardItemModel.RewardStatus = RewardStatus.Claimed;
                 }
             }
 
-            this.uiTemplateDailyRewardController.ClaimAllAvailableReward();
             this.View.dailyRewardAdapter.Refresh();
+            await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
             this.CloseView();
-            this.logService.Log($"Do Animation Claim Reward");
-            this.popupModel.OnClaimFinish?.Invoke();
         }
-
-        private bool CheckUserClaimAllReward() { return !(this.uiTemplateDailyRewardData.RewardStatus.Any(t => t != RewardStatus.Claimed)); }
     }
 }

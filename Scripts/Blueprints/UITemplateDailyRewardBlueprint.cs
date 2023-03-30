@@ -5,7 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 
     [CsvHeaderKey("Day")]
     [BlueprintReader("UITemplateDailyReward", true)]
-    public class UITemplateDailyRewardBlueprint : GenericBlueprintReaderByRow<string, UITemplateDailyRewardRecord>
+    public class UITemplateDailyRewardBlueprint : GenericBlueprintReaderByRow<int, UITemplateDailyRewardRecord>
     {
     }
 

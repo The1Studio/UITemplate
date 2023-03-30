@@ -6,24 +6,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using UnityEngine;
 
     public class UITemplateDailyRewardController
     {
         #region inject
 
-        private readonly IInternetService               internetService;
-        private readonly UITemplateDailyRewardData      uiTemplateDailyRewardData;
-        private readonly UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint;
+        private readonly IInternetService                  internetService;
+        private readonly UITemplateDailyRewardData         uiTemplateDailyRewardData;
+        private readonly UITemplateDailyRewardBlueprint    uiTemplateDailyRewardBlueprint;
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
 
         #endregion
 
-        public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData,
-            UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint)
+        public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
+                                               UITemplateInventoryDataController uiTemplateInventoryDataController)
         {
-            this.internetService                = internetService;
-            this.uiTemplateDailyRewardData      = uiTemplateDailyRewardData;
-            this.uiTemplateDailyRewardBlueprint = uiTemplateDailyRewardBlueprint;
+            this.internetService                   = internetService;
+            this.uiTemplateDailyRewardData         = uiTemplateDailyRewardData;
+            this.uiTemplateDailyRewardBlueprint    = uiTemplateDailyRewardBlueprint;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
         public async UniTask<int> GetUserLoginDay()
@@ -32,11 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var beginDay        = this.uiTemplateDailyRewardData.BeginDate.Day;
             var differenceOfDay = currentDay - beginDay;
 
-            return differenceOfDay > 0
-                ? differenceOfDay >= this.uiTemplateDailyRewardData.RewardStatus.Count
-                    ? this.uiTemplateDailyRewardData.RewardStatus.Count - 1
-                    : differenceOfDay
-                : 0;
+            return differenceOfDay > 0 ? differenceOfDay >= this.uiTemplateDailyRewardData.RewardStatus.Count ? this.uiTemplateDailyRewardData.RewardStatus.Count - 1 : differenceOfDay : 0;
         }
 
         public void SetRewardStatus(int day, RewardStatus status)
@@ -44,18 +41,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             if (this.uiTemplateDailyRewardData.RewardStatus[day] == RewardStatus.Claimed)
                 return;
 
-            this.uiTemplateDailyRewardData.BeginDate = status == RewardStatus.Unlocked
-                ? DateTime.Now
-                : this.uiTemplateDailyRewardData.BeginDate;
+            this.uiTemplateDailyRewardData.BeginDate         = status == RewardStatus.Unlocked ? DateTime.Now : this.uiTemplateDailyRewardData.BeginDate;
             this.uiTemplateDailyRewardData.RewardStatus[day] = status;
         }
 
         public void ClaimAllAvailableReward()
         {
+            var rewardsList = new List<Dictionary<string, int>>();
             for (var i = 0; i < this.uiTemplateDailyRewardData.RewardStatus.Count; i++)
             {
                 if (this.uiTemplateDailyRewardData.RewardStatus[i] == RewardStatus.Unlocked)
+                {
                     this.uiTemplateDailyRewardData.RewardStatus[i] = RewardStatus.Claimed;
+                    rewardsList.Add(this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1).Reward);
+                }
+            }
+
+            var sumReward = rewardsList.SelectMany(d => d).GroupBy(kvp => kvp.Key, (key, kvps) => new { Key = key, Value = kvps.Sum(kvp => kvp.Value) }).ToDictionary(x => x.Key, x => x.Value);
+
+            foreach (var reward in sumReward)
+            {
+                this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value);
             }
         }
 
@@ -71,15 +77,5 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public bool CanClaimReward => this.uiTemplateDailyRewardData.RewardStatus.Any(t => t == RewardStatus.Unlocked);
-
-        public List<UITemplateDailyRewardRecord> ListRewardBlueprint => this.uiTemplateDailyRewardBlueprint.Values.ToList();
-
-        public bool IsFirstOpenGame()
-        {
-            if (PlayerPrefs.GetInt("FirstOpenApp") != 0) return false;
-            PlayerPrefs.SetInt("FirstOpenApp", 1);
-            return true;
-
-        }
     }
 }

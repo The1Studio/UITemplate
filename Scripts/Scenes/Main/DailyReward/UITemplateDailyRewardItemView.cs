@@ -1,6 +1,9 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward
 {
+    using System;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
+    using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.Utilities.LogService;
@@ -12,14 +15,14 @@
 
     public class UITemplateDailyRewardItemModel
     {
+        public RewardStatus                RewardStatus      { get; set; }
+        public UITemplateDailyRewardRecord DailyRewardRecord { get; set; }
+        
         public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord, RewardStatus rewardStatus)
         {
             this.DailyRewardRecord = dailyRewardRecord;
             this.RewardStatus      = rewardStatus;
         }
-
-        public RewardStatus                RewardStatus      { get; set; }
-        public UITemplateDailyRewardRecord DailyRewardRecord { get; set; }
     }
 
     public class UITemplateDailyRewardItemView : TViewMono
@@ -29,6 +32,7 @@
         public GameObject      objClaimed;
         public TextMeshProUGUI txtValue;
         public TextMeshProUGUI txtDayLabel;
+        public GameObject      objClaimedCheckIcon;
     }
 
     public class UITemplateDailyRewardItemPresenter : BaseUIItemPresenter<UITemplateDailyRewardItemView, UITemplateDailyRewardItemModel>
@@ -57,7 +61,7 @@
             this.InitView();
         }
 
-        private void InitView()
+        private async void InitView()
         {
             var rewardSprite = this.GameAssets.ForceLoadAsset<Sprite>($"{this.model.DailyRewardRecord.RewardImage}");
             var rewardValue  = string.Empty;
@@ -72,6 +76,10 @@
                 : $"{PrefixLabel}{this.model.DailyRewardRecord.Day}";
             this.View.objLockReward.SetActive(this.model.RewardStatus == RewardStatus.Locked);
             this.View.objClaimed.SetActive(this.model.RewardStatus == RewardStatus.Claimed);
+            var duration = 1f;
+            this.View.objClaimedCheckIcon.transform.localScale = Vector3.zero;
+            this.View.objClaimedCheckIcon.transform.DOScale(Vector3.one, duration).SetEase(Ease.OutBounce);
+            await UniTask.Delay(TimeSpan.FromSeconds(duration));
         }
     }
 }

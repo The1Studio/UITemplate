@@ -118,7 +118,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             // Prepare the Remind 
             var currentHour = DateTime.Now.Hour;
 
-            foreach (var notificationData in this.uiTemplateNotificationBlueprint)
+            foreach (var notificationData in this.uiTemplateNotificationBlueprint.Where(x => x.Value.RandomAble))
             {
                 var delayTime = new TimeSpan(notificationData.Value.TimeToShow[0], notificationData.Value.TimeToShow[1], notificationData.Value.TimeToShow[2]);
 
@@ -141,25 +141,39 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private NotificationContent PrepareRemind(UITemplateNotificationRecord record)
         {
-            var title = record.Title == -1
-                ? this.uiTemplateNotificationDataBlueprint.ElementAt(Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count)).Value.GetTitle(new object[]
-                {
-                    Application.productName
-                })
-                : this.uiTemplateNotificationDataBlueprint[record.Title].GetTitle(new object[]
-                {
-                    Application.productName
-                });
+            var title      = "";
+            var body       = "";
+            var itemRandom = this.uiTemplateNotificationDataBlueprint.Values.Where(x => x.RandomAble).ElementAt(Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count));
 
-            var body = record.Body == -1
-                ? this.uiTemplateNotificationDataBlueprint.ElementAt(Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count)).Value.GetBody(new object[]
-                {
-                    Application.productName
-                })
-                : this.uiTemplateNotificationDataBlueprint[record.Body].GetBody(new object[]
+            if (record.Title.Equals("Random"))
+            {
+                title = itemRandom.GetTitle(new object[]
                 {
                     Application.productName
                 });
+            }
+            else
+            {
+                title = this.uiTemplateNotificationDataBlueprint[record.Title].GetTitle(new object[]
+                {
+                    Application.productName
+                });
+            }
+
+            if (record.Body.Equals("Random"))
+            {
+                body = itemRandom.GetBody(new object[]
+                {
+                    Application.productName
+                });
+            }
+            else
+            {
+                body = this.uiTemplateNotificationDataBlueprint[record.Body].GetBody(new object[]
+                {
+                    Application.productName
+                });
+            }
 
             var content = new NotificationContent
             {
@@ -171,5 +185,46 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         }
 
         #endregion
+
+        public void SetupCustomNotification(string notificationId)
+        {
+            if (!this.uiTemplateNotificationBlueprint.TryGetValue(notificationId, out var notificationData))
+            {
+                return;
+            }
+
+            var currentHour = DateTime.Now.Hour;
+            var delayTime   = new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
+
+            var hourToShow = currentHour + delayTime.Hours;
+            var highHour   = notificationData.HourRangeShow[1];
+            var lowHour    = notificationData.HourRangeShow[0];
+
+            if (hourToShow < highHour && hourToShow > lowHour)
+            {
+                Notifications.ScheduleLocalNotification(delayTime,
+                    this.PrepareRemind(notificationData),
+                    Enum.TryParse<NotificationRepeat>(notificationData.Repeat, out var result) ? result : NotificationRepeat.None);
+            }
+        }
+        public void SetupCustomNotification(string notificationId, TimeSpan delayTime)
+        {
+            if (!this.uiTemplateNotificationBlueprint.TryGetValue(notificationId, out var notificationData))
+            {
+                return;
+            }
+
+            var currentHour = DateTime.Now.Hour;
+            var hourToShow  = currentHour + delayTime.Hours;
+            var highHour    = notificationData.HourRangeShow[1];
+            var lowHour     = notificationData.HourRangeShow[0];
+
+            if (hourToShow < highHour && hourToShow > lowHour)
+            {
+                Notifications.ScheduleLocalNotification(delayTime,
+                    this.PrepareRemind(notificationData),
+                    Enum.TryParse<NotificationRepeat>(notificationData.Repeat, out var result) ? result : NotificationRepeat.None);
+            }
+        }
     }
 }

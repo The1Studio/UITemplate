@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using EasyMobile;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using UnityEngine;
     using Zenject;
     using LocalNotification = EasyMobile.LocalNotification;

@@ -48,7 +48,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 case > 1:
                     throw new Exception("Error: More than one analytic event factory found. Please remove one of them (Project Setting/Script Define Symbols).");
                 case 0:
-                    throw new Exception("Error: No analytic event factory found. Please add one of them (Project Setting/Script Define Symbols).");
+                    throw new Exception("Error: No analytic event factory found. Please add one of them (WIDO,ROCKET,ADONE,ABI...) into (Project Setting/Script Define Symbols).");
 
                     break;
             }

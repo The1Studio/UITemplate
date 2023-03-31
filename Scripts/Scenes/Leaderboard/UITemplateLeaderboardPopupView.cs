@@ -87,13 +87,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             DOTween.To(() => oldRank, setValue => cloneView.SetRank(setValue), newRank, scrollDuration);
             this.View.Adapter.SmoothScrollTo(newIndex - indexPadding, scrollDuration);
             await UniTask.Delay(TimeSpan.FromSeconds(scrollDuration));
-            this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack);
+            if (this.yourClone != null)
+            {
+                this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack);
+            }
         }
 
         public override void Dispose()
         {
             base.Dispose();
             Object.Destroy(this.yourClone);
+            this.yourClone = null;
         }
     }
 }

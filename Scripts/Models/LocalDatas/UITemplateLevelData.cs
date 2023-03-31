@@ -8,9 +8,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public int                        CurrentLevel { get; set; } = 1;
         public Dictionary<int, LevelData> LevelToLevelData = new();
 
-        public LevelData GetLevelDataByLevel(int level)
+        public void SetLevelStatusByLevel(int level, LevelData.Status status)
         {
-            return this.LevelToLevelData[level];
+            this.LevelToLevelData[level].LevelStatus = status;
         }
         public void Init() { }
     }

@@ -18,14 +18,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         #endregion
 
-        public UITemplateLevelDataController(UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData, SignalBus signalBus)
+        public UITemplateLevelDataController(UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData,
+            SignalBus signalBus)
         {
             this.uiTemplateItemBlueprint  = uiTemplateItemBlueprint;
             this.uiTemplateLevelBlueprint = uiTemplateLevelBlueprint;
             this.uiTemplateUserLevelData  = uiTemplateUserLevelData;
             this.signalBus                = signalBus;
         }
-        
+
         public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
 
         public LevelData GetLevelData(int level) { return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked)); }
@@ -36,12 +37,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Fire(new LevelStartedSignal(level));
         }
 
-        public void GoToNextLevel()
+        private void GoToNextLevel(LevelData.Status levelStatus)
         {
+            var previousLevel = this.uiTemplateUserLevelData.CurrentLevel;
+            this.uiTemplateUserLevelData.GetLevelDataByLevel(previousLevel).LevelStatus = levelStatus;
             this.uiTemplateUserLevelData.CurrentLevel++;
             this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
         }
 
+        public void PassCurrentLevel() { this.GoToNextLevel(LevelData.Status.Passed); }
         public void SkipCurrentLevel()
         {
             this.signalBus.Fire(new LevelSkippedSignal
@@ -49,13 +53,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 Level = this.uiTemplateUserLevelData.CurrentLevel,
                 Time  = 0
             });
-            this.GoToNextLevel();
+            this.GoToNextLevel(LevelData.Status.Skipped);
         }
 
-        public LevelData GetCurrentLevelData()
-        {
-            return this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);
-        }
+        public LevelData GetCurrentLevelData() { return this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel); }
 
         public int MaxLevel
         {

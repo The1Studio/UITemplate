@@ -25,8 +25,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public enum Status
         {
             Owned      = 0,
-            InProgress = 1,
-            Unlocked   = 2,
+            Unlocked   = 1,
+            InProgress = 2,
             Locked     = 3
         }
 

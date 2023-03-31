@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices.CommonEvents;
     using Cysharp.Threading.Tasks;
     using EasyMobile;
+    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
@@ -141,16 +142,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private NotificationContent PrepareRemind(UITemplateNotificationRecord record)
         {
-            var title      = "";
-            var body       = "";
-            var itemRandom = this.uiTemplateNotificationDataBlueprint.Values.Where(x => x.RandomAble).ElementAt(Random.Range(0, this.uiTemplateNotificationDataBlueprint.Count));
+            var title = "";
+            var body  = "";
+
+            var listCanRandom = this.uiTemplateNotificationDataBlueprint.Values.Where(x => x.RandomAble).ToList();
+
+            UITemplateNotificationDataRecord itemRandom = null;
+
+            if (listCanRandom.Count > 0)
+            {
+                itemRandom = listCanRandom.PickRandom();
+            }
+
+            if (itemRandom == null)
+            {
+                this.logger.Warning($"There is no item can random in {this.uiTemplateNotificationDataBlueprint.GetType().Name}, ignore random");
+            }
 
             if (record.Title.Equals("Random"))
             {
-                title = itemRandom.GetTitle(new object[]
+                if (itemRandom != null)
                 {
-                    Application.productName
-                });
+                    title = itemRandom.GetTitle(new object[]
+                    {
+                        Application.productName
+                    });
+                }
             }
             else
             {
@@ -162,10 +179,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             if (record.Body.Equals("Random"))
             {
-                body = itemRandom.GetBody(new object[]
+                if (itemRandom != null)
                 {
-                    Application.productName
-                });
+                    body = itemRandom.GetBody(new object[]
+                    {
+                        Application.productName
+                    });
+                }
             }
             else
             {
@@ -207,6 +227,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                     Enum.TryParse<NotificationRepeat>(notificationData.Repeat, out var result) ? result : NotificationRepeat.None);
             }
         }
+
         public void SetupCustomNotification(string notificationId, TimeSpan delayTime)
         {
             if (!this.uiTemplateNotificationBlueprint.TryGetValue(notificationId, out var notificationData))

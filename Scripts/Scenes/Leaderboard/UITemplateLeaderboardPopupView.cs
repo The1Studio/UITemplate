@@ -52,7 +52,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
         private int GetRankWithLevel(int level) => (int)(this.View.LowestRank - 1f * level / this.View.MaxLevel * this.View.LowestRank + this.View.HighestRank);
 
-        public override async void BindData()
+        public override async UniTask BindData()
         {
             var indexPadding   = 4;
             var scrollDuration = 3;

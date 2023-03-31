@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -49,11 +50,12 @@
             this.View.ItemsButton.Button.onClick.AddListener(this.OnClickItem);
         }
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             this.GetItemDataList(this.itemLists);
             this.SelectTabCategory(CatCharacter);
+            return UniTask.CompletedTask;
         }
 
         private void OnNotEnoughMoney()

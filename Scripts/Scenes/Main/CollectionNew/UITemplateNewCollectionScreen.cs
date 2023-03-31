@@ -83,7 +83,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.btnAddMoreCoin.onClick.AddListener(this.OnClickAddMoreCoinButton);
         }
 
-        public override async void BindData()
+        public override async UniTask BindData()
         {
             this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
 

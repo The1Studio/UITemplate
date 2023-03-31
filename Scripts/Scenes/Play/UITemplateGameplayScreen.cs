@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
 {
     using Core.AdsServices;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -65,10 +66,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             this.View.BtnSkip?.onClick.AddListener(this.OnClickSkip);
         }
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             this.View.BtnSkip?.BindData();
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
+            return UniTask.CompletedTask;
         }
 
         public override void Dispose()

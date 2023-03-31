@@ -59,7 +59,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.OpenViewAsync();
         }
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             this.startedLoadingTime = DateTime.Now;
             this.SignalBus.Subscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
@@ -69,6 +69,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             this.ShowLoadingProgress(LoadingBlueprintStepName);
             this.blueprintReaderManager.LoadBlueprint();
+            return UniTask.CompletedTask;
         }
 
         private async void ShowLoadingProgress(string loadingContent)

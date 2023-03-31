@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
 {
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -41,9 +42,10 @@
             this.DiContainer.Inject(this.View.SettingButtonView);
         }
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
+            return UniTask.CompletedTask;
         }
 
         protected virtual void OnClickShopButton()

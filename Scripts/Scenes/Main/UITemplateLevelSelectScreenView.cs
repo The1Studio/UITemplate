@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
 {
     using System.Collections.Generic;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -42,7 +43,7 @@
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
         }
 
-        public override async void BindData()
+        public override async UniTask BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             var levelList    = this.getLevelList();

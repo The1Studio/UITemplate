@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -25,10 +26,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.View.btnX2Reward.onClick.AddListener(this.OnX2Reward);
         }
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             base.BindData();
             this.SoundServices.PlaySoundWin();
+            return UniTask.CompletedTask;
         }
 
         protected virtual void OnX2Reward()

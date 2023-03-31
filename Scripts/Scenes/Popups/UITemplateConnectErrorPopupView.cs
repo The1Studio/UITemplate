@@ -33,9 +33,10 @@
             this.internetService = internetService;
         }
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             this.UpdateContent(false);
+            return UniTask.CompletedTask;
         }
 
         protected override async void OnViewReady()

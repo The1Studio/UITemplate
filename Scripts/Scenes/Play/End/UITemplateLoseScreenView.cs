@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play.End
 {
     using Core.AdsServices;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -44,10 +45,11 @@
 
         #endregion
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             this.View.SkipButton?.BindData();
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
+            return UniTask.CompletedTask;
         }
 
         public override void Dispose()

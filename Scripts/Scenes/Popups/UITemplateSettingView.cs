@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -63,9 +64,10 @@
             this.View.VibrationButton.SetOnOff(this.uiTemplateSettingDataController.IsVibrationOn);
         }
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             this.InitButton();
+            return UniTask.CompletedTask;
         }
     }
 }

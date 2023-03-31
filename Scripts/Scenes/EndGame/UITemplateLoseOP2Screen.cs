@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -24,10 +25,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             this.View.btnContinue.onClick.AddListener(this.OnContinue);
         }
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             base.BindData();
             this.SoundServices.PlaySoundLose();
+            return UniTask.CompletedTask;
         }
 
         protected virtual void OnContinue()

@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
     using System.Collections.Generic;
+    using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -40,7 +41,7 @@
 #endif
         }
 
-        public override void BindData()
+        public override UniTask BindData()
         {
             this.lastStarCount = 0;
             for (var i = 0; i < this.View.StarImages.Count; i++)
@@ -48,6 +49,7 @@
                 var star = this.View.StarImages[i];
                 star.transform.localScale = Vector3.zero;
             }
+            return UniTask.CompletedTask;
         }
         protected override void OnViewReady()
         {

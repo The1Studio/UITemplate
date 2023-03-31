@@ -6,31 +6,36 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using BlueprintFlow.Signals;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using UnityEngine;
     using Zenject;
 
     public class UITemplateInventoryDataController
     {
         #region inject
 
-        private readonly UITemplateInventoryData     uiTemplateInventoryData;
-        private readonly UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint;
-        private readonly UITemplateShopBlueprint     uiTemplateShopBlueprint;
-        private readonly SignalBus                   signalBus;
-        private readonly UITemplateItemBlueprint     uiTemplateItemBlueprint;
+        private readonly UITemplateInventoryData           uiTemplateInventoryData;
+        private readonly UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency;
+        private readonly UITemplateCurrencyBlueprint       uiTemplateCurrencyBlueprint;
+        private readonly UITemplateShopBlueprint           uiTemplateShopBlueprint;
+        private readonly SignalBus                         signalBus;
+        private readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
 
         #endregion
 
         private const string DefaultSoftCurrencyID = "Coin";
 
-        public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint,
-                                                 UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus, UITemplateItemBlueprint uiTemplateItemBlueprint)
+        public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
+            UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint,
+            UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus, UITemplateItemBlueprint uiTemplateItemBlueprint)
         {
-            this.uiTemplateInventoryData     = uiTemplateInventoryData;
-            this.uiTemplateCurrencyBlueprint = uiTemplateCurrencyBlueprint;
-            this.uiTemplateShopBlueprint     = uiTemplateShopBlueprint;
-            this.signalBus                   = signalBus;
-            this.uiTemplateItemBlueprint     = uiTemplateItemBlueprint;
+            this.uiTemplateInventoryData           = uiTemplateInventoryData;
+            this.uiTemplateFlyingAnimationCurrency = uiTemplateFlyingAnimationCurrency;
+            this.uiTemplateCurrencyBlueprint       = uiTemplateCurrencyBlueprint;
+            this.uiTemplateShopBlueprint           = uiTemplateShopBlueprint;
+            this.signalBus                         = signalBus;
+            this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
 
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
         }
@@ -60,6 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var itemRecord = this.uiTemplateShopBlueprint.GetDataById(id);
             var item       = this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () => new UITemplateItemData(id, itemRecord, defaultStatusWhenCreateNew));
             item.BlueprintRecord = itemRecord;
+
             return item;
         }
 
@@ -77,8 +83,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData);
         }
 
-        public void AddCurrency(int addingValue, string id = DefaultSoftCurrencyID)
+        public async void AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null)
         {
+            if (startAnimationRect != null)
+            {
+                await this.uiTemplateFlyingAnimationCurrency.PlayAnimation(startAnimationRect);
+            }
+
             this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = addingValue, FinalValue = this.uiTemplateInventoryData.IDToCurrencyData[id].Value + addingValue, });
 
             this.uiTemplateInventoryData.IDToCurrencyData[id].Value += addingValue;
@@ -91,28 +102,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToCurrencyData[id].Value = currentCoin;
         }
 
-        public UITemplateItemData FindOneItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
+        public UITemplateItemData FindOneItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null,
+            params UITemplateItemData.Status[] statuses)
         {
             return this.FindAllItems(category, unlockType, orderBy, statuses).FirstOrDefault();
         }
 
-        public IEnumerable<UITemplateItemData> FindAllItems(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
+        public IEnumerable<UITemplateItemData> FindAllItems(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
+            IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
         {
-            var                                                  query = this.uiTemplateInventoryData.IDToItemData.Values.AsQueryable();
-            if (category is not null)                            query = query.Where(itemData => itemData.BlueprintRecord.Category.Equals(category));
+            var query                                                  = this.uiTemplateInventoryData.IDToItemData.Values.AsQueryable();
+            if (category is not null) query                            = query.Where(itemData => itemData.BlueprintRecord.Category.Equals(category));
             if (unlockType != UITemplateItemData.UnlockType.All) query = query.Where(itemData => (itemData.BlueprintRecord.UnlockType & unlockType) != 0);
-            if (statuses.Length > 0)                             query = query.Where(itemData => statuses.Contains(itemData.CurrentStatus));
-            if (orderBy is not null)                             query = query.OrderBy(itemData => itemData, orderBy);
+            if (statuses.Length > 0) query                             = query.Where(itemData => statuses.Contains(itemData.CurrentStatus));
+            if (orderBy is not null) query                             = query.OrderBy(itemData => itemData, orderBy);
+
             return query;
         }
 
-        public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null, params UITemplateItemData.Status[] statuses)
+        public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null,
+            params UITemplateItemData.Status[] statuses)
         {
             return this.FindAllItems(category, unlockType, orderBy, statuses).ToList();
         }
 
         public List<UITemplateItemData> GetAllItemWithOrder(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
-                                                            IComparer<UITemplateItemData> comparer = null)
+            IComparer<UITemplateItemData> comparer = null)
         {
             return this.GetAllItem(category, unlockType).OrderBy(itemData => itemData, comparer ?? UITemplateItemData.DefaultComparerInstance).ToList();
         }
@@ -125,7 +140,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                 return new UITemplateItemData(id, itemRecord, status);
             });
+
             itemData.CurrentStatus = status;
+
             return itemData;
         }
 
@@ -162,11 +179,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public void AddGenericReward(string rewardKey, int rewardValue)
+        public void AddGenericReward(string rewardKey, int rewardValue, RectTransform startPosCurrency = null)
         {
             if (this.uiTemplateCurrencyBlueprint.TryGetValue(rewardKey, out _))
             {
-                this.AddCurrency(rewardValue, rewardKey);
+                this.AddCurrency(rewardValue, rewardKey, startPosCurrency);
             }
             else if (this.uiTemplateItemBlueprint.TryGetValue(rewardKey, out _))
             {

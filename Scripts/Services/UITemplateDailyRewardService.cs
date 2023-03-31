@@ -60,7 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.notificationServices.SetupCustomNotification(NotificationId);
                 return;
             }
-
+            
             if (!this.uiTemplateDailyRewardController.CanClaimReward)
                 return;
 

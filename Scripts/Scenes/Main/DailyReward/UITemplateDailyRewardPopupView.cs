@@ -11,6 +11,8 @@
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using UnityEngine;
+    using UnityEngine.EventSystems;
     using UnityEngine.UI;
     using Zenject;
 
@@ -19,6 +21,7 @@
         public UITemplateDailyRewardAdapter dailyRewardAdapter;
         public Button                       btnClaim;
         public Button                       btnClose;
+        public RectTransform                startPointCoinAnimation;
     }
 
     public class UITemplateDailyRewardPopupModel
@@ -31,6 +34,7 @@
     {
         #region inject
 
+        private readonly EventSystem                     eventSystem;
         private readonly DiContainer                     diContainer;
         private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
         private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
@@ -41,9 +45,11 @@
         private UITemplateDailyRewardPopupModel      popupModel;
         private List<UITemplateDailyRewardItemModel> listRewardModel;
 
-        public UITemplateDailyRewardPopupPresenter(SignalBus signalBus, ILogService logger, DiContainer diContainer, UITemplateDailyRewardController uiTemplateDailyRewardController,
-                                                   UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint) : base(signalBus, logger)
+        public UITemplateDailyRewardPopupPresenter(SignalBus signalBus, EventSystem eventSystem, ILogService logger, DiContainer diContainer,
+            UITemplateDailyRewardController uiTemplateDailyRewardController,
+            UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint) : base(signalBus, logger)
         {
+            this.eventSystem                     = eventSystem;
             this.diContainer                     = diContainer;
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
             this.uiTemplateDailyRewardBlueprint  = uiTemplateDailyRewardBlueprint;
@@ -56,14 +62,16 @@
             this.View.btnClose.onClick.AddListener(this.CloseView);
         }
 
-        public override async void BindData(UITemplateDailyRewardPopupModel param)
+        public override void BindData(UITemplateDailyRewardPopupModel param)
         {
             this.popupModel = param;
+            this.eventSystem.gameObject.SetActive(true);
 
             this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values.Select(uiTemplateDailyRewardRecord =>
-                                                                                         new UITemplateDailyRewardItemModel(uiTemplateDailyRewardRecord,
-                                                                                                                            this.uiTemplateDailyRewardController
-                                                                                                                                .GetDateRewardStatus(uiTemplateDailyRewardRecord.Day))).ToList();
+                new UITemplateDailyRewardItemModel(uiTemplateDailyRewardRecord,
+                    this.uiTemplateDailyRewardController
+                        .GetDateRewardStatus(uiTemplateDailyRewardRecord.Day))).ToList();
+
             this.InitListDailyReward(this.listRewardModel);
 
             var hasRewardCanClaim = this.uiTemplateDailyRewardController.CanClaimReward;
@@ -75,10 +83,13 @@
 
         private async void ClaimReward()
         {
-            this.uiTemplateDailyRewardController.ClaimAllAvailableReward();
+            this.View.btnClaim.gameObject.SetActive(false);
+            this.eventSystem.gameObject.SetActive(false);
+            this.uiTemplateDailyRewardController.ClaimAllAvailableReward(this.View.startPointCoinAnimation);
             this.View.dailyRewardAdapter.Refresh();
             this.logService.Log($"Do Animation Claim Reward");
             this.popupModel.OnClaimFinish?.Invoke();
+
             foreach (var uiTemplateDailyRewardItemModel in this.listRewardModel)
             {
                 if (uiTemplateDailyRewardItemModel.RewardStatus == RewardStatus.Unlocked)
@@ -89,6 +100,7 @@
 
             this.View.dailyRewardAdapter.Refresh();
             await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
+            this.eventSystem.gameObject.SetActive(true);
             this.CloseView();
         }
     }

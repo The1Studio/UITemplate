@@ -14,7 +14,7 @@
 
         [SerializeField] private string currencyId;
 
-        [SerializeField] private GameObject CurrencyIcon;
+        public GameObject CurrencyIcon;
 
         private Tween updateCurrencyTween;
 

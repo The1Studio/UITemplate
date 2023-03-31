@@ -1,0 +1,99 @@
+namespace TheOneStudio.UITemplate.UITemplate.Services
+{
+    using System.Collections.Generic;
+    using System.Linq;
+    using Cysharp.Threading.Tasks;
+    using DG.Tweening;
+    using GameFoundation.Scripts.AssetLibrary;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.ObjectPool;
+    using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using UnityEngine;
+
+    public class UITemplateFlyingAnimationCurrency
+    {
+        private readonly ScreenManager screenManager;
+        private readonly IGameAssets   gameAssets;
+        private const    string        PrefabName = "UITemplateFlyingAnimationItem";
+        private          BoxCollider2D tempObjGetBoxCollider;
+
+        public UITemplateFlyingAnimationCurrency(ScreenManager screenManager, IGameAssets gameAssets)
+        {
+            this.screenManager = screenManager;
+            this.gameAssets    = gameAssets;
+        }
+
+        public async UniTask PlayAnimation(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "")
+        {
+            var currencyView = this.screenManager.RootUICanvas.RootUIShowTransform.GetComponentsInChildren<UITemplateCurrencyView>().First();
+            var endUiPos     = Vector3.zero;
+
+            if (currencyView != null)
+            {
+                endUiPos = currencyView.CurrencyIcon.transform.position;
+            }
+
+            if (target != null)
+            {
+                endUiPos = target.position;
+            }
+
+            if (currencyView == null && target == null)
+            {
+                return;
+            }
+
+            var totalCount  = Random.Range(minAmount, maxAmount);
+            var finalPrefab = string.IsNullOrEmpty(prefabName) ? PrefabName : prefabName;
+            var prefab      = await this.gameAssets.LoadAssetAsync<GameObject>(finalPrefab);
+            var listItem    = new List<GameObject>();
+            //create temp object to get random point in rect
+            var box2D = this.CreateTempBoxCollider(startPointRect);
+
+            for (var i = 0; i < totalCount; i++)
+            {
+                var startPoint = box2D.bounds.RandomPointInBounds();
+                var item       = prefab.Spawn(this.screenManager.RootUICanvas.RootUIOverlayTransform.transform);
+                item.transform.localScale = Vector3.one;
+                item.transform.position   = startPoint;
+
+                item.transform.DOPunchPosition(item.transform.position * 0.3f, 0.5f, 2, 0.5f);
+                listItem.Add(item);
+            }
+
+            var countComplete = 0;
+            await UniTask.Delay(1000);
+
+            foreach (var item in listItem)
+            {
+                item.transform.DOMove(endUiPos, timeAnim).SetEase(Ease.InBack).OnComplete(() =>
+                {
+                    countComplete++;
+                    item.Recycle();
+                });
+            }
+
+            await UniTask.WaitUntil(() => countComplete == listItem.Count);
+        }
+
+        private BoxCollider2D CreateTempBoxCollider(RectTransform startPointRect)
+        {
+            if (this.tempObjGetBoxCollider != null)
+            {
+                return this.tempObjGetBoxCollider;
+            }
+
+            var tempObj   = new GameObject();
+            var rectTrans = tempObj.AddComponent<RectTransform>();
+            tempObj.transform.SetParent(this.screenManager.RootUICanvas.RootUIOverlayTransform.transform);
+            tempObj.transform.localScale    = Vector3.one;
+            tempObj.transform.position      = startPointRect.position;
+            rectTrans.sizeDelta             = startPointRect.sizeDelta;
+            this.tempObjGetBoxCollider      = tempObj.AddComponent<BoxCollider2D>();
+            this.tempObjGetBoxCollider.size = new Vector2(startPointRect.rect.width, startPointRect.rect.height);
+
+            return this.tempObjGetBoxCollider;
+        }
+    }
+}

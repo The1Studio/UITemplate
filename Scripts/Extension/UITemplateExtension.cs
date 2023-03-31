@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using UniRx;
+    using UnityEngine;
     using Random = UnityEngine.Random;
 
     public static class UITemplateExtension
@@ -59,5 +60,40 @@
         }
 
         public static bool IsNullOrEmpty(this string str) { return string.IsNullOrEmpty(str); }
+
+        public static Vector3 RandomPointInBounds(this Bounds bounds)
+        {
+            return new Vector3(
+                Random.Range(bounds.min.x, bounds.max.x),
+                Random.Range(bounds.min.y, bounds.max.y),
+                Random.Range(bounds.min.z, bounds.max.z)
+            );
+        }
+
+        public static Vector2 Random2DPointInBounds(this Bounds bounds)
+        {
+            return new Vector2(
+                Random.Range(bounds.min.x, bounds.max.x),
+                Random.Range(bounds.min.y, bounds.max.y)
+            );
+        }
+
+        public static Vector2 GetRandomPointInRectTransform(this RectTransform rectTransform,Camera uiCamera)
+        {
+            // Convert the corners of the RectTransform to screen space
+            var corners = new Vector3[4];
+            rectTransform.GetWorldCorners(corners);
+            var bottomLeft = RectTransformUtility.WorldToScreenPoint(uiCamera, corners[0]);
+            var topRight   = RectTransformUtility.WorldToScreenPoint(uiCamera, corners[2]);
+
+            // Generate a random point within the RectTransform's bounds
+            var randomPoint = new Vector2(Random.Range(bottomLeft.x, topRight.x), Random.Range(bottomLeft.y, topRight.y));
+
+            // Convert the random point back to local space
+            Vector2 localPoint;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, randomPoint, uiCamera, out localPoint);
+
+            return localPoint;
+        }
     }
 }

@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using UnityEngine;
 
     public class UITemplateDailyRewardController
     {
@@ -22,7 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         #endregion
 
         public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
-                                               UITemplateInventoryDataController uiTemplateInventoryDataController)
+            UITemplateInventoryDataController uiTemplateInventoryDataController)
         {
             this.internetService                   = internetService;
             this.uiTemplateDailyRewardData         = uiTemplateDailyRewardData;
@@ -38,6 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             if (!(diffDay >= 1)) return;
 
             var firstLockedDayIndex = this.FindFirstLockedDayIndex();
+
             if (firstLockedDayIndex == -1)
             {
                 if (!this.CanClaimReward)
@@ -55,14 +57,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        private int FindFirstLockedDayIndex()
-        {
-            return this.uiTemplateDailyRewardData.RewardStatus.FirstIndex(status => status is RewardStatus.Locked);
-        }
+        private int FindFirstLockedDayIndex() { return this.uiTemplateDailyRewardData.RewardStatus.FirstIndex(status => status is RewardStatus.Locked); }
 
         public int GetCurrentDayIndex()
         {
             var firstLockedDayIndex = this.FindFirstLockedDayIndex();
+
             return firstLockedDayIndex == -1 ? this.uiTemplateDailyRewardData.RewardStatus.Count - 1 : firstLockedDayIndex - 1;
         }
 
@@ -70,9 +70,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <returns></returns>
         public RewardStatus GetDateRewardStatus(int day) => this.uiTemplateDailyRewardData.RewardStatus[day - 1];
 
-        public void ClaimAllAvailableReward()
+        public void ClaimAllAvailableReward(RectTransform startPosCurrency = null)
         {
             var rewardsList = new List<Dictionary<string, int>>();
+
             for (var i = 0; i < this.uiTemplateDailyRewardData.RewardStatus.Count; i++)
             {
                 if (this.uiTemplateDailyRewardData.RewardStatus[i] == RewardStatus.Unlocked)
@@ -86,13 +87,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             foreach (var reward in sumReward)
             {
-                this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value);
+                this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value, startPosCurrency);
             }
         }
 
         public async void InitRewardStatus()
         {
             this.uiTemplateDailyRewardData.RewardStatus = new();
+
             for (var i = 0; i < this.uiTemplateDailyRewardBlueprint.Values.Count; i++)
             {
                 this.uiTemplateDailyRewardData.RewardStatus.Add(RewardStatus.Locked);

@@ -1,6 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
@@ -33,10 +32,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public async UniTask CheckRewardStatus()
         {
-            var currentTimeAsync = await this.internetService.GetCurrentTimeAsync();
-            var diffDay          = (currentTimeAsync - this.uiTemplateDailyRewardData.LastRewardedDate).TotalDays;
+            var issDiffDay = await this.internetService.IsDifferentDay(this.uiTemplateDailyRewardData.LastRewardedDate);
 
-            if (!(diffDay >= 1)) return;
+            if (!issDiffDay) return;
 
             var firstLockedDayIndex = this.FindFirstLockedDayIndex();
 

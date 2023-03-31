@@ -15,6 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
@@ -41,6 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.BindLocalData<UITemplateDailyRewardData>();
             this.BindLocalData<UITemplateUserJackpotData>();
             this.BindLocalData<UITemplateAdsData>();
+            this.BindLocalData<UITemplateLuckySpinData>();
 
             this.Container.Bind<UITemplateAdServiceConfig>().AsCached().NonLazy();
             //FlyingAnimation Currency
@@ -88,6 +90,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateLevelDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateSettingDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateJackpotController>().AsCached();
+            this.Container.BindInterfacesAndSelfTo<UITemplateLuckySpinController>().AsCached();
 #if EM_ADMOB
             var listAoaAppId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId;
 #if UNITY_IOS

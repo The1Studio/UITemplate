@@ -37,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Fire(new LevelStartedSignal(level));
         }
 
-        private void GoToNextLevel()
+        public void GoToNextLevel()
         {
             this.uiTemplateUserLevelData.CurrentLevel++;
             this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
@@ -48,18 +48,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.GoToNextLevel();
         }
+
         public void SkipCurrentLevel()
         {
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
+
             this.signalBus.Fire(new LevelSkippedSignal
             {
                 Level = this.uiTemplateUserLevelData.CurrentLevel,
                 Time  = 0
             });
+
             this.GoToNextLevel();
         }
 
-        public LevelData GetCurrentLevelData() { return this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel); }
+        public LevelData GetCurrentLevelData => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);
 
         public int MaxLevel
         {

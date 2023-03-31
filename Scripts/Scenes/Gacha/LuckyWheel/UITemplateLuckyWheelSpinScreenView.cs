@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints.Gacha;
     using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.EventSystems;
@@ -22,7 +23,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         public int                             CircleTimes    { get; set; } = 3;
         public List<UITemplateLuckySpinRecord> SpinRecords    { get; set; } = new();
         public bool                            AutoClose      { get; set; } = true;
-        public Action<int>                     OnSpinComplete { get; set; }
+        public int                             ForceSpinIndex { get; set; } = -1;
+        public Action<int, RectTransform>      OnSpinComplete { get; set; }
     }
 
     public class UITemplateLuckyWheelSpinScreenView : BaseView
@@ -34,6 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         public GameObject                         objCircleNoteParent;
         public GameObject                         arrowOn, arrowOff;
         public List<CircleNote>                   circleNotes;
+        public RectTransform                      animationCoin;
     }
 
     [PopupInfo(nameof(UITemplateLuckyWheelSpinScreenView), false)]
@@ -88,8 +91,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             }
 
             var rewardTargetIndex = prizes.RandomGachaWithWeight(weights);
-            var startAngle        = this.View.rotateObject.transform.localEulerAngles.z;
-            var angelWant         = startAngle - CircleDegree * this.Model.CircleTimes - (rewardTargetIndex - this.lastRewardIndex) * DeltaDegree;
+
+            if (this.Model.ForceSpinIndex != -1)
+            {
+                rewardTargetIndex = this.Model.ForceSpinIndex;
+            }
+
+            var startAngle = this.View.rotateObject.transform.localEulerAngles.z;
+            var angelWant  = startAngle - CircleDegree * this.Model.CircleTimes - (rewardTargetIndex - this.lastRewardIndex) * DeltaDegree;
 
             this.lastRewardIndex = rewardTargetIndex;
 
@@ -103,7 +112,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             }
 
             this.FlashCircleNote(0.5f);
-            this.eventSystem.gameObject.SetActive(true);
+
             this.View.arrowOff.SetActive(false);
             this.View.arrowOn.SetActive(true);
 
@@ -112,7 +121,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
                 this.CloseView();
             }
 
-            this.Model.OnSpinComplete?.Invoke(rewardTargetIndex);
+            this.eventSystem.gameObject.SetActive(true);
+            this.Model.OnSpinComplete?.Invoke(this.lastRewardIndex, this.View.animationCoin);
+            this.View.btnAdsSpin.gameObject.SetActive(true);
         }
 
         private void FlashCircleNote(float startTime)
@@ -146,35 +157,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
         private void InitItemLuckySpin()
         {
-            if (this.spinItemPresenters.Count > 0)
+            if (this.spinItemPresenters.Count == 0)
             {
-                for (var index = 0; index < this.spinItemPresenters.Count; index++)
+                foreach (var view in this.View.spinItemList)
                 {
-                    var p = this.spinItemPresenters[index];
+                    var p = this.diContainer.Instantiate<UITemplateLuckyWheelSpinItemPresenter>();
+                    p.SetView(view);
 
-                    p.BindData(new UITemplateLuckyWheelSpinItemModel()
-                    {
-                        ItemIndex = index,
-                        Icon      = this.Model.SpinRecords[index].Icon
-                    });
+                    this.spinItemPresenters.Add(p);
                 }
-
-                return;
             }
 
-            for (var index = 0; index < this.View.spinItemList.Count; index++)
+            for (var index = 0; index < this.spinItemPresenters.Count; index++)
             {
-                var view = this.View.spinItemList[index];
-                var p    = this.diContainer.Instantiate<UITemplateLuckyWheelSpinItemPresenter>();
-                p.SetView(view);
+                var p = this.spinItemPresenters[index];
 
                 p.BindData(new UITemplateLuckyWheelSpinItemModel()
                 {
                     ItemIndex = index,
-                    Icon      = this.Model.SpinRecords[index].Icon
+                    Icon      = this.Model.SpinRecords[index].Icon,
+                    Value     = this.Model.SpinRecords[index].Rewards[UITemplateInventoryDataController.DefaultSoftCurrencyID]
                 });
-
-                this.spinItemPresenters.Add(p);
             }
         }
 

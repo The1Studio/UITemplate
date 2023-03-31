@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -11,11 +12,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
     {
         public int    ItemIndex { get; set; }
         public string Icon      { get; set; }
+        public int    Value     { get; set; }
     }
 
     public class UITemplateLuckyWheelSpinItem : TViewMono
     {
-        public Image imgIcon;
+        public Image           imgIcon;
+        public TextMeshProUGUI txtValue;
     }
 
     public class UITemplateLuckyWheelSpinItemPresenter : BaseUIItemPresenter<UITemplateLuckyWheelSpinItem, UITemplateLuckyWheelSpinItemModel>
@@ -24,13 +27,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
         public override async void BindData(UITemplateLuckyWheelSpinItemModel param)
         {
-            if (param.Icon.IsNullOrEmpty())
+            //Todo Enable this code when have the icon
+            // if (param.Icon.IsNullOrEmpty())
+            // {
+            //     this.View.imgIcon.gameObject.SetActive(false);
+            // }
+            // else
+            // {
+            //     this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.Icon);
+            // }
+
+            if (param.Value > 0)
             {
-                this.View.imgIcon.gameObject.SetActive(false);
+                this.View.txtValue.text = $"{param.Value.ToString()}";
             }
             else
             {
-                this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.Icon);
+                this.View.txtValue.gameObject.SetActive(false);
             }
         }
     }

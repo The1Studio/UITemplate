@@ -14,6 +14,7 @@
         UniTask<DateTime> GetCurrentTimeAsync();
         UniTask<DateTime> GetCurrentUTCTimeAsync();
         bool              IsInternetAvailable { get; }
+        UniTask<bool>     IsDifferentDay(DateTime timeCompare);
     }
 
     public class InternetService : IInternetService, IInitializable
@@ -26,6 +27,14 @@
         private bool isInternetAvailable = true;
 
         public InternetService(ILogService logService) { this.logService = logService; }
+
+        public async UniTask<bool> IsDifferentDay(DateTime timeCompare)
+        {
+            var currentTimeAsync = await this.GetCurrentTimeAsync();
+            var day              = (currentTimeAsync - timeCompare).TotalDays;
+
+            return day >= 1;
+        }
 
         public void Initialize() { this.CheckInternetInterval(); }
 
@@ -85,6 +94,7 @@
             try
             {
                 var req = (HttpWebRequest)WebRequest.Create(CheckInternetUrl);
+
                 using (var resp = (HttpWebResponse)await req.GetResponseAsync())
                 {
                     this.isInternetAvailable = (int)resp.StatusCode < 299 && (int)resp.StatusCode >= 200;

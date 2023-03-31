@@ -60,7 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
             var TestList = new List<UITemplateLeaderboardItemModel>();
 
-            var currentLevel = this.uiTemplateLevelDataController.GetCurrentLevelData().Level;
+            var currentLevel = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
             var oldRank  = this.GetRankWithLevel(currentLevel - 1);
             var newRank  = this.GetRankWithLevel(currentLevel);
             var newIndex = indexPadding;

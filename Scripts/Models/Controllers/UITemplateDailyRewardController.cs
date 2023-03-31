@@ -70,7 +70,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <returns></returns>
         public RewardStatus GetDateRewardStatus(int day) => this.uiTemplateDailyRewardData.RewardStatus[day - 1];
 
-        public void ClaimAllAvailableReward(RectTransform startPosCurrency = null)
+        public void ClaimAllAvailableReward(Dictionary<int, RectTransform> dailyIndexToRectTransform)
         {
             var rewardsList = new List<Dictionary<string, int>>();
 
@@ -79,7 +79,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 if (this.uiTemplateDailyRewardData.RewardStatus[i] == RewardStatus.Unlocked)
                 {
                     this.uiTemplateDailyRewardData.RewardStatus[i] = RewardStatus.Claimed;
-                    rewardsList.Add(this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1).Reward);
+
+                    var reward = this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1).Reward;
+                    if (reward.ContainsKey(UITemplateInventoryDataController.DefaultSoftCurrencyID))
+                        this.uiTemplateInventoryDataController.AddGenericReward(UITemplateInventoryDataController.DefaultSoftCurrencyID, 0, dailyIndexToRectTransform[i]);
+                    rewardsList.Add(reward);
                 }
             }
 
@@ -87,7 +91,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             foreach (var reward in sumReward)
             {
-                this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value, startPosCurrency);
+                this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value);
             }
         }
 

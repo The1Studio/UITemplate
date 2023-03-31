@@ -16,7 +16,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly ScreenManager screenManager;
         private readonly IGameAssets   gameAssets;
         private const    string        PrefabName = "UITemplateFlyingAnimationItem";
-        private          BoxCollider2D tempObjGetBoxCollider;
 
         public UITemplateFlyingAnimationCurrency(ScreenManager screenManager, IGameAssets gameAssets)
         {
@@ -61,6 +60,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 item.transform.DOPunchPosition(item.transform.position * 0.3f, 0.5f, 2, 0.5f);
                 listItem.Add(item);
             }
+            
+            Object.Destroy(box2D.gameObject);
 
             var countComplete = 0;
             await UniTask.Delay(1000);
@@ -68,10 +69,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             foreach (var item in listItem)
             {
                 item.transform.DOMove(endUiPos, timeAnim).SetEase(Ease.InBack).OnComplete(() =>
-                {
-                    countComplete++;
-                    item.Recycle();
-                });
+                                                                                          {
+                                                                                              countComplete++;
+                                                                                              item.Recycle();
+                                                                                          });
             }
 
             await UniTask.WaitUntil(() => countComplete == listItem.Count);
@@ -79,21 +80,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private BoxCollider2D CreateTempBoxCollider(RectTransform startPointRect)
         {
-            if (this.tempObjGetBoxCollider != null)
-            {
-                return this.tempObjGetBoxCollider;
-            }
+            var tempObjGetBoxCollider = new GameObject().AddComponent<BoxCollider2D>();
+            tempObjGetBoxCollider.transform.SetParent(this.screenManager.RootUICanvas.RootUIOverlayTransform.transform);
+            tempObjGetBoxCollider.transform.localScale = Vector3.one;
+            tempObjGetBoxCollider.gameObject.AddComponent<RectTransform>();
 
-            var tempObj   = new GameObject();
-            var rectTrans = tempObj.AddComponent<RectTransform>();
-            tempObj.transform.SetParent(this.screenManager.RootUICanvas.RootUIOverlayTransform.transform);
-            tempObj.transform.localScale    = Vector3.one;
-            tempObj.transform.position      = startPointRect.position;
-            rectTrans.sizeDelta             = startPointRect.sizeDelta;
-            this.tempObjGetBoxCollider      = tempObj.AddComponent<BoxCollider2D>();
-            this.tempObjGetBoxCollider.size = new Vector2(startPointRect.rect.width, startPointRect.rect.height);
+            tempObjGetBoxCollider.transform.position                      = startPointRect.position;
+            tempObjGetBoxCollider.GetComponent<RectTransform>().sizeDelta = startPointRect.sizeDelta;
+            tempObjGetBoxCollider.size                                    = new Vector2(startPointRect.rect.width, startPointRect.rect.height);
 
-            return this.tempObjGetBoxCollider;
+            return tempObjGetBoxCollider;
         }
     }
 }

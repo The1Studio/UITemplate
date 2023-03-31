@@ -24,7 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         #endregion
 
-        private const string DefaultSoftCurrencyID = "Coin";
+        public const string DefaultSoftCurrencyID = "Coin";
 
         public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
             UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint,

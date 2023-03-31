@@ -45,7 +45,7 @@
             this.CurrencyIcon.transform.DOScale(Vector3.one * scaleValue, duration / yoyoTime).SetLoops(yoyoTime, LoopType.Yoyo);
             this.updateCurrencyTween?.Kill();
             this.updateCurrencyTween     = DOTween.To(() => obj.FinalValue - obj.Amount, this.UpdateData, obj.FinalValue, duration);
-            this.currencyValueText.color = obj.Amount > 0 ? Color.green : Color.red;
+            this.currencyValueText.color = obj.Amount >= 0 ? Color.green : Color.red;
             await UniTask.Delay(TimeSpan.FromSeconds(duration));
             this.ResetState();
         }

@@ -77,10 +77,16 @@
                 : $"{PrefixLabel}{this.model.DailyRewardRecord.Day}";
             this.View.objLockReward.SetActive(this.model.RewardStatus == RewardStatus.Locked);
             this.View.objClaimed.SetActive(this.model.RewardStatus == RewardStatus.Claimed);
-            var duration = 1f;
-            this.View.objClaimedCheckIcon.transform.localScale = Vector3.zero;
-            this.View.objClaimedCheckIcon.transform.DOScale(Vector3.one, duration).SetEase(Ease.OutBounce);
-            await UniTask.Delay(TimeSpan.FromSeconds(duration));
+
+            //Only play if the items were not claimed
+            if (!this.View.objClaimed.activeSelf)
+            {
+                //Animation
+                var duration = 1f;
+                this.View.objClaimedCheckIcon.transform.localScale = Vector3.zero;
+                this.View.objClaimedCheckIcon.transform.DOScale(Vector3.one, duration).SetEase(Ease.OutBounce);
+                await UniTask.Delay(TimeSpan.FromSeconds(duration));
+            }
         }
     }
 }

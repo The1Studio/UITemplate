@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 2806986266180340722}
   - component: {fileID: 1523262957485666312}
   - component: {fileID: 3161326739899394559}
+  - component: {fileID: 2465582242849620398}
   m_Layer: 5
   m_Name: ChoiceSlider
   m_TagString: Untagged
@@ -233,6 +234,18 @@ MonoBehaviour:
   slider: {fileID: 4460264891420653322}
   layoutGroup: {fileID: 3171322977910779753}
   speed: 1
+--- !u!225 &2465582242849620398
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4636556890287107184}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &6078748452144101791
 GameObject:
   m_ObjectHideFlags: 0

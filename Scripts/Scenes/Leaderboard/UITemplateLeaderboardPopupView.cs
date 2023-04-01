@@ -90,6 +90,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             this.animationCancelTokenSource = new CancellationTokenSource();
             //Do animation
             //Do scale up
+            this.animationTweenList.Clear();
             this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one * 1.1f, scaleTime).SetEase(Ease.InOutBack));
             await UniTask.Delay(TimeSpan.FromSeconds(scaleTime), cancellationToken: this.animationCancelTokenSource.Token);
             //Do move to new rank

@@ -368,6 +368,7 @@ MonoBehaviour:
   objClaimed: {fileID: 1969561116468126143}
   txtValue: {fileID: 3084830164283336865}
   txtDayLabel: {fileID: 5642892138120897461}
+  objClaimedCheckIcon: {fileID: 0}
 --- !u!1 &1969561116468126143
 GameObject:
   m_ObjectHideFlags: 0
@@ -2944,7 +2945,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6633810510837081095}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0

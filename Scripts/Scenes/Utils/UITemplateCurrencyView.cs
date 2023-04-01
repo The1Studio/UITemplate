@@ -34,7 +34,7 @@
 
         private void UpdateData(int newValue) { this.currencyValueText.text = newValue.ToString(); }
 
-        public void Unsubscribe(SignalBus signalBus) { signalBus.TryUnsubscribe<UpdateCurrencySignal>(this.UpdateCurrency); }
+        public void Unsubscribe(SignalBus signalBus) { signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrency); }
 
         private async void UpdateCurrency(UpdateCurrencySignal obj)
         {

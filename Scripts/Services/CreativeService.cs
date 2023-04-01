@@ -12,7 +12,12 @@
         private float touchTime = 0.25f;
         private float counter;
 
-        public CreativeService(IScreenManager screenManager) { this.screenManager = screenManager; }
+        public bool isShowUI { get; private set; } = true;
+
+        public CreativeService(IScreenManager screenManager)
+        {
+            this.screenManager = screenManager;
+        }
 
         public void Tick()
         {
@@ -22,7 +27,7 @@
 
                 if (Input.touchCount == 3)
                 {
-                    this.screenManager.RootUICanvas.gameObject.SetActive(!this.screenManager.RootUICanvas.gameObject.activeInHierarchy);
+                    this.screenManager.RootUICanvas.gameObject.SetActive(this.isShowUI = !this.isShowUI);
                 }
             }
 
@@ -34,13 +39,14 @@
             {
                 this.touchCount = 0;
             }
+
             if (Input.GetMouseButtonDown(0))
             {
                 this.counter = this.touchTime;
                 this.touchCount++;
                 if (this.touchCount == 3)
                 {
-                    this.screenManager.RootUICanvas.gameObject.SetActive(!this.screenManager.RootUICanvas.gameObject.activeInHierarchy);
+                    this.screenManager.RootUICanvas.gameObject.SetActive(this.isShowUI = !this.isShowUI);
                 }
             }
         }

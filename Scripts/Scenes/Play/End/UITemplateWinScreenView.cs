@@ -134,7 +134,7 @@
             this.View.BtnAds.onClick.AddListener(this.OnClickAds);
         }
 
-        public override async void BindData(UITemplateWinScreenModel model)
+        public override async UniTask BindData(UITemplateWinScreenModel model)
         {
             this.View.BtnAds.BindData();
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());

@@ -10,6 +10,9 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
@@ -88,7 +91,11 @@
             return result.OrderBy(o => o.IsLocked).ToList();
         }
 
-        protected virtual void OnClickPlay() { }
+        protected virtual void OnClickPlay()
+        {
+            this.inventoryData.IDToCurrencyData["Coin"].Value = 1000;
+            this.ScreenManager.OpenScreen<UITemplateDecorScreenPresenter>();
+        }
 
         public override UniTask BindData()
         {

@@ -6,6 +6,7 @@
     using UniRx;
     using UnityEngine;
     using Random = UnityEngine.Random;
+    using Screen = UnityEngine.Device.Screen;
 
     public static class UITemplateExtension
     {
@@ -78,7 +79,7 @@
             );
         }
 
-        public static Vector2 GetRandomPointInRectTransform(this RectTransform rectTransform,Camera uiCamera)
+        public static Vector2 GetRandomPointInRectTransform(this RectTransform rectTransform, Camera uiCamera)
         {
             // Convert the corners of the RectTransform to screen space
             var corners = new Vector3[4];
@@ -94,6 +95,19 @@
             RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, randomPoint, uiCamera, out localPoint);
 
             return localPoint;
+        }
+
+        public static Vector3 GetUIPositionFromWorldPosition(RectTransform rootUI, Camera uiCamera, Vector3 worldPosition)
+        {
+            var mainCam = Camera.main;
+            uiCamera.orthographicSize = mainCam.orthographicSize;
+            var directionUiCamToMainCam = uiCamera.transform.position - mainCam.transform.position;
+            var screenSize              = 192f;
+            var screenPos               = RectTransformUtility.WorldToScreenPoint(uiCamera, worldPosition);
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(rootUI, screenPos, uiCamera, out var anchorPos);
+            var cameraScaleSize = mainCam.orthographicSize / uiCamera.orthographicSize;
+            return anchorPos / cameraScaleSize + new Vector2(directionUiCamToMainCam.x, directionUiCamToMainCam.y) * screenSize * cameraScaleSize;
         }
     }
 }

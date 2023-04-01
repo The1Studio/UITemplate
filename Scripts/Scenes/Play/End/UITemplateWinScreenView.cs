@@ -120,6 +120,8 @@
 
         #endregion
 
+        protected virtual string AdPlacement => "x2_reward";
+        
         private IDisposable spinDisposable;
         private Tween       tweenSpin;
 
@@ -136,7 +138,7 @@
 
         public override async UniTask BindData(UITemplateWinScreenModel model)
         {
-            this.View.BtnAds.BindData();
+            this.View.BtnAds.BindData(this.AdPlacement);
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
             this.ItemUnlockProgress(model.ItemUnlockLastValue, model.ItemUnlockNewValue);
 

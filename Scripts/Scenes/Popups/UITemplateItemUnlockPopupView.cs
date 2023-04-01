@@ -72,6 +72,8 @@
 
         #endregion
 
+        protected virtual string AdPlacement => "unlock";
+        
         protected override void OnViewReady()
         {
             base.OnViewReady();
@@ -81,7 +83,7 @@
 
         public override async void BindData(UITemplateItemUnlockPopupModel popupModel)
         {
-            this.View.BtnGet.BindData();
+            this.View.BtnGet.BindData(this.AdPlacement);
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
             var itemImageAddress = this.itemBlueprint.Values.First(record => record.Id.Equals(popupModel.ItemId)).ImageAddress;
             var itemSprite       = await this.gameAssets.LoadAssetAsync<Sprite>(itemImageAddress);

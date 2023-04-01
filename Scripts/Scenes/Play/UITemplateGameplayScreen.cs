@@ -56,6 +56,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         #endregion
 
         protected virtual string NextSceneToLoad => "1.MainScene";
+        protected virtual string AdPlacement     => "skip_level";
 
         protected override void OnViewReady()
         {
@@ -68,7 +69,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
 
         public override UniTask BindData()
         {
-            this.View.BtnSkip?.BindData();
+            this.View.BtnSkip?.BindData(this.AdPlacement);
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
             return UniTask.CompletedTask;
         }

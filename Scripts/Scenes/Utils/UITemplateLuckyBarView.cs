@@ -19,7 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
         public float Coin { get; private set; }
 
-        public void BindData(float minCoin, float maxCoin)
+        public void BindData(float minCoin, float maxCoin, float coinUpdateInterval = 1f, Ease ease = Ease.InOutQuart)
         {
             var min   = this.sliderRange.x;
             var max   = this.sliderRange.y;
@@ -30,12 +30,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 setter: value =>
                 {
                     this.pointer.value = value;
-                    this.Coin          = maxCoin - (maxCoin - minCoin) * Mathf.Abs(value - mid) / (range / 2);
+                    var coin = maxCoin - (maxCoin - minCoin) * Mathf.Abs(value - mid) / (range / 2);
+                    this.Coin = Mathf.Round(coin / coinUpdateInterval) * coinUpdateInterval;
                     if (this.txtCoin) this.txtCoin.text = $"+{this.Coin:N0}";
                 },
                 endValue: max,
                 duration: this.duration
-            ).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutQuart);
+            ).SetLoops(-1, LoopType.Yoyo).SetEase(ease);
         }
 
         public void Dispose()

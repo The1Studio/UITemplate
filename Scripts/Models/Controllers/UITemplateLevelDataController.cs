@@ -11,17 +11,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     {
         #region inject
 
-        private readonly UITemplateItemBlueprint  uiTemplateItemBlueprint;
         private readonly UITemplateLevelBlueprint uiTemplateLevelBlueprint;
         private readonly UITemplateUserLevelData  uiTemplateUserLevelData;
         private readonly SignalBus                signalBus;
 
         #endregion
 
-        public UITemplateLevelDataController(UITemplateItemBlueprint uiTemplateItemBlueprint, UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData,
-            SignalBus signalBus)
+        public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData,
+                                             SignalBus signalBus)
         {
-            this.uiTemplateItemBlueprint  = uiTemplateItemBlueprint;
             this.uiTemplateLevelBlueprint = uiTemplateLevelBlueprint;
             this.uiTemplateUserLevelData  = uiTemplateUserLevelData;
             this.signalBus                = signalBus;

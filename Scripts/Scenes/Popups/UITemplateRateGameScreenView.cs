@@ -95,12 +95,12 @@
         }
 
 
-        protected virtual void OnClickLater() { this.screenManager.CloseCurrentScreen(); }
+        protected virtual void OnClickLater() { this.CloseView(); }
 
         protected virtual void OnClickYes()
         {
             if (this.lastStarCount == this.View.StarButtons.Count) Application.OpenURL(this.storeUrl);
-            this.screenManager.CloseCurrentScreen();
+            this.CloseView();
         }
 
         #region inject

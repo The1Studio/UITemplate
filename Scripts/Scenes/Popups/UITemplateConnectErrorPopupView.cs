@@ -47,7 +47,7 @@
 
         private void OnConnectSuccess()
         {
-            this.screenManager.CloseCurrentScreen();
+            this.CloseView();
         }
 
         private void UpdateImage(bool isConnecting)

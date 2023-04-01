@@ -45,9 +45,11 @@
 
         #endregion
 
+        protected virtual string AdPlacement => "replay";
+        
         public override UniTask BindData()
         {
-            this.View.SkipButton?.BindData();
+            this.View.SkipButton?.BindData(this.AdPlacement);
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
             return UniTask.CompletedTask;
         }

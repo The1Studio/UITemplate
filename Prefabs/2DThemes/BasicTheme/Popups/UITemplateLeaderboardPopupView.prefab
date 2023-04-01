@@ -669,7 +669,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7178046634983856539
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1672,7 +1672,7 @@ PrefabInstance:
     - target: {fileID: 1685162116223536764, guid: 1438d283515ee4637b1d0bbdd782865e,
         type: 3}
       propertyPath: m_Name
-      value: UITemplateLeaderBoardPopupView
+      value: UITemplateLeaderboardPopupView
       objectReference: {fileID: 0}
     - target: {fileID: 5842222193616549311, guid: 1438d283515ee4637b1d0bbdd782865e,
         type: 3}

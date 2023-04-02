@@ -49,7 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.View.CloseButton.onClick.AddListener(() => this.CloseView());
+            this.View.CloseButton.onClick.AddListener(this.CloseView);
         }
 
         private int GetRankWithLevel(int level) => (int)(this.View.LowestRank - 1f * level / this.View.MaxLevel * this.View.LowestRank + this.View.HighestRank);

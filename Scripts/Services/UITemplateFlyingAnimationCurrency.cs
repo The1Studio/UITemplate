@@ -66,21 +66,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             Object.Destroy(box2D.gameObject);
 
-            var countComplete = 0;
-            await UniTask.Delay(1000);
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+            var flyingTime = 0.08f;
+            _ = this.DoFlyingCoins(listItem, flyingTime, endUiPos, timeAnim);
 
+            await UniTask.Delay(TimeSpan.FromSeconds(flyingTime + timeAnim));
+        }
+
+        private async UniTask DoFlyingCoins(List<GameObject> listItem, float flyingTime, Vector3 endUiPos, float timeAnim)
+        {
             foreach (var item in listItem)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(0.08f));
+                await UniTask.Delay(TimeSpan.FromSeconds(flyingTime));
 
                 item.transform.DOMove(endUiPos, timeAnim).SetEase(Ease.InBack).OnComplete(() =>
-                {
-                    countComplete++;
-                    item.Recycle();
-                });
+                                                                                          {
+                                                                                              item.Recycle();
+                                                                                          });
             }
-
-            await UniTask.WaitUntil(() => countComplete == listItem.Count);
         }
 
         private BoxCollider2D CreateTempBoxCollider(RectTransform startPointRect)

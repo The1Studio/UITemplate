@@ -2,6 +2,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.UI;
@@ -9,15 +11,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 
     public class UITemplateWinOP2Screen : BaseEndGameScreenView
     {
-        public Button btnX2Reward;
+        public Button                 btnX2Reward;
+        public UITemplateCurrencyView currencyView;
     }
 
     [ScreenInfo(nameof(UITemplateWinOP2Screen))]
     public class UITemPlateWinOp2ScreenPresenter : BaseEndGameScreenPresenter<UITemplateWinOP2Screen>
     {
-        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) :
+        #region inject
+
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+
+        #endregion
+
+        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices, UITemplateInventoryDataController uiTemplateInventoryDataController) :
             base(signalBus, uiTemplateAdService, soundServices)
         {
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
         protected override void OnViewReady()
@@ -30,6 +40,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         {
             base.BindData();
             this.SoundServices.PlaySoundWin();
+            this.View.currencyView.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             return UniTask.CompletedTask;
         }
 
@@ -44,6 +55,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 
         protected override void OnClickNext()
         {
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.View.currencyView.Unsubscribe(this.SignalBus);
         }
     }
 }

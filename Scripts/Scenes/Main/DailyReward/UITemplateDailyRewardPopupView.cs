@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
@@ -12,7 +11,6 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
-    using UnityEngine.EventSystems;
     using UnityEngine.UI;
     using Zenject;
 
@@ -33,7 +31,6 @@
     {
         #region inject
 
-        private readonly EventSystem                     eventSystem;
         private readonly DiContainer                     diContainer;
         private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
         private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
@@ -44,11 +41,10 @@
         private UITemplateDailyRewardPopupModel      popupModel;
         private List<UITemplateDailyRewardItemModel> listRewardModel;
 
-        public UITemplateDailyRewardPopupPresenter(SignalBus                       signalBus, EventSystem eventSystem, ILogService logger, DiContainer diContainer,
+        public UITemplateDailyRewardPopupPresenter(SignalBus                       signalBus, ILogService logger, DiContainer diContainer,
                                                    UITemplateDailyRewardController uiTemplateDailyRewardController,
                                                    UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint) : base(signalBus, logger)
         {
-            this.eventSystem                     = eventSystem;
             this.diContainer                     = diContainer;
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
             this.uiTemplateDailyRewardBlueprint  = uiTemplateDailyRewardBlueprint;
@@ -64,7 +60,6 @@
         public override void BindData(UITemplateDailyRewardPopupModel param)
         {
             this.popupModel = param;
-            this.eventSystem.gameObject.SetActive(true);
 
             this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values.Select(uiTemplateDailyRewardRecord =>
                                                                                          new UITemplateDailyRewardItemModel(uiTemplateDailyRewardRecord,
@@ -74,16 +69,16 @@
             this.InitListDailyReward(this.listRewardModel);
 
             var hasRewardCanClaim = this.uiTemplateDailyRewardController.CanClaimReward;
+            this.View.btnClaim.interactable = true;
             this.View.btnClaim.gameObject.SetActive(hasRewardCanClaim);
             this.View.btnClose.gameObject.SetActive(!hasRewardCanClaim);
         }
 
         private async void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels) { await this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer); }
 
-        private async void ClaimReward()
+        private void ClaimReward()
         {
-            this.View.btnClaim.gameObject.SetActive(false);
-            this.eventSystem.gameObject.SetActive(false);
+            this.View.btnClaim.interactable = false;
 
             var claimAbleItemRectTransforms = new Dictionary<int, RectTransform>();
             for (var i = 0; i < this.listRewardModel.Count; i++)
@@ -108,9 +103,6 @@
             }
 
             this.View.dailyRewardAdapter.Refresh();
-            await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
-            this.eventSystem.gameObject.SetActive(true);
-            this.CloseView();
         }
     }
 }

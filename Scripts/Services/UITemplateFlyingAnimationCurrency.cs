@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
+    using Object = UnityEngine.Object;
+    using Random = UnityEngine.Random;
 
     public class UITemplateFlyingAnimationCurrency
     {
@@ -60,7 +63,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 item.transform.DOPunchPosition(item.transform.position * 0.3f, 0.5f, 2, 0.5f);
                 listItem.Add(item);
             }
-            
+
             Object.Destroy(box2D.gameObject);
 
             var countComplete = 0;
@@ -68,11 +71,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             foreach (var item in listItem)
             {
+                await UniTask.Delay(TimeSpan.FromSeconds(0.08f));
+
                 item.transform.DOMove(endUiPos, timeAnim).SetEase(Ease.InBack).OnComplete(() =>
-                                                                                          {
-                                                                                              countComplete++;
-                                                                                              item.Recycle();
-                                                                                          });
+                {
+                    countComplete++;
+                    item.Recycle();
+                });
             }
 
             await UniTask.WaitUntil(() => countComplete == listItem.Count);

@@ -43,7 +43,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.BindLocalData<UITemplateUserJackpotData>();
             this.BindLocalData<UITemplateAdsData>();
             this.BindLocalData<UITemplateLuckySpinData>();
-
+            //HandleScreenShow
+            this.Container.BindInterfacesAndSelfTo<UITemplateScreenShowServices>().AsCached();
+            this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<UITemplateBaseScreenShow>();
+            //AdsConfig
             this.Container.Bind<UITemplateAdServiceConfig>().AsCached().NonLazy();
             //FlyingAnimation Currency
             this.Container.Bind<UITemplateFlyingAnimationCurrency>().AsCached().NonLazy();
@@ -131,6 +134,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
 #if APPSFLYER
             var listFactory = this.Container.ResolveAll<IAnalyticEventFactory>();
+
             if (listFactory is { Count: > 0 })
             {
                 var analyticFactory = listFactory[0];

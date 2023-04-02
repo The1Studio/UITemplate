@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using GameFoundation.Scripts.UIModule.Utilities.GameQueueAction;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
@@ -21,18 +22,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly ScreenManager                   screenManager;
         private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
         private readonly NotificationServices            notificationServices;
+        private readonly GameQueueActionContext          gameQueueActionContext;
 
         #endregion
 
         private bool   canShowReward = true;
 
         public UITemplateDailyRewardService(SignalBus signalBus, ScreenManager screenManager,
-                                            UITemplateDailyRewardController uiTemplateDailyRewardController, NotificationServices notificationServices)
+                                            UITemplateDailyRewardController uiTemplateDailyRewardController, NotificationServices notificationServices, GameQueueActionContext gameQueueActionContext)
         {
             this.signalBus                       = signalBus;
             this.screenManager                   = screenManager;
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
             this.notificationServices            = notificationServices;
+            this.gameQueueActionContext          = gameQueueActionContext;
         }
 
         public void Initialize()
@@ -64,10 +67,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             if (!this.uiTemplateDailyRewardController.CanClaimReward)
                 return;
 
-            _ = this.screenManager.OpenScreen<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()
-            {
-                OnClaimFinish = onClaimReward
-            });
+            this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()
+                                                                                                                             {
+                                                                                                                                 OnClaimFinish = onClaimReward
+                                                                                                                             });
         }
 
         private async void OnScreenShow(ScreenShowSignal obj)

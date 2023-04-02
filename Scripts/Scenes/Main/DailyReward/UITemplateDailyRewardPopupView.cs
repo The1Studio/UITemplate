@@ -55,6 +55,7 @@
             base.OnViewReady();
             this.View.btnClaim.onClick.AddListener(this.ClaimReward);
             this.View.btnClose.onClick.AddListener(this.CloseView);
+            this.View.btnClose.onClick.AddListener(() => this.View.btnClose.gameObject.SetActive(false));
         }
 
         public override void BindData(UITemplateDailyRewardPopupModel param)
@@ -69,7 +70,6 @@
             this.InitListDailyReward(this.listRewardModel);
 
             var hasRewardCanClaim = this.uiTemplateDailyRewardController.CanClaimReward;
-            this.View.btnClaim.interactable = true;
             this.View.btnClaim.gameObject.SetActive(hasRewardCanClaim);
             this.View.btnClose.gameObject.SetActive(!hasRewardCanClaim);
         }
@@ -78,8 +78,8 @@
 
         private void ClaimReward()
         {
-            this.View.btnClaim.interactable = false;
-
+            this.View.btnClaim.gameObject.SetActive(false);
+            this.View.btnClose.gameObject.SetActive(true);
             var claimAbleItemRectTransforms = new Dictionary<int, RectTransform>();
             for (var i = 0; i < this.listRewardModel.Count; i++)
             {

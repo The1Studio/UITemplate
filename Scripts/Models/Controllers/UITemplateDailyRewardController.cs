@@ -18,16 +18,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateDailyRewardData         uiTemplateDailyRewardData;
         private readonly UITemplateDailyRewardBlueprint    uiTemplateDailyRewardBlueprint;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency;
 
         #endregion
 
         public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
-            UITemplateInventoryDataController uiTemplateInventoryDataController)
+            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency)
         {
             this.internetService                   = internetService;
             this.uiTemplateDailyRewardData         = uiTemplateDailyRewardData;
             this.uiTemplateDailyRewardBlueprint    = uiTemplateDailyRewardBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.uiTemplateFlyingAnimationCurrency = uiTemplateFlyingAnimationCurrency;
         }
 
         public async UniTask CheckRewardStatus()
@@ -68,10 +70,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <returns></returns>
         public RewardStatus GetDateRewardStatus(int day) => this.uiTemplateDailyRewardData.RewardStatus[day - 1];
 
-        public void ClaimAllAvailableReward(Dictionary<int, RectTransform> dailyIndexToRectTransform)
+        public async void ClaimAllAvailableReward(Dictionary<int, RectTransform> dailyIndexToRectTransform)
         {
             var rewardsList = new List<Dictionary<string, int>>();
 
+            var playAnimTask = UniTask.CompletedTask;
             for (var i = 0; i < this.uiTemplateDailyRewardData.RewardStatus.Count; i++)
             {
                 if (this.uiTemplateDailyRewardData.RewardStatus[i] == RewardStatus.Unlocked)
@@ -80,13 +83,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                     var reward = this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1).Reward;
                     if (reward.ContainsKey(UITemplateInventoryDataController.DefaultSoftCurrencyID))
-                        this.uiTemplateInventoryDataController.AddGenericReward(UITemplateInventoryDataController.DefaultSoftCurrencyID, 0, dailyIndexToRectTransform[i]);
+                    {
+                        playAnimTask = this.uiTemplateFlyingAnimationCurrency.PlayAnimation(dailyIndexToRectTransform[i]);
+                    }
                     rewardsList.Add(reward);
                 }
             }
 
             var sumReward = rewardsList.SelectMany(d => d).GroupBy(kvp => kvp.Key, (key, kvps) => new { Key = key, Value = kvps.Sum(kvp => kvp.Value) }).ToDictionary(x => x.Key, x => x.Value);
 
+            await UniTask.WhenAny(playAnimTask);
             foreach (var reward in sumReward)
             {
                 this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value);

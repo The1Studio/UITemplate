@@ -68,12 +68,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             var flyingTime = 0.08f;
-            _ = this.DoFlyingCoins(listItem, flyingTime, endUiPos, timeAnim);
+            _ = this.DoFlyingItems(listItem, flyingTime, endUiPos, timeAnim);
 
             await UniTask.Delay(TimeSpan.FromSeconds(flyingTime + timeAnim));
         }
 
-        private async UniTask DoFlyingCoins(List<GameObject> listItem, float flyingTime, Vector3 endUiPos, float timeAnim)
+        private async UniTask DoFlyingItems(List<GameObject> listItem, float flyingTime, Vector3 endUiPos, float timeAnim)
         {
             foreach (var item in listItem)
             {

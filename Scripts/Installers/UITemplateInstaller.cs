@@ -12,6 +12,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using ServiceImplementation.AppsflyerAnalyticTracker;
 #endif
     using ServiceImplementation.FirebaseAnalyticTracker;
+    using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOneStudio.UITemplate.UITemplate.FTUE;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.TutorialTriggerCondition;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -36,13 +39,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
-            this.BindLocalData<UITemplateUserLevelData>();
-            this.BindLocalData<UITemplateInventoryData>();
-            this.BindLocalData<UITemplateUserSettingData>();
-            this.BindLocalData<UITemplateDailyRewardData>();
-            this.BindLocalData<UITemplateUserJackpotData>();
-            this.BindLocalData<UITemplateAdsData>();
-            this.BindLocalData<UITemplateLuckySpinData>();
+            FTUEInstaller.Install(this.Container);
+            this.Container.BindLocalData<UITemplateUserLevelData>();
+            this.Container.BindLocalData<UITemplateInventoryData>();
+            this.Container.BindLocalData<UITemplateUserSettingData>();
+            this.Container.BindLocalData<UITemplateDailyRewardData>();
+            this.Container.BindLocalData<UITemplateUserJackpotData>();
+            this.Container.BindLocalData<UITemplateAdsData>();
+            this.Container.BindLocalData<UITemplateLuckySpinData>();
+
+            this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<UITemplateBaseFTUE>();
             //HandleScreenShow
             this.Container.BindInterfacesAndSelfTo<UITemplateScreenShowServices>().AsCached();
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<UITemplateBaseScreenShow>();
@@ -142,11 +148,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
             }
 #endif
-        }
-
-        private void BindLocalData<TLocalData>() where TLocalData : class, ILocalData, new()
-        {
-            this.Container.Bind<TLocalData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();
         }
     }
 }

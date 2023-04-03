@@ -3,9 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.Scripts.Interfaces;
+    using GameFoundation.Scripts.Utilities;
     using UniRx;
     using UnityEngine;
     using UnityEngine.UI;
+    using Zenject;
     using Random = UnityEngine.Random;
 
     public static class UITemplateExtension
@@ -114,7 +117,13 @@
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(rootUIShow, screenPos, uiCamera, out var anchorPos);
             var cameraScaleSize = mainCam.orthographicSize / uiCamera.orthographicSize;
+
             return anchorPos / cameraScaleSize + new Vector2(directionUiCamToMainCam.x, directionUiCamToMainCam.y) * canvasSizePerUnit * cameraScaleSize;
+        }
+
+        public static void BindLocalData<TLocalData>(this DiContainer container) where TLocalData : class, ILocalData, new()
+        {
+            container.Bind<TLocalData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();
         }
     }
 }

@@ -97,7 +97,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {
-                this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount);
+                this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, startAnimationRect : this.View.btnAddMoreCoin.transform as RectTransform);
             });
         }
 

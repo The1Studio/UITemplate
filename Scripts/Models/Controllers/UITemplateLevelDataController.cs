@@ -18,7 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         #endregion
 
         public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData,
-                                             SignalBus signalBus)
+            SignalBus signalBus)
         {
             this.uiTemplateLevelBlueprint = uiTemplateLevelBlueprint;
             this.uiTemplateUserLevelData  = uiTemplateUserLevelData;
@@ -45,6 +45,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.GoToNextLevel();
+            this.signalBus.Fire(new LevelEndedSignal
+            {
+                Level            = this.uiTemplateUserLevelData.CurrentLevel,
+                IsWin            = true,
+                Time             = 0,
+                CurrentIdToValue = null
+            });
         }
 
         public void SkipCurrentLevel()
@@ -70,6 +77,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                 return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
             }
+        }
+
+        public void IncreaseLoseCount(int level)
+        {
+            this.signalBus.Fire(new LevelEndedSignal
+            {
+                Level            = level,
+                IsWin            = false,
+                Time             = 0,
+                CurrentIdToValue = null
+            });
+            this.GetLevelData(level).LoseCount++;
         }
     }
 }

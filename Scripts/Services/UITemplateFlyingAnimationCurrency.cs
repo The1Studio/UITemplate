@@ -66,7 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             Object.Destroy(box2D.gameObject);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+            await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
             var flyingTime = 0.08f;
             _ = this.DoFlyingItems(listItem, flyingTime, endUiPos, timeAnim);
 

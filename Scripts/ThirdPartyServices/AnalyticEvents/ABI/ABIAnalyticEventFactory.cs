@@ -90,6 +90,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 typeof(AdsRewardFail),
                 typeof(AdsRewardOffer),
                 typeof(AdsRewardedDownloaded),
+                typeof(AdsRewardClick),
             },
             CustomEventKeys = new Dictionary<string, string>()
             {

@@ -8,7 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
     public class UITemplateDecorationManager
     {
-        private Dictionary<string, IDecorationItem> categoryToDecorationItem = new();
+        private readonly Dictionary<string, IDecorationItem> categoryToDecorationItem = new();
 
         #region Inject
 
@@ -32,14 +32,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             }
         }
 
-        private DecorationItem CreateDecorationItem(string category)
+        private IDecorationItem CreateDecorationItem(string category)
         {
-            var decoration = new GameObject($"{category}_Decor").AddComponent<DecorationItem>();
+            var decoration = this.uiTemplateDecorCategoryBlueprint[category].Mode is DecorationMode.Theme2D
+                ? this.CreateTheme2D(category)
+                : this.CreateTheme3D(category);
             this.diContainer.InjectGameObject(decoration.gameObject);
             decoration.Init(this.uiTemplateDecorCategoryBlueprint[category]);
             this.categoryToDecorationItem.Add(category, decoration);
             return decoration;
         }
+
+        private DecorationItem CreateTheme2D(string category) { return new GameObject($"{category}").AddComponent<Decoration2DThemeItem>(); }
+
+        private DecorationItem CreateTheme3D(string category) { return new GameObject($"{category}").AddComponent<Decoration3DThemeItem>(); }
 
         public void OnChangeCategory(string category) { this.GetDecoration(category).ScaleItem(); }
 

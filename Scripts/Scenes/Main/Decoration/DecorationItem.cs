@@ -8,29 +8,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
     using UnityEngine;
     using Zenject;
 
-    public class DecorationItem : MonoBehaviour, IDecorationItem
+    public abstract class DecorationItem : MonoBehaviour, IDecorationItem
     {
         #region Cache
 
-        private SpriteRenderer spriteRenderer;
-        private bool           isDoPunchScale;
+        private bool isDoPunchScale;
 
         #endregion
 
         #region Inject
 
-        private IGameAssets gameAssets;
+        protected IGameAssets GameAssets;
 
         [Inject]
-        private void Init(IGameAssets gameAssets) { this.gameAssets = gameAssets; }
+        private void Init(IGameAssets gameAssets) { this.GameAssets = gameAssets; }
 
         #endregion
 
         #region Implement IDecorationItem
 
-        public Vector3 PositionUI { get; protected set; }
+        public Vector3 PositionUI { get; private set; }
 
-        public string Category { get; protected set; }
+        public string Category { get; private set; }
 
         public void Init(UITemplateDecorCategoryRecord record)
         {
@@ -51,12 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
                 .OnComplete(() => this.isDoPunchScale = false);
         }
 
-        public async UniTask ChangeItem(string addressItem)
-        {
-            await UniTask.WaitUntil(() => this.gameAssets != null);
-            if (this.spriteRenderer == null) this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
-            this.spriteRenderer.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(addressItem);
-        }
+        public abstract UniTask ChangeItem(string addressItem);
 
         #endregion
     }

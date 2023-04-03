@@ -11,9 +11,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 
     public class UITemplateDecorCategoryRecord
     {
-        public string  Id                 { get; set; }
-        public Vector3 OffsetPositionOnUI { get; set; }
-        public Vector3 PositionOnScene    { get; set; }
-        public Vector3 RotationOnScene    { get; set; }
+        public string         Id                 { get; set; }
+        public Vector3        OffsetPositionOnUI { get; set; }
+        public Vector3        PositionOnScene    { get; set; }
+        public Vector3        RotationOnScene    { get; set; }
+        public DecorationMode Mode               { get; set; }
+    }
+
+    public enum DecorationMode
+    {
+        Theme2D,
+        Theme3D
     }
 }

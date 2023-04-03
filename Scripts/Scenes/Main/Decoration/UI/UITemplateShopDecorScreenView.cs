@@ -86,7 +86,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         {
             await UniTask.CompletedTask;
             this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
-            this.OnActiveTab(DefaultTabActive, true);
+            await this.OnActiveTab(DefaultTabActive, true);
         }
 
         public override void Dispose()
@@ -115,9 +115,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             }
         }
 
-        private void OnClickCategoryTab(string category)
+        private async void OnClickCategoryTab(string category)
         {
-            this.OnActiveTab(category);
+            await this.OnActiveTab(category);
             this.uiTemplateDecorationManager.OnChangeCategory(this.currentCategoryTab);
         }
 
@@ -230,7 +230,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
             if (currentCoin < obj.UITemplateItemRecord.Price)
             {
-                this.logger.Log($"Not Enough {obj.UITemplateItemRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.UITemplateItemRecord.Price}");
+                Debug.Log($"Not Enough {obj.UITemplateItemRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.UITemplateItemRecord.Price}");
 
                 return;
             }
@@ -254,7 +254,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         #endregion
 
-        private void OnActiveTab(string categoryId, bool forceRefresh = false)
+        private async UniTask OnActiveTab(string categoryId, bool forceRefresh = false)
         {
             if (this.currentCategoryTab.Equals(categoryId) && !forceRefresh) return;
             foreach (var (key, value) in this.idToCategoryTab)
@@ -263,7 +263,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             }
 
             this.currentCategoryTab = categoryId;
-            this.BindDataToAdapter();
+            await this.BindDataToAdapter();
         }
     }
 }

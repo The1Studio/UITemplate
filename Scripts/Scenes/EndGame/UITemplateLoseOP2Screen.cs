@@ -13,7 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     }
 
     [ScreenInfo(nameof(UITemplateLoseOP2Screen))]
-    public class UITemplateLoseOp2Presenter : BaseEndGameScreenPresenter<UITemplateLoseOP2Screen>
+    public class UITemplateLoseOp2Presenter<TView> : BaseEndGameScreenPresenter<TView> where TView : UITemplateLoseOP2Screen
     {
         public UITemplateLoseOp2Presenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus, uiTemplateAdService, soundServices)
         {

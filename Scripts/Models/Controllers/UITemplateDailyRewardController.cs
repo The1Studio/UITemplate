@@ -1,7 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
@@ -22,6 +24,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         #endregion
 
+        private SemaphoreSlim mySemaphoreSlim = new(1, 1);
+        
         public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency)
         {
@@ -34,26 +38,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public async UniTask CheckRewardStatus()
         {
-            var issDiffDay = await this.internetService.IsDifferentDay(this.uiTemplateDailyRewardData.LastRewardedDate);
+            await this.mySemaphoreSlim.WaitAsync() ;
+            try {
+                var currentTime = await this.internetService.GetCurrentTimeAsync();
+                var issDiffDay  = this.internetService.IsDifferentDay(this.uiTemplateDailyRewardData.LastRewardedDate, currentTime);
 
-            if (!issDiffDay) return;
+                if (!issDiffDay) return;
 
-            var firstLockedDayIndex = this.FindFirstLockedDayIndex();
+                var firstLockedDayIndex = this.FindFirstLockedDayIndex();
 
-            if (firstLockedDayIndex == -1)
-            {
-                if (!this.CanClaimReward)
+                if (firstLockedDayIndex == -1)
                 {
-                    this.InitRewardStatus();
+                    if (!this.CanClaimReward)
+                    {
+                        this.InitRewardStatus(currentTime);
+                    }
                 }
-            }
-            else
-            {
-                if (firstLockedDayIndex / TotalDayInWeek == (firstLockedDayIndex) / TotalDayInWeek)
+                else
                 {
-                    this.uiTemplateDailyRewardData.RewardStatus[firstLockedDayIndex] = RewardStatus.Unlocked;
-                    this.uiTemplateDailyRewardData.LastRewardedDate                  = await this.internetService.GetCurrentTimeAsync();
+                    if (firstLockedDayIndex / TotalDayInWeek == (firstLockedDayIndex) / TotalDayInWeek)
+                    {
+                        this.uiTemplateDailyRewardData.RewardStatus[firstLockedDayIndex] = RewardStatus.Unlocked;
+                        this.uiTemplateDailyRewardData.LastRewardedDate                  = currentTime;
+                    }
                 }
+            } finally {
+                this.mySemaphoreSlim.Release();
             }
         }
 
@@ -99,7 +109,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public async void InitRewardStatus()
+        private void InitRewardStatus(DateTime currentTime)
         {
             this.uiTemplateDailyRewardData.RewardStatus = new();
 
@@ -109,7 +119,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
 
             this.uiTemplateDailyRewardData.RewardStatus[0]  = RewardStatus.Unlocked;
-            this.uiTemplateDailyRewardData.LastRewardedDate = await this.internetService.GetCurrentTimeAsync();
+            this.uiTemplateDailyRewardData.LastRewardedDate = currentTime;
         }
 
         public bool CanClaimReward => this.uiTemplateDailyRewardData.RewardStatus.Any(t => t == RewardStatus.Unlocked);

@@ -16,7 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     }
 
     [ScreenInfo(nameof(UITemplateWinOP2Screen))]
-    public class UITemPlateWinOp2ScreenPresenter<TView> : BaseEndGameScreenPresenter<TView> where TView : UITemplateWinOP2Screen
+    public class UITemPlateWinOp2ScreenPresenter : BaseEndGameScreenPresenter<UITemplateWinOP2Screen>
     {
         #region inject
 

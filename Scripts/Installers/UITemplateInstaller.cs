@@ -40,7 +40,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         public override void InstallBindings()
         {
             //Todo Enable Late
-            // FTUEInstaller.Install(this.Container);
+            FTUEInstaller.Install(this.Container);
             
             this.Container.BindLocalData<UITemplateUserLevelData>();
             this.Container.BindLocalData<UITemplateInventoryData>();

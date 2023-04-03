@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent InterstitialDownloaded(string place);
 
         IEvent InterstitialCalled(string place);
+        IEvent RewardedInterstitialAdDisplayed(int level, string place);
 
         IEvent RewardedVideoEligible(string place);
 

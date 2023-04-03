@@ -13,6 +13,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -49,7 +50,7 @@
 
         protected readonly IScreenManager                    screenManager;
         protected readonly IGameAssets                       gameAssets;
-        protected readonly IAdServices                       adService;
+        protected readonly UITemplateAdServiceWrapper        adService;
         protected readonly UITemplateItemBlueprint           itemBlueprint;
         protected readonly UITemplateInventoryDataController inventoryDataController;
 
@@ -58,7 +59,7 @@
             ILogService logService,
             IScreenManager screenManager,
             IGameAssets gameAssets,
-            IAdServices adService,
+            UITemplateAdServiceWrapper adService,
             UITemplateItemBlueprint itemBlueprint,
             UITemplateInventoryDataController inventoryDataController
         ) : base(signalBus, logService)

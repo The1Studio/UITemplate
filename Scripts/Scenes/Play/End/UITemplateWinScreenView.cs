@@ -14,6 +14,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
     using UnityEngine;
@@ -99,16 +100,16 @@
         protected readonly IGameAssets                       gameAssets;
         protected readonly UITemplateInventoryDataController inventoryDataController;
         protected readonly UITemplateSoundServices           soundService;
-        protected readonly IAdServices                       adService;
+        protected readonly UITemplateAdServiceWrapper        adService;
 
         public UITemplateWinScreenPresenter(
-            SignalBus signalBus,
-            ILogService logService,
-            IScreenManager screenManager,
-            IGameAssets gameAssets,
+            SignalBus                         signalBus,
+            ILogService                       logService,
+            IScreenManager                    screenManager,
+            IGameAssets                       gameAssets,
             UITemplateInventoryDataController inventoryDataController,
-            UITemplateSoundServices soundService,
-            IAdServices adService
+            UITemplateSoundServices           soundService,
+            UITemplateAdServiceWrapper        adService
         ) : base(signalBus, logService)
         {
             this.screenManager           = screenManager;

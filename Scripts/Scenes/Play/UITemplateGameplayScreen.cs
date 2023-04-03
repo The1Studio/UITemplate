@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.UI;
@@ -33,18 +34,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
 
         protected readonly SceneDirector                     SceneDirector;
         protected readonly ScreenManager                     ScreenManager;
-        protected readonly IAdServices                       adService;
+        protected readonly UITemplateAdServiceWrapper        adService;
         protected readonly UITemplateSoundServices           SoundServices;
         protected readonly UITemplateInventoryDataController inventoryDataController;
 
-        public UITemplateGameplayScreenPresenter(
-            SignalBus signalBus,
-            SceneDirector sceneDirector,
-            ScreenManager screenManager,
-            IAdServices adService,
-            UITemplateSoundServices soundServices,
-            UITemplateInventoryDataController inventoryDataController
-        ) : base(signalBus)
+        public UITemplateGameplayScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, ScreenManager screenManager, UITemplateAdServiceWrapper adService, UITemplateSoundServices soundServices,
+                                                 UITemplateInventoryDataController inventoryDataController) : base(signalBus)
         {
             this.SceneDirector           = sceneDirector;
             this.ScreenManager           = screenManager;
@@ -80,22 +75,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }
 
-        protected virtual async void OnOpenHome()
-        {
-            await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
-        }
+        protected virtual async void OnOpenHome() { await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>(); }
 
-        protected virtual void OnClickReplay()
-        {
-        }
+        protected virtual void OnClickReplay() { }
 
-        protected virtual void OnClickSkip()
-        {
-        }
+        protected virtual void OnClickSkip() { }
 
-        protected virtual void OpenNextScene()
-        {
-            this.SceneDirector.LoadSingleSceneAsync(this.NextSceneToLoad);
-        }
+        protected virtual void OpenNextScene() { this.SceneDirector.LoadSingleSceneAsync(this.NextSceneToLoad); }
     }
 }

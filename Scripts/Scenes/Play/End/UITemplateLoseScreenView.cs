@@ -8,6 +8,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine.UI;
     using Zenject;
 
@@ -25,15 +26,15 @@
         #region Inject
 
         protected readonly DiContainer                       diContainer;
-        protected readonly IAdServices                       adService;
+        protected readonly UITemplateAdServiceWrapper        adService;
         protected readonly IScreenManager                    screenManager;
         protected readonly UITemplateInventoryDataController inventoryDataController;
 
         public UITemplateLoseScreenPresenter(
-            SignalBus signalBus,
-            DiContainer diContainer,
-            IAdServices adService,
-            IScreenManager screenManager,
+            SignalBus                         signalBus,
+            DiContainer                       diContainer,
+            UITemplateAdServiceWrapper        adService,
+            IScreenManager                    screenManager,
             UITemplateInventoryDataController inventoryDataController
         ) : base(signalBus)
         {

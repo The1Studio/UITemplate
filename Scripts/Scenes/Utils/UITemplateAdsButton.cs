@@ -1,25 +1,21 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
     using System.Threading;
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine.UI;
 
     public class UITemplateAdsButton : Button
     {
-        private IAdServices             adServices;
-        private CancellationTokenSource cts;
+        private UITemplateAdServiceWrapper adServices;
+        private CancellationTokenSource    cts;
 
-        public void OnViewReady(IAdServices adService)
-        {
-            this.adServices = adService;
-        }
+        public void OnViewReady(UITemplateAdServiceWrapper adService) { this.adServices = adService; }
 
         public void BindData(string place)
         {
             this.cts = new CancellationTokenSource();
-            UniTask.WaitUntil(() => this.adServices.IsRewardedAdReady(place), cancellationToken: this.cts.Token)
-                   .ContinueWith(() => this.interactable = true);
+            UniTask.WaitUntil(() => this.adServices.IsRewardedAdReady(place), cancellationToken: this.cts.Token).ContinueWith(() => this.interactable = true);
         }
 
         public void Dispose()

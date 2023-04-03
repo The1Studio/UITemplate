@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
@@ -46,7 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         public UITemplateNewCollectionScreenPresenter(SignalBus                         signalBus,
                                                       EventSystem                       eventSystem,
-                                                      IIapServices                      iapServices,
+                                                      IUnityIapServices                      unityUnityIapServices,
                                                       ILogService                       logger,
                                                       UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
                                                       IGameAssets                       gameAssets,
@@ -60,7 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         ) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
-            this.iapServices                       = iapServices;
+            this.unityUnityIapServices                       = unityUnityIapServices;
             this.logger                            = logger;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.gameAssets                        = gameAssets;
@@ -297,7 +298,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly   UITemplateInventoryData           uiTemplateInventoryData;
         private readonly   EventSystem                       eventSystem;
-        private readonly   IIapServices                      iapServices;
+        private readonly   IUnityIapServices                      unityUnityIapServices;
         private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;
@@ -333,7 +334,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private void BuyWithIAP(ItemCollectionItemModel obj)
         {
-            this.iapServices.BuyProductID(obj.UITemplateItemRecord.CurrencyID, x =>
+            this.unityUnityIapServices.BuyProductID(obj.UITemplateItemRecord.CurrencyID, x =>
             {
                 this.BuyItemCompleted(obj);
             });

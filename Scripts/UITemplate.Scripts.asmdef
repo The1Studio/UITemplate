@@ -26,7 +26,8 @@
         "Unity.Services.Core.Environments",
         "3rd.ServiceImplementation.Appsflyer",
         "FirebaseTracker",
-        "EasyMobile.Scripts"
+        "EasyMobile.Scripts",
+        "3rd.IAP"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

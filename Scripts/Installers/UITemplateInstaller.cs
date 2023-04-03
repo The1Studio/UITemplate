@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using ServiceImplementation.AppsflyerAnalyticTracker;
 #endif
     using ServiceImplementation.FirebaseAnalyticTracker;
+    using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE;
     using TheOneStudio.UITemplate.UITemplate.FTUE.TutorialTriggerCondition;
@@ -39,9 +40,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
-            //Todo Enable Late
+            UnityIapInstaller.Install(this.Container);
             FTUEInstaller.Install(this.Container);
-            
+
             this.Container.BindLocalData<UITemplateUserLevelData>();
             this.Container.BindLocalData<UITemplateInventoryData>();
             this.Container.BindLocalData<UITemplateUserSettingData>();
@@ -58,11 +59,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<UITemplateAdServiceConfig>().AsCached().NonLazy();
             //FlyingAnimation Currency
             this.Container.Bind<UITemplateFlyingAnimationCurrency>().AsCached().NonLazy();
-#if !TEMPLATE_IAP
-            this.Container.Bind<IIapServices>().To<UITemplateDummyIAPServices>().AsCached().NonLazy();
-#else
-            this.Container.Bind<IIapServices>().To<UITemplateIapServices>().AsCached().NonLazy();
-#endif
             //Signal
             this.Container.DeclareSignal<RewardedAdEligibleSignal>();
             this.Container.DeclareSignal<RewardedAdCalledSignal>();

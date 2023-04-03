@@ -71,6 +71,8 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
             if (status)
             {
+                this.disposables = new CompositeDisposable();
+
                 foreach (var current in childTransform)
                 {
                     if (!current.name.Equals(highLightPath)) continue;
@@ -95,6 +97,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             else
             {
                 this.disposables.Dispose();
+                this.hand.transform.SetParent(this.transform, false);
 
                 foreach (var current in childTransform)
                 {

@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UIDecorationAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 1
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: a0e19ff337d1342479be0f62a467a37b, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: ed5305d0b25feac4b9f810f1923471d1, type: 3}
+  - {fileID: 21300000, guid: fc64252146910db44bc5efdacfb0a3a9, type: 3}
+  - {fileID: 21300000, guid: 5a61194586340dd44812d36bfcbd87c8, type: 3}
+  - {fileID: 21300000, guid: f4960fc70e90af24a85ad7ec845c2053, type: 3}
+  - {fileID: 21300000, guid: 91c08aa91ad02ea49af753f73ca9c78a, type: 3}
+  - {fileID: 21300000, guid: 18e6ce3a3aa942c4085b0bc726583d03, type: 3}
+  - {fileID: 21300000, guid: a0678a2b0323699448497d5db74323fb, type: 3}
+  - {fileID: 21300000, guid: 8919f65d93673724699a38d8d46daa15, type: 3}
+  - {fileID: 21300000, guid: e746797df7bb208449525d9871228fa3, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - bg_item_frame
+  - buy_button_pressed_frame
+  - buy_button_default_frame
+  - tab_button
+  - active_tab_frame
+  - bg_frame
+  - decor_icon
+  - choose_item_frame
+  - deActive_tab_frame
+  m_RenderDataMap: {}
+  m_Tag: UIDecorationAtlas
+  m_IsVariant: 0

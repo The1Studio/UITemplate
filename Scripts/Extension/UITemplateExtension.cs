@@ -5,10 +5,17 @@
     using System.Linq;
     using UniRx;
     using UnityEngine;
+    using UnityEngine.UI;
     using Random = UnityEngine.Random;
 
     public static class UITemplateExtension
     {
+        #region Cache
+
+        private static Vector2 canvasSize;
+
+        #endregion
+
         public static void GachaItemWithTimer<T>(this List<T> items, IDisposable randomTimerDispose, Action<T> onComplete, Action<T> everyCycle, float currentCooldownTime = 1f,
             float currentCycle = 0.5f, int finalItemIndex = -1)
         {
@@ -78,7 +85,7 @@
             );
         }
 
-        public static Vector2 GetRandomPointInRectTransform(this RectTransform rectTransform,Camera uiCamera)
+        public static Vector2 GetRandomPointInRectTransform(this RectTransform rectTransform, Camera uiCamera)
         {
             // Convert the corners of the RectTransform to screen space
             var corners = new Vector3[4];
@@ -94,6 +101,20 @@
             RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, randomPoint, uiCamera, out localPoint);
 
             return localPoint;
+        }
+
+        public static Vector3 GetUIPositionFromWorldPosition(RectTransform rootUIShow, Camera uiCamera, Vector3 worldPosition)
+        {
+            var mainCam = Camera.main;
+            uiCamera.orthographicSize = mainCam.orthographicSize;
+            var directionUiCamToMainCam                = uiCamera.transform.position - mainCam.transform.position;
+            if (canvasSize == Vector2.zero) canvasSize = rootUIShow.GetComponentInParent<CanvasScaler>().referenceResolution;
+            var canvasSizePerUnit                      = canvasSize / 10f;
+            var screenPos                              = RectTransformUtility.WorldToScreenPoint(uiCamera, worldPosition);
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(rootUIShow, screenPos, uiCamera, out var anchorPos);
+            var cameraScaleSize = mainCam.orthographicSize / uiCamera.orthographicSize;
+            return anchorPos / cameraScaleSize + new Vector2(directionUiCamToMainCam.x, directionUiCamToMainCam.y) * canvasSizePerUnit * cameraScaleSize;
         }
     }
 }

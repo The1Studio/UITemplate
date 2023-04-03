@@ -79,6 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<InterstitialAdDownloadedSignal>(this.InterstitialAdLoadedHandler);
             this.signalBus.Subscribe<InterstitialAdLoadFailedSignal>(this.InterstitialAdFailedHandler);
             this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.InterstitialAdDisplayedHandler);
+            this.signalBus.Subscribe<RewardedInterstitialAdDisplayedSignal>(this.RewardedInterstitialAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
             this.signalBus.Subscribe<RewardedAdEligibleSignal>(this.RewardedAdEligibleHandler);
             this.signalBus.Subscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);
@@ -94,13 +95,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.adServices.InterstitialAdCompleted += this.InterstitialAdCompletedHandler;
         }
 
-        private void RewardedAdEligibleHandler(RewardedAdEligibleSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.RewardedVideoEligible(obj.place));
-            }
-        }
+        #region Interstitial Ads Signal Handler
 
         private void InterstitialAdEligibleHandler(InterstitialAdEligibleSignal obj)
         {
@@ -109,8 +104,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.Track(analytic.InterstitialEligible(obj.place));
             }
         }
-
-        #region Interstitial Ads Signal Handler
 
         private void InterstitialAdClickedHandler(InterstitialAdClickedSignal obj)
         {
@@ -162,9 +155,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
         }
 
+        private void RewardedInterstitialAdDisplayedHandler(RewardedInterstitialAdDisplayedSignal obj)
+        {
+            foreach (var analytic in this.analyticEventList)
+            {
+                this.analyticServices.UserProperties[analytic.LastAdsPlacementProperty] = obj.Placement;
+                this.analyticServices.UserProperties[analytic.TotalRewardedAdsProperty] = obj.Placement;
+                this.Track(analytic.RewardedInterstitialAdDisplayed(this.uiTemplateUserLevelData.CurrentLevel, obj.Placement));
+            }
+        }
+
         #endregion
 
         #region Rewarded Ads Signal Handler
+
+        private void RewardedAdEligibleHandler(RewardedAdEligibleSignal obj)
+        {
+            foreach (var analytic in this.analyticEventList)
+            {
+                this.Track(analytic.RewardedVideoEligible(obj.place));
+            }
+        }
 
         private void RewardedAdFailedHandler(RewardedAdLoadFailedSignal obj)
         {
@@ -296,6 +307,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<InterstitialAdDownloadedSignal>(this.InterstitialAdLoadedHandler);
             this.signalBus.Unsubscribe<InterstitialAdLoadFailedSignal>(this.InterstitialAdFailedHandler);
             this.signalBus.Unsubscribe<InterstitialAdDisplayedSignal>(this.InterstitialAdDisplayedHandler);
+            this.signalBus.Unsubscribe<RewardedInterstitialAdDisplayedSignal>(this.RewardedInterstitialAdDisplayedHandler);
             this.signalBus.Unsubscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
             this.signalBus.Unsubscribe<RewardedAdEligibleSignal>(this.RewardedAdEligibleHandler);
             this.signalBus.Unsubscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);

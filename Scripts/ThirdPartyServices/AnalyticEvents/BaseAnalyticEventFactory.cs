@@ -20,6 +20,8 @@
 
         public virtual IEvent InterstitialCalled(string place) => new CustomEvent();
 
+        public IEvent RewardedInterstitialAdDisplayed(int level, string place) => new CustomEvent();
+
         public virtual IEvent RewardedVideoEligible(string place) => new CustomEvent();
 
         public virtual IEvent RewardedVideoOffer(string place) => new CustomEvent();

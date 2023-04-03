@@ -12,11 +12,12 @@
 
     public class ItemCollectionItemModel
     {
-        public int                  ItemIndex            { get; set; }
-        public int                  IndexItemUsed        { get; set; }
-        public int                  IndexItemSelected    { get; set; }
-        public UITemplateItemRecord UITemplateItemRecord { get; set; }
-        public UITemplateItemData   ItemData             { get; set; }
+        public int                  ItemIndex           { get; set; }
+        public int                  IndexItemUsed       { get; set; }
+        public int                  IndexItemSelected   { get; set; }
+        public UITemplateItemRecord ItemBlueprintRecord => this.ItemData.ItemBlueprintRecord;
+        public UITemplateShopRecord ShopBlueprintRecord => this.ItemData.ShopBlueprintRecord;
+        public UITemplateItemData   ItemData            { get; set; }
 
         public Action<ItemCollectionItemModel> OnSelectItem { get; set; }
         public Action<ItemCollectionItemModel> OnBuyItem    { get; set; }
@@ -65,8 +66,8 @@
 
         public override async void BindData(ItemCollectionItemModel param)
         {
-            this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.UITemplateItemRecord.ImageAddress);
-            this.View.txtPrice.text  = $"{param.UITemplateItemRecord.Price}";
+            this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.ItemBlueprintRecord.ImageAddress);
+            this.View.txtPrice.text  = $"{param.ShopBlueprintRecord.Price}";
             this.View.objUsed.SetActive(param.ItemIndex == param.IndexItemUsed);
             this.View.objChoose.SetActive(param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
             this.View.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected);
@@ -81,9 +82,9 @@
 
         private void SetButtonStatus(ItemCollectionItemModel param)
         {
-            var isCoin     = param.UITemplateItemRecord.UnlockType == UITemplateItemData.UnlockType.SoftCurrency;
-            var isAds      = param.UITemplateItemRecord.UnlockType == UITemplateItemData.UnlockType.Ads;
-            var isIap      = param.UITemplateItemRecord.UnlockType == UITemplateItemData.UnlockType.IAP;
+            var isCoin     = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.SoftCurrency;
+            var isAds      = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.Ads;
+            var isIap      = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.IAP;
             var isOwner    = param.ItemData.CurrentStatus == UITemplateItemData.Status.Owned;
             var isUnlocked = param.ItemData.CurrentStatus == UITemplateItemData.Status.Unlocked;
             var isLocked   = param.ItemData.CurrentStatus == UITemplateItemData.Status.Locked;

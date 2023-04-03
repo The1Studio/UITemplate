@@ -7,16 +7,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     [CsvHeaderKey("Id")]
     public class UITemplateShopBlueprint : GenericBlueprintReaderByRow<string, UITemplateShopRecord>
     {
-        
     }
 
     public class UITemplateShopRecord
     {
-        public string              Id;
-        public string              Name;
-        public string              Description;
-        public string              Category;
+        public string                        Id;
         public UITemplateItemData.UnlockType UnlockType;
-        public float               Price;
+        public string                        CurrencyID;
+        public int                           Price;
     }
 }

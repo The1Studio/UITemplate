@@ -110,9 +110,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
                 this.idToCategoryTab.Add(record.Id, categoryTabView);
                 categoryTabView.OnButtonClick += () => this.OnClickCategoryTab(category);
                 categoryTabView.SetPosition(UITemplateExtension
-                    .GetUIPositionFromWorldPosition(this.View.categoryTabHolder.GetComponent<RectTransform>(),
-                        this.screenManager.RootUICanvas.UICamera,
-                        this.uiTemplateDecorationManager.GetDecoration(category).PositionUI));
+                                                .GetUIPositionFromWorldPosition(this.View.categoryTabHolder.GetComponent<RectTransform>(),
+                                                                                this.screenManager.RootUICanvas.UICamera,
+                                                                                this.uiTemplateDecorationManager.GetDecoration(category).PositionUI));
             }
         }
 
@@ -124,7 +124,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         private async UniTask BindDataToAdapter()
         {
-            var listModels      = this.itemCollectionItemModels.Where(model => model.UITemplateItemRecord.Category.Equals(this.currentCategoryTab)).ToList();
+            var listModels      = this.itemCollectionItemModels.Where(model => model.ItemBlueprintRecord.Category.Equals(this.currentCategoryTab)).ToList();
             var currentItemUsed = this.uiTemplateInventoryDataController.GetCurrentItemSelected(this.currentCategoryTab);
             var indexUsed       = listModels.FindIndex(item => item.ItemData.Id.Equals(currentItemUsed));
             for (var i = 0; i < listModels.Count; i++)
@@ -149,7 +149,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
                 var model = new ItemCollectionItemModel
                 {
-                    UITemplateItemRecord = record, OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, OnUseItem = this.OnUseItem, ItemData = itemData
+                    OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, OnUseItem = this.OnUseItem, ItemData = itemData
                 };
 
                 this.itemCollectionItemModels.Add(model);
@@ -163,7 +163,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             // If the item is not owned, do not use it
             if (!this.uiTemplateInventoryDataController.TryGetItemData(obj.ItemData.Id, out var itemData) || itemData.CurrentStatus != UITemplateItemData.Status.Owned) return;
 
-            var tempModel = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(this.currentCategoryTab)).ToList();
+            var tempModel = this.itemCollectionItemModels.Where(x => x.ItemBlueprintRecord.Category.Equals(this.currentCategoryTab)).ToList();
 
             foreach (var model in tempModel) model.IndexItemUsed = model.IndexItemSelected = obj.ItemIndex;
 
@@ -172,15 +172,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             this.OnUsedItem(obj.ItemData);
 
             this.View.decorationItemAdapter.Refresh();
-            this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(obj.UITemplateItemRecord.Category, obj.UITemplateItemRecord.Id);
-            this.uiTemplateDecorationManager.ChangeItem(obj.UITemplateItemRecord.Category, obj.UITemplateItemRecord.ImageAddress);
+            this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(obj.ItemBlueprintRecord.Category, obj.ItemBlueprintRecord.Id);
+            this.uiTemplateDecorationManager.ChangeItem(obj.ItemBlueprintRecord.Category, obj.ItemBlueprintRecord.ImageAddress);
         }
 
-        protected virtual void OnUsedItem(UITemplateItemData itemData) { }
+        protected virtual void OnUsedItem(UITemplateItemData itemData)
+        {
+        }
 
         private void OnSelectItem(ItemCollectionItemModel obj)
         {
-            var tempModel = this.itemCollectionItemModels.Where(x => x.UITemplateItemRecord.Category.Equals(this.currentCategoryTab)).ToList();
+            var tempModel = this.itemCollectionItemModels.Where(x => x.ItemBlueprintRecord.Category.Equals(this.currentCategoryTab)).ToList();
 
             foreach (var model in tempModel) model.IndexItemSelected = obj.ItemIndex;
 
@@ -190,11 +192,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             this.View.decorationItemAdapter.Refresh();
         }
 
-        protected virtual void OnSelectedItem(UITemplateItemData itemData) { }
+        protected virtual void OnSelectedItem(UITemplateItemData itemData)
+        {
+        }
 
         private void OnBuyItem(ItemCollectionItemModel obj)
         {
-            switch (obj.UITemplateItemRecord.UnlockType)
+            switch (obj.ShopBlueprintRecord.UnlockType)
             {
                 case UITemplateItemData.UnlockType.Ads:
                     this.BuyWithAds(obj);
@@ -227,29 +231,41 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         private void BuyWithSoftCurrency(ItemCollectionItemModel obj)
         {
-            var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(obj.UITemplateItemRecord.CurrencyID);
+            var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(obj.ShopBlueprintRecord.CurrencyID);
 
-            if (currentCoin < obj.UITemplateItemRecord.Price)
+            if (currentCoin < obj.ShopBlueprintRecord.Price)
             {
-                Debug.Log($"Not Enough {obj.UITemplateItemRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.UITemplateItemRecord.Price}");
+                Debug.Log($"Not Enough {obj.ShopBlueprintRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.ShopBlueprintRecord.Price}");
 
                 return;
             }
 
-            this.uiTemplateInventoryDataController.AddCurrency(-obj.UITemplateItemRecord.Price, obj.UITemplateItemRecord.CurrencyID);
+            this.uiTemplateInventoryDataController.AddCurrency(-obj.ShopBlueprintRecord.Price, obj.ShopBlueprintRecord.CurrencyID);
             this.BuyItemCompleted(obj);
         }
 
-        private void BuyWithAds(ItemCollectionItemModel obj) { this.uiTemplateAdServiceWrapper.ShowRewardedAd(Placement, () => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithAds(ItemCollectionItemModel obj)
+        {
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(Placement, () =>
+            {
+                this.BuyItemCompleted(obj);
+            });
+        }
 
-        private void BuyWithIAP(ItemCollectionItemModel obj) { this.unityUnityIapServices.BuyProductID(obj.UITemplateItemRecord.CurrencyID, x => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithIAP(ItemCollectionItemModel obj)
+        {
+            this.unityUnityIapServices.BuyProductID(obj.ShopBlueprintRecord.CurrencyID, x =>
+            {
+                this.BuyItemCompleted(obj);
+            });
+        }
 
         private void BuyItemCompleted(ItemCollectionItemModel obj)
         {
             obj.ItemData.CurrentStatus = UITemplateItemData.Status.Owned;
             this.uiTemplateInventoryDataController.AddItemData(obj.ItemData);
-            this.uiTemplateInventoryData.CategoryToChosenItem[obj.UITemplateItemRecord.Category] = obj.UITemplateItemRecord.Id;
-            this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(obj.UITemplateItemRecord.Category, obj.UITemplateItemRecord.Id);
+            this.uiTemplateInventoryData.CategoryToChosenItem[obj.ItemBlueprintRecord.Category] = obj.ItemBlueprintRecord.Id;
+            this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(obj.ItemBlueprintRecord.Category, obj.ItemBlueprintRecord.Id);
             this.OnSelectItem(obj);
         }
 

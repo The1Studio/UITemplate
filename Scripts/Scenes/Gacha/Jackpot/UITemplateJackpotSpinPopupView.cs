@@ -36,7 +36,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
     {
         public Action OnClaim;
 
-        public UITemplateJackpotSpinPopupModel(Action onClaim) { this.OnClaim = onClaim; }
+        public UITemplateJackpotSpinPopupModel(Action onClaim)
+        {
+            this.OnClaim = onClaim;
+        }
     }
 
     [PopupInfo(nameof(UITemplateJackpotSpinPopupView))]
@@ -52,16 +55,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
         private readonly UITemplateJackpotController       uiTemplateJackpotController;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly UITemplateShopBlueprint           uiTemplateShopBlueprint;
+        private readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
 
         private Snapper8                         snapper8;
         private List<UITemplateJackpotItemModel> listJackpotItemModels = new();
         private UITemplateJackpotItemModel       currentJackpotItem;
         private IDisposable                      randomTimerDispose;
 
-        public UITemplateJackpotSpinPopupPresenter(SignalBus signalBus, ILogService logger, EventSystem eventSystem, DiContainer diContainer,
-            UITemplateGachaJackpotBlueprint uiTemplateGachaJackpotBlueprint, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UITemplateJackpotController uiTemplateJackpotController,
-            UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateShopBlueprint uiTemplateShopBlueprint) : base(signalBus, logger)
+        public UITemplateJackpotSpinPopupPresenter(SignalBus                         signalBus,
+                                                   ILogService                       logger,
+                                                   EventSystem                       eventSystem,
+                                                   DiContainer                       diContainer,
+                                                   UITemplateGachaJackpotBlueprint   uiTemplateGachaJackpotBlueprint,
+                                                   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
+                                                   UITemplateJackpotController       uiTemplateJackpotController,
+                                                   UITemplateInventoryDataController uiTemplateInventoryDataController,
+                                                   UITemplateShopBlueprint           uiTemplateShopBlueprint,
+                                                   UITemplateItemBlueprint           uiTemplateItemBlueprint)
+            : base(signalBus,
+                   logger)
         {
             this.logger                            = logger;
             this.eventSystem                       = eventSystem;
@@ -71,6 +83,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
             this.uiTemplateJackpotController       = uiTemplateJackpotController;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateShopBlueprint           = uiTemplateShopBlueprint;
+            this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
         }
 
         protected override void OnViewReady()
@@ -107,11 +120,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
         private void DoSpinningAnimByListImages()
         {
             this.View.listJackpotSpinning.GachaItemWithTimer(this.randomTimerDispose,
-                (obj) => { this.View.listJackpotSpinning.ForEach(o => o.SetActive(false)); }, (obj) =>
-                {
-                    this.View.listJackpotSpinning.ForEach(o => o.SetActive(false));
-                    obj.SetActive(true);
-                }, 4f, 0.1f);
+                                                             (obj) =>
+                                                             {
+                                                                 this.View.listJackpotSpinning.ForEach(o => o.SetActive(false));
+                                                             }, (obj) =>
+                                                             {
+                                                                 this.View.listJackpotSpinning.ForEach(o => o.SetActive(false));
+                                                                 obj.SetActive(true);
+                                                             }, 4f, 0.1f);
         }
 
         private void OnClickClaim()
@@ -138,8 +154,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
                 else
                 {
                     for (var i = 0; i < reward.Value; i++)
+                    {
+                        var shopRecord = this.uiTemplateShopBlueprint.GetDataById(reward.Key);
+                        var itemRecord = this.uiTemplateItemBlueprint.GetDataById(reward.Key);
+
                         this.uiTemplateInventoryDataController.AddItemData(
-                            new UITemplateItemData(reward.Key, this.uiTemplateShopBlueprint.GetDataById(reward.Key), UITemplateItemData.Status.Owned));
+                            new UITemplateItemData(reward.Key, shopRecord, itemRecord, UITemplateItemData.Status.Owned));
+                    }
                     // Do item's reward animation
                 }
             }

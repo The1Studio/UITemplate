@@ -13,13 +13,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public          Status CurrentStatus;
         public          float  ProgressValue;
 
-        [JsonIgnore] public UITemplateShopRecord BlueprintRecord { get; internal set; }
+        [JsonIgnore]
+        public UITemplateShopRecord ShopBlueprintRecord { get; internal set; }
 
-        public UITemplateItemData(string id, UITemplateShopRecord blueprintRecord, Status currentStatus = Status.Locked)
+        [JsonIgnore]
+        public UITemplateItemRecord ItemBlueprintRecord { get; internal set; }
+
+        public UITemplateItemData(string id, UITemplateShopRecord shopBlueprintRecord, UITemplateItemRecord itemBlueprintRecord, Status currentStatus = Status.Locked)
         {
-            this.Id              = id;
-            this.CurrentStatus   = currentStatus;
-            this.BlueprintRecord = blueprintRecord;
+            this.Id                  = id;
+            this.CurrentStatus       = currentStatus;
+            this.ShopBlueprintRecord = shopBlueprintRecord;
+            this.ItemBlueprintRecord = itemBlueprintRecord;
         }
 
         public enum Status
@@ -47,7 +52,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             public int Compare(UITemplateItemData x, UITemplateItemData y)
             {
                 //Check ref and null first
-                if (ReferenceEquals(x,    y)) return 0;
+                if (ReferenceEquals(x, y)) return 0;
                 if (ReferenceEquals(null, y)) return 1;
                 if (ReferenceEquals(null, x)) return -1;
 

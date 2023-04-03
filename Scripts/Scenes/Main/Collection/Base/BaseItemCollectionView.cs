@@ -11,7 +11,7 @@
     public abstract class BaseItemCollectionModel
     {
         public int                Index              { get; set; }
-        public UITemplateItemData UITemplateItemData { get; set; }
+        public UITemplateItemData UITemplateItemInventoryData { get; set; }
         public string             Category           { get; set; }
         public Action             OnNotEnoughMoney   { get; set; }
     }

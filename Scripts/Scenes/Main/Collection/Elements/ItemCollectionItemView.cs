@@ -36,10 +36,10 @@
         public override async void BindData(ItemCollectionItemModel param)
         {
             this.model = param;
-            this.Init(param.UITemplateItemData.CurrentStatus);
-            this.inventoryData.CategoryToChosenItem.Values.Any(value => value.Equals(this.model.UITemplateItemData.Id));
-            this.View.ItemImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.model.UITemplateItemData.BlueprintRecord.Name);
-            this.View.PriceText.text   = $"{param.UITemplateItemData.BlueprintRecord.Price}";
+            this.Init(param.UITemplateItemInventoryData.CurrentStatus);
+            this.inventoryData.CategoryToChosenItem.Values.Any(value => value.Equals(this.model.UITemplateItemInventoryData.Id));
+            this.View.ItemImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.model.UITemplateItemInventoryData.ItemBlueprintRecord.ImageAddress);
+            this.View.PriceText.text   = $"{param.UITemplateItemInventoryData.ShopBlueprintRecord.Price}";
             this.View.SelectButton.onClick.AddListener(this.OnSelect);
             this.View.BuyItemButton.onClick.AddListener(this.OnBuyItem);
         }

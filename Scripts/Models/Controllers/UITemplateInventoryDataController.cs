@@ -13,7 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
     public class UITemplateInventoryDataController
     {
-        #region inject
+        #region Inject
 
         private readonly UITemplateInventoryData           uiTemplateInventoryData;
         private readonly UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency;
@@ -26,9 +26,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public const string DefaultSoftCurrencyID = "Coin";
 
-        public UITemplateInventoryDataController(UITemplateInventoryData     uiTemplateInventoryData, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
-                                                 UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint,
-                                                 UITemplateShopBlueprint     uiTemplateShopBlueprint, SignalBus signalBus, UITemplateItemBlueprint uiTemplateItemBlueprint)
+        public UITemplateInventoryDataController(UITemplateInventoryData           uiTemplateInventoryData,
+                                                 UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
+                                                 UITemplateCurrencyBlueprint       uiTemplateCurrencyBlueprint,
+                                                 UITemplateShopBlueprint           uiTemplateShopBlueprint,
+                                                 SignalBus                         signalBus,
+                                                 UITemplateItemBlueprint           uiTemplateItemBlueprint)
         {
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
             this.uiTemplateFlyingAnimationCurrency = uiTemplateFlyingAnimationCurrency;
@@ -103,14 +106,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToCurrencyData[id].Value = currentCoin;
         }
 
-        public UITemplateItemData FindOneItem(string                             category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null,
-                                              params UITemplateItemData.Status[] statuses)
+        public UITemplateItemData FindOneItem(string                             category   = null,
+                                              UITemplateItemData.UnlockType      unlockType = UITemplateItemData.UnlockType.All,
+                                              IComparer<UITemplateItemData>      orderBy    = null,
+                                              params UITemplateItemData.Status[] statuses
+        )
         {
             return this.FindAllItems(category, unlockType, orderBy, statuses).FirstOrDefault();
         }
 
-        public List<UITemplateItemData> FindAllItems(string                        category = null, UITemplateItemData.UnlockType      unlockType = UITemplateItemData.UnlockType.All,
-                                                     IComparer<UITemplateItemData> orderBy  = null, params UITemplateItemData.Status[] statuses)
+        public List<UITemplateItemData> FindAllItems(string                             category   = null,
+                                                     UITemplateItemData.UnlockType      unlockType = UITemplateItemData.UnlockType.All,
+                                                     IComparer<UITemplateItemData>      orderBy    = null,
+                                                     params UITemplateItemData.Status[] statuses
+        )
         {
             var query                                                  = this.uiTemplateInventoryData.IDToItemData.Values.ToList();
             if (category is not null) query                            = query.Where(itemData => itemData.ItemBlueprintRecord.Category.Equals(category)).ToList();

@@ -342,6 +342,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private void BuyItemCompleted(ItemCollectionItemModel obj)
         {
+            obj.ItemData.RemainingAdsProgress--;
+            if (obj.ItemData.RemainingAdsProgress > 0)
+            {
+                return;
+            }
+            
             obj.ItemData.CurrentStatus = UITemplateItemData.Status.Owned;
             this.uiTemplateInventoryDataController.AddItemData(obj.ItemData);
             this.uiTemplateInventoryData.CategoryToChosenItem[obj.ItemBlueprintRecord.Category] = obj.ItemBlueprintRecord.Id;

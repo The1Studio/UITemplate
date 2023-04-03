@@ -11,7 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         public readonly string Id;
         public          Status CurrentStatus;
-        public          float  ProgressValue;
+        public          int    RemainingAdsProgress;
 
         [JsonIgnore]
         public UITemplateShopRecord ShopBlueprintRecord { get; internal set; }
@@ -19,12 +19,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         [JsonIgnore]
         public UITemplateItemRecord ItemBlueprintRecord { get; internal set; }
 
-        public UITemplateItemData(string id, UITemplateShopRecord shopBlueprintRecord, UITemplateItemRecord itemBlueprintRecord, Status currentStatus = Status.Locked)
+        public UITemplateItemData(string               id,
+                                  UITemplateShopRecord shopBlueprintRecord,
+                                  UITemplateItemRecord itemBlueprintRecord,
+                                  Status               currentStatus = Status.Locked)
         {
             this.Id                  = id;
             this.CurrentStatus       = currentStatus;
             this.ShopBlueprintRecord = shopBlueprintRecord;
             this.ItemBlueprintRecord = itemBlueprintRecord;
+
+            if (this.ShopBlueprintRecord is not null && (this.ShopBlueprintRecord.UnlockType & UnlockType.Ads) != 0)
+            {
+                this.RemainingAdsProgress = this.ShopBlueprintRecord?.Price ?? 0;
+            }
         }
 
         public enum Status
@@ -61,7 +69,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
                 if (currentStatusComparison != 0) return currentStatusComparison;
 
                 //If status is equal, then check progress
-                var progressComparison = x.ProgressValue.CompareTo(y.ProgressValue);
+                var progressComparison = x.RemainingAdsProgress.CompareTo(y.RemainingAdsProgress);
                 if (progressComparison != 0) return progressComparison;
 
                 //if progress is equal, then check id

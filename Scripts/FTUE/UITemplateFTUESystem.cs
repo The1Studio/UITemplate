@@ -5,6 +5,8 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.FTUE.TutorialTriggerCondition;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using Zenject;
@@ -40,6 +42,16 @@
             this.signalBus.Subscribe<StartLoadingNewSceneSignal>(this.OnStartLoadingNewScene);
             this.signalBus.Subscribe<FinishLoadingNewSceneSignal>(this.OnFinishLoadingNewScene);
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+            this.signalBus.Subscribe<FTUEManualTriggerSignal>(this.OnTriggerFTUE);
+        }
+
+        private void OnTriggerFTUE(FTUEManualTriggerSignal obj)
+        {
+            if (obj.TriggerId.IsNullOrEmpty()) return;
+            var isCompleteAllRequire = this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(this.ftueBlueprint[obj.TriggerId].RequireCondition);
+
+            if (!isCompleteAllRequire || this.uiTemplateFtueControllerData.IsFinishedStep(obj.TriggerId)) return;
+            this.dicUITemplateFTUE[obj.TriggerId].Execute();
         }
 
         private void OnFinishLoadingNewScene(FinishLoadingNewSceneSignal obj) { this.uiTemplateFtueController.MoveToCurrentRootUI(this.screenManager.CurrentOverlayRoot); }

@@ -45,7 +45,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void PassCurrentLevel()
         {
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
-            this.GoToNextLevel();
             this.signalBus.Fire(new LevelEndedSignal
             {
                 Level            = this.uiTemplateUserLevelData.CurrentLevel,
@@ -53,6 +52,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 Time             = 0,
                 CurrentIdToValue = null
             });
+            this.GoToNextLevel();
         }
 
         public void SkipCurrentLevel()

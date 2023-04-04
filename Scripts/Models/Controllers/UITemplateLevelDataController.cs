@@ -96,7 +96,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             var skippedLevel      = this.uiTemplateUserLevelData.LevelToLevelData.Values.LastOrDefault(levelData => levelData.LevelStatus == LevelData.Status.Skipped);
             var skippedLevelIndex = this.uiTemplateUserLevelData.LevelToLevelData.Values.ToList().IndexOf(skippedLevel);
-            if (skippedLevelIndex == -1 && this.MaxLevel == 0)
+            if (skippedLevelIndex == -1 && this.MaxLevel == 0 && level == 1)
             {
                 return true;
             }

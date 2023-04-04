@@ -52,8 +52,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerPresentedHandler);
             this.cancellationTokenSource = new();
-            this.TryShowBanner().AttachExternalCancellation(this.cancellationTokenSource.Token);
-
+            this.TryShowBanner();
         }
 
         private async UniTask TryShowBanner()
@@ -61,8 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             while (true)
             {
                 this.adServices.ShowBannerAd();
-                Debug.Log("try show banner");
-                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken:this.cancellationTokenSource.Token);
             }
         }
 

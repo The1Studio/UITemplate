@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
@@ -89,6 +90,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 CurrentIdToValue = null
             });
             this.GetLevelData(level).LoseCount++;
+        }
+
+        public bool CheckLevelIsUnlockedStatus(int level)
+        {
+            var skippedLevel      = this.uiTemplateUserLevelData.LevelToLevelData.Values.LastOrDefault(levelData => levelData.LevelStatus == LevelData.Status.Skipped);
+            var skippedLevelIndex = this.uiTemplateUserLevelData.LevelToLevelData.Values.ToList().IndexOf(skippedLevel);
+            if (skippedLevelIndex == -1 && this.MaxLevel == 0)
+            {
+                return true;
+            }
+
+            var maxIndex = Math.Max(skippedLevelIndex, this.MaxLevel);
+
+            return level == maxIndex + 1;
         }
     }
 }

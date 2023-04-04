@@ -15,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public long InterstitialAdInterval { get; set; }
     }
 
-    public class UITemplateAdServiceWrapper : IInitializable, IDisposable
+    public class UITemplateAdServiceWrapper
     {
         #region inject
 
@@ -42,26 +42,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus         = signalBus;
         }
         
-        public void Initialize()
-        {
-            this.signalBus.Subscribe<BannerAdLoadedSignal>(this.OnBannerLoadedHandler);
-        }
-        public void Dispose()
-        {
-            this.signalBus.Unsubscribe<BannerAdLoadedSignal>(this.OnBannerLoadedHandler);
-        }
-
         #region banner
 
         public virtual async void ShowBannerAd()
         {
-            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized() && this.isBannerLoaded);
-            this.adServices.ShowBannerAd();
+            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
+            this.ShowBannerInterval();
         }
 
-        private void OnBannerLoadedHandler(BannerAdLoadedSignal obj)
+        private async void ShowBannerInterval()
         {
-            this.isBannerLoaded = true;
+            this.adServices.ShowBannerAd();
+            await UniTask.Delay(TimeSpan.FromSeconds(5));
+            this.ShowBannerInterval();
         }
 
         #endregion

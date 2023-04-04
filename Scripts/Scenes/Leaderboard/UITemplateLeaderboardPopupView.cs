@@ -99,6 +99,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             await UniTask.Delay(TimeSpan.FromSeconds(scrollDuration), cancellationToken: this.animationCancelTokenSource.Token);
             //Do scale down
             this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack));
+            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime + 1), cancellationToken: this.animationCancelTokenSource.Token);
+            this.CloseView();
         }
 
         public override void Dispose()

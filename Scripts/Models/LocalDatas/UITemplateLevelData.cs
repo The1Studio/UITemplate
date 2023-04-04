@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using System.Collections.Generic;
+    using System.Linq;
     using GameFoundation.Scripts.Interfaces;
 
     public class UITemplateUserLevelData : ILocalData
@@ -8,11 +9,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public int                        CurrentLevel { get; set; } = 1;
         public Dictionary<int, LevelData> LevelToLevelData = new();
 
-        public void SetLevelStatusByLevel(int level, LevelData.Status status)
+        public void SetLevelStatusByLevel(int level, LevelData.Status status) { this.LevelToLevelData[level].LevelStatus = status; }
+
+        public void Init()
         {
-            this.LevelToLevelData[level].LevelStatus = status;
+#if CREATIVE
+            foreach (var levelData in this.LevelToLevelData.Values.ToList())
+            {
+                levelData.LevelStatus = LevelData.Status.Passed;
+            }
+#endif
         }
-        public void Init() { }
     }
 
     public class LevelData

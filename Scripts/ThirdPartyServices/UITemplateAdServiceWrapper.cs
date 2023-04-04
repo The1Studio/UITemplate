@@ -1,7 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
-    using System.Threading;
     using Core.AdsServices;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
@@ -9,7 +8,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
-    using UnityEngine;
     using Zenject;
 
     public class UITemplateAdServiceConfig
@@ -17,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public long InterstitialAdInterval { get; set; }
     }
 
-    public class UITemplateAdServiceWrapper
+    public class UITemplateAdServiceWrapper : IInitializable, IDisposable
     {
         #region inject
 
@@ -31,9 +29,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #endregion
 
         private long lastInterstitialAdTime;
+        private bool isBannerLoaded = false;
 
-        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData,
-            UITemplateAdServiceConfig config)
+        public UITemplateAdServiceWrapper(ILogService               logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData,
+                                          UITemplateAdServiceConfig config)
         {
             this.adServices        = adServices;
             this.mrecAdService     = mrecAdService;
@@ -42,36 +41,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService        = logService;
             this.signalBus         = signalBus;
         }
+        
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<BannerAdLoadedSignal>(this.OnBannerLoadedHandler);
+        }
+        public void Dispose()
+        {
+            this.signalBus.Unsubscribe<BannerAdLoadedSignal>(this.OnBannerLoadedHandler);
+        }
 
         #region banner
 
-        private CancellationTokenSource cancellationTokenSource;
-
         public virtual async void ShowBannerAd()
         {
-            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
-            this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerPresentedHandler);
-            this.cancellationTokenSource = new();
-            this.TryShowBanner();
+            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized() && this.isBannerLoaded);
+            this.adServices.ShowBannerAd();
         }
 
-        private async UniTask TryShowBanner()
+        private void OnBannerLoadedHandler(BannerAdLoadedSignal obj)
         {
-            while (true)
-            {
-                this.adServices.ShowBannerAd();
-                await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken:this.cancellationTokenSource.Token);
-            }
-        }
-
-        private void OnBannerPresentedHandler(BannerAdPresentedSignal obj)
-        {
-            this.cancellationTokenSource.Cancel();
-            this.signalBus.Unsubscribe<BannerAdPresentedSignal>(this.OnBannerPresentedHandler);
+            this.isBannerLoaded = true;
         }
 
         #endregion
-    
+
 
         #region InterstitialAd
 

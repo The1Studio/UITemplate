@@ -81,13 +81,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if CREATIVE
             this.Container.Bind<UITemplateAdServiceWrapper>().To<UITemplateAdServiceWrapperCreative>().AsCached();
 #else
-            this.Container.Bind<UITemplateAdServiceWrapper>().AsCached();
+            this.Container.BindInterfacesAndSelfTo<UITemplateAdServiceWrapper>().AsCached();
 #endif
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<BaseAnalyticEventFactory>();
 
-            //Manager
-            this.Container.BindInterfacesAndSelfTo<GameSeasonManager>().AsCached().NonLazy();
             //Build-in service
             this.Container.BindInterfacesAndSelfTo<InternetService>().AsSingle().NonLazy();
 

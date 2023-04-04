@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
+    using System.Threading;
     using Core.AdsServices;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using UnityEngine;
     using Zenject;
 
     public class UITemplateAdServiceConfig
@@ -41,11 +43,37 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus         = signalBus;
         }
 
+        #region banner
+
+        private CancellationTokenSource cancellationTokenSource;
+
         public virtual async void ShowBannerAd()
         {
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
-            this.adServices.ShowBannerAd();
+            this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerPresentedHandler);
+            this.cancellationTokenSource = new();
+            this.TryShowBanner().AttachExternalCancellation(this.cancellationTokenSource.Token);
+
         }
+
+        private async UniTask TryShowBanner()
+        {
+            while (true)
+            {
+                this.adServices.ShowBannerAd();
+                Debug.Log("try show banner");
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+            }
+        }
+
+        private void OnBannerPresentedHandler(BannerAdPresentedSignal obj)
+        {
+            this.cancellationTokenSource.Cancel();
+            this.signalBus.Unsubscribe<BannerAdPresentedSignal>(this.OnBannerPresentedHandler);
+        }
+
+        #endregion
+    
 
         #region InterstitialAd
 

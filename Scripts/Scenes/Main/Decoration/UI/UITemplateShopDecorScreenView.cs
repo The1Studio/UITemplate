@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
@@ -38,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly IScreenManager                    screenManager;
         private readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
-        private readonly IIapServices                      iapServices;
+        private readonly IUnityIapServices                      unityUnityIapServices;
         private readonly UITemplateInventoryData           uiTemplateInventoryData;
         private readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly DiContainer                       diContainer;
@@ -59,14 +60,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         private const string DefaultTabActive = "Character";
 
         public UITemplateDecorScreenPresenter(SignalBus signalBus, UITemplateDecorationManager uiTemplateDecorationManager, UITemplateInventoryDataController uiTemplateInventoryDataController,
-            IScreenManager screenManager, UITemplateItemBlueprint uiTemplateItemBlueprint, IIapServices iapServices, UITemplateInventoryData uiTemplateInventoryData,
+            IScreenManager screenManager, UITemplateItemBlueprint uiTemplateItemBlueprint, IUnityIapServices unityUnityIapServices, UITemplateInventoryData uiTemplateInventoryData,
             UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, DiContainer diContainer, UITemplateDecorCategoryBlueprint uiTemplateDecorCategoryBlueprint) : base(signalBus)
         {
             this.uiTemplateDecorationManager       = uiTemplateDecorationManager;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.screenManager                     = screenManager;
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
-            this.iapServices                       = iapServices;
+            this.unityUnityIapServices                       = unityUnityIapServices;
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.diContainer                       = diContainer;
@@ -241,7 +242,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         private void BuyWithAds(ItemCollectionItemModel obj) { this.uiTemplateAdServiceWrapper.ShowRewardedAd(Placement, () => { this.BuyItemCompleted(obj); }); }
 
-        private void BuyWithIAP(ItemCollectionItemModel obj) { this.iapServices.BuyProductID(obj.UITemplateItemRecord.CurrencyID, x => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithIAP(ItemCollectionItemModel obj) { this.unityUnityIapServices.BuyProductID(obj.UITemplateItemRecord.CurrencyID, x => { this.BuyItemCompleted(obj); }); }
 
         private void BuyItemCompleted(ItemCollectionItemModel obj)
         {

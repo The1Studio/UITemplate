@@ -11,15 +11,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         public readonly string Id;
         public          Status CurrentStatus;
-        public          float  ProgressValue;
+        public          int    RemainingAdsProgress;
 
-        [JsonIgnore] public UITemplateShopRecord BlueprintRecord { get; internal set; }
+        [JsonIgnore]
+        public UITemplateShopRecord ShopBlueprintRecord { get; internal set; }
 
-        public UITemplateItemData(string id, UITemplateShopRecord blueprintRecord, Status currentStatus = Status.Locked)
+        [JsonIgnore]
+        public UITemplateItemRecord ItemBlueprintRecord { get; internal set; }
+
+        public UITemplateItemData(string               id,
+                                  UITemplateShopRecord shopBlueprintRecord,
+                                  UITemplateItemRecord itemBlueprintRecord,
+                                  Status               currentStatus = Status.Locked)
         {
-            this.Id              = id;
-            this.CurrentStatus   = currentStatus;
-            this.BlueprintRecord = blueprintRecord;
+            this.Id                  = id;
+            this.CurrentStatus       = currentStatus;
+            this.ShopBlueprintRecord = shopBlueprintRecord;
+            this.ItemBlueprintRecord = itemBlueprintRecord;
+
+            if (this.ShopBlueprintRecord is not null && (this.ShopBlueprintRecord.UnlockType & UnlockType.Ads) != 0)
+            {
+                this.RemainingAdsProgress = this.ShopBlueprintRecord?.Price ?? 0;
+            }
         }
 
         public enum Status
@@ -39,7 +52,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             Ads          = 1 << 3,
             Progression  = 1 << 4,
             Gift         = 1 << 5,
-            All          = IAP | SoftCurrency | Ads | Progression | Gift
+            DailyReward  = 1 << 6,
+            LuckySpin        = 1 << 7,
+            All          = IAP | SoftCurrency | Ads | Progression | Gift | DailyReward | LuckySpin
         }
 
         public class DefaultComparer : IComparer<UITemplateItemData>
@@ -47,7 +62,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             public int Compare(UITemplateItemData x, UITemplateItemData y)
             {
                 //Check ref and null first
-                if (ReferenceEquals(x,    y)) return 0;
+                if (ReferenceEquals(x, y)) return 0;
                 if (ReferenceEquals(null, y)) return 1;
                 if (ReferenceEquals(null, x)) return -1;
 
@@ -56,7 +71,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
                 if (currentStatusComparison != 0) return currentStatusComparison;
 
                 //If status is equal, then check progress
-                var progressComparison = x.ProgressValue.CompareTo(y.ProgressValue);
+                var progressComparison = x.RemainingAdsProgress.CompareTo(y.RemainingAdsProgress);
                 if (progressComparison != 0) return progressComparison;
 
                 //if progress is equal, then check id

@@ -32,12 +32,18 @@
 
         private readonly List<ItemCollectionItemModel> itemLists = new();
 
-        public UITemplateCollectionScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, UITemplateShopBlueprint shopBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController) :
+        public UITemplateCollectionScreenPresenter(SignalBus                         signalBus,
+                                                   IScreenManager                    screenManager,
+                                                   DiContainer                       diContainer,
+                                                   UITemplateShopBlueprint           shopBlueprint,
+                                                   UITemplateItemBlueprint           itemBlueprint,
+                                                   UITemplateInventoryDataController uiTemplateInventoryDataController) :
             base(signalBus)
         {
             this.screenManager                     = screenManager;
             this.diContainer                       = diContainer;
             this.shopBlueprint                     = shopBlueprint;
+            this.itemBlueprint                     = itemBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
@@ -68,13 +74,14 @@
             source.Clear();
             for (var i = 0; i < this.shopBlueprint.Values.Count; i++)
             {
-                var currentElement = this.shopBlueprint.Values.ElementAt(i);
+                var shopRecord = this.shopBlueprint.Values.ElementAt(i);
+                var itemRecord = this.itemBlueprint.GetDataById(shopRecord.Id);
 
-                if (!currentElement.Category.Equals(CatItem)) continue;
+                if (!itemRecord.Category.Equals(CatItem)) continue;
                 var model = new ItemCollectionItemModel
                 {
                     Index              = i,
-                    UITemplateItemData = this.uiTemplateInventoryDataController.GetItemData(currentElement.Name),
+                    UITemplateItemInventoryData = this.uiTemplateInventoryDataController.GetItemData(itemRecord.Id),
                     Category           = CatItem,
                     OnBuy              = this.OnBuyItem,
                     OnSelected         = this.OnSelectedItem,
@@ -86,9 +93,9 @@
 
         private void OnBuyItem(ItemCollectionItemModel obj)
         {
-            obj.UITemplateItemData.CurrentStatus = UITemplateItemData.Status.Owned;
+            obj.UITemplateItemInventoryData.CurrentStatus = UITemplateItemData.Status.Owned;
             // this.userData.InventoryData.CurrentSelectItemId.Value = obj.UITemplateItemData.BlueprintRecord.Name;
-            this.uiTemplateInventoryDataController.UpdateStatusItemData(obj.UITemplateItemData.BlueprintRecord.Name, UITemplateItemData.Status.Owned);
+            this.uiTemplateInventoryDataController.UpdateStatusItemData(obj.UITemplateItemInventoryData.ItemBlueprintRecord.Id, UITemplateItemData.Status.Owned);
             // update payment coin here
 
             this.View.ItemCollectionAdapter.Refresh();
@@ -147,6 +154,7 @@
         private readonly IScreenManager                    screenManager;
         private readonly DiContainer                       diContainer;
         private readonly UITemplateShopBlueprint           shopBlueprint;
+        private readonly UITemplateItemBlueprint           itemBlueprint;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
 
         #endregion

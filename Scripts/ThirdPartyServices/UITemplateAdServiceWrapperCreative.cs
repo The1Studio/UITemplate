@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
+    using System.Collections.Generic;
     using Core.AdsServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -8,9 +9,9 @@
 
     public class UITemplateAdServiceWrapperCreative : UITemplateAdServiceWrapper
     {
-        public UITemplateAdServiceWrapperCreative(ILogService logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData,
-            UITemplateAdServiceConfig config) : base(
-            logService, signalBus, adServices, mrecAdService, uiTemplateAdsData, config)
+        public UITemplateAdServiceWrapperCreative(ILogService logService, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices, UITemplateAdsData uiTemplateAdsData,
+            UITemplateAdServiceConfig                         config) : base(
+            logService, signalBus, adServices, mrecAdServices, uiTemplateAdsData, config)
         {
         }
 

@@ -98,10 +98,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateLuckySpinController>().AsCached();
 #if EM_ADMOB
             var listAoaAppId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId;
+            var listMRecId   = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecAndroidId;
 #if UNITY_IOS
             listAoaAppId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaIOSAppId;
+            listMRecId   = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecIOSId;
 #endif
             var adMobWrapperConfig = new AdModWrapper.Config(listAoaAppId);
+            adMobWrapperConfig.ADModMRecIds = new();
+            var listMRecAndroidAdViewPosition = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecAndroidAdViewPosition;
+            for (var i = listMRecId.Count - 1; i >= 0; i--)
+            {
+                adMobWrapperConfig.ADModMRecIds.Add(listMRecAndroidAdViewPosition[i], listMRecId[i]);
+            }
+            
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
 #endif
 

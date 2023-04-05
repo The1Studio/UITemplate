@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Core.AdsServices;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
@@ -20,7 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region inject
 
         private readonly IAdServices               adServices;
-        private readonly IMRECAdService            mrecAdService;
+        private readonly List<IMRECAdService>      mrecAdServices;
         private readonly UITemplateAdsData         uiTemplateAdsData;
         private readonly UITemplateAdServiceConfig config;
         private readonly ILogService               logService;
@@ -31,17 +33,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private long lastInterstitialAdTime;
         private bool isBannerLoaded = false;
 
-        public UITemplateAdServiceWrapper(ILogService               logService, SignalBus signalBus, IAdServices adServices, IMRECAdService mrecAdService, UITemplateAdsData uiTemplateAdsData,
+        public UITemplateAdServiceWrapper(ILogService               logService, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices, UITemplateAdsData uiTemplateAdsData,
                                           UITemplateAdServiceConfig config)
         {
             this.adServices        = adServices;
-            this.mrecAdService     = mrecAdService;
+            this.mrecAdServices     = mrecAdServices;
             this.uiTemplateAdsData = uiTemplateAdsData;
             this.config            = config;
             this.logService        = logService;
             this.signalBus         = signalBus;
         }
-        
+
         #region banner
 
         public virtual async void ShowBannerAd()
@@ -123,12 +125,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.adServices.HideBannedAd();
             }
 
-            this.mrecAdService.ShowMREC(adViewPosition);
+            this.mrecAdServices.FirstOrDefault(service => service.IsReady(adViewPosition))?.ShowMREC(adViewPosition);
         }
 
         public virtual void HideMREC(AdViewPosition adViewPosition)
         {
-            this.mrecAdService.HideMREC(adViewPosition);
+            foreach (var mrecAdService in this.mrecAdServices.Where(service => service.IsReady(adViewPosition)))
+            {
+                mrecAdService.HideMREC(adViewPosition);
+            }
 
             if (adViewPosition == AdViewPosition.BottomCenter)
             {

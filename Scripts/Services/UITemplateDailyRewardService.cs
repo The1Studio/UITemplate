@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.UIModule.Utilities.GameQueueAction;
@@ -38,7 +39,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.gameQueueActionContext          = gameQueueActionContext;
         }
 
-        public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+        }
 
         private bool IsFirstOpenGame()
         {
@@ -47,9 +51,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             return true;
         }
 
-        private void ShowDailyRewardPopup(Action onClaimReward)
+        public async UniTask ShowDailyRewardPopupAsync(bool force = false)
         {
-            if (!this.canShowReward)
+            await this.uiTemplateDailyRewardController.CheckRewardStatus();
+            this.ShowDailyRewardPopup(this.OnClaimDailyRewardFinish, force);
+        }
+
+        private void ShowDailyRewardPopup(Action onClaimReward, bool force)
+        {
+            if (!this.canShowReward && !force)
                 return;
 
             if (this.IsFirstOpenGame())
@@ -60,24 +70,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 return;
             }
 
-            if (!this.uiTemplateDailyRewardController.CanClaimReward)
+            if (!this.uiTemplateDailyRewardController.CanClaimReward && !force)
                 return;
 
             this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()
-                                                                                                                                         {
-                                                                                                                                             OnClaimFinish = onClaimReward
-                                                                                                                                         });
+            {
+                OnClaimFinish = onClaimReward
+            });
         }
 
         private async void OnScreenShow(ScreenShowSignal obj)
         {
             if (obj.ScreenPresenter is UITemplateHomeSimpleScreenPresenter or UITemplateHomeTapToPlayScreenPresenter)
             {
-                await this.uiTemplateDailyRewardController.CheckRewardStatus();
-                this.ShowDailyRewardPopup(this.OnClaimDailyRewardFinish);
+                await this.ShowDailyRewardPopupAsync();
             }
         }
 
-        private void OnClaimDailyRewardFinish() { }
+        private void OnClaimDailyRewardFinish()
+        {
+        }
     }
 }

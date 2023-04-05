@@ -47,7 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         public UITemplateNewCollectionScreenPresenter(SignalBus                         signalBus,
                                                       EventSystem                       eventSystem,
-                                                      IUnityIapServices                      unityUnityIapServices,
+                                                      IUnityIapServices                 unityUnityIapServices,
                                                       ILogService                       logger,
                                                       UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
                                                       IGameAssets                       gameAssets,
@@ -57,11 +57,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                                                       UITemplateItemBlueprint           uiTemplateItemBlueprint,
                                                       UITemplateInventoryDataController uiTemplateInventoryDataController,
                                                       UITemplateInventoryData           uiTemplateInventoryData,
-                                                      UITemplateSoundServices           soundServices
+                                                      UITemplateSoundServices           soundServices,
+                                                      UITemplateLuckySpinServices       uiTemplateLuckySpinServices,
+                                                      UITemplateDailyRewardService      uiTemplateDailyRewardService
         ) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
-            this.unityUnityIapServices                       = unityUnityIapServices;
+            this.unityUnityIapServices             = unityUnityIapServices;
             this.logger                            = logger;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.gameAssets                        = gameAssets;
@@ -72,6 +74,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
             this.SoundServices                     = soundServices;
+            this.uiTemplateLuckySpinServices       = uiTemplateLuckySpinServices;
+            this.uiTemplateDailyRewardService      = uiTemplateDailyRewardService;
         }
 
         protected virtual int CoinAddAmount => 500;
@@ -276,6 +280,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                     break;
                 case UITemplateItemData.UnlockType.Gift:
                     break;
+                case UITemplateItemData.UnlockType.DailyReward:
+                    this.BuyWithDailyReward(obj);
+                    break;
+                case UITemplateItemData.UnlockType.LuckySpin:
+                    this.BuyWithLuckySpin(obj);
+                    break;
                 case UITemplateItemData.UnlockType.All:
                     break;
                 default:
@@ -298,16 +308,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly   UITemplateInventoryData           uiTemplateInventoryData;
         private readonly   EventSystem                       eventSystem;
-        private readonly   IUnityIapServices                      unityUnityIapServices;
+        private readonly   IUnityIapServices                 unityUnityIapServices;
         private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;
         protected readonly UITemplateSoundServices           SoundServices;
+        private readonly   UITemplateLuckySpinServices       uiTemplateLuckySpinServices;
+        private readonly   UITemplateDailyRewardService      uiTemplateDailyRewardService;
         protected readonly IScreenManager                    ScreenManager;
 
         #endregion
 
         #region Buy Item
+
+        private void BuyWithDailyReward(ItemCollectionItemModel obj)
+        {
+            _ = this.uiTemplateDailyRewardService.ShowDailyRewardPopupAsync(true);
+        }
+
+        private void BuyWithLuckySpin(ItemCollectionItemModel obj)
+        {
+            this.uiTemplateLuckySpinServices.OpenLuckySpin();
+        }
 
         private void BuyWithSoftCurrency(ItemCollectionItemModel obj)
         {
@@ -347,7 +369,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             {
                 return;
             }
-            
+
             obj.ItemData.CurrentStatus = UITemplateItemData.Status.Owned;
             this.uiTemplateInventoryDataController.AddItemData(obj.ItemData);
             this.uiTemplateInventoryData.CategoryToChosenItem[obj.ItemBlueprintRecord.Category] = obj.ItemBlueprintRecord.Id;

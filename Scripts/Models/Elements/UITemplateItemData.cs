@@ -52,7 +52,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             Ads          = 1 << 3,
             Progression  = 1 << 4,
             Gift         = 1 << 5,
-            All          = IAP | SoftCurrency | Ads | Progression | Gift
+            DailyReward  = 1 << 6,
+            LuckySpin        = 1 << 7,
+            All          = IAP | SoftCurrency | Ads | Progression | Gift | DailyReward | LuckySpin
         }
 
         public class DefaultComparer : IComparer<UITemplateItemData>

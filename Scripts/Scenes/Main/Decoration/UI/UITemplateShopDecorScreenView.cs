@@ -16,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -39,11 +40,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly IScreenManager                    screenManager;
         private readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
-        private readonly IUnityIapServices                      unityUnityIapServices;
+        private readonly IUnityIapServices                 unityUnityIapServices;
         private readonly UITemplateInventoryData           uiTemplateInventoryData;
         private readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly DiContainer                       diContainer;
         private readonly UITemplateDecorCategoryBlueprint  uiTemplateDecorCategoryBlueprint;
+        private readonly UITemplateLuckySpinServices       uiTemplateLuckySpinServices;
+        private readonly UITemplateDailyRewardService      uiTemplateDailyRewardService;
         private readonly UITemplateItemData                uiTemplateItemData;
 
         #endregion
@@ -59,19 +62,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         private const string Placement        = "Decoration";
         private const string DefaultTabActive = "Character";
 
-        public UITemplateDecorScreenPresenter(SignalBus signalBus, UITemplateDecorationManager uiTemplateDecorationManager, UITemplateInventoryDataController uiTemplateInventoryDataController,
-            IScreenManager screenManager, UITemplateItemBlueprint uiTemplateItemBlueprint, IUnityIapServices unityUnityIapServices, UITemplateInventoryData uiTemplateInventoryData,
-            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, DiContainer diContainer, UITemplateDecorCategoryBlueprint uiTemplateDecorCategoryBlueprint) : base(signalBus)
+        public UITemplateDecorScreenPresenter(SignalBus                         signalBus,
+                                              UITemplateDecorationManager       uiTemplateDecorationManager,
+                                              UITemplateInventoryDataController uiTemplateInventoryDataController,
+                                              IScreenManager                    screenManager,
+                                              UITemplateItemBlueprint           uiTemplateItemBlueprint,
+                                              IUnityIapServices                 unityUnityIapServices,
+                                              UITemplateInventoryData           uiTemplateInventoryData,
+                                              UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
+                                              DiContainer                       diContainer,
+                                              UITemplateDecorCategoryBlueprint  uiTemplateDecorCategoryBlueprint,
+                                              UITemplateLuckySpinServices       uiTemplateLuckySpinServices,
+                                              UITemplateDailyRewardService      uiTemplateDailyRewardService) : base(signalBus)
         {
             this.uiTemplateDecorationManager       = uiTemplateDecorationManager;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.screenManager                     = screenManager;
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
-            this.unityUnityIapServices                       = unityUnityIapServices;
+            this.unityUnityIapServices             = unityUnityIapServices;
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.diContainer                       = diContainer;
             this.uiTemplateDecorCategoryBlueprint  = uiTemplateDecorCategoryBlueprint;
+            this.uiTemplateLuckySpinServices       = uiTemplateLuckySpinServices;
+            this.uiTemplateDailyRewardService      = uiTemplateDailyRewardService;
         }
 
         protected override void OnViewReady()
@@ -218,6 +232,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
                     break;
                 case UITemplateItemData.UnlockType.Gift:
                     break;
+                case UITemplateItemData.UnlockType.DailyReward:
+                    this.BuyWithDailyReward(obj);
+                    break;
+                case UITemplateItemData.UnlockType.LuckySpin:
+                    this.BuyWithLuckySpin(obj);
+                    break;
                 case UITemplateItemData.UnlockType.All:
                     break;
                 default:
@@ -228,6 +248,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         #endregion
 
         #region Buy Item
+
+        private void BuyWithDailyReward(ItemCollectionItemModel obj)
+        {
+            _ = this.uiTemplateDailyRewardService.ShowDailyRewardPopupAsync(true);
+        }
+
+        private void BuyWithLuckySpin(ItemCollectionItemModel obj)
+        {
+            this.uiTemplateLuckySpinServices.OpenLuckySpin();
+        }
 
         private void BuyWithSoftCurrency(ItemCollectionItemModel obj)
         {

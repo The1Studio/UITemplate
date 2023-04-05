@@ -29,9 +29,9 @@
         public GameObject      objChoose, objNormal, objUsed;
         public Image           imgIcon;
         public TextMeshProUGUI txtPrice;
-        public Button          btnBuyCoin, btnBuyAds, btnBuyIap, btnSelect, btnUse;
+        public Button          btnBuyCoin, btnBuyAds, btnBuyIap, btnDailyReward, btnLuckySpin, btnSelect, btnUse;
 
-        public Action OnBuyCoin, OnBuyAds, OnBuyIap, OnSelect, OnUse;
+        public Action OnBuyCoin, OnBuyAds, OnBuyIap, OnSelect, OnUse, OnBuyDailyReward, OnBuyLuckySpin;
 
         private void Awake()
         {
@@ -55,6 +55,14 @@
             {
                 this.OnUse?.Invoke();
             });
+            this.btnDailyReward.onClick.AddListener(() =>
+            {
+                this.OnBuyDailyReward?.Invoke();
+            });
+            this.btnLuckySpin.onClick.AddListener(() =>
+            {
+                this.OnBuyLuckySpin?.Invoke();
+            });
         }
     }
 
@@ -72,30 +80,38 @@
             this.View.objChoose.SetActive(param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
             this.View.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected);
 
-            this.View.OnBuyAds  = () => param.OnBuyItem?.Invoke(param);
-            this.View.OnBuyCoin = () => param.OnBuyItem?.Invoke(param);
-            this.View.OnBuyIap  = () => param.OnBuyItem?.Invoke(param);
-            this.View.OnSelect  = () => param.OnSelectItem?.Invoke(param);
-            this.View.OnUse     = () => param.OnUseItem?.Invoke(param);
+            this.View.OnBuyAds         = () => param.OnBuyItem?.Invoke(param);
+            this.View.OnBuyCoin        = () => param.OnBuyItem?.Invoke(param);
+            this.View.OnBuyIap         = () => param.OnBuyItem?.Invoke(param);
+            this.View.OnSelect         = () => param.OnSelectItem?.Invoke(param);
+            this.View.OnUse            = () => param.OnUseItem?.Invoke(param);
+            this.View.OnBuyDailyReward = () => param.OnBuyItem?.Invoke(param);
+            this.View.OnBuyLuckySpin   = () => param.OnBuyItem?.Invoke(param);
             this.SetButtonStatus(param);
         }
 
         private void SetButtonStatus(ItemCollectionItemModel param)
         {
-            var isCoin     = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.SoftCurrency;
-            var isAds      = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.Ads;
-            var isIap      = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.IAP;
+            var isCoin      = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.SoftCurrency;
+            var isAds       = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.Ads;
+            var isIap       = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.IAP;
+            var isDaily     = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.DailyReward;
+            var isLuckySpin = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.LuckySpin;
+
             var isOwner    = param.ItemData.CurrentStatus == UITemplateItemData.Status.Owned;
             var isUnlocked = param.ItemData.CurrentStatus == UITemplateItemData.Status.Unlocked;
             var isLocked   = param.ItemData.CurrentStatus == UITemplateItemData.Status.Locked;
-            var isChoose   = param.ItemIndex == param.IndexItemSelected;
-            var isUse      = param.ItemIndex == param.IndexItemUsed;
+
+            var isChoose = param.ItemIndex == param.IndexItemSelected;
+            var isUse    = param.ItemIndex == param.IndexItemUsed;
 
             this.View.btnBuyCoin.gameObject.SetActive(isCoin && !isOwner && isUnlocked);
             this.View.btnUse.gameObject.SetActive(isOwner && !isUse);
             this.View.btnSelect.gameObject.SetActive(!isLocked);
             this.View.btnBuyAds.gameObject.SetActive(isAds && !isOwner && isUnlocked);
             this.View.btnBuyIap.gameObject.SetActive(isIap && !isOwner && isUnlocked);
+            this.View.btnDailyReward.gameObject.SetActive(isDaily && !isOwner && isUnlocked);
+            this.View.btnLuckySpin.gameObject.SetActive(isLuckySpin && !isOwner && isUnlocked);
         }
     }
 }

@@ -105,7 +105,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
             var adMobWrapperConfig = new AdModWrapper.Config(listAoaAppId);
             adMobWrapperConfig.ADModMRecIds = new();
-            var listMRecAndroidAdViewPosition = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecAndroidAdViewPosition;
+            var listMRecAndroidAdViewPosition = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecAdViewPosition;
             for (var i = listMRecId.Count - 1; i >= 0; i--)
             {
                 adMobWrapperConfig.ADModMRecIds.Add(listMRecAndroidAdViewPosition[i], listMRecId[i]);

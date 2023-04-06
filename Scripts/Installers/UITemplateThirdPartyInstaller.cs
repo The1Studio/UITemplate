@@ -1,16 +1,16 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using Core.AnalyticServices;
+    using Core.AnalyticServices.Data;
     using ServiceImplementation.AdsServices;
+    using ServiceImplementation.FirebaseAnalyticTracker;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using Zenject;
 #if FIREBASE_REMOTE_CONFIG
     using Firebase.RemoteConfig;
 #endif
-    using Core.AnalyticServices.Data;
-    using ServiceImplementation.FirebaseAnalyticTracker;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
 #if APPSFLYER
     using ServiceImplementation.AppsflyerAnalyticTracker;
 #endif
@@ -30,14 +30,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<IFirebaseRemoteConfig>().To<FirebaseDummyManager>().AsCached().NonLazy();
 #endif
 
-#if APPSFLYER
-            var listFactory = this.Container.ResolveAll<IAnalyticEventFactory>();
+            var listFactory     = this.Container.ResolveAll<IAnalyticEventFactory>();
+            var analyticFactory = listFactory[0];
 
             if (listFactory is { Count: > 0 })
             {
-                var analyticFactory = listFactory[0];
-                this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
+            }
+#if APPSFLYER
+            if (listFactory is { Count: > 0 })
+            {
+                this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
             }
 #endif
         }

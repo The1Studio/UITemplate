@@ -1,5 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+    using System.Collections.Generic;
+    using Core.AdsServices;
     using GameFoundation.Scripts.Utilities.Extension;
     using global::Models;
     using ServiceImplementation.AdsServices.EasyMobile;
@@ -24,14 +26,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
 
 #if EM_ADMOB
-            var listAoaAppId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaAppId;
-            var listMRecId   = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecAndroidId;
-#if UNITY_IOS
-            listAoaAppId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listAoaIOSAppId;
-            listMRecId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecIOSId;
-#endif
-            var adMobWrapperConfig = new AdModWrapper.Config(listAoaAppId);
-            adMobWrapperConfig.ADModMRecIds = new();
+            var listAoaAppId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListAoaAppId;
+            var listMRecId   = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListMRecId;
+
+            var adMobWrapperConfig = new AdModWrapper.Config(listAoaAppId)
+            {
+                ADModMRecIds = new Dictionary<AdViewPosition, string>()
+            };
+
             var listMRecAndroidAdViewPosition = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecAdViewPosition;
 
             for (var i = listMRecId.Count - 1; i >= 0; i--)

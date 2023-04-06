@@ -93,19 +93,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             return level == maxIndex + 1;
         }
-
-        public float GetRewardProgress()
-        {
-            var currentLevel      = this.uiTemplateUserLevelData.CurrentLevel;
-            var levelUnlockReward = this.GetLevelUnlockReward(currentLevel);
-            if (levelUnlockReward < 0) return 0;
-
-            //update last unlock reward level
-            var temp = this.lastUnlockRewardLevel;
-            if(currentLevel == levelUnlockReward) this.UpdateLastUnlockRewardLevel(currentLevel);
-            
-            return (float)(currentLevel - temp) / (levelUnlockReward - temp);
-        }
         
         public float GetRewardProgress(int level)
         {

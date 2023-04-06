@@ -14,7 +14,7 @@
             this.Container.BindInterfacesAndSelfTo<UITemplateFTUEControllerData>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateFTUESystem>().AsCached().NonLazy();
             this.Container.Bind<UITemplateFTUEController>().FromComponentInNewPrefabResource(nameof(UITemplateFTUEController)).AsCached().NonLazy();
-            this.Container.Bind<UITEmplateFTUEHelper>().AsCached().NonLazy();
+            this.Container.Bind<UITemplateFTUEHelper>().AsCached().NonLazy();
             this.Container.DeclareSignal<FTUEButtonClickSignal>();
             this.Container.DeclareSignal<FTUEManualTriggerSignal>();
         }

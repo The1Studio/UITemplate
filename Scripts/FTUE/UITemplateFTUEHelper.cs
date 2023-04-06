@@ -1,26 +1,30 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using System.Linq;
+    using System.Runtime;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
-    public class UITEmplateFTUEHelper
+    public class UITemplateFTUEHelper
     {
         private readonly ScreenManager                screenManager;
         private readonly UITemplateFTUEBlueprint      ftueBlueprint;
         private readonly UITemplateFTUEControllerData uiTemplateFtueControllerData;
 
-        public UITEmplateFTUEHelper(ScreenManager screenManager,UITemplateFTUEBlueprint ftueBlueprint,UITemplateFTUEControllerData uiTemplateFtueControllerData)
+        public UITemplateFTUEHelper(ScreenManager screenManager,UITemplateFTUEBlueprint ftueBlueprint,UITemplateFTUEControllerData uiTemplateFtueControllerData)
         {
             this.screenManager                = screenManager;
             this.ftueBlueprint                = ftueBlueprint;
             this.uiTemplateFtueControllerData = uiTemplateFtueControllerData;
         }
 
-        public bool IsAnyFtueActive()
+        public bool IsAnyFtueActive() => this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);
+
+        public bool IsAnyFtueActive(IScreenPresenter screenPresenter)
         {
-            var currentScreen = this.screenManager.CurrentActiveScreen.GetType().Name;
+            var currentScreen = screenPresenter.GetType().Name;
 
             foreach (var ftue in this.ftueBlueprint.Where(x => x.Value.EnableTrigger))
             {

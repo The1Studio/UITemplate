@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.UIModule.Utilities.GameQueueAction;
+    using TheOneStudio.UITemplate.UITemplate.FTUE;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
@@ -24,19 +25,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
         private readonly NotificationServices            notificationServices;
         private readonly GameQueueActionContext          gameQueueActionContext;
+        private readonly UITemplateFTUEHelper            uiTemplateFtueHelper;
 
         #endregion
 
         private bool canShowReward = true;
 
         public UITemplateDailyRewardService(SignalBus            signalBus,            ScreenManager          screenManager, UITemplateDailyRewardController uiTemplateDailyRewardController,
-                                            NotificationServices notificationServices, GameQueueActionContext gameQueueActionContext)
+                                            NotificationServices notificationServices, GameQueueActionContext gameQueueActionContext, UITemplateFTUEHelper uiTemplateFtueHelper)
         {
             this.signalBus                       = signalBus;
             this.screenManager                   = screenManager;
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
             this.notificationServices            = notificationServices;
             this.gameQueueActionContext          = gameQueueActionContext;
+            this.uiTemplateFtueHelper            = uiTemplateFtueHelper;
         }
 
         public void Initialize()
@@ -53,7 +56,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public async UniTask ShowDailyRewardPopupAsync(bool force = false)
         {
-            await this.uiTemplateDailyRewardController.CheckRewardStatus();
             this.ShowDailyRewardPopup(this.OnClaimDailyRewardFinish, force);
         }
 
@@ -83,6 +85,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             if (obj.ScreenPresenter is UITemplateHomeSimpleScreenPresenter or UITemplateHomeTapToPlayScreenPresenter)
             {
+                await this.uiTemplateDailyRewardController.CheckRewardStatus();
+                if (this.uiTemplateFtueHelper.IsAnyFtueActive(obj.ScreenPresenter)) return;
                 await this.ShowDailyRewardPopupAsync();
             }
         }

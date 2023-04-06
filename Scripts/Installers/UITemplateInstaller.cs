@@ -115,8 +115,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
 
 #if CREATIVE && EM_ADMOB
-            adMobWrapperConfig.IsShowAOAAtOpenApp = false;
-            adMobWrapperConfig.OpenAfterResuming = false;
+            adMobWrapperConfig.IsShowAOAAtOpenApp   = false;
+            adMobWrapperConfig.OpenAOAAfterResuming = false;
 #endif
 
 #if CREATIVE

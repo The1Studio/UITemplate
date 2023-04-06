@@ -38,6 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #elif UNITY_IOS && !UNITY_EDITOR
             this.Container.Bind<IFlashLight>().To<FlashLightPluginIOS>().AsSingle().NonLazy();
 #endif
+            this.Container.Bind<UITemplateHandleSoundWhenOpenAdsServices>().AsCached().NonLazy();
         }
     }
 }

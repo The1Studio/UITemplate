@@ -28,18 +28,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if EM_ADMOB
             var listAoaAppId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListAoaAppId;
             var listMRecId   = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListMRecId;
+            var listNativeId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListMRecId;
 
             var adMobWrapperConfig = new AdModWrapper.Config(listAoaAppId)
             {
-                ADModMRecIds = new Dictionary<AdViewPosition, string>()
+                ADModMRecIds = new Dictionary<AdViewPosition, string>(),
+                NativeAdIds = listNativeId
             };
 
             var listMRecAndroidAdViewPosition = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecAdViewPosition;
-
             for (var i = listMRecId.Count - 1; i >= 0; i--)
             {
                 adMobWrapperConfig.ADModMRecIds.Add(listMRecAndroidAdViewPosition[i], listMRecId[i]);
             }
+
 
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
 #endif

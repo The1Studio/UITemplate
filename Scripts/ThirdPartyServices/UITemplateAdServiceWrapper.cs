@@ -37,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                                           UITemplateAdServiceConfig config)
         {
             this.adServices        = adServices;
-            this.mrecAdServices     = mrecAdServices;
+            this.mrecAdServices    = mrecAdServices;
             this.uiTemplateAdsData = uiTemplateAdsData;
             this.config            = config;
             this.logService        = logService;
@@ -120,24 +120,33 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowMREC(AdViewPosition adViewPosition)
         {
-            if (adViewPosition == AdViewPosition.BottomCenter)
+            var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(adViewPosition));
+            
+            if (mrecAdService != null)
             {
-                this.adServices.HideBannedAd();
-            }
+                mrecAdService.ShowMREC(adViewPosition);
 
-            this.mrecAdServices.FirstOrDefault(service => service.IsReady(adViewPosition))?.ShowMREC(adViewPosition);
+                if (adViewPosition == AdViewPosition.BottomCenter)
+                {
+                    this.adServices.HideBannedAd();
+                }
+            }
         }
 
         public virtual void HideMREC(AdViewPosition adViewPosition)
         {
-            foreach (var mrecAdService in this.mrecAdServices.Where(service => service.IsReady(adViewPosition)))
+            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(adViewPosition)).ToList();
+            if (mrecAdServices.Count > 0)
             {
-                mrecAdService.HideMREC(adViewPosition);
-            }
+                foreach (var mrecAdService in mrecAdServices)
+                {
+                    mrecAdService.HideMREC(adViewPosition);
+                }
 
-            if (adViewPosition == AdViewPosition.BottomCenter)
-            {
-                this.adServices.ShowBannerAd();
+                if (adViewPosition == AdViewPosition.BottomCenter)
+                {
+                    this.adServices.ShowBannerAd();
+                }
             }
         }
     }

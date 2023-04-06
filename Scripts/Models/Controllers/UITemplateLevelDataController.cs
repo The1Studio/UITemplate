@@ -115,8 +115,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             for (int i = 0; i < rewardList.Count; i++)
             {
-                var status = this.uiTemplateInventoryDataController.GetItemData(rewardList[i]).CurrentStatus;
-                if (this.uiTemplateInventoryDataController.GetItemData(rewardList[i]).CurrentStatus == UITemplateItemData.Status.Unlocked) return rewardList[i];
+                if (this.uiTemplateInventoryDataController.GetItemData(rewardList[i]).CurrentStatus != UITemplateItemData.Status.Owned) return rewardList[i];
             }
 
             return null;

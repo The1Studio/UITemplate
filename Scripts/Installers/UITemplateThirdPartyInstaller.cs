@@ -4,13 +4,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using Core.AnalyticServices.Data;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.FirebaseAnalyticTracker;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using Zenject;
 #if FIREBASE_REMOTE_CONFIG
-    using Firebase.RemoteConfig;
+    using FirebaseRemoteConfig = TheOneStudio.UITemplate.UITemplate.Scripts.Services.FirebaseRemoteConfig;
 #endif
+
 #if APPSFLYER
     using ServiceImplementation.AppsflyerAnalyticTracker;
 #endif

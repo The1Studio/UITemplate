@@ -1,7 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Extension;
-    using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.TutorialTriggerCondition;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using Zenject;
@@ -15,8 +16,7 @@
             this.Container.BindInterfacesAndSelfTo<UITemplateFTUESystem>().AsCached().NonLazy();
             this.Container.Bind<UITemplateFTUEController>().FromComponentInNewPrefabResource(nameof(UITemplateFTUEController)).AsCached().NonLazy();
             this.Container.Bind<UITemplateFTUEHelper>().AsCached().NonLazy();
-            this.Container.DeclareSignal<FTUEButtonClickSignal>();
-            this.Container.DeclareSignal<FTUEManualTriggerSignal>();
+            this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<UITemplateBaseFTUE>();
         }
     }
 }

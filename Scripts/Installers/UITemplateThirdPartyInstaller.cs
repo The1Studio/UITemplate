@@ -6,8 +6,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using ServiceImplementation.FirebaseAnalyticTracker;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using Zenject;
-#if FIREBASE_REMOTE_CONFIG
-    using FirebaseRemoteConfig = TheOneStudio.UITemplate.UITemplate.Scripts.Services.FirebaseRemoteConfig;
+#if !FIREBASE_REMOTE_CONFIG
+    using TheOneStudio.UITemplate.UITemplate.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
+
+#elif FIREBASE_REMOTE_CONFIG
+ using TheOneStudio.UITemplate.UITemplate.Services;
 #endif
 
 #if APPSFLYER
@@ -23,10 +27,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             AnalyticServicesInstaller.Install(this.Container);
 
 #if FIREBASE_REMOTE_CONFIG
-            this.Container.BindInterfacesAndSelfTo<FirebaseRemoteConfig>().AsCached().NonLazy();
-
+            this.Container.BindInterfacesTo<UITemplateFirebaseRemoteConfig>().AsCached().NonLazy();
 #else
-            this.Container.Bind<IFirebaseRemoteConfig>().To<FirebaseDummyManager>().AsCached().NonLazy();
+            this.Container.Bind<IUITemplateRemoteConfig>().To<UITemplateDummyManager>().AsCached().NonLazy();
 #endif
 
             var listFactory     = this.Container.ResolveAll<IAnalyticEventFactory>();
@@ -35,13 +38,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             if (listFactory is { Count: > 0 })
             {
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
-            }
 #if APPSFLYER
-            if (listFactory is { Count: > 0 })
-            {
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
-            }
 #endif
+            }
         }
     }
 }

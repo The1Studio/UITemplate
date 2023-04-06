@@ -1,5 +1,5 @@
 #if FIREBASE_REMOTE_CONFIG
-namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
+namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using System.Linq;
@@ -8,27 +8,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
     using Firebase.Extensions;
     using Firebase.RemoteConfig;
     using GameFoundation.Scripts.Utilities.LogService;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using Zenject;
 
-    public class FirebaseRemoteConfig : IFirebaseRemoteConfig, IInitializable
+    public class UITemplateFirebaseRemoteConfig : IUITemplateRemoteConfig, IInitializable
     {
         private readonly ILogService logger;
         private readonly SignalBus   signalBus;
         public           bool        IsFirebaseReady { get; private set; }
 
-        public FirebaseRemoteConfig(ILogService logger, SignalBus signalBus)
+        public UITemplateFirebaseRemoteConfig(ILogService logger, SignalBus signalBus)
         {
             this.logger = logger;
 
             this.signalBus = signalBus;
         }
 
-        public void Initialize()
-        {
-            this.InitFirebase();
-        }
+        public void Initialize() { this.InitFirebase(); }
 
         private void InitFirebase()
         {
@@ -49,16 +46,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
             });
         }
 
-        private Task FetchDataAsync()
+        private void FetchDataAsync()
         {
             var fetchTask =
                 Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(
                     TimeSpan.Zero);
 
-            return fetchTask.ContinueWithOnMainThread(this.FetchComplete);
+            fetchTask.ContinueWithOnMainThread(this.FetchComplete);
         }
 
-        private async void FetchComplete(Task fetchTask)
+        private void FetchComplete(Task fetchTask)
         {
             if (fetchTask.IsCanceled)
             {
@@ -79,7 +76,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
             switch (info.LastFetchStatus)
             {
                 case LastFetchStatus.Success:
-                    Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.ActivateAsync().ContinueWithOnMainThread(_ => { });
+                    _ = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.ActivateAsync().ContinueWithOnMainThread(_ => { });
 
                     break;
                 case LastFetchStatus.Failure:

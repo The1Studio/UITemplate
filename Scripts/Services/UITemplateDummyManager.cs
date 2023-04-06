@@ -1,8 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
 {
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.Interfaces;
 
-    public class FirebaseDummyManager : IFirebaseRemoteConfig
+    public class UITemplateDummyManager : IUITemplateRemoteConfig
     {
         public string GetRemoteConfigStringValue(string key) { return ""; }
 

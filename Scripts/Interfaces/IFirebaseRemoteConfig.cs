@@ -1,6 +1,6 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.Interfaces
+﻿namespace TheOneStudio.UITemplate.UITemplate.Interfaces
 {
-    public interface IFirebaseRemoteConfig
+    public interface IUITemplateRemoteConfig
     {
         string GetRemoteConfigStringValue(string key);
         bool   GetRemoteConfigBoolValue(string key);

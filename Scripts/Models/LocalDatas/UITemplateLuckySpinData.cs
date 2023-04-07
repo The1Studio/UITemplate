@@ -2,13 +2,20 @@
 {
     using System;
     using GameFoundation.Scripts.Interfaces;
+    using Sirenix.Serialization;
 
     public class UITemplateLuckySpinData : ILocalData
     {
-        public bool     IsUsedFreeSpin              { get; set; }
-        public bool     IsFirstTimeOpenLuckySpin    { get; set; }
-        public DateTime LastSpinTime                { get; set; }
+        [OdinSerialize]
+        public bool IsUsedFreeSpin { get; set; }
 
-        public void Init() { }
+        [OdinSerialize]
+        public bool IsFirstTimeOpenLuckySpin { get; set; }
+
+        public DateTime LastSpinTime { get; set; }
+
+        public void Init()
+        {
+        }
     }
 }

@@ -3,14 +3,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Interfaces;
+    using Sirenix.Serialization;
 
     public class UITemplateUserLevelData : ILocalData
     {
-        public int                        CurrentLevel { get; set; } = 1;
-        public Dictionary<int, LevelData> LevelToLevelData = new();
-        public int                        LastUnlockRewardLevel;
+        [OdinSerialize]
+        public int CurrentLevel { get; set; } = 1;
 
-        public void SetLevelStatusByLevel(int level, LevelData.Status status) { this.LevelToLevelData[level].LevelStatus = status; }
+        [OdinSerialize]
+        public Dictionary<int, LevelData> LevelToLevelData = new();
+
+        [OdinSerialize]
+        public int LastUnlockRewardLevel;
+
+        public void SetLevelStatusByLevel(int level, LevelData.Status status)
+        {
+            this.LevelToLevelData[level].LevelStatus = status;
+        }
 
         public void Init()
         {

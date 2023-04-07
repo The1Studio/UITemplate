@@ -5,93 +5,49 @@ namespace UITemplate.Editor
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
+    using Sirenix.OdinInspector;
+    using Sirenix.OdinInspector.Editor;
+    using Sirenix.Serialization;
     using UnityEditor;
     using UnityEngine;
 
-    public class LocalDataEditor : EditorWindow
+    public class LocalDataEditor : OdinEditorWindow
     {
         private const string LocalDataPrefix = "LD-";
 
+        [OdinSerialize, HideLabel]
+        [ListDrawerSettings(Expanded = true, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]
         private List<ILocalData> localData;
 
         private Vector2 scrollPosition;
 
-        private bool toggleAll;
 
-        private List<bool> toggleGroupStates = new();
-
-        private void OnGUI()
+        [HorizontalGroup]
+        [Button(ButtonSizes.Large)]
+        private void LoadLocalData()
         {
-            this.titleContent = new GUIContent("Local Data Editor");
+            this.localData = LoadAllLocalData();
+        }
 
-            if (GUILayout.Button("Clear Local Data"))
+        [HorizontalGroup]
+        [Button(ButtonSizes.Large)]
+        private void SaveLocalData()
+        {
+            if (this.localData is { Count: 0 }) return;
+            foreach (var data in this.localData)
             {
-                PlayerPrefs.DeleteAll();
-                this.localData = null;
-                this.toggleGroupStates.Clear();
+                var key  = $"{LocalDataPrefix}{data.GetType().Name}";
+                var json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                PlayerPrefs.SetString(key, json);
             }
+        }
 
-            GUILayout.BeginHorizontal();
-
-            if (GUILayout.Button("Load Local Data"))
-            {
-                this.localData         = this.LoadAllLocalData();
-                this.toggleGroupStates = this.localData.Select(_ => false).ToList();
-            }
-
-            if (GUILayout.Button("Save Local Data"))
-                if (this.localData is not null)
-                    for (var i = 0; i < this.localData.Count; i++)
-                    {
-                        var data = this.localData[i];
-
-                        if (this.toggleGroupStates[i])
-                        {
-                            var key  = $"{LocalDataPrefix}{data.GetType().Name}";
-                            var json = JsonConvert.SerializeObject(data, Formatting.Indented);
-                            PlayerPrefs.SetString(key, json);
-                        }
-                    }
-
-            GUILayout.EndHorizontal();
-
-            this.scrollPosition = GUILayout.BeginScrollView(this.scrollPosition);
-
-            if (this.localData is not null)
-            {
-                GUILayout.Space(20);
-
-                GUILayout.BeginHorizontal();
-
-                GUILayout.Label("Local Data", EditorStyles.boldLabel);
-
-                if (GUILayout.Button("Toggle/UnToggle All"))
-                {
-                    this.toggleAll = !this.toggleAll;
-                    for (var i = 0; i < this.toggleGroupStates.Count; i++)
-                        this.toggleGroupStates[i] = this.toggleAll;
-                }
-
-                GUILayout.EndHorizontal();
-
-                for (var i = 0; i < this.localData.Count; i++)
-                {
-                    var data = this.localData[i];
-
-                    this.toggleGroupStates[i] = EditorGUILayout.BeginToggleGroup($"{data.GetType().Name}", this.toggleGroupStates[i]);
-
-                    if (this.toggleGroupStates[i])
-                    {
-                        var json = EditorGUILayout.TextArea(JsonConvert.SerializeObject(data, Formatting.Indented));
-                        if (JsonConvert.DeserializeObject(json, data.GetType()) is ILocalData newData)
-                            this.localData[i] = newData;
-                    }
-
-                    EditorGUILayout.EndToggleGroup();
-                }
-            }
-
-            GUILayout.EndScrollView();
+        [Button(ButtonSizes.Large)]
+        [GUIColor(0.5f, 0, 0)]
+        private void ClearLocalData()
+        {
+            PlayerPrefs.DeleteAll();
+            this.localData = null;
         }
 
         [MenuItem("Window/TheOneStudio/Local Data Editor")]
@@ -100,7 +56,7 @@ namespace UITemplate.Editor
             GetWindow(typeof(LocalDataEditor));
         }
 
-        private List<ILocalData> LoadAllLocalData()
+        private static List<ILocalData> LoadAllLocalData()
         {
             var result = new List<ILocalData>();
 
@@ -109,12 +65,10 @@ namespace UITemplate.Editor
             foreach (var type in localDataTypes)
             {
                 var key = $"{LocalDataPrefix}{type.Name}";
-                if (PlayerPrefs.HasKey(key))
-                {
-                    var json = PlayerPrefs.GetString(key);
-                    if (JsonConvert.DeserializeObject(json, type) is ILocalData data)
-                        result.Add(data);
-                }
+                if (!PlayerPrefs.HasKey(key)) continue;
+                var json = PlayerPrefs.GetString(key);
+                if (JsonConvert.DeserializeObject(json, type) is ILocalData data)
+                    result.Add(data);
             }
 
             return result;

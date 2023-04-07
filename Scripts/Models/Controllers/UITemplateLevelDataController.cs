@@ -34,6 +34,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public LevelData GetLevelData(int level) { return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked)); }
 
+        public void ReplayLevel()
+        {
+            this.signalBus.Fire(new LevelStartedSignal( this.uiTemplateUserLevelData.CurrentLevel));
+        }
+        
         public void SelectLevel(int level)
         {
             this.uiTemplateUserLevelData.CurrentLevel = level;

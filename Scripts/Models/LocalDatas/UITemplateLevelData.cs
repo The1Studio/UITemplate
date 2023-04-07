@@ -13,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         public void Init()
         {
+            this.CurrentLevel = 20;
 #if CREATIVE
             foreach (var levelData in this.LevelToLevelData.Values.ToList())
             {

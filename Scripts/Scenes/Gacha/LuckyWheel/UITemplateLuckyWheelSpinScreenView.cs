@@ -134,7 +134,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             }
         }
 
-        public override void BindData(UITemplateLuckyWheelSpinModel model)
+        public override UniTask BindData(UITemplateLuckyWheelSpinModel model)
         {
             this.View.btnSpin.gameObject.SetActive(model.IsFreeSpin);
             this.View.btnAdsSpin.gameObject.SetActive(!model.IsFreeSpin);
@@ -153,6 +153,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             {
                 this.logService.Error($"Error: SpinRecords.Count != spinItemList.Count");
             }
+            return UniTask.CompletedTask;
         }
 
         private void InitItemLuckySpin()

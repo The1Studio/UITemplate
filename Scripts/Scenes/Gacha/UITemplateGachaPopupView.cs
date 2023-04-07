@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha
     using System;
     using System.Collections.Generic;
     using Com.TheFallenGames.OSA.Util;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
@@ -53,10 +54,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha
             this.View.btnWatchAds.onClick.AddListener(this.WatchAds);
         }
 
-        public override void BindData(UITemplateGachaPopupModel param)
+        public override UniTask BindData(UITemplateGachaPopupModel param)
         {
             this.model = param;
             this.InitGachaAdapter();
+            return UniTask.CompletedTask;
         }
 
         private async void InitGachaAdapter()

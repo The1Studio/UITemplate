@@ -95,12 +95,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
             this.View.btnSkipAds.onClick.AddListener(this.CloseView);
         }
 
-        public override void BindData(UITemplateJackpotSpinPopupModel popupModel)
+        public override UniTask BindData(UITemplateJackpotSpinPopupModel popupModel)
         {
             this.Model = popupModel;
             this.FakeListJackpotItem();
             this.CheckButtonStatusByRemainingSpin();
             this.View.btnClaim.gameObject.SetActive(false);
+            return UniTask.CompletedTask;
         }
 
         private async void CheckButtonStatusByRemainingSpin()

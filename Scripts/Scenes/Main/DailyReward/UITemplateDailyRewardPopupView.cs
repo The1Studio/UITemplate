@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
@@ -58,7 +59,7 @@
             this.View.btnClose.onClick.AddListener(() => this.View.btnClose.gameObject.SetActive(false));
         }
 
-        public override void BindData(UITemplateDailyRewardPopupModel param)
+        public override UniTask BindData(UITemplateDailyRewardPopupModel param)
         {
             this.popupModel = param;
 
@@ -72,6 +73,7 @@
             var hasRewardCanClaim = this.uiTemplateDailyRewardController.CanClaimReward;
             this.View.btnClaim.gameObject.SetActive(hasRewardCanClaim);
             this.View.btnClose.gameObject.SetActive(!hasRewardCanClaim);
+            return UniTask.CompletedTask;
         }
 
         private async void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels) { await this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer); }

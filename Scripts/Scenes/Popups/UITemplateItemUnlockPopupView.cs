@@ -82,7 +82,7 @@
             this.InitButtonListener();
         }
 
-        public override async void BindData(UITemplateItemUnlockPopupModel popupModel)
+        public override async UniTask BindData(UITemplateItemUnlockPopupModel popupModel)
         {
             this.View.BtnGet.BindData(this.AdPlacement);
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());

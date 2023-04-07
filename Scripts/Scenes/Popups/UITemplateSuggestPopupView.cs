@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -93,7 +94,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
         {
         }
 
-        public override async void BindData(UITemplateSuggestPopupModel popupModel)
+        public override async UniTask BindData(UITemplateSuggestPopupModel popupModel)
         {
             this.PopupModel = popupModel;
             // Bind ItemName

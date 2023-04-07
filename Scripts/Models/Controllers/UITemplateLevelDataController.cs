@@ -20,8 +20,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         #endregion
 
-        private int lastUnlockRewardLevel;
-        
         public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus)
         {
             this.uiTemplateLevelBlueprint          = uiTemplateLevelBlueprint;
@@ -100,7 +98,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             if (levelUnlockReward < 0) return 0;
 
             //update last unlock reward level
-            var temp = this.lastUnlockRewardLevel;
+            var temp = this.uiTemplateUserLevelData.LastUnlockRewardLevel;
             if(level == levelUnlockReward) this.UpdateLastUnlockRewardLevel(level);
             
             return (float)(level - temp) / (levelUnlockReward - temp);
@@ -140,7 +138,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         private void UpdateLastUnlockRewardLevel(int level)
         {
-            this.lastUnlockRewardLevel = level;
+            this.uiTemplateUserLevelData.LastUnlockRewardLevel = level;
         }
     }
 }

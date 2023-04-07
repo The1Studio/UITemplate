@@ -1,7 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using GameFoundation.Scripts.Utilities;
-    using GameFoundation.Scripts.Utilities.ApplicationServices;
+    using ServiceImplementation.AdsServices.Signal;
     using Zenject;
 
     public class UITemplateHandleSoundWhenOpenAdsServices
@@ -13,12 +13,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             this.signalBus    = signalBus;
             this.audioManager = audioManager;
-            this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnApplicationPause);
+            this.signalBus.Subscribe<AppStateChangeSignal>(this.OnApplicationPause);
         }
 
-        private void OnApplicationPause(ApplicationPauseSignal obj)
+        private void OnApplicationPause(AppStateChangeSignal obj)
         {
-            if (obj.PauseStatus)
+            if (obj.IsBackground)
             {
                 this.audioManager.PauseEverything();
             }

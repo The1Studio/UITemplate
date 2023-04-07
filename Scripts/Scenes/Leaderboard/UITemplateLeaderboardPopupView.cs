@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
+    using UnityEditor;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -54,7 +55,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
         private int GetRankWithLevel(int level) => (int)(this.View.LowestRank - 1f * level / this.View.MaxLevel * this.View.LowestRank + this.View.HighestRank);
 
-        public override async UniTask BindData()
+        public override UniTask BindData()
+        {
+            _ = this.DoAnimation();
+            return UniTask.CompletedTask;
+        }
+
+        private async UniTask DoAnimation()
         {
             var indexPadding   = 4;
             var scrollDuration = 3;

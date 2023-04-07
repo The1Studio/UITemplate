@@ -16,14 +16,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus    = signalBus;
             this.adServices   = adServices;
             this.audioManager = audioManager;
-            this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.OnDisplayRewardedAd);
-            this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayed);
+            
+          
             this.signalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAppFullScreenContentClosed);
             this.signalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppFullScreenContentOpened);
-            this.adServices.RewardedAdSkipped             += this.OnRewardedAdSkipped;
-            this.adServices.RewardedInterstitialAdSkipped += this.OnRewardedInterstitialAdSkipped;
-            this.adServices.InterstitialAdCompleted       += this.OnInterstitialAdCompleted;
+            
+            this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.OnDisplayRewardedAd);
+            this.adServices.RewardedAdCompleted             += this.OnRewardedAdCompleted;
+            this.adServices.RewardedAdSkipped               += this.OnRewardedAdSkipped;
+            
+            this.signalBus.Subscribe<RewardedInterstitialAdDisplayedSignal>(this.OnRewardInterDisplay);
+            this.adServices.RewardedInterstitialAdSkipped   += this.OnRewardedInterstitialAdSkipped;
+            this.adServices.RewardedInterstitialAdCompleted += this.OnRewardedInterstitialAdCompleted;
+            
+            this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayed);
+            this.adServices.InterstitialAdCompleted         += this.OnInterstitialAdCompleted;
         }
+
+        private void OnRewardInterDisplay(RewardedInterstitialAdDisplayedSignal obj) { this.audioManager.PauseEverything(); }
+
+        private void OnRewardedInterstitialAdCompleted(InterstitialAdNetwork arg1, string arg2) { this.audioManager.ResumeEverything(); }
+
+        private void OnRewardedAdCompleted(RewardedAdNetwork arg1, string arg2) { this.audioManager.ResumeEverything(); }
 
         private void OnAppFullScreenContentOpened(AppOpenFullScreenContentOpenedSignal obj) { this.audioManager.PauseEverything(); }
 

@@ -26,56 +26,53 @@
 
     public class ItemCollectionItemView : TViewMono
     {
-        public GameObject      objChoose, objNormal, objUsed;
-        public Image           imgIcon;
-        public TextMeshProUGUI txtPrice;
-        public Button          btnBuyCoin, btnBuyAds, btnBuyIap, btnDailyReward, btnLuckySpin, btnSelect, btnUse;
+        public GameObject            objChoose, objNormal, objUsed;
+        public Image                 imgIcon;
+        public HorizontalLayoutGroup layoutGroup;
+        public TextMeshProUGUI       txtPrice;
+        public Button                btnBuyCoin, btnBuyAds, btnBuyIap, btnDailyReward, btnLuckySpin, btnSelect, btnUse;
 
         public Action OnBuyCoin, OnBuyAds, OnBuyIap, OnSelect, OnUse, OnBuyDailyReward, OnBuyLuckySpin;
 
         private void Awake()
         {
-            this.btnBuyCoin.onClick.AddListener(() =>
-            {
-                this.OnBuyCoin?.Invoke();
-            });
-            this.btnBuyAds.onClick.AddListener(() =>
-            {
-                this.OnBuyAds?.Invoke();
-            });
-            this.btnBuyIap.onClick.AddListener(() =>
-            {
-                this.OnBuyIap?.Invoke();
-            });
-            this.btnSelect.onClick.AddListener(() =>
-            {
-                this.OnSelect?.Invoke();
-            });
-            this.btnUse.onClick.AddListener(() =>
-            {
-                this.OnUse?.Invoke();
-            });
-            this.btnDailyReward.onClick.AddListener(() =>
-            {
-                this.OnBuyDailyReward?.Invoke();
-            });
-            this.btnLuckySpin.onClick.AddListener(() =>
-            {
-                this.OnBuyLuckySpin?.Invoke();
-            });
+            this.btnBuyCoin.onClick.AddListener(() => { this.OnBuyCoin?.Invoke(); });
+            this.btnBuyAds.onClick.AddListener(() => { this.OnBuyAds?.Invoke(); });
+            this.btnBuyIap.onClick.AddListener(() => { this.OnBuyIap?.Invoke(); });
+            this.btnSelect.onClick.AddListener(() => { this.OnSelect?.Invoke(); });
+            this.btnUse.onClick.AddListener(() => { this.OnUse?.Invoke(); });
+            this.btnDailyReward.onClick.AddListener(() => { this.OnBuyDailyReward?.Invoke(); });
+            this.btnLuckySpin.onClick.AddListener(() => { this.OnBuyLuckySpin?.Invoke(); });
         }
     }
 
     public class ItemCollectionItemPresenter : BaseUIItemPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
-        public ItemCollectionItemPresenter(IGameAssets gameAssets) : base(gameAssets)
-        {
-        }
+        private readonly UITemplateItemBlueprint uiTemplateItemBlueprint;
+        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateItemBlueprint uiTemplateItemBlueprint) : base(gameAssets) { this.uiTemplateItemBlueprint = uiTemplateItemBlueprint; }
 
         public override async void BindData(ItemCollectionItemModel param)
         {
-            this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.ItemBlueprintRecord.ImageAddress);
-            this.View.txtPrice.text  = $"{param.ShopBlueprintRecord.Price}";
+            if (param.ItemBlueprintRecord.ListItemId.Count <= 1)
+            {
+                this.View.imgIcon.gameObject.SetActive(true);
+                this.View.layoutGroup.gameObject.SetActive(false);
+                this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.ItemBlueprintRecord.ImageAddress);
+            }
+            else
+            {
+                this.View.imgIcon.gameObject.SetActive(false);
+                this.View.layoutGroup.gameObject.SetActive(true);
+                foreach (var itemId in param.ItemBlueprintRecord.ListItemId)
+                {
+                    var itemIcon = await this.GameAssets.LoadAssetAsync<Sprite>(this.uiTemplateItemBlueprint[itemId].ImageAddress);
+                    var item     = GameObject.Instantiate(this.View.imgIcon, this.View.layoutGroup.transform);
+                    item.sprite = itemIcon;
+                    item.gameObject.SetActive(true);
+                }
+            }
+
+            this.View.txtPrice.text = $"{param.ShopBlueprintRecord.Price}";
             this.View.objUsed.SetActive(param.ItemIndex == param.IndexItemUsed);
             this.View.objChoose.SetActive(param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
             this.View.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected);

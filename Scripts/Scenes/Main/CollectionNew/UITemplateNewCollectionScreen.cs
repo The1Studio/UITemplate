@@ -128,11 +128,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                     this.OnRandomItemComplete(model);
                     this.BuyItemCompleted(model);
                     this.eventSystem.enabled = true;
-                }, model =>
+                },  async model =>
                 {
                     foreach (var itemCollectionItemModel in collectionModel) itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
 
-                    this.View.itemCollectionGridAdapter.Refresh();
+                    await this.View.itemCollectionGridAdapter.InitItemAdapter(collectionModel, this.diContainer);
+                    // this.View.itemCollectionGridAdapter.Refresh();
                 }, maxTime, 0.1f);
             });
         }
@@ -220,7 +221,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.btnUnlockRandom.gameObject.SetActive(!hasOwnAllItem);
         }
 
-        private void OnUseItem(ItemCollectionItemModel obj)
+        private async void OnUseItem(ItemCollectionItemModel obj)
         {
             // If the item is not owned, do not use it
             if (!this.uiTemplateInventoryDataController.TryGetItemData(obj.ItemData.Id, out var itemData) || itemData.CurrentStatus != UITemplateItemData.Status.Owned) return;
@@ -234,14 +235,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(currentCategory, obj.ItemData.Id);
             this.OnUsedItem(obj.ItemData);
 
-            this.View.itemCollectionGridAdapter.Refresh();
+            await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel, this.diContainer);
+            // this.View.itemCollectionGridAdapter.Refresh();
         }
 
         protected virtual void OnUsedItem(UITemplateItemData itemData)
         {
         }
 
-        private void OnSelectItem(ItemCollectionItemModel obj)
+        private async void OnSelectItem(ItemCollectionItemModel obj)
         {
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
             var tempModel       = this.itemCollectionItemModels.Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory)).ToList();
@@ -251,7 +253,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             // Save the selected item
             this.OnSelectedItem(obj.ItemData);
 
-            this.View.itemCollectionGridAdapter.Refresh();
+            await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel, this.diContainer);
+            // this.View.itemCollectionGridAdapter.Refresh();
         }
 
         protected virtual void OnSelectedItem(UITemplateItemData itemData)

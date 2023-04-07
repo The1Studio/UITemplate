@@ -16,7 +16,7 @@
             this.Container.BindInterfacesAndSelfTo<UITemplateFTUESystem>().AsCached().NonLazy();
             this.Container.Bind<UITemplateFTUEController>().FromComponentInNewPrefabResource(nameof(UITemplateFTUEController)).AsCached().NonLazy();
             this.Container.Bind<UITemplateFTUEHelper>().AsCached().NonLazy();
-            this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<UITemplateBaseFTUE>();
+            this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<UITemplateFTUEStepBase>();
         }
     }
 }

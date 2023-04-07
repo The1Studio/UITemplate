@@ -1,10 +1,10 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
-    using System.Linq;
-    using System.Runtime;
+    using System.Collections.Generic;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.TutorialTriggerCondition;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
     public class UITemplateFTUEHelper
@@ -12,12 +12,15 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         private readonly ScreenManager                screenManager;
         private readonly UITemplateFTUEBlueprint      ftueBlueprint;
         private readonly UITemplateFTUEControllerData uiTemplateFtueControllerData;
+        private readonly List<IUITemplateFTUE>        uiTemplateSteps;
 
-        public UITemplateFTUEHelper(ScreenManager screenManager,UITemplateFTUEBlueprint ftueBlueprint,UITemplateFTUEControllerData uiTemplateFtueControllerData)
+        public UITemplateFTUEHelper(ScreenManager                screenManager, UITemplateFTUEBlueprint ftueBlueprint, UITemplateFTUEControllerData uiTemplateFtueControllerData,
+                                    List<IUITemplateFTUE> uiTemplateSteps)
         {
             this.screenManager                = screenManager;
             this.ftueBlueprint                = ftueBlueprint;
             this.uiTemplateFtueControllerData = uiTemplateFtueControllerData;
+            this.uiTemplateSteps              = uiTemplateSteps;
         }
 
         public bool IsAnyFtueActive() => this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);
@@ -25,13 +28,14 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         public bool IsAnyFtueActive(IScreenPresenter screenPresenter)
         {
             var currentScreen = screenPresenter.GetType().Name;
-
-            foreach (var ftue in this.ftueBlueprint.Where(x => x.Value.EnableTrigger))
+            
+            foreach (var uiTemplateFtueStep in this.uiTemplateSteps)
             {
-                if (!currentScreen.Equals(ftue.Value.ScreenLocation)) continue;
-                var isCompleteAllRequire = this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(ftue.Value.RequireCondition);
-
-                if (!isCompleteAllRequire || this.uiTemplateFtueControllerData.IsFinishedStep(ftue.Value.Id)) continue;
+                var stepBlueprintRecord = this.ftueBlueprint.GetDataById(uiTemplateFtueStep.StepId);
+                if (!currentScreen.Equals(stepBlueprintRecord.ScreenLocation)) continue;
+                if (!this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(stepBlueprintRecord.RequireCondition)) continue;
+                if (this.uiTemplateFtueControllerData.IsFinishedStep(stepBlueprintRecord.Id)) continue;
+                if (!uiTemplateFtueStep.IsPassedCondition()) continue;
 
                 return true;
             }

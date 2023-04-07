@@ -40,7 +40,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             await this.mySemaphoreSlim.WaitAsync() ;
             try {
-                var currentTime = await this.internetService.GetCurrentTimeAsync();
+                // var currentTime = await this.internetService.GetCurrentTimeAsync();
+                var currentTime = DateTime.Now; // Because the internet service getting time doesn't work stable I use this instead, btw, we allow hyper casual players cheat the game.
                 var issDiffDay  = this.internetService.IsDifferentDay(this.uiTemplateDailyRewardData.LastRewardedDate, currentTime);
 
                 if (!issDiffDay) return;

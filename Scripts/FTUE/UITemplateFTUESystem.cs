@@ -36,7 +36,7 @@
         {
             foreach (var u in this.uiTemplateBaseFtues)
             {
-                this.dicUITemplateFTUE.Add(u.TriggerId, u);
+                this.dicUITemplateFTUE.Add(u.StepId, u);
             }
 
             this.signalBus.Subscribe<StartLoadingNewSceneSignal>(this.OnStartLoadingNewScene);

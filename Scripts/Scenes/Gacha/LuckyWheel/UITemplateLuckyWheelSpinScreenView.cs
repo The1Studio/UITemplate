@@ -131,8 +131,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
         private void FlashCircleNote(float startTime)
         {
-            return;
-
             foreach (var c in this.View.circleNotes)
             {
                 c.ChangeColor(startTime);

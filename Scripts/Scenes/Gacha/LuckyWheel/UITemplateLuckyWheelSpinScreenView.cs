@@ -37,6 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         public GameObject                         arrowOn, arrowOff;
         public List<CircleNote>                   circleNotes;
         public RectTransform                      animationCoin;
+        public GameObject                         blockInput;
     }
 
     [PopupInfo(nameof(UITemplateLuckyWheelSpinScreenView), false)]
@@ -77,6 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
         private async void DoSpin()
         {
+            this.View.blockInput.SetActive(true);
             this.eventSystem.gameObject.SetActive(false);
             this.View.btnSpin.gameObject.SetActive(false);
             this.View.btnAdsSpin.gameObject.SetActive(false);
@@ -124,11 +126,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             this.eventSystem.gameObject.SetActive(true);
             this.Model.OnSpinComplete?.Invoke(this.lastRewardIndex, this.View.animationCoin);
             this.View.btnAdsSpin.gameObject.SetActive(true);
+            this.View.blockInput.SetActive(false);
         }
 
         private void FlashCircleNote(float startTime)
         {
             return;
+
             foreach (var c in this.View.circleNotes)
             {
                 c.ChangeColor(startTime);
@@ -137,6 +141,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
         public override UniTask BindData(UITemplateLuckyWheelSpinModel model)
         {
+            this.View.blockInput.SetActive(false);
             this.View.btnSpin.gameObject.SetActive(model.IsFreeSpin);
             this.View.btnAdsSpin.gameObject.SetActive(!model.IsFreeSpin);
             this.lastRewardIndex                              = 0;
@@ -154,6 +159,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             {
                 this.logService.Error($"Error: SpinRecords.Count != spinItemList.Count");
             }
+
             return UniTask.CompletedTask;
         }
 

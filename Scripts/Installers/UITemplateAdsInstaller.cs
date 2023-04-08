@@ -26,14 +26,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
 
 #if EM_ADMOB
-            var listAoaAppId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListAoaAppId;
-            var listMRecId   = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListMRecId;
-            var listNativeId = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListNativeId;
+            var listAoaAppId                = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListAoaAppId;
+            var listMRecId                  = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListMRecId;
+            var listNativeId                = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().ListNativeId;
+            var adMobAOAOpenAppThreshold = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().AdMObAOAOpenAppThreshold;
 
             var adMobWrapperConfig = new AdModWrapper.Config(listAoaAppId)
             {
                 ADModMRecIds = new Dictionary<AdViewPosition, string>(),
-                NativeAdIds = listNativeId
+                NativeAdIds = listNativeId,
+                AOAOpenAppThreshHold = adMobAOAOpenAppThreshold
             };
 
             var listMRecAndroidAdViewPosition = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>().listMRecAdViewPosition;

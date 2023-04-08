@@ -1,12 +1,18 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using GameFoundation.Scripts.Interfaces;
+    using Sirenix.Serialization;
 
     public class UITemplateAdsData : ILocalData
     {
+        [OdinSerialize]
         public int WatchedInterstitialAds { get; set; }
-        public int WatchedRewardedAds     { get; set; }
 
-        public void Init() { }
+        [OdinSerialize]
+        public int WatchedRewardedAds { get; set; }
+
+        public void Init()
+        {
+        }
     }
 }

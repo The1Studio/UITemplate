@@ -58,6 +58,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             await UniTask.Delay(TimeSpan.FromSeconds(5));
             this.ShowBannerInterval();
         }
+        
+        public virtual void HideBannerAd()
+        {
+            this.adServices.HideBannedAd();
+        }
 
         #endregion
 

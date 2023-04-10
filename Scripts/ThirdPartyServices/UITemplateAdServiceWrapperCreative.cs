@@ -16,6 +16,7 @@
         }
 
         public override void ShowBannerAd() { }
+        public override void HideBannerAd() { }
 
         public override void ShowInterstitialAd(string place, bool force = false) { }
 

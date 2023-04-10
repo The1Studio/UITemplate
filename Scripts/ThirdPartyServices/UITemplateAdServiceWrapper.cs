@@ -17,7 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public long InterstitialAdInterval { get; set; }
     }
 
-    public class UITemplateAdServiceWrapper
+    public class UITemplateAdServiceWrapper : IInitializable
     {
         private const int MaxInterstitialAdTime = 30; // in seconds
         
@@ -68,7 +68,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         #endregion
+        
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayedHandler);
+            this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
+        }
+        private void OnInterstitialAdClosedHandler()
+        {
+            this.LastEndInterstitial = DateTime.Now;
+        }
 
+        private void OnInterstitialAdDisplayedHandler()
+        {
+            this.LastStartInterstitial = DateTime.Now;
+        }
 
         #region InterstitialAd
 

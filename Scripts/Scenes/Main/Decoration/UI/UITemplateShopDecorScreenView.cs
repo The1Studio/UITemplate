@@ -60,7 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         #endregion
 
         private const string Placement        = "Decoration";
-        private const string DefaultTabActive = "Character";
+        private const string DefaultTabActive = "Room";
 
         public UITemplateDecorScreenPresenter(SignalBus                         signalBus,
                                               UITemplateDecorationManager       uiTemplateDecorationManager,

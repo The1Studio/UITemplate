@@ -1,7 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 {
     using System.Collections.Generic;
+    using System.Linq;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI;
     using UnityEngine;
     using Zenject;
@@ -12,13 +14,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         #region Inject
 
-        private readonly DiContainer                      diContainer;
-        private readonly UITemplateDecorCategoryBlueprint uiTemplateDecorCategoryBlueprint;
+        private readonly DiContainer                       diContainer;
+        private readonly UITemplateDecorCategoryBlueprint  uiTemplateDecorCategoryBlueprint;
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
 
-        private UITemplateDecorationManager(DiContainer diContainer, UITemplateDecorCategoryBlueprint uiTemplateDecorCategoryBlueprint)
+        private UITemplateDecorationManager(DiContainer diContainer, UITemplateDecorCategoryBlueprint uiTemplateDecorCategoryBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateItemBlueprint uiTemplateItemBlueprint)
         {
-            this.diContainer                      = diContainer;
-            this.uiTemplateDecorCategoryBlueprint = uiTemplateDecorCategoryBlueprint;
+            this.diContainer                       = diContainer;
+            this.uiTemplateDecorCategoryBlueprint  = uiTemplateDecorCategoryBlueprint;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.InitDecorItems();
         }
 
@@ -28,6 +34,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
         {
             foreach (var key in this.uiTemplateDecorCategoryBlueprint.Keys)
             {
+                if (this.uiTemplateInventoryDataController.GetCurrentItemSelected(key) == null)
+                {
+                    this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(key, this.GetDefaultItemId(key));
+                }
+                
                 this.CreateDecorationItem(key);
             }
         }
@@ -43,6 +54,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             return decoration;
         }
 
+        private string GetDefaultItemId(string category)
+        {
+            return this.uiTemplateItemBlueprint.First(x => x.Value.Category.Equals(category) && x.Value.IsDefaultItem).Value.Id;
+        }
+        
         private DecorationItem CreateTheme2D(string category) { return new GameObject($"{category}").AddComponent<Decoration2DThemeItem>(); }
 
         private DecorationItem CreateTheme3D(string category) { return new GameObject($"{category}").AddComponent<Decoration3DThemeItem>(); }

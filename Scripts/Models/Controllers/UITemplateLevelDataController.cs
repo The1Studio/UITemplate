@@ -49,18 +49,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
         }
 
-        public void PassCurrentLevel()
+        public void PassCurrentLevel(int time = 0)
         {
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
-            this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = 0, CurrentIdToValue = null });
+            this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = time, CurrentIdToValue = null });
             this.GoToNextLevel();
         }
 
-        public void SkipCurrentLevel()
+        public void SkipCurrentLevel(int time = 0 )
         {
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
 
-            this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = 0 });
+            this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = time });
 
             this.GoToNextLevel();
         }
@@ -77,9 +77,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public void IncreaseLoseCount(int level)
+        public void IncreaseLoseCount(int level, int time = 0)
         {
-            this.signalBus.Fire(new LevelEndedSignal { Level = level, IsWin = false, Time = 0, CurrentIdToValue = null });
+            this.signalBus.Fire(new LevelEndedSignal { Level = level, IsWin = false, Time = time, CurrentIdToValue = null });
             this.GetLevelData(level).LoseCount++;
         }
 

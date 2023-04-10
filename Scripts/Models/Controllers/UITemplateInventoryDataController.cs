@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using BlueprintFlow.Signals;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -87,7 +88,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData);
         }
 
-        public async void AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null)
+        public async UniTask AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null)
         {
             if (startAnimationRect != null)
             {

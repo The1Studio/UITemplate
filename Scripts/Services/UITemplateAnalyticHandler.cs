@@ -74,6 +74,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
+            this.signalBus.Subscribe<TotalVirtualCurrencySpentSignal>(this.TotalVirtualCurrencySpentHandler);
+            this.signalBus.Subscribe<TotalVirtualCurrencyEarnedSignal>(this.TotalVirtualCurrencyEarnedHandler);
+            this.signalBus.Subscribe<DaysPlayedSignal>(this.DaysPlayedHandler);
             
             this.signalBus.Subscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
@@ -299,12 +302,42 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.Track(analytic.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
             }
         }
+        
+        private void TotalVirtualCurrencySpentHandler(TotalVirtualCurrencySpentSignal obj)
+        {
+            foreach (var analytic in this.analyticEventList)
+            {
+                this.analyticServices.UserProperties[analytic.TotalVirtualCurrencySpentProperty] = obj.Amount;
+                this.Track(analytic.TotalVirtualCurrencySpent(obj.CurrencyName, obj.Amount));
+            }
+        }
+        
+        private void TotalVirtualCurrencyEarnedHandler(TotalVirtualCurrencyEarnedSignal obj)
+        {
+            foreach (var analytic in this.analyticEventList)
+            {
+                this.analyticServices.UserProperties[analytic.TotalVirtualCurrencyEarnedProperty] = obj.Amount;
+                this.Track(analytic.TotalVirtualCurrencyEarned(obj.CurrencyName, obj.Amount));
+            }
+        }
+        
+        private void DaysPlayedHandler(DaysPlayedSignal obj)
+        {
+            foreach (var analytic in this.analyticEventList)
+            {
+                this.analyticServices.UserProperties[analytic.DaysPlayedProperty] = obj.Days;
+                this.Track(analytic.DaysPlayed(obj.Days));
+            }
+        }
 
         public void Dispose()
         {
             this.signalBus.Unsubscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Unsubscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Unsubscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
+            this.signalBus.Unsubscribe<TotalVirtualCurrencyEarnedSignal>(this.TotalVirtualCurrencyEarnedHandler);
+            this.signalBus.Unsubscribe<TotalVirtualCurrencySpentSignal>(this.TotalVirtualCurrencySpentHandler);
+            this.signalBus.Unsubscribe<DaysPlayedSignal>(this.DaysPlayedHandler);
             this.signalBus.Unsubscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Unsubscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Unsubscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);

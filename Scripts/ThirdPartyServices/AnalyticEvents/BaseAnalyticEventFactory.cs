@@ -51,18 +51,27 @@
         public virtual IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) { return new CustomEvent(); }
 
         public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) { return new CustomEvent(); }
-
-        public virtual IEvent TutorialCompletion(bool success, string tutorialId) { return new CustomEvent(); }
+        
+        public virtual IEvent TotalVirtualCurrencyEarned(string virtualCurrencyName, long value)            => new CustomEvent();
+        
+        public virtual IEvent TotalVirtualCurrencySpent(string virtualCurrencyName, long value)             => new CustomEvent();
+        
+        public virtual IEvent DaysPlayed(int daysPlayed)                                                    => new CustomEvent();
+        
+        public virtual IEvent TutorialCompletion(bool success, string tutorialId)                           { return new CustomEvent(); }
 
         public virtual IEvent EarnVirtualCurrency(string type, int amount) { return new CustomEvent(); }
 
         public virtual void ForceUpdateAllProperties() { }
 
-        public virtual string LevelMaxProperty             => "level_max";
-        public virtual string LastLevelProperty            => "last_level";
-        public virtual string LastAdsPlacementProperty     => "last_placement";
-        public virtual string TotalInterstitialAdsProperty => "total_interstitial_ads";
-        public virtual string TotalRewardedAdsProperty     => "total_rewarded_ads";
+        public virtual string LevelMaxProperty                   => "level_max";
+        public virtual string LastLevelProperty                  => "last_level";
+        public virtual string LastAdsPlacementProperty           => "last_placement";
+        public virtual string TotalInterstitialAdsProperty       => "total_interstitial_ads";
+        public virtual string TotalRewardedAdsProperty           => "total_rewarded_ads";
+        public virtual string TotalVirtualCurrencySpentProperty  => "total_spent";
+        public virtual string TotalVirtualCurrencyEarnedProperty => "total_earned";
+        public virtual string DaysPlayedProperty                 => "days_played";
 
         public virtual AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new();
 

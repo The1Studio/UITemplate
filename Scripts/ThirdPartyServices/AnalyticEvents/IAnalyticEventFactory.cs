@@ -48,6 +48,12 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source);
 
         IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName);
+        
+        IEvent TotalVirtualCurrencyEarned(string virtualCurrencyName, long value);
+        
+        IEvent TotalVirtualCurrencySpent(string virtualCurrencyName, long value);
+        
+        IEvent DaysPlayed(int daysPlayed);
 
         IEvent TutorialCompletion(bool success, string tutorialId);
 
@@ -58,6 +64,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         string                            LastAdsPlacementProperty                   { get; }
         string                            TotalInterstitialAdsProperty               { get; }
         string                            TotalRewardedAdsProperty                   { get; }
+        string                            TotalVirtualCurrencySpentProperty          { get; }
+        string                            TotalVirtualCurrencyEarnedProperty         { get; }
+        string                            DaysPlayedProperty                         { get; }
         AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; }
         AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig  { get; set; }
     }

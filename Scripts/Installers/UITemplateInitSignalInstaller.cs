@@ -25,6 +25,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<InterstitialAdCalledSignal>();
             this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
             this.Container.DeclareSignal<FirebaseInitializeSucceededSignal>();
+            this.Container.DeclareSignal<TotalVirtualCurrencyEarnedSignal>();
+            this.Container.DeclareSignal<TotalVirtualCurrencySpentSignal>();
+            this.Container.DeclareSignal<DaysPlayedSignal>();
         }
     }
 }

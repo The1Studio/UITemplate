@@ -19,6 +19,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
     public class UITemplateAdServiceWrapper
     {
+        private const int MaxInterstitialAdTime = 30; // in seconds
+        
         #region inject
 
         private readonly IAdServices               adServices;
@@ -30,8 +32,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        private long lastInterstitialAdTime;
-        private bool isBannerLoaded = false;
+        private DateTime LastStartInterstitial;
+        private DateTime LastEndInterstitial;
+        private bool     isBannerLoaded = false;
 
         public UITemplateAdServiceWrapper(ILogService               logService, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices, UITemplateAdsData uiTemplateAdsData,
                                           UITemplateAdServiceConfig config)
@@ -73,15 +76,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowInterstitialAd(string place, bool force = false)
         {
-            var currentTimestamp = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
-            if (this.lastInterstitialAdTime + this.config.InterstitialAdInterval > currentTimestamp && !force)
+            var currentTime = DateTime.Now;
+            if ((currentTime - this.LastEndInterstitial).TotalSeconds < this.config.InterstitialAdInterval && (currentTime - this.LastStartInterstitial).TotalSeconds < this.config.InterstitialAdInterval + MaxInterstitialAdTime && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
                 return;
             }
-
-            this.lastInterstitialAdTime = currentTimestamp;
 
             this.signalBus.Fire(new InterstitialAdEligibleSignal(place));
             if (!this.adServices.IsInterstitialAdReady(place))

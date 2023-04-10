@@ -218,6 +218,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.topButtonBarAdapter.Refresh();
             var hasOwnAllItem = tempModel.All(x => this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id));
             this.View.btnUnlockRandom.gameObject.SetActive(!hasOwnAllItem);
+
+            this.OnClickCategoryButton(obj);
+        }
+
+        protected virtual void OnClickCategoryButton(TopButtonItemModel obj)
+        {
         }
 
         private void OnUseItem(ItemCollectionItemModel obj)

@@ -30,6 +30,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
         public UITemplateJackpotItemAdapter jackpotItemAdapter;
         public GameObject                   jackpotSpinningObj;
         public List<GameObject>             listJackpotSpinning;
+        public GameObject                   jackpotStickOnObj;
+        public GameObject                   jackpotStickOffObj;
     }
 
     public class UITemplateJackpotSpinPopupModel
@@ -108,6 +110,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
         {
             var remainingSpin = await this.uiTemplateJackpotController.UserRemainingJackpotSpin() > 0;
             this.View.btnSpin.gameObject.SetActive(remainingSpin);
+            this.View.jackpotStickOnObj.SetActive(remainingSpin);
+            this.View.jackpotStickOffObj.SetActive(!remainingSpin);
             this.View.btnWatchAds.gameObject.SetActive(!remainingSpin);
             this.View.btnSkipAds.gameObject.SetActive(!remainingSpin);
         }
@@ -199,6 +203,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot
         private void DoSpin()
         {
             this.View.btnSpin.gameObject.SetActive(false);
+            this.View.jackpotStickOnObj.SetActive(false);
+            this.View.jackpotStickOffObj.SetActive(true);
             this.uiTemplateJackpotController.DoJackpotSpin();
             this.snapper8.enabled = false;
             var weights            = this.uiTemplateGachaJackpotBlueprint.Values.Select(record => record.Weight).ToList();

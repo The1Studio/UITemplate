@@ -11,8 +11,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 
     public class UITemplateBuildingRecord
     {
-        public string                    Id            { get; set; }
-        public string                    UnlockPrice   { get; set; }
-        public Dictionary<string, float> EarnPerSecond { get; set; }
+        public string                    Id             { get; set; }
+        public float                     IdleTimeUnlock { get; set; }
+        public string                    UnlockPrice    { get; set; }
+        public Dictionary<string, float> EarnPerSecond  { get; set; }
     }
 }

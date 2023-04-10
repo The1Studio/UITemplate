@@ -77,10 +77,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public void IncreaseLoseCount(int level, int time = 0)
+        public void LoseCurrentLevel (int time = 0)
         {
-            this.signalBus.Fire(new LevelEndedSignal { Level = level, IsWin = false, Time = time, CurrentIdToValue = null });
-            this.GetLevelData(level).LoseCount++;
+            this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = time, CurrentIdToValue = null });
+            this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
         }
 
         public bool CheckLevelIsUnlockedStatus(int level)

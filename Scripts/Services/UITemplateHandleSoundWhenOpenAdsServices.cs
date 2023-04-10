@@ -23,14 +23,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             signalBus.Subscribe<RewardInterstitialAdCloseSignal>(this.OnRewardInterClose);
 
             signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayed);
-            adServices.InterstitialAdCompleted += this.OnInterstitialAdCompleted;
+            signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
         }
 
         private void OnRewardInterClose(RewardInterstitialAdCloseSignal obj) { this.ResumeSound(); }
 
         private void OnRewardClose(RewardAdCloseSignal obj)                                 { this.ResumeSound(); }
         private void OnAppFullScreenContentClosed(AppOpenFullScreenContentClosedSignal obj) { this.ResumeSound(); }
-        private void OnInterstitialAdCompleted(InterstitialAdNetwork arg1, string arg2)     { this.ResumeSound(); }
+        private void OnInterstitialAdClosed(InterstitialAdClosedSignal obj)       { this.ResumeSound(); }
 
         private void OnRewardInterDisplay(RewardedInterstitialAdDisplayedSignal obj) { this.PauseSound(); }
 

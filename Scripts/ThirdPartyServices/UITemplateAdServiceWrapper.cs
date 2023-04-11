@@ -81,13 +81,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
 
-        public virtual void ShowInterstitialAd(string place, bool force = false)
+        public virtual bool ShowInterstitialAd(string place, bool force = false)
         {
             if ((DateTime.Now - this.LastEndInterstitial).TotalSeconds < this.config.InterstitialAdInterval && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
-                return;
+                return false;
             }
 
             this.signalBus.Fire(new InterstitialAdEligibleSignal(place));
@@ -95,13 +95,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.logService.Warning("InterstitialAd was not loaded");
 
-                return;
+                return false;
             }
 
             this.signalBus.Fire(new InterstitialAdCalledSignal(place));
             this.uiTemplateAdsData.WatchedInterstitialAds++;
             this.aoaAdService.IsResumedFromAds = true;
             this.adServices.ShowInterstitialAd(place);
+
+            return true;
         }
 
         public virtual void LoadInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdDownloadedSignal(place)); }

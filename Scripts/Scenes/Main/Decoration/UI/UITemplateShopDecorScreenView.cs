@@ -60,7 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         #endregion
 
         private const string Placement        = "Decoration";
-        private const string DefaultTabActive = "Character";
+        private const string DefaultTabActive = "Room";
 
         public UITemplateDecorScreenPresenter(SignalBus                         signalBus,
                                               UITemplateDecorationManager       uiTemplateDecorationManager,
@@ -123,10 +123,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
                 var categoryTabView = Object.Instantiate(this.View.categoryTabViewPrefab, this.View.categoryTabHolder);
                 this.idToCategoryTab.Add(record.Id, categoryTabView);
                 categoryTabView.OnButtonClick += () => this.OnClickCategoryTab(category);
-                categoryTabView.SetPosition(UITemplateExtension
-                                                .GetUIPositionFromWorldPosition(this.View.categoryTabHolder.GetComponent<RectTransform>(),
-                                                                                this.screenManager.RootUICanvas.UICamera,
-                                                                                this.uiTemplateDecorationManager.GetDecoration(category).PositionUI));
+                var test = UITemplateExtension
+                    .GetUIPositionFromWorldPosition(this.View.categoryTabHolder.GetComponent<RectTransform>(),
+                                                    this.screenManager.RootUICanvas.UICamera,
+                                                    this.uiTemplateDecorationManager.GetDecoration(category).PositionUI);
+                categoryTabView.SetPosition(this.uiTemplateDecorationManager.GetDecoration(category).PositionUI);
             }
         }
 
@@ -261,7 +262,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         private void BuyWithSoftCurrency(ItemCollectionItemModel obj)
         {
-            var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(obj.ShopBlueprintRecord.CurrencyID);
+            var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue();
 
             if (currentCoin < obj.ShopBlueprintRecord.Price)
             {

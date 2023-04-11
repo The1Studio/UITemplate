@@ -17,7 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             signalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppFullScreenContentOpened);
 
             signalBus.Subscribe<RewardedAdDisplayedSignal>(this.OnDisplayRewardedAd);
-            signalBus.Subscribe<RewardedAdCloseSignal>(this.OnRewardClose);
+            signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardClose);
 
             signalBus.Subscribe<RewardedInterstitialAdCompletedSignal>(this.OnRewardInterDisplay);
             signalBus.Subscribe<RewardInterstitialAdSkippedSignal>(this.OnRewardInterClose);
@@ -28,7 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void OnRewardInterClose(RewardInterstitialAdSkippedSignal obj) { this.ResumeSound(); }
 
-        private void OnRewardClose(RewardedAdCloseSignal obj)                                 { this.ResumeSound(); }
+        private void OnRewardClose(RewardedAdCompletedSignal obj)                                 { this.ResumeSound(); }
         private void OnAppFullScreenContentClosed(AppOpenFullScreenContentClosedSignal obj) { this.ResumeSound(); }
         private void OnInterstitialAdClosed(InterstitialAdClosedSignal obj)       { this.ResumeSound(); }
 

@@ -95,7 +95,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             //Ads events
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
-            this.signalBus.Subscribe<RewardedAdCloseSignal>(this.OnRewardedAdClosed);
+            this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedAdClosed);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedAdSkipped);
         }
 
@@ -107,7 +107,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
         }
 
-        private void OnRewardedAdClosed(RewardedAdCloseSignal obj)
+        private void OnRewardedAdClosed(RewardedAdCompletedSignal obj)
         {
             foreach (var analytic in this.analyticEventList)
             {

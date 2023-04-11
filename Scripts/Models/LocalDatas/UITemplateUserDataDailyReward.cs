@@ -3,11 +3,14 @@
     using System;
     using System.Collections.Generic;
     using GameFoundation.Scripts.Interfaces;
+    using Sirenix.Serialization;
+
 
     public class UITemplateDailyRewardData : ILocalData
     {
-        public List<RewardStatus> RewardStatus = new();
-        public DateTime           LastRewardedDate { get; set; }
+        [OdinSerialize] public List<RewardStatus> RewardStatus = new();
+        [OdinSerialize] public DateTime           LastRewardedDate    { get; set; }
+        [OdinSerialize] public DateTime           FirstTimeOpenedDate { get; set; } = DateTime.Now;
 
         public void Init() { }
     }

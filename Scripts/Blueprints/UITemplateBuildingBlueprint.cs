@@ -13,7 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     {
         public string                    Id             { get; set; }
         public float                     IdleTimeUnlock { get; set; }
-        public string                    UnlockPrice    { get; set; }
+        public int                       UnlockPrice    { get; set; }
         public Dictionary<string, float> EarnPerSecond  { get; set; }
     }
 }

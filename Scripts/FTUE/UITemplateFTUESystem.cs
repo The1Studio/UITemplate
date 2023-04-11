@@ -65,7 +65,7 @@
                 if (!obj.ScreenPresenter.GetType().Name.Equals(ftue.Value.ScreenLocation)) continue;
                 var isCompleteAllRequire = this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(ftue.Value.RequireCondition);
 
-                //CompleteAll Requie Condition?
+                //CompleteAll Require Condition?
                 if (!isCompleteAllRequire || this.uiTemplateFtueControllerData.IsFinishedStep(ftue.Value.Id)) continue;
                 this.dicUITemplateFTUE[ftue.Value.Id].Execute();
 

@@ -75,7 +75,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
-            this.signalBus.Subscribe<DaysPlayedSignal>(this.DaysPlayedHandler);
             this.signalBus.Subscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Subscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);
@@ -321,16 +320,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             this.analyticServices.UserProperties[analytic.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData().TotalEarned;
             this.Track(analytic.TotalVirtualCurrencyEarned(obj.Id, this.uITemplateInventoryDataController.GetCurrencyData().TotalEarned));
-            
-        }
-        
-        private void DaysPlayedHandler(DaysPlayedSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.analyticServices.UserProperties[analytic.DaysPlayedProperty] = obj.Days;
-                this.Track(analytic.DaysPlayed(obj.Days));
-            }
         }
 
         public void Dispose()
@@ -339,7 +328,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Unsubscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
-            this.signalBus.Unsubscribe<DaysPlayedSignal>(this.DaysPlayedHandler);
             this.signalBus.Unsubscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Unsubscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Unsubscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);

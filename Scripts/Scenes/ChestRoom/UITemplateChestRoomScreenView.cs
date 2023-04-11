@@ -1,9 +1,13 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using TheOneStudio.UITemplate.UITemplate.Blueprints.Gacha;
+    using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
@@ -23,12 +27,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         #region region
 
         private readonly UITemplateGachaChestRoomBlueprint uiTemplateGachaChestRoomBlueprint;
+        private readonly IGameAssets                       gameAssets;
 
         #endregion
-        public UITemplateChestRoomScreenPresenter(SignalBus signalBus, UITemplateGachaChestRoomBlueprint uiTemplateGachaChestRoomBlueprint) : base(signalBus)
+
+        private int currentOpenedAmount;
+        private List<UITemplateGachaChestRoomRecord> currentChestList;
+        
+        public UITemplateChestRoomScreenPresenter(SignalBus signalBus, UITemplateGachaChestRoomBlueprint uiTemplateGachaChestRoomBlueprint, IGameAssets gameAssets) : base(signalBus)
         {
             this.uiTemplateGachaChestRoomBlueprint = uiTemplateGachaChestRoomBlueprint;
+            this.gameAssets                        = gameAssets;
         }
+        
 
         protected override void OnViewReady()
         {
@@ -41,8 +52,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             }
         }
         
-        private void OnClickChestButton(UITemplateChestItemView uiTemplateChestItemView)
+        private async void OnClickChestButton(UITemplateChestItemView uiTemplateChestItemView)
         {
+            this.currentOpenedAmount++;
+
+            var weights     = this.currentChestList.Select(value => value.Weight).ToList();
+            var randomChest = this.currentChestList.RandomGachaWithWeight(weights);
+            this.currentChestList.Remove(randomChest);
+            var rewardSpite = await this.gameAssets.LoadAssetAsync<Sprite>(randomChest.Icon);
+            var value = randomChest.Reward.Count == 1 ? randomChest.Reward.First().Value : 0;
+            uiTemplateChestItemView.OpenChest(rewardSpite, value);
+
+            if (this.currentOpenedAmount >= this.View.ChestItemViewList.Count)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(1f));
+                this.CloseView();
+            }
         }
 
         private void OnClickWatchAdButton() { this.ResetKeys(); }
@@ -51,6 +76,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
 
         public override UniTask BindData()
         {
+            this.currentOpenedAmount = 0;
+            this.currentChestList    = this.uiTemplateGachaChestRoomBlueprint.Values.ToList();
             foreach (var uiTemplateChestItemView in this.View.ChestItemViewList)
             {
                 uiTemplateChestItemView.Init();

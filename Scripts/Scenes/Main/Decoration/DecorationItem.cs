@@ -45,7 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             this.record                = record;
             this.transform.position    = record.PositionOnScene;
             this.transform.eulerAngles = record.RotationOnScene;
-            this.PositionUI            = record.OffsetPositionOnUI;
+            this.PositionUI            = record.ButtonPosition;
             this.Category              = record.Id;
         }
 

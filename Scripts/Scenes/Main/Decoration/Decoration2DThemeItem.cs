@@ -18,10 +18,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
         public override async void Init(UITemplateDecorCategoryRecord record)
         {
             base.Init(record);
+            
             this.signalBus.Subscribe<ScaleDecoration2DItem>(this.OnChangeScale);
+            
             if (this.spriteRenderer == null) this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
             this.spriteRenderer.sprite       = await this.GameAssets.LoadAssetAsync<Sprite>(this.uiTemplateInventoryDataController.GetCurrentItemSelected(record.Id));
             this.spriteRenderer.sortingOrder = record.Layer;
+            
             if (record.IsScaleRoot)
             {
                 this.AdjustScale();   
@@ -39,8 +42,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
         {
             var camera = Camera.allCameras.First(camera => camera.name == "GameCamera");
 
-            float worldScreenHeight = camera.orthographicSize      * 2;
-            float worldScreenWidth  = worldScreenHeight / Screen.height * Screen.width;
+            var worldScreenHeight = camera.orthographicSize      * 2;
+            var worldScreenWidth  = worldScreenHeight / Screen.height * Screen.width;
             
             transform.localScale = new Vector3(
                                                worldScreenWidth  / this.spriteRenderer.sprite.bounds.size.x,

@@ -4,8 +4,8 @@
 
     public class TotalVirtualCurrencySpent : IEvent
     {
-        public long Amount;
         public string CurrencyName;
+        public long Amount;
         
         public TotalVirtualCurrencySpent(string currencyName, long amount)
         {

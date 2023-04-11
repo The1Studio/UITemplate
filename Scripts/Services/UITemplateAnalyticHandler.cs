@@ -74,8 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
-            this.signalBus.Subscribe<TotalVirtualCurrencySpentSignal>(this.TotalVirtualCurrencySpentHandler);
-            this.signalBus.Subscribe<TotalVirtualCurrencyEarnedSignal>(this.TotalVirtualCurrencyEarnedHandler);
+            this.signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Subscribe<DaysPlayedSignal>(this.DaysPlayedHandler);
             this.signalBus.Subscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
@@ -302,22 +301,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
         }
         
-        private void TotalVirtualCurrencySpentHandler(TotalVirtualCurrencySpentSignal obj)
+        private void UpdateCurrencyHandler(UpdateCurrencySignal obj)
         {
             foreach (var analytic in this.analyticEventList)
             {
-                this.analyticServices.UserProperties[analytic.TotalVirtualCurrencySpentProperty] = obj.Amount;
-                this.Track(analytic.TotalVirtualCurrencySpent(obj.CurrencyName, obj.Amount));
+                if(obj.Amount > 0)
+                    this.TotalVirtualCurrencyEarnedHandler(analytic,obj);
+                else
+                    this.TotalVirtualCurrencySpentHandler(analytic, obj);
             }
         }
-        
-        private void TotalVirtualCurrencyEarnedHandler(TotalVirtualCurrencyEarnedSignal obj)
+        private void TotalVirtualCurrencySpentHandler(IAnalyticEventFactory analytic ,UpdateCurrencySignal obj)
         {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.analyticServices.UserProperties[analytic.TotalVirtualCurrencyEarnedProperty] = obj.Amount;
-                this.Track(analytic.TotalVirtualCurrencyEarned(obj.CurrencyName, obj.Amount));
-            }
+            this.analyticServices.UserProperties[analytic.TotalVirtualCurrencySpentProperty] = this.uITemplateInventoryDataController.GetCurrencyData().TotalEarned - this.uITemplateInventoryDataController.GetCurrencyData().Value;
+            this.Track(analytic.TotalVirtualCurrencySpent(obj.Id, this.uITemplateInventoryDataController.GetCurrencyData().TotalEarned - this.uITemplateInventoryDataController.GetCurrencyData().Value));
+        }
+        
+        private void TotalVirtualCurrencyEarnedHandler(IAnalyticEventFactory analytic ,UpdateCurrencySignal obj)
+        {
+            this.analyticServices.UserProperties[analytic.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData().TotalEarned;
+            this.Track(analytic.TotalVirtualCurrencyEarned(obj.Id, this.uITemplateInventoryDataController.GetCurrencyData().TotalEarned));
+            
         }
         
         private void DaysPlayedHandler(DaysPlayedSignal obj)
@@ -334,8 +338,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Unsubscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Unsubscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
-            this.signalBus.Unsubscribe<TotalVirtualCurrencyEarnedSignal>(this.TotalVirtualCurrencyEarnedHandler);
-            this.signalBus.Unsubscribe<TotalVirtualCurrencySpentSignal>(this.TotalVirtualCurrencySpentHandler);
+            this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Unsubscribe<DaysPlayedSignal>(this.DaysPlayedHandler);
             this.signalBus.Unsubscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Unsubscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);

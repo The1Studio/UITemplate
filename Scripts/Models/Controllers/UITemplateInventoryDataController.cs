@@ -58,6 +58,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public int GetCurrencyValue(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0)).Value;
+        
+        public UITemplateCurrencyData GetCurrencyData(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0));
 
         public bool HasItem(string id) => this.uiTemplateInventoryData.IDToItemData.ContainsKey(id);
 
@@ -93,10 +95,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             {
                 await this.uiTemplateFlyingAnimationCurrency.PlayAnimation(startAnimationRect);
             }
-
-            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = addingValue, FinalValue = this.uiTemplateInventoryData.IDToCurrencyData[id].Value + addingValue, });
-
+            
             this.uiTemplateInventoryData.IDToCurrencyData[id].Value += addingValue;
+            if(addingValue>0) this.uiTemplateInventoryData.IDToCurrencyData[id].TotalEarned += addingValue;
+            
+            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = addingValue, FinalValue = this.uiTemplateInventoryData.IDToCurrencyData[id].Value, });
         }
 
         public void UpdateCurrency(int currentCoin, string id = DefaultSoftCurrencyID)

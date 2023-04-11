@@ -16,6 +16,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public Vector3        PositionOnScene    { get; set; }
         public Vector3        RotationOnScene    { get; set; }
         public DecorationMode Mode               { get; set; }
+        public bool           IsScaleRoot        { get; set; }
+        public int            Layer              { get; set; }
     }
 
     public enum DecorationMode

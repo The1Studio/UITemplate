@@ -21,12 +21,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         protected IGameAssets                       GameAssets;
         protected UITemplateInventoryDataController uiTemplateInventoryDataController;
+        protected SignalBus                         signalBus;
 
         [Inject]
-        protected void Init(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController)
+        protected void Init(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus)
         {
             this.GameAssets                        = gameAssets;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.signalBus                         = signalBus;
         }
 
         #endregion
@@ -41,7 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
         {
             this.transform.position    = record.PositionOnScene;
             this.transform.eulerAngles = record.RotationOnScene;
-            this.PositionUI            = this.transform.position + record.OffsetPositionOnUI;
+            this.PositionUI            = record.OffsetPositionOnUI;
             this.Category              = record.Id;
         }
 

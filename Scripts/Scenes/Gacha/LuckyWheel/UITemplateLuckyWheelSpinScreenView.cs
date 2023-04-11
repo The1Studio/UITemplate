@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
     using TheOneStudio.UITemplate.UITemplate.Blueprints.Gacha;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.EventSystems;
@@ -41,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
     }
 
     [PopupInfo(nameof(UITemplateLuckyWheelSpinScreenView), false)]
-    public class UITemplateLuckyWheelSpinScreenPresenter : BasePopupPresenter<UITemplateLuckyWheelSpinScreenView, UITemplateLuckyWheelSpinModel>
+    public class UITemplateLuckyWheelSpinScreenPresenter : UITemplateBasePopupPresenter<UITemplateLuckyWheelSpinScreenView, UITemplateLuckyWheelSpinModel>
     {
         private readonly EventSystem                eventSystem;
         private readonly DiContainer                diContainer;

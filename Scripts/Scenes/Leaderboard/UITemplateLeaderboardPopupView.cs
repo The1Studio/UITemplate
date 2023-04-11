@@ -8,9 +8,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
-    using UnityEditor;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -29,7 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     }
 
     [PopupInfo(nameof(UITemplateLeaderboardPopupView), false)]
-    public class UITemplateLeaderBoardPopupPresenter : BasePopupPresenter<UITemplateLeaderboardPopupView>
+    public class UITemplateLeaderBoardPopupPresenter : UITemplateBasePopupPresenter<UITemplateLeaderboardPopupView>
     {
         private const string VFXLeaderboard = "vfx_leaderboard";
         

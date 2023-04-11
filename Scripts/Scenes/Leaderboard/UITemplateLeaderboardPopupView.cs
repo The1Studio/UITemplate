@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
     using UnityEditor;
     using UnityEngine;
@@ -30,10 +31,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     [PopupInfo(nameof(UITemplateLeaderboardPopupView), false)]
     public class UITemplateLeaderBoardPopupPresenter : BasePopupPresenter<UITemplateLeaderboardPopupView>
     {
+        private const string VFXLeaderboard = "vfx_leaderboard";
+        
         #region inject
 
         private readonly DiContainer                   diContainer;
         private readonly UITemplateLevelDataController uiTemplateLevelDataController;
+        private readonly UITemplateSoundServices       uiTemplateSoundServices;
 
         #endregion
 
@@ -41,10 +45,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         private CancellationTokenSource animationCancelTokenSource;
         private List<Tween>             animationTweenList = new();
 
-        public UITemplateLeaderBoardPopupPresenter(SignalBus signalBus, DiContainer diContainer, UITemplateLevelDataController uiTemplateLevelDataController) : base(signalBus)
+        public UITemplateLeaderBoardPopupPresenter(SignalBus signalBus, DiContainer diContainer, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateSoundServices uiTemplateSoundServices) : base(signalBus)
         {
             this.diContainer                   = diContainer;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
+            this.uiTemplateSoundServices       = uiTemplateSoundServices;
         }
 
         protected override void OnViewReady()
@@ -85,10 +90,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             TestList[oldIndex].CountryFlag = this.View.CountryFlags.GetLocalDeviceFlagByDeviceLang();
             TestList[oldIndex].Name        = "You";
 
+            this.uiTemplateSoundServices.PlaySound(VFXLeaderboard);
+            
             //Setup view
             await this.View.Adapter.InitItemAdapter(TestList, this.diContainer);
             this.View.Adapter.ScrollTo(oldIndex - indexPadding);
-            
+
             //Create your clone
             this.yourClone                                   = Object.Instantiate(this.View.Adapter.GetItemViewsHolderIfVisible(oldIndex).root.gameObject, this.View.YourRankerParentTransform);
             this.yourClone.GetComponent<CanvasGroup>().alpha = 1;
@@ -113,6 +120,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         public override void Dispose()
         {
             base.Dispose();
+            this.uiTemplateSoundServices.StopSound(VFXLeaderboard);
             this.animationCancelTokenSource.Cancel();
             this.animationCancelTokenSource.Dispose();
             this.View.Adapter.StopScrollingIfAny();

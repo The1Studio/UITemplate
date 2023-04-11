@@ -13,7 +13,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         public virtual void PlaySoundClick() => this.PlaySound(this.KeySoundClick);
 
         public void PlaySound(string key) { AudioManager.Instance.PlaySound(key); }
+        public void StopSound(string key) { AudioManager.Instance.StopAllSound(key); }
 
-        public void PlayMusic(string key) { AudioManager.Instance.PlayPlayList(key); }
+        public void PlayMusic(string playList) { AudioManager.Instance.PlayPlayList(playList); }
     }
 }

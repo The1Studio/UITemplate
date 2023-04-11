@@ -17,7 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public long InterstitialAdInterval { get; set; }
     }
 
-    public class UITemplateAdServiceWrapper
+    public class UITemplateAdServiceWrapper : IInitializable
     {
         #region inject
 
@@ -30,8 +30,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        private long lastInterstitialAdTime;
-        private bool isBannerLoaded = false;
+        private DateTime LastEndInterstitial;
+        private bool     isBannerLoaded = false;
 
         public UITemplateAdServiceWrapper(ILogService               logService, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices, UITemplateAdsData uiTemplateAdsData,
                                           UITemplateAdServiceConfig config)
@@ -58,9 +58,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             await UniTask.Delay(TimeSpan.FromSeconds(5));
             this.ShowBannerInterval();
         }
+        
+        public virtual void HideBannerAd()
+        {
+            this.adServices.HideBannedAd();
+        }
 
         #endregion
-
+        
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
+        }
+        private void OnInterstitialAdClosedHandler()
+        {
+            this.LastEndInterstitial = DateTime.Now;
+        }
 
         #region InterstitialAd
 
@@ -68,15 +81,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowInterstitialAd(string place, bool force = false)
         {
-            var currentTimestamp = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
-            if (this.lastInterstitialAdTime + this.config.InterstitialAdInterval > currentTimestamp && !force)
+            if ((DateTime.Now - this.LastEndInterstitial).TotalSeconds < this.config.InterstitialAdInterval && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
                 return;
             }
-
-            this.lastInterstitialAdTime = currentTimestamp;
 
             this.signalBus.Fire(new InterstitialAdEligibleSignal(place));
             if (!this.adServices.IsInterstitialAdReady(place))

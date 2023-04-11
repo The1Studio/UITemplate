@@ -17,22 +17,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             signalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppFullScreenContentOpened);
 
             signalBus.Subscribe<RewardedAdDisplayedSignal>(this.OnDisplayRewardedAd);
-            signalBus.Subscribe<RewardAdCloseSignal>(this.OnRewardClose);
+            signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedAdEnded);
+            signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedAdEnded);
 
-            signalBus.Subscribe<RewardedInterstitialAdDisplayedSignal>(this.OnRewardInterDisplay);
-            signalBus.Subscribe<RewardInterstitialAdCloseSignal>(this.OnRewardInterClose);
+            signalBus.Subscribe<RewardedInterstitialAdCompletedSignal>(this.OnRewardInterDisplay);
+            signalBus.Subscribe<RewardInterstitialAdSkippedSignal>(this.OnRewardInterClose);
 
             signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayed);
-            adServices.InterstitialAdCompleted += this.OnInterstitialAdCompleted;
+            signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
         }
 
-        private void OnRewardInterClose(RewardInterstitialAdCloseSignal obj) { this.ResumeSound(); }
+        private void OnRewardInterClose(RewardInterstitialAdSkippedSignal obj) { this.ResumeSound(); }
 
-        private void OnRewardClose(RewardAdCloseSignal obj)                                 { this.ResumeSound(); }
+        private void OnRewardedAdEnded()                                                    { this.ResumeSound(); }
         private void OnAppFullScreenContentClosed(AppOpenFullScreenContentClosedSignal obj) { this.ResumeSound(); }
-        private void OnInterstitialAdCompleted(InterstitialAdNetwork arg1, string arg2)     { this.ResumeSound(); }
+        private void OnInterstitialAdClosed(InterstitialAdClosedSignal                 obj) { this.ResumeSound(); }
 
-        private void OnRewardInterDisplay(RewardedInterstitialAdDisplayedSignal obj) { this.PauseSound(); }
+        private void OnRewardInterDisplay(RewardedInterstitialAdCompletedSignal obj) { this.PauseSound(); }
 
         private void OnAppFullScreenContentOpened(AppOpenFullScreenContentOpenedSignal obj) { this.PauseSound(); }
 

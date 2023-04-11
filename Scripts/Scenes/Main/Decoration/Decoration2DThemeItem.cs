@@ -11,7 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
     {
         #region Cache
 
-        private SpriteRenderer spriteRenderer;
+        private SpriteRenderer                spriteRenderer;
 
         #endregion
 
@@ -53,5 +53,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
         {
             transform.localScale = new Vector3(signal.WidthScale, signal.HeightScale, 1);
         }
+
+        public override void HideItem()
+        {
+            this.spriteRenderer.sortingOrder = -2;
+        }
+
+        public override void ShowItem()
+        {
+            this.spriteRenderer.sortingOrder = this.record.Layer;
+        }
+        
     }
 }

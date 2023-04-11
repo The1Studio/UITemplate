@@ -43,6 +43,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             }
         }
 
+        public void HideDecorItems()
+        {
+            foreach (var item in this.categoryToDecorationItem)
+            {
+                item.Value.HideItem();
+            }
+        }
+
+        public void ShowDecorItems()
+        {
+            foreach (var item in this.categoryToDecorationItem)
+            {
+                item.Value.ShowItem();
+            }
+        }
+
         private IDecorationItem CreateDecorationItem(string category)
         {
             var decoration = this.uiTemplateDecorCategoryBlueprint[category].Mode is DecorationMode.Theme2D

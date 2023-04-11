@@ -13,7 +13,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
     {
         #region Cache
 
-        private bool isDoPunchScale;
+        private   bool                          isDoPunchScale;
+        protected UITemplateDecorCategoryRecord record;
 
         #endregion
 
@@ -41,6 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         public virtual void Init(UITemplateDecorCategoryRecord record)
         {
+            this.record                = record;
             this.transform.position    = record.PositionOnScene;
             this.transform.eulerAngles = record.RotationOnScene;
             this.PositionUI            = record.OffsetPositionOnUI;
@@ -59,6 +61,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
         }
 
         public abstract UniTask ChangeItem(string addressItem);
+
+        public virtual void ShowItem()
+        {
+        }
+
+        public virtual void HideItem()
+        {
+        }
 
         #endregion
     }

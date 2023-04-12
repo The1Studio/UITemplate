@@ -25,6 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly List<IMRECAdService>      mrecAdServices;
         private readonly UITemplateAdsData         uiTemplateAdsData;
         private readonly UITemplateAdServiceConfig config;
+        private readonly IAOAAdService             aoaAdService;
         private readonly ILogService               logService;
         private readonly SignalBus                 signalBus;
 
@@ -32,14 +33,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private DateTime LastEndInterstitial;
         private bool     isBannerLoaded = false;
+        private bool     isShowBannerAd;
 
         public UITemplateAdServiceWrapper(ILogService               logService, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices, UITemplateAdsData uiTemplateAdsData,
-                                          UITemplateAdServiceConfig config)
+                                          UITemplateAdServiceConfig config, IAOAAdService aoaAdService)
         {
             this.adServices        = adServices;
             this.mrecAdServices    = mrecAdServices;
             this.uiTemplateAdsData = uiTemplateAdsData;
             this.config            = config;
+            this.aoaAdService      = aoaAdService;
             this.logService        = logService;
             this.signalBus         = signalBus;
         }
@@ -48,19 +51,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual async void ShowBannerAd()
         {
+            this.isShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             this.ShowBannerInterval();
         }
 
         private async void ShowBannerInterval()
         {
-            this.adServices.ShowBannerAd();
+            if (this.isShowBannerAd)
+            {
+                this.adServices.ShowBannerAd();   
+            }
             await UniTask.Delay(TimeSpan.FromSeconds(5));
             this.ShowBannerInterval();
         }
         
         public virtual void HideBannerAd()
         {
+            this.isShowBannerAd = false;
             this.adServices.HideBannedAd();
         }
 
@@ -79,13 +87,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
 
-        public virtual void ShowInterstitialAd(string place, bool force = false)
+        public virtual bool ShowInterstitialAd(string place, bool force = false)
         {
             if ((DateTime.Now - this.LastEndInterstitial).TotalSeconds < this.config.InterstitialAdInterval && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
-                return;
+                return false;
             }
 
             this.signalBus.Fire(new InterstitialAdEligibleSignal(place));
@@ -93,12 +101,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.logService.Warning("InterstitialAd was not loaded");
 
-                return;
+                return false;
             }
 
             this.signalBus.Fire(new InterstitialAdCalledSignal(place));
             this.uiTemplateAdsData.WatchedInterstitialAds++;
+            this.aoaAdService.IsResumedFromAds = true;
             this.adServices.ShowInterstitialAd(place);
+
+            return true;
         }
 
         public virtual void LoadInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdDownloadedSignal(place)); }
@@ -119,6 +130,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsData.WatchedRewardedAds++;
+            this.aoaAdService.IsResumedFromAds = true;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 

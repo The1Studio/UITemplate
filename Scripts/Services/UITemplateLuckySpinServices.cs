@@ -33,10 +33,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public void Initialize() { }
 
-        public async void OpenLuckySpin()
+        public void OpenLuckySpin()
         {
             var isFreeSpin         = true;
-            var isUseFreeSpinToday = await this.uiTemplateLuckySpinController.IsUsedFreeSpinToDay();
+            var isUseFreeSpinToday = this.uiTemplateLuckySpinController.IsUsedFreeSpinToDay();
 
             if (isUseFreeSpinToday)
             {

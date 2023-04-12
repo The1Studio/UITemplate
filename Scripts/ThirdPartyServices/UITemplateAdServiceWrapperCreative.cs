@@ -10,15 +10,15 @@
     public class UITemplateAdServiceWrapperCreative : UITemplateAdServiceWrapper
     {
         public UITemplateAdServiceWrapperCreative(ILogService logService, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices, UITemplateAdsData uiTemplateAdsData,
-            UITemplateAdServiceConfig                         config) : base(
-            logService, signalBus, adServices, mrecAdServices, uiTemplateAdsData, config)
+                                                  UITemplateAdServiceConfig config, IAOAAdService aoaAdService) : base(logService, signalBus, adServices, mrecAdServices, uiTemplateAdsData, config,
+                                                                                                                       aoaAdService)
         {
         }
 
         public override void ShowBannerAd() { }
         public override void HideBannerAd() { }
 
-        public override void ShowInterstitialAd(string place, bool force = false) { }
+        public override bool ShowInterstitialAd(string place, bool force = false) { return true; }
 
         public override void ShowRewardedAd(string place, Action onComplete) { onComplete.Invoke(); }
 

@@ -11,5 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         void    Init(UITemplateDecorCategoryRecord record);
         void    ScaleItem();
         UniTask ChangeItem(string addressItem);
+        void    ShowItem();
+        void    HideItem();
     }
 }

@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI;
     using UnityEngine;
     using Zenject;
@@ -12,16 +13,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
     {
         #region Cache
 
-        private bool isDoPunchScale;
+        private   bool                          isDoPunchScale;
+        protected UITemplateDecorCategoryRecord record;
 
         #endregion
 
         #region Inject
 
-        protected IGameAssets GameAssets;
+        protected IGameAssets                       GameAssets;
+        protected UITemplateInventoryDataController uiTemplateInventoryDataController;
+        protected SignalBus                         signalBus;
 
         [Inject]
-        private void Init(IGameAssets gameAssets) { this.GameAssets = gameAssets; }
+        protected void Init(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus)
+        {
+            this.GameAssets                        = gameAssets;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.signalBus                         = signalBus;
+        }
 
         #endregion
 
@@ -31,11 +40,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         public string Category { get; private set; }
 
-        public void Init(UITemplateDecorCategoryRecord record)
+        public virtual void Init(UITemplateDecorCategoryRecord record)
         {
+            this.record = record;
+            
             this.transform.position    = record.PositionOnScene;
             this.transform.eulerAngles = record.RotationOnScene;
-            this.PositionUI            = this.transform.position + record.OffsetPositionOnUI;
+            this.PositionUI            = record.ButtonPosition;
             this.Category              = record.Id;
         }
 
@@ -51,6 +62,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
         }
 
         public abstract UniTask ChangeItem(string addressItem);
+
+        public virtual void ShowItem()
+        {
+        }
+
+        public virtual void HideItem()
+        {
+        }
 
         #endregion
     }

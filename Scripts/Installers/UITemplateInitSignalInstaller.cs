@@ -26,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
             this.Container.DeclareSignal<FirebaseInitializeSucceededSignal>();
             this.Container.DeclareSignal<AppOpenSignal>();
+            this.Container.DeclareSignal<ScaleDecoration2DItem>();
         }
     }
 }

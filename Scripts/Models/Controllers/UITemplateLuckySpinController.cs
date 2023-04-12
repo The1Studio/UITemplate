@@ -1,6 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
-    using Cysharp.Threading.Tasks;
+    using System;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services;
 
@@ -15,27 +15,27 @@
             this.internetService         = internetService;
         }
 
-        public async UniTask<bool> IsUsedFreeSpinToDay()
+        public bool IsUsedFreeSpinToDay()
         {
-            var isDiffDay = await this.internetService.IsDifferentDay(this.uiTemplateLuckySpinData.LastSpinTime);
+            var isDiffDay = this.internetService.IsDifferentDay(this.uiTemplateLuckySpinData.LastSpinTime, DateTime.Now);
 
             if (!isDiffDay) return this.uiTemplateLuckySpinData.IsUsedFreeSpin;
-            this.uiTemplateLuckySpinData.IsUsedFreeSpin              = false;
+            this.uiTemplateLuckySpinData.IsUsedFreeSpin = false;
 
             return this.uiTemplateLuckySpinData.IsUsedFreeSpin;
         }
 
-        public async void SaveTimeSpinToDay()
+        public void SaveTimeSpinToDay()
         {
             this.uiTemplateLuckySpinData.IsFirstTimeOpenLuckySpin = true;
 
-            if ( this.uiTemplateLuckySpinData.IsUsedFreeSpin)
+            if (this.uiTemplateLuckySpinData.IsUsedFreeSpin)
             {
                 return;
             }
 
-            this.uiTemplateLuckySpinData.IsUsedFreeSpin              = true;
-            this.uiTemplateLuckySpinData.LastSpinTime                = await this.internetService.GetCurrentTimeAsync();
+            this.uiTemplateLuckySpinData.IsUsedFreeSpin = true;
+            this.uiTemplateLuckySpinData.LastSpinTime   = DateTime.Now;
         }
     }
 }

@@ -181,10 +181,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                 if (!this.uiTemplateInventoryData.IDToItemData.TryGetValue(itemRecord.Id, out var existedItemData))
                 {
+#if CREATIVE
+                    this.uiTemplateInventoryData.IDToItemData.Add(itemRecord.Id, new UITemplateItemData(itemRecord.Id, shopRecord, itemRecord, UITemplateItemData.Status.Owned));
+#else
                     this.uiTemplateInventoryData.IDToItemData.Add(itemRecord.Id, new UITemplateItemData(itemRecord.Id, shopRecord, itemRecord, status));
+#endif
                 }
                 else
                 {
+#if CREATIVE
+                    existedItemData.CurrentStatus = UITemplateItemData.Status.Owned;
+#endif
                     existedItemData.ShopBlueprintRecord = shopRecord;
                     existedItemData.ItemBlueprintRecord = itemRecord;
                 }

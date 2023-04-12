@@ -1,6 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 {
-    using System;
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
@@ -59,12 +58,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         public override void HideItem()
         {
-            this.spriteRenderer.sortingOrder = -2;
+            this.spriteRenderer.enabled = false;
         }
 
         public override void ShowItem()
         {
-            this.spriteRenderer.sortingOrder = this.record.Layer;
+            this.spriteRenderer.enabled = true;
         }
         
     }

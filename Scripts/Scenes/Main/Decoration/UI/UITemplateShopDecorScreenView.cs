@@ -9,8 +9,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
-    using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
@@ -36,18 +34,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
     {
         #region Inject
 
-        private readonly UITemplateDecorationManager       uiTemplateDecorationManager;
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly IScreenManager                    screenManager;
-        private readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
-        private readonly IUnityIapServices                 unityUnityIapServices;
-        private readonly UITemplateInventoryData           uiTemplateInventoryData;
-        private readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
-        private readonly DiContainer                       diContainer;
-        private readonly UITemplateDecorCategoryBlueprint  uiTemplateDecorCategoryBlueprint;
-        private readonly UITemplateLuckySpinServices       uiTemplateLuckySpinServices;
-        private readonly UITemplateDailyRewardService      uiTemplateDailyRewardService;
-        private readonly UITemplateItemData                uiTemplateItemData;
+        protected readonly UITemplateDecorationManager       uiTemplateDecorationManager;
+        protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        protected readonly IScreenManager                    screenManager;
+        protected readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
+        protected readonly IUnityIapServices                 unityUnityIapServices;
+        protected readonly UITemplateInventoryData           uiTemplateInventoryData;
+        protected readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
+        protected readonly DiContainer                       diContainer;
+        protected readonly UITemplateDecorCategoryBlueprint  uiTemplateDecorCategoryBlueprint;
+        protected readonly UITemplateLuckySpinServices       uiTemplateLuckySpinServices;
+        protected readonly UITemplateDailyRewardService      uiTemplateDailyRewardService;
 
         #endregion
 
@@ -59,8 +56,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         #endregion
 
-        private const string Placement        = "Decoration";
-        private const string DefaultTabActive = "Room";
+        protected virtual string           AdPlacement      => "Decoration";
+        protected virtual string           DefaultTabActive => "Character";
 
         public UITemplateDecorScreenPresenter(SignalBus                         signalBus,
                                               UITemplateDecorationManager       uiTemplateDecorationManager,
@@ -99,8 +96,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         public override async UniTask BindData()
         {
+            this.uiTemplateAdServiceWrapper.HideBannerAd();
             await UniTask.CompletedTask;
             this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
+            this.uiTemplateDecorationManager.ShowDecorItems();
             await this.OnActiveTab(DefaultTabActive, true);
         }
 
@@ -112,8 +111,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         protected virtual async void OnClickBackButton()
         {
-            await this.CloseViewAsync();
-            await this.screenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
+            this.CloseView();
         }
 
         private void InitCategoryTabs()
@@ -123,10 +121,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
                 var categoryTabView = Object.Instantiate(this.View.categoryTabViewPrefab, this.View.categoryTabHolder);
                 this.idToCategoryTab.Add(record.Id, categoryTabView);
                 categoryTabView.OnButtonClick += () => this.OnClickCategoryTab(category);
-                var test = UITemplateExtension
-                    .GetUIPositionFromWorldPosition(this.View.categoryTabHolder.GetComponent<RectTransform>(),
-                                                    this.screenManager.RootUICanvas.UICamera,
-                                                    this.uiTemplateDecorationManager.GetDecoration(category).PositionUI);
                 categoryTabView.SetPosition(this.uiTemplateDecorationManager.GetDecoration(category).PositionUI);
             }
         }
@@ -277,7 +271,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         private void BuyWithAds(ItemCollectionItemModel obj)
         {
-            this.uiTemplateAdServiceWrapper.ShowRewardedAd(Placement, () =>
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(AdPlacement, () =>
             {
                 this.BuyItemCompleted(obj);
             });
@@ -312,6 +306,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
             this.currentCategoryTab = categoryId;
             await this.BindDataToAdapter();
+        }
+
+        public override void CloseView()
+        {
+            base.CloseView();
+            this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
     }
 }

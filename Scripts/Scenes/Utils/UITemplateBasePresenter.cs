@@ -196,7 +196,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             base.OnViewReady();
             UITemplateBaseScreenUtils.Instance.BindOnClickButton(this.View.GetType().Name, this.View.RectTransform.GetComponentsInChildren<Button>());
+#if CREATIVE
             UITemplateBaseScreenUtils.Instance.SetupCreativeMode(this);
+#endif
         }
     }
 
@@ -211,7 +213,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             base.OnViewReady();
             UITemplateBaseScreenUtils.Instance.BindOnClickButton(this.View.GetType().Name, this.View.RectTransform.GetComponentsInChildren<Button>());
+#if CREATIVE
             UITemplateBaseScreenUtils.Instance.SetupCreativeMode(this);
+#endif
         }
     }
 
@@ -226,7 +230,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             base.OnViewReady();
             UITemplateBaseScreenUtils.Instance.BindOnClickButton(this.View.GetType().Name, this.View.RectTransform.GetComponentsInChildren<Button>());
+#if CREATIVE
             UITemplateBaseScreenUtils.Instance.SetupCreativeMode(this);
+#endif
         }
     }
 
@@ -241,7 +247,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             base.OnViewReady();
             UITemplateBaseScreenUtils.Instance.BindOnClickButton(this.View.GetType().Name, this.View.RectTransform.GetComponentsInChildren<Button>());
+#if CREATIVE
             UITemplateBaseScreenUtils.Instance.SetupCreativeMode(this);
+#endif
         }
     }
 }

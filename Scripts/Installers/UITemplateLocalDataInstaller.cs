@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindLocalData<UITemplateUserJackpotData>();
             this.Container.BindLocalData<UITemplateAdsData>();
             this.Container.BindLocalData<UITemplateLuckySpinData>();
+            this.Container.BindLocalData<UITemplateBuildingData>();
             //Data controller
             this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateInventoryDataController>().AsCached();
@@ -24,6 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateSettingDataController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateJackpotController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateLuckySpinController>().AsCached();
+            this.Container.BindInterfacesAndSelfTo<UITemplateBuildingController>().AsCached();
         }
     }
 }

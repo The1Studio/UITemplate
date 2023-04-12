@@ -12,11 +12,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 
     public class ShopPackRecord
     {
-        public string       Id          { get; set; }
-        public List<string> Platforms   { get; set; }
-        public string       PackName    { get; set; }
-        public bool         IsRemoveAds { get; set; }
-        public List<int>    PackValues  { get; set; }
+        public string                  Id           { get; set; }
+        public List<string>            Platforms    { get; set; }
+        public string                  PackName     { get; set; }
+        public bool                    IsRemoveAds  { get; set; }
+        public Dictionary<string, int> RewardValues { get; set; }
 
         public ProductType ProductType  { get; set; }
         public string      ImageAddress { get; set; }

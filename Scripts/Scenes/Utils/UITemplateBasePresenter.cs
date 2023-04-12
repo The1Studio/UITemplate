@@ -62,6 +62,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             foreach (var button in buttons) button.onClick.AddListener(() => this.OnClickButton($"{SceneDirector.CurrentSceneName}/{screenName}", button));
         }
 
+#if CREATIVE
         public void SetupCreativeMode<TView>(BaseScreenPresenter<TView> presenter) where TView : IScreenView
         {
             this.creativeService.OnTripleTap.AddListener(() =>
@@ -165,6 +166,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 return fieldInfosSet.ToArray();
             }
         }
+#endif
 
         private class FieldInfoComparer : IEqualityComparer<FieldInfo>
         {

@@ -58,7 +58,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             base.OnViewReady();
             this.OpenViewAsync();
-            this.SignalBus.Fire<AppOpenSignal>();
         }
 
         public override UniTask BindData()

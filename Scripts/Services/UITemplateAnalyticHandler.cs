@@ -97,7 +97,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
 
             this.signalBus.Subscribe<PopupShowedSignal>(this.PopupShowedHandler);
-            this.signalBus.Subscribe<AppOpenSignal>(this.DayTrackHandler);
 
             //Ads events
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
@@ -327,7 +326,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticServices.UserProperties[analytic.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned;
         }
 
-        private void DayTrackHandler()
+        public void DayTrackHandler()
         {
             foreach (var analytic in this.analyticEventList)
             {
@@ -355,7 +354,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
             this.signalBus.Unsubscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
             this.signalBus.Unsubscribe<PopupShowedSignal>(this.PopupShowedHandler);
-            this.signalBus.Unsubscribe<AppOpenSignal>(this.DayTrackHandler);
         }
     }
 }

@@ -4,42 +4,54 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
+    using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using TheOneStudio.UITemplate.UITemplate.Blueprints.Gacha;
     using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
     public class UITemplateChestRoomScreenView : BaseView
     {
+        public UITemplateCurrencyView        CurrencyView;
         public List<UITemplateChestItemView> ChestItemViewList; // List of chest item view
         public Button                        NoThankButton;     // No thank button
-        public Button                        WatchAdButton;     // Watch ad button
+        public UITemplateAdsButton           WatchAdButton;     // Watch ad button
         public List<GameObject>              KeyObjectList;     // Open button
         public GameObject                    KeyGroupObject;
+        public Image                         bestPrizeImage;
     }
 
+    [ScreenInfo(nameof(UITemplateChestRoomScreenView))]
     public class UITemplateChestRoomScreenPresenter : UITemplateBaseScreenPresenter<UITemplateChestRoomScreenView>
     {
         #region region
 
         private readonly UITemplateGachaChestRoomBlueprint uiTemplateGachaChestRoomBlueprint;
         private readonly IGameAssets                       gameAssets;
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
 
         #endregion
 
-        private int currentOpenedAmount;
+        private int                                  currentOpenedAmount;
+        private int                                  currentKeyAmount;
         private List<UITemplateGachaChestRoomRecord> currentChestList;
-        
-        public UITemplateChestRoomScreenPresenter(SignalBus signalBus, UITemplateGachaChestRoomBlueprint uiTemplateGachaChestRoomBlueprint, IGameAssets gameAssets) : base(signalBus)
+
+        public UITemplateChestRoomScreenPresenter(SignalBus                         signalBus, UITemplateGachaChestRoomBlueprint uiTemplateGachaChestRoomBlueprint, IGameAssets gameAssets,
+                                                  UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper) : base(signalBus)
         {
             this.uiTemplateGachaChestRoomBlueprint = uiTemplateGachaChestRoomBlueprint;
             this.gameAssets                        = gameAssets;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
         }
-        
 
         protected override void OnViewReady()
         {
@@ -50,50 +62,102 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             {
                 uiTemplateChestItemView.ChestButton.onClick.AddListener(() => this.OnClickChestButton(uiTemplateChestItemView));
             }
+            this.View.WatchAdButton.OnViewReady(this.uiTemplateAdServiceWrapper);
         }
         
-        private async void OnClickChestButton(UITemplateChestItemView uiTemplateChestItemView)
-        {
-            this.currentOpenedAmount++;
-
-            var weights     = this.currentChestList.Select(value => value.Weight).ToList();
-            var randomChest = this.currentChestList.RandomGachaWithWeight(weights);
-            this.currentChestList.Remove(randomChest);
-            var rewardSpite = await this.gameAssets.LoadAssetAsync<Sprite>(randomChest.Icon);
-            var value = randomChest.Reward.Count == 1 ? randomChest.Reward.First().Value : 0;
-            uiTemplateChestItemView.OpenChest(rewardSpite, value);
-
-            if (this.currentOpenedAmount >= this.View.ChestItemViewList.Count)
-            {
-                await UniTask.Delay(TimeSpan.FromSeconds(1f));
-                this.CloseView();
-            }
-        }
-
-        private void OnClickWatchAdButton() { this.ResetKeys(); }
-
-        private void OnClickNoThankButton() { }
-
-        public override UniTask BindData()
+        public override async UniTask BindData()
         {
             this.currentOpenedAmount = 0;
-            this.currentChestList    = this.uiTemplateGachaChestRoomBlueprint.Values.ToList();
+            this.ResetKeys();
+            this.SetKeyObjectActive(true, true);
+            this.currentChestList = this.uiTemplateGachaChestRoomBlueprint.Values.Where(chestData => !this.uiTemplateInventoryDataController.IsAlreadyContainedItem(chestData.Reward))
+                                        .Take(this.View.ChestItemViewList.Count).ToList();
+
+            this.View.bestPrizeImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.currentChestList.First(prize => prize.IsBestPrize).Icon);
             foreach (var uiTemplateChestItemView in this.View.ChestItemViewList)
             {
                 uiTemplateChestItemView.Init();
             }
 
-            this.ResetKeys();
+            this.View.WatchAdButton.BindData("Chest_Room");
+            this.View.CurrencyView.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
+        }
 
-            return UniTask.CompletedTask;
+        private async void OnClickChestButton(UITemplateChestItemView uiTemplateChestItemView)
+        {
+            if (this.currentKeyAmount == 0) return;
+            this.currentOpenedAmount++;
+            this.currentKeyAmount--;
+            this.View.KeyObjectList[this.currentKeyAmount].SetActive(false);
+
+            var weights     = this.currentChestList.Select(value => value.Weight).ToList();
+            var randomChest = this.currentChestList.RandomGachaWithWeight(weights);
+            this.currentChestList.Remove(randomChest);
+            var rewardSpite = await this.gameAssets.LoadAssetAsync<Sprite>(randomChest.Icon);
+            var value       = randomChest.Reward.Count == 1 ? randomChest.Reward.First().Value : 0;
+            uiTemplateChestItemView.OpenChest(rewardSpite, value);
+
+            this.uiTemplateInventoryDataController.AddGenericReward(randomChest.Reward, uiTemplateChestItemView.transform as RectTransform);
+
+            if (this.currentOpenedAmount >= this.View.ChestItemViewList.Count)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
+                this.CloseView();
+            }
+
+            if (this.currentKeyAmount == 0)
+            {
+                this.SetKeyObjectActive(false);
+            }
+        }
+
+        private async void SetKeyObjectActive(bool isActive, bool force = false)
+        {
+            if (force)
+            {
+                this.View.NoThankButton.transform.localScale = !isActive ? Vector3.one : Vector3.zero;
+                this.View.WatchAdButton.transform.localScale = !isActive ? Vector3.one : Vector3.zero;
+                this.View.KeyGroupObject.transform.localScale = isActive ? Vector3.one : Vector3.zero;
+            }
+            else
+            {
+                var scaleDuration = 0.5f;
+                if (isActive)
+                {
+                    this.View.WatchAdButton.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InQuad);
+                    this.View.NoThankButton.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InQuad);
+                    await UniTask.Delay(TimeSpan.FromSeconds(scaleDuration));
+                    this.View.KeyGroupObject.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutQuad);
+                }
+                else
+                {
+                    this.View.KeyGroupObject.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InQuad);
+                    await UniTask.Delay(TimeSpan.FromSeconds(scaleDuration));
+                    this.View.WatchAdButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutQuad);
+                    this.View.NoThankButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutQuad);
+                }
+            }
+        }
+
+        private void OnClickWatchAdButton()
+        {
+            this.ResetKeys();
+            this.SetKeyObjectActive(true);
+        }
+
+        private void OnClickNoThankButton() { this.CloseView(); }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }
 
         private void ResetKeys()
         {
-            this.View.NoThankButton.gameObject.SetActive(false);
-            this.View.WatchAdButton.gameObject.SetActive(false);
-            this.View.KeyGroupObject.SetActive(true);
+            this.currentKeyAmount = 3;
 
+            this.SetKeyObjectActive(true);
             foreach (var keyObject in this.View.KeyObjectList)
             {
                 keyObject.SetActive(true);

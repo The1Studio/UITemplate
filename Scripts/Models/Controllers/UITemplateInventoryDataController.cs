@@ -213,5 +213,29 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 throw new Exception("Need to implemented!!!");
             }
         }
+        
+        public void AddGenericReward(Dictionary<string, int> reward, RectTransform startPosCurrency = null)
+        {
+            foreach (var (rewardKey, rewardValue) in reward)
+            {
+                this.AddGenericReward(rewardKey, rewardValue, startPosCurrency);
+            }
+        }
+        
+        public bool IsAlreadyContainedItem(Dictionary<string, int> reward)
+        {
+            foreach (var (rewardKey, _) in reward)
+            {
+                if (this.uiTemplateItemBlueprint.TryGetValue(rewardKey, out _))
+                {
+                    if (this.uiTemplateInventoryData.IDToItemData[rewardKey].CurrentStatus == UITemplateItemData.Status.Owned)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }

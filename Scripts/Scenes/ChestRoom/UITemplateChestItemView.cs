@@ -17,6 +17,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             this.SetChestActive(false);
             this.RewardImage.sprite = rewardSprite;
             this.RewardValue.text   = value.ToString();
+            if (value <= 1)
+            {
+                this.RewardImage.rectTransform.anchoredPosition = new Vector2(0, 0);
+                this.RewardImage.rectTransform.sizeDelta = new Vector2(220, 220);
+                this.RewardValue.gameObject.SetActive(false);
+            }
+            else
+            {
+                this.RewardImage.rectTransform.anchoredPosition = new Vector2(0, 15);
+                this.RewardImage.rectTransform.sizeDelta = new Vector2(150, 150);
+                this.RewardValue.gameObject.SetActive(true);
+            }
         }
 
         private void SetChestActive(bool isActive)

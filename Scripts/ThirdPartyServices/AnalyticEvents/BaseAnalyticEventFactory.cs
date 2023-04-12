@@ -52,12 +52,6 @@
 
         public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) { return new CustomEvent(); }
         
-        public virtual IEvent TotalVirtualCurrencyEarned(string virtualCurrencyName, long value)            => new CustomEvent();
-        
-        public virtual IEvent TotalVirtualCurrencySpent(string virtualCurrencyName, long value)             => new CustomEvent();
-        
-        public virtual IEvent DaysPlayed(int daysPlayed)                                                    => new CustomEvent();
-        
         public virtual IEvent TutorialCompletion(bool success, string tutorialId)                           { return new CustomEvent(); }
 
         public virtual IEvent EarnVirtualCurrency(string type, int amount) { return new CustomEvent(); }

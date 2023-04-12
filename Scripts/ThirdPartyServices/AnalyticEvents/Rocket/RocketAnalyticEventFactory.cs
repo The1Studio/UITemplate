@@ -57,12 +57,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
         public override IEvent TutorialCompletion(bool success, string tutorialId) { return new CustomEvent(); }
 
         public override IEvent EarnVirtualCurrency(string type, int amount) { return new CustomEvent(); }
-        
-        public override IEvent TotalVirtualCurrencyEarned(string virtualCurrencyName, long value) => new TotalVirtualCurrencyEarned(virtualCurrencyName, value);
-        
-        public override IEvent TotalVirtualCurrencySpent(string virtualCurrencyName, long value)  => new TotalVirtualCurrencySpent(virtualCurrencyName, value);
-        
-        public override IEvent DaysPlayed(int daysPlayed)                                         => new DaysPlayed(daysPlayed);
 
         public override void ForceUpdateAllProperties() { }
 

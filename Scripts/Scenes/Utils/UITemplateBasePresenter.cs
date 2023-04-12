@@ -16,26 +16,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
-    using Object = System.Object;
 
     internal class UITemplateBaseScreenUtils
     {
         private readonly IAnalyticServices       analyticService;
         private readonly UITemplateSoundServices soundServices;
-
-#if CREATIVE
-        private readonly CreativeService creativeService;
-#endif
-
+        
         public UITemplateBaseScreenUtils()
         {
             var diContainer = ZenjectUtils.GetCurrentContainer();
             this.analyticService = diContainer.Resolve<IAnalyticServices>();
             this.soundServices   = diContainer.Resolve<UITemplateSoundServices>();
-
-#if CREATIVE
-            this.creativeService = diContainer.Resolve<CreativeService>();
-#endif
         }
 
         public static UITemplateBaseScreenUtils Instance { get; set; }
@@ -65,7 +56,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 #if CREATIVE
         public void SetupCreativeMode<TView>(BaseScreenPresenter<TView> presenter) where TView : IScreenView
         {
-            this.creativeService.OnTripleTap.AddListener(() =>
+            var creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
+            creativeService.OnTripleTap.AddListener(() =>
             {
                 // If the view is not marked as HideOnCreative, then do nothing with it
                 if (presenter.View.GetType().GetCustomAttribute<CreativeAttribute>() is { HideOnCreative: false }) return;
@@ -73,7 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 var oldActiveStates = new Dictionary<GameObject, bool>();
 
                 // At First, set all active state to false
-                SetActiveRecursive(presenter.View.RectTransform, this.creativeService.IsShowUI, oldActiveStates);
+                SetActiveRecursive(presenter.View.RectTransform, creativeService.IsShowUI, oldActiveStates);
 
                 // Retrieve all fields from the view
                 foreach (var fieldInfo in GetAllFieldInfosIncludeBaseClass(presenter.View.GetType()))

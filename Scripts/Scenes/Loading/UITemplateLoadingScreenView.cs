@@ -86,11 +86,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                     this.startedLoadingTime = this.startedLoadingTime.Add(DateTime.Now - this.startedShowingAOATime);
                 }
 
-                var currentProgress       = this.loadingTypeToProgressPercent.Values.Average();
+                var currentProgress       = this.loadingTypeToProgressPercent.Values.ToList().Average();
                 var maximumLoadingPercent = (float)(DateTime.Now - this.startedLoadingTime).TotalSeconds / MinimumLoadingBlueprintTime;
                 progressInView = Mathf.Min(currentProgress, maximumLoadingPercent);
                 this.View.SetLoadingProgressValue(progressInView);
-                await UniTask.WaitForEndOfFrame();
+                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             }
 
             await this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);

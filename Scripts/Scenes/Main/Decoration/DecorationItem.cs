@@ -42,7 +42,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         public virtual void Init(UITemplateDecorCategoryRecord record)
         {
-            this.record                = record;
+            this.record = record;
+            
             this.transform.position    = record.PositionOnScene;
             this.transform.eulerAngles = record.RotationOnScene;
             this.PositionUI            = record.ButtonPosition;

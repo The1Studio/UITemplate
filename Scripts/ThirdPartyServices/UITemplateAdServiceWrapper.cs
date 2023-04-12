@@ -33,6 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private DateTime LastEndInterstitial;
         private bool     isBannerLoaded = false;
+        private bool     isShowBannerAd;
 
         public UITemplateAdServiceWrapper(ILogService               logService, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices, UITemplateAdsData uiTemplateAdsData,
                                           UITemplateAdServiceConfig config, IAOAAdService aoaAdService)
@@ -50,19 +51,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual async void ShowBannerAd()
         {
+            this.isShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             this.ShowBannerInterval();
         }
 
         private async void ShowBannerInterval()
         {
-            this.adServices.ShowBannerAd();
+            if (this.isShowBannerAd)
+            {
+                this.adServices.ShowBannerAd();   
+            }
             await UniTask.Delay(TimeSpan.FromSeconds(5));
             this.ShowBannerInterval();
         }
         
         public virtual void HideBannerAd()
         {
+            this.isShowBannerAd = false;
             this.adServices.HideBannedAd();
         }
 

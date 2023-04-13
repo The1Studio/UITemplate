@@ -20,8 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
         public void Dispose()
         {
-            this.cts.Cancel();
-            this.cts.Dispose();
+            this.cts?.Dispose();
             this.interactable = false;
         }
     }

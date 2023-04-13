@@ -281,6 +281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 426827116250624509}
   - component: {fileID: 1112777577092315752}
+  - component: {fileID: 7693232091692120266}
   m_Layer: 5
   m_Name: KeyStatusObject
   m_TagString: Untagged
@@ -337,6 +338,22 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &7693232091692120266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 564647236488835653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4882999b5bdc4bbcbcdf4f7b9d9f800e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KeySet:
+  - {fileID: 5598044799906262563}
+  - {fileID: 7554173676801593509}
+  - {fileID: 2538239485198056643}
 --- !u!1 &1544989343775681091
 GameObject:
   m_ObjectHideFlags: 0
@@ -2999,10 +3016,7 @@ MonoBehaviour:
   - {fileID: 6618391298763458919}
   NoThankButton: {fileID: 6321102845245968858}
   WatchAdButton: {fileID: 4340203913226058129}
-  KeyObjectList:
-  - {fileID: 5598044799906262563}
-  - {fileID: 7554173676801593509}
-  - {fileID: 2538239485198056643}
+  KeySetView: {fileID: 7693232091692120266}
   KeyGroupObject: {fileID: 564647236488835653}
   bestPrizeImage: {fileID: 840927717490324702}
 --- !u!224 &8855641366075975464 stripped

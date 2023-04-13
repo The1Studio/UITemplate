@@ -23,7 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         public List<UITemplateChestItemView> ChestItemViewList; // List of chest item view
         public Button                        NoThankButton;     // No thank button
         public UITemplateAdsButton           WatchAdButton;     // Watch ad button
-        public List<GameObject>              KeyObjectList;     // Open button
+        public UITemplateKeySetView          KeySetView;        // Key set view
         public GameObject                    KeyGroupObject;
         public Image                         bestPrizeImage;
     }
@@ -31,6 +31,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
     [ScreenInfo(nameof(UITemplateChestRoomScreenView))]
     public class UITemplateChestRoomScreenPresenter : UITemplateBaseScreenPresenter<UITemplateChestRoomScreenView>
     {
+        private const int MaxKeyAmount = 3;
+        
         #region region
 
         private readonly UITemplateGachaChestRoomBlueprint uiTemplateGachaChestRoomBlueprint;
@@ -41,8 +43,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         #endregion
 
         private int                                  currentOpenedAmount;
-        private int                                  currentKeyAmount;
         private List<UITemplateGachaChestRoomRecord> currentChestList;
+
+        private int CurrentKeyAmount
+        {
+            get => this.uiTemplateInventoryDataController.GetCurrencyValue(UITemplateInventoryDataController.DefaultChestRoomKeyCurrencyID);
+            set => this.uiTemplateInventoryDataController.UpdateCurrency(value, UITemplateInventoryDataController.DefaultChestRoomKeyCurrencyID);
+        }
 
         public UITemplateChestRoomScreenPresenter(SignalBus                         signalBus, UITemplateGachaChestRoomBlueprint uiTemplateGachaChestRoomBlueprint, IGameAssets gameAssets,
                                                   UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper) : base(signalBus)
@@ -63,6 +70,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
                 uiTemplateChestItemView.ChestButton.onClick.AddListener(() => this.OnClickChestButton(uiTemplateChestItemView));
             }
             this.View.WatchAdButton.OnViewReady(this.uiTemplateAdServiceWrapper);
+            this.View.KeyGroupObject.SetActive(true);
+            this.View.WatchAdButton.gameObject.SetActive(true);
+            this.View.NoThankButton.gameObject.SetActive(true);
         }
         
         public override async UniTask BindData()
@@ -78,17 +88,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             {
                 uiTemplateChestItemView.Init();
             }
-
+            
+            //Bind view element
+            this.View.KeySetView.BindData(this.SignalBus, this.CurrentKeyAmount);
             this.View.WatchAdButton.BindData("Chest_Room");
             this.View.CurrencyView.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
         }
 
         private async void OnClickChestButton(UITemplateChestItemView uiTemplateChestItemView)
         {
-            if (this.currentKeyAmount == 0) return;
+            if (this.CurrentKeyAmount == 0) return;
             this.currentOpenedAmount++;
-            this.currentKeyAmount--;
-            this.View.KeyObjectList[this.currentKeyAmount].SetActive(false);
+            this.CurrentKeyAmount--;
 
             var weights     = this.currentChestList.Select(value => value.Weight).ToList();
             var randomChest = this.currentChestList.RandomGachaWithWeight(weights);
@@ -105,7 +116,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
                 this.CloseView();
             }
 
-            if (this.currentKeyAmount == 0)
+            if (this.CurrentKeyAmount == 0)
             {
                 this.SetKeyObjectActive(false);
             }
@@ -150,18 +161,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         public override void Dispose()
         {
             base.Dispose();
+            //dispose view element
+            this.View.KeySetView.Dispose();
+            this.View.WatchAdButton.Dispose();
             this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }
 
         private void ResetKeys()
         {
-            this.currentKeyAmount = 3;
+            this.CurrentKeyAmount = MaxKeyAmount;
 
             this.SetKeyObjectActive(true);
-            foreach (var keyObject in this.View.KeyObjectList)
-            {
-                keyObject.SetActive(true);
-            }
         }
     }
 }

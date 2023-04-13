@@ -31,7 +31,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             base.BindData();
             this.UITemplateAdService.ShowMREC(AdViewPosition.Centered);
             this.SoundServices.PlaySoundLose();
-            this.UITemplateAdService.HideBannerAd();
             return UniTask.CompletedTask;
         }
 
@@ -43,7 +42,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         public override void Dispose()
         {
             base.Dispose(); 
-            this.UITemplateAdService.ShowBannerAd();
             this.UITemplateAdService.HideMREC(AdViewPosition.Centered);
         }
 

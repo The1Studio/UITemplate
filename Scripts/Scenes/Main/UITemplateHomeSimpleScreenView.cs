@@ -6,14 +6,10 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Jackpot;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
@@ -30,10 +26,9 @@
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
     public class UITemplateHomeSimpleScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, UITemplateInventoryData inventoryData, DiContainer diContainer, IScreenManager screenManager,
-            UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateInventoryDataController uiTemplateInventoryDataController) :
+            base(signalBus)
         {
-            this.inventoryData                     = inventoryData;
             this.diContainer                       = diContainer;
             this.ScreenManager                     = screenManager;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
@@ -51,9 +46,9 @@
         protected virtual void OnClickLevel()
         {
             this.ScreenManager.OpenScreen<UITemplateJackpotSpinPopupPresenter, UITemplateJackpotSpinPopupModel>(new UITemplateJackpotSpinPopupModel(() =>
-            {
-                Debug.Log($"Get Reward from Jackpot Complete");
-            }));
+                                                                                                                {
+                                                                                                                    Debug.Log($"Get Reward from Jackpot Complete");
+                                                                                                                }));
         }
 
         private UITemplateGachaPopupModel FakeGachaPage()
@@ -63,11 +58,7 @@
 
             for (var i = 0; i < count; i++)
             {
-                result.GachaPageModels.Add(new UITemplateGachaPageModel
-                {
-                    PageId        = i,
-                    ListGachaItem = this.FakeListItemInPageData()
-                });
+                result.GachaPageModels.Add(new UITemplateGachaPageModel { PageId = i, ListGachaItem = this.FakeListItemInPageData() });
             }
 
             return result;
@@ -80,12 +71,7 @@
 
             for (var i = 0; i < count; i++)
             {
-                result.Add(new UITemplateGachaItemModel
-                {
-                    ItemId     = i,
-                    IsSelected = i == 0,
-                    IsLocked   = i > 0 && Random.Range(0, 2) == 0
-                });
+                result.Add(new UITemplateGachaItemModel { ItemId = i, IsSelected = i == 0, IsLocked = i > 0 && Random.Range(0, 2) == 0 });
             }
 
             return result.OrderBy(o => o.IsLocked).ToList();
@@ -93,7 +79,7 @@
 
         protected virtual void OnClickPlay()
         {
-            this.inventoryData.IDToCurrencyData["Coin"].Value = 1000;
+            this.uiTemplateInventoryDataController.UpdateCurrency(1000);
             this.ScreenManager.OpenScreen<UITemplateDecorScreenPresenter>();
         }
 
@@ -111,7 +97,6 @@
 
         #region inject
 
-        private readonly   UITemplateInventoryData           inventoryData;
         private readonly   DiContainer                       diContainer;
         protected readonly IScreenManager                    ScreenManager;
         protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;

@@ -2,13 +2,15 @@
 {
     public class UITemplateCurrencyData
     {
-        internal string Id    { get; private set; }
-        public   int    Value { get; internal set; }
+        public string Id       { get; }
+        public int    Value    { get; set; }
+        public int    MaxValue { get; set; }
 
-        public UITemplateCurrencyData(string id, int value)
+        public UITemplateCurrencyData(string id, int value, int maxValue)
         {
-            this.Id    = id;
-            this.Value = value;
+            this.Id       = id;
+            this.Value    = value;
+            this.MaxValue = maxValue;
         }
     }
 }

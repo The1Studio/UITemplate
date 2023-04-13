@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 4139902883742606776}
   - component: {fileID: 2216099273553929476}
   - component: {fileID: 8579896479278194864}
+  - component: {fileID: 3231115170648685329}
   m_Layer: 5
   m_Name: ImgChest
   m_TagString: Untagged
@@ -273,6 +274,26 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!95 &3231115170648685329
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3406522712679392295}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: aced70374d71b4471985614900cfd1bc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8258116394429331787
 GameObject:
   m_ObjectHideFlags: 0

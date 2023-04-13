@@ -23,6 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.uiTemplateShopPackBlueprint = uiTemplateShopPackBlueprint;
             this.unityIapServices            = unityIapServices;
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnBlueprintLoaded);
+            this.signalBus.Subscribe<UnityIAPOnPurchaseCompleteSignal>(this.OnHandleRestorePurchase);
         }
 
         private void OnBlueprintLoaded(LoadBlueprintDataSucceedSignal obj)
@@ -48,7 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.unityIapServices.InitIapServices(dicData);
         }
 
-        public void BuyProduct(GameObject source ,string productId, Action<string> onComplete = null, Action<string> onFail = null)
+        public void BuyProduct(GameObject source, string productId, Action<string> onComplete = null, Action<string> onFail = null)
         {
             this.unityIapServices.BuyProductID(productId, (x) =>
             {
@@ -72,6 +73,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.signalBus.Fire(new UITemplateAddRewardsSignal(rewardItemDatas, source));
             }
         }
+
+        private void OnHandleRestorePurchase(UnityIAPOnPurchaseCompleteSignal obj) { this.OnPurchaseComplete(obj.ProductID, null); }
 
         public void RestorePurchase(Action onComplete = null) { this.unityIapServices.RestorePurchases(onComplete); }
     }

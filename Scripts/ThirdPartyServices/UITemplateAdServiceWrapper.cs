@@ -142,6 +142,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowMREC(AdViewPosition adViewPosition)
         {
+            if (this.adServices.IsRemoveAds()) return;
+
             var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(adViewPosition));
             
             if (mrecAdService != null)

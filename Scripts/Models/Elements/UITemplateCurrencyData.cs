@@ -10,7 +10,7 @@
         [OdinSerialize] public int    TotalEarned { get; internal set; }
         [OdinSerialize] public int    MaxValue    { get; set; }
 
-        public UITemplateCurrencyData(string id, int value, int totalEarned = 0)
+        public UITemplateCurrencyData(string id, int value, int maxValue, int totalEarned = 0)
         {
             this.Id          = id;
             this.Value       = value;

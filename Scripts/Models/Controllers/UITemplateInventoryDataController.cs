@@ -79,9 +79,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
         
-        public int GetCurrencyValue(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)).Value;
+        public int GetCurrencyValue(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)).Value;
         
-        public UITemplateCurrencyData GetCurrencyData(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max));
+        public UITemplateCurrencyData GetCurrencyData(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max));
         
         public bool IsCurrencyFull(string id)
         {

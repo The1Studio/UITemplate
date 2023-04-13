@@ -27,7 +27,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             this.SetKeyAmount(obj.FinalValue);
         }
 
-        public void Dispose() { this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.OnCurrencyUpdated); }
+        public void Dispose()
+        {
+            this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.OnCurrencyUpdated);
+        }
 
         private void SetKeyAmount(int keyAmount)
         {
@@ -36,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
                 gameObject.SetActive(false);
             }
 
-            for (var i = 0; i < keyAmount; i++)
+            for (var i = 0; i < Math.Min(keyAmount, this.KeySet.Count); i++)
             {
                 this.KeySet[i].SetActive(true);
             }

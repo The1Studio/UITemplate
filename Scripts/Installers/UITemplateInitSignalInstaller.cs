@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
@@ -13,7 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<FTUEButtonClickSignal>();
             this.Container.DeclareSignal<FTUEManualTriggerSignal>();
             this.Container.DeclareSignal<TutorialCompletionSignal>();
-            
+
             //Signal
             this.Container.DeclareSignal<RewardedAdEligibleSignal>();
             this.Container.DeclareSignal<RewardedAdCalledSignal>();
@@ -26,6 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
             this.Container.DeclareSignal<FirebaseInitializeSucceededSignal>();
             this.Container.DeclareSignal<ScaleDecoration2DItem>();
+            this.Container.DeclareSignal<UITemplateAddRewardsSignal>();
         }
     }
 }

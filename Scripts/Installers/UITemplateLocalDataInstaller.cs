@@ -6,7 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using Zenject;
 
-    public class UITemplateLocalDataInstaller:Installer<UITemplateLocalDataInstaller>
+    public class UITemplateLocalDataInstaller : Installer<UITemplateLocalDataInstaller>
     {
         public override void InstallBindings()
         {
@@ -18,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindLocalData<UITemplateAdsData>();
             this.Container.BindLocalData<UITemplateLuckySpinData>();
             this.Container.BindLocalData<UITemplateBuildingData>();
+            this.Container.BindLocalData<UITemplateRewardData>();
             //Data controller
             this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateInventoryDataController>().AsCached();
@@ -26,6 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateJackpotController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateLuckySpinController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateBuildingController>().AsCached();
+            this.Container.BindInterfacesAndSelfTo<UITemplateHandleRewardController>().AsCached();
         }
     }
 }

@@ -44,6 +44,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Reward Handle
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<IUITemplateBaseReward>();
             this.Container.BindInterfacesAndSelfTo<UITemplateHandleRewardServices>().AsCached().NonLazy();
+            this.Container.Bind<UITemplateGetRealRewardHelper>().AsCached().NonLazy();
         }
     }
 }

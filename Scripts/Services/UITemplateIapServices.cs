@@ -48,16 +48,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.unityIapServices.InitIapServices(dicData);
         }
 
-        public void BuyProduct(GameObject source, string productId, Action<string> onComplete = null, Action<string> onFail = null)
+        public void BuyProduct(GameObject source ,string productId, Action<string> onComplete = null, Action<string> onFail = null)
         {
             this.unityIapServices.BuyProductID(productId, (x) =>
             {
-                this.OnPurchaseComplete(source, productId);
+                this.OnPurchaseComplete(productId, source);
                 onComplete?.Invoke(x);
             }, onFail);
         }
 
-        private void OnPurchaseComplete(GameObject source, string productId)
+        private void OnPurchaseComplete(string productId, GameObject source)
         {
             var dataShopPackRecord = this.uiTemplateShopPackBlueprint[productId];
             var rewardItemDatas    = new Dictionary<string, UITemplateRewardItemData>();

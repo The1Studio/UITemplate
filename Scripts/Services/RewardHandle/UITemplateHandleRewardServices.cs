@@ -55,13 +55,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
             {
                 //Set StartPosAnimation for each reward
 
-                if (startPosAnimationDictionary.TryGetValue(data.Key, out var startPosAnimationRecord) && this.dicRewardHandle.ContainsKey(data.Key))
+                if (startPosAnimationDictionary.TryGetValue(data.Key, out var animatinoPos) && this.dicRewardHandle.ContainsKey(data.Key))
                 {
-                    this.dicRewardHandle[data.Key].StartPosAnimation  = startPosAnimationRecord.Item1;
-                    this.dicRewardHandle[data.Key].TargetPosAnimation = startPosAnimationRecord.Item2;
                 }
 
-                this.ReceiveReward(data.Key, data.Value.RewardValue, data.Value.AddressableFlyingItem);
+                this.ReceiveReward(data.Key, data.Value.RewardValue, animatinoPos?.Item1, animatinoPos?.Item2);
             }
         }
 
@@ -71,19 +69,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
             {
                 this.uiTemplateHandleRewardController.CheckToAddReward(data.Key, data.Value.Repeat, data.Value.RewardValue, data.Value.AddressableFlyingItem);
 
-                if (this.dicRewardHandle.TryGetValue(data.Key, out var dicRewardRecord))
-                {
-                    dicRewardRecord.ReceiveReward(data.Value.RewardValue, data.Value.AddressableFlyingItem);
-                }
-
-                this.uiTemplateHandleRewardController.CheckToRemoveReward(data.Key);
+                this.ReceiveReward(data.Key, data.Value.RewardValue, obj.SourceGameObject.transform as RectTransform,
+                    obj.SourceGameObject.transform as RectTransform);
             }
         }
 
-        private void ReceiveReward(string rewardKey, string value, string addressableFlyingItem)
+        private void ReceiveReward(string rewardKey, string value, RectTransform startPos = null, RectTransform endPos = null)
         {
             if (!this.dicRewardHandle.TryGetValue(rewardKey, out var dicRewardRecord)) return;
-            dicRewardRecord.ReceiveReward(value, addressableFlyingItem);
+            dicRewardRecord.ReceiveReward(value, startPos);
             this.uiTemplateHandleRewardController.CheckToRemoveReward(rewardKey);
         }
     }

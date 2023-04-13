@@ -30,6 +30,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public string RewardValue           { get; set; }
         public int    Repeat                { get; set; }
         public string RewardIcon            { get; set; }
+        public string RewardContent         { get; set; }
         public string AddressableFlyingItem { get; set; }
     }
 }

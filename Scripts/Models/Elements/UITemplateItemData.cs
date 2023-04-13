@@ -13,16 +13,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public          Status CurrentStatus;
         public          int    RemainingAdsProgress;
 
-        [JsonIgnore]
-        public UITemplateShopRecord ShopBlueprintRecord { get; internal set; }
+        [JsonIgnore] public UITemplateShopRecord ShopBlueprintRecord { get; internal set; }
 
-        [JsonIgnore]
-        public UITemplateItemRecord ItemBlueprintRecord { get; internal set; }
+        [JsonIgnore] public UITemplateItemRecord ItemBlueprintRecord { get; internal set; }
 
-        public UITemplateItemData(string               id,
-                                  UITemplateShopRecord shopBlueprintRecord,
-                                  UITemplateItemRecord itemBlueprintRecord,
-                                  Status               currentStatus = Status.Locked)
+        public UITemplateItemData(string id,
+            UITemplateShopRecord shopBlueprintRecord,
+            UITemplateItemRecord itemBlueprintRecord,
+            Status currentStatus = Status.Locked)
         {
             this.Id                  = id;
             this.CurrentStatus       = currentStatus;
@@ -53,7 +51,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             Progression  = 1 << 4,
             Gift         = 1 << 5,
             DailyReward  = 1 << 6,
-            LuckySpin        = 1 << 7,
+            LuckySpin    = 1 << 7,
+            StartedPack  = 1 << 8,
             All          = IAP | SoftCurrency | Ads | Progression | Gift | DailyReward | LuckySpin
         }
 
@@ -68,10 +67,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
                 //Check status first
                 var currentStatusComparison = x.CurrentStatus.CompareTo(y.CurrentStatus);
+
                 if (currentStatusComparison != 0) return currentStatusComparison;
 
                 //If status is equal, then check progress
                 var progressComparison = x.RemainingAdsProgress.CompareTo(y.RemainingAdsProgress);
+
                 if (progressComparison != 0) return progressComparison;
 
                 //if progress is equal, then check id

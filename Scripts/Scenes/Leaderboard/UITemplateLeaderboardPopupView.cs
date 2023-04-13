@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -23,6 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         public Button                       CloseButton;
         public Transform                    YourRankerParentTransform;
         public CountryFlags                 CountryFlags;
+        public TMP_Text                     BetterThanText;
         public int                          MaxLevel    = 200;
         public int                          LowestRank  = 68365;
         public int                          HighestRank = 156;
@@ -32,7 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     public class UITemplateLeaderBoardPopupPresenter : UITemplateBasePopupPresenter<UITemplateLeaderboardPopupView>
     {
         private const string SFXLeaderboard = "sfx_leaderboard";
-        
+
         #region inject
 
         private readonly DiContainer                   diContainer;
@@ -45,7 +47,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         private CancellationTokenSource animationCancelTokenSource;
         private List<Tween>             animationTweenList = new();
 
-        public UITemplateLeaderBoardPopupPresenter(SignalBus signalBus, DiContainer diContainer, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateSoundServices uiTemplateSoundServices) : base(signalBus)
+        public UITemplateLeaderBoardPopupPresenter(SignalBus               signalBus, DiContainer diContainer, UITemplateLevelDataController uiTemplateLevelDataController,
+                                                   UITemplateSoundServices uiTemplateSoundServices) : base(signalBus)
         {
             this.diContainer                   = diContainer;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
@@ -90,8 +93,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             TestList[oldIndex].CountryFlag = this.View.CountryFlags.GetLocalDeviceFlagByDeviceLang();
             TestList[oldIndex].Name        = "You";
 
+
             this.uiTemplateSoundServices.PlaySound(SFXLeaderboard);
-            
+
             //Setup view
             await this.View.Adapter.InitItemAdapter(TestList, this.diContainer);
             this.View.Adapter.ScrollTo(oldIndex - indexPadding);
@@ -100,7 +104,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             this.yourClone                                   = Object.Instantiate(this.View.Adapter.GetItemViewsHolderIfVisible(oldIndex).root.gameObject, this.View.YourRankerParentTransform);
             this.yourClone.GetComponent<CanvasGroup>().alpha = 1;
             var cloneView = this.yourClone.GetComponent<UITemplateLeaderboardItemView>();
-            
+            this.View.BetterThanText.text = this.GetBetterThanText(oldRank);
+
             this.animationCancelTokenSource = new CancellationTokenSource();
             //Do animation
             //Do scale up
@@ -108,14 +113,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one * 1.1f, scaleTime).SetEase(Ease.InOutBack));
             await UniTask.Delay(TimeSpan.FromSeconds(scaleTime), cancellationToken: this.animationCancelTokenSource.Token);
             //Do move to new rank
-            this.animationTweenList.Add(DOTween.To(() => oldRank, setValue => cloneView.SetRank(setValue), newRank, scrollDuration));
+            cloneView.ShowRankUP();
+            this.animationTweenList.Add(DOTween.To(() => 0, setValue => cloneView.SetRankUp(setValue), oldRank - newRank, scrollDuration));
+            this.animationTweenList.Add(DOTween.To(() => oldRank, setValue =>
+                                                                  {
+                                                                      cloneView.SetRank(setValue);
+                                                                      this.View.BetterThanText.text = this.GetBetterThanText(setValue);
+                                                                  }, newRank, scrollDuration));
             this.View.Adapter.SmoothScrollTo(newIndex - indexPadding, scrollDuration);
             await UniTask.Delay(TimeSpan.FromSeconds(scrollDuration), cancellationToken: this.animationCancelTokenSource.Token);
             //Do scale down
             this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack));
-            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime + 1), cancellationToken: this.animationCancelTokenSource.Token);
+            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime + 2), cancellationToken: this.animationCancelTokenSource.Token);
             this.CloseView();
         }
+
+
+        private string GetBetterThanText(int currentRank) =>
+            $"you are better than <color=#2DF2FF><size=120%>{1f * (this.View.LowestRank * 2 - currentRank) / (this.View.LowestRank * 2) * 100:F2}%</size ></color > of people";
 
         public override void Dispose()
         {
@@ -128,6 +143,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             {
                 tween.Kill();
             }
+
             Object.Destroy(this.yourClone);
         }
     }

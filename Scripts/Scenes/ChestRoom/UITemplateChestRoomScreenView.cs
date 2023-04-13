@@ -135,17 +135,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
                 var scaleDuration = 0.5f;
                 if (isActive)
                 {
-                    this.View.WatchAdButton.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InQuad);
-                    this.View.NoThankButton.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InQuad);
+                    this.View.WatchAdButton.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
+                    this.View.NoThankButton.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
                     await UniTask.Delay(TimeSpan.FromSeconds(scaleDuration));
-                    this.View.KeyGroupObject.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutQuad);
+                    this.View.KeyGroupObject.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
                 }
                 else
                 {
-                    this.View.KeyGroupObject.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InQuad);
+                    this.View.KeyGroupObject.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
                     await UniTask.Delay(TimeSpan.FromSeconds(scaleDuration));
-                    this.View.WatchAdButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutQuad);
-                    this.View.NoThankButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutQuad);
+                    this.View.WatchAdButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
+                    this.View.NoThankButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
                 }
             }
         }

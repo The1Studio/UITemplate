@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 {
+    using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using TMPro;
@@ -24,16 +25,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
     public class UITemplateLeaderboardItemView : TViewMono
     {
-        public TMP_Text RankText;
-        public TMP_Text NameText;
-        public Image    FlagImage;
-        public Image    BackGround;
-
+        public TMP_Text   RankText;
+        public TMP_Text   NameText;
+        public Image      FlagImage;
+        public Image      BackGround;
+        public TMP_Text   RankUpText;
+        public GameObject RankUpObject;
 
         public Sprite OtherSpriteBg;
         public Sprite YourSpriteBg;
 
         public void SetRank(int rank) { this.RankText.text = $"#{rank}"; }
+        public void SetRankUp(int rankUp) { this.RankUpText.text = rankUp.ToString(); }
+        public void ShowRankUP()
+        {
+            this.RankUpObject.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+        }
     }
 
     public class UITemplateLeaderboardItemPresenter : BaseUIItemPresenter<UITemplateLeaderboardItemView, UITemplateLeaderboardItemModel>
@@ -48,6 +55,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             this.View.NameText.fontSize = param.IsYou ? 50 : 30;
             this.View.FlagImage.sprite  = param.CountryFlag;
             this.View.FlagImage.gameObject.SetActive(!param.IsYou);
+            this.View.RankUpObject.gameObject.SetActive(param.IsYou);
+            this.View.RankUpObject.transform.localScale = Vector3.zero;
 
             this.View.BackGround.sprite                 = param.IsYou ? this.View.YourSpriteBg : this.View.OtherSpriteBg;
             this.View.GetComponent<CanvasGroup>().alpha = param.IsYou ? 0 : 1;

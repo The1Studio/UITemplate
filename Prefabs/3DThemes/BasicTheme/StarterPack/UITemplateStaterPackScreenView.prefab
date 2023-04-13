@@ -268,10 +268,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
+  m_fontSize: 62.35
   m_fontSizeBase: 80
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -344,8 +344,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.020004272, y: 0.5}
-  m_SizeDelta: {x: 0, y: -2}
+  m_AnchoredPosition: {x: -29.92398, y: -4348.005}
+  m_SizeDelta: {x: 572.9247, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1042949074535977086
 GameObject:
@@ -545,7 +545,7 @@ GameObject:
   - component: {fileID: 5671081061447916849}
   - component: {fileID: 6840708203496398266}
   m_Layer: 5
-  m_Name: ImgCar
+  m_Name: ImgGift
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -568,7 +568,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -459}
+  m_AnchoredPosition: {x: 0, y: -402}
   m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4913454560944881296
@@ -1182,10 +1182,10 @@ RectTransform:
   m_Father: {fileID: 7481732293775344499}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -29.92398, y: 130.3}
-  m_SizeDelta: {x: 572.9247, y: 130}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8455415505144835927
 MonoBehaviour:
@@ -2641,8 +2641,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 104.96997}
+  m_SizeDelta: {x: 0, y: 209.94}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8967080171175537112
 CanvasRenderer:
@@ -2974,6 +2974,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8814671947969535310}
   m_PrefabAsset: {fileID: 0}
+--- !u!225 &686581714827304052
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8665239719399496410}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &1137469507149818241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2993,15 +3005,5 @@ MonoBehaviour:
   btnRestore: {fileID: 6331512407492528840}
   btnPolicy: {fileID: 5817125564513715451}
   btnTerms: {fileID: 8239405276068272150}
---- !u!225 &686581714827304052
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8665239719399496410}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
+  imgGift: {fileID: 4729271796056625979}
+  adapter: {fileID: 73649314838317280}

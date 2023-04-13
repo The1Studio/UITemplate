@@ -6,8 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
 
     public class UITemplateAddRewardsSignal
     {
-        public Dictionary<string, UITemplateRewardItemData> RewardItemDatas { get; }
+        public Dictionary<string, UITemplateRewardItemData> RewardItemDatas  { get; }
         public GameObject                                   SourceGameObject { get; }
+
         public UITemplateAddRewardsSignal(Dictionary<string, UITemplateRewardItemData> rewardItemDatas, GameObject sourceGameObject)
         {
             this.RewardItemDatas  = rewardItemDatas;

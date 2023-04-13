@@ -8,22 +8,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using GameFoundation.Scripts.UIModule.Utilities.LoadImage;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.IAPServices;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
     public class UITemplateStaterPackModel
     {
-        public string                             PackId           { get; set; }
-        public string                             ImageGiftAddress { get; set; }
-        public string                             PolicyAddress    { get; set; }
-        public string                             TermsAddress     { get; set; }
-        public List<UITemplateStartPackItemModel> StarterDatas     { get; set; } = new();
-        public Action<string>                     OnComplete       { get; set; }
-        public Action<string>                     OnFail           { get; set; }
-        public Action                             OnRestore        { get; set; }
+        public string         PackId     { get; set; }
+        public Action<string> OnComplete { get; set; }
     }
 
     public class UITemplateStaterPackScreenView : BaseView
@@ -40,16 +36,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     [ScreenInfo(nameof(UITemplateStaterPackScreenView))]
     public class UITemplateStartPackScreenPresenter : UITemplateBaseScreenPresenter<UITemplateStaterPackScreenView, UITemplateStaterPackModel>
     {
-        private readonly DiContainer       diContainer;
-        private readonly LoadImageHelper   loadImageHelper;
-        private readonly IUnityIapServices iapServices;
+        private readonly UITemplateShopPackBlueprint  uiTemplateShopPackBlueprint;
+        private readonly UITemplateIapServices        uiTemplateIapServices;
+        private readonly UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint;
+        private readonly DiContainer                  diContainer;
+        private readonly LoadImageHelper              loadImageHelper;
+        private readonly IUnityIapServices            iapServices;
 
-        public UITemplateStartPackScreenPresenter(SignalBus signalBus, DiContainer diContainer, LoadImageHelper loadImageHelper, IUnityIapServices iapServices, ILogService logger) : base(signalBus,
+        public UITemplateStartPackScreenPresenter(SignalBus signalBus, UITemplateShopPackBlueprint uiTemplateShopPackBlueprint, UITemplateIapServices uiTemplateIapServices,
+            UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint, DiContainer diContainer,
+            LoadImageHelper loadImageHelper,
+            IUnityIapServices iapServices, ILogService logger) : base(signalBus,
             logger)
         {
-            this.diContainer     = diContainer;
-            this.loadImageHelper = loadImageHelper;
-            this.iapServices     = iapServices;
+            this.uiTemplateShopPackBlueprint  = uiTemplateShopPackBlueprint;
+            this.uiTemplateIapServices        = uiTemplateIapServices;
+            this.uiTemplateMiscParamBlueprint = uiTemplateMiscParamBlueprint;
+            this.diContainer                  = diContainer;
+            this.loadImageHelper              = loadImageHelper;
+            this.iapServices                  = iapServices;
         }
 
         protected override void OnViewReady()
@@ -68,28 +73,53 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 
         private void OnOpenPolicy()
         {
-            if (!this.Model.PolicyAddress.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(this.uiTemplateMiscParamBlueprint.PolicyAddress))
             {
-                Application.OpenURL(this.Model.PolicyAddress);
+                Application.OpenURL(this.uiTemplateMiscParamBlueprint.PolicyAddress);
             }
         }
 
         private void OnOpenTerm()
         {
-            if (!this.Model.TermsAddress.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(this.uiTemplateMiscParamBlueprint.TermsAddress))
             {
-                Application.OpenURL(this.Model.TermsAddress);
+                Application.OpenURL(this.uiTemplateMiscParamBlueprint.TermsAddress);
             }
         }
 
-        private void OnRestore() { this.iapServices.RestorePurchases(this.Model.OnRestore); }
+        private void OnRestore() { this.uiTemplateIapServices.RestorePurchase(() => { }); }
 
-        private void OnBuyClick() { this.iapServices.BuyProductID(this.Model.PackId, this.Model.OnComplete, this.Model.OnFail); }
+        private void OnBuyClick()
+        {
+            this.uiTemplateIapServices.BuyProduct(this.View.btnBuy.gameObject, this.Model.PackId, (x) =>
+            {
+                this.CloseView();
+                this.Model.OnComplete?.Invoke(x);
+            });
+        }
 
         public override async UniTask BindData(UITemplateStaterPackModel screenModel)
         {
-            this.View.imgGift.sprite = await this.loadImageHelper.LoadLocalSprite(screenModel.ImageGiftAddress);
-            _                        = this.View.adapter.InitItemAdapter(screenModel.StarterDatas, this.diContainer);
+            if (this.uiTemplateShopPackBlueprint.TryGetValue(screenModel.PackId, out var shopPackRecord))
+            {
+                if (!shopPackRecord.ImageAddress.IsNullOrEmpty())
+                {
+                    this.View.imgGift.sprite = await this.loadImageHelper.LoadLocalSprite(shopPackRecord.ImageAddress);
+                }
+
+                var model = new List<UITemplateStartPackItemModel>();
+
+                foreach (var rewardBlueprintData in shopPackRecord.RewardIdToRewardDatas)
+                {
+                    model.Add(new UITemplateStartPackItemModel()
+                    {
+                        IconAddress = rewardBlueprintData.Value.RewardIcon,
+                        Value       = rewardBlueprintData.Value.RewardContent
+                    });
+                }
+
+                _ = this.View.adapter.InitItemAdapter(model, this.diContainer);
+            }
         }
     }
 }

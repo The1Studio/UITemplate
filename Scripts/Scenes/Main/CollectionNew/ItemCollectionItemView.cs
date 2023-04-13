@@ -29,48 +29,26 @@
         public GameObject      objChoose, objNormal, objUsed;
         public Image           imgIcon;
         public TextMeshProUGUI txtPrice;
-        public Button          btnBuyCoin, btnBuyAds, btnBuyIap, btnDailyReward, btnLuckySpin, btnSelect, btnUse;
+        public Button          btnBuyCoin, btnBuyAds, btnBuyIap, btnDailyReward, btnLuckySpin, btnSelect, btnUse, btnStartPack;
 
-        public Action OnBuyCoin, OnBuyAds, OnBuyIap, OnSelect, OnUse, OnBuyDailyReward, OnBuyLuckySpin;
+        public Action OnBuyCoin, OnBuyAds, OnBuyIap, OnSelect, OnUse, OnBuyDailyReward, OnBuyLuckySpin, OnBuyStartPack;
 
         private void Awake()
         {
-            this.btnBuyCoin.onClick.AddListener(() =>
-            {
-                this.OnBuyCoin?.Invoke();
-            });
-            this.btnBuyAds.onClick.AddListener(() =>
-            {
-                this.OnBuyAds?.Invoke();
-            });
-            this.btnBuyIap.onClick.AddListener(() =>
-            {
-                this.OnBuyIap?.Invoke();
-            });
-            this.btnSelect.onClick.AddListener(() =>
-            {
-                this.OnSelect?.Invoke();
-            });
-            this.btnUse.onClick.AddListener(() =>
-            {
-                this.OnUse?.Invoke();
-            });
-            this.btnDailyReward.onClick.AddListener(() =>
-            {
-                this.OnBuyDailyReward?.Invoke();
-            });
-            this.btnLuckySpin.onClick.AddListener(() =>
-            {
-                this.OnBuyLuckySpin?.Invoke();
-            });
+            this.btnBuyCoin.onClick.AddListener(() => { this.OnBuyCoin?.Invoke(); });
+            this.btnBuyAds.onClick.AddListener(() => { this.OnBuyAds?.Invoke(); });
+            this.btnBuyIap.onClick.AddListener(() => { this.OnBuyIap?.Invoke(); });
+            this.btnSelect.onClick.AddListener(() => { this.OnSelect?.Invoke(); });
+            this.btnUse.onClick.AddListener(() => { this.OnUse?.Invoke(); });
+            this.btnDailyReward.onClick.AddListener(() => { this.OnBuyDailyReward?.Invoke(); });
+            this.btnLuckySpin.onClick.AddListener(() => { this.OnBuyLuckySpin?.Invoke(); });
+            this.btnStartPack.onClick.AddListener(() => { this.OnBuyStartPack?.Invoke(); });
         }
     }
 
     public class ItemCollectionItemPresenter : BaseUIItemPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
-        public ItemCollectionItemPresenter(IGameAssets gameAssets) : base(gameAssets)
-        {
-        }
+        public ItemCollectionItemPresenter(IGameAssets gameAssets) : base(gameAssets) { }
 
         public override async void BindData(ItemCollectionItemModel param)
         {
@@ -87,6 +65,7 @@
             this.View.OnUse            = () => param.OnUseItem?.Invoke(param);
             this.View.OnBuyDailyReward = () => param.OnBuyItem?.Invoke(param);
             this.View.OnBuyLuckySpin   = () => param.OnBuyItem?.Invoke(param);
+            this.View.OnBuyStartPack   = () => param.OnBuyItem?.Invoke(param);
             this.SetButtonStatus(param);
         }
 
@@ -97,6 +76,7 @@
             var isIap       = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.IAP;
             var isDaily     = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.DailyReward;
             var isLuckySpin = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.LuckySpin;
+            var isStartPack = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.StartedPack;
 
             var isOwner    = param.ItemData.CurrentStatus == UITemplateItemData.Status.Owned;
             var isUnlocked = param.ItemData.CurrentStatus == UITemplateItemData.Status.Unlocked;
@@ -112,6 +92,7 @@
             this.View.btnBuyIap.gameObject.SetActive(isIap && !isOwner && isUnlocked);
             this.View.btnDailyReward.gameObject.SetActive(isDaily && !isOwner && isUnlocked);
             this.View.btnLuckySpin.gameObject.SetActive(isLuckySpin && !isOwner && isUnlocked);
+            this.View.btnStartPack.gameObject.SetActive(isStartPack && !isOwner && isUnlocked);
         }
     }
 }

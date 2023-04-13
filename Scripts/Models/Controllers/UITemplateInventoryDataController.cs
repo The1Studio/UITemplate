@@ -28,6 +28,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public const string DefaultSoftCurrencyID         = "Coin";
         public const string DefaultChestRoomKeyCurrencyID = "ChestRoomKey";
 
+        private Dictionary<string, int> revertCurrencyValue = new();
+
         public UITemplateInventoryDataController(UITemplateInventoryData     uiTemplateInventoryData,     UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
                                                  UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint           uiTemplateShopBlueprint, SignalBus signalBus,
                                                  UITemplateItemBlueprint     uiTemplateItemBlueprint)
@@ -40,6 +42,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
 
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
+        }
+        
+        public void SetRevertCurrencyValue(string id, int value)
+        {
+            if (this.revertCurrencyValue.ContainsKey(id))
+            {
+                this.revertCurrencyValue[id] = value;
+            }
+            else
+            {
+                this.revertCurrencyValue.Add(id, value);
+            }
+        }
+
+        public void RevertCurrency()
+        {
+            foreach (var (currencyKey, value) in this.revertCurrencyValue)
+            {
+                this.UpdateCurrency(value, currencyKey);
+            }
+            this.revertCurrencyValue.Clear();
         }
 
         public string GetCurrentItemSelected(string category) => this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null;
@@ -59,6 +82,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public int GetCurrencyValue(string id = DefaultSoftCurrencyID)
         {
             return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)).Value;
+        }
+        
+        public bool IsCurrencyFull(string id)
+        {
+            return this.GetCurrencyValue(id) >= this.uiTemplateCurrencyBlueprint.GetDataById(id).Max;
         }
 
         public bool HasItem(string id) => this.uiTemplateInventoryData.IDToItemData.ContainsKey(id);
@@ -101,11 +129,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.SetCurrencyWithCap(this.GetCurrencyValue(id) + addingValue, id);
         }
 
-        public void UpdateCurrency(int currentCoin, string id = DefaultSoftCurrencyID)
+        public void UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID)
         {
-            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = currentCoin - this.GetCurrencyValue(id), FinalValue = currentCoin, });
+            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = finalValue - this.GetCurrencyValue(id), FinalValue = finalValue, });
 
-            this.SetCurrencyWithCap(currentCoin, id);
+            this.SetCurrencyWithCap(finalValue, id);
         }
 
         private void SetCurrencyWithCap(int value, string id)

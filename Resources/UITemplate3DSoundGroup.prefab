@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 6017160058225991142}
   - component: {fileID: 8696756296127578810}
   m_Layer: 0
-  m_Name: vfx_leaderboard
+  m_Name: sfx_leaderboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1094,7 +1094,7 @@ GameObject:
   - component: {fileID: 4755336508847207926}
   - component: {fileID: 5238421941210117397}
   m_Layer: 0
-  m_Name: vfx_leaderboard
+  m_Name: sfx_leaderboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

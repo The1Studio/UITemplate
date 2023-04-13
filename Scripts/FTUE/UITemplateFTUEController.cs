@@ -37,7 +37,8 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
         private void Awake()
         {
-            this.originPath = this.GetComponentInParent<Transform>();
+            var projectContextTrans = FindObjectOfType<ProjectContext>();
+            this.originPath = projectContextTrans.transform;
             this.gameObject.SetActive(false);
         }
 

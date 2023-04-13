@@ -4,6 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
+    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using TheOneStudio.UITemplate.UITemplate.Utils;
     using UnityEngine;
     using Zenject;
@@ -39,6 +41,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<IFlashLight>().To<FlashLightPluginIOS>().AsSingle().NonLazy();
 #endif
             this.Container.Bind<UITemplateHandleSoundWhenOpenAdsServices>().AsCached().NonLazy();
+            //Reward Handle
+            this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<IUITemplateBaseReward>();
+            this.Container.BindInterfacesAndSelfTo<UITemplateHandleRewardServices>().AsCached().NonLazy();
         }
     }
 }

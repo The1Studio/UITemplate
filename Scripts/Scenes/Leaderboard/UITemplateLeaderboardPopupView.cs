@@ -31,7 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     [PopupInfo(nameof(UITemplateLeaderboardPopupView), false)]
     public class UITemplateLeaderBoardPopupPresenter : UITemplateBasePopupPresenter<UITemplateLeaderboardPopupView>
     {
-        private const string VFXLeaderboard = "vfx_leaderboard";
+        private const string SFXLeaderboard = "sfx_leaderboard";
         
         #region inject
 
@@ -90,7 +90,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             TestList[oldIndex].CountryFlag = this.View.CountryFlags.GetLocalDeviceFlagByDeviceLang();
             TestList[oldIndex].Name        = "You";
 
-            this.uiTemplateSoundServices.PlaySound(VFXLeaderboard);
+            this.uiTemplateSoundServices.PlaySound(SFXLeaderboard);
             
             //Setup view
             await this.View.Adapter.InitItemAdapter(TestList, this.diContainer);
@@ -120,7 +120,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         public override void Dispose()
         {
             base.Dispose();
-            this.uiTemplateSoundServices.StopSound(VFXLeaderboard);
+            this.uiTemplateSoundServices.StopSound(SFXLeaderboard);
             this.animationCancelTokenSource.Cancel();
             this.animationCancelTokenSource.Dispose();
             this.View.Adapter.StopScrollingIfAny();

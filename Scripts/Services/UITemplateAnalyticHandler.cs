@@ -102,6 +102,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedAdCompleted);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedAdSkipped);
+            
+            this.TotalDaysPlayedChange();
         }
 
         private void OnRewardedAdSkipped(RewardedSkippedSignal obj)
@@ -310,23 +312,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             foreach (var analytic in this.analyticEventList)
             {
                 if(obj.Amount > 0)
-                    this.TotalVirtualCurrencyEarnedHandler(analytic,obj);
+                    this.analyticServices.UserProperties[analytic.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned;
                 else
-                    this.TotalVirtualCurrencySpentHandler(analytic, obj);
+                    this.analyticServices.UserProperties[analytic.TotalVirtualCurrencySpentProperty] = 
+                        this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned - this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).Value;
             }
         }
-        private void TotalVirtualCurrencySpentHandler(IAnalyticEventFactory analytic ,UpdateCurrencySignal obj)
-        {
-            this.analyticServices.UserProperties[analytic.TotalVirtualCurrencySpentProperty] = 
-                this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned - this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).Value;
-        }
-        
-        private void TotalVirtualCurrencyEarnedHandler(IAnalyticEventFactory analytic ,UpdateCurrencySignal obj)
-        {
-            this.analyticServices.UserProperties[analytic.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned;
-        }
 
-        public void DayTrackHandler()
+        private void TotalDaysPlayedChange()
         {
             foreach (var analytic in this.analyticEventList)
             {

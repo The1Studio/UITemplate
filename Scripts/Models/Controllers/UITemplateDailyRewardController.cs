@@ -11,7 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateDailyRewardController : IInitializable
+    public class UITemplateDailyRewardController
     {
         private const int TotalDayInWeek = 7;
 
@@ -22,21 +22,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateDailyRewardBlueprint    uiTemplateDailyRewardBlueprint;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency;
-        private readonly UITemplateAnalyticHandler         uiTemplateAnalyticHandler;
 
         #endregion
 
         private SemaphoreSlim mySemaphoreSlim = new(1, 1);
         
         public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
-            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency, UITemplateAnalyticHandler uiTemplateAnalyticHandler)
+            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency)
         {
             this.internetService                   = internetService;
             this.uiTemplateDailyRewardData         = uiTemplateDailyRewardData;
             this.uiTemplateDailyRewardBlueprint    = uiTemplateDailyRewardBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateFlyingAnimationCurrency = uiTemplateFlyingAnimationCurrency;
-            this.uiTemplateAnalyticHandler         = uiTemplateAnalyticHandler;
         }
 
         public async UniTask CheckRewardStatus()
@@ -127,9 +125,5 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public bool CanClaimReward => this.uiTemplateDailyRewardData.RewardStatus.Any(t => t == RewardStatus.Unlocked);
-        public void Initialize()
-        {
-            this.uiTemplateAnalyticHandler.DayTrackHandler();
-        }
     }
 }

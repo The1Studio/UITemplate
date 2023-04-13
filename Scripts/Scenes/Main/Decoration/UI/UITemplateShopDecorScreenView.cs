@@ -107,6 +107,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         {
             base.Dispose();
             this.View.coinText.Unsubscribe(this.SignalBus);
+            this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
 
         protected virtual async void OnClickBackButton()
@@ -306,12 +307,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
             this.currentCategoryTab = categoryId;
             await this.BindDataToAdapter();
-        }
-
-        public override void CloseView()
-        {
-            base.CloseView();
-            this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
     }
 }

@@ -28,8 +28,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         public Image                         bestPrizeImage;
     }
 
-    [ScreenInfo(nameof(UITemplateChestRoomScreenView))]
-    public class UITemplateChestRoomScreenPresenter : UITemplateBaseScreenPresenter<UITemplateChestRoomScreenView>
+    [PopupInfo(nameof(UITemplateChestRoomScreenView), false)]
+    // Change this into pop-up because I don't want to rebind screen after closing it
+    // public class UITemplateChestRoomScreenPresenter : UITemplateBaseScreenPresenter<UITemplateChestRoomScreenView>
+    public class UITemplateChestRoomScreenPresenter : UITemplateBasePopupPresenter<UITemplateChestRoomScreenView>
     {
         private const int MaxKeyAmount = 3;
         

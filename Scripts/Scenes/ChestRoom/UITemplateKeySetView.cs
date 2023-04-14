@@ -10,19 +10,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
     public class UITemplateKeySetView : MonoBehaviour, IDisposable
     {
         private SignalBus signalBus;
+        private string currencyKey;
 
         public List<GameObject> KeySet;
 
-        public void BindData(SignalBus signalBus, int initValue)
+        public void BindData(SignalBus signalBus, int initValue, string currencyKey = UITemplateInventoryDataController.DefaultChestRoomKeyCurrencyID)
         {
-            this.signalBus = signalBus;
+            this.signalBus   = signalBus;
+            this.currencyKey = currencyKey;
             this.signalBus.Subscribe<UpdateCurrencySignal>(this.OnCurrencyUpdated);
             this.SetKeyAmount(initValue);
         }
 
         private void OnCurrencyUpdated(UpdateCurrencySignal obj)
         {
-            if (!obj.Id.Equals(UITemplateInventoryDataController.DefaultChestRoomKeyCurrencyID)) return;
+            if (!obj.Id.Equals(this.currencyKey)) return;
 
             this.SetKeyAmount(obj.FinalValue);
         }

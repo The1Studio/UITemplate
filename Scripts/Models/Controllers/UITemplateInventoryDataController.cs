@@ -28,11 +28,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public const string DefaultSoftCurrencyID         = "Coin";
         public const string DefaultChestRoomKeyCurrencyID = "ChestRoomKey";
 
-        private Dictionary<string, int> revertCurrencyValue = new();
-
-        public UITemplateInventoryDataController(UITemplateInventoryData     uiTemplateInventoryData,     UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
-                                                 UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint           uiTemplateShopBlueprint, SignalBus signalBus,
-                                                 UITemplateItemBlueprint     uiTemplateItemBlueprint)
+        public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
+            UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus,
+            UITemplateItemBlueprint uiTemplateItemBlueprint)
         {
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
             this.uiTemplateFlyingAnimationCurrency = uiTemplateFlyingAnimationCurrency;
@@ -44,27 +42,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
         }
         
-        public void SetRevertCurrencyValue(string id, int value)
-        {
-            if (this.revertCurrencyValue.ContainsKey(id))
-            {
-                this.revertCurrencyValue[id] = value;
-            }
-            else
-            {
-                this.revertCurrencyValue.Add(id, value);
-            }
-        }
-
-        public void RevertCurrency()
-        {
-            foreach (var (currencyKey, value) in this.revertCurrencyValue)
-            {
-                this.UpdateCurrency(value, currencyKey);
-            }
-            this.revertCurrencyValue.Clear();
-        }
-
         public string GetCurrentItemSelected(string category) => this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null;
 
         public void UpdateCurrentSelectedItem(string category, string id)
@@ -147,11 +124,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public List<UITemplateItemData> FindAllItems(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null,
                                                      params UITemplateItemData.Status[] statuses)
         {
-            var query                                  = this.uiTemplateInventoryData.IDToItemData.Values.ToList();
-            if (category is not null) query                                 = query.Where(itemData => itemData.ItemBlueprintRecord.Category.Equals(category)).ToList();
-            if (unlockType      != UITemplateItemData.UnlockType.All) query = query.Where(itemData => (itemData.ShopBlueprintRecord.UnlockType & unlockType) != 0).ToList();
-            if (statuses.Length > 0) query                                  = query.Where(itemData => statuses.Contains(itemData.CurrentStatus)).ToList();
-            if (orderBy is not null) query                                  = query.OrderBy(itemData => itemData, orderBy).ToList();
+            var query                                                  = this.uiTemplateInventoryData.IDToItemData.Values.ToList();
+            if (category is not null) query                            = query.Where(itemData => itemData.ItemBlueprintRecord.Category.Equals(category)).ToList();
+            if (unlockType != UITemplateItemData.UnlockType.All) query = query.Where(itemData => (itemData.ShopBlueprintRecord.UnlockType & unlockType) != 0).ToList();
+            if (statuses.Length > 0) query                             = query.Where(itemData => statuses.Contains(itemData.CurrentStatus)).ToList();
+            if (orderBy is not null) query                             = query.OrderBy(itemData => itemData, orderBy).ToList();
+
             return query;
         }
 

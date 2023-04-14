@@ -5,6 +5,7 @@
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
@@ -27,8 +28,8 @@
 
     public class ItemCollectionItemView : TViewMono
     {
-        public GameObject      objChoose, objNormal, objUsed;
-        public Image           imgIcon, imgLockBuyCoin;
+        public GameObject      objChoose, objNormal, objUsed, objStaredPack, objChooseStaredPack;
+        public Image           imgIcon,   imgLockBuyCoin;
         public TextMeshProUGUI txtPrice;
         public Button          btnBuyCoin, btnBuyAds, btnBuyIap, btnDailyReward, btnLuckySpin, btnSelect, btnUse, btnStartPack;
 
@@ -60,9 +61,6 @@
         {
             this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.ItemBlueprintRecord.ImageAddress);
             this.View.txtPrice.text  = $"{param.ShopBlueprintRecord.Price}";
-            this.View.objUsed.SetActive(param.ItemIndex == param.IndexItemUsed);
-            this.View.objChoose.SetActive(param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
-            this.View.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected);
 
             this.View.OnBuyAds         = () => param.OnBuyItem?.Invoke(param);
             this.View.OnBuyCoin        = () => param.OnBuyItem?.Invoke(param);
@@ -72,10 +70,10 @@
             this.View.OnBuyDailyReward = () => param.OnBuyItem?.Invoke(param);
             this.View.OnBuyLuckySpin   = () => param.OnBuyItem?.Invoke(param);
             this.View.OnBuyStartPack   = () => param.OnBuyItem?.Invoke(param);
-            this.SetButtonStatus(param);
+            this.SetButtonStatusAndBorderStatus(param);
         }
 
-        private void SetButtonStatus(ItemCollectionItemModel param)
+        private void SetButtonStatusAndBorderStatus(ItemCollectionItemModel param)
         {
             var isCoin      = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.SoftCurrency;
             var isAds       = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.Ads;
@@ -100,11 +98,23 @@
             this.View.btnDailyReward.gameObject.SetActive(isDaily && !isOwner && isUnlocked);
             this.View.btnLuckySpin.gameObject.SetActive(isLuckySpin && !isOwner && isUnlocked);
             this.View.btnStartPack.gameObject.SetActive(isStartPack && !isOwner && isUnlocked);
+
+            this.View.objUsed.SetActive(param.ItemIndex == param.IndexItemUsed);
+            this.View.objChoose.SetActive(!isStartPack && param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
+            this.View.objChooseStaredPack.SetActive(isStartPack && param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
+            this.View.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected && !isStartPack);
+            this.View.objStaredPack.SetActive(isStartPack && !isOwner && isUnlocked);
         }
 
         private bool IsItemBuyCoinAble(ItemCollectionItemModel param)
         {
+            if (param.ShopBlueprintRecord.CurrencyID.IsNullOrEmpty())
+            {
+                return true;
+            }
+
             var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(param.ShopBlueprintRecord.CurrencyID);
+
             return currentCoin >= param.ShopBlueprintRecord.Price;
         }
     }

@@ -15,8 +15,7 @@
         UniTask<DateTime> GetCurrentUTCTimeAsync();
         bool              IsInternetAvailable { get; }
         UniTask<bool>     IsDifferentDay(DateTime timeCompare);
-        bool     IsDifferentDay(DateTime timeCompare, DateTime newTime);
-
+        bool              IsDifferentDay(DateTime timeCompare, DateTime newTime);
     }
 
     public class InternetService : IInternetService, IInitializable
@@ -33,13 +32,22 @@
         public async UniTask<bool> IsDifferentDay(DateTime timeCompare)
         {
             var currentTime = await this.GetCurrentTimeAsync();
+
             return this.IsDifferentDay(timeCompare, currentTime);
         }
-        
+
         public bool IsDifferentDay(DateTime timeCompare, DateTime newTime)
         {
             var day = (newTime - timeCompare).TotalDays;
+
             return day >= 1;
+        }
+
+        public int ToTalDiffDay(DateTime timeCompare, DateTime newTime)
+        {
+            var day = (newTime - timeCompare).TotalDays;
+
+            return day >= 1 ? (int)day : 0;
         }
 
         public void Initialize() { this.CheckInternetInterval(); }

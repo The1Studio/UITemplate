@@ -70,7 +70,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             if (rewardItemDatas.Count > 0)
             {
-                this.signalBus.Fire(new UITemplateAddRewardsSignal(rewardItemDatas, source));
+                this.signalBus.Fire(new UITemplateAddRewardsSignal(productId,rewardItemDatas, source));
             }
         }
 

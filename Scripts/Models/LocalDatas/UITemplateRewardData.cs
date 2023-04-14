@@ -6,7 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
 
     public class UITemplateRewardData : ILocalData
     {
-        public Dictionary<string, UITemplateRewardItemData> Rewards { get; set; } = new();
+        public Dictionary<string, Dictionary<string, UITemplateRewardItemData>> IapPackIdToRewards { get; set; } = new();
 
         public void Init() { }
     }
@@ -16,13 +16,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
         public string   RewardValue           { get; }
         public int      Repeat                { get; set; }
         public string   AddressableFlyingItem { get; }
+        public int      TotalDayLeft          { get; set; }
         public DateTime LastTimeReceive       { get; set; }
 
-        public UITemplateRewardItemData(string rewardValue, int repeat, string addressableFlyingItem)
+        public UITemplateRewardItemData(string rewardValue, int repeat, string addressableFlyingItem, int totalDayLeft = 0)
         {
             this.AddressableFlyingItem = addressableFlyingItem;
             this.RewardValue           = rewardValue;
             this.Repeat                = repeat;
+            this.TotalDayLeft          = totalDayLeft;
         }
     }
 }

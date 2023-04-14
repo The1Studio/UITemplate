@@ -293,7 +293,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
             this.ScreenManager.OpenScreen<UITemplateStartPackScreenPresenter, UITemplateStaterPackModel>(new UITemplateStaterPackModel()
             {
-                PackId     = itemCollectionItemModel.ShopBlueprintRecord.IapPackId,
                 OnComplete = this.OnBuyStartedPackComplete
             });
         }

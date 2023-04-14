@@ -2,60 +2,104 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using UnityEngine;
 
     public class UITemplateHandleRewardController
     {
         private readonly UITemplateRewardData uiTemplateRewardData;
+        private readonly ILogService          logger;
         private readonly InternetService      internetService;
 
-        public UITemplateHandleRewardController(UITemplateRewardData uiTemplateRewardData, InternetService internetService)
+        public UITemplateHandleRewardController(UITemplateRewardData uiTemplateRewardData, ILogService logger, InternetService internetService)
         {
             this.uiTemplateRewardData = uiTemplateRewardData;
+            this.logger               = logger;
             this.internetService      = internetService;
         }
 
-        public void CheckToAddReward(string reward, int repeat, string value, string addressableFlyingItem)
+        public void CheckToAddReward(string packID, Dictionary<string, UITemplateRewardItemData> rewardItemDatas)
         {
-            if (!this.uiTemplateRewardData.Rewards.ContainsKey(reward))
+            if (!this.uiTemplateRewardData.IapPackIdToRewards.ContainsKey(packID))
             {
-                this.uiTemplateRewardData.Rewards.Add(reward, new UITemplateRewardItemData(value, repeat, addressableFlyingItem));
+                this.uiTemplateRewardData.IapPackIdToRewards.Add(packID, rewardItemDatas);
             }
             else
             {
-                if (this.uiTemplateRewardData.Rewards[reward].Repeat != -1)
-                    this.uiTemplateRewardData.Rewards[reward].Repeat += repeat;
-            }
-        }
+                var packIdToReward = this.uiTemplateRewardData.IapPackIdToRewards[packID];
 
-        public void CheckToRemoveReward(string reward)
-        {
-            if (this.uiTemplateRewardData.Rewards.TryGetValue(reward, out var itemData))
-            {
-                itemData.LastTimeReceive = DateTime.Now;
-                if (itemData.Repeat == -1) return;
-                itemData.Repeat--;
-                if (itemData.Repeat == 0)
+                foreach (var rewardItemData in rewardItemDatas)
                 {
-                    this.uiTemplateRewardData.Rewards.Remove(reward);
+                    if (packIdToReward.ContainsKey(rewardItemData.Key))
+                    {
+                        if (packIdToReward[rewardItemData.Key].Repeat != -1)
+                        {
+                            packIdToReward[rewardItemData.Key].Repeat = Math.Min(rewardItemData.Value.Repeat, packIdToReward[rewardItemData.Key].Repeat);
+                        }
+                    }
+                    else
+                    {
+                        packIdToReward.Add(rewardItemData.Key, rewardItemData.Value);
+                    }
                 }
             }
         }
 
-        public void ClearRewards() { this.uiTemplateRewardData.Rewards.Clear(); }
-
-        public bool IsRewardExist(string reward) { return this.uiTemplateRewardData.Rewards.ContainsKey(reward); }
-
-        public Dictionary<string, UITemplateRewardItemData> GetAllRewardCanReceiveAtThisTimeToDay()
+        public void CheckToRemoveReward(string packID, string rewardId)
         {
-            var data = new Dictionary<string, UITemplateRewardItemData>();
-
-            foreach (var record in this.uiTemplateRewardData.Rewards)
+            if (this.uiTemplateRewardData.IapPackIdToRewards.TryGetValue(packID, out var itemData))
             {
-                if (record.Value.Repeat is -1 or > 0 && this.internetService.IsDifferentDay(record.Value.LastTimeReceive, DateTime.Now))
+                if (itemData.TryGetValue(rewardId, out var rewardItemData))
                 {
-                    data.Add(record.Key, record.Value);
+                    rewardItemData.LastTimeReceive = DateTime.Now;
+
+                    if (rewardItemData.Repeat == -1)
+                    {
+                        itemData.Remove(rewardId);
+
+                        if (itemData.Count == 0)
+                        {
+                            this.uiTemplateRewardData.IapPackIdToRewards.Remove(packID);
+                        }
+                    }
+
+                    //Todo Handle TotalDayLeft
+                    this.logger.LogWithColor($"Handle total day left later", Color.green);
+                    // rewardItemData.TotalDayLeft--;
+                }
+            }
+        }
+
+        public void ClearRewards() { this.uiTemplateRewardData.IapPackIdToRewards.Clear(); }
+
+        public bool IsRewardExist(string packId, string rewardId)
+        {
+            return this.uiTemplateRewardData.IapPackIdToRewards.ContainsKey(packId) && this.uiTemplateRewardData.IapPackIdToRewards[packId].ContainsKey(rewardId);
+        }
+
+        public Dictionary<string, Dictionary<string, UITemplateRewardItemData>> GetAllRewardCanReceiveAtThisTimeToDay()
+        {
+            var data = new Dictionary<string, Dictionary<string, UITemplateRewardItemData>>();
+
+            foreach (var iapPackIdToReward in this.uiTemplateRewardData.IapPackIdToRewards)
+            {
+                data.Add(iapPackIdToReward.Key, new Dictionary<string, UITemplateRewardItemData>());
+
+                foreach (var rewardItemData in iapPackIdToReward.Value)
+                {
+                    var totalDiffDay = this.internetService.ToTalDiffDay(rewardItemData.Value.LastTimeReceive, DateTime.Now);
+
+                    if (totalDiffDay >= rewardItemData.Value.Repeat && rewardItemData.Value.TotalDayLeft >= 0)
+                    {
+                        data[iapPackIdToReward.Key].Add(rewardItemData.Key, rewardItemData.Value);
+                    }
+                }
+
+                if (data[iapPackIdToReward.Key].Count == 0)
+                {
+                    data.Remove(iapPackIdToReward.Key);
                 }
             }
 

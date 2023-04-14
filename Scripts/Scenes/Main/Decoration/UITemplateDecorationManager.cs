@@ -25,6 +25,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             this.uiTemplateDecorCategoryBlueprint  = uiTemplateDecorCategoryBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
+            
+            this.InitDecorItems();
         }
 
         #endregion
@@ -38,7 +40,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
                     this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(key, this.GetDefaultItemId(key));
                 }
                 
-                this.CreateDecorationItem(key);
+                var decorItem = this.CreateDecorationItem(key);
+                decorItem.HideItem();
             }
         }
 

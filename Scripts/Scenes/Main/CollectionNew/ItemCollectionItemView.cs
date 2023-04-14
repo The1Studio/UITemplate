@@ -6,6 +6,7 @@
     using GameFoundation.Scripts.UIModule.MVP;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -27,7 +28,7 @@
     public class ItemCollectionItemView : TViewMono
     {
         public GameObject      objChoose, objNormal, objUsed;
-        public Image           imgIcon;
+        public Image           imgIcon, imgLockBuyCoin;
         public TextMeshProUGUI txtPrice;
         public Button          btnBuyCoin, btnBuyAds, btnBuyIap, btnDailyReward, btnLuckySpin, btnSelect, btnUse, btnStartPack;
 
@@ -48,7 +49,12 @@
 
     public class ItemCollectionItemPresenter : BaseUIItemPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
-        public ItemCollectionItemPresenter(IGameAssets gameAssets) : base(gameAssets) { }
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+
+        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController) : base(gameAssets)
+        {
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+        }
 
         public override async void BindData(ItemCollectionItemModel param)
         {
@@ -86,6 +92,7 @@
             var isUse    = param.ItemIndex == param.IndexItemUsed;
 
             this.View.btnBuyCoin.gameObject.SetActive(isCoin && !isOwner && isUnlocked);
+            this.View.imgLockBuyCoin.gameObject.SetActive(!this.IsItemBuyCoinAble(param));
             this.View.btnUse.gameObject.SetActive(isOwner && !isUse);
             this.View.btnSelect.gameObject.SetActive(!isLocked);
             this.View.btnBuyAds.gameObject.SetActive(isAds && !isOwner && isUnlocked);
@@ -93,6 +100,12 @@
             this.View.btnDailyReward.gameObject.SetActive(isDaily && !isOwner && isUnlocked);
             this.View.btnLuckySpin.gameObject.SetActive(isLuckySpin && !isOwner && isUnlocked);
             this.View.btnStartPack.gameObject.SetActive(isStartPack && !isOwner && isUnlocked);
+        }
+
+        private bool IsItemBuyCoinAble(ItemCollectionItemModel param)
+        {
+            var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(param.ShopBlueprintRecord.CurrencyID);
+            return currentCoin >= param.ShopBlueprintRecord.Price;
         }
     }
 }

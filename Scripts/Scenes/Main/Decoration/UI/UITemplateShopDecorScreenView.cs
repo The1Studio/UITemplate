@@ -292,7 +292,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             this.uiTemplateInventoryDataController.AddItemData(obj.ItemData);
             this.uiTemplateInventoryData.CategoryToChosenItem[obj.ItemBlueprintRecord.Category] = obj.ItemBlueprintRecord.Id;
             this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(obj.ItemBlueprintRecord.Category, obj.ItemBlueprintRecord.Id);
-            this.OnSelectItem(obj);
+            this.OnUseItem(obj);
         }
 
         #endregion

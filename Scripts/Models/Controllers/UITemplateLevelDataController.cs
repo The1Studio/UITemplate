@@ -32,7 +32,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public LevelData GetLevelData(int level) { return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked)); }
 
-        public void ReplayLevel()
+        public void PlayCurrentLevel()
         {
             this.signalBus.Fire(new LevelStartedSignal( this.uiTemplateUserLevelData.CurrentLevel));
         }
@@ -40,12 +40,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void SelectLevel(int level)
         {
             this.uiTemplateUserLevelData.CurrentLevel = level;
-            this.signalBus.Fire(new LevelStartedSignal(level));
         }
-
-        public void GoToNextLevel()
+        
+        public void LoseCurrentLevel (int time = 0)
         {
-            this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
+            this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = time, CurrentIdToValue = null });
+            this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
         }
 
         public void PassCurrentLevel(int time = 0)
@@ -60,7 +60,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
             this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = time });
             this.uiTemplateUserLevelData.CurrentLevel++;
-            this.GoToNextLevel();
         }
 
         public LevelData GetCurrentLevelData => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);
@@ -75,11 +74,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public void LoseCurrentLevel (int time = 0)
-        {
-            this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = time, CurrentIdToValue = null });
-            this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
-        }
 
         public bool CheckLevelIsUnlockedStatus(int level)
         {

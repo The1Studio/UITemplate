@@ -109,7 +109,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
             var starterPacks     = this.uiTemplateShopPackBlueprint.Where(x => x.Value.RewardIdToRewardDatas.Count > 1).ToList();
             this.IapPack = starterPacks.First(packRecord => packRecord.Value.RewardIdToRewardDatas.ContainsKey("remove_ads") != this.adServices.IsRemoveAds()).Key;
 
-            this.View.txtPrice.text = this.iapServices.GetPriceById(this.IapPack);
+            this.View.txtPrice.text = $"Special Offer: Only {this.iapServices.GetPriceById(this.IapPack)}";
 
             if (this.uiTemplateShopPackBlueprint.TryGetValue(this.IapPack, out var shopPackRecord))
             {

@@ -80,8 +80,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         public override async UniTask BindData()
         {
             this.currentOpenedAmount = 0;
-            this.ResetKeys();
-            this.SetKeyObjectActive(true, true);
+            this.SetKeyObjectActive(this.CurrentKeyAmount > 0, true);
             this.currentChestList = this.uiTemplateGachaChestRoomBlueprint.Values.Where(chestData => !this.uiTemplateInventoryDataController.IsAlreadyContainedItem(chestData.Reward))
                                         .Take(this.View.ChestItemViewList.Count).ToList();
 
@@ -126,15 +125,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
 
         private async void SetKeyObjectActive(bool isActive, bool force = false)
         {
+            var noThankDelay  = 2;
+            var scaleDuration = 0.5f;
             if (force)
             {
-                this.View.NoThankButton.transform.localScale = !isActive ? Vector3.one : Vector3.zero;
-                this.View.WatchAdButton.transform.localScale = !isActive ? Vector3.one : Vector3.zero;
+                this.View.WatchAdButton.transform.localScale  = !isActive ? Vector3.one : Vector3.zero;
                 this.View.KeyGroupObject.transform.localScale = isActive ? Vector3.one : Vector3.zero;
+                if (!isActive)
+                {
+                    this.View.NoThankButton.transform.localScale = Vector3.zero;
+                    await UniTask.Delay(TimeSpan.FromSeconds(noThankDelay));
+                    this.View.NoThankButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
+                }
+                else
+                {
+                    this.View.NoThankButton.transform.localScale = Vector3.zero;
+                }
             }
             else
             {
-                var scaleDuration = 0.5f;
                 if (isActive)
                 {
                     this.View.WatchAdButton.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
@@ -147,6 +156,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
                     this.View.KeyGroupObject.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
                     await UniTask.Delay(TimeSpan.FromSeconds(scaleDuration));
                     this.View.WatchAdButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
+                    await UniTask.Delay(TimeSpan.FromSeconds(noThankDelay));
                     this.View.NoThankButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
                 }
             }
@@ -154,7 +164,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
 
         private void OnClickWatchAdButton()
         {
-            this.ResetKeys();
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd("Chest_Room", this.OnRewardedAdWatched);
+        }
+        private void OnRewardedAdWatched()
+        {
+            this.uiTemplateInventoryDataController.UpdateCurrency(MaxKeyAmount, UITemplateInventoryDataController.DefaultChestRoomKeyCurrencyID);
+            this.SetKeyObjectActive(true);
             this.SetKeyObjectActive(true);
         }
 
@@ -167,13 +182,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             this.View.KeySetView.Dispose();
             this.View.WatchAdButton.Dispose();
             this.View.CurrencyView.Unsubscribe(this.SignalBus);
-        }
-
-        private void ResetKeys()
-        {
-            this.CurrentKeyAmount = MaxKeyAmount;
-
-            this.SetKeyObjectActive(true);
         }
     }
 }

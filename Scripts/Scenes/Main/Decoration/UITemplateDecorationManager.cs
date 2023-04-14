@@ -25,12 +25,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             this.uiTemplateDecorCategoryBlueprint  = uiTemplateDecorCategoryBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
-            this.InitDecorItems();
         }
 
         #endregion
 
-        private void InitDecorItems()
+        public void InitDecorItems()
         {
             foreach (var key in this.uiTemplateDecorCategoryBlueprint.Keys)
             {

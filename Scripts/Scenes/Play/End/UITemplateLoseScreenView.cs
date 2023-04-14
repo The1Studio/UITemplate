@@ -9,6 +9,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.UI;
     using Zenject;
 
@@ -27,19 +28,22 @@
 
         protected readonly DiContainer                       diContainer;
         protected readonly UITemplateAdServiceWrapper        adService;
+        private readonly   UITemplateSoundServices           soundServices;
         protected readonly IScreenManager                    screenManager;
         protected readonly UITemplateInventoryDataController inventoryDataController;
 
         public UITemplateLoseScreenPresenter(
-            SignalBus                         signalBus,
-            DiContainer                       diContainer,
-            UITemplateAdServiceWrapper        adService,
-            IScreenManager                    screenManager,
+            SignalBus signalBus,
+            DiContainer diContainer,
+            UITemplateAdServiceWrapper adService,
+            UITemplateSoundServices soundServices,
+            IScreenManager screenManager,
             UITemplateInventoryDataController inventoryDataController
         ) : base(signalBus)
         {
             this.diContainer             = diContainer;
             this.adService               = adService;
+            this.soundServices           = soundServices;
             this.screenManager           = screenManager;
             this.inventoryDataController = inventoryDataController;
         }
@@ -47,11 +51,12 @@
         #endregion
 
         protected virtual string AdPlacement => "replay";
-        
+
         public override UniTask BindData()
         {
             this.View.SkipButton?.BindData(this.AdPlacement);
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
+            this.soundServices.PlaySoundLose();
             return UniTask.CompletedTask;
         }
 

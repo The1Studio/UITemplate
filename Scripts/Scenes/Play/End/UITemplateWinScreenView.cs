@@ -8,6 +8,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.LogService;
     using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -121,8 +122,7 @@
 
         #endregion
 
-        protected virtual string AdPlacement => "x2_reward";
-        
+        protected virtual string AdPlacement     => "x2_reward";
         private IDisposable spinDisposable;
         private Tween       tweenSpin;
 
@@ -141,11 +141,12 @@
             this.View.BtnAds.BindData(this.AdPlacement);
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
             this.ItemUnlockProgress(model.ItemUnlockLastValue, model.ItemUnlockNewValue);
-
+            this.soundService.PlaySoundWin();
+            
             if (this.View.UseLightGlow)
             {
                 this.tweenSpin = this.View.ImgLightGlow.transform.DORotate(new Vector3(0, 0, -360), 5f, RotateMode.FastBeyond360).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
-            }
+            } 
 
             if (this.View.UseStarRate)
             {

@@ -58,12 +58,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         public override void HideItem()
         {
-            this.spriteRenderer.enabled = false;
+            this.gameObject.SetActive(false);
         }
 
         public override void ShowItem()
         {
-            this.spriteRenderer.enabled = true;
+            this.gameObject.SetActive(true);
         }
         
     }

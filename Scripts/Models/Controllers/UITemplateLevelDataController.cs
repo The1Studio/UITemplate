@@ -32,22 +32,35 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public LevelData GetLevelData(int level) { return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked)); }
 
+        /// <summary>Have be called when level started</summary> 
         public void PlayCurrentLevel()
         {
             this.signalBus.Fire(new LevelStartedSignal( this.uiTemplateUserLevelData.CurrentLevel));
         }
         
+        /// <summary>
+        /// Called when select a level in level selection screen
+        /// </summary>
+        /// <param name="level">selected level</param>
         public void SelectLevel(int level)
         {
             this.uiTemplateUserLevelData.CurrentLevel = level;
         }
         
+        /// <summary>
+        /// Called when player lose current level
+        /// </summary>
+        /// <param name="time">Play time in seconds</param>
         public void LoseCurrentLevel (int time = 0)
         {
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = time, CurrentIdToValue = null });
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
         }
 
+        /// <summary>
+        /// Called when player win current level
+        /// </summary>
+        /// <param name="time">Play time in seconds</param>
         public void PassCurrentLevel(int time = 0)
         {
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
@@ -55,6 +68,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateUserLevelData.CurrentLevel++;
         }
 
+        /// <summary>
+        /// Called when player skip current level
+        /// </summary>
+        /// <param name="time">Play time in seconds</param>
         public void SkipCurrentLevel(int time = 0 )
         {
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);

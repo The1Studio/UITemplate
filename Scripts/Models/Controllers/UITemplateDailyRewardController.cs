@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
+    using Zenject;
 
     public class UITemplateDailyRewardController
     {

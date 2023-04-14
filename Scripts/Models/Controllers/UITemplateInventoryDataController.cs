@@ -67,13 +67,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 this.uiTemplateInventoryData.CategoryToChosenItem.Add(category, id);
             }
         }
-
-        public int GetCurrencyValue(string id = DefaultSoftCurrencyID)
-        {
-            return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)).Value;
-        }
-
-        public bool IsCurrencyFull(string id) { return this.GetCurrencyValue(id) >= this.uiTemplateCurrencyBlueprint.GetDataById(id).Max; }
+        
+        public int GetCurrencyValue(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)).Value;
+        
+        public UITemplateCurrencyData GetCurrencyData(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max));
+        
+        public bool IsCurrencyFull(string id) => this.GetCurrencyValue(id) >= this.uiTemplateCurrencyBlueprint.GetDataById(id).Max;
 
         public bool HasItem(string id) => this.uiTemplateInventoryData.IDToItemData.ContainsKey(id);
 
@@ -86,7 +85,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var item       = this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () => new UITemplateItemData(id, shopRecord, itemRecord, defaultStatusWhenCreateNew));
             item.ShopBlueprintRecord = shopRecord;
             item.ItemBlueprintRecord = itemRecord;
-
             return item;
         }
 
@@ -130,13 +128,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public UITemplateItemData FindOneItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null,
-            params UITemplateItemData.Status[] statuses)
+                                              params UITemplateItemData.Status[] statuses)
         {
             return this.FindAllItems(category, unlockType, orderBy, statuses).FirstOrDefault();
         }
 
         public List<UITemplateItemData> FindAllItems(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null,
-            params UITemplateItemData.Status[] statuses)
+                                                     params UITemplateItemData.Status[] statuses)
         {
             var query                                                  = this.uiTemplateInventoryData.IDToItemData.Values.ToList();
             if (category is not null) query                            = query.Where(itemData => itemData.ItemBlueprintRecord.Category.Equals(category)).ToList();
@@ -148,13 +146,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public List<UITemplateItemData> GetAllItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null,
-            params UITemplateItemData.Status[] statuses)
+                                                   params UITemplateItemData.Status[] statuses)
         {
             return this.FindAllItems(category, unlockType, orderBy, statuses);
         }
 
-        public List<UITemplateItemData> GetAllItemWithOrder(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
-            IComparer<UITemplateItemData> comparer = null)
+        public List<UITemplateItemData> GetAllItemWithOrder(string                        category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
+                                                            IComparer<UITemplateItemData> comparer = null)
         {
             return this.GetAllItem(category, unlockType).OrderBy(itemData => itemData, comparer ?? UITemplateItemData.DefaultComparerInstance).ToList();
         }

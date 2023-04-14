@@ -7,6 +7,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using Core.AnalyticServices.Signal;
+    using Core.AnalyticServices.Tools;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -14,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using UnityEngine;
     using Zenject;
 
     public class UITemplateAnalyticHandler : IInitializable, IDisposable
@@ -28,11 +31,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly ILogService                       logService;
         private readonly UITemplateLevelDataController     uiTemplateLevelDataController;
         private readonly UITemplateInventoryDataController uITemplateInventoryDataController;
+        private readonly UITemplateDailyRewardData         uiTemplateDailyRewardData;
 
         #endregion
 
         public UITemplateAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, List<IAnalyticEventFactory> analyticEventList, UITemplateUserLevelData uiTemplateUserLevelData,
-            IAdServices adServices, ILogService logService, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateInventoryDataController uITemplateInventoryDataController)
+            IAdServices adServices, ILogService logService, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateInventoryDataController uITemplateInventoryDataController, UITemplateDailyRewardData uiTemplateDailyRewardData)
         {
             this.signalBus                         = signalBus;
             this.analyticServices                  = analyticServices;
@@ -42,6 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.logService                        = logService;
             this.uiTemplateLevelDataController     = uiTemplateLevelDataController;
             this.uITemplateInventoryDataController = uITemplateInventoryDataController;
+            this.uiTemplateDailyRewardData         = uiTemplateDailyRewardData;
 
             switch (analyticEventList.Count)
             {
@@ -74,7 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
-
+            this.signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Subscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Subscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);
@@ -97,6 +102,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedAdCompleted);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedAdSkipped);
+            
+            this.TotalDaysPlayedChange();
         }
 
         private void OnRewardedAdSkipped(RewardedSkippedSignal obj)
@@ -299,12 +306,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.Track(analytic.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
             }
         }
+        
+        private void UpdateCurrencyHandler(UpdateCurrencySignal obj)
+        {
+            foreach (var analytic in this.analyticEventList)
+            {
+                if(obj.Amount > 0)
+                    this.analyticServices.UserProperties[analytic.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned;
+                else
+                    this.analyticServices.UserProperties[analytic.TotalVirtualCurrencySpentProperty] = 
+                        this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned - this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).Value;
+            }
+        }
 
+        private void TotalDaysPlayedChange()
+        {
+            foreach (var analytic in this.analyticEventList)
+            {
+                this.analyticServices.UserProperties[analytic.DaysPlayedProperty] = (int)(DateTime.Now.Date - this.uiTemplateDailyRewardData.FirstTimeOpenedDate.Date).TotalDays;
+            }
+        }
         public void Dispose()
         {
             this.signalBus.Unsubscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Unsubscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Unsubscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
+            this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Unsubscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Unsubscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Unsubscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);

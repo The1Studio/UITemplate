@@ -3358,3 +3358,4 @@ MonoBehaviour:
   btnTerms: {fileID: 8239405276068272150}
   imgGift: {fileID: 4729271796056625979}
   adapter: {fileID: 73649314838317280}
+  txtPrice: {fileID: 4749884173861977591}

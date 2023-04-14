@@ -15,8 +15,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 
     public class UITemplateStartPackItemView : TViewMono
     {
-        public Image imgIcon;
-        public TextMeshProUGUI  txtValue;
+        public Image           imgIcon;
+        public TextMeshProUGUI txtValue;
     }
 
     public class UITemplateStartPackItemPresenter : BaseUIItemPresenter<UITemplateStartPackItemView, UITemplateStartPackItemModel>
@@ -26,11 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 
         public override async void BindData(UITemplateStartPackItemModel param)
         {
-            if (param.IconAddress.IsNullOrEmpty())
-            {
-                this.View.imgIcon.gameObject.SetActive(false);
-            }
-            else
+            if (!param.IconAddress.IsNullOrEmpty())
             {
                 this.View.imgIcon.sprite = await this.loadImageHelper.LoadLocalSprite(param.IconAddress);
             }

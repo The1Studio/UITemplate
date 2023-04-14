@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
@@ -13,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -31,6 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         public Button                      btnTerms;
         public Image                       imgGift;
         public UITemplateStaterPackAdapter adapter;
+        public TextMeshProUGUI             txtPrice;
     }
 
     [ScreenInfo(nameof(UITemplateStaterPackScreenView))]
@@ -43,9 +46,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         private readonly DiContainer                  diContainer;
         private readonly LoadImageHelper              loadImageHelper;
         private readonly IUnityIapServices            iapServices;
-        private     string                       IapPack = "com.car.climb.draw.bridge.start_pack_1";
+        private          string                       IapPack = "";
 
-        public UITemplateStartPackScreenPresenter(SignalBus signalBus,IAdServices adServices, UITemplateShopPackBlueprint uiTemplateShopPackBlueprint, UITemplateIapServices uiTemplateIapServices,
+        public UITemplateStartPackScreenPresenter(SignalBus signalBus, IAdServices adServices, UITemplateShopPackBlueprint uiTemplateShopPackBlueprint, UITemplateIapServices uiTemplateIapServices,
             UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint, DiContainer diContainer,
             LoadImageHelper loadImageHelper,
             IUnityIapServices iapServices, ILogService logger) : base(signalBus,
@@ -103,12 +106,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 
         public override async UniTask BindData(UITemplateStaterPackModel screenModel)
         {
-            if (this.adServices.IsRemoveAds())
-            {
-                this.IapPack= "com.car.climb.draw.bridge.start_pack_2";
-            }
+            var starterPacks     = this.uiTemplateShopPackBlueprint.Where(x => x.Value.RewardIdToRewardDatas.Count > 1).ToList();
+            this.IapPack = starterPacks.First(packRecord => packRecord.Value.RewardIdToRewardDatas.ContainsKey("remove_ads") != this.adServices.IsRemoveAds()).Key;
 
-            if (this.uiTemplateShopPackBlueprint.TryGetValue(IapPack, out var shopPackRecord))
+            this.View.txtPrice.text = this.iapServices.GetPriceById(this.IapPack);
+
+            if (this.uiTemplateShopPackBlueprint.TryGetValue(this.IapPack, out var shopPackRecord))
             {
                 if (!shopPackRecord.ImageAddress.IsNullOrEmpty())
                 {

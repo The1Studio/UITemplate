@@ -101,7 +101,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         protected virtual void OnClickAddMoreCoinButton()
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement,
-                () => { this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform); });
+                this.BuyItemCompleted);
+        }
+
+        private async void BuyItemCompleted()
+        {
+            await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
+            this.View.itemCollectionGridAdapter.Refresh();
         }
 
         protected virtual void OnClickUnlockRandomButton()

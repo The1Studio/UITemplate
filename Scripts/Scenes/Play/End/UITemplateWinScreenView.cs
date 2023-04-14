@@ -129,7 +129,6 @@
         protected override async void OnViewReady()
         {
             base.OnViewReady();
-            await this.OpenViewAsync();
             this.View.BtnAds.OnViewReady(this.adService);
             this.View.BtnHome.onClick.AddListener(this.OnClickHome);
             this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
@@ -228,7 +227,7 @@
 
         protected virtual void OnClickAds()
         {
-            this.adService.ShowRewardedAd("", () =>
+            this.adService.ShowRewardedAd(this.AdPlacement, () =>
             {
             });
         }

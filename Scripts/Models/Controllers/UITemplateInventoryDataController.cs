@@ -28,8 +28,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public const string DefaultSoftCurrencyID         = "Coin";
         public const string DefaultChestRoomKeyCurrencyID = "ChestRoomKey";
 
-        private Dictionary<string, int> revertCurrencyValue = new();
-
         public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
             UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus,
             UITemplateItemBlueprint uiTemplateItemBlueprint)
@@ -43,29 +41,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
         }
-
-        public void SetRevertCurrencyValue(string id, int value)
-        {
-            if (this.revertCurrencyValue.ContainsKey(id))
-            {
-                this.revertCurrencyValue[id] = value;
-            }
-            else
-            {
-                this.revertCurrencyValue.Add(id, value);
-            }
-        }
-
-        public void RevertCurrency()
-        {
-            foreach (var (currencyKey, value) in this.revertCurrencyValue)
-            {
-                this.UpdateCurrency(value, currencyKey);
-            }
-
-            this.revertCurrencyValue.Clear();
-        }
-
+        
         public string GetCurrentItemSelected(string category) => this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null;
 
         public void UpdateCurrentSelectedItem(string category, string id)

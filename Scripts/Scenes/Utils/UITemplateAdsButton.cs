@@ -14,14 +14,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
         public void BindData(string place)
         {
-            this.cts = new CancellationTokenSource();
+            this.cts          = new CancellationTokenSource();
+            this.interactable = false;
             UniTask.WaitUntil(() => this.adServices.IsRewardedAdReady(place), cancellationToken: this.cts.Token).ContinueWith(() => this.interactable = true);
         }
 
         public void Dispose()
         {
             this.cts?.Dispose();
-            this.interactable = false;
         }
     }
 }

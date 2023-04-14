@@ -41,6 +41,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
         }
+
+        public string GetTempCurrencyKey(string currency) => $"Temp_{currency}";
+
+        public void ApplyTempCurrency(string currency)
+        {
+            this.UpdateCurrency(this.GetCurrencyValue(this.GetTempCurrencyKey(currency)), currency);
+        }
+
+        public void ResetTempCurrency(string currency)
+        {
+            this.UpdateCurrency(this.GetCurrencyValue(currency), this.GetTempCurrencyKey(currency));
+        }
         
         public string GetCurrentItemSelected(string category) => this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null;
 

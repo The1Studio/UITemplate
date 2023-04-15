@@ -13,18 +13,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using UnityEngine;
     using Zenject;
 
+    /// <summary>
+    /// We need to use MonoBehaviour to use Firebase Remote Config
+    /// </summary>
     public class UITemplateFirebaseRemoteConfig : MonoBehaviour, IUITemplateRemoteConfig, IInitializable
     {
         [Inject] private readonly ILogService logger;
         [Inject] private readonly SignalBus   signalBus;
         public                    bool        IsFirebaseReady { get; private set; }
 
-        // public UITemplateFirebaseRemoteConfig(ILogService logger, SignalBus signalBus)
-        // {
-        //     this.logger = logger;
-        //
-        //     this.signalBus = signalBus;
-        // }
         private void Start() { this.InitFirebase(); }
 
         public void Initialize() { }

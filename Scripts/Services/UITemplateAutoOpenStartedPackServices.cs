@@ -11,14 +11,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     {
         private readonly SignalBus                  signalBus;
         private readonly UITemplateCommonController uiTemplateCommonController;
-        private readonly string                     statedPackID;
         private readonly ScreenManager              screenManager;
 
-        public UITemplateAutoOpenStartedPackServices(SignalBus signalBus, UITemplateCommonController uiTemplateCommonController, string statedPackID, ScreenManager screenManager)
+        public UITemplateAutoOpenStartedPackServices(SignalBus signalBus, UITemplateCommonController uiTemplateCommonController, ScreenManager screenManager)
         {
             this.signalBus                  = signalBus;
             this.uiTemplateCommonController = uiTemplateCommonController;
-            this.statedPackID               = statedPackID;
             this.screenManager              = screenManager;
         }
 
@@ -34,7 +32,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
                 this.screenManager.OpenScreen<UITemplateStartPackScreenPresenter, UITemplateStaterPackModel>(new UITemplateStaterPackModel()
                 {
-                   
                 });
             }
         }

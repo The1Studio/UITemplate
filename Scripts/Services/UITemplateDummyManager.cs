@@ -12,7 +12,7 @@
 
         public double GetRemoteConfigDoubleValue(string key) { return 0; }
 
-        public int GetRemoteConfigIntValue(string key) { return 0; }
+        public int GetRemoteConfigIntValue(string key, int defaultValue) { return defaultValue; }
 
         public float GetRemoteConfigFloatValue(string key) { return 0; }
     }

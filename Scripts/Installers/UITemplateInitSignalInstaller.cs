@@ -6,7 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
-    public class UITemplateInitSignalInstaller : Installer<UITemplateInitSignalInstaller>
+    public class UITemplateDeclareSignalInstaller : Installer<UITemplateDeclareSignalInstaller>
     {
         public override void InstallBindings()
         {
@@ -25,7 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<LevelSkippedSignal>();
             this.Container.DeclareSignal<InterstitialAdCalledSignal>();
             this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
-            this.Container.DeclareSignal<FirebaseInitializeSucceededSignal>();
+            this.Container.DeclareSignal<RemoteConfigInitializeSucceededSignal>();
             this.Container.DeclareSignal<ScaleDecoration2DItem>();
             this.Container.DeclareSignal<UITemplateAddRewardsSignal>();
         }

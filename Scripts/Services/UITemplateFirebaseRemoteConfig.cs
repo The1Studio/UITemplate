@@ -68,7 +68,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             else if (fetchTask.IsCompleted)
             {
                 this.logger.Log("Fetch completed successfully!");
-                this.signalBus.Fire<FirebaseInitializeSucceededSignal>();
+                this.signalBus.Fire<RemoteConfigInitializeSucceededSignal>();
             }
 
             var info = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.Info;
@@ -146,16 +146,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             return double.TryParse(value, out var result) ? result : 0;
         }
 
-        public int GetRemoteConfigIntValue(string key)
+        public int GetRemoteConfigIntValue(string key, int defaultValue)
         {
             if (!this.HasKey(key) || !this.IsFirebaseReady)
             {
-                return 0;
+                return defaultValue;
             }
 
             var value = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
 
-            return int.TryParse(value, out var result) ? result : 0;
+            return int.TryParse(value, out var result) ? result : defaultValue;
         }
 
         public float GetRemoteConfigFloatValue(string key)

@@ -13,13 +13,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
+            UITemplateDeclareSignalInstaller.Install(this.Container);
+            
             UnityIapInstaller.Install(this.Container);
             FTUEInstaller.Install(this.Container);
-            UITemplateAdsInstaller.Install(this.Container);
-            UITemplateInitSignalInstaller.Install(this.Container);
             UITemplateLocalDataInstaller.Install(this.Container);
             UITemplateServicesInstaller.Install(this.Container, this.soundGroupPrefab);
             UITemplateThirdPartyInstaller.Install(this.Container);
+            UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
         }
     }
 }

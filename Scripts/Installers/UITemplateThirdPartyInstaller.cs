@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using Core.AnalyticServices;
     using Core.AnalyticServices.Data;
+    using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.FirebaseAnalyticTracker;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
@@ -32,6 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<IUITemplateRemoteConfig>().To<UITemplateDummyManager>().AsCached().NonLazy();
 #endif
 
+            this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<BaseAnalyticEventFactory>();
             var listFactory     = this.Container.ResolveAll<IAnalyticEventFactory>();
             var analyticFactory = listFactory[0];
 

@@ -19,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public string                                                ImageAddress          { get; set; }
         public string                                                Name                  { get; set; }
         public string                                                Description           { get; set; }
+        public string                                                DefaultPrice          { get; set; }
         public BlueprintByRow<string, UITemplateRewardBlueprintData> RewardIdToRewardDatas { get; set; }
     }
 

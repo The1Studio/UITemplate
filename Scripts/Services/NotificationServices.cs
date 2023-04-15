@@ -39,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.logger                              = logger;
             this.analyticHandler                     = analyticServices;
 #if FIREBASE_REMOTE_CONFIG
-            this.signalBus.Subscribe<FirebaseInitializeSucceededSignal>(this.InitNotification);
+            this.signalBus.Subscribe<RemoteConfigInitializeSucceededSignal>(this.InitNotification);
 #endif
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintComplete);
         }

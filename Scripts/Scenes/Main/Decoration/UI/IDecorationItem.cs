@@ -8,10 +8,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
     {
         Vector3 PositionUI { get; }
         string  Category   { get; }
-        void    Init(UITemplateDecorCategoryRecord record);
-        void    ScaleItem();
+        UniTask Init(UITemplateDecorCategoryRecord record);
+        UniTask ScaleItem();
         UniTask ChangeItem(string addressItem);
-        void    ShowItem();
-        void    HideItem();
+        UniTask ShowItem();
+        UniTask HideItem();
     }
 }

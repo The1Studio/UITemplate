@@ -54,11 +54,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
                     this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(key, this.GetDefaultItemId(key));
                 }
 
-                _ = this.CreateDecorationItemThenHide(key);
+                _ = this.CreateDecorationItem(key);
             }
         }
-
-        private async UniTask CreateDecorationItemThenHide(string key) => (await this.CreateDecorationItem(key)).HideItem();
 
         public void HideDecorItems()
         {

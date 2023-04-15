@@ -45,9 +45,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<IUITemplateBaseReward>();
             this.Container.BindInterfacesAndSelfTo<UITemplateHandleRewardServices>().AsCached().NonLazy();
             this.Container.Bind<UITemplateGetRealRewardHelper>().AsCached().NonLazy();
-
+            
             this.Container.BindInterfacesTo<UITemplateAutoOpenStartedPackServices>().AsCached().NonLazy();
-            this.Container.Bind<string>().FromInstance("com.car.climb.draw.bridge.start_pack_1").WhenInjectedInto<UITemplateAutoOpenStartedPackServices>();
         }
     }
 }

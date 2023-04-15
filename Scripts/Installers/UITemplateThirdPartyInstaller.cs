@@ -10,9 +10,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if !FIREBASE_REMOTE_CONFIG
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
-
 #elif FIREBASE_REMOTE_CONFIG
- using TheOneStudio.UITemplate.UITemplate.Services;
+    using TheOneStudio.UITemplate.UITemplate.Services;
 #endif
 
 #if APPSFLYER
@@ -28,7 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             AnalyticServicesInstaller.Install(this.Container);
 
 #if FIREBASE_REMOTE_CONFIG
-            this.Container.BindInterfacesTo<UITemplateFirebaseRemoteConfig>().AsCached().NonLazy();
+            this.Container.BindInterfacesTo<UITemplateFirebaseRemoteConfig>().FromNewComponentOnNewGameObject().AsCached().NonLazy();
 #else
             this.Container.Bind<IUITemplateRemoteConfig>().To<UITemplateDummyManager>().AsCached().NonLazy();
 #endif

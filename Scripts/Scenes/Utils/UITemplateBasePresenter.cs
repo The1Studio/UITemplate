@@ -17,7 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
     using UnityEngine.UI;
     using Zenject;
 
-    internal class UITemplateBaseScreenUtils
+    public class UITemplateBaseScreenUtils
     {
         private readonly IAnalyticServices       analyticService;
         private readonly UITemplateSoundServices soundServices;

@@ -46,9 +46,9 @@
         protected virtual void OnClickLevel()
         {
             this.ScreenManager.OpenScreen<UITemplateJackpotSpinPopupPresenter, UITemplateJackpotSpinPopupModel>(new UITemplateJackpotSpinPopupModel(() =>
-                                                                                                                {
-                                                                                                                    Debug.Log($"Get Reward from Jackpot Complete");
-                                                                                                                }));
+            {
+                Debug.Log($"Get Reward from Jackpot Complete");
+            }));
         }
 
         private UITemplateGachaPopupModel FakeGachaPage()
@@ -97,7 +97,7 @@
 
         #region inject
 
-        private readonly   DiContainer                       diContainer;
+        protected readonly DiContainer                       diContainer;
         protected readonly IScreenManager                    ScreenManager;
         protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
 

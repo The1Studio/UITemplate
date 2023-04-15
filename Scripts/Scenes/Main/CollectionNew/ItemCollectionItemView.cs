@@ -100,10 +100,10 @@
             this.View.btnStartPack.gameObject.SetActive(isStartPack && !isOwner && isUnlocked);
 
             this.View.objUsed.SetActive(param.ItemIndex == param.IndexItemUsed);
-            this.View.objChoose.SetActive(!isStartPack && param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
-            this.View.objChooseStaredPack.SetActive(isStartPack && param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
-            this.View.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected && !isStartPack);
-            this.View.objStaredPack.SetActive(isStartPack && !isOwner && isUnlocked);
+            this.View.objChoose.SetActive((!isStartPack || isStartPack && isOwner) && param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
+            this.View.objChooseStaredPack.SetActive(isStartPack && !isOwner && param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
+            this.View.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected && (!isStartPack || isStartPack && isOwner));
+            this.View.objStaredPack.SetActive(isStartPack && !isUse && !isOwner);
         }
 
         private bool IsItemBuyCoinAble(ItemCollectionItemModel param)

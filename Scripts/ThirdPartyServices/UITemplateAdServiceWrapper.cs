@@ -106,7 +106,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.signalBus.Fire(new InterstitialAdCalledSignal(place));
             this.uiTemplateAdsData.WatchedInterstitialAds++;
-            this.aoaAdService.IsResumedFromAds = true;
+            this.aoaAdService.IsResumedFromAdsOrIAP = true;
             this.adServices.ShowInterstitialAd(place);
 
             return true;
@@ -130,7 +130,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsData.WatchedRewardedAds++;
-            this.aoaAdService.IsResumedFromAds = true;
+            this.aoaAdService.IsResumedFromAdsOrIAP = true;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 

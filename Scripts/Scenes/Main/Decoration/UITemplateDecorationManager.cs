@@ -45,8 +45,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             this.InitDecorItems();
         }
 
-        public void InitDecorItems()
+        public async UniTask InitDecorItems()
         {
+            var createDecorItemTasks = new List<UniTask>();
             foreach (var key in this.uiTemplateDecorCategoryBlueprint.Keys)
             {
                 if (this.uiTemplateInventoryDataController.GetCurrentItemSelected(key) == null)
@@ -54,8 +55,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
                     this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(key, this.GetDefaultItemId(key));
                 }
 
-                _ = this.CreateDecorationItem(key);
+                createDecorItemTasks.Add(this.CreateDecorationItem(key));
             }
+
+            await UniTask.WhenAll(createDecorItemTasks);
+            this.signalBus.Fire<UITemplateDecorItemsInitSucceedSignal>();
         }
 
         public void HideDecorItems()

@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
+            this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
             UITemplateDeclareSignalInstaller.Install(this.Container);
 
             UnityIapInstaller.Install(this.Container);

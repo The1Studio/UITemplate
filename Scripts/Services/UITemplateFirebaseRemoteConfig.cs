@@ -10,22 +10,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
+    using UnityEngine;
     using Zenject;
 
-    public class UITemplateFirebaseRemoteConfig : IUITemplateRemoteConfig, IInitializable
+    public class UITemplateFirebaseRemoteConfig : MonoBehaviour, IUITemplateRemoteConfig, IInitializable
     {
-        private readonly ILogService logger;
-        private readonly SignalBus   signalBus;
-        public           bool        IsFirebaseReady { get; private set; }
+        [Inject] private readonly ILogService logger;
+        [Inject] private readonly SignalBus   signalBus;
+        public                    bool        IsFirebaseReady { get; private set; }
 
-        public UITemplateFirebaseRemoteConfig(ILogService logger, SignalBus signalBus)
-        {
-            this.logger = logger;
+        // public UITemplateFirebaseRemoteConfig(ILogService logger, SignalBus signalBus)
+        // {
+        //     this.logger = logger;
+        //
+        //     this.signalBus = signalBus;
+        // }
+        private void Start() { this.InitFirebase(); }
 
-            this.signalBus = signalBus;
-        }
-
-        public void Initialize() { this.InitFirebase(); }
+        public void Initialize() { }
 
         private void InitFirebase()
         {
@@ -46,13 +48,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             });
         }
 
-        private void FetchDataAsync()
+        private Task FetchDataAsync()
         {
             var fetchTask =
-                Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.FetchAsync(
+                FirebaseRemoteConfig.DefaultInstance.FetchAsync(
                     TimeSpan.Zero);
 
-            fetchTask.ContinueWithOnMainThread(this.FetchComplete);
+            return fetchTask.ContinueWithOnMainThread(this.FetchComplete);
         }
 
         private void FetchComplete(Task fetchTask)
@@ -68,15 +70,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             else if (fetchTask.IsCompleted)
             {
                 this.logger.Log("Fetch completed successfully!");
-                this.signalBus.Fire<RemoteConfigInitializeSucceededSignal>();
+                this.signalBus.Fire(new RemoteConfigInitializeSucceededSignal());
             }
 
-            var info = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.Info;
+            var info = FirebaseRemoteConfig.DefaultInstance.Info;
 
             switch (info.LastFetchStatus)
             {
                 case LastFetchStatus.Success:
-                    _ = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.ActivateAsync().ContinueWithOnMainThread(_ => { });
+                    FirebaseRemoteConfig.DefaultInstance.ActivateAsync();
 
                     break;
                 case LastFetchStatus.Failure:
@@ -108,7 +110,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region Get Data Remote Config
 
-        public string GetRemoteConfigStringValue(string key) { return !this.HasKey(key) ? "" : Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue; }
+        public string GetRemoteConfigStringValue(string key) { return !this.HasKey(key) ? "" : FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue; }
 
         public bool GetRemoteConfigBoolValue(string key)
         {
@@ -117,7 +119,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 return false;
             }
 
-            var value = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
+            var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
 
             return bool.TryParse(value, out var result) && result;
         }
@@ -129,7 +131,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 return 0;
             }
 
-            var value = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
+            var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
 
             return long.TryParse(value, out var result) ? result : 0;
         }
@@ -141,7 +143,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 return 0d;
             }
 
-            var value = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
+            var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
 
             return double.TryParse(value, out var result) ? result : 0;
         }
@@ -153,7 +155,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 return defaultValue;
             }
 
-            var value = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
+            var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
 
             return int.TryParse(value, out var result) ? result : defaultValue;
         }
@@ -165,15 +167,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 return 0f;
             }
 
-            var value = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
+            var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
 
             return float.TryParse(value, out var result) ? result : 0f;
         }
 
-        private bool HasKey(string key)
-        {
-            return Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.Keys != null && Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.Keys.Contains(key);
-        }
+        private bool HasKey(string key) { return FirebaseRemoteConfig.DefaultInstance.Keys != null && FirebaseRemoteConfig.DefaultInstance.Keys.Contains(key); }
 
         #endregion
     }

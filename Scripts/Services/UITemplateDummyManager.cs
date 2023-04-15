@@ -1,9 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
 {
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
+    using Zenject;
 
     public class UITemplateDummyManager : IUITemplateRemoteConfig
     {
+        public UITemplateDummyManager(SignalBus signalBus) { signalBus.Fire(new RemoteConfigInitializeSucceededSignal()); }
+
         public string GetRemoteConfigStringValue(string key) { return ""; }
 
         public bool GetRemoteConfigBoolValue(string key) { return true; }

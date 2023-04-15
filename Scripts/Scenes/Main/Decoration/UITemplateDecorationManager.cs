@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 {
     using System.Collections.Generic;
     using System.Linq;
+    using BlueprintFlow.Signals;
     using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -9,7 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateDecorationManager
+    public class UITemplateDecorationManager : IInitializable
     {
         private readonly Dictionary<string, IDecorationItem> categoryToDecorationItem = new();
 
@@ -19,18 +20,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
         private readonly UITemplateDecorCategoryBlueprint  uiTemplateDecorCategoryBlueprint;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
+        private readonly SignalBus                         signalBus;
 
-        private UITemplateDecorationManager(DiContainer diContainer, UITemplateDecorCategoryBlueprint uiTemplateDecorCategoryBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateItemBlueprint uiTemplateItemBlueprint)
+        #endregion
+
+
+        private UITemplateDecorationManager(DiContainer diContainer, UITemplateDecorCategoryBlueprint uiTemplateDecorCategoryBlueprint, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateItemBlueprint uiTemplateItemBlueprint, SignalBus signalBus)
         {
             this.diContainer                       = diContainer;
             this.uiTemplateDecorCategoryBlueprint  = uiTemplateDecorCategoryBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
-            
-            this.InitDecorItems();
+            this.signalBus                         = signalBus;
         }
 
-        #endregion
+
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnBlueprintDataLoaded);
+        }
+            
+        private void OnBlueprintDataLoaded()
+        {
+            this.InitDecorItems();
+        }
 
         public void InitDecorItems()
         {
@@ -41,7 +54,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
                     this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(key, this.GetDefaultItemId(key));
                 }
 
-                this.CreateDecorationItemThenHide(key);
+                _ = this.CreateDecorationItemThenHide(key);
             }
         }
 
@@ -84,12 +97,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         private async UniTask<DecorationItem> CreateTheme2D(string category)
         {
-            return new GameObject($"{category}").AddComponent<Decoration2DThemeItem>();
+            var gameObject = new GameObject($"{category}");
+            Object.DontDestroyOnLoad(gameObject);
+            return gameObject.AddComponent<Decoration2DThemeItem>();
         }
 
         private async UniTask<DecorationItem> CreateTheme3D(string category)
         {
-            return new GameObject($"{category}").AddComponent<Decoration3DThemeItem>();
+            var gameObject = new GameObject($"{category}");
+            Object.DontDestroyOnLoad(gameObject);
+            return gameObject.AddComponent<Decoration3DThemeItem>();
         }
 
         public async void OnChangeCategory(string category) { (await this.GetDecoration(category)).ScaleItem(); }
@@ -98,7 +115,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         public async UniTask<IDecorationItem> GetDecoration(string category)
         {
-            if (this.categoryToDecorationItem.ContainsKey(category)) return this.categoryToDecorationItem[category];
+            if (this.categoryToDecorationItem.TryGetValue(category, out var decoration)) return decoration;
             return await this.CreateDecorationItem(category);
         }
     }

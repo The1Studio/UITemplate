@@ -23,11 +23,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             if (this.spriteRenderer == null) this.spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
             this.spriteRenderer.sprite       = await this.GameAssets.LoadAssetAsync<Sprite>(this.uiTemplateInventoryDataController.GetCurrentItemSelected(record.Id));
             this.spriteRenderer.sortingOrder = record.Layer;
-            
-            if (record.IsScaleRoot)
-            {
-                this.AdjustScale();   
-            }
         }   
 
         public override async UniTask ChangeItem(string addressItem)
@@ -65,6 +60,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         public override UniTask ShowItem()
         {
+            if (this.record.IsScaleRoot)
+            {
+                this.AdjustScale();   
+            }
             this.gameObject.SetActive(true);
             return UniTask.CompletedTask;
         }

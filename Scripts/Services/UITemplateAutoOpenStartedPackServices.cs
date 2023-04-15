@@ -30,7 +30,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 this.uiTemplateCommonController.ChangeGameIsAlreadyOpened();
 
-                this.screenManager.OpenScreen<UITemplateStartPackScreenPresenter, UITemplateStaterPackModel>(new UITemplateStaterPackModel()
+                _ = this.screenManager.OpenScreen<UITemplateStartPackScreenPresenter, UITemplateStaterPackModel>(new UITemplateStaterPackModel()
                 {
                 });
             }

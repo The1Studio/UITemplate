@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI;
@@ -39,11 +40,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
                 {
                     this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(key, this.GetDefaultItemId(key));
                 }
-                
-                var decorItem = this.CreateDecorationItem(key);
-                decorItem.HideItem();
+
+                this.CreateDecorationItemThenHide(key);
             }
         }
+
+        private async UniTask CreateDecorationItemThenHide(string key) => (await this.CreateDecorationItem(key)).HideItem();
 
         public void HideDecorItems()
         {
@@ -53,19 +55,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             }
         }
 
-        public void ShowDecorItems()
+        public async UniTask ShowDecorItems()
         {
+            var showItemTasks = new List<UniTask>();
             foreach (var item in this.categoryToDecorationItem)
             {
-                item.Value.ShowItem();
+                showItemTasks.Add(item.Value.ShowItem());
             }
+
+            await UniTask.WhenAll(showItemTasks);
         }
 
-        private IDecorationItem CreateDecorationItem(string category)
+        private async UniTask<IDecorationItem> CreateDecorationItem(string category)
         {
             var decoration = this.uiTemplateDecorCategoryBlueprint[category].Mode is DecorationMode.Theme2D
-                ? this.CreateTheme2D(category)
-                : this.CreateTheme3D(category);
+                ? await this.CreateTheme2D(category)
+                : await this.CreateTheme3D(category);
             this.diContainer.InjectGameObject(decoration.gameObject);
             decoration.Init(this.uiTemplateDecorCategoryBlueprint[category]);
             this.categoryToDecorationItem.Add(category, decoration);
@@ -76,20 +81,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
         {
             return this.uiTemplateItemBlueprint.First(x => x.Value.Category.Equals(category) && x.Value.IsDefaultItem).Value.Id;
         }
-        
-        private DecorationItem CreateTheme2D(string category) { return new GameObject($"{category}").AddComponent<Decoration2DThemeItem>(); }
 
-        private DecorationItem CreateTheme3D(string category) { return new GameObject($"{category}").AddComponent<Decoration3DThemeItem>(); }
+        private async UniTask<DecorationItem> CreateTheme2D(string category)
+        {
+            return new GameObject($"{category}").AddComponent<Decoration2DThemeItem>();
+        }
 
-        public void OnChangeCategory(string category) { this.GetDecoration(category).ScaleItem(); }
+        private async UniTask<DecorationItem> CreateTheme3D(string category)
+        {
+            return new GameObject($"{category}").AddComponent<Decoration3DThemeItem>();
+        }
 
-        public void ChangeItem(string category, string addressItem) { this.GetDecoration(category).ChangeItem(addressItem); }
+        public async void OnChangeCategory(string category) { (await this.GetDecoration(category)).ScaleItem(); }
 
-        public IDecorationItem GetDecoration(string category)
+        public async void ChangeItem(string category, string addressItem) { (await this.GetDecoration(category)).ChangeItem(addressItem); }
+
+        public async UniTask<IDecorationItem> GetDecoration(string category)
         {
             if (this.categoryToDecorationItem.ContainsKey(category)) return this.categoryToDecorationItem[category];
-            var decoration = this.CreateDecorationItem(category);
-            return decoration;
+            return await this.CreateDecorationItem(category);
         }
     }
 }

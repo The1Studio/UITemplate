@@ -91,7 +91,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             this.itemCollectionItemModels.Clear();
             this.PrepareModel();
             this.View.backButton.onClick.AddListener(this.OnClickBackButton);
-            this.InitCategoryTabs();
+            _ = this.InitCategoryTabs();
         }
 
         public override async UniTask BindData()
@@ -99,7 +99,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             this.uiTemplateAdServiceWrapper.HideBannerAd();
             await UniTask.CompletedTask;
             this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
-            this.uiTemplateDecorationManager.ShowDecorItems();
+            _ = this.uiTemplateDecorationManager.ShowDecorItems();
             await this.OnActiveTab(DefaultTabActive, true);
         }
 
@@ -115,17 +115,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             this.CloseView();
         }
 
-        private void InitCategoryTabs()
+        private async UniTask InitCategoryTabs()
         {
+            var setPositionTasks = new List<UniTask>();
             foreach (var (category, record) in this.uiTemplateDecorCategoryBlueprint)
             {
                 var categoryTabView = Object.Instantiate(this.View.categoryTabViewPrefab, this.View.categoryTabHolder);
                 this.idToCategoryTab.Add(record.Id, categoryTabView);
                 categoryTabView.OnButtonClick += () => this.OnClickCategoryTab(category);
-                categoryTabView.SetPosition(this.uiTemplateDecorationManager.GetDecoration(category).PositionUI);
+                setPositionTasks.Add(this.SetCategoryTabViewPosition(categoryTabView, category));
             }
+
+            await UniTask.WhenAll(setPositionTasks);
         }
 
+        private async UniTask SetCategoryTabViewPosition(DecorCategoryTabView categoryTabView, string category)
+        {
+            categoryTabView.SetPosition((await this.uiTemplateDecorationManager.GetDecoration(category)).PositionUI);
+        }
+        
         private async void OnClickCategoryTab(string category)
         {
             await this.OnActiveTab(category);

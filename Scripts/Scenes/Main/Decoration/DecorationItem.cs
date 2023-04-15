@@ -40,7 +40,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         public string Category { get; private set; }
 
-        public virtual void Init(UITemplateDecorCategoryRecord record)
+        public virtual UniTask Init(UITemplateDecorCategoryRecord record)
         {
             this.record = record;
             
@@ -48,27 +48,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
             this.transform.eulerAngles = record.RotationOnScene;
             this.PositionUI            = record.ButtonPosition;
             this.Category              = record.Id;
+            return UniTask.CompletedTask;
         }
 
-        public void ScaleItem()
+        public UniTask ScaleItem()
         {
-            if (this.isDoPunchScale) return;
+            if (this.isDoPunchScale) return UniTask.CompletedTask;
             const float addPunchScaleMultiple = 0.1f;
             const float scaleDuration         = 1f;
             this.transform.DOPunchScale(this.transform.localScale * addPunchScaleMultiple, scaleDuration, 2)
                 .SetEase(Ease.Linear)
                 .OnUpdate(() => this.isDoPunchScale   = true)
                 .OnComplete(() => this.isDoPunchScale = false);
+            return UniTask.CompletedTask;
         }
 
         public abstract UniTask ChangeItem(string addressItem);
 
-        public virtual void ShowItem()
+        public virtual UniTask ShowItem()
         {
+            return UniTask.CompletedTask;
         }
 
-        public virtual void HideItem()
+        public virtual UniTask HideItem()
         {
+            return UniTask.CompletedTask;
         }
 
         #endregion

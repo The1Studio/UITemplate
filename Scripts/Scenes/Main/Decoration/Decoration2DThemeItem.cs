@@ -14,7 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
         #endregion
 
-        public override async void Init(UITemplateDecorCategoryRecord record)
+        public override async UniTask Init(UITemplateDecorCategoryRecord record)
         {
             base.Init(record);
             
@@ -43,27 +43,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 
             var worldScreenHeight = camera.orthographicSize      * 2;
             var worldScreenWidth  = worldScreenHeight / Screen.height * Screen.width;
+
+            var boundsSize = this.spriteRenderer.sprite.bounds.size;
+            this.transform.localScale = new Vector3(
+                                                    worldScreenWidth  / boundsSize.x,
+                                                    worldScreenHeight / boundsSize.y, 1);
             
-            transform.localScale = new Vector3(
-                                               worldScreenWidth  / this.spriteRenderer.sprite.bounds.size.x,
-                                               worldScreenHeight / this.spriteRenderer.sprite.bounds.size.y, 1);
-            
-            this.signalBus.Fire(new ScaleDecoration2DItem(worldScreenWidth  / this.spriteRenderer.sprite.bounds.size.x, worldScreenHeight / this.spriteRenderer.sprite.bounds.size.y));
+            this.signalBus.Fire(new ScaleDecoration2DItem(worldScreenWidth  / boundsSize.x, worldScreenHeight / boundsSize.y));
         }
 
         private void OnChangeScale(ScaleDecoration2DItem signal)
         {
-            transform.localScale = new Vector3(signal.WidthScale, signal.HeightScale, 1);
+            this.transform.localScale = new Vector3(signal.WidthScale, signal.HeightScale, 1);
         }
 
-        public override void HideItem()
+        public override UniTask HideItem()
         {
             this.gameObject.SetActive(false);
+            return UniTask.CompletedTask;
         }
 
-        public override void ShowItem()
+        public override UniTask ShowItem()
         {
             this.gameObject.SetActive(true);
+            return UniTask.CompletedTask;
         }
         
     }

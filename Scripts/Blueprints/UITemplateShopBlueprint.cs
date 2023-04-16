@@ -15,6 +15,5 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public UITemplateItemData.UnlockType UnlockType;
         public string                        CurrencyID;
         public int                           Price;
-        public string                        IapPackId;
     }
 }

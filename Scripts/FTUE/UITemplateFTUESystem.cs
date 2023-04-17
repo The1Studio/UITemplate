@@ -20,6 +20,7 @@
         private readonly ScreenManager                       screenManager;
         private readonly UITemplateFTUEController            uiTemplateFtueController;
         private          Dictionary<string, IUITemplateFTUE> dicUITemplateFTUE = new();
+        private const    string                              DefaultStepID     = "DefaultStep";
 
         public UITemplateFTUESystem(SignalBus signalBus, UITemplateFTUEControllerData uiTemplateFtueControllerData, List<IUITemplateFTUE> uiTemplateBaseFtues, UITemplateFTUEBlueprint ftueBlueprint,
             ScreenManager screenManager, UITemplateFTUEController uiTemplateFtueController)
@@ -47,11 +48,11 @@
 
         private void OnTriggerFTUE(FTUEManualTriggerSignal obj)
         {
-            if (obj.TriggerId.IsNullOrEmpty()) return;
-            var isCompleteAllRequire = this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(this.ftueBlueprint[obj.TriggerId].RequireCondition);
+            if (obj.StepId.IsNullOrEmpty()) return;
+            var isCompleteAllRequire = this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(this.ftueBlueprint[obj.StepId].RequireCondition);
 
-            if (!isCompleteAllRequire || this.uiTemplateFtueControllerData.IsFinishedStep(obj.TriggerId)) return;
-            this.dicUITemplateFTUE[obj.TriggerId].Execute();
+            if (!isCompleteAllRequire || this.uiTemplateFtueControllerData.IsFinishedStep(obj.StepId)) return;
+            this.dicUITemplateFTUE[obj.StepId].Execute(obj.StepId);
         }
 
         private void OnFinishLoadingNewScene(FinishLoadingNewSceneSignal obj) { this.uiTemplateFtueController.MoveToCurrentRootUI(this.screenManager.CurrentOverlayRoot); }
@@ -60,6 +61,8 @@
 
         private void OnScreenShow(ScreenShowSignal obj)
         {
+            if (obj.ScreenPresenter == null) return;
+
             foreach (var ftue in this.ftueBlueprint.Where(x => x.Value.EnableTrigger))
             {
                 if (!obj.ScreenPresenter.GetType().Name.Equals(ftue.Value.ScreenLocation)) continue;
@@ -67,7 +70,15 @@
 
                 //CompleteAll Require Condition?
                 if (!isCompleteAllRequire || this.uiTemplateFtueControllerData.IsFinishedStep(ftue.Value.Id)) continue;
-                this.dicUITemplateFTUE[ftue.Value.Id].Execute();
+
+                if (ftue.Value.AutoPassCondition)
+                {
+                    this.dicUITemplateFTUE[DefaultStepID].Execute(ftue.Value.Id);
+                }
+                else
+                {
+                    this.dicUITemplateFTUE[ftue.Value.Id].Execute(ftue.Value.Id);
+                }
 
                 return;
             }

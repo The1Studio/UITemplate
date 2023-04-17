@@ -55,10 +55,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.transform.SetAsLastSibling();
         }
 
-        public void SetTutorialStatus(bool status, string triggerId)
+        public void SetTutorialStatus(bool status, string stepId)
         {
             this.gameObject.SetActive(status);
-            this.PrepareTutorial(status, triggerId);
+            this.PrepareTutorial(status, stepId);
         }
 
         private void PrepareTutorial(bool status, string triggerId)

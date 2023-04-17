@@ -3,12 +3,12 @@
     public class FTUEButtonClickSignal
     {
         public string ButtonId { get; set; }
-        public string FTUEId   { get; set; }
+        public string StepId   { get; set; }
 
-        public FTUEButtonClickSignal(string buttonId, string ftueId)
+        public FTUEButtonClickSignal(string buttonId, string stepId)
         {
             this.ButtonId = buttonId;
-            this.FTUEId   = ftueId;
+            this.StepId   = stepId;
         }
     }
 }

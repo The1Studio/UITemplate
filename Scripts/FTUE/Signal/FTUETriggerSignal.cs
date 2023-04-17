@@ -2,8 +2,8 @@
 {
     public class FTUEManualTriggerSignal
     {
-        public string TriggerId { get; set; }
+        public string StepId { get; set; }
 
-        public FTUEManualTriggerSignal(string triggerId) { this.TriggerId = triggerId; }
+        public FTUEManualTriggerSignal(string stepId) { this.StepId = stepId; }
     }
 }

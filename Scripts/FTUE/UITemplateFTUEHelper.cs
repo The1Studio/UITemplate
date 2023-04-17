@@ -14,8 +14,8 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         private readonly UITemplateFTUEControllerData uiTemplateFtueControllerData;
         private readonly List<IUITemplateFTUE>        uiTemplateSteps;
 
-        public UITemplateFTUEHelper(ScreenManager                screenManager, UITemplateFTUEBlueprint ftueBlueprint, UITemplateFTUEControllerData uiTemplateFtueControllerData,
-                                    List<IUITemplateFTUE> uiTemplateSteps)
+        public UITemplateFTUEHelper(ScreenManager screenManager, UITemplateFTUEBlueprint ftueBlueprint, UITemplateFTUEControllerData uiTemplateFtueControllerData,
+            List<IUITemplateFTUE> uiTemplateSteps)
         {
             this.screenManager                = screenManager;
             this.ftueBlueprint                = ftueBlueprint;
@@ -28,14 +28,28 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         public bool IsAnyFtueActive(IScreenPresenter screenPresenter)
         {
             var currentScreen = screenPresenter.GetType().Name;
-            
-            foreach (var uiTemplateFtueStep in this.uiTemplateSteps)
+
+            foreach (var stepBlueprintRecord in this.ftueBlueprint.Values)
             {
-                var stepBlueprintRecord = this.ftueBlueprint.GetDataById(uiTemplateFtueStep.StepId);
                 if (!currentScreen.Equals(stepBlueprintRecord.ScreenLocation)) continue;
+
                 if (!this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(stepBlueprintRecord.RequireCondition)) continue;
                 if (this.uiTemplateFtueControllerData.IsFinishedStep(stepBlueprintRecord.Id)) continue;
-                if (!uiTemplateFtueStep.IsPassedCondition()) continue;
+                var isPassedCondition = false;
+
+                if (stepBlueprintRecord.AutoPassCondition)
+                {
+                    isPassedCondition = true;
+                }
+                else
+                {
+                    var step = this.uiTemplateSteps.Find(x => x.StepId == stepBlueprintRecord.Id);
+
+                    if (step != null)
+                        isPassedCondition = step.IsPassedCondition();
+                }
+
+                if (!isPassedCondition) continue;
 
                 return true;
             }

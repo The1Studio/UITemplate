@@ -61,7 +61,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
             this.AddCustomDefineSymbol(totalDefine);
         }
 
-        public void AddCustomDefineSymbol(List<string> totalDefine)
+        public void AddCustomDefineSymbol(List<string> originDefine)
         {
             if (!this.IsEnable) return;
             var totalCurrentSettingDefine = new Dictionary<string, bool>();
@@ -82,7 +82,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
                 totalCurrentSettingDefine.Add(customDefineSymbol.DefineSymbolName, customDefineSymbol.IsEnable);
             }
 
-            var totalDefineList = new List<string>(totalDefine);
+            var totalDefineList = new List<string>(originDefine);
 
             //add define symbol to total define symbol
             foreach (var data in totalCurrentSettingDefine)
@@ -93,12 +93,30 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
                 }
                 else if (!totalDefineList.Contains(data.Key) && data.Value)
                 {
-                    totalDefineList.Add(data.Key);
+                    this.CheckToAddDefineSymbol(data.Key, totalDefineList);
                 }
             }
 
+            //default define for all project
+            this.CheckToAddDefineSymbol("TextMeshPro", totalDefineList);
+            this.CheckToAddDefineSymbol("ODIN_INSPECTOR", totalDefineList);
+            this.CheckToAddDefineSymbol("ODIN_INSPECTOR_3", totalDefineList);
+            this.CheckToAddDefineSymbol("ADDRESSABLES_ENABLED", totalDefineList);
             var finalDefine = string.Join(";", totalDefineList);
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, finalDefine);
+
+            //compare totalDefineList list and current originDefine list
+            if (!finalDefine.Equals(string.Join(";", originDefine)))
+            {
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, finalDefine);
+            }
+        }
+
+        private void CheckToAddDefineSymbol(string defineSymbolName, List<string> totalDefine)
+        {
+            if (!totalDefine.Contains(defineSymbolName))
+            {
+                totalDefine.Add(defineSymbolName);
+            }
         }
 
         public void GetDefine(FieldInfo[] propertyInfos, object objectContain, Dictionary<string, bool> totalDic)

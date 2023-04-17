@@ -50,7 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
             var totalReward = this.uiTemplateHandleRewardController.GetAllRewardCanReceiveAtThisTimeToDay();
 
             if (totalReward.Count < 0) return;
-            this.logger.Error($"Total reward: {totalReward.Count} need UI To display Total reward ToDay, remove this log when UI is ready");
+            this.logger.LogWithColor($"Total reward: {totalReward.Count} need UI To display Total reward ToDay, remove this log when UI is ready", Color.red);
 
             foreach (var packIdToReward in totalReward)
             {

@@ -79,8 +79,8 @@
 
         protected virtual void OnClickPlay()
         {
-            this.uiTemplateInventoryDataController.UpdateCurrency(1000);
-            this.ScreenManager.OpenScreen<UITemplateDecorScreenPresenter>();
+            // this.uiTemplateInventoryDataController.UpdateCurrency(1000);
+            // this.ScreenManager.OpenScreen<UITemplateDecorScreenPresenter>();
         }
 
         public override UniTask BindData()

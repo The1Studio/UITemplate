@@ -6,22 +6,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
     using Core.AdsServices;
+    using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
-    using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
     public class UITemplateLoadingScreenView : BaseView
     {
-        [SerializeField]
-        private Slider LoadingSlider;
+        [SerializeField] private Slider LoadingSlider;
 
         public void SetLoadingProgressValue(float value)
         {
@@ -36,15 +34,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     {
         private const string LoadingBlueprintStepName = "Loading static data...";
 
-        private const float MinimumLoadingBlueprintTime = 1f; //seconds
+        #region inject
+
+        private readonly BlueprintReaderManager     blueprintReaderManager;
+        private readonly SceneDirector              sceneDirector;
+        private readonly IAOAAdService              aoaAdService;
+        private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
+
+        #endregion
 
         private Dictionary<Type, float> loadingTypeToProgressPercent;
+        private DateTime                startedLoadingTime;
+        private DateTime                startedShowingAOATime;
 
-        private DateTime startedLoadingTime;
-        private DateTime startedShowingAOATime;
 
-
-        public UITemplateLoadingScreenPresenter(SignalBus signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper) : base(signalBus)
+        public UITemplateLoadingScreenPresenter(SignalBus                  signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService,
+                                                UITemplateAdServiceWrapper uiTemplateAdServiceWrapper) : base(signalBus)
         {
             this.blueprintReaderManager     = blueprintReaderManager;
             this.sceneDirector              = sceneDirector;
@@ -52,7 +57,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
         }
 
-        protected virtual string NextSceneName => "1.UITemplateMainScene";
+        protected virtual string NextSceneName               => "1.UITemplateMainScene";
+        protected virtual float  MinimumLoadingBlueprintTime { get; set; } = 1f; //seconds
+
 
         protected override void OnViewReady()
         {
@@ -65,12 +72,26 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.startedLoadingTime = DateTime.Now;
             this.SignalBus.Subscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
             this.SignalBus.Subscribe<ReadBlueprintProgressSignal>(this.OnLoadProgress);
+            this.SignalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppOpenFullScreenContentOpened);
 
             this.loadingTypeToProgressPercent = new Dictionary<Type, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f } };
 
             this.ShowLoadingProgress(LoadingBlueprintStepName);
             this.blueprintReaderManager.LoadBlueprint();
             return UniTask.CompletedTask;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.SignalBus.Unsubscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
+            this.SignalBus.Unsubscribe<ReadBlueprintProgressSignal>(this.OnLoadProgress);
+            this.SignalBus.Unsubscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppOpenFullScreenContentOpened);
+        }
+
+        private void OnAppOpenFullScreenContentOpened()
+        {
+            this.MinimumLoadingBlueprintTime = 1;
         }
 
         private async void ShowLoadingProgress(string loadingContent)
@@ -88,7 +109,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 }
 
                 var currentProgress       = this.loadingTypeToProgressPercent.Values.ToList().Average();
-                var maximumLoadingPercent = (float)(DateTime.Now - this.startedLoadingTime).TotalSeconds / MinimumLoadingBlueprintTime;
+                var maximumLoadingPercent = (float)(DateTime.Now - this.startedLoadingTime).TotalSeconds / this.MinimumLoadingBlueprintTime;
                 progressInView = Mathf.Min(currentProgress, maximumLoadingPercent);
                 this.View.SetLoadingProgressValue(progressInView);
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
@@ -98,18 +119,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
 
-        private void OnLoadProgress(IProgressPercent obj)
-        {
-            this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent;
-        }
-
-        #region inject
-
-        private readonly BlueprintReaderManager     blueprintReaderManager;
-        private readonly SceneDirector              sceneDirector;
-        private readonly IAOAAdService              aoaAdService;
-        private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
-
-        #endregion
+        private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
     }
 }

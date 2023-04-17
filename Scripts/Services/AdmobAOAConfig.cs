@@ -14,8 +14,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
         [SerializeField] private List<string> listAoaIOSAppId = new();
 
         [SerializeField] private int adMobAOAOpenAppThreshold = 1;
-        [SerializeField] private int aoaMinPauseTimeToOpen    = 10;
-
 
         public List<AdViewPosition> listMRecAdViewPosition = new();
 
@@ -29,6 +27,5 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
         public List<string> ListMRecId               => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor ? this.listMRecAndroidId : this.listMRecIOSId;
         public List<string> ListNativeId             => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor ? this.listNativeAndroidId : this.listNativeIOSId;
         public int          AdMObAOAOpenAppThreshold => this.adMobAOAOpenAppThreshold;
-        public int          AOAMinPauseTimeToOpen    => this.aoaMinPauseTimeToOpen;
     }
 }

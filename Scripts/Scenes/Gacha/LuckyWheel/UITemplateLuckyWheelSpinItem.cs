@@ -27,15 +27,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
         public override async void BindData(UITemplateLuckyWheelSpinItemModel param)
         {
-            //Todo Enable this code when have the icon
-            // if (param.Icon.IsNullOrEmpty())
-            // {
-            //     this.View.imgIcon.gameObject.SetActive(false);
-            // }
-            // else
-            // {
-            //     this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.Icon);
-            // }
+             if (param.Icon.IsNullOrEmpty())
+             {
+                 this.View.imgIcon.gameObject.SetActive(false);
+             }
+             else
+             {
+                 this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.Icon);
+             }
 
             if (param.Value > 0)
             {

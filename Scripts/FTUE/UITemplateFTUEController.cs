@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using UniRx;
@@ -31,7 +32,13 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.screenManager           = screenManager;
             this.uiTemplateFtueBlueprint = uiTemplateFtueBlueprint;
             this.signalBus               = signalBus;
+            this.signalBus.Subscribe<StartLoadingNewSceneSignal>(this.OnStartLoadingNewScene);
+            this.signalBus.Subscribe<FinishLoadingNewSceneSignal>(this.OnFinishLoadingNewScene);
         }
+
+        private void OnFinishLoadingNewScene(FinishLoadingNewSceneSignal obj) { this.MoveToCurrentRootUI(this.screenManager.CurrentOverlayRoot); }
+
+        private void OnStartLoadingNewScene(StartLoadingNewSceneSignal obj) { this.MoveToOriginParent(); }
 
         #endregion
 
@@ -42,14 +49,14 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.gameObject.SetActive(false);
         }
 
-        public void MoveToOriginParent()
+        private void MoveToOriginParent()
         {
             this.transform.SetParent(this.originPath, false);
             this.transform.localPosition = Vector3.zero;
             this.gameObject.SetActive(false);
         }
 
-        public void MoveToCurrentRootUI(Transform parent)
+        private void MoveToCurrentRootUI(Transform parent)
         {
             this.transform.SetParent(parent, false);
             this.transform.SetAsLastSibling();

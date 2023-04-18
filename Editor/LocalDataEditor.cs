@@ -50,7 +50,7 @@ namespace UITemplate.Editor
             this.localData = null;
         }
 
-        [MenuItem("Window/TheOneStudio/Local Data Editor")]
+        [MenuItem("Tools/TheOneStudio/Local Data Editor")]
         public static void ShowWindow()
         {
             GetWindow(typeof(LocalDataEditor));

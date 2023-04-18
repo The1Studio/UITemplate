@@ -1,87 +1,62 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
-    using TheOneStudio.UITemplate.UITemplate.FTUE.TutorialTriggerCondition;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using Zenject;
 
     public class UITemplateFTUESystem : IInitializable
     {
-        private readonly SignalBus                           signalBus;
-        private readonly UITemplateFTUEControllerData        uiTemplateFtueControllerData;
-        private readonly List<IUITemplateFTUE>               uiTemplateBaseFtues;
-        private readonly UITemplateFTUEBlueprint             ftueBlueprint;
-        private readonly ScreenManager                       screenManager;
-        private readonly UITemplateFTUEController            uiTemplateFtueController;
-        private          Dictionary<string, IUITemplateFTUE> dicUITemplateFTUE = new();
-        private const    string                              DefaultStepID     = "DefaultStep";
+        private readonly SignalBus                    signalBus;
+        private readonly UITemplateFTUEHelper         uiTemplateFtueHelper;
+        private readonly UITemplateFTUEControllerData uiTemplateFtueControllerData;
+        private readonly UITemplateFTUEBlueprint      ftueBlueprint;
+        private readonly UITemplateFTUEController     uiTemplateFtueController;
 
-        public UITemplateFTUESystem(SignalBus signalBus, UITemplateFTUEControllerData uiTemplateFtueControllerData, List<IUITemplateFTUE> uiTemplateBaseFtues, UITemplateFTUEBlueprint ftueBlueprint,
+        public UITemplateFTUESystem(SignalBus signalBus, UITemplateFTUEHelper uiTemplateFtueHelper,
+            UITemplateFTUEControllerData uiTemplateFtueControllerData,
+            UITemplateFTUEBlueprint ftueBlueprint,
             ScreenManager screenManager, UITemplateFTUEController uiTemplateFtueController)
         {
             this.signalBus                    = signalBus;
+            this.uiTemplateFtueHelper         = uiTemplateFtueHelper;
             this.uiTemplateFtueControllerData = uiTemplateFtueControllerData;
-            this.uiTemplateBaseFtues          = uiTemplateBaseFtues;
             this.ftueBlueprint                = ftueBlueprint;
-            this.screenManager                = screenManager;
             this.uiTemplateFtueController     = uiTemplateFtueController;
         }
 
         public void Initialize()
         {
-            foreach (var u in this.uiTemplateBaseFtues)
-            {
-                this.dicUITemplateFTUE.Add(u.StepId, u);
-            }
-
-            this.signalBus.Subscribe<StartLoadingNewSceneSignal>(this.OnStartLoadingNewScene);
-            this.signalBus.Subscribe<FinishLoadingNewSceneSignal>(this.OnFinishLoadingNewScene);
-            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
-            this.signalBus.Subscribe<FTUEManualTriggerSignal>(this.OnTriggerFTUE);
+            this.signalBus.Subscribe<FTUETriggerSignal>(this.OnTriggerFTUE);
+            this.signalBus.Subscribe<FTUEButtonClickSignal>(this.OnFTUEButtonClick);
         }
 
-        private void OnTriggerFTUE(FTUEManualTriggerSignal obj)
+        private void OnFTUEButtonClick(FTUEButtonClickSignal obj)
+        {
+            this.uiTemplateFtueController.SetTutorialStatus(false, obj.StepId);
+            this.uiTemplateFtueControllerData.CompleteStep(obj.StepId);
+            var nextStepId = this.ftueBlueprint[obj.StepId].NextStepId;
+
+            if (nextStepId.IsNullOrEmpty()) return;
+            this.OnTriggerFTUE(new FTUETriggerSignal(nextStepId));
+        }
+
+        private void OnTriggerFTUE(FTUETriggerSignal obj)
         {
             if (obj.StepId.IsNullOrEmpty()) return;
-            var isCompleteAllRequire = this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(this.ftueBlueprint[obj.StepId].RequireCondition);
+            var isCompleteAllRequire = this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(this.ftueBlueprint[obj.StepId].RequireTriggerComplete);
 
             if (!isCompleteAllRequire || this.uiTemplateFtueControllerData.IsFinishedStep(obj.StepId)) return;
-            this.dicUITemplateFTUE[obj.StepId].Execute(obj.StepId);
+            this.Execute(obj.StepId);
         }
 
-        private void OnFinishLoadingNewScene(FinishLoadingNewSceneSignal obj) { this.uiTemplateFtueController.MoveToCurrentRootUI(this.screenManager.CurrentOverlayRoot); }
-
-        private void OnStartLoadingNewScene(StartLoadingNewSceneSignal obj) { this.uiTemplateFtueController.MoveToOriginParent(); }
-
-        private void OnScreenShow(ScreenShowSignal obj)
+        private void Execute(string stepId)
         {
-            if (obj.ScreenPresenter == null) return;
+            var canTrigger = this.uiTemplateFtueHelper.IsPassedCondition(stepId);
 
-            foreach (var ftue in this.ftueBlueprint.Where(x => x.Value.EnableTrigger))
-            {
-                if (!obj.ScreenPresenter.GetType().Name.Equals(ftue.Value.ScreenLocation)) continue;
-                var isCompleteAllRequire = this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(ftue.Value.RequireCondition);
-
-                //CompleteAll Require Condition?
-                if (!isCompleteAllRequire || this.uiTemplateFtueControllerData.IsFinishedStep(ftue.Value.Id)) continue;
-
-                if (ftue.Value.AutoPassCondition)
-                {
-                    this.dicUITemplateFTUE[DefaultStepID].Execute(ftue.Value.Id);
-                }
-                else
-                {
-                    this.dicUITemplateFTUE[ftue.Value.Id].Execute(ftue.Value.Id);
-                }
-
-                return;
-            }
+            this.uiTemplateFtueController.SetTutorialStatus(canTrigger, stepId);
         }
     }
 }

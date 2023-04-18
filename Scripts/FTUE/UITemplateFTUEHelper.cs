@@ -1,26 +1,26 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
-    using System.Collections.Generic;
+    using System;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.FTUE.TutorialTriggerCondition;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
     public class UITemplateFTUEHelper
     {
-        private readonly ScreenManager                screenManager;
-        private readonly UITemplateFTUEBlueprint      ftueBlueprint;
-        private readonly UITemplateFTUEControllerData uiTemplateFtueControllerData;
-        private readonly List<IUITemplateFTUE>        uiTemplateSteps;
+        private readonly ScreenManager                 screenManager;
+        private readonly UITemplateLevelDataController uiTemplateLevelDataController;
+        private readonly UITemplateFTUEBlueprint       ftueBlueprint;
+        private readonly UITemplateFTUEControllerData  uiTemplateFtueControllerData;
 
-        public UITemplateFTUEHelper(ScreenManager screenManager, UITemplateFTUEBlueprint ftueBlueprint, UITemplateFTUEControllerData uiTemplateFtueControllerData,
-            List<IUITemplateFTUE> uiTemplateSteps)
+        public UITemplateFTUEHelper(ScreenManager screenManager, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateFTUEBlueprint ftueBlueprint,
+            UITemplateFTUEControllerData uiTemplateFtueControllerData
+        )
         {
-            this.screenManager                = screenManager;
-            this.ftueBlueprint                = ftueBlueprint;
-            this.uiTemplateFtueControllerData = uiTemplateFtueControllerData;
-            this.uiTemplateSteps              = uiTemplateSteps;
+            this.screenManager                 = screenManager;
+            this.uiTemplateLevelDataController = uiTemplateLevelDataController;
+            this.ftueBlueprint                 = ftueBlueprint;
+            this.uiTemplateFtueControllerData  = uiTemplateFtueControllerData;
         }
 
         public bool IsAnyFtueActive() => this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);
@@ -33,21 +33,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             {
                 if (!currentScreen.Equals(stepBlueprintRecord.ScreenLocation)) continue;
 
-                if (!this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(stepBlueprintRecord.RequireCondition)) continue;
+                if (!this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(stepBlueprintRecord.RequireTriggerComplete)) continue;
                 if (this.uiTemplateFtueControllerData.IsFinishedStep(stepBlueprintRecord.Id)) continue;
-                var isPassedCondition = false;
 
-                if (stepBlueprintRecord.AutoPassCondition)
-                {
-                    isPassedCondition = true;
-                }
-                else
-                {
-                    var step = this.uiTemplateSteps.Find(x => x.StepId == stepBlueprintRecord.Id);
-
-                    if (step != null)
-                        isPassedCondition = step.IsPassedCondition();
-                }
+                var isPassedCondition = this.IsPassedCondition(stepBlueprintRecord.Id);
 
                 if (!isPassedCondition) continue;
 
@@ -56,5 +45,54 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
             return false;
         }
+
+        public bool IsPassedCondition(string stepId)
+        {
+            foreach (var requireCondition in this.ftueBlueprint[stepId].GetRequireCondition())
+            {
+                var isPass = requireCondition.RequireId switch
+                {
+                    FTUEStaticValue.RequireConditionId.RoundLevelRequire => this.IsPassedRoundLevelRequire(requireCondition.RequireValue, requireCondition.Condition),
+                    FTUEStaticValue.RequireConditionId.PlayerLevelRequire => this.IsPassedPlayerLevelRequire(requireCondition.RequireValue, requireCondition.Condition),
+                    _ => false
+                };
+
+                if (!isPass)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        #region Check Pass Condition
+
+        private bool IsPassedRoundLevelRequire(string requireLevel, string condition)
+        {
+            var level = int.Parse(requireLevel);
+
+            return condition switch
+            {
+                FTUEStaticValue.FTUECondition.Equal => this.uiTemplateLevelDataController.GetCurrentLevelData.Level == level,
+                FTUEStaticValue.FTUECondition.NotEqual => this.uiTemplateLevelDataController.GetCurrentLevelData.Level != level,
+                FTUEStaticValue.FTUECondition.Higher => this.uiTemplateLevelDataController.GetCurrentLevelData.Level > level,
+                FTUEStaticValue.FTUECondition.Lower => this.uiTemplateLevelDataController.GetCurrentLevelData.Level < level,
+                _ => throw new ArgumentOutOfRangeException(nameof(condition), condition, null)
+            };
+        }
+
+        private bool IsPassedPlayerLevelRequire(string requireLevel, string condition)
+        {
+            var level = int.Parse(requireLevel);
+
+            //Todo Fill player Level
+            return condition switch
+            {
+                _ => throw new ArgumentOutOfRangeException(nameof(condition), condition, null)
+            };
+        }
+
+        #endregion
     }
 }

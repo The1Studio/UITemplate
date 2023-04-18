@@ -15,18 +15,17 @@ namespace UITemplate.Editor
     {
         private const string LocalDataPrefix = "LD-";
 
-        [OdinSerialize, HideLabel]
-        [ListDrawerSettings(Expanded = true, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]
+        [OdinSerialize, HideLabel] [ListDrawerSettings(Expanded = true, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]
         private List<ILocalData> localData;
 
         private Vector2 scrollPosition;
-
 
         [HorizontalGroup]
         [Button(ButtonSizes.Large)]
         private void LoadLocalData()
         {
             this.localData = LoadAllLocalData();
+            Debug.LogError($"Load Complete");
         }
 
         [HorizontalGroup]
@@ -34,12 +33,15 @@ namespace UITemplate.Editor
         private void SaveLocalData()
         {
             if (this.localData is { Count: 0 }) return;
+
             foreach (var data in this.localData)
             {
                 var key  = $"{LocalDataPrefix}{data.GetType().Name}";
                 var json = JsonConvert.SerializeObject(data, Formatting.Indented);
                 PlayerPrefs.SetString(key, json);
             }
+
+            Debug.LogError($"Save Complete");
         }
 
         [Button(ButtonSizes.Large)]
@@ -48,13 +50,11 @@ namespace UITemplate.Editor
         {
             PlayerPrefs.DeleteAll();
             this.localData = null;
+            Debug.LogError($"Clear Complete");
         }
 
         [MenuItem("Tools/TheOneStudio/Local Data Editor")]
-        public static void ShowWindow()
-        {
-            GetWindow(typeof(LocalDataEditor));
-        }
+        public static void ShowWindow() { GetWindow(typeof(LocalDataEditor)); }
 
         private static List<ILocalData> LoadAllLocalData()
         {
@@ -65,8 +65,10 @@ namespace UITemplate.Editor
             foreach (var type in localDataTypes)
             {
                 var key = $"{LocalDataPrefix}{type.Name}";
+
                 if (!PlayerPrefs.HasKey(key)) continue;
                 var json = PlayerPrefs.GetString(key);
+
                 if (JsonConvert.DeserializeObject(json, type) is ILocalData data)
                     result.Add(data);
             }

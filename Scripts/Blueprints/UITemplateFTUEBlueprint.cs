@@ -29,18 +29,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 
         public List<RequireCondition> GetRequireCondition() => JsonConvert.DeserializeObject<List<RequireCondition>>(this.RequireCondition);
 
+        /// <summary>
+        /// For test Generate Json require condition
+        /// </summary>
         public UITemplateFTUERecord()
         {
             var list = new List<RequireCondition>();
             list.Add(new RequireCondition() { RequireId = "Round_level", RequireValue = "8" });
+#if UNITY_EDITOR
             Debug.Log($"{list.ToJson()}");
+#endif
         }
     }
 
     public class RequireCondition
     {
         public string RequireId { get; set; }
-        //Equal, NotEqual, Higher, Lower, Higher, Lower
+        //Equal, NotEqual, Higher, Lower, Higher, Lower, HigherEqual, LowerEqual
 
         public string Condition    { get; set; } = "Equal";
         public string RequireValue { get; set; }

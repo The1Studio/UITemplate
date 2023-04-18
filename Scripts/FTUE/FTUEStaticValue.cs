@@ -2,7 +2,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     public static class FTUEStaticValue
     {
-     
         public class RequireConditionId
         {
             public const string RoundLevelRequire  = "Round_level";
@@ -11,10 +10,12 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
         public class FTUECondition
         {
-            public const string Equal    = "Equal";
-            public const string NotEqual = "NotEqual";
-            public const string Higher   = "Higher";
-            public const string Lower    = "Lower";
+            public const string Equal     = "Equal";
+            public const string NotEqual  = "NotEqual";
+            public const string Higher    = "Higher";
+            public const string Lower     = "Lower";
+            public const string HighEqual = "HighEqual";
+            public const string LowEqual  = "LowEqual";
         }
     }
 }

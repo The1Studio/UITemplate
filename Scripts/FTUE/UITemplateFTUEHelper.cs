@@ -78,6 +78,8 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
                 FTUEStaticValue.FTUECondition.NotEqual => this.uiTemplateLevelDataController.GetCurrentLevelData.Level != level,
                 FTUEStaticValue.FTUECondition.Higher => this.uiTemplateLevelDataController.GetCurrentLevelData.Level > level,
                 FTUEStaticValue.FTUECondition.Lower => this.uiTemplateLevelDataController.GetCurrentLevelData.Level < level,
+                FTUEStaticValue.FTUECondition.HighEqual => this.uiTemplateLevelDataController.GetCurrentLevelData.Level >= level,
+                FTUEStaticValue.FTUECondition.LowEqual => this.uiTemplateLevelDataController.GetCurrentLevelData.Level <= level,
                 _ => throw new ArgumentOutOfRangeException(nameof(condition), condition, null)
             };
         }

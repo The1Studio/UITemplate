@@ -109,11 +109,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public string GetRemoteConfigStringValue(string key) { return !this.HasKey(key) ? "" : FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue; }
 
-        public bool GetRemoteConfigBoolValue(string key)
+        public bool GetRemoteConfigBoolValue(string key, bool defaultValue)
         {
             if (!this.HasKey(key) || !this.IsFirebaseReady)
             {
-                return false;
+                return defaultValue;
             }
 
             var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;

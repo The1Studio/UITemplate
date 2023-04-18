@@ -7,7 +7,7 @@
 
         public string GetRemoteConfigStringValue(string key) { return ""; }
 
-        public bool GetRemoteConfigBoolValue(string key) { return true; }
+        public bool GetRemoteConfigBoolValue(string key, bool defaultValue) { return defaultValue; }
 
         public long GetRemoteConfigLongValue(string key) { return 0; }
 

@@ -39,7 +39,7 @@
             });
         }
 
-        public static T RandomGachaWithWeight<T>(this IList<T> elements, IList<float> weights)
+        public static T RandomGachaWithWeight<T>(this IList<T> elements, IList<float> weights, int defaultElementIndex = 0)
         {
             // Validate input
             if (elements == null || weights == null || elements.Count != weights.Count || elements.Count == 0)
@@ -66,7 +66,7 @@
                 randomNumber -= normalizedWeights[i];
             }
 
-            return elements[^1];
+            return elements[defaultElementIndex];
         }
 
         public static bool IsNullOrEmpty(this string str) { return string.IsNullOrEmpty(str); }

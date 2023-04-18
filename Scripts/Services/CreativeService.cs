@@ -3,20 +3,23 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using UnityEngine;
     using UnityEngine.Events;
+    using UnityEngine.EventSystems;
     using Zenject;
 
     public class CreativeService : ITickable
     {
-        private int   touchCount;
-        private float touchTime = 0.25f;
-        private float counter;
+        private readonly EventSystem eventSystem;
+        private          int         touchCount;
+        private          float       touchTime = 0.25f;
+        private          float       counter;
 
         public bool IsShowUI { get; private set; } = true;
 
         public readonly UnityEvent OnTripleTap = new();
 
-        public CreativeService()
+        public CreativeService(EventSystem eventSystem)
         {
+            this.eventSystem = eventSystem;
         }
 
         public void Tick()
@@ -29,6 +32,7 @@
                 {
                     this.IsShowUI = !this.IsShowUI;
                     this.OnTripleTap?.Invoke();
+                    this.eventSystem.enabled = true;
                 }
             }
 
@@ -49,6 +53,7 @@
                 {
                     this.IsShowUI = !this.IsShowUI;
                     this.OnTripleTap?.Invoke();
+                    this.eventSystem.enabled = true;
                 }
             }
         }

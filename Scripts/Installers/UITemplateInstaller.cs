@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.FTUE;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using Zenject;
 
@@ -14,7 +15,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
-            this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
+            //Helper
+            this.Container.Bind<UITemplateAnimationHelper>().AsCached();
+            
             UITemplateDeclareSignalInstaller.Install(this.Container);
 
             UnityIapInstaller.Install(this.Container);

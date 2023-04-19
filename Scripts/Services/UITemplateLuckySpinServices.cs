@@ -52,7 +52,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             _ = this.screenManager.OpenScreen<UITemplateLuckyWheelSpinScreenPresenter, UITemplateLuckyWheelSpinModel>(new UITemplateLuckyWheelSpinModel()
             {
-                AutoClose      = false,
                 IsFreeSpin     = isFreeSpin,
                 ForceSpinIndex = forceSpin,
                 SpinRecords    = this.spinBlueprint.Values.ToList(),

@@ -13,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -41,6 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         private readonly IGameAssets                       gameAssets;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
+        private readonly UITemplateAnimationHelper         uiTemplateAnimationHelper;
 
         #endregion
 
@@ -54,12 +56,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         }
 
         public UITemplateChestRoomScreenPresenter(SignalBus                         signalBus, UITemplateGachaChestRoomBlueprint uiTemplateGachaChestRoomBlueprint, IGameAssets gameAssets,
-                                                  UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper) : base(signalBus)
+                                                  UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UITemplateAnimationHelper uiTemplateAnimationHelper) : base(signalBus)
         {
             this.uiTemplateGachaChestRoomBlueprint = uiTemplateGachaChestRoomBlueprint;
             this.gameAssets                        = gameAssets;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
+            this.uiTemplateAnimationHelper         = uiTemplateAnimationHelper;
         }
 
         protected override void OnViewReady()
@@ -96,6 +99,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             this.View.CurrencyView.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
         }
 
+        private void SetKeyObjectActive(bool isActive, bool force = false) => this.uiTemplateAnimationHelper.SetActiveFreeObject(this.View.WatchAdButton.gameObject, this.View.NoThankButton.gameObject, this.View.KeyGroupObject, isActive, force);
+
         private async void OnClickChestButton(UITemplateChestItemView uiTemplateChestItemView)
         {
             if (this.CurrentKeyAmount == 0) return;
@@ -120,45 +125,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             if (this.CurrentKeyAmount == 0)
             {
                 this.SetKeyObjectActive(false);
-            }
-        }
-
-        private async void SetKeyObjectActive(bool isActive, bool force = false)
-        {
-            var noThankDelay  = 2;
-            var scaleDuration = 0.5f;
-            if (force)
-            {
-                this.View.WatchAdButton.transform.localScale  = !isActive ? Vector3.one : Vector3.zero;
-                this.View.KeyGroupObject.transform.localScale = isActive ? Vector3.one : Vector3.zero;
-                if (!isActive)
-                {
-                    this.View.NoThankButton.transform.localScale = Vector3.zero;
-                    await UniTask.Delay(TimeSpan.FromSeconds(noThankDelay));
-                    this.View.NoThankButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
-                }
-                else
-                {
-                    this.View.NoThankButton.transform.localScale = Vector3.zero;
-                }
-            }
-            else
-            {
-                if (isActive)
-                {
-                    this.View.WatchAdButton.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
-                    this.View.NoThankButton.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
-                    await UniTask.Delay(TimeSpan.FromSeconds(scaleDuration));
-                    this.View.KeyGroupObject.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
-                }
-                else
-                {
-                    this.View.KeyGroupObject.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack);
-                    await UniTask.Delay(TimeSpan.FromSeconds(scaleDuration));
-                    this.View.WatchAdButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
-                    await UniTask.Delay(TimeSpan.FromSeconds(noThankDelay));
-                    this.View.NoThankButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
-                }
             }
         }
 

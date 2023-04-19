@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
@@ -19,11 +20,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
     public class UITemplateLuckyWheelSpinModel
     {
-        public bool                            IsFreeSpin     { get; set; } = false;
+        public bool                            IsFreeSpin     { get; set; }
         public float                           RotateDuration { get; set; } = 4f;
         public int                             CircleTimes    { get; set; } = 3;
         public List<UITemplateLuckySpinRecord> SpinRecords    { get; set; } = new();
-        public bool                            AutoClose      { get; set; } = true;
         public int                             ForceSpinIndex { get; set; } = -1;
         public Action<int, RectTransform>      OnSpinComplete { get; set; }
     }
@@ -39,6 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         public List<CircleNote>                   circleNotes;
         public RectTransform                      animationCoin;
         public GameObject                         blockInput;
+        public Button                             noThankButton;
     }
 
     [PopupInfo(nameof(UITemplateLuckyWheelSpinScreenView), false)]
@@ -47,6 +48,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         private readonly EventSystem                eventSystem;
         private readonly DiContainer                diContainer;
         private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
+        private readonly UITemplateAnimationHelper  uiTemplateAnimationHelper;
 
         private Tween spinTween;
 
@@ -59,11 +61,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
         public UITemplateLuckyWheelSpinScreenPresenter(SignalBus signalBus, EventSystem eventSystem, DiContainer diContainer,
             UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            ILogService logger) : base(signalBus, logger)
+            ILogService logger, UITemplateAnimationHelper uiTemplateAnimationHelper) : base(signalBus, logger)
         {
             this.eventSystem                = eventSystem;
             this.diContainer                = diContainer;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
+            this.uiTemplateAnimationHelper  = uiTemplateAnimationHelper;
         }
 
         protected override void OnViewReady()
@@ -71,6 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             base.OnViewReady();
             this.View.btnSpin.onClick.AddListener(this.OnFreeSpin);
             this.View.btnAdsSpin.onClick.AddListener(this.OnAdsSpin);
+            this.View.noThankButton.onClick.AddListener(this.CloseView);
         }
 
         private void OnAdsSpin() { this.uiTemplateAdServiceWrapper.ShowRewardedAd(RewardPlacement, this.DoSpin); }
@@ -81,8 +85,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         {
             this.View.blockInput.SetActive(true);
             this.eventSystem.gameObject.SetActive(false);
-            this.View.btnSpin.gameObject.SetActive(false);
-            this.View.btnAdsSpin.gameObject.SetActive(false);
+            this.SetActiveButtons(false);
             var currentTime = 0f;
             var weights     = new List<float>();
             var prizes      = new List<int>();
@@ -113,22 +116,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
                 var currentAngle = angelWant * this.View.animationCurve.Evaluate(currentTime / this.Model.RotateDuration);
                 this.View.rotateObject.transform.localEulerAngles = new Vector3(0, 0, currentAngle);
             }
+            
+            this.SetActiveButtons(true);
+            this.SetActiveWatchAdsButton(true);
 
             this.FlashCircleNote(0.5f);
 
             this.View.arrowOff.SetActive(false);
             this.View.arrowOn.SetActive(true);
 
-            if (this.Model.AutoClose)
-            {
-                this.CloseView();
-            }
-
             this.eventSystem.gameObject.SetActive(true);
             this.Model.OnSpinComplete?.Invoke(this.lastRewardIndex, this.View.animationCoin);
-            this.View.btnAdsSpin.gameObject.SetActive(true);
             this.View.blockInput.SetActive(false);
         }
+
+        private void SetActiveButtons(bool isActive)
+        {
+            this.View.btnSpin.gameObject.SetActive(isActive);
+            this.View.btnAdsSpin.gameObject.SetActive(isActive);
+            this.View.noThankButton.gameObject.SetActive(isActive);
+        }
+
+        private void SetActiveWatchAdsButton(bool isActive, bool force = false) => this.uiTemplateAnimationHelper.SetActiveFreeObject(this.View.btnAdsSpin.gameObject, this.View.noThankButton.gameObject, this.View.btnSpin.gameObject, !isActive, force);
 
         private void FlashCircleNote(float startTime)
         {
@@ -141,8 +150,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         public override UniTask BindData(UITemplateLuckyWheelSpinModel model)
         {
             this.View.blockInput.SetActive(false);
-            this.View.btnSpin.gameObject.SetActive(model.IsFreeSpin);
-            this.View.btnAdsSpin.gameObject.SetActive(!model.IsFreeSpin);
+            this.SetActiveWatchAdsButton(!model.IsFreeSpin, true);
             this.lastRewardIndex                              = 0;
             this.View.rotateObject.transform.localEulerAngles = Vector3.zero;
             this.View.objCircleNoteParent.SetActive(true);

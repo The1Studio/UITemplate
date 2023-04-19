@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -10,6 +11,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         public override void InstallBindings()
         {
+            this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
+            
             //FTUE
             this.Container.DeclareSignal<FTUEButtonClickSignal>();
             this.Container.DeclareSignal<FTUETriggerSignal>();

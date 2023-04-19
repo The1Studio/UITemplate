@@ -4,7 +4,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
-    using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -27,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         public UITemplateKeySetView          KeySetView;        // Key set view
         public GameObject                    KeyGroupObject;
         public Image                         bestPrizeImage;
+        public Button                        closeButton;
     }
 
     [PopupInfo(nameof(UITemplateChestRoomScreenView), false)]
@@ -70,6 +70,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             base.OnViewReady();
             this.View.NoThankButton.onClick.AddListener(this.OnClickNoThankButton);
             this.View.WatchAdButton.onClick.AddListener(this.OnClickWatchAdButton);
+            this.View.closeButton.onClick.AddListener(this.CloseView);
             foreach (var uiTemplateChestItemView in this.View.ChestItemViewList)
             {
                 uiTemplateChestItemView.ChestButton.onClick.AddListener(() => this.OnClickChestButton(uiTemplateChestItemView));
@@ -84,6 +85,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
         {
             this.currentOpenedAmount = 0;
             this.SetKeyObjectActive(this.CurrentKeyAmount > 0, true);
+            this.View.closeButton.gameObject.SetActive(this.CurrentKeyAmount == 0);
             this.currentChestList = this.uiTemplateGachaChestRoomBlueprint.Values.Where(chestData => !this.uiTemplateInventoryDataController.IsAlreadyContainedItem(chestData.Reward))
                                         .Take(this.View.ChestItemViewList.Count).ToList();
 

@@ -15,6 +15,9 @@
             this.internetService         = internetService;
         }
 
+        public bool IsFeatureUnlocked() => this.uiTemplateLuckySpinData.IsFeatureUnlocked;
+        public void UnlockFeature()     => this.uiTemplateLuckySpinData.IsFeatureUnlocked = true;
+
         public bool IsUsedFreeSpinToDay()
         {
             var isDiffDay = this.internetService.IsDifferentDay(this.uiTemplateLuckySpinData.LastSpinTime, DateTime.Now);

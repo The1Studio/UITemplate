@@ -45,10 +45,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
     [PopupInfo(nameof(UITemplateLuckyWheelSpinScreenView), false)]
     public class UITemplateLuckyWheelSpinScreenPresenter : UITemplateBasePopupPresenter<UITemplateLuckyWheelSpinScreenView, UITemplateLuckyWheelSpinModel>
     {
-        private readonly EventSystem                eventSystem;
-        private readonly DiContainer                diContainer;
-        private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
-        private readonly UITemplateAnimationHelper  uiTemplateAnimationHelper;
+        private readonly EventSystem                   eventSystem;
+        private readonly DiContainer                   diContainer;
+        private readonly UITemplateAdServiceWrapper    uiTemplateAdServiceWrapper;
+        private readonly UITemplateAnimationHelper     uiTemplateAnimationHelper;
+        private readonly UITemplateLuckySpinController luckySpinController;
 
         private Tween spinTween;
 
@@ -59,19 +60,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         private       int                                         lastRewardIndex;
         private       List<UITemplateLuckyWheelSpinItemPresenter> spinItemPresenters = new();
 
-        public UITemplateLuckyWheelSpinScreenPresenter(SignalBus signalBus, EventSystem eventSystem, DiContainer diContainer,
+        public UITemplateLuckyWheelSpinScreenPresenter(
+            SignalBus signalBus,
+            EventSystem eventSystem,
+            DiContainer diContainer,
             UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            ILogService logger, UITemplateAnimationHelper uiTemplateAnimationHelper) : base(signalBus, logger)
+            ILogService logger,
+            UITemplateAnimationHelper uiTemplateAnimationHelper,
+            UITemplateLuckySpinController luckySpinController
+        ) : base(signalBus, logger)
         {
             this.eventSystem                = eventSystem;
             this.diContainer                = diContainer;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
             this.uiTemplateAnimationHelper  = uiTemplateAnimationHelper;
+            this.luckySpinController        = luckySpinController;
         }
 
         protected override void OnViewReady()
         {
             base.OnViewReady();
+            this.luckySpinController.UnlockFeature();
             this.View.btnSpin.onClick.AddListener(this.OnFreeSpin);
             this.View.btnAdsSpin.onClick.AddListener(this.OnAdsSpin);
             this.View.noThankButton.onClick.AddListener(this.CloseView);

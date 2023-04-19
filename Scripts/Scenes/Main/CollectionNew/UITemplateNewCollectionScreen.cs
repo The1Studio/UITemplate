@@ -45,7 +45,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private int         currentSelectedCategoryIndex;
         private IDisposable randomTimerDispose;
 
-        public UITemplateNewCollectionScreenPresenter(SignalBus signalBus,
+        public UITemplateNewCollectionScreenPresenter(
+            SignalBus signalBus,
             EventSystem eventSystem,
             IUnityIapServices unityUnityIapServices,
             ILogService logger,
@@ -59,7 +60,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             UITemplateInventoryData uiTemplateInventoryData,
             UITemplateSoundServices soundServices,
             UITemplateLuckySpinServices uiTemplateLuckySpinServices,
-            UITemplateDailyRewardService uiTemplateDailyRewardService
+            UITemplateDailyRewardService uiTemplateDailyRewardService,
+            UITemplateLuckySpinController luckySpinController,
+            UITemplateDailyRewardController dailyRewardController
         ) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
@@ -76,6 +79,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.SoundServices                     = soundServices;
             this.uiTemplateLuckySpinServices       = uiTemplateLuckySpinServices;
             this.uiTemplateDailyRewardService      = uiTemplateDailyRewardService;
+            this.luckySpinController               = luckySpinController;
+            this.dailyRewardController             = dailyRewardController;
         }
 
         protected virtual int CoinAddAmount => 500;
@@ -149,11 +154,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
             this.itemCollectionItemModels.Clear();
 
+            var unlockTypes                                                  = UITemplateItemData.UnlockType.All;
+            if (!this.luckySpinController.IsFeatureUnlocked()) unlockTypes   &= ~UITemplateItemData.UnlockType.LuckySpin;
+            if (!this.dailyRewardController.IsFeatureUnlocked()) unlockTypes &= ~UITemplateItemData.UnlockType.DailyReward;
+
             foreach (var record in this.uiTemplateItemBlueprint.Values)
             {
-                var itemData = this.uiTemplateInventoryDataController.HasItem(record.Id)
-                    ? this.uiTemplateInventoryDataController.GetItemData(record.Id)
-                    : this.uiTemplateInventoryDataController.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
+                var itemData = this.uiTemplateInventoryDataController.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
+
+                if ((itemData.ShopBlueprintRecord.UnlockType & unlockTypes) == 0) continue;
 
                 var model = new ItemCollectionItemModel
                 {
@@ -327,6 +336,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         protected readonly UITemplateSoundServices           SoundServices;
         private readonly   UITemplateLuckySpinServices       uiTemplateLuckySpinServices;
         private readonly   UITemplateDailyRewardService      uiTemplateDailyRewardService;
+        private readonly   UITemplateLuckySpinController     luckySpinController;
+        private readonly   UITemplateDailyRewardController   dailyRewardController;
         protected readonly IScreenManager                    ScreenManager;
 
         #endregion

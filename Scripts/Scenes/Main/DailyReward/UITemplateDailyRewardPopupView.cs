@@ -8,8 +8,8 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
@@ -54,6 +54,7 @@
         protected override void OnViewReady()
         {
             base.OnViewReady();
+            this.uiTemplateDailyRewardController.UnlockFeature();
             this.View.btnClaim.onClick.AddListener(this.ClaimReward);
             this.View.btnClose.onClick.AddListener(this.CloseView);
             this.View.btnClose.onClick.AddListener(() => this.View.btnClose.gameObject.SetActive(false));
@@ -105,6 +106,8 @@
             }
 
             this.View.dailyRewardAdapter.Refresh();
+
+            UniTask.Delay(TimeSpan.FromSeconds(1.5)).ContinueWith(this.CloseView);
         }
     }
 }

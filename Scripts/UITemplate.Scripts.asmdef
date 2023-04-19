@@ -27,7 +27,8 @@
         "3rd.ServiceImplementation.Appsflyer",
         "FirebaseTracker",
         "EasyMobile.Scripts",
-        "3rd.IAP"
+        "3rd.IAP",
+        "Reporter.Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -93,7 +93,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
             }
         }
 
-        private void OnRestore() { this.uiTemplateIapServices.RestorePurchase(() => { }); }
+        private void OnRestore() { this.uiTemplateIapServices.RestorePurchase(this.CloseView); }
 
         private void OnBuyClick()
         {
@@ -106,7 +106,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 
         public override async UniTask BindData(UITemplateStaterPackModel screenModel)
         {
-            var starterPacks     = this.uiTemplateShopPackBlueprint.Where(x => x.Value.RewardIdToRewardDatas.Count > 1).ToList();
+            var starterPacks = this.uiTemplateShopPackBlueprint.Where(x => x.Value.RewardIdToRewardDatas.Count > 1).ToList();
             this.IapPack = starterPacks.First(packRecord => packRecord.Value.RewardIdToRewardDatas.ContainsKey("remove_ads") != this.adServices.IsRemoveAds()).Key;
 
             this.View.txtPrice.text = $"Special Offer: Only {this.iapServices.GetPriceById(this.IapPack, this.uiTemplateShopPackBlueprint.GetDataById(this.IapPack).DefaultPrice)}";

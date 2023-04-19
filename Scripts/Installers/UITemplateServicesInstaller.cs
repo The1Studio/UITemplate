@@ -18,6 +18,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
+            //reporter
+#if ENABLE_REPORTER
+            this.Container.Bind<Reporter>().FromComponentInNewPrefabResource("Reporter").AsSingle().NonLazy();
+#endif
             // Master Audio
             this.Container.InstantiatePrefab(this.soundGroupPrefab);
             this.Container.Bind<UITemplateSoundServices>().AsCached();

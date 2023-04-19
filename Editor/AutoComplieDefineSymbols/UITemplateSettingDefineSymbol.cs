@@ -164,6 +164,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
         [Header("CREATIVE")]              public bool creative;
         [Header("UITEMPLATE_DECORATION")] public bool decoration;
         [Header("SHOW_FPS")]              public bool showFPS;
+        [Header("ENABLE_REPORTER")]       public bool showReporterRuntime;
     }
 
     [Serializable]

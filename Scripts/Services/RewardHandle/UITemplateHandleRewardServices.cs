@@ -71,8 +71,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
 
             foreach (var data in obj.RewardItemDatas)
             {
-                this.ReceiveReward(obj.IapPackId, data.Key, data.Value.RewardValue, obj.SourceGameObject.transform as RectTransform,
-                    obj.SourceGameObject.transform as RectTransform);
+                this.ReceiveReward(obj.IapPackId, data.Key, data.Value.RewardValue, obj.SourceGameObject == null ? null : obj.SourceGameObject.transform as RectTransform,
+                    obj.SourceGameObject == null ? null : obj.SourceGameObject.transform as RectTransform);
             }
         }
 

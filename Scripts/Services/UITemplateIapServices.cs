@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using BlueprintFlow.Signals;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
@@ -70,12 +71,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             if (rewardItemDatas.Count > 0)
             {
-                this.signalBus.Fire(new UITemplateAddRewardsSignal(productId,rewardItemDatas, source));
+                this.signalBus.Fire(new UITemplateAddRewardsSignal(productId, rewardItemDatas, source));
             }
         }
 
         private void OnHandleRestorePurchase(UnityIAPOnRestorePurchaseCompleteSignal obj) { this.OnPurchaseComplete(obj.ProductID, null); }
 
         public void RestorePurchase(Action onComplete = null) { this.unityIapServices.RestorePurchases(onComplete); }
+
+        public bool IsProductOwned(string productId = "")
+        {
+            foreach (var shopPackRecord in this.uiTemplateShopPackBlueprint.Values.Where(x => x.RewardIdToRewardDatas.Count > 1))
+            {
+                if (this.unityIapServices.IsProductOwned(shopPackRecord.Id))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

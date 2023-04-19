@@ -18,7 +18,7 @@
     {
         public RewardStatus                RewardStatus      { get; set; }
         public UITemplateDailyRewardRecord DailyRewardRecord { get; set; }
-        
+
         public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord, RewardStatus rewardStatus)
         {
             this.DailyRewardRecord = dailyRewardRecord;
@@ -34,6 +34,22 @@
         public TextMeshProUGUI txtValue;
         public TextMeshProUGUI txtDayLabel;
         public GameObject      objClaimedCheckIcon;
+
+
+        public void UpdateIconRectTransform(Vector2? position, Vector2? size)
+        {
+            var rectTransform = this.imgReward.GetComponent<RectTransform>();
+
+            if (position is not null)
+            {
+                rectTransform.anchoredPosition = position.Value;
+            }
+
+            if (size is not null)
+            {
+                rectTransform.sizeDelta = size.Value;
+            }
+        }
     }
 
     public class UITemplateDailyRewardItemPresenter : BaseUIItemPresenter<UITemplateDailyRewardItemView, UITemplateDailyRewardItemModel>
@@ -77,6 +93,8 @@
                 : $"{PrefixLabel}{this.model.DailyRewardRecord.Day}";
             this.View.objLockReward.SetActive(this.model.RewardStatus == RewardStatus.Locked);
             this.View.objClaimed.SetActive(this.model.RewardStatus == RewardStatus.Claimed);
+
+            this.View.UpdateIconRectTransform(this.model.DailyRewardRecord.Position, this.model.DailyRewardRecord.Size);
 
             //Only play if the items were not claimed
             if (!this.View.objClaimed.activeSelf)

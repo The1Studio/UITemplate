@@ -8,13 +8,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         public virtual string KeySoundLose  => "lose";
         public virtual string KeySoundClick => "click_button";
 
-        public virtual void PlaySoundWin()   => this.PlaySound(this.KeySoundWin);
-        public virtual void PlaySoundLose()  => this.PlaySound(this.KeySoundLose);
+        public string CurrentPlayList { get; private set; }
+
+        public virtual void PlaySoundWin() => this.PlaySound(this.KeySoundWin);
+
+        public virtual void PlaySoundLose() => this.PlaySound(this.KeySoundLose);
+
         public virtual void PlaySoundClick() => this.PlaySound(this.KeySoundClick);
 
         public void PlaySound(string key) { AudioManager.Instance.PlaySound(key); }
+
         public void StopSound(string key) { AudioManager.Instance.StopAllSound(key); }
 
-        public void PlayMusic(string playList) { AudioManager.Instance.PlayPlayList(playList); }
+        public void PlayMusic(string playList)
+        {
+            AudioManager.Instance.PlayPlayList(playList);
+            this.CurrentPlayList = playList;
+        }
     }
 }

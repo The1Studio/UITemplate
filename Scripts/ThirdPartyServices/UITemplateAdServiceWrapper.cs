@@ -111,14 +111,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #region RewardAd
 
-        public virtual void ShowRewardedAd(string place, Action onComplete)
+        public virtual void ShowRewardedAd(string place, Action onComplete, Action onFail = null)
         {
             this.signalBus.Fire(new RewardedAdEligibleSignal(place));
 
             if (!this.adServices.IsRewardedAdReady(place))
             {
                 this.logService.Warning("Rewarded was not loaded");
-
+                onFail?.Invoke();
                 return;
             }
 

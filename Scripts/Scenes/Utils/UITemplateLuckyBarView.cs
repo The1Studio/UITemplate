@@ -43,5 +43,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             this.sliderTweener.Kill();
         }
+        public void Pause()
+        {
+            this.sliderTweener.Pause();
+        }
+        public void Resume()
+        {
+            this.sliderTweener.Play();
+        }
     }
 }

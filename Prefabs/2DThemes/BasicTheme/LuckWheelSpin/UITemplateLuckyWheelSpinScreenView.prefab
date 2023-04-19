@@ -214,7 +214,7 @@ CanvasGroup:
   m_IgnoreParentGroups: 0
 --- !u!95 &8487817364561689012
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -231,8 +231,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2557037751521575202
 GameObject:
   m_ObjectHideFlags: 0
@@ -991,7 +990,7 @@ RectTransform:
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &1274170222541731636
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1008,8 +1007,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!225 &938141693439986808
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1109,7 +1107,7 @@ MonoBehaviour:
       m_Calls: []
 --- !u!95 &6202321542059589789
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1126,8 +1124,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &6595111640943557293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1227,7 +1224,7 @@ CanvasGroup:
   m_IgnoreParentGroups: 0
 --- !u!95 &5432815890284228172
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1244,8 +1241,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &6829520244120791856
 GameObject:
   m_ObjectHideFlags: 0
@@ -1823,7 +1819,7 @@ MonoBehaviour:
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!95 &7845127099427259689
 Animator:
-  serializedVersion: 5
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1840,8 +1836,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!225 &4352090144842034224
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3458,7 +3453,7 @@ PrefabInstance:
     - target: {fileID: 4928139586437348439, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
       propertyPath: m_SceneBindings.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4928139586437348439, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
@@ -3486,6 +3481,18 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 4928139586437348439, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].key
+      value: 
+      objectReference: {fileID: 1059759707156566238, guid: bf847e3b4891c7f4ebaf02846efcf056,
+        type: 2}
+    - target: {fileID: 4928139586437348439, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
+        type: 3}
+      propertyPath: m_SceneBindings.Array.data[5].key
+      value: 
+      objectReference: {fileID: 1059759707156566238, guid: bf847e3b4891c7f4ebaf02846efcf056,
+        type: 2}
+    - target: {fileID: 4928139586437348439, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
+        type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value
       value: 
       objectReference: {fileID: 1274170222541731636}
@@ -3504,6 +3511,16 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[3].value
       value: 
       objectReference: {fileID: 8487817364561689012}
+    - target: {fileID: 4928139586437348439, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
+        type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].value
+      value: 
+      objectReference: {fileID: 6202321542059589789}
+    - target: {fileID: 4928139586437348439, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
+        type: 3}
+      propertyPath: m_SceneBindings.Array.data[5].value
+      value: 
+      objectReference: {fileID: 6202321542059589789}
     - target: {fileID: 8242476744511311356, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
       propertyPath: m_Pivot.x
@@ -3618,7 +3635,7 @@ PrefabInstance:
     - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
       propertyPath: m_SceneBindings.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
@@ -3646,6 +3663,12 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].key
+      value: 
+      objectReference: {fileID: -1673264919187703886, guid: 8ef7a85212e9cc1429eb2af99e642c3c,
+        type: 2}
+    - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
+        type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value
       value: 
       objectReference: {fileID: 8487817364561689012}
@@ -3664,6 +3687,11 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[3].value
       value: 
       objectReference: {fileID: 5432815890284228172}
+    - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
+        type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].value
+      value: 
+      objectReference: {fileID: 6202321542059589789}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 824a6ecd3c44043ccbace3bf4014c6c9, type: 3}
 --- !u!224 &5093552083599659469 stripped

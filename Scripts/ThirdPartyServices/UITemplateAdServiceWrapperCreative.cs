@@ -20,7 +20,7 @@
 
         public override bool ShowInterstitialAd(string place, bool force = false) { return true; }
 
-        public override void ShowRewardedAd(string place, Action onComplete) { onComplete.Invoke(); }
+        public override void ShowRewardedAd(string place, Action onComplete, Action onFail = null) { onComplete.Invoke(); }
 
         public override void RewardedAdOffer(string place) { }
 

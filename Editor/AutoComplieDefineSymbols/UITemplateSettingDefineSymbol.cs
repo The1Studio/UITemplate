@@ -47,7 +47,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
 
         public AnalyticAndTracking       AnalyticAndTracking;
         public Monetization              Monetization;
-        public Partner                   Partner;
+        public Partner                   Partner { get; set; } = new();
         public UITemplateGameAndServices UITemplateGameAndServices;
 
         public List<CustomDefineSymbol> CustomDefineSymbols;
@@ -107,7 +107,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
             //compare totalDefineList list and current originDefine list
             if (!finalDefine.Equals(string.Join(";", originDefine)))
             {
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, finalDefine);
+                // PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, finalDefine);
             }
         }
 

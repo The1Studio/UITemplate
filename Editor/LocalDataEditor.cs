@@ -1,8 +1,11 @@
 namespace UITemplate.Editor
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using GameFoundation.Scripts.Interfaces;
+    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
     using Sirenix.OdinInspector;
@@ -15,10 +18,29 @@ namespace UITemplate.Editor
     {
         private const string LocalDataPrefix = "LD-";
 
-        [OdinSerialize, HideLabel] [ListDrawerSettings(Expanded = true, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]
+        [OdinSerialize, HideLabel]
+        [ListDrawerSettings(Expanded = true, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]
         private List<ILocalData> localData;
 
         private Vector2 scrollPosition;
+
+        [Button(ButtonSizes.Medium)]
+        [GUIColor(0, 0.5f, 0)]
+        private void SyncWithRuntime()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.LogError("Sync with runtime only work in play mode");
+                this.localData = null;
+                return;
+            }
+
+            var handleLocalDataServices = this.GetCurrentContainer().Resolve<HandleLocalDataServices>();
+            var cacheFieldInfo = handleLocalDataServices.GetType()
+                                                        .GetField("localDataCaches", BindingFlags.Instance | BindingFlags.NonPublic);
+            var localDataCaches = cacheFieldInfo?.GetValue(handleLocalDataServices) as Dictionary<string, object>;
+            this.localData = localDataCaches?.Select(e => e.Value).Cast<ILocalData>().ToList();
+        }
 
         [HorizontalGroup]
         [Button(ButtonSizes.Large)]
@@ -54,7 +76,10 @@ namespace UITemplate.Editor
         }
 
         [MenuItem("Tools/TheOneStudio/Local Data Editor")]
-        public static void ShowWindow() { GetWindow(typeof(LocalDataEditor)); }
+        public static void ShowWindow()
+        {
+            GetWindow(typeof(LocalDataEditor));
+        }
 
         private static List<ILocalData> LoadAllLocalData()
         {

@@ -35,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<BaseAnalyticEventFactory>();
             var listFactory     = this.Container.ResolveAll<IAnalyticEventFactory>();
 
-            if (listFactory is { Count: > 0 })
+            if (listFactory.Count > 0)
             {
                 var analyticFactory = listFactory[0];
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();

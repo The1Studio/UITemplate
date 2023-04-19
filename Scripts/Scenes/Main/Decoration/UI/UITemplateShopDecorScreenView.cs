@@ -45,6 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         protected readonly UITemplateDecorCategoryBlueprint  uiTemplateDecorCategoryBlueprint;
         protected readonly UITemplateLuckySpinServices       uiTemplateLuckySpinServices;
         protected readonly UITemplateDailyRewardService      uiTemplateDailyRewardService;
+        private readonly   UITemplateSoundServices           uiTemplateSoundServices;
 
         #endregion
 
@@ -56,21 +57,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         #endregion
 
-        protected virtual string           AdPlacement      => "Decoration";
-        protected virtual string           DefaultTabActive => "Character";
+        protected virtual string AdPlacement        => "Decoration";
+        protected virtual string DefaultTabActive   => "Character";
+        protected virtual string SfxBuyItemComplete => "sfx_buy_item";
 
-        public UITemplateDecorScreenPresenter(SignalBus                         signalBus,
-                                              UITemplateDecorationManager       uiTemplateDecorationManager,
+        public UITemplateDecorScreenPresenter(SignalBus signalBus,
+                                              UITemplateDecorationManager uiTemplateDecorationManager,
                                               UITemplateInventoryDataController uiTemplateInventoryDataController,
-                                              IScreenManager                    screenManager,
-                                              UITemplateItemBlueprint           uiTemplateItemBlueprint,
-                                              IUnityIapServices                 unityUnityIapServices,
-                                              UITemplateInventoryData           uiTemplateInventoryData,
-                                              UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
-                                              DiContainer                       diContainer,
-                                              UITemplateDecorCategoryBlueprint  uiTemplateDecorCategoryBlueprint,
-                                              UITemplateLuckySpinServices       uiTemplateLuckySpinServices,
-                                              UITemplateDailyRewardService      uiTemplateDailyRewardService) : base(signalBus)
+                                              IScreenManager screenManager,
+                                              UITemplateItemBlueprint uiTemplateItemBlueprint,
+                                              IUnityIapServices unityUnityIapServices,
+                                              UITemplateInventoryData uiTemplateInventoryData,
+                                              UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+                                              DiContainer diContainer,
+                                              UITemplateDecorCategoryBlueprint uiTemplateDecorCategoryBlueprint,
+                                              UITemplateLuckySpinServices uiTemplateLuckySpinServices,
+                                              UITemplateDailyRewardService uiTemplateDailyRewardService,
+                                              UITemplateSoundServices uiTemplateSoundServices) : base(signalBus)
         {
             this.uiTemplateDecorationManager       = uiTemplateDecorationManager;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
@@ -83,6 +86,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             this.uiTemplateDecorCategoryBlueprint  = uiTemplateDecorCategoryBlueprint;
             this.uiTemplateLuckySpinServices       = uiTemplateLuckySpinServices;
             this.uiTemplateDailyRewardService      = uiTemplateDailyRewardService;
+            this.uiTemplateSoundServices           = uiTemplateSoundServices;
         }
 
         protected override void OnViewReady()
@@ -133,7 +137,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         {
             categoryTabView.SetPosition((await this.uiTemplateDecorationManager.GetDecoration(category)).PositionUI);
         }
-        
+
         private async void OnClickCategoryTab(string category)
         {
             await this.OnActiveTab(category);
@@ -296,6 +300,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
 
         private void BuyItemCompleted(ItemCollectionItemModel obj)
         {
+            this.uiTemplateSoundServices.StopSound(this.SfxBuyItemComplete);
+            this.uiTemplateSoundServices.PlaySound(this.SfxBuyItemComplete);
             obj.ItemData.CurrentStatus = UITemplateItemData.Status.Owned;
             this.uiTemplateInventoryDataController.AddItemData(obj.ItemData);
             this.uiTemplateInventoryData.CategoryToChosenItem[obj.ItemBlueprintRecord.Category] = obj.ItemBlueprintRecord.Id;

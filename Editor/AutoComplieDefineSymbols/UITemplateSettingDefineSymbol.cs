@@ -45,10 +45,10 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
 
         public bool IsEnable;
 
-        public AnalyticAndTracking       AnalyticAndTracking;
-        public Monetization              Monetization;
-        public Partner                   Partner { get; set; } = new();
-        public UITemplateGameAndServices UITemplateGameAndServices;
+        public                   AnalyticAndTracking       AnalyticAndTracking;
+        public                   Monetization              Monetization;
+        [HideInInspector] public Partner                   Partner;
+        public                   UITemplateGameAndServices UITemplateGameAndServices;
 
         public List<CustomDefineSymbol> CustomDefineSymbols;
 

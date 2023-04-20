@@ -1,20 +1,16 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using GameFoundation.Scripts.Interfaces;
     using Sirenix.Serialization;
 
     public class UITemplateUserLevelData : ILocalData
     {
-        [OdinSerialize]
-        public int CurrentLevel { get; set; } = 1;
-
-        [OdinSerialize]
-        public Dictionary<int, LevelData> LevelToLevelData = new();
-
-        [OdinSerialize]
-        public int LastUnlockRewardLevel;
+        [OdinSerialize] public Feature                    UnlockedFeature  { get; set; } = Feature.None;
+        [OdinSerialize] public int                        CurrentLevel     { get; set; } = 1;
+        [OdinSerialize] public Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
+        [OdinSerialize] public int                        LastUnlockRewardLevel;
 
         public void SetLevelStatusByLevel(int level, LevelData.Status status)
         {
@@ -30,6 +26,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             }
 #endif
         }
+    }
+
+    [Flags]
+    public enum Feature
+    {
+        None        = 0,
+        DailyReward = 1 << 0,
+        LuckySpin   = 1 << 1,
+        All         = DailyReward | LuckySpin,
     }
 
     public class LevelData

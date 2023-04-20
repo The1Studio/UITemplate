@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints.Gacha;
     using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -49,7 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         private readonly DiContainer                   diContainer;
         private readonly UITemplateAdServiceWrapper    uiTemplateAdServiceWrapper;
         private readonly UITemplateAnimationHelper     uiTemplateAnimationHelper;
-        private readonly UITemplateLuckySpinController luckySpinController;
+        private readonly UITemplateLevelDataController levelDataController;
 
         private Tween spinTween;
 
@@ -67,20 +68,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
             ILogService logger,
             UITemplateAnimationHelper uiTemplateAnimationHelper,
-            UITemplateLuckySpinController luckySpinController
+            UITemplateLevelDataController levelDataController
         ) : base(signalBus, logger)
         {
             this.eventSystem                = eventSystem;
             this.diContainer                = diContainer;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
             this.uiTemplateAnimationHelper  = uiTemplateAnimationHelper;
-            this.luckySpinController        = luckySpinController;
+            this.levelDataController        = levelDataController;
         }
 
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.luckySpinController.UnlockFeature();
+            this.levelDataController.UnlockFeature(Feature.LuckySpin);
             this.View.btnSpin.onClick.AddListener(this.OnFreeSpin);
             this.View.btnAdsSpin.onClick.AddListener(this.OnAdsSpin);
             this.View.noThankButton.onClick.AddListener(this.CloseView);

@@ -28,6 +28,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus                         = signalBus;
         }
 
+        public bool IsFeatureUnlocked(Feature feature) => (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0;
+        public void UnlockFeature(Feature feature) => this.uiTemplateUserLevelData.UnlockedFeature |= feature;
+
         public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
 
         public LevelData GetLevelData(int level) { return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked)); }

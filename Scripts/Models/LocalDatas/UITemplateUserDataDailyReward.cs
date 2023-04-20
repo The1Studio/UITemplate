@@ -7,7 +7,6 @@
 
     public class UITemplateDailyRewardData : ILocalData
     {
-        [OdinSerialize] public bool               IsFeatureUnlocked   { get; set; } = false;
         [OdinSerialize] public List<RewardStatus> RewardStatus        { get; set; } = new();
         [OdinSerialize] public DateTime           LastRewardedDate    { get; set; }
         [OdinSerialize] public DateTime           FirstTimeOpenedDate { get; set; } = DateTime.Now;

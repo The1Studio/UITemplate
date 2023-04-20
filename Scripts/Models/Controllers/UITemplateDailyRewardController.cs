@@ -37,9 +37,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateFlyingAnimationCurrency = uiTemplateFlyingAnimationCurrency;
         }
 
-        public bool IsFeatureUnlocked() => this.uiTemplateDailyRewardData.IsFeatureUnlocked;
-        public void UnlockFeature()     => this.uiTemplateDailyRewardData.IsFeatureUnlocked = true;
-
         public async UniTask CheckRewardStatus()
         {
             await this.mySemaphoreSlim.WaitAsync() ;

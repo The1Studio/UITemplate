@@ -61,8 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             UITemplateSoundServices soundServices,
             UITemplateLuckySpinServices uiTemplateLuckySpinServices,
             UITemplateDailyRewardService uiTemplateDailyRewardService,
-            UITemplateLuckySpinController luckySpinController,
-            UITemplateDailyRewardController dailyRewardController
+            UITemplateLevelDataController levelDataController
         ) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
@@ -79,8 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.SoundServices                     = soundServices;
             this.uiTemplateLuckySpinServices       = uiTemplateLuckySpinServices;
             this.uiTemplateDailyRewardService      = uiTemplateDailyRewardService;
-            this.luckySpinController               = luckySpinController;
-            this.dailyRewardController             = dailyRewardController;
+            this.levelDataController               = levelDataController;
         }
 
         protected virtual int CoinAddAmount => 500;
@@ -154,9 +152,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
             this.itemCollectionItemModels.Clear();
 
-            var unlockTypes                                                  = UITemplateItemData.UnlockType.All;
-            if (!this.luckySpinController.IsFeatureUnlocked()) unlockTypes   &= ~UITemplateItemData.UnlockType.LuckySpin;
-            if (!this.dailyRewardController.IsFeatureUnlocked()) unlockTypes &= ~UITemplateItemData.UnlockType.DailyReward;
+            var unlockTypes                                                                   = UITemplateItemData.UnlockType.All;
+            if (!this.levelDataController.IsFeatureUnlocked(Feature.DailyReward)) unlockTypes &= ~UITemplateItemData.UnlockType.DailyReward;
+            if (!this.levelDataController.IsFeatureUnlocked(Feature.LuckySpin)) unlockTypes   &= ~UITemplateItemData.UnlockType.LuckySpin;
 
             foreach (var record in this.uiTemplateItemBlueprint.Values)
             {
@@ -336,8 +334,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         protected readonly UITemplateSoundServices           SoundServices;
         private readonly   UITemplateLuckySpinServices       uiTemplateLuckySpinServices;
         private readonly   UITemplateDailyRewardService      uiTemplateDailyRewardService;
-        private readonly   UITemplateLuckySpinController     luckySpinController;
-        private readonly   UITemplateDailyRewardController   dailyRewardController;
+        private readonly   UITemplateLevelDataController     levelDataController;
         protected readonly IScreenManager                    ScreenManager;
 
         #endregion

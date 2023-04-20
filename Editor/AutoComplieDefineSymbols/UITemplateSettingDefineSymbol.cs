@@ -107,7 +107,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
             //compare totalDefineList list and current originDefine list
             if (!finalDefine.Equals(string.Join(";", originDefine)))
             {
-                // PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, finalDefine);
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, finalDefine);
             }
         }
 

@@ -81,7 +81,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.levelDataController.UnlockFeature(Feature.LuckySpin);
+            this.levelDataController.UnlockFeature(UITemplateItemData.UnlockType.LuckySpin);
             this.View.btnSpin.onClick.AddListener(this.OnFreeSpin);
             this.View.btnAdsSpin.onClick.AddListener(this.OnAdsSpin);
             this.View.noThankButton.onClick.AddListener(this.CloseView);

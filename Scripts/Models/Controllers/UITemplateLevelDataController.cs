@@ -27,24 +27,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus                         = signalBus;
         }
 
-        public Feature UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
+        public UITemplateItemData.UnlockType UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
 
-        public bool IsFeatureUnlocked(Feature feature) => (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0;
+        public bool IsFeatureUnlocked(UITemplateItemData.UnlockType feature) => (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0;
 
-        public bool IsFeatureUnlocked(UITemplateItemData.UnlockType unlockType) => this.IsFeatureUnlocked(unlockType.ToFeature());
+        public void UnlockFeature(UITemplateItemData.UnlockType feature) => this.uiTemplateUserLevelData.UnlockedFeature |= feature;
 
-        public void UnlockFeature(Feature feature) => this.uiTemplateUserLevelData.UnlockedFeature |= feature;
+        public List<LevelData> GetAllLevels()
+        {
+            return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList();
+        }
 
-        public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
-
-        public LevelData GetLevelData(int level) { return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked)); }
+        public LevelData GetLevelData(int level)
+        {
+            return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked));
+        }
 
         /// <summary>Have be called when level started</summary> 
         public void PlayCurrentLevel()
         {
-            this.signalBus.Fire(new LevelStartedSignal( this.uiTemplateUserLevelData.CurrentLevel));
+            this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
         }
-        
+
         /// <summary>
         /// Called when select a level in level selection screen
         /// </summary>
@@ -53,12 +57,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             this.uiTemplateUserLevelData.CurrentLevel = level;
         }
-        
+
         /// <summary>
         /// Called when player lose current level
         /// </summary>
         /// <param name="time">Play time in seconds</param>
-        public void LoseCurrentLevel (int time = 0)
+        public void LoseCurrentLevel(int time = 0)
         {
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = time, CurrentIdToValue = null });
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
@@ -79,7 +83,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player skip current level
         /// </summary>
         /// <param name="time">Play time in seconds</param>
-        public void SkipCurrentLevel(int time = 0 )
+        public void SkipCurrentLevel(int time = 0)
         {
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
             this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = time });
@@ -112,7 +116,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             return level == maxIndex + 1;
         }
-        
+
         public float GetRewardProgress(int level)
         {
             var levelUnlockReward = this.GetLevelUnlockReward(level);
@@ -120,15 +124,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             //update last unlock reward level
             var temp = this.uiTemplateUserLevelData.LastUnlockRewardLevel;
-            if(level == levelUnlockReward) this.UpdateLastUnlockRewardLevel(level);
-            
+            if (level == levelUnlockReward) this.UpdateLastUnlockRewardLevel(level);
+
             return (float)(level - temp) / (levelUnlockReward - temp);
         }
 
         public string GetRewardId(int currentLevel)
         {
             var levelUnlockReward = this.GetLevelUnlockReward(currentLevel);
-            
+
             if (levelUnlockReward < 0) return null;
             var rewardList = this.uiTemplateLevelBlueprint.GetDataById(levelUnlockReward).Rewards;
 
@@ -160,25 +164,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private void UpdateLastUnlockRewardLevel(int level)
         {
             this.uiTemplateUserLevelData.LastUnlockRewardLevel = level;
-        }
-    }
-
-    public static class FeatureExtension
-    {
-        public static Feature ToFeature(this UITemplateItemData.UnlockType unlockType)
-        {
-            var feature                                                                 = Feature.All;
-            if (!unlockType.HasFlag(UITemplateItemData.UnlockType.DailyReward)) feature &= ~Feature.DailyReward;
-            if (!unlockType.HasFlag(UITemplateItemData.UnlockType.LuckySpin)) feature   &= ~Feature.LuckySpin;
-            return feature;
-        }
-
-        public static UITemplateItemData.UnlockType ToUnlockType(this Feature feature)
-        {
-            var unlockType                                        = UITemplateItemData.UnlockType.All;
-            if (!feature.HasFlag(Feature.DailyReward)) unlockType &= ~UITemplateItemData.UnlockType.DailyReward;
-            if (!feature.HasFlag(Feature.LuckySpin)) unlockType   &= ~UITemplateItemData.UnlockType.LuckySpin;
-            return unlockType;
         }
     }
 }

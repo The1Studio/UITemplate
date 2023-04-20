@@ -64,7 +64,7 @@
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.levelDataController.UnlockFeature(Feature.DailyReward);
+            this.levelDataController.UnlockFeature(UITemplateItemData.UnlockType.DailyReward);
             this.View.btnClaim.onClick.AddListener(this.ClaimReward);
             this.View.btnClose.onClick.AddListener(this.CloseView);
             this.View.btnClose.onClick.AddListener(() => this.View.btnClose.gameObject.SetActive(false));

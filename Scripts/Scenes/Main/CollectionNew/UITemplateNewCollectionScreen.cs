@@ -152,15 +152,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
             this.itemCollectionItemModels.Clear();
 
-            var unlockTypes                                                                   = UITemplateItemData.UnlockType.All;
-            if (!this.levelDataController.IsFeatureUnlocked(Feature.DailyReward)) unlockTypes &= ~UITemplateItemData.UnlockType.DailyReward;
-            if (!this.levelDataController.IsFeatureUnlocked(Feature.LuckySpin)) unlockTypes   &= ~UITemplateItemData.UnlockType.LuckySpin;
+            var unlockType = UITemplateItemData.UnlockType.All;
+            unlockType &= this.levelDataController.UnlockedFeature.ToUnlockType();
 
             foreach (var record in this.uiTemplateItemBlueprint.Values)
             {
                 var itemData = this.uiTemplateInventoryDataController.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
 
-                if ((itemData.ShopBlueprintRecord.UnlockType & unlockTypes) == 0) continue;
+                if ((itemData.ShopBlueprintRecord.UnlockType & unlockType) == 0) continue;
 
                 var model = new ItemCollectionItemModel
                 {

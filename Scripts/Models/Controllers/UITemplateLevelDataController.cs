@@ -4,7 +4,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
-    using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
@@ -28,7 +27,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus                         = signalBus;
         }
 
+        public Feature UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
+
         public bool IsFeatureUnlocked(Feature feature) => (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0;
+
+        public bool IsFeatureUnlocked(UITemplateItemData.UnlockType unlockType) => this.IsFeatureUnlocked(unlockType.ToFeature());
+
         public void UnlockFeature(Feature feature) => this.uiTemplateUserLevelData.UnlockedFeature |= feature;
 
         public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
@@ -156,6 +160,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private void UpdateLastUnlockRewardLevel(int level)
         {
             this.uiTemplateUserLevelData.LastUnlockRewardLevel = level;
+        }
+    }
+
+    public static class FeatureExtension
+    {
+        public static Feature ToFeature(this UITemplateItemData.UnlockType unlockType)
+        {
+            var feature                                                                 = Feature.All;
+            if (!unlockType.HasFlag(UITemplateItemData.UnlockType.DailyReward)) feature &= ~Feature.DailyReward;
+            if (!unlockType.HasFlag(UITemplateItemData.UnlockType.LuckySpin)) feature   &= ~Feature.LuckySpin;
+            return feature;
+        }
+
+        public static UITemplateItemData.UnlockType ToUnlockType(this Feature feature)
+        {
+            var unlockType                                        = UITemplateItemData.UnlockType.All;
+            if (!feature.HasFlag(Feature.DailyReward)) unlockType &= ~UITemplateItemData.UnlockType.DailyReward;
+            if (!feature.HasFlag(Feature.LuckySpin)) unlockType   &= ~UITemplateItemData.UnlockType.LuckySpin;
+            return unlockType;
         }
     }
 }

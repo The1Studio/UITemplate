@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -43,6 +44,7 @@
         private int                                  userLoginDay;
         private UITemplateDailyRewardPopupModel      popupModel;
         private List<UITemplateDailyRewardItemModel> listRewardModel;
+        private CancellationTokenSource              closeViewCts;
 
         public UITemplateDailyRewardPopupPresenter(
             SignalBus signalBus,
@@ -115,7 +117,15 @@
 
             this.View.dailyRewardAdapter.Refresh();
 
-            UniTask.Delay(TimeSpan.FromSeconds(1.5)).ContinueWith(this.CloseView);
+            this.closeViewCts = new();
+            UniTask.Delay(TimeSpan.FromSeconds(1.5), cancellationToken: this.closeViewCts.Token).ContinueWith(this.CloseView);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.closeViewCts?.Dispose();
+            this.closeViewCts = null;
         }
     }
 }

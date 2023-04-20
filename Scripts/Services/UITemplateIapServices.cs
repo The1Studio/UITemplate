@@ -4,8 +4,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System.Collections.Generic;
     using System.Linq;
     using BlueprintFlow.Signals;
+    using Core.AdsServices;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using UnityEngine;
@@ -13,16 +15,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
     public class UITemplateIapServices
     {
-        private readonly SignalBus                   signalBus;
-        private readonly UITemplateShopPackBlueprint uiTemplateShopPackBlueprint;
-        private readonly IUnityIapServices           unityIapServices;
+        private readonly SignalBus                            signalBus;
+        private readonly IAdServices                          adServices;
+        private readonly UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData;
+        private readonly UITemplateShopPackBlueprint          uiTemplateShopPackBlueprint;
+        private readonly IUnityIapServices                    unityIapServices;
 
-        public UITemplateIapServices(SignalBus signalBus, UITemplateShopPackBlueprint uiTemplateShopPackBlueprint,
+        public UITemplateIapServices(SignalBus signalBus, IAdServices adServices, UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
+            UITemplateShopPackBlueprint uiTemplateShopPackBlueprint,
             IUnityIapServices unityIapServices)
         {
-            this.signalBus                   = signalBus;
-            this.uiTemplateShopPackBlueprint = uiTemplateShopPackBlueprint;
-            this.unityIapServices            = unityIapServices;
+            this.signalBus                            = signalBus;
+            this.adServices                           = adServices;
+            this.uiTemplateIAPOwnerPackControllerData = uiTemplateIAPOwnerPackControllerData;
+            this.uiTemplateShopPackBlueprint          = uiTemplateShopPackBlueprint;
+            this.unityIapServices                     = unityIapServices;
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnBlueprintLoaded);
             this.signalBus.Subscribe<UnityIAPOnRestorePurchaseCompleteSignal>(this.OnHandleRestorePurchase);
         }
@@ -63,6 +70,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             var dataShopPackRecord = this.uiTemplateShopPackBlueprint[productId];
             var rewardItemDatas    = new Dictionary<string, UITemplateRewardItemData>();
+            this.uiTemplateIAPOwnerPackControllerData.AddPack(productId);
 
             foreach (var rewardIdToData in dataShopPackRecord.RewardIdToRewardDatas.Values)
             {
@@ -81,9 +89,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public bool IsProductOwned(string productId = "")
         {
+            //Todo check with pack ID
             foreach (var shopPackRecord in this.uiTemplateShopPackBlueprint.Values.Where(x => x.RewardIdToRewardDatas.Count > 1))
             {
-                if (this.unityIapServices.IsProductOwned(shopPackRecord.Id))
+                if (this.uiTemplateIAPOwnerPackControllerData.IsOwnerPack(shopPackRecord.Id))
                 {
                     return true;
                 }

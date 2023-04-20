@@ -20,6 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindLocalData<UITemplateBuildingData>();
             this.Container.BindLocalData<UITemplateRewardData>();
             this.Container.BindLocalData<UITemplateCommonData>();
+            this.Container.BindLocalData<UITemplateIAPOwnerPackData>();
             //Data controller
             this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateInventoryDataController>().AsCached();
@@ -30,6 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateBuildingController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateHandleRewardController>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateCommonController>().AsCached();
+            this.Container.BindInterfacesAndSelfTo<UITemplateIAPOwnerPackControllerData>().AsCached();
         }
     }
 }

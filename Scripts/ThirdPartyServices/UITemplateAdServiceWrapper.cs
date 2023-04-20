@@ -48,6 +48,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual async void ShowBannerAd()
         {
+            if (this.adServices.IsRemoveAds())
+            {
+                return;
+            }
+
             this.isShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             this.ShowBannerInterval();
@@ -72,7 +77,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        public  void Initialize()                    { this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler); }
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
+            this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
+        }
+
+        private void OnBannerAdPresented(BannerAdPresentedSignal obj)
+        {
+            if (this.adServices.IsRemoveAds())
+            {
+                this.adServices.DestroyBannerAd();
+            }
+        }
+
         private void OnInterstitialAdClosedHandler() { this.LastEndInterstitial = DateTime.Now; }
 
         #region InterstitialAd
@@ -119,6 +137,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.logService.Warning("Rewarded was not loaded");
                 onFail?.Invoke();
+
                 return;
             }
 

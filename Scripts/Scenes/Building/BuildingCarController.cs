@@ -17,7 +17,8 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
 
         public float movementSpeed = 10f;
 
-        private Rigidbody rig;
+        private Rigidbody             rig;
+        private BuildingCharacterView buildingCharacterView;
 
         private Rigidbody Rig
         {
@@ -39,11 +40,12 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         [Inject]
         public async void Init()
         {
-            this.Rig.useGravity = false;
-            var runningObiect = await buildingRunningObjectFactory.Create();
-            runningObiect.transform.SetParent(this.carholder);
-            runningObiect.transform.localPosition = Vector3.zero;
-            runningObiect.transform.localRotation = Quaternion.identity;
+            this.Rig.useGravity        = false;
+            this.buildingCharacterView = await this.buildingRunningObjectFactory.Create();
+            var characterTransform = this.buildingCharacterView.transform;
+            characterTransform.SetParent(this.carholder);
+            characterTransform.localPosition = Vector3.zero;
+            characterTransform.localRotation = Quaternion.identity;
         }
 
         public void Moving(float v, float h)
@@ -52,10 +54,14 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             {
                 this.Rig.velocity       = Vector3.zero;
                 this.Rig.freezeRotation = true;
-
+                if (buildingCharacterView != null)
+                {
+                    this.buildingCharacterView.OnStop();
+                }
                 return;
             }
 
+            this.buildingCharacterView.OnRun();
             this.Rig.freezeRotation = false;
             var rotationMove    = Quaternion.AngleAxis(this.angleOffset, Vector3.up);
             var velocity        = new Vector3(-v, 0, h) * this.movementSpeed;

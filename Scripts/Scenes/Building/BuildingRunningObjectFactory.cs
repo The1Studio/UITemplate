@@ -5,6 +5,6 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
 
     public abstract class BuildingRunningObjectFactory
     {
-        public abstract UniTask<GameObject> Create();
+        public abstract UniTask<BuildingCharacterView> Create();
     }
 }

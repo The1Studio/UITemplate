@@ -5,6 +5,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
     using UnityEngine;
     using Zenject;
 
+    [RequireComponent(typeof(Rigidbody), typeof(BoxCollider))]
     public class BuildingCarController : MonoBehaviour
     {
         #region View
@@ -14,7 +15,20 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         #endregion
 
         public  float     movementSpeed = 10f;
-        private Rigidbody rig => this.GetComponent<Rigidbody>();
+
+        private Rigidbody rig;
+
+        private Rigidbody Rig
+        {
+            get
+            {
+                if (this.rig == null)
+                {
+                    this.rig = this.GetComponent<Rigidbody>();
+                }
+                return this.rig;
+            }
+        }
 
         [Inject] private ObjectPoolManager                 objectPoolManager;
         [Inject] private UITemplateInventoryDataController inventoryDataController;
@@ -23,7 +37,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         [Inject]
         public async void Init()
         {
-
+            this.Rig.useGravity = false;
             var runningObiect = await buildingRunningObjectFactory.Create();
             runningObiect.transform.SetParent(this.carholder);
             runningObiect.transform.localPosition = Vector3.zero;
@@ -34,14 +48,14 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         {
             if (h == 0 || v == 0)
             {
-                this.rig.velocity       = Vector3.zero;
-                this.rig.freezeRotation = true;
+                this.Rig.velocity       = Vector3.zero;
+                this.Rig.freezeRotation = true;
 
                 return;
             }
 
-            this.rig.freezeRotation = false;
-            this.rig.velocity       = (new Vector3(-v, 0, h) * this.movementSpeed).normalized * this.movementSpeed;
+            this.Rig.freezeRotation = false;
+            this.Rig.velocity       = (new Vector3(-v, 0, h) * this.movementSpeed).normalized * this.movementSpeed;
             var lookRot = new Vector3(v, 0, -h);
 
             if (lookRot == Vector3.zero)

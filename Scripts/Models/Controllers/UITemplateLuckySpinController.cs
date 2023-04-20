@@ -3,39 +3,54 @@
     using System;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using UIModule.Utilities;
 
     public class UITemplateLuckySpinController
     {
-        private readonly UITemplateLuckySpinData uiTemplateLuckySpinData;
-        private readonly InternetService         internetService;
+        private readonly UITemplateLuckySpinData           uiTemplateLuckySpinData;
+        private readonly InternetService                   internetService;
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
 
-        public UITemplateLuckySpinController(UITemplateLuckySpinData uiTemplateLuckySpinData, InternetService internetService)
+        public UITemplateLuckySpinController(UITemplateLuckySpinData uiTemplateLuckySpinData, InternetService internetService, UITemplateInventoryDataController uiTemplateInventoryDataController)
         {
-            this.uiTemplateLuckySpinData = uiTemplateLuckySpinData;
-            this.internetService         = internetService;
+            this.uiTemplateLuckySpinData           = uiTemplateLuckySpinData;
+            this.internetService                   = internetService;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+        }
+        
+        private int CurrentFreeTurns
+        {
+            get => this.uiTemplateInventoryDataController.GetCurrencyValue(UITemplateInventoryDataController.DefaultLuckySpinFreeTurnCurrencyID);
+            set => this.uiTemplateInventoryDataController.UpdateCurrency(value, UITemplateInventoryDataController.DefaultLuckySpinFreeTurnCurrencyID);
         }
 
-        public bool IsUsedFreeSpinToDay()
+        public void CheckGetFreeTurn()
         {
-            var isDiffDay = this.internetService.IsDifferentDay(this.uiTemplateLuckySpinData.LastSpinTime, DateTime.Now);
+            var isDiffDay = this.internetService.IsDifferentDay(this.uiTemplateLuckySpinData.LastTimeGetFreeTurn, DateTime.Now);
 
-            if (!isDiffDay) return this.uiTemplateLuckySpinData.IsUsedFreeSpin;
-            this.uiTemplateLuckySpinData.IsUsedFreeSpin = false;
-
-            return this.uiTemplateLuckySpinData.IsUsedFreeSpin;
+            if (isDiffDay)
+            {
+                this.CurrentFreeTurns++;
+                this.uiTemplateLuckySpinData.LastTimeGetFreeTurn = DateTime.Now;
+            }
         }
 
         public void SaveTimeSpinToDay()
         {
             this.uiTemplateLuckySpinData.IsFirstTimeOpenLuckySpin = true;
 
-            if (this.uiTemplateLuckySpinData.IsUsedFreeSpin)
+            if (!this.IsTurnFree())
             {
                 return;
             }
 
-            this.uiTemplateLuckySpinData.IsUsedFreeSpin = true;
+            this.CurrentFreeTurns--;
             this.uiTemplateLuckySpinData.LastSpinTime   = DateTime.Now;
+        }
+
+        public bool IsTurnFree()
+        {
+            return this.CurrentFreeTurns > 0;
         }
     }
 }

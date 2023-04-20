@@ -25,12 +25,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         #endregion
 
-        public const string DefaultSoftCurrencyID         = "Coin";
-        public const string DefaultChestRoomKeyCurrencyID = "ChestRoomKey";
+        public const string DefaultSoftCurrencyID              = "Coin";
+        public const string DefaultChestRoomKeyCurrencyID      = "ChestRoomKey";
+        public const string DefaultLuckySpinFreeTurnCurrencyID = "LuckySpinFreeTurn";
 
         public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
-            UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus,
-            UITemplateItemBlueprint uiTemplateItemBlueprint)
+                                                 UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus,
+                                                 UITemplateItemBlueprint uiTemplateItemBlueprint)
         {
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
             this.uiTemplateFlyingAnimationCurrency = uiTemplateFlyingAnimationCurrency;
@@ -53,7 +54,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             this.UpdateCurrency(this.GetCurrencyValue(currency), this.GetTempCurrencyKey(currency));
         }
-        
+
         public string GetCurrentItemSelected(string category) => this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null;
 
         public void UpdateCurrentSelectedItem(string category, string id)
@@ -67,11 +68,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 this.uiTemplateInventoryData.CategoryToChosenItem.Add(category, id);
             }
         }
-        
+
         public int GetCurrencyValue(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)).Value;
-        
+
         public UITemplateCurrencyData GetCurrencyData(string id = DefaultSoftCurrencyID) => this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new UITemplateCurrencyData(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max));
-        
+
         public bool IsCurrencyFull(string id) => this.GetCurrencyValue(id) >= this.uiTemplateCurrencyBlueprint.GetDataById(id).Max;
 
         public bool HasItem(string id) => this.uiTemplateInventoryData.IDToItemData.ContainsKey(id);
@@ -151,7 +152,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return this.FindAllItems(category, unlockType, orderBy, statuses);
         }
 
-        public List<UITemplateItemData> GetAllItemWithOrder(string                        category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
+        public List<UITemplateItemData> GetAllItemWithOrder(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
                                                             IComparer<UITemplateItemData> comparer = null)
         {
             return this.GetAllItem(category, unlockType).OrderBy(itemData => itemData, comparer ?? UITemplateItemData.DefaultComparerInstance).ToList();
@@ -256,8 +257,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public Dictionary<string, UITemplateItemData> GetAllItemAvailable()
         {
             return this.uiTemplateInventoryData.IDToItemData
-                .Where(itemData => itemData.Value.CurrentStatus != UITemplateItemData.Status.Owned && itemData.Value.CurrentStatus == UITemplateItemData.Status.Unlocked)
-                .ToDictionary(itemData => itemData.Key, itemData => itemData.Value);
+                       .Where(itemData => itemData.Value.CurrentStatus != UITemplateItemData.Status.Owned && itemData.Value.CurrentStatus == UITemplateItemData.Status.Unlocked)
+                       .ToDictionary(itemData => itemData.Key, itemData => itemData.Value);
         }
     }
 }

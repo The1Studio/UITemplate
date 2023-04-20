@@ -110,16 +110,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 await this.uiTemplateFlyingAnimationCurrency.PlayAnimation(startAnimationRect);
             }
 
-            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = addingValue, FinalValue = this.GetCurrencyValue(id) + addingValue, });
-
-            this.SetCurrencyWithCap(this.GetCurrencyValue(id) + addingValue, id);
+            var lastValue = this.GetCurrencyValue(id);
+            this.SetCurrencyWithCap(lastValue + addingValue, id);
+            
+            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = addingValue, FinalValue = lastValue + addingValue, });
         }
 
         public void UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID)
         {
-            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = finalValue - this.GetCurrencyValue(id), FinalValue = finalValue, });
-
+            var lastValue = this.GetCurrencyValue(id);
+            
             this.SetCurrencyWithCap(finalValue, id);
+            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = finalValue - lastValue, FinalValue = finalValue, });
+            
         }
 
         private void SetCurrencyWithCap(int value, string id)

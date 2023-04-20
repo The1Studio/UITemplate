@@ -5,7 +5,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
     using UnityEngine;
     using Zenject;
 
-    [RequireComponent(typeof(Rigidbody), typeof(BoxCollider))]
+    [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
     public class BuildingCarController : MonoBehaviour
     {
         #region View

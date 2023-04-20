@@ -141,7 +141,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ChestRoom
             this.SetKeyObjectActive(true);
         }
 
-        private void OnClickNoThankButton() { this.CloseView(); }
+        private void OnClickNoThankButton()
+        {
+            this.uiTemplateAdServiceWrapper.ShowInterstitialAd("chest_room");
+            this.CloseView();
+        }
 
         public override void Dispose()
         {

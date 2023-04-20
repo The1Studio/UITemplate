@@ -142,11 +142,12 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
     [Serializable]
     public class Monetization
     {
-        [Header("EM_ADMOB")]         public bool admob;
-        [Header("EM_APPLOVIN")]      public bool appLovin;
-        [Header("EM_IRONSOURCE")]    public bool ironSource;
-        [Header("ENABLE_IAP")]       public bool iap;
-        [Header("ADMOB_NATIVE_ADS")] public bool admobNativeAds;
+        [Header("EM_ADMOB")]              public bool admob;
+        [Header("EM_APPLOVIN")]           public bool appLovin;
+        [Header("EM_IRONSOURCE")]         public bool ironSource;
+        [Header("ADMOB_NATIVE_ADS")]      public bool admobNativeAds;
+        [Header("ENABLE_IAP")]            public bool iap;
+        [Header("FAKE_RESTORE_PURCHASE")] public bool fakeRestorePurchase;
     }
 
     [Serializable]

@@ -37,7 +37,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -0.0000038146973, y: 400.33}
+  m_AnchoredPosition: {x: -0.0000038146973, y: 308}
   m_SizeDelta: {x: 300, y: 90.33}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8452219130296278309
@@ -214,7 +214,7 @@ CanvasGroup:
   m_IgnoreParentGroups: 0
 --- !u!95 &8487817364561689012
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -231,7 +231,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2557037751521575202
 GameObject:
   m_ObjectHideFlags: 0
@@ -990,7 +991,7 @@ RectTransform:
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &1274170222541731636
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1007,7 +1008,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!225 &938141693439986808
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1058,7 +1060,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 529}
+  m_AnchoredPosition: {x: 0, y: 425}
   m_SizeDelta: {x: 400, y: 167}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3937019168882773921
@@ -1107,7 +1109,7 @@ MonoBehaviour:
       m_Calls: []
 --- !u!95 &6202321542059589789
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1124,7 +1126,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6595111640943557293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1163,7 +1166,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 529}
+  m_AnchoredPosition: {x: 0, y: 425}
   m_SizeDelta: {x: 400, y: 167}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3232148719113592710
@@ -1224,7 +1227,7 @@ CanvasGroup:
   m_IgnoreParentGroups: 0
 --- !u!95 &5432815890284228172
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1241,7 +1244,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6829520244120791856
 GameObject:
   m_ObjectHideFlags: 0
@@ -1819,7 +1823,7 @@ MonoBehaviour:
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!95 &7845127099427259689
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1836,7 +1840,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!225 &4352090144842034224
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3665,7 +3670,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SceneBindings.Array.data[4].key
       value: 
-      objectReference: {fileID: -1673264919187703886, guid: 8ef7a85212e9cc1429eb2af99e642c3c,
+      objectReference: {fileID: 8863646792693938960, guid: 8ef7a85212e9cc1429eb2af99e642c3c,
         type: 2}
     - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
@@ -3691,7 +3696,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SceneBindings.Array.data[4].value
       value: 
-      objectReference: {fileID: 6202321542059589789}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 824a6ecd3c44043ccbace3bf4014c6c9, type: 3}
 --- !u!224 &5093552083599659469 stripped
@@ -3714,7 +3719,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6491660353993539718}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0

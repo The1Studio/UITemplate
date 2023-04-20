@@ -31,17 +31,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.uiTemplateLuckySpinController     = uiTemplateLuckySpinController;
         }
 
-        public void Initialize() { }
+        public void Initialize()
+        {
+            this.uiTemplateLuckySpinController.CheckGetFreeTurn();
+        }
 
         public void OpenLuckySpin()
         {
-            var isFreeSpin         = true;
-            var isUseFreeSpinToday = this.uiTemplateLuckySpinController.IsUsedFreeSpinToDay();
-
-            if (isUseFreeSpinToday)
-            {
-                isFreeSpin = false;
-            }
+            var isFreeSpin         = this.uiTemplateLuckySpinController.IsTurnFree();
 
             var forceSpin = -1;
 

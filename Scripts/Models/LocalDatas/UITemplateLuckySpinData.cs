@@ -6,13 +6,9 @@
 
     public class UITemplateLuckySpinData : ILocalData
     {
-        [OdinSerialize]
-        public bool IsUsedFreeSpin { get; set; }
-
-        [OdinSerialize]
-        public bool IsFirstTimeOpenLuckySpin { get; set; }
-
-        public DateTime LastSpinTime { get; set; }
+        [OdinSerialize] public bool     IsUsedFreeSpin           { get; set; }
+        [OdinSerialize] public bool     IsFirstTimeOpenLuckySpin { get; set; }
+        public                 DateTime LastSpinTime             { get; set; }
 
         public void Init()
         {

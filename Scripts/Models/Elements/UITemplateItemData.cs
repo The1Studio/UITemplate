@@ -13,14 +13,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public          Status CurrentStatus;
         public          int    RemainingAdsProgress;
 
-        [JsonIgnore] public UITemplateShopRecord ShopBlueprintRecord { get; internal set; }
+        [JsonIgnore]
+        public UITemplateShopRecord ShopBlueprintRecord { get; internal set; }
 
-        [JsonIgnore] public UITemplateItemRecord ItemBlueprintRecord { get; internal set; }
+        [JsonIgnore]
+        public UITemplateItemRecord ItemBlueprintRecord { get; internal set; }
 
-        public UITemplateItemData(string id,
-            UITemplateShopRecord shopBlueprintRecord,
-            UITemplateItemRecord itemBlueprintRecord,
-            Status currentStatus = Status.Locked)
+        public UITemplateItemData(string               id,
+                                  UITemplateShopRecord shopBlueprintRecord,
+                                  UITemplateItemRecord itemBlueprintRecord,
+                                  Status               currentStatus = Status.Locked)
         {
             this.Id                  = id;
             this.CurrentStatus       = currentStatus;
@@ -53,7 +55,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             DailyReward  = 1 << 6,
             LuckySpin    = 1 << 7,
             StartedPack  = 1 << 8,
-            All          = IAP | SoftCurrency | Ads | Progression | Gift | DailyReward | LuckySpin
+            All          = -1,
+            Default      = IAP | SoftCurrency | Ads | Progression | Gift | StartedPack
         }
 
         public class DefaultComparer : IComparer<UITemplateItemData>

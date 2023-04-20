@@ -1,17 +1,20 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using GameFoundation.Scripts.Interfaces;
     using Sirenix.Serialization;
 
     public class UITemplateUserLevelData : ILocalData
     {
         [OdinSerialize]
+        public UITemplateItemData.UnlockType UnlockedFeature { get; set; } = UITemplateItemData.UnlockType.Default;
+
+        [OdinSerialize]
         public int CurrentLevel { get; set; } = 1;
 
         [OdinSerialize]
-        public Dictionary<int, LevelData> LevelToLevelData = new();
+        public Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
 
         [OdinSerialize]
         public int LastUnlockRewardLevel;

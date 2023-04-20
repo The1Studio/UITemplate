@@ -8,8 +8,8 @@
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;

@@ -7,9 +7,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
-    using Zenject;
 
     public class UITemplateDailyRewardController
     {

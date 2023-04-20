@@ -1033,6 +1033,7 @@ GameObject:
   - component: {fileID: 1540190944307090445}
   - component: {fileID: 3937019168882773921}
   - component: {fileID: 6202321542059589789}
+  - component: {fileID: 5793273186352077779}
   m_Layer: 5
   m_Name: btnAds
   m_TagString: Untagged
@@ -1128,6 +1129,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!225 &5793273186352077779
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6116299464798290994}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6595111640943557293
 GameObject:
   m_ObjectHideFlags: 0
@@ -3640,7 +3653,7 @@ PrefabInstance:
     - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
       propertyPath: m_SceneBindings.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
@@ -3670,7 +3683,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SceneBindings.Array.data[4].key
       value: 
-      objectReference: {fileID: 8863646792693938960, guid: 8ef7a85212e9cc1429eb2af99e642c3c,
+      objectReference: {fileID: -4023328313997928278, guid: 8ef7a85212e9cc1429eb2af99e642c3c,
+        type: 2}
+    - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
+        type: 3}
+      propertyPath: m_SceneBindings.Array.data[5].key
+      value: 
+      objectReference: {fileID: -2776664576590025745, guid: 8ef7a85212e9cc1429eb2af99e642c3c,
         type: 2}
     - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
@@ -3696,7 +3715,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SceneBindings.Array.data[4].value
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6202321542059589789}
+    - target: {fileID: 8882919957623623703, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
+        type: 3}
+      propertyPath: m_SceneBindings.Array.data[5].value
+      value: 
+      objectReference: {fileID: 6202321542059589789}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 824a6ecd3c44043ccbace3bf4014c6c9, type: 3}
 --- !u!224 &5093552083599659469 stripped

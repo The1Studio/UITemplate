@@ -28,7 +28,8 @@
         "FirebaseTracker",
         "EasyMobile.Scripts",
         "3rd.IAP",
-        "Reporter.Scripts"
+        "Reporter.Scripts",
+        "UltimateJoystick.Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

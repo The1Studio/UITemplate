@@ -11,7 +11,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         #region View
 
         public Transform carholder;
-        public float     rotation = 0f;
+        public float     angleOffset = 0f;
 
         #endregion
 
@@ -57,7 +57,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             }
 
             this.Rig.freezeRotation = false;
-            var rotationMove    = Quaternion.AngleAxis(this.rotation, Vector3.up);
+            var rotationMove    = Quaternion.AngleAxis(this.angleOffset, Vector3.up);
             var velocity        = new Vector3(-v, 0, h) * this.movementSpeed;
             var rotatedVelocity = rotationMove * velocity;
             this.Rig.velocity = rotatedVelocity.normalized * this.movementSpeed;

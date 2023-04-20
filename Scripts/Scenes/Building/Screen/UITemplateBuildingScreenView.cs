@@ -9,19 +9,19 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
     using UnityEngine.UI;
     using Zenject;
 
-    public class BuildingScreenView : BaseView
+    public class UITemplateBuildingScreenView : BaseView
     {
         public UITemplateCurrencyView uiTemplateCurrencyView;
         public Button                 btnHOme;
     }
 
-    [ScreenInfo(nameof(BuildingScreenView))]
-    public class BuildingScreenPresenter : BaseScreenPresenter<BuildingScreenView>
+    [ScreenInfo(nameof(UITemplateBuildingScreenView))]
+    public class UITemplateBuildingScreenPresenter : BaseScreenPresenter<UITemplateBuildingScreenView>
     {
         private readonly SceneDirector                     sceneDirector;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
 
-        public BuildingScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
+        public UITemplateBuildingScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, UITemplateInventoryDataController uiTemplateInventoryDataController) : base(signalBus)
         {
             this.sceneDirector                     = sceneDirector;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;

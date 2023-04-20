@@ -51,6 +51,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
         private readonly UITemplateAdServiceWrapper    uiTemplateAdServiceWrapper;
         private readonly UITemplateAnimationHelper     uiTemplateAnimationHelper;
         private readonly UITemplateLevelDataController levelDataController;
+        private readonly UITemplateLuckySpinController uiTemplateLuckySpinController;
 
         private Tween spinTween;
 
@@ -68,14 +69,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
             ILogService logger,
             UITemplateAnimationHelper uiTemplateAnimationHelper,
-            UITemplateLevelDataController levelDataController
+            UITemplateLevelDataController levelDataController,
+            UITemplateLuckySpinController uiTemplateLuckySpinController
         ) : base(signalBus, logger)
         {
-            this.eventSystem                = eventSystem;
-            this.diContainer                = diContainer;
-            this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
-            this.uiTemplateAnimationHelper  = uiTemplateAnimationHelper;
-            this.levelDataController        = levelDataController;
+            this.eventSystem                   = eventSystem;
+            this.diContainer                   = diContainer;
+            this.uiTemplateAdServiceWrapper    = uiTemplateAdServiceWrapper;
+            this.uiTemplateAnimationHelper     = uiTemplateAnimationHelper;
+            this.levelDataController           = levelDataController;
+            this.uiTemplateLuckySpinController = uiTemplateLuckySpinController;
         }
 
         protected override void OnViewReady()
@@ -128,7 +131,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
             }
             
             this.SetActiveButtons(true);
-            this.SetActiveWatchAdsButton(true);
 
             this.FlashCircleNote(0.5f);
 
@@ -137,6 +139,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
             this.eventSystem.gameObject.SetActive(true);
             this.Model.OnSpinComplete?.Invoke(this.lastRewardIndex, this.View.animationCoin);
+            this.SetActiveWatchAdsButton(!this.uiTemplateLuckySpinController.IsTurnFree());
             this.View.blockInput.SetActive(false);
         }
 

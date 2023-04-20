@@ -4,7 +4,9 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using TheOneStudio.UITemplate.UITemplate.Extension;
     using UnityEditor;
+    using UnityEditor.Compilation;
     using UnityEngine;
 
     [Serializable]
@@ -43,12 +45,15 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
 
         #region Field
 
-        public bool IsEnable;
+        [HideInInspector] public bool IsEnable;
 
-        public                   AnalyticAndTracking       AnalyticAndTracking;
-        public                   Monetization              Monetization;
-        [HideInInspector] public Partner                   Partner;
-        public                   UITemplateGameAndServices UITemplateGameAndServices;
+        public AnalyticAndTracking AnalyticAndTracking;
+        public Monetization        Monetization;
+
+        [HideInInspector] [AutoSettingDefine(true)]
+        public Partner Partner;
+
+        public UITemplateGameAndServices UITemplateGameAndServices;
 
         public List<CustomDefineSymbol> CustomDefineSymbols;
 
@@ -63,7 +68,13 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
 
         public void AddCustomDefineSymbol(List<string> originDefine)
         {
-            if (!this.IsEnable) return;
+            if (!this.IsEnable)
+            {
+                Debug.LogError($"Not Enable");
+
+                return;
+            }
+
             var totalCurrentSettingDefine = new Dictionary<string, bool>();
             //get all define symbol from all class
             var analyticProperties     = this.AnalyticAndTracking.GetType().GetFields();
@@ -79,6 +90,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
             //get all define symbol from custom define symbol
             foreach (var customDefineSymbol in this.CustomDefineSymbols)
             {
+                if (customDefineSymbol.DefineSymbolName.IsNullOrEmpty()) continue;
                 totalCurrentSettingDefine.Add(customDefineSymbol.DefineSymbolName, customDefineSymbol.IsEnable);
             }
 

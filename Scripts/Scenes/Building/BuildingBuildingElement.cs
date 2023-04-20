@@ -2,6 +2,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
 {
     using DG.Tweening;
     using GameFoundation.Scripts.Utilities.LogService;
+    using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -11,6 +12,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
     using UnityEngine.UI;
     using Zenject;
 
+    [RequireComponent(typeof(BoxCollider), typeof(Renderer))]
     public class BuildingBuildingElement : MonoBehaviour
     {
         public  string          BuildingId;

@@ -11,10 +11,11 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         #region View
 
         public Transform carholder;
+        public float     rotation = 0f;
 
         #endregion
 
-        public  float     movementSpeed = 10f;
+        public float movementSpeed = 10f;
 
         private Rigidbody rig;
 
@@ -26,6 +27,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
                 {
                     this.rig = this.GetComponent<Rigidbody>();
                 }
+
                 return this.rig;
             }
         }
@@ -55,7 +57,10 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             }
 
             this.Rig.freezeRotation = false;
-            this.Rig.velocity       = (new Vector3(-v, 0, h) * this.movementSpeed).normalized * this.movementSpeed;
+            var rotationMove    = Quaternion.AngleAxis(this.rotation, Vector3.up);
+            var velocity        = new Vector3(-v, 0, h) * this.movementSpeed;
+            var rotatedVelocity = rotationMove * velocity;
+            this.Rig.velocity = rotatedVelocity.normalized * this.movementSpeed;
             var lookRot = new Vector3(v, 0, -h);
 
             if (lookRot == Vector3.zero)

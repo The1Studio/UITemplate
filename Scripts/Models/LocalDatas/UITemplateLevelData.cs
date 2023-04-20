@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using System;

@@ -91,9 +91,9 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
                 this.TimeWhileUnlocking = 0;
                 var reduceCurrencyValue = 10;
 
-                if (currentBuildingData.UnlockPrice - reduceCurrencyValue < 0)
+                if (currentBuildingData.RemainPrice - reduceCurrencyValue < 0)
                 {
-                    reduceCurrencyValue = currentBuildingData.UnlockPrice;
+                    reduceCurrencyValue = currentBuildingData.RemainPrice;
                 }
 
                 if (this.uiTemplateInventoryDataController.GetCurrencyValue() < reduceCurrencyValue)
@@ -101,12 +101,12 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
                     reduceCurrencyValue = this.uiTemplateInventoryDataController.GetCurrencyValue();
                 }
 
-                currentBuildingData.UnlockPrice -= reduceCurrencyValue;
+                currentBuildingData.RemainPrice -= reduceCurrencyValue;
                 this.SetPrice();
                 this.uiTemplateInventoryDataController.UpdateCurrency(this.uiTemplateInventoryDataController.GetCurrencyValue() - reduceCurrencyValue);
             }
 
-            if (currentBuildingData.UnlockPrice > 0) return;
+            if (currentBuildingData.RemainPrice > 0) return;
             this.CheckToFillCarOnStay(0);
             this.uiTemplateBuildingController.UnlockBuilding(this.BuildingId);
             this.renderer.enabled     = true;
@@ -132,8 +132,8 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         {
             if (this.txtPrice != null)
             {
-                this.txtPrice.text = this.GetBuildingData.UnlockPrice.ToString();
-                this.txtPrice.gameObject.SetActive(this.GetBuildingData.UnlockPrice > 0);
+                this.txtPrice.text = this.GetBuildingData.RemainPrice.ToString();
+                this.txtPrice.gameObject.SetActive(this.GetBuildingData.RemainPrice > 0);
             }
         }
 

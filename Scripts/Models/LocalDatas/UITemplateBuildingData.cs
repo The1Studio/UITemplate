@@ -15,5 +15,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     public class BuildingData : UITemplateBuildingRecord
     {
         public bool IsUnlocked;
+        public int  RemainPrice;
     }
 }

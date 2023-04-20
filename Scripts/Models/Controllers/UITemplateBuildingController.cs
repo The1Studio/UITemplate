@@ -30,7 +30,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 Id            = buildingId,
                 IsUnlocked    = false,
                 UnlockPrice   = this.uiTemplateBuildingBlueprint[buildingId].UnlockPrice,
-                EarnPerSecond = this.uiTemplateBuildingBlueprint[buildingId].EarnPerSecond
+                EarnPerSecond = this.uiTemplateBuildingBlueprint[buildingId].EarnPerSecond,
+                RemainPrice   = this.uiTemplateBuildingBlueprint[buildingId].UnlockPrice
             };
 
             this.buildingData.Buildings.Add(buildingId, buildingData);

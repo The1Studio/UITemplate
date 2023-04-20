@@ -54,7 +54,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             {
                 this.Rig.velocity       = Vector3.zero;
                 this.Rig.freezeRotation = true;
-                if (buildingCharacterView != null)
+                if (this.buildingCharacterView != null)
                 {
                     this.buildingCharacterView.OnStop();
                 }

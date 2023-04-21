@@ -39,17 +39,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void OnBlueprintLoaded(LoadBlueprintDataSucceedSignal obj)
         {
-            var dicData         = new Dictionary<string, IAPModel>();
-            var currentPlatForm = "Android";
-#if UNITY_IOS||UNITY_IPHONE
-            currentPlatForm = "IOS";
-#endif
+            var dicData = new Dictionary<string, IAPModel>();
 
-            foreach (var record in this.uiTemplateShopPackBlueprint.Values)
+            foreach (var record in this.uiTemplateShopPackBlueprint.GetPack())
             {
-                if (!record.Platforms.Contains(currentPlatForm))
-                    continue;
-
                 dicData.Add(record.Id, new IAPModel()
                 {
                     Id          = record.Id,

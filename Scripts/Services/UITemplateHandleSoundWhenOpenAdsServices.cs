@@ -27,7 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayed);
             signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
-            signalBus.Subscribe<LevelStart>(this.OnStartLevel);
+            signalBus.Subscribe<LevelStartedSignal>(this.OnStartLevel);
             signalBus.Subscribe<RewardedAdCalledSignal>(this.OnRewardAdsCalled);
             signalBus.Subscribe<InterstitialAdCalledSignal>(this.OnInterAdCalled);
         }
@@ -36,7 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void OnRewardAdsCalled(RewardedAdCalledSignal obj) { this.PauseSound(); }
 
-        private void OnStartLevel(LevelStart obj) { this.ResumeSound(); }
+        private void OnStartLevel(LevelStartedSignal obj) { this.ResumeSound(); }
 
         private void OnRewardInterClose(RewardInterstitialAdSkippedSignal obj) { this.ResumeSound(); }
 

@@ -3,6 +3,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AdsServices;
     using Core.AdsServices.Signals;
     using GameFoundation.Scripts.Utilities;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
     using Zenject;
 
     public class UITemplateHandleSoundWhenOpenAdsServices
@@ -25,13 +27,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayed);
             signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
+            signalBus.Subscribe<LevelStart>(this.OnStartLevel);
+            signalBus.Subscribe<RewardedAdCalledSignal>(this.OnRewardAdsCalled);
+            signalBus.Subscribe<InterstitialAdCalledSignal>(this.OnInterAdCalled);
         }
+
+        private void OnInterAdCalled(InterstitialAdCalledSignal obj) { this.PauseSound(); }
+
+        private void OnRewardAdsCalled(RewardedAdCalledSignal obj) { this.PauseSound(); }
+
+        private void OnStartLevel(LevelStart obj) { this.ResumeSound(); }
 
         private void OnRewardInterClose(RewardInterstitialAdSkippedSignal obj) { this.ResumeSound(); }
 
         private void OnRewardedAdEnded()                                                    { this.ResumeSound(); }
         private void OnAppFullScreenContentClosed(AppOpenFullScreenContentClosedSignal obj) { this.ResumeSound(); }
-        private void OnInterstitialAdClosed(InterstitialAdClosedSignal                 obj) { this.ResumeSound(); }
+        private void OnInterstitialAdClosed(InterstitialAdClosedSignal obj)                 { this.ResumeSound(); }
 
         private void OnRewardInterDisplay(RewardedInterstitialAdCompletedSignal obj) { this.PauseSound(); }
 

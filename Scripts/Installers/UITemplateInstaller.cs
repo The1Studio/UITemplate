@@ -21,6 +21,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
+            Application.targetFrameRate = 60;
             //Helper
             this.Container.Bind<UITemplateAnimationHelper>().AsCached();
 

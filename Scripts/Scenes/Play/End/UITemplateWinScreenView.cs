@@ -176,7 +176,8 @@
 
             if (this.View.UseItemUnlockProgressImage)
             {
-                var sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.Model.ItemId);
+                var itemData = this.inventoryDataController.GetItemData(this.Model.ItemId);
+                var sprite = await this.gameAssets.LoadAssetAsync<Sprite>(itemData.ItemBlueprintRecord.ImageAddress);
                 this.View.ImgItemUnlockProgress.sprite           = sprite;
                 this.View.ImgItemUnlockProgressBackground.sprite = sprite;
                 sequence.Join(

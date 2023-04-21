@@ -16,7 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
             return this.Values.Where(x => x.Platforms.Contains("Android")).ToList();
 #elif UNITY_IOS||UNITY_IPHONE
             return this.Values.Where(x => x.Platforms.Contains("IOS")).ToList();
-else 
+#else 
             return this.Values.ToList();
 #endif
         }

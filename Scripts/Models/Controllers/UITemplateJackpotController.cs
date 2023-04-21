@@ -5,7 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services;
 
-    public class UITemplateJackpotController
+    public class UITemplateJackpotController:IUITemplateControllerData
     {
         private readonly InternetService                internetService;
         private readonly UITemplateUserJackpotData      userJackpotData;

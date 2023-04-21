@@ -2,7 +2,7 @@
 {
     using GameFoundation.Scripts.Models;
 
-    public class UITemplateSettingDataController
+    public class UITemplateSettingDataController:IUITemplateControllerData
     {
         #region Inject
 

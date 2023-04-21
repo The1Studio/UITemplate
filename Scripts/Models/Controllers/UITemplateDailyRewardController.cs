@@ -11,7 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
 
-    public class UITemplateDailyRewardController
+    public class UITemplateDailyRewardController:IUITemplateControllerData
     {
         private const int TotalDayInWeek = 7;
 

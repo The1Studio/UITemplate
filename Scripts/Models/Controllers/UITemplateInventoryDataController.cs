@@ -12,7 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateInventoryDataController
+    public class UITemplateInventoryDataController:IUITemplateControllerData
     {
         #region Inject
 

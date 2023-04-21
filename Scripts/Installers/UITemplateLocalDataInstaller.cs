@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -21,17 +22,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindLocalData<UITemplateRewardData>();
             this.Container.BindLocalData<UITemplateCommonData>();
             this.Container.BindLocalData<UITemplateIAPOwnerPackData>();
+            this.Container.BindLocalData<UITemplateFTUEData>();
+
             //Data controller
-            this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardController>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateInventoryDataController>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateLevelDataController>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateSettingDataController>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateJackpotController>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateLuckySpinController>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateBuildingController>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateHandleRewardController>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateCommonController>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateIAPOwnerPackControllerData>().AsCached();
+            this.BindAllController();
+        }
+
+        private void BindAllController()
+        {
+            var listController = ReflectionUtils.GetAllDerivedTypes<IUITemplateControllerData>();
+
+            foreach (var localDataType in listController)
+            {
+                this.Container.BindInterfacesAndSelfTo(localDataType).AsCached();
+            }
         }
     }
 }

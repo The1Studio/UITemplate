@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public class UITemplateFTUEControllerData
+    public class UITemplateFTUEControllerData:IUITemplateControllerData
     {
         private readonly UITemplateFTUEData templateFtueData;
 

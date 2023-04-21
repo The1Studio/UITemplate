@@ -11,8 +11,6 @@
     {
         public override void InstallBindings()
         {
-            this.Container.BindLocalData<UITemplateFTUEData>();
-            this.Container.BindInterfacesAndSelfTo<UITemplateFTUEControllerData>().AsCached();
             this.Container.BindInterfacesAndSelfTo<UITemplateFTUESystem>().AsCached().NonLazy();
             this.Container.Bind<UITemplateFTUEController>().FromComponentInNewPrefabResource(nameof(UITemplateFTUEController)).AsCached().NonLazy();
             this.Container.Bind<UITemplateFTUEHelper>().AsCached().NonLazy();

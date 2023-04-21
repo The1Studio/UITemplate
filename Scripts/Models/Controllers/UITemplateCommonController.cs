@@ -2,7 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
 
-    public class UITemplateCommonController
+    public class UITemplateCommonController:IUITemplateControllerData
     {
         private readonly UITemplateCommonData uiTemplateCommonData;
 

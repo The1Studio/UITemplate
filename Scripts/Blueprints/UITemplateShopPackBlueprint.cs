@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using BlueprintFlow.BlueprintReader;
     using ServiceImplementation.IAPServices;
 
@@ -9,6 +10,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     [BlueprintReader("UITemplateShopPack", true)]
     public class UITemplateShopPackBlueprint : GenericBlueprintReaderByRow<string, ShopPackRecord>
     {
+        public List<ShopPackRecord> GetPack()
+        {
+#if UNITY_ANDROID
+            return this.Values.Where(x => x.Platforms.Contains("Android")).ToList();
+#elif UNITY_IOS||UNITY_IPHONE
+            return this.Values.Where(x => x.Platforms.Contains("IOS")).ToList();
+else 
+            return this.Values.ToList();
+#endif
+        }
     }
 
     public class ShopPackRecord

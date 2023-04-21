@@ -51,6 +51,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<UITemplateGetRealRewardHelper>().AsCached().NonLazy();
 
             // this.Container.BindInterfacesTo<UITemplateAutoOpenStartedPackServices>().AsCached().NonLazy();
+            
+            // VFX Spawn
+            this.Container.Bind<UITemplateVFXSpawnService>().AsCached().NonLazy();
         }
     }
 }

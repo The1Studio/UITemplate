@@ -7,6 +7,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -23,6 +24,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
 
         #region Zenject
 
+        private SignalBus                         signalBus;
         private UITemplateBuildingController      uiTemplateBuildingController;
         private float                             timeIdeToUnlock = 0;
         private float                             TimeWhileUnlocking;
@@ -33,6 +35,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         public void OnInit(ILogService logger, SignalBus signalBus, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateBuildingController uiTemplateBuildingController,
             UITemplateBuildingBlueprint uiTemplateBuildingBlueprint)
         {
+            this.signalBus                         = signalBus;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateBuildingController      = uiTemplateBuildingController;
             this.uiTemplateBuildingBlueprint       = uiTemplateBuildingBlueprint;
@@ -112,6 +115,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             this.renderer.enabled     = true;
             this.boxCollider.enabled  = false;
             this.transform.localScale = Vector3.zero;
+            this.signalBus.Fire(new BuildingPraiseSignal());
             this.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.InBack).OnComplete(() => { this.boxCollider.enabled = true; });
         }
 

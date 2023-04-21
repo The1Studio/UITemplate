@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
-    public class UpdateCurrencySignal
+    using BlueprintFlow.Signals;
+
+    public class UpdateCurrencySignal:ISignal
     {
         public string Id;
         public int    Amount;

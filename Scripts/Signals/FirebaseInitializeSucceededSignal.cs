@@ -1,6 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.Signals
 {
-    public class RemoteConfigInitializeSucceededSignal
+    using BlueprintFlow.Signals;
+
+    public class RemoteConfigInitializeSucceededSignal : ISignal
     {
     }
 }

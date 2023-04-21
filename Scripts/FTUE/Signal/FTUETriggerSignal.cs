@@ -1,6 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE.Signal
 {
-    public class FTUETriggerSignal
+    using BlueprintFlow.Signals;
+
+    public class FTUETriggerSignal : ISignal
     {
         public string StepId { get; set; }
 

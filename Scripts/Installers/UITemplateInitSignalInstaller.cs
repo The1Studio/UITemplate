@@ -1,36 +1,19 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
-    using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
-    using TheOneStudio.UITemplate.UITemplate.Signals;
+    using BlueprintFlow.Signals;
+    using GameFoundation.Scripts.Utilities.Extension;
     using Zenject;
 
     public class UITemplateDeclareSignalInstaller : Installer<UITemplateDeclareSignalInstaller>
     {
         public override void InstallBindings()
         {
-            this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
-            
-            //FTUE
-            this.Container.DeclareSignal<FTUEButtonClickSignal>();
-            this.Container.DeclareSignal<FTUETriggerSignal>();
-            this.Container.DeclareSignal<TutorialCompletionSignal>();
+            var signalList = ReflectionUtils.GetAllDerivedTypes<ISignal>();
 
-            //Signal
-            this.Container.DeclareSignal<RewardedAdEligibleSignal>();
-            this.Container.DeclareSignal<RewardedAdCalledSignal>();
-            this.Container.DeclareSignal<RewardedAdOfferSignal>();
-            this.Container.DeclareSignal<UpdateCurrencySignal>();
-            this.Container.DeclareSignal<LevelStartedSignal>();
-            this.Container.DeclareSignal<LevelEndedSignal>();
-            this.Container.DeclareSignal<LevelSkippedSignal>();
-            this.Container.DeclareSignal<InterstitialAdCalledSignal>();
-            this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
-            this.Container.DeclareSignal<RemoteConfigInitializeSucceededSignal>();
-            this.Container.DeclareSignal<ScaleDecoration2DItem>();
-            this.Container.DeclareSignal<UITemplateAddRewardsSignal>();
+            foreach (var localDataType in signalList)
+            {
+                this.Container.DeclareSignal(localDataType);
+            }
         }
     }
 }

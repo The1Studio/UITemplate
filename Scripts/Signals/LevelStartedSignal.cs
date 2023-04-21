@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
-    public class LevelStartedSignal
+    using BlueprintFlow.Signals;
+
+    public class LevelStartedSignal:ISignal
     {
         public int Level;
         public LevelStartedSignal(int level) { this.Level = level; }

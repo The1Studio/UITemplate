@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
-    public class LevelSkippedSignal
+    using BlueprintFlow.Signals;
+
+    public class LevelSkippedSignal : ISignal
     {
         public int Level;
         public int Time;

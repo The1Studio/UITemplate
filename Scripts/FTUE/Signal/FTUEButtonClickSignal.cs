@@ -1,6 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE.Signal
 {
-    public class FTUEButtonClickSignal
+    using BlueprintFlow.Signals;
+
+    public class FTUEButtonClickSignal : ISignal
     {
         public string ButtonId { get; set; }
         public string StepId   { get; set; }

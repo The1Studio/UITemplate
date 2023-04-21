@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
-    public class RewardedAdOfferSignal
+    using BlueprintFlow.Signals;
+
+    public class RewardedAdOfferSignal:ISignal
     {
         public string Place;
 

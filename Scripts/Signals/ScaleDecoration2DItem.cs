@@ -1,8 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
-    using UnityEngine;
+    using BlueprintFlow.Signals;
 
-    public class ScaleDecoration2DItem
+    public class ScaleDecoration2DItem : ISignal
     {
         public float WidthScale;
         public float HeightScale;

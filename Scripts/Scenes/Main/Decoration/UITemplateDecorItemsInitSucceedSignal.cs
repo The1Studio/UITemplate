@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 {
-    public class UITemplateDecorItemsInitSucceedSignal
+    using BlueprintFlow.Signals;
+
+    public class UITemplateDecorItemsInitSucceedSignal : ISignal
     {
     }
 }

@@ -9,9 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.LogService;
-    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
@@ -24,27 +22,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly SignalBus                         signalBus;
         private readonly IAnalyticServices                 analyticServices;
         private readonly List<IAnalyticEventFactory>       analyticEventList;
-        private readonly UITemplateUserLevelData           uiTemplateUserLevelData;
         private readonly IAdServices                       adServices;
         private readonly ILogService                       logService;
         private readonly UITemplateLevelDataController     uiTemplateLevelDataController;
         private readonly UITemplateInventoryDataController uITemplateInventoryDataController;
-        private readonly UITemplateDailyRewardData         uiTemplateDailyRewardData;
+        private readonly UITemplateDailyRewardController   uiTemplateDailyRewardController;
 
         #endregion
 
-        public UITemplateAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, List<IAnalyticEventFactory> analyticEventList, UITemplateUserLevelData uiTemplateUserLevelData,
-            IAdServices adServices, ILogService logService, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateInventoryDataController uITemplateInventoryDataController, UITemplateDailyRewardData uiTemplateDailyRewardData)
+        public UITemplateAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, List<IAnalyticEventFactory> analyticEventList,
+            IAdServices adServices, ILogService logService, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateInventoryDataController uITemplateInventoryDataController, UITemplateDailyRewardController uiTemplateDailyRewardController)
         {
             this.signalBus                         = signalBus;
             this.analyticServices                  = analyticServices;
             this.analyticEventList                 = analyticEventList;
-            this.uiTemplateUserLevelData           = uiTemplateUserLevelData;
             this.adServices                        = adServices;
             this.logService                        = logService;
             this.uiTemplateLevelDataController     = uiTemplateLevelDataController;
             this.uITemplateInventoryDataController = uITemplateInventoryDataController;
-            this.uiTemplateDailyRewardData         = uiTemplateDailyRewardData;
+            this.uiTemplateDailyRewardController   = uiTemplateDailyRewardController;
 
             switch (analyticEventList.Count)
             {
@@ -52,8 +48,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                     throw new Exception("Error: More than one analytic event factory found. Please remove one of them (Project Setting/Script Define Symbols).");
                 case 0:
                     throw new Exception("Error: No analytic event factory found. Please add one of them (WIDO,ROCKET,ADONE,ABI...) into (Project Setting/Script Define Symbols).");
-
-                    break;
             }
         }
 
@@ -168,7 +162,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 this.analyticServices.UserProperties[analytic.LastAdsPlacementProperty]     = obj.Placement;
                 this.analyticServices.UserProperties[analytic.TotalInterstitialAdsProperty] = obj.Placement;
-                this.Track(analytic.InterstitialShow(this.uiTemplateUserLevelData.CurrentLevel, obj.Placement));
+                this.Track(analytic.InterstitialShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
             }
         }
 
@@ -186,7 +180,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 this.analyticServices.UserProperties[analytic.LastAdsPlacementProperty] = obj.Placement;
                 this.analyticServices.UserProperties[analytic.TotalRewardedAdsProperty] = obj.Placement;
-                this.Track(analytic.RewardedInterstitialAdDisplayed(this.uiTemplateUserLevelData.CurrentLevel, obj.Placement));
+                this.Track(analytic.RewardedInterstitialAdDisplayed(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
             }
         }
 
@@ -240,7 +234,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 this.analyticServices.UserProperties[analytic.LastAdsPlacementProperty] = obj.Placement;
                 this.analyticServices.UserProperties[analytic.TotalRewardedAdsProperty] = obj.Placement;
-                this.Track(analytic.RewardedVideoShow(this.uiTemplateUserLevelData.CurrentLevel, obj.Placement));
+                this.Track(analytic.RewardedVideoShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
             }
         }
 
@@ -300,7 +294,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             foreach (var analytic in this.analyticEventList)
             {
-                this.analyticServices.UserProperties[analytic.LastLevelProperty] = this.uiTemplateUserLevelData.CurrentLevel;
+                this.analyticServices.UserProperties[analytic.LastLevelProperty] = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
                 this.Track(analytic.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
             }
         }
@@ -321,7 +315,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             foreach (var analytic in this.analyticEventList)
             {
-                this.analyticServices.UserProperties[analytic.DaysPlayedProperty] = (int)(DateTime.Now.Date - this.uiTemplateDailyRewardData.FirstTimeOpenedDate.Date).TotalDays;
+                this.analyticServices.UserProperties[analytic.DaysPlayedProperty] = (int)(DateTime.Now.Date - this.uiTemplateDailyRewardController.GetFirstTimeOpenedDate.Date).TotalDays;
             }
         }
         public void Dispose()

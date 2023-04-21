@@ -3,12 +3,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     using System;
     using System.Collections.Generic;
     using GameFoundation.Scripts.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
-    public class UITemplateRewardData : ILocalData
+    public class UITemplateRewardData : ILocalData, IUITemplateLocalData
     {
         public Dictionary<string, Dictionary<string, UITemplateRewardItemData>> IapPackIdToRewards { get; set; } = new();
 
-        public void Init() { }
+        public void Init()         { }
+        public Type ControllerType => typeof(UITemplateHandleRewardController);
     }
 
     public class UITemplateRewardItemData

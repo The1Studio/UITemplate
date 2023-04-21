@@ -6,25 +6,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using System.Collections.Generic;
     using GameFoundation.Scripts.Interfaces;
     using Sirenix.Serialization;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
 
-    public class UITemplateUserLevelData : ILocalData
+    public class UITemplateUserLevelData : ILocalData, IUITemplateLocalData
     {
-        [OdinSerialize]
-        public UITemplateItemData.UnlockType UnlockedFeature { get; set; } = UITemplateItemData.UnlockType.Default;
+        [OdinSerialize] public UITemplateItemData.UnlockType UnlockedFeature { get; set; } = UITemplateItemData.UnlockType.Default;
 
-        [OdinSerialize]
-        public int CurrentLevel { get; set; } = 1;
+        [OdinSerialize] public int CurrentLevel { get; set; } = 1;
 
-        [OdinSerialize]
-        public Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
+        [OdinSerialize] public Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
 
-        [OdinSerialize]
-        public int LastUnlockRewardLevel;
+        [OdinSerialize] public int LastUnlockRewardLevel;
 
-        public void SetLevelStatusByLevel(int level, LevelData.Status status)
-        {
-            this.LevelToLevelData[level].LevelStatus = status;
-        }
+        public void SetLevelStatusByLevel(int level, LevelData.Status status) { this.LevelToLevelData[level].LevelStatus = status; }
 
         public void Init()
         {
@@ -35,6 +30,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             }
 #endif
         }
+
+        public Type ControllerType => typeof(UITemplateLevelDataController);
     }
 
     public class LevelData

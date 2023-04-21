@@ -5,13 +5,14 @@
     using Core.AdsServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.AdsServices;
-    using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using Zenject;
 
     public class UITemplateAdServiceWrapperCreative : UITemplateAdServiceWrapper
     {
         public UITemplateAdServiceWrapperCreative(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
-            UITemplateAdsData uiTemplateAdsData, IAOAAdService aoaAdService) : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsData, aoaAdService)
+            UITemplateAdsController uiTemplateAdsController, IAOAAdService aoaAdService) : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController,
+            aoaAdService)
         {
         }
 

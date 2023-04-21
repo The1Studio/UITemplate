@@ -11,7 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
 
-    public class UITemplateDailyRewardController:IUITemplateControllerData
+    public class UITemplateDailyRewardController : IUITemplateControllerData
     {
         private const int TotalDayInWeek = 7;
 
@@ -26,7 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         #endregion
 
         private SemaphoreSlim mySemaphoreSlim = new(1, 1);
-        
+
         public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency)
         {
@@ -39,8 +39,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public async UniTask CheckRewardStatus()
         {
-            await this.mySemaphoreSlim.WaitAsync() ;
-            try {
+            await this.mySemaphoreSlim.WaitAsync();
+
+            try
+            {
                 // var currentTime = await this.internetService.GetCurrentTimeAsync();
                 var currentTime = DateTime.Now; // Because the internet service getting time doesn't work stable I use this instead, btw, we allow hyper casual players cheat the game.
                 var issDiffDay  = this.internetService.IsDifferentDay(this.uiTemplateDailyRewardData.LastRewardedDate, currentTime);
@@ -64,7 +66,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                         this.uiTemplateDailyRewardData.LastRewardedDate                  = currentTime;
                     }
                 }
-            } finally {
+            }
+            finally
+            {
                 this.mySemaphoreSlim.Release();
             }
         }
@@ -87,6 +91,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var rewardsList = new List<Dictionary<string, int>>();
 
             var playAnimTask = UniTask.CompletedTask;
+
             for (var i = 0; i < this.uiTemplateDailyRewardData.RewardStatus.Count; i++)
             {
                 if (this.uiTemplateDailyRewardData.RewardStatus[i] == RewardStatus.Unlocked)
@@ -94,10 +99,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                     this.uiTemplateDailyRewardData.RewardStatus[i] = RewardStatus.Claimed;
 
                     var reward = this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1).Reward;
+
                     if (reward.ContainsKey(UITemplateInventoryDataController.DefaultSoftCurrencyID))
                     {
                         playAnimTask = this.uiTemplateFlyingAnimationCurrency.PlayAnimation(dailyIndexToRectTransform[i]);
                     }
+
                     rewardsList.Add(reward);
                 }
             }
@@ -105,6 +112,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var sumReward = rewardsList.SelectMany(d => d).GroupBy(kvp => kvp.Key, (key, kvps) => new { Key = key, Value = kvps.Sum(kvp => kvp.Value) }).ToDictionary(x => x.Key, x => x.Value);
 
             await UniTask.WhenAny(playAnimTask);
+
             foreach (var reward in sumReward)
             {
                 this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value);
@@ -125,5 +133,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public bool CanClaimReward => this.uiTemplateDailyRewardData.RewardStatus.Any(t => t == RewardStatus.Unlocked);
+
+        public DateTime GetFirstTimeOpenedDate => this.uiTemplateDailyRewardData.FirstTimeOpenedDate;
     }
 }

@@ -1,8 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+    using System;
+    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
-    using TheOneStudio.UITemplate.UITemplate.Models;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using Zenject;
@@ -11,30 +12,41 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         public override void InstallBindings()
         {
-            this.Container.BindLocalData<UITemplateUserLevelData>();
-            this.Container.BindLocalData<UITemplateInventoryData>();
-            this.Container.BindLocalData<UITemplateUserSettingData>();
-            this.Container.BindLocalData<UITemplateDailyRewardData>();
-            this.Container.BindLocalData<UITemplateUserJackpotData>();
-            this.Container.BindLocalData<UITemplateAdsData>();
-            this.Container.BindLocalData<UITemplateLuckySpinData>();
-            this.Container.BindLocalData<UITemplateBuildingData>();
-            this.Container.BindLocalData<UITemplateRewardData>();
-            this.Container.BindLocalData<UITemplateCommonData>();
-            this.Container.BindLocalData<UITemplateIAPOwnerPackData>();
-            this.Container.BindLocalData<UITemplateFTUEData>();
-
+            this.BindLocalData();
             //Data controller
             this.BindAllController();
+        }
+
+        private void BindLocalData()
+        {
+            var logger             = this.Container.Resolve<ILogService>();
+            var handleDataServices = this.Container.Resolve<HandleLocalDataServices>();
+            var listLocalData      = ReflectionUtils.GetAllDerivedTypes<IUITemplateLocalData>();
+
+            foreach (var localDataType in listLocalData)
+            {
+                var localData = handleDataServices.Load(localDataType);
+                var property  = localDataType.GetProperty("ControllerType");
+
+                if (property.GetValue(localData) == null)
+                {
+                    logger.Error($"Waring, the local data {localDataType.Name} has no controller, consider to create new controller");
+                    this.Container.Bind(localDataType).FromInstance(localData).AsCached();
+                }
+                else
+                {
+                    this.Container.Bind(localDataType).FromInstance(localData).WhenInjectedInto((Type)property.GetValue(localData));
+                }
+            }
         }
 
         private void BindAllController()
         {
             var listController = ReflectionUtils.GetAllDerivedTypes<IUITemplateControllerData>();
 
-            foreach (var localDataType in listController)
+            foreach (var controller in listController)
             {
-                this.Container.BindInterfacesAndSelfTo(localDataType).AsCached();
+                this.Container.BindInterfacesAndSelfTo(controller).AsCached();
             }
         }
     }

@@ -107,7 +107,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region Get Data Remote Config
 
-        public string GetRemoteConfigStringValue(string key) { return !this.HasKey(key) ? "" : FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue; }
+        public string GetRemoteConfigStringValue(string key,string defaultValue) { return !this.HasKey(key) ? defaultValue : FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue; }
 
         public bool GetRemoteConfigBoolValue(string key, bool defaultValue)
         {

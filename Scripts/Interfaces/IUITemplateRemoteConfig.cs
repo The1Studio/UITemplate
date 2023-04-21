@@ -2,11 +2,11 @@
 {
     public interface IUITemplateRemoteConfig
     {
-        string GetRemoteConfigStringValue(string key);
-        bool   GetRemoteConfigBoolValue(string   key, bool defaultValue);
-        long   GetRemoteConfigLongValue(string   key);
+        string GetRemoteConfigStringValue(string key, string defaultValue = "");
+        bool   GetRemoteConfigBoolValue(string key, bool defaultValue);
+        long   GetRemoteConfigLongValue(string key);
         double GetRemoteConfigDoubleValue(string key);
-        int    GetRemoteConfigIntValue(string    key, int defaultValue);
-        float  GetRemoteConfigFloatValue(string  key);
+        int    GetRemoteConfigIntValue(string key, int defaultValue);
+        float  GetRemoteConfigFloatValue(string key);
     }
 }

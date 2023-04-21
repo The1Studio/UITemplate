@@ -5,7 +5,7 @@
     public class UITemplateDummyManager : IUITemplateRemoteConfig
     {
 
-        public string GetRemoteConfigStringValue(string key) { return ""; }
+        public string GetRemoteConfigStringValue(string key,string defaultValue) { return ""; }
 
         public bool GetRemoteConfigBoolValue(string key, bool defaultValue) { return defaultValue; }
 

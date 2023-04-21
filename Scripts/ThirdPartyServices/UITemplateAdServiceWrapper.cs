@@ -187,5 +187,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 }
             }
         }
+
+        public bool IsRemovedAds => this.adServices.IsRemoveAds();
     }
 }

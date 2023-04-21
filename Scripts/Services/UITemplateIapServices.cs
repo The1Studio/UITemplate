@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System.Linq;
     using BlueprintFlow.Signals;
     using Core.AdsServices;
+    using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -16,16 +17,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     public class UITemplateIapServices
     {
         private readonly SignalBus                            signalBus;
+        private readonly ILogService                          logger;
         private readonly IAdServices                          adServices;
         private readonly UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData;
         private readonly UITemplateShopPackBlueprint          uiTemplateShopPackBlueprint;
         private readonly IUnityIapServices                    unityIapServices;
 
-        public UITemplateIapServices(SignalBus signalBus, IAdServices adServices, UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
+        public UITemplateIapServices(SignalBus signalBus, ILogService logger, IAdServices adServices, UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
             UITemplateShopPackBlueprint uiTemplateShopPackBlueprint,
             IUnityIapServices unityIapServices)
         {
             this.signalBus                            = signalBus;
+            this.logger                               = logger;
             this.adServices                           = adServices;
             this.uiTemplateIAPOwnerPackControllerData = uiTemplateIAPOwnerPackControllerData;
             this.uiTemplateShopPackBlueprint          = uiTemplateShopPackBlueprint;
@@ -59,6 +62,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public void BuyProduct(GameObject source, string productId, Action<string> onComplete = null, Action<string> onFail = null)
         {
+            this.logger.Warning($"BuyProduct {productId}");
+
             this.unityIapServices.BuyProductID(productId, (x) =>
             {
                 this.OnPurchaseComplete(productId, source);

@@ -70,7 +70,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
         {
             if (!this.IsEnable)
             {
-                Debug.LogError($"Not Enable");
+                Debug.LogError($"Not Enable auto custom define symbol");
 
                 return;
             }

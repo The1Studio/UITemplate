@@ -1,9 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
     using System.Collections.Generic;
-    using BlueprintFlow.Signals;
 
-    public class LevelEndedSignal:ISignal
+    public class LevelEndedSignal
     {
         public int                     Level;
         public bool                    IsWin;

@@ -6,7 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
 
-    public class UITemplateAddRewardsSignal:ISignal
+    public class UITemplateAddRewardsSignal
     {
         public string                                       IapPackId        { get; }
         public Dictionary<string, UITemplateRewardItemData> RewardItemDatas  { get; }

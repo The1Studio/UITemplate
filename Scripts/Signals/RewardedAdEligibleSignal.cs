@@ -1,8 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.Signals
 {
-    using BlueprintFlow.Signals;
-
-    public class RewardedAdEligibleSignal : ISignal
+    public class RewardedAdEligibleSignal
     {
         public string place;
         public RewardedAdEligibleSignal(string place) { this.place = place; }

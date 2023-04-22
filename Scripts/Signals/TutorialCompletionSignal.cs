@@ -1,8 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.Signals
 {
-    using BlueprintFlow.Signals;
-
-    public class TutorialCompletionSignal : ISignal
+    public class TutorialCompletionSignal
     {
         public bool   Success;
         public string TutorialId;

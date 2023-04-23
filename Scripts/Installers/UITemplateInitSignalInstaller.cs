@@ -7,12 +7,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
+    /// <summary>
+    /// Installer for declaring signals.
+    /// We use this installer to declare signals in the container.
+    /// We don't you reflection to declare signals.
+    /// </summary>
     public class UITemplateDeclareSignalInstaller : Installer<UITemplateDeclareSignalInstaller>
     {
         public override void InstallBindings()
         {
-            this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
-            
             //FTUE
             this.Container.DeclareSignal<FTUEButtonClickSignal>();
             this.Container.DeclareSignal<FTUETriggerSignal>();
@@ -31,6 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<RemoteConfigInitializeSucceededSignal>();
             this.Container.DeclareSignal<ScaleDecoration2DItem>();
             this.Container.DeclareSignal<UITemplateAddRewardsSignal>();
+            this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
         }
     }
 }

@@ -1,7 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
 {
     using System.Collections.Generic;
+    using BlueprintFlow.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
 
     public class UITemplateAddRewardsSignal

@@ -4,8 +4,9 @@
     using System.Collections.Generic;
     using GameFoundation.Scripts.Interfaces;
     using Sirenix.Serialization;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
-    public class UITemplateDailyRewardData : ILocalData
+    public class UITemplateDailyRewardData : ILocalData,IUITemplateLocalData
     {
         [OdinSerialize] public List<RewardStatus> RewardStatus        { get; set; } = new();
         [OdinSerialize] public DateTime           LastRewardedDate    { get; set; }
@@ -14,6 +15,8 @@
         public void Init()
         {
         }
+
+        public Type ControllerType => typeof(UITemplateDailyRewardController);
     }
 
     public enum RewardStatus

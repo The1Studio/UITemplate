@@ -8,7 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
-    public class UITemplateLevelDataController
+    public class UITemplateLevelDataController:IUITemplateControllerData
     {
         #region inject
 

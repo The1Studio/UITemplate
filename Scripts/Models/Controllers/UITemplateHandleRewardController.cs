@@ -7,7 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
 
-    public class UITemplateHandleRewardController
+    public class UITemplateHandleRewardController:IUITemplateControllerData
     {
         private readonly UITemplateRewardData uiTemplateRewardData;
         private readonly ILogService          logger;

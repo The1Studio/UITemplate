@@ -2,45 +2,46 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
     public class UITemPlateVibrateServices : IVibrate
     {
-        private readonly UITemplateUserSettingData uiTemplateUserSettingData;
+        private readonly UITemplateSettingDataController uiTemplateSettingDataController;
 
-        public UITemPlateVibrateServices(UITemplateUserSettingData uiTemplateUserSettingData)
+        public UITemPlateVibrateServices(UITemplateSettingDataController uiTemplateSettingDataController)
         {
-            this.uiTemplateUserSettingData = uiTemplateUserSettingData;
+            this.uiTemplateSettingDataController = uiTemplateSettingDataController;
             Vibration.Init();
         }
 
         public void VibratePop()
         {
-            if (this.uiTemplateUserSettingData.IsVibrationEnable)
+            if (this.uiTemplateSettingDataController.IsVibrationOn)
                 Vibration.VibratePop();
         }
 
         public void VibratePeek()
         {
-            if (this.uiTemplateUserSettingData.IsVibrationEnable)
+            if (this.uiTemplateSettingDataController.IsVibrationOn)
                 Vibration.VibratePeek();
         }
 
         public void VibrateNope()
         {
-            if (this.uiTemplateUserSettingData.IsVibrationEnable)
+            if (this.uiTemplateSettingDataController.IsVibrationOn)
                 Vibration.VibrateNope();
         }
 
 #if UNITY_ANDROID
         public void VibrateAndroid(long milliseconds)
         {
-            if (this.uiTemplateUserSettingData.IsVibrationEnable)
+            if (this.uiTemplateSettingDataController.IsVibrationOn)
                 Vibration.VibrateAndroid(milliseconds);
         }
 
         public void VibrateAndroid(long[] pattern, int repeat)
         {
-            if (this.uiTemplateUserSettingData.IsVibrationEnable)
+            if (this.uiTemplateSettingDataController.IsVibrationOn)
                 Vibration.VibrateAndroid(pattern, repeat);
         }
 
@@ -51,7 +52,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public void Vibrate()
         {
-            if (this.uiTemplateUserSettingData.IsVibrationEnable)
+            if (this.uiTemplateSettingDataController.IsVibrationOn)
                 Vibration.Vibrate();
         }
     }

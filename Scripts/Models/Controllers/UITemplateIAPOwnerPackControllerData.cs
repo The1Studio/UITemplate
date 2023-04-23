@@ -2,7 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
 
-    public class UITemplateIAPOwnerPackControllerData
+    public class UITemplateIAPOwnerPackControllerData:IUITemplateControllerData
     {
         private readonly UITemplateIAPOwnerPackData uiTemplateIAPOwnerPackData;
 

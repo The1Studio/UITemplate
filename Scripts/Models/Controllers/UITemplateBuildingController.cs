@@ -5,7 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine;
 
-    public class UITemplateBuildingController
+    public class UITemplateBuildingController:IUITemplateControllerData
     {
         private readonly UITemplateBuildingData            buildingData;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;

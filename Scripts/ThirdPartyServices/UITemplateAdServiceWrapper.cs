@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.AdsServices;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
@@ -17,13 +18,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     {
         #region inject
 
-        private readonly IAdServices          adServices;
-        private readonly List<IMRECAdService> mrecAdServices;
-        private readonly UITemplateAdsData    uiTemplateAdsData;
-        private readonly IAOAAdService        aoaAdService;
-        private readonly ILogService          logService;
-        private readonly AdServicesConfig     adServicesConfig;
-        private readonly SignalBus            signalBus;
+        private readonly IAdServices             adServices;
+        private readonly List<IMRECAdService>    mrecAdServices;
+        private readonly UITemplateAdsController uiTemplateAdsController;
+        private readonly IAOAAdService           aoaAdService;
+        private readonly ILogService             logService;
+        private readonly AdServicesConfig        adServicesConfig;
+        private readonly SignalBus               signalBus;
 
         #endregion
 
@@ -32,16 +33,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     isShowBannerAd;
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
-            UITemplateAdsData uiTemplateAdsData,
+            UITemplateAdsController uiTemplateAdsController,
             IAOAAdService aoaAdService)
         {
-            this.adServices        = adServices;
-            this.mrecAdServices    = mrecAdServices;
-            this.uiTemplateAdsData = uiTemplateAdsData;
-            this.aoaAdService      = aoaAdService;
-            this.logService        = logService;
-            this.adServicesConfig  = adServicesConfig;
-            this.signalBus         = signalBus;
+            this.adServices              = adServices;
+            this.mrecAdServices          = mrecAdServices;
+            this.uiTemplateAdsController = uiTemplateAdsController;
+            this.aoaAdService            = aoaAdService;
+            this.logService              = logService;
+            this.adServicesConfig        = adServicesConfig;
+            this.signalBus               = signalBus;
         }
 
         #region banner
@@ -116,7 +117,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.signalBus.Fire(new InterstitialAdCalledSignal(place));
-            this.uiTemplateAdsData.WatchedInterstitialAds++;
+            this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
             this.aoaAdService.IsResumedFromAdsOrIAP = true;
             this.adServices.ShowInterstitialAd(place);
 
@@ -142,7 +143,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
-            this.uiTemplateAdsData.WatchedRewardedAds++;
+            this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.aoaAdService.IsResumedFromAdsOrIAP = true;
             this.adServices.ShowRewardedAd(place, onComplete);
         }

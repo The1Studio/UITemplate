@@ -5,9 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Signals
         public string Id;
         public int    Amount;
         public int    FinalValue;
-        
-        public UpdateCurrencySignal()
-        {
-        }
+
+        public UpdateCurrencySignal() { }
     }
 }

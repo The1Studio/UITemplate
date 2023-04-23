@@ -1,7 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
-    using UnityEngine;
-
     public class ScaleDecoration2DItem
     {
         public float WidthScale;

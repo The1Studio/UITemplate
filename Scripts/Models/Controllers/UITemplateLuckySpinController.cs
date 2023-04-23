@@ -5,7 +5,7 @@
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UIModule.Utilities;
 
-    public class UITemplateLuckySpinController
+    public class UITemplateLuckySpinController:IUITemplateControllerData
     {
         private readonly UITemplateLuckySpinData           uiTemplateLuckySpinData;
         private readonly InternetService                   internetService;

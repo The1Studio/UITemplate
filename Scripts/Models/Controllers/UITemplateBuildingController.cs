@@ -5,7 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine;
 
-    public class UITemplateBuildingController:IUITemplateControllerData
+    public class UITemplateBuildingController : IUITemplateControllerData
     {
         private readonly UITemplateBuildingData            buildingData;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
@@ -19,6 +19,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.logger                            = logger;
             this.uiTemplateBuildingBlueprint       = uiTemplateBuildingBlueprint;
+        }
+
+        public bool IsFirstTimeOpenBuilding { 
+            get { return this.buildingData.IsFirstTimeOpenBuilding; } 
+            set { this.buildingData.IsFirstTimeOpenBuilding = value; } 
         }
 
         public bool CheckBuildingStatus(string buildingId)

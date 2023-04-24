@@ -9,7 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     public class UITemplateBuildingData : ILocalData,IUITemplateLocalData
     {
         public Dictionary<string, BuildingData> Buildings = new();
-        public bool                             IsFirstTimeToBuilding { get; set; }
+        public bool                             IsFirstTimeOpenBuilding { get; set; } = true;
         public float                            CurrentEarnCurrency   { get; set; } = 0;
 
         public void Init()         { }

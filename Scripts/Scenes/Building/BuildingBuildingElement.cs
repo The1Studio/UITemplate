@@ -1,12 +1,15 @@
 namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
 {
     using DG.Tweening;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using Sirenix.OdinInspector;
+    using TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building.Popup;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -20,6 +23,8 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         public  TextMeshProUGUI txtPrice;
         private BoxCollider     boxCollider => this.GetComponent<BoxCollider>();
         private Renderer        renderer    => this.GetComponent<Renderer>();
+        private bool            isShowPopup;
+        private bool            isBuildingComplete;
 
         #region Zenject
 
@@ -28,14 +33,19 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         private float                             TimeWhileUnlocking;
         private UITemplateBuildingBlueprint       uiTemplateBuildingBlueprint;
         private UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private IScreenManager                    screenManager;
+        private SignalBus                         signalBus;
 
         [Inject]
         public void OnInit(ILogService logger, SignalBus signalBus, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateBuildingController uiTemplateBuildingController,
-            UITemplateBuildingBlueprint uiTemplateBuildingBlueprint)
+            UITemplateBuildingBlueprint uiTemplateBuildingBlueprint,
+            IScreenManager screenManager)
         {
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateBuildingController      = uiTemplateBuildingController;
             this.uiTemplateBuildingBlueprint       = uiTemplateBuildingBlueprint;
+            this.screenManager                     = screenManager;
+            this.signalBus                         = signalBus;
 
             if (this.BuildingId.IsNullOrEmpty())
             {
@@ -77,6 +87,15 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             this.CheckToFillCarOnStay(this.timeIdeToUnlock / this.uiTemplateBuildingBlueprint[this.BuildingId].IdleTimeUnlock);
 
             if (this.timeIdeToUnlock < this.uiTemplateBuildingBlueprint[this.BuildingId].IdleTimeUnlock) return;
+            
+            if (this.uiTemplateInventoryDataController.GetCurrencyValue() < this.uiTemplateBuildingBlueprint[this.BuildingId].UnlockPrice && !this.isBuildingComplete)
+            {
+                if ((this.screenManager.CurrentActiveScreen.Value is not UITemplateBuildingNotEnoughCoinPopupPresenter) && !this.isShowPopup)
+                {
+                    this.isShowPopup = true;
+                    this.screenManager.OpenScreen<UITemplateBuildingNotEnoughCoinPopupPresenter>();
+                }
+            }
 
             this.TryToUnlockBuilding();
         }
@@ -107,8 +126,11 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             }
 
             if (currentBuildingData.RemainPrice > 0) return;
+            
+            this.isBuildingComplete = true;
             this.CheckToFillCarOnStay(0);
             this.uiTemplateBuildingController.UnlockBuilding(this.BuildingId);
+            this.signalBus.Fire(new UnlockBuildingSuccessSignal());
             this.renderer.enabled     = true;
             this.boxCollider.enabled  = false;
             this.transform.localScale = Vector3.zero;
@@ -137,10 +159,18 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             }
         }
 
-        public void OnCarEnter() { this.ResetColdDownTimeUnlock(); }
+        public void OnCarEnter()
+        {
+            this.ResetColdDownTimeUnlock();
+            if (this.uiTemplateInventoryDataController.GetCurrencyValue() >= this.GetBuildingData.RemainPrice)
+            {
+                this.isBuildingComplete = true;
+            }
+        }
 
         public void OnCarExit()
         {
+            this.isShowPopup = false;
             this.ResetColdDownTimeUnlock();
 
             if (this.GetBuildingData.IsUnlocked)

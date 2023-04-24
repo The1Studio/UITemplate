@@ -22,10 +22,12 @@
     [ScreenInfo(nameof(UITemplateLevelSelectScreenView))]
     public class UITemplateLevelSelectScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLevelSelectScreenView>
     {
-        public UITemplateLevelSelectScreenPresenter(SignalBus                         signalBus,                         DiContainer                   diContainer, IScreenManager screenManager, UITemplateUserLevelData userLevelData,
-                                                    UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateLevelDataController uiTemplateLevelDataController) : base(signalBus)
+        public UITemplateLevelSelectScreenPresenter(SignalBus signalBus,
+            DiContainer diContainer,
+            IScreenManager screenManager,
+            UITemplateInventoryDataController uiTemplateInventoryDataController,
+            UITemplateLevelDataController uiTemplateLevelDataController) : base(signalBus)
         {
-            this.UserLevelData                     = userLevelData;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateLevelDataController     = uiTemplateLevelDataController;
             this.diContainer                       = diContainer;
@@ -38,16 +40,13 @@
             this.View.HomeButton.onClick.AddListener(this.OnClickHome);
         }
 
-        protected virtual void OnClickHome()
-        {
-            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
-        }
+        protected virtual void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
 
         public override async UniTask BindData()
         {
             this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             var levelList    = this.getLevelList();
-            var currentLevel = this.UserLevelData.CurrentLevel;
+            var currentLevel = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
             await this.View.LevelGridAdapter.InitItemAdapter(levelList, this.diContainer);
             this.View.LevelGridAdapter.SmoothScrollTo(currentLevel, 1);
         }
@@ -58,16 +57,12 @@
             this.View.CoinText.Unsubscribe(this.SignalBus);
         }
 
-        private List<LevelData> getLevelList()
-        {
-            return this.uiTemplateLevelDataController.GetAllLevels();
-        }
+        private List<LevelData> getLevelList() { return this.uiTemplateLevelDataController.GetAllLevels(); }
 
         #region inject
 
         protected readonly DiContainer                       diContainer;
         protected readonly IScreenManager                    screenManager;
-        protected readonly UITemplateUserLevelData           UserLevelData;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly   UITemplateLevelDataController     uiTemplateLevelDataController;
 

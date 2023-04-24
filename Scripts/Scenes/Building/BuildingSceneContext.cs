@@ -17,7 +17,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             this.Container.Bind<BuildingMainCamera>().FromInstance(this.buildingMainCamera).AsCached().NonLazy();
             this.Container.Bind<BuildingMapController>().FromInstance(this.buildingMapController).AsCached().NonLazy();
             this.Container.Bind<BuildingCarController>().FromInstance(this.buildingCarController).AsCached().NonLazy();
-            this.Container.Bind<BuildingJoyStick>().FromComponentInNewPrefab(this.buildingJoyStick).AsCached().NonLazy();
+            this.Container.Bind<BuildingJoyStick>().FromInstance(this.buildingJoyStick).AsCached().NonLazy();
             this.Container.InitScreenManually<UITemplateBuildingScreenPresenter>();
         }
     }

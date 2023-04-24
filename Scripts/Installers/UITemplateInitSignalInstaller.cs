@@ -35,6 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<ScaleDecoration2DItem>();
             this.Container.DeclareSignal<UITemplateAddRewardsSignal>();
             this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
+            this.Container.DeclareSignal<JoystickOnMouseDownSignal>();
         }
     }
 }

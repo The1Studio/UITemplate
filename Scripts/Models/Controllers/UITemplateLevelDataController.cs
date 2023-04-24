@@ -74,6 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <param name="time">Play time in seconds</param>
         public void PassCurrentLevel(int time = 0)
         {
+            this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).WinCount++;
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = time, CurrentIdToValue = null });
             this.uiTemplateUserLevelData.CurrentLevel++;

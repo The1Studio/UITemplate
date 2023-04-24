@@ -93,7 +93,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             {
                 { nameof(BannerShown), "af_banner_shown" },
                 { nameof(GameTutorialCompletion), "af_tutorial_completion" },
-                { nameof(FirstWin), "af_level_achieved" },
+                { nameof(LevelAchieved), "af_level_achieved" },
                 { nameof(AdsIntersEligible), "af_inters_ad_eligible" },
                 { nameof(AdInterCalled), "af_inters_api_called" },
                 { nameof(AdInterShow), "af_inters_displayed" },
@@ -109,7 +109,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             IgnoreEvents = new HashSet<Type>(),
             CustomEventKeys = new Dictionary<string, string>()
             {
-                { nameof(AdsRevenueEvent), "ad_impression_abi" }
+                { nameof(AdsRevenueEvent), "ad_impression_abi" },
+                { nameof(LevelAchieved), "checkpoint" },
             }
         };
 

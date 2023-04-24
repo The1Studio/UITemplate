@@ -58,7 +58,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             {
                 this.BuildingTutorial();
             }
-            this.signalBus.Subscribe<JoystickOnMouseDownSignal>(this.OnMouseDown);
+            this.signalBus.Subscribe<BuildingOnMouseDownSignal>(this.OnMouseDown);
             return UniTask.CompletedTask;
         }
         
@@ -80,7 +80,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         public override void Dispose()
         {
             base.Dispose();
-            this.signalBus.Unsubscribe<JoystickOnMouseDownSignal>(this.OnMouseDown);
+            this.signalBus.Unsubscribe<BuildingOnMouseDownSignal>(this.OnMouseDown);
             this.View.uiTemplateCurrencyView.Unsubscribe(this.SignalBus);
         }
     }

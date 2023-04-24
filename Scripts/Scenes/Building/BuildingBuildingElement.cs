@@ -9,6 +9,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -33,6 +34,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         private UITemplateBuildingBlueprint       uiTemplateBuildingBlueprint;
         private UITemplateInventoryDataController uiTemplateInventoryDataController;
         private IScreenManager                    screenManager;
+        private SignalBus                         signalBus;
 
         [Inject]
         public void OnInit(ILogService logger, SignalBus signalBus, UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateBuildingController uiTemplateBuildingController,
@@ -43,6 +45,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             this.uiTemplateBuildingController      = uiTemplateBuildingController;
             this.uiTemplateBuildingBlueprint       = uiTemplateBuildingBlueprint;
             this.screenManager                     = screenManager;
+            this.signalBus                         = signalBus;
 
             if (this.BuildingId.IsNullOrEmpty())
             {
@@ -127,6 +130,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             this.isBuildingComplete = true;
             this.CheckToFillCarOnStay(0);
             this.uiTemplateBuildingController.UnlockBuilding(this.BuildingId);
+            this.signalBus.Fire(new UnlockBuildingSuccessSignal());
             this.renderer.enabled     = true;
             this.boxCollider.enabled  = false;
             this.transform.localScale = Vector3.zero;

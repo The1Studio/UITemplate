@@ -52,7 +52,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
 
         private void OnPointerDown()
         {
-            this.signalBus.Fire(new JoystickOnMouseDownSignal());
+            this.signalBus.Fire(new BuildingOnMouseDownSignal());
             this.uiTemplateBuildingController.IsFirstTimeOpenBuilding = false;
         }
         

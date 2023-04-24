@@ -16,7 +16,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
     }
 
     [ScreenInfo(nameof(UITemplateBuildingScreenView))]
-    public class UITemplateBuildingScreenPresenter : BaseScreenPresenter<UITemplateBuildingScreenView>
+    public class UITemplateBuildingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateBuildingScreenView>
     {
         private readonly SceneDirector                     sceneDirector;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;

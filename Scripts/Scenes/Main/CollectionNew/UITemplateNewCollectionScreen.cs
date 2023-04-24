@@ -57,7 +57,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint,
             UITemplateItemBlueprint           uiTemplateItemBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateInventoryData           uiTemplateInventoryData,
             UITemplateSoundServices           soundServices,
             UITemplateLuckySpinServices       uiTemplateLuckySpinServices,
             UITemplateDailyRewardService      uiTemplateDailyRewardService,
@@ -74,7 +73,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.uiTemplateCategoryItemBlueprint   = uiTemplateCategoryItemBlueprint;
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.uiTemplateInventoryData           = uiTemplateInventoryData;
             this.SoundServices                     = soundServices;
             this.uiTemplateLuckySpinServices       = uiTemplateLuckySpinServices;
             this.uiTemplateDailyRewardService      = uiTemplateDailyRewardService;

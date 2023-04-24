@@ -33,7 +33,7 @@ RectTransform:
   m_Children:
   - {fileID: 3631297888212595152}
   m_Father: {fileID: 4521470261581594587}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -409,8 +409,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 899334554358180530}
-  - {fileID: 8683753035604850506}
   - {fileID: 463973644751124625}
+  - {fileID: 8683753035604850506}
   - {fileID: 823280757232449751}
   m_Father: {fileID: 5790757826326026634}
   m_RootOrder: 0
@@ -739,7 +739,7 @@ PrefabInstance:
     - target: {fileID: 5234449049821420213, guid: d9f20163f4222344f886aaf88c543672,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5234449049821420213, guid: d9f20163f4222344f886aaf88c543672,
         type: 3}
@@ -854,7 +854,7 @@ PrefabInstance:
     - target: {fileID: 150057990277990292, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}
       propertyPath: m_Name
-      value: UITemplateHomeTaptoplayScreenView
+      value: UITemplateHomeTapToPlayScreenView
       objectReference: {fileID: 0}
     - target: {fileID: 8242476744511311356, guid: 824a6ecd3c44043ccbace3bf4014c6c9,
         type: 3}

@@ -57,11 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelComplete(level, timeSpent);
 
-        public override IEvent FirstWin(int level, int timeSpent) => new CustomEvent
-        {
-            EventName = $"checkpoints_{level}",
-            EventProperties = new Dictionary<string, object>()
-        };
+        public override IEvent FirstWin(int level, int timeSpent) => new LevelAchieved(level, timeSpent);
 
         public override IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
 
@@ -91,12 +87,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 typeof(AdsRewardOffer),
                 typeof(AdsRewardedDownloaded),
                 typeof(AdsRewardClick),
+                typeof(LevelComplete),
             },
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(BannerShown), "af_banner_shown" },
                 { nameof(GameTutorialCompletion), "af_tutorial_completion" },
-                { nameof(LevelComplete), "af_level_achieved" },
+                { nameof(FirstWin), "af_level_achieved" },
                 { nameof(AdsIntersEligible), "af_inters_ad_eligible" },
                 { nameof(AdInterCalled), "af_inters_api_called" },
                 { nameof(AdInterShow), "af_inters_displayed" },
@@ -116,9 +113,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             }
         };
 
-        public  ABIAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticEvents)
+        public ABIAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticEvents)
         {
-            this.signalBus = signalBus;
+            this.signalBus      = signalBus;
             this.analyticEvents = analyticEvents;
             this.signalBus.Subscribe<AdRevenueSignal>(this.OnAdRevenueEvent);
         }

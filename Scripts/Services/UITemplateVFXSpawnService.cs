@@ -27,6 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             //spawn random position base on target's position
             position.x += Random.Range(-1f, 1f);
             position.y += Random.Range(0f, 2f);
+            position.z = -1;
             // random vfx rotation
             var rotation = Quaternion.Euler(0, 0, Random.Range(-50, 50));
             // spawn vfx

@@ -120,7 +120,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
                 var collectionModel = this.itemCollectionItemModels
                                           .Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory) &&
-                                                      !this.uiTemplateInventoryData.IDToItemData.ContainsKey(x.ItemData.Id)).ToList();
+                                                      !this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id)).ToList();
 
                 foreach (var model in this.itemCollectionItemModels) model.IndexItemSelected = -1;
 
@@ -332,7 +332,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
         private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly   UITemplateInventoryData           uiTemplateInventoryData;
         private readonly   EventSystem                       eventSystem;
         private readonly   IUnityIapServices                 unityUnityIapServices;
         private readonly   ILogService                       logger;
@@ -400,7 +399,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
             obj.ItemData.CurrentStatus = UITemplateItemData.Status.Owned;
             this.uiTemplateInventoryDataController.AddItemData(obj.ItemData);
-            this.uiTemplateInventoryData.CategoryToChosenItem[obj.ItemBlueprintRecord.Category] = obj.ItemBlueprintRecord.Id;
             this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(obj.ItemBlueprintRecord.Category, obj.ItemBlueprintRecord.Id);
             this.OnSelectItem(obj);
         }

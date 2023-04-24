@@ -13,4 +13,16 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
             this.TimeSpent = timeSpent;
         }
     }
+
+    public class LevelAchieved : IEvent
+    {
+        public int Level;
+        public int TimeSpent;
+
+        public LevelAchieved(int level, int timeSpent)
+        {
+            this.Level     = level;
+            this.TimeSpent = timeSpent;
+        }
+    }
 }

@@ -18,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         [OdinSerialize] public Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
 
         [OdinSerialize] public int LastUnlockRewardLevel;
+        [OdinSerialize] public float LastUnlockRewardProgress;
 
         public void SetLevelStatusByLevel(int level, LevelData.Status status) { this.LevelToLevelData[level].LevelStatus = status; }
 

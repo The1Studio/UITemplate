@@ -8,7 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
-    public class UITemplateLevelDataController:IUITemplateControllerData
+    public class UITemplateLevelDataController : IUITemplateControllerData
     {
         #region inject
 
@@ -103,6 +103,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
+        public int TotalLevelSurpassed
+        {
+            get
+            {
+                var levelDatas = this.uiTemplateUserLevelData.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus != LevelData.Status.Locked).ToList();
+
+                return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
+            }
+        }
+
 
         public bool CheckLevelIsUnlockedStatus(int level)
         {
@@ -165,6 +175,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private void UpdateLastUnlockRewardLevel(int level)
         {
             this.uiTemplateUserLevelData.LastUnlockRewardLevel = level;
+        }
+
+        public float GetLastUnlockRewardProgress()
+        {
+            return this.uiTemplateUserLevelData.LastUnlockRewardProgress;
+        }
+
+        public void UpdateLastUnlockRewardProgress(float progress)
+        {
+            this.uiTemplateUserLevelData.LastUnlockRewardProgress = progress;
         }
     }
 }

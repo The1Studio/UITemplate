@@ -103,6 +103,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
+        public int TotalLevelSurpassed
+        {
+            get
+            {
+                var levelDatas = this.uiTemplateUserLevelData.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus != LevelData.Status.Locked).ToList();
+
+                return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
+            }
+        }
+
 
         public bool CheckLevelIsUnlockedStatus(int level)
         {

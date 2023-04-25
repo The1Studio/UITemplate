@@ -4819,7 +4819,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 93b7972afb7216f4a915cec9ee48e0e1, type: 2}
+  - {fileID: 2100000, guid: 03d52e86c8d47094d9e43589861b3909, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9690,7 +9690,7 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 93b7972afb7216f4a915cec9ee48e0e1, type: 2}
-  - {fileID: 2100000, guid: 5356c33136453fe4185816e679ea150a, type: 2}
+  - {fileID: 2100000, guid: caa6ff3312922ca49890cc937f432007, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9751,7 +9751,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8603437817939893594}
   m_Layer: 5
-  m_Name: fx_firework
+  m_Name: vfx_firework
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14595,7 +14595,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 93b7972afb7216f4a915cec9ee48e0e1, type: 2}
+  - {fileID: 2100000, guid: 03d52e86c8d47094d9e43589861b3909, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19466,7 +19466,7 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 93b7972afb7216f4a915cec9ee48e0e1, type: 2}
-  - {fileID: 2100000, guid: 5356c33136453fe4185816e679ea150a, type: 2}
+  - {fileID: 2100000, guid: caa6ff3312922ca49890cc937f432007, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

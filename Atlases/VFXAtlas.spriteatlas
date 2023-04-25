@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: VFXAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 248add65558a4a34b81a8915de9c5638, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: fdbc40710af4744f1b1aaaf99d028f36, type: 3}
+  - {fileID: 21300000, guid: d2343a913adc3d14884bd0dc99348dc5, type: 3}
+  - {fileID: 21300000, guid: c0f306830551b42c0a3b10d3aaec4999, type: 3}
+  - {fileID: 21300000, guid: c5fd6f6420659d64b9d128ed146307c6, type: 3}
+  - {fileID: 21300000, guid: ea9e8965890b44114a67a655c9cca616, type: 3}
+  - {fileID: 21300000, guid: b21fd87534298b7499693b8b41e3ed14, type: 3}
+  - {fileID: 21300000, guid: 7c604776bd3e5874cb91e326a68e4a1e, type: 3}
+  - {fileID: 21300000, guid: cfdfb5cca8dd0d4478e18db3567e6bdd, type: 3}
+  - {fileID: 21300000, guid: d235ae7deb83b49cbbe52d0958350648, type: 3}
+  - {fileID: 21300000, guid: 4ad6fa6e02feff94ebfb3b7de7542f01, type: 3}
+  - {fileID: 21300000, guid: 4ebbc0cf381e3cf418d98635e4000e00, type: 3}
+  - {fileID: 21300000, guid: dd55c3cfc32fe9747ba4d561b4de1794, type: 3}
+  - {fileID: 21300000, guid: 57191edf12ca349538520c87a1a1eeb4, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - fx_box_blur
+  - fx_star_green
+  - x3
+  - amazing
+  - x2
+  - trail
+  - perfect
+  - fx_star_red
+  - x4
+  - toohot
+  - yousogud
+  - ConfettiSequence_-_Diamond_TEX
+  - fx_star_purple
+  m_RenderDataMap: {}
+  m_Tag: VFX
+  m_IsVariant: 0

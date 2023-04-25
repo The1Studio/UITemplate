@@ -33,7 +33,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
         private const string LoadingBlueprintStepName = "Loading static data...";
-        private const int    DefaultLoadingTime       = 1;
+        private const int    DefaultLoadingTime       = 5;
+        private const int    MinLoadingTime           = 1;
 
         #region inject
 
@@ -74,6 +75,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             {
                 this.MinimumLoadingBlueprintTime = DefaultLoadingTime;
             }
+
             this.startedLoadingTime = DateTime.Now;
             this.SignalBus.Subscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
             this.SignalBus.Subscribe<ReadBlueprintProgressSignal>(this.OnLoadProgress);
@@ -94,10 +96,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Unsubscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppOpenFullScreenContentOpened);
         }
 
-        private void OnAppOpenFullScreenContentOpened()
-        {
-            this.MinimumLoadingBlueprintTime = DefaultLoadingTime;
-        }
+        private void OnAppOpenFullScreenContentOpened() { this.MinimumLoadingBlueprintTime = MinLoadingTime; }
 
         private async void ShowLoadingProgress(string loadingContent)
         {

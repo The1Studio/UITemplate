@@ -13,7 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
         [SerializeField] private List<string> listAoaAppId    = new();
         [SerializeField] private List<string> listAoaIOSAppId = new();
 
-        [SerializeField] private int adMobAOAOpenAppThreshold = 1;
+        [SerializeField] private int adMobAOAOpenAppThreshold = 5;
 
         public List<AdViewPosition> listMRecAdViewPosition = new();
 

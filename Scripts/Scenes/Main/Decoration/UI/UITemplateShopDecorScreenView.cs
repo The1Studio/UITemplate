@@ -39,7 +39,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
         protected readonly IScreenManager                    screenManager;
         protected readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
         protected readonly IUnityIapServices                 unityUnityIapServices;
-        protected readonly UITemplateInventoryData           uiTemplateInventoryData;
         protected readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         protected readonly DiContainer                       diContainer;
         protected readonly UITemplateDecorCategoryBlueprint  uiTemplateDecorCategoryBlueprint;
@@ -67,7 +66,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
                                               IScreenManager screenManager,
                                               UITemplateItemBlueprint uiTemplateItemBlueprint,
                                               IUnityIapServices unityUnityIapServices,
-                                              UITemplateInventoryData uiTemplateInventoryData,
                                               UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
                                               DiContainer diContainer,
                                               UITemplateDecorCategoryBlueprint uiTemplateDecorCategoryBlueprint,
@@ -80,7 +78,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             this.screenManager                     = screenManager;
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.unityUnityIapServices             = unityUnityIapServices;
-            this.uiTemplateInventoryData           = uiTemplateInventoryData;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.diContainer                       = diContainer;
             this.uiTemplateDecorCategoryBlueprint  = uiTemplateDecorCategoryBlueprint;
@@ -304,7 +301,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI
             this.uiTemplateSoundServices.PlaySound(this.SfxBuyItemComplete);
             obj.ItemData.CurrentStatus = UITemplateItemData.Status.Owned;
             this.uiTemplateInventoryDataController.AddItemData(obj.ItemData);
-            this.uiTemplateInventoryData.CategoryToChosenItem[obj.ItemBlueprintRecord.Category] = obj.ItemBlueprintRecord.Id;
             this.uiTemplateInventoryDataController.UpdateCurrentSelectedItem(obj.ItemBlueprintRecord.Category, obj.ItemBlueprintRecord.Id);
             this.OnUseItem(obj);
         }

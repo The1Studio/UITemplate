@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
 
@@ -9,7 +10,7 @@
     {
         public List<GameObject> StarList;
 
-        public override void InitView(LevelData data, UITemplateUserLevelData userLevelData)
+        public override void InitView(LevelData data, UITemplateLevelDataController userLevelData)
         {
             base.InitView(data, userLevelData);
             data.StarCount = data.LevelStatus != LevelData.Status.Passed ? 0 : data.StarCount;

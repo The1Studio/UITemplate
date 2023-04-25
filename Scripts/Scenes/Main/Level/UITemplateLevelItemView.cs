@@ -5,6 +5,7 @@
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -29,12 +30,12 @@
         [SerializeField]
         private Sprite SkippedSprite;
 
-        public virtual void InitView(LevelData data, UITemplateUserLevelData userLevelData)
+        public virtual void InitView(LevelData data, UITemplateLevelDataController userLevelData)
         {
             this.LevelText.text         = data.Level.ToString();
             this.BackgroundImage.sprite = this.GetStatusBackground(data.LevelStatus);
-            if (data.Level == userLevelData.CurrentLevel) this.BackgroundImage.sprite = this.NowSprite;
-            this.LevelButton.interactable = data.Level <= userLevelData.CurrentLevel;
+            if (data.Level == userLevelData.GetCurrentLevelData.Level) this.BackgroundImage.sprite = this.NowSprite;
+            this.LevelButton.interactable = data.Level <= userLevelData.GetCurrentLevelData.Level;
         }
 
         private Sprite GetStatusBackground(LevelData.Status levelStatus)
@@ -53,7 +54,7 @@
     {
         private LevelData _model;
 
-        public UITemplateLevelItemPresenter(IGameAssets gameAssets, SignalBus signalBus, IScreenManager screenManager, UITemplateUserLevelData userLevelData) : base(gameAssets)
+        public UITemplateLevelItemPresenter(IGameAssets gameAssets, SignalBus signalBus, IScreenManager screenManager, UITemplateLevelDataController userLevelData) : base(gameAssets)
         {
             this.signalBus     = signalBus;
             this.screenManager = screenManager;
@@ -72,8 +73,9 @@
         {
             #region test
 
-            this.userLevelData.LevelToLevelData[this.userLevelData.CurrentLevel].LevelStatus = LevelData.Status.Passed;
-            this.userLevelData.LevelToLevelData[this.userLevelData.CurrentLevel].StarCount   = Random.Range(1, 4);
+            int currentLevel = this.userLevelData.GetCurrentLevelData.Level;
+            this.userLevelData.GetLevelData(currentLevel).LevelStatus = LevelData.Status.Passed;
+            this.userLevelData.GetLevelData(currentLevel).StarCount   = Random.Range(1, 4);
 
             #endregion
         }
@@ -84,7 +86,7 @@
 
         private readonly SignalBus               signalBus;
         private readonly IScreenManager          screenManager;
-        private readonly UITemplateUserLevelData userLevelData;
+        private readonly UITemplateLevelDataController userLevelData;
 
         #endregion
     }

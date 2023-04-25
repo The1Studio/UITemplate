@@ -176,5 +176,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             this.uiTemplateUserLevelData.LastUnlockRewardLevel = level;
         }
+
+        public void UpdateLastUnlockRewardProgress(float progress)
+        {
+            this.uiTemplateUserLevelData.LastUnlockRewardProgress = progress;
+        }
     }
 }

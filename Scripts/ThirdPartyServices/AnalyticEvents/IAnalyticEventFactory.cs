@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent InterstitialDownloaded(string place);
 
         IEvent InterstitialCalled(string place);
+
         IEvent RewardedInterstitialAdDisplayed(int level, string place);
 
         IEvent RewardedVideoEligible(string place);
@@ -50,6 +51,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName);
 
         IEvent TutorialCompletion(bool success, string tutorialId);
+
+        IEvent BuildingUnlock(bool success);
 
         void ForceUpdateAllProperties();
 

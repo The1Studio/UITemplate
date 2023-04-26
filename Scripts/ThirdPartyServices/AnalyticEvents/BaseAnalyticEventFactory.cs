@@ -2,7 +2,10 @@
 {
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket;
+    using LevelSkipped = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket.LevelSkipped;
+    using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket.LevelStart;
 
     public abstract class BaseAnalyticEventFactory : IAnalyticEventFactory
     {
@@ -51,10 +54,12 @@
         public virtual IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) { return new CustomEvent(); }
 
         public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) { return new CustomEvent(); }
-        
-        public virtual IEvent TutorialCompletion(bool success, string tutorialId)                           { return new CustomEvent(); }
+
+        public virtual IEvent TutorialCompletion(bool success, string tutorialId) { return new CustomEvent(); }
 
         public virtual IEvent EarnVirtualCurrency(string type, int amount) { return new CustomEvent(); }
+
+        public virtual IEvent BuildingUnlock(bool success) => new BuildingUnlock(success);
 
         public virtual void ForceUpdateAllProperties() { }
 

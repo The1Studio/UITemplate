@@ -52,13 +52,13 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         private async void OnEnable()
         {
             await this.isInjected.Task;
-            this.signalBus.Subscribe<UnlockBuildingSuccessSignal>(this.HandleAnimation);
+            this.signalBus.Subscribe<UITemplateUnlockBuildingSignal>(this.HandleAnimation);
         }
 
         private async void OnDisable()
         {
             await this.isInjected.Task;
-            this.signalBus.Unsubscribe<UnlockBuildingSuccessSignal>(this.HandleAnimation);
+            this.signalBus.Unsubscribe<UITemplateUnlockBuildingSignal>(this.HandleAnimation);
         }
 
         private void HandleAnimation()

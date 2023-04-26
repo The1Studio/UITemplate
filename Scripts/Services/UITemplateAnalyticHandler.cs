@@ -13,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using UnityEngine;
     using Zenject;
 
     public class UITemplateAnalyticHandler : IInitializable, IDisposable
@@ -90,6 +91,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
 
             this.signalBus.Subscribe<PopupShowedSignal>(this.PopupShowedHandler);
+            this.signalBus.Subscribe<UITemplateUnlockBuildingSignal>(this.UnlockBuildingHandler);
 
             //Ads events
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
@@ -315,6 +317,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
         }
 
+        private void UnlockBuildingHandler(UITemplateUnlockBuildingSignal obj)
+        {
+            foreach (var analytic in this.analyticEventList)
+            {
+                this.Track(analytic.BuildingUnlock(obj.IsUnlockSuccess));
+            }   
+        }
+
         public void Dispose()
         {
             this.signalBus.Unsubscribe<LevelStartedSignal>(this.LevelStartedHandler);
@@ -336,6 +346,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
             this.signalBus.Unsubscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
             this.signalBus.Unsubscribe<PopupShowedSignal>(this.PopupShowedHandler);
+            this.signalBus.Unsubscribe<UITemplateUnlockBuildingSignal>(this.UnlockBuildingHandler);
         }
     }
 }

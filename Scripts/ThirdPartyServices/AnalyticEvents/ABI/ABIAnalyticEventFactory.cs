@@ -67,6 +67,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent TutorialCompletion(bool success, string tutorialId) => new GameTutorialCompletion(success, tutorialId);
 
+        public override IEvent BuildingUnlock(bool success) => new BuildingUnlock(success);
+
         public override void ForceUpdateAllProperties() { }
 
         public override string LevelMaxProperty             => "level_max";

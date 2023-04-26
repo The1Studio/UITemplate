@@ -10,8 +10,13 @@
         
     }
 
-    public class UnlockBuildingSuccessSignal
+    public class UITemplateUnlockBuildingSignal
     {
-        
+        public bool IsUnlockSuccess;
+
+        public UITemplateUnlockBuildingSignal(bool isUnlockSuccess)
+        {
+            this.IsUnlockSuccess = isUnlockSuccess;
+        }
     }
 }

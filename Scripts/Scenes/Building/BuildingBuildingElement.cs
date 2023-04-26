@@ -93,6 +93,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
                 if ((this.screenManager.CurrentActiveScreen.Value is not UITemplateBuildingNotEnoughCoinPopupPresenter) && !this.isShowPopup)
                 {
                     this.isShowPopup = true;
+                    this.signalBus.Fire(new UITemplateUnlockBuildingSignal(false));
                     this.screenManager.OpenScreen<UITemplateBuildingNotEnoughCoinPopupPresenter>();
                 }
             }
@@ -130,7 +131,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             this.isBuildingComplete = true;
             this.CheckToFillCarOnStay(0);
             this.uiTemplateBuildingController.UnlockBuilding(this.BuildingId);
-            this.signalBus.Fire(new UnlockBuildingSuccessSignal());
+            this.signalBus.Fire(new UITemplateUnlockBuildingSignal(true));
             this.renderer.enabled     = true;
             this.boxCollider.enabled  = false;
             this.transform.localScale = Vector3.zero;

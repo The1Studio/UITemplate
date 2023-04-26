@@ -104,7 +104,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             while (progressInView < 1f)
             {
-#if UNITY_EDITOR
                 if (this.aoaAdService.IsShowingAd)
                 {
                     if (this.startedShowingAOATime == default) this.startedShowingAOATime = DateTime.Now;
@@ -112,7 +111,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                     await UniTask.WaitUntil(() => !this.aoaAdService.IsShowingAd);
                     this.startedLoadingTime = this.startedLoadingTime.Add(DateTime.Now - this.startedShowingAOATime);
                 }
-#endif
                 var currentProgress       = this.loadingTypeToProgressPercent.Values.ToList().Average();
                 var maximumLoadingPercent = (float)(DateTime.Now - this.startedLoadingTime).TotalSeconds / this.MinimumLoadingBlueprintTime;
                 progressInView = Mathf.Min(currentProgress, maximumLoadingPercent);

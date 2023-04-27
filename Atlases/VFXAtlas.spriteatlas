@@ -33,7 +33,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 248add65558a4a34b81a8915de9c5638, type: 3}
-    bindAsDefault: 1
+    bindAsDefault: 0
     isAtlasV2: 0
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
@@ -66,5 +66,5 @@ SpriteAtlas:
   - ConfettiSequence_-_Diamond_TEX
   - fx_star_purple
   m_RenderDataMap: {}
-  m_Tag: VFX
+  m_Tag: VFXAtlas
   m_IsVariant: 0

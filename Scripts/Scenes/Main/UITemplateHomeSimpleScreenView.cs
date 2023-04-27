@@ -19,6 +19,7 @@
     {
         public Button                      PlayButton;
         public Button                      LevelButton;
+        public Button                      ShopButton;
         public UITemplateCurrencyView      CoinText;
         public UITemplateSettingButtonView SettingButtonView;
     }
@@ -41,6 +42,7 @@
             this.diContainer.Inject(this.View.SettingButtonView);
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
             this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
+            this.View.ShopButton.onClick.AddListener(this.OnClickShop);
         }
 
         protected virtual void OnClickLevel()
@@ -50,6 +52,8 @@
                 Debug.Log($"Get Reward from Jackpot Complete");
             }));
         }
+
+        protected virtual void OnClickShop() { }
 
         private UITemplateGachaPopupModel FakeGachaPage()
         {

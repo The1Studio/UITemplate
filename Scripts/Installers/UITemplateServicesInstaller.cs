@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Utils;
     using UnityEngine;
     using Zenject;
+    using NotificationServices = TheOneStudio.UITemplate.UITemplate.Services.NotificationServices;
 
     public class UITemplateServicesInstaller : Installer<GameObject, UITemplateServicesInstaller>
     {
@@ -25,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             // Master Audio
             this.Container.InstantiatePrefab(this.soundGroupPrefab);
             this.Container.Bind<UITemplateSoundServices>().AsCached();
+            
             //Build-in service
             this.Container.BindInterfacesAndSelfTo<InternetService>().AsSingle().NonLazy();
             //HandleScreenShow

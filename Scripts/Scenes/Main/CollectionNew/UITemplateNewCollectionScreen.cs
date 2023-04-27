@@ -58,8 +58,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             UITemplateItemBlueprint           uiTemplateItemBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
             UITemplateSoundServices           soundServices,
-            UITemplateLuckySpinServices       uiTemplateLuckySpinServices,
-            UITemplateDailyRewardService      uiTemplateDailyRewardService,
             UITemplateLevelDataController     levelDataController
         ) : base(signalBus)
         {
@@ -74,8 +72,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.SoundServices                     = soundServices;
-            this.uiTemplateLuckySpinServices       = uiTemplateLuckySpinServices;
-            this.uiTemplateDailyRewardService      = uiTemplateDailyRewardService;
             this.levelDataController               = levelDataController;
         }
 

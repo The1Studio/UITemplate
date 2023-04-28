@@ -217,11 +217,14 @@ public static class Vibration
 
     public static void Vibrate ()
     {
+#if UNITY_IOS || UNITY_ANDROID
         if ( Application.isMobilePlatform ) {
             Handheld.Vibrate ();
         }
+#endif
     }
-
+    
+#if UNITY_ANDROID
     public static int AndroidVersion {
         get {
             int iVersionNumber = 0;
@@ -233,6 +236,8 @@ public static class Vibration
             return iVersionNumber;
         }
     }
+#endif
+
 }
 
 public enum ImpactFeedbackStyle

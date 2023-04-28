@@ -1,18 +1,24 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.Toast
 {
-    using System;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using TMPro;
     using UnityEngine;
 
+    public enum ToastPosition
+    {
+        Bottom,
+        Top,
+        Center
+    }
+
     public class ToastController : MonoBehaviour
     {
-        public GameObject      bottomObj;
-        public GameObject      topObj;
-        public GameObject      centerObj;
-        public GameObject      toastObj;
-        public TextMeshProUGUI txtToast;
+        [SerializeField] private GameObject      bottomObj;
+        [SerializeField] private GameObject      topObj;
+        [SerializeField] private GameObject      centerObj;
+        [SerializeField] private GameObject      toastObj;
+        [SerializeField] private  TextMeshProUGUI txtToast;
 
         private GameObject GetParentObj(ToastPosition position)
         {
@@ -25,11 +31,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Toast
             };
         }
 
-        public async void SetContent(string message, Vector2 offset, ToastPosition position)
+        public async void SetContent(string message, float offsetX = 0, float offsetY = 0, ToastPosition position = ToastPosition.Bottom)
         {
             this.toastObj.SetActive(false);
             this.toastObj.transform.SetParent(this.GetParentObj(position).transform);
-            this.toastObj.transform.localPosition = Vector3.zero + (Vector3)offset;
+            this.toastObj.transform.localPosition = Vector3.zero + new Vector3(offsetX, offsetY, 0);
             this.txtToast.text                    = message;
             this.toastObj.SetActive(true);
             this.toastObj.transform.DOLocalMoveY(100, 1f);

@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
+    using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using TheOneStudio.UITemplate.UITemplate.Utils;
     using UnityEngine;
     using Zenject;
@@ -54,6 +55,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             
             // VFX Spawn
             this.Container.Bind<UITemplateVFXSpawnService>().AsCached().NonLazy();
+            
+            // Toast
+            this.Container.Bind<ToastService>().AsCached().NonLazy();
         }
     }
 }

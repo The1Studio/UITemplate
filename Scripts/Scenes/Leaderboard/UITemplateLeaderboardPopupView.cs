@@ -28,6 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         public int                          MaxLevel    = 200;
         public int                          LowestRank  = 68365;
         public int                          HighestRank = 156;
+        public int                          RankRange => this.LowestRank - this.HighestRank;
     }
 
     [PopupInfo(nameof(UITemplateLeaderboardPopupView), false)]
@@ -61,7 +62,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             this.View.CloseButton.onClick.AddListener(this.CloseView);
         }
 
-        private int GetRankWithLevel(int level) => (int)(this.View.LowestRank - 1f * level / this.View.MaxLevel * this.View.LowestRank + this.View.HighestRank);
+        private int GetRankWithLevel(int level) => (int)(this.View.LowestRank - Mathf.Sqrt(Mathf.Sqrt(level * 1f / this.View.MaxLevel)) * this.View.RankRange);
 
         public override UniTask BindData()
         {
@@ -130,7 +131,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
 
         private string GetBetterThanText(int currentRank) =>
-            $"you are better than <color=#2DF2FF><size=120%>{1f * (this.View.LowestRank * 2 - currentRank) / (this.View.LowestRank * 2) * 100:F2}%</size ></color > of people";
+            $"you are better than <color=#2DF2FF><size=120%>{(this.View.LowestRank * 1.5f - currentRank) / (this.View.LowestRank * 1.5f) * 100:F2}%</size ></color > of people";
 
         public override void Dispose()
         {

@@ -1,3 +1,4 @@
+#if EASY_MOBILE_PRO
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
@@ -7,21 +8,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Cysharp.Threading.Tasks;
-    using EasyMobile;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using UnityEngine;
     using Zenject;
-    using LocalNotification = EasyMobile.LocalNotification;
     using Random = UnityEngine.Random;
+    using EasyMobile;
     using RemoteNotification = EasyMobile.RemoteNotification;
+    using LocalNotification = EasyMobile.LocalNotification;
 
     /// <summary>
     /// For handle notification
     /// </summary>
-    public class NotificationServices
+    public class EasyMobileNotificationServicesImpl : INotificationService
     {
         private readonly SignalBus                           signalBus;
         private readonly UITemplateNotificationBlueprint     uiTemplateNotificationBlueprint;
@@ -30,7 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly IAnalyticServices                   analyticHandler;
         private          bool                                isLoadBlueprintComplete;
 
-        public NotificationServices(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint, UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint,
+        public EasyMobileNotificationServicesImpl(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint, UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint,
             ILogService logger, IAnalyticServices analyticServices)
         {
             this.signalBus                           = signalBus;
@@ -249,3 +250,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         }
     }
 }
+#endif

@@ -23,7 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly SignalBus                       signalBus;
         private readonly ScreenManager                   screenManager;
         private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
-        private readonly NotificationServices            notificationServices;
+        private readonly INotificationService            notificationServices;
         private readonly GameQueueActionContext          gameQueueActionContext;
         private readonly UITemplateFTUEHelper            uiTemplateFtueHelper;
 
@@ -32,7 +32,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private bool canShowReward = true;
 
         public UITemplateDailyRewardService(SignalBus            signalBus,            ScreenManager          screenManager, UITemplateDailyRewardController uiTemplateDailyRewardController,
-                                            NotificationServices notificationServices, GameQueueActionContext gameQueueActionContext, UITemplateFTUEHelper uiTemplateFtueHelper)
+                                            INotificationService notificationServices, GameQueueActionContext gameQueueActionContext, UITemplateFTUEHelper uiTemplateFtueHelper)
         {
             this.signalBus                       = signalBus;
             this.screenManager                   = screenManager;

@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 1401844620283917458}
   - component: {fileID: 1401844620283917470}
   m_Layer: 5
-  m_Name: ToastCanvas
+  m_Name: ToastController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

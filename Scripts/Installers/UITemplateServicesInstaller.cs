@@ -11,11 +11,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateServicesInstaller : Installer<GameObject, UITemplateServicesInstaller>
+    public class UITemplateServicesInstaller : Installer<GameObject, ToastController, UITemplateServicesInstaller>
     {
-        private readonly GameObject soundGroupPrefab;
+        private readonly GameObject      soundGroupPrefab;
+        private readonly ToastController toastController;
 
-        public UITemplateServicesInstaller(GameObject soundGroupPrefab) { this.soundGroupPrefab = soundGroupPrefab; }
+        public UITemplateServicesInstaller(GameObject soundGroupPrefab, ToastController toastController)
+        {
+            this.soundGroupPrefab = soundGroupPrefab;
+            this.toastController  = toastController;
+        }
 
         public override void InstallBindings()
         {
@@ -57,7 +62,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<UITemplateVFXSpawnService>().AsCached().NonLazy();
             
             // Toast
-            this.Container.Bind<ToastService>().AsCached().NonLazy();
+            this.Container.Bind<ToastController>().FromComponentInNewPrefab(this.toastController).AsCached().NonLazy();
         }
     }
 }

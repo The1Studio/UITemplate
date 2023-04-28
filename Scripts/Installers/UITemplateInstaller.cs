@@ -10,14 +10,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateInstaller : Installer<GameObject, UITemplateInstaller>
+    public class UITemplateInstaller : Installer<GameObject, ToastController, UITemplateInstaller>
     {
-        private readonly GameObject soundGroupPrefab;
+        private readonly GameObject      soundGroupPrefab;
+        private readonly ToastController toastCanvas;
 
-        public UITemplateInstaller(GameObject soundGroupPrefab) { this.soundGroupPrefab = soundGroupPrefab; }
+        public UITemplateInstaller(GameObject soundGroupPrefab, ToastController toastCanvas)
+        {
+            this.soundGroupPrefab = soundGroupPrefab;
+            this.toastCanvas      = toastCanvas;
+        }
 
         public override void InstallBindings()
         {
@@ -29,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateLocalDataInstaller.Install(this.Container);
             UnityIapInstaller.Install(this.Container);
             FTUEInstaller.Install(this.Container);
-            UITemplateServicesInstaller.Install(this.Container, this.soundGroupPrefab);
+            UITemplateServicesInstaller.Install(this.Container, this.soundGroupPrefab, this.toastCanvas);
             UITemplateThirdPartyInstaller.Install(this.Container);
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
 
@@ -46,12 +52,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             var devicesId = SystemInfo.deviceUniqueIdentifier;
             this.Container.Resolve<ILogService>().Log($"Devices ID: {devicesId}");
-            var debugKey    = "DebugDevices";
+            var debugKey = "DebugDevices";
 
             this.Container.Resolve<SignalBus>().Subscribe<RemoteConfigInitializeSucceededSignal>(() =>
             {
                 var remoteConfig = this.Container.Resolve<IUITemplateRemoteConfig>();
-                var devices      = remoteConfig.GetRemoteConfigStringValue(debugKey,"");
+                var devices      = remoteConfig.GetRemoteConfigStringValue(debugKey, "");
 
                 if (devices.IsNullOrEmpty())
                 {

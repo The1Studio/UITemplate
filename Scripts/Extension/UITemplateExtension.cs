@@ -121,6 +121,43 @@
             return anchorPos / cameraScaleSize + new Vector2(directionUiCamToMainCam.x, directionUiCamToMainCam.y) * canvasSizePerUnit * cameraScaleSize;
         }
 
+        public static Vector3 GetRealRotationFromInSpector(this Transform transform)
+        {
+            var angle = transform.eulerAngles;
+            var x     = angle.x;
+            var y     = angle.y;
+            var z     = angle.z;
+
+            if (Vector3.Dot(transform.up, Vector3.up) >= 0f)
+            {
+                x = angle.x switch { >= 0f and <= 90f => angle.x, >= 270f and <= 360f => angle.x - 360f, _ => x };
+            }
+
+            if (Vector3.Dot(transform.up, Vector3.up) < 0f)
+            {
+                switch (angle.x)
+                {
+                    case >= 0f and <= 90f:
+                    case >= 270f and <= 360f:
+                        x = 180 - angle.x;
+
+                        break;
+                }
+            }
+
+            if (angle.y > 180)
+            {
+                y = angle.y - 360f;
+            }
+
+            if (angle.z > 180)
+            {
+                z = angle.z - 360f;
+            }
+
+            return new Vector3(x, y, z);
+        }
+
         public static void BindLocalData<TLocalData>(this DiContainer container) where TLocalData : class, ILocalData, new()
         {
             container.Bind<TLocalData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();

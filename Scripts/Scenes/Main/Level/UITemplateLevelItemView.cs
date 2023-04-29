@@ -35,7 +35,7 @@
             this.LevelText.text         = data.Level.ToString();
             this.BackgroundImage.sprite = this.GetStatusBackground(data.LevelStatus);
             if (data.Level == userLevelData.GetCurrentLevelData.Level) this.BackgroundImage.sprite = this.NowSprite;
-            this.LevelButton.interactable = data.Level <= userLevelData.GetCurrentLevelData.Level;
+            this.LevelButton.interactable = data.Level <= userLevelData.MaxLevel;
         }
 
         private Sprite GetStatusBackground(LevelData.Status levelStatus)

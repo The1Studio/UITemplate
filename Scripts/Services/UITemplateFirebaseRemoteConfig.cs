@@ -20,7 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     {
         [Inject] private readonly ILogService logger;
         [Inject] private readonly SignalBus   signalBus;
-        public                    bool        IsFirebaseReady { get; private set; }
+        public                    bool        IsConfigFetchedSucceed { get; private set; }
 
         private void Start() { this.InitFirebase(); }
 
@@ -34,8 +34,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
                 if (dependencyStatus == DependencyStatus.Available)
                 {
-                    this.IsFirebaseReady = true;
-
                     this.FetchDataAsync();
                 }
                 else
@@ -67,6 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             else if (fetchTask.IsCompleted)
             {
                 this.logger.Log("Fetch completed successfully!");
+                this.IsConfigFetchedSucceed = true;
                 this.signalBus.Fire(new RemoteConfigInitializeSucceededSignal());
             }
 
@@ -111,7 +110,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public bool GetRemoteConfigBoolValue(string key, bool defaultValue)
         {
-            if (!this.HasKey(key) || !this.IsFirebaseReady)
+            if (!this.HasKey(key) || !this.IsConfigFetchedSucceed)
             {
                 return defaultValue;
             }
@@ -121,33 +120,33 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             return bool.TryParse(value, out var result) && result;
         }
 
-        public long GetRemoteConfigLongValue(string key)
+        public long GetRemoteConfigLongValue(string key, long defaultValue)
         {
-            if (!this.HasKey(key) || !this.IsFirebaseReady)
+            if (!this.HasKey(key) || !this.IsConfigFetchedSucceed)
             {
-                return 0;
+                return defaultValue;
             }
 
             var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
 
-            return long.TryParse(value, out var result) ? result : 0;
+            return long.TryParse(value, out var result) ? result : defaultValue;
         }
 
-        public double GetRemoteConfigDoubleValue(string key)
+        public double GetRemoteConfigDoubleValue(string key, double defaultValue)
         {
-            if (!this.HasKey(key) || !this.IsFirebaseReady)
+            if (!this.HasKey(key) || !this.IsConfigFetchedSucceed)
             {
-                return 0d;
+                return defaultValue;
             }
 
             var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
 
-            return double.TryParse(value, out var result) ? result : 0;
+            return double.TryParse(value, out var result) ? result : defaultValue;
         }
 
         public int GetRemoteConfigIntValue(string key, int defaultValue)
         {
-            if (!this.HasKey(key) || !this.IsFirebaseReady)
+            if (!this.HasKey(key) || !this.IsConfigFetchedSucceed)
             {
                 return defaultValue;
             }
@@ -157,16 +156,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             return int.TryParse(value, out var result) ? result : defaultValue;
         }
 
-        public float GetRemoteConfigFloatValue(string key)
+        public float GetRemoteConfigFloatValue(string key, float defaultValue)
         {
-            if (!this.HasKey(key) || !this.IsFirebaseReady)
+            if (!this.HasKey(key) || !this.IsConfigFetchedSucceed)
             {
-                return 0f;
+                return defaultValue;
             }
 
             var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key).StringValue;
 
-            return float.TryParse(value, out var result) ? result : 0f;
+            return float.TryParse(value, out var result) ? result : defaultValue;
         }
 
         private bool HasKey(string key) { return FirebaseRemoteConfig.DefaultInstance.Keys != null && FirebaseRemoteConfig.DefaultInstance.Keys.Contains(key); }

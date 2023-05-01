@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Scripts.UIModule.Utilities.GameQueueAction;
     using TheOneStudio.UITemplate.UITemplate.FTUE;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
     using UnityEngine;
@@ -17,7 +18,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private const string FirstOpenAppKey = "FirstOpenApp";
         private const string NotificationId  = "daily_reward";
 
-
         #region inject
 
         private readonly SignalBus                       signalBus;
@@ -26,13 +26,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly INotificationService            notificationServices;
         private readonly GameQueueActionContext          gameQueueActionContext;
         private readonly UITemplateFTUEHelper            uiTemplateFtueHelper;
+        private readonly UITemplateFeatureConfig         uiTemplateFeatureConfig;
 
         #endregion
 
         private bool canShowReward = true;
 
         public UITemplateDailyRewardService(SignalBus            signalBus,            ScreenManager          screenManager, UITemplateDailyRewardController uiTemplateDailyRewardController,
-                                            INotificationService notificationServices, GameQueueActionContext gameQueueActionContext, UITemplateFTUEHelper uiTemplateFtueHelper)
+                                            INotificationService notificationServices, GameQueueActionContext gameQueueActionContext, UITemplateFTUEHelper uiTemplateFtueHelper, UITemplateFeatureConfig uiTemplateFeatureConfig)
         {
             this.signalBus                       = signalBus;
             this.screenManager                   = screenManager;
@@ -40,6 +41,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.notificationServices            = notificationServices;
             this.gameQueueActionContext          = gameQueueActionContext;
             this.uiTemplateFtueHelper            = uiTemplateFtueHelper;
+            this.uiTemplateFeatureConfig         = uiTemplateFeatureConfig;
         }
 
         public void Initialize()
@@ -54,9 +56,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             return true;
         }
 
-        public async UniTask ShowDailyRewardPopupAsync(bool force = false)
+        public UniTask ShowDailyRewardPopupAsync(bool force = false)
         {
             this.ShowDailyRewardPopup(this.OnClaimDailyRewardFinish, force);
+            return UniTask.CompletedTask;
         }
 
         private void ShowDailyRewardPopup(Action onClaimReward, bool force)
@@ -87,6 +90,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 await this.uiTemplateDailyRewardController.CheckRewardStatus();
                 if (this.uiTemplateFtueHelper.IsAnyFtueActive(obj.ScreenPresenter)) return;
+                if (!this.uiTemplateFeatureConfig.IsDailyRewardEnable) return;
                 await this.ShowDailyRewardPopupAsync();
             }
         }

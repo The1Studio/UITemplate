@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
@@ -24,6 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
+            this.Container.BindInterfacesAndSelfTo<UITemplateFeatureConfig>().AsCached().NonLazy();
             //reporter
 #if ENABLE_REPORTER
             this.Container.Bind<Reporter>().FromComponentInNewPrefabResource("Reporter").AsSingle().NonLazy();

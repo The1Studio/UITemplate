@@ -10,7 +10,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
         private const string IsLuckySpinEnableKey   = "IsLuckySpinEnable";
         private const string IsChestRoomEnableKey   = "IsChestRoomEnable";
         private const string IsIAPEnableKey         = "IsIAPEnable";
+        private const string IsRemoveAdsEnableKey   = "IsRemoveAdsEnable";
         private const string IsSuggestionEnableKey  = "IsSuggestionEnable";
+        private const string IsBuildingEnableKey    = "IsBuildingEnable";
+        private const string IsVFXEnableKey         = "IsVFXEnable";
+        private const string IsSFXEnableKey         = "IsSFXEnable";      
         
         private readonly IUITemplateRemoteConfig uiTemplateRemoteConfig;
 
@@ -24,7 +28,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
         public bool IsLuckySpinEnable   { get; set; } = true;
         public bool IsChestRoomEnable   { get; set; } = true;
         public bool IsIAPEnable         { get; set; } = true;
+        public bool IsRemoveAdsEnable   { get; set; } = true;
         public bool IsSuggestionEnable  { get; set; } = true;
+        public bool IsBuildingEnable    { get; set; } = true;
+        public bool IsVFXEnable         { get; set; } = true;
+        public bool IsSFXEnable         { get; set; } = true;
         
         public void Initialize()
         {
@@ -33,7 +41,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
             this.uiTemplateRemoteConfig.GetRemoteConfigBoolValueAsync(IsLuckySpinEnableKey, remoteValue => this.IsLuckySpinEnable     = remoteValue, true);
             this.uiTemplateRemoteConfig.GetRemoteConfigBoolValueAsync(IsChestRoomEnableKey, remoteValue => this.IsChestRoomEnable     = remoteValue, true);
             this.uiTemplateRemoteConfig.GetRemoteConfigBoolValueAsync(IsIAPEnableKey, remoteValue => this.IsIAPEnable                 = remoteValue, true);
+            this.uiTemplateRemoteConfig.GetRemoteConfigBoolValueAsync(IsRemoveAdsEnableKey, remoteValue => this.IsRemoveAdsEnable     = remoteValue, true);
             this.uiTemplateRemoteConfig.GetRemoteConfigBoolValueAsync(IsSuggestionEnableKey, remoteValue => this.IsSuggestionEnable   = remoteValue, true);
+            this.uiTemplateRemoteConfig.GetRemoteConfigBoolValueAsync(IsBuildingEnableKey, remoteValue => this.IsBuildingEnable       = remoteValue, true);
+            this.uiTemplateRemoteConfig.GetRemoteConfigBoolValueAsync(IsVFXEnableKey, remoteValue => this.IsVFXEnable                 = remoteValue, true);
+            this.uiTemplateRemoteConfig.GetRemoteConfigBoolValueAsync(IsSFXEnableKey, remoteValue => this.IsSFXEnable                 = remoteValue, true);
         }
     }
 }

@@ -134,9 +134,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             if (levelUnlockReward < 0) return 0;
 
             //update last unlock reward level
-            var temp = this.uiTemplateUserLevelData.LastUnlockRewardLevel;
-            if (level == levelUnlockReward) this.UpdateLastUnlockRewardLevel(level);
-
+            var temp = this.GetLastLevelUnlockReward(level);
+        
             return (float)(level - temp) / (levelUnlockReward - temp);
         }
 
@@ -164,27 +163,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         private int GetLevelUnlockReward(int level)
         {
-            for (int i = level; i < this.uiTemplateLevelBlueprint.Count; i++)
+            for (int i = level; i <= this.uiTemplateLevelBlueprint.Count; i++)
             {
                 if (this.uiTemplateLevelBlueprint.GetDataById(i).Rewards.Count > 0) return i;
             }
 
             return -1;
         }
-
-        private void UpdateLastUnlockRewardLevel(int level)
+        
+        private int GetLastLevelUnlockReward(int level)
         {
-            this.uiTemplateUserLevelData.LastUnlockRewardLevel = level;
-        }
+            for (int i = level - 1; i > 0; i--)
+            {
+                if (this.uiTemplateLevelBlueprint.GetDataById(i).Rewards.Count > 0) return i;
+            }
 
-        public float GetLastUnlockRewardProgress()
-        {
-            return this.uiTemplateUserLevelData.LastUnlockRewardProgress;
+            return 0;
         }
-
-        public void UpdateLastUnlockRewardProgress(float progress)
-        {
-            this.uiTemplateUserLevelData.LastUnlockRewardProgress = progress;
-        }
+        
     }
 }

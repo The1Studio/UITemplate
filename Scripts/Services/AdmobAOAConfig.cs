@@ -23,9 +23,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
         [SerializeField] private List<string> listNativeAndroidId = new();
         [SerializeField] private List<string> listNativeIOSId     = new();
 
-        public List<string> ListAoaAppId             => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor ? this.listAoaAppId : this.listAoaIOSAppId;
-        public List<string> ListMRecId               => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor ? this.listMRecAndroidId : this.listMRecIOSId;
-        public List<string> ListNativeId             => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor ? this.listNativeAndroidId : this.listNativeIOSId;
+        public List<string> ListAoaAppId             => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor or RuntimePlatform.OSXEditor ? this.listAoaAppId : this.listAoaIOSAppId;
+        public List<string> ListMRecId               => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor or RuntimePlatform.OSXEditor ? this.listMRecAndroidId : this.listMRecIOSId;
+        public List<string> ListNativeId             => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor or RuntimePlatform.OSXEditor ? this.listNativeAndroidId : this.listNativeIOSId;
         public int          AdMObAOAOpenAppThreshold => this.adMobAOAOpenAppThreshold;
     }
 }

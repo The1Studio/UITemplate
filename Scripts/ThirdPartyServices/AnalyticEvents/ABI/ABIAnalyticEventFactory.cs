@@ -130,12 +130,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 EventName = "ad_impression",
                 EventProperties = new Dictionary<string, object>()
                 {
-                    { "source_id", obj.AdsRevenueEvent.AdsRevenueSourceId },
-                    { "ad_network", obj.AdsRevenueEvent.AdNetwork },
-                    { "ad_unit", obj.AdsRevenueEvent.AdUnit },
+                    { "ad_platform", obj.AdsRevenueEvent.AdsRevenueSourceId },
+                    { "ad_source", obj.AdsRevenueEvent.AdNetwork },
+                    { "ad_unit_name", obj.AdsRevenueEvent.AdUnit },
+                    { "ad_format", obj.AdsRevenueEvent.AdFormat },
                     { "placement", obj.AdsRevenueEvent.Placement },
                     { "currency", obj.AdsRevenueEvent.Currency },
-                    { "revenue", obj.AdsRevenueEvent.Revenue },
+                    { "value", obj.AdsRevenueEvent.Revenue },
                 }
             });
         }

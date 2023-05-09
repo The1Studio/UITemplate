@@ -78,6 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = time, CurrentIdToValue = null });
             this.uiTemplateUserLevelData.CurrentLevel++;
+            if(GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
         }
 
         /// <summary>
@@ -86,7 +87,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <param name="time">Play time in seconds</param>
         public void SkipCurrentLevel(int time = 0)
         {
-            this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
+            if(GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
             this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = time });
             this.uiTemplateUserLevelData.CurrentLevel++;
         }

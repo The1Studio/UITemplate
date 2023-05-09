@@ -66,17 +66,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             this.View.BtnHome.onClick.AddListener(this.OnOpenHome);
             this.View.BtnReplay?.onClick.AddListener(this.OnClickReplay);
             this.View.BtnSkip?.onClick.AddListener(this.OnClickSkip);
-            if (this.View.LevelText)
-            {
-                this.View.LevelText.text = "Level " + levelDataController.GetCurrentLevelData.Level;
-            }
-           
         }
 
         public override UniTask BindData()
         {
             this.View.BtnSkip?.BindData(this.AdPlacement);
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
+            if (this.View.LevelText)
+            {
+                this.View.LevelText.text = "Level " + levelDataController.GetCurrentLevelData.Level;
+            }
             return UniTask.CompletedTask;
         }
 

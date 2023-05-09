@@ -12,6 +12,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.LuckyWheel
 
         public void ChangeColor(float startTime)
         {
+            if (!this.isActiveAndEnabled) return;
+            
             if (this.coroutine != null)
             {
                 this.currentTime = startTime;

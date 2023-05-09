@@ -1,3 +1,5 @@
+using TMPro;
+
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
 {
     using Core.AdsServices;
@@ -20,11 +22,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         [SerializeField] private Button                 btnReplay;
         [SerializeField] private UITemplateAdsButton    btnSkip;
         [SerializeField] private UITemplateCurrencyView currencyView;
+        [SerializeField] private TextMeshProUGUI        levelText;
 
         public Button                 BtnHome      => this.btnHome;
         public Button                 BtnReplay    => this.btnReplay;
         public UITemplateAdsButton    BtnSkip      => this.btnSkip;
         public UITemplateCurrencyView CurrencyView => this.currencyView;
+        public TextMeshProUGUI        LevelText    => this.levelText;
     }
 
     [ScreenInfo(nameof(UITemplateGameplayScreen))]
@@ -37,15 +41,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         protected readonly UITemplateAdServiceWrapper        adService;
         protected readonly UITemplateSoundServices           SoundServices;
         protected readonly UITemplateInventoryDataController inventoryDataController;
+        protected readonly UITemplateLevelDataController     levelDataController;
 
         public UITemplateGameplayScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, ScreenManager screenManager, UITemplateAdServiceWrapper adService, UITemplateSoundServices soundServices,
-                                                 UITemplateInventoryDataController inventoryDataController) : base(signalBus)
+                                                 UITemplateInventoryDataController inventoryDataController, UITemplateLevelDataController levelDataController) : base(signalBus)
         {
             this.SceneDirector           = sceneDirector;
             this.ScreenManager           = screenManager;
             this.adService               = adService;
             this.SoundServices           = soundServices;
             this.inventoryDataController = inventoryDataController;
+            this.levelDataController     = levelDataController;
         }
 
         #endregion
@@ -60,6 +66,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             this.View.BtnHome.onClick.AddListener(this.OnOpenHome);
             this.View.BtnReplay?.onClick.AddListener(this.OnClickReplay);
             this.View.BtnSkip?.onClick.AddListener(this.OnClickSkip);
+            if (this.View.LevelText)
+            {
+                this.View.LevelText.text = "Level " + levelDataController.GetCurrentLevelData.Level;
+            }
+           
         }
 
         public override UniTask BindData()

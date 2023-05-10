@@ -43,13 +43,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent InterstitialCalled(string place) { return new CustomEvent(); }
 
-        public override IEvent RewardedVideoEligible(string place) => new CustomEvent();
+        public override IEvent RewardedVideoEligible(string place) => new AdsRewardEligible(place);
 
-        public override IEvent RewardedVideoOffer(string place) { return new CustomEvent(); }
+        public override IEvent RewardedVideoOffer(string place) { return new AdsRewardOffer(place); }
 
-        public override IEvent RewardedVideoDownloaded(string place) { return new CustomEvent(); }
+        public override IEvent RewardedVideoDownloaded(string place) { return new AdsRewardedDownloaded(); }
 
-        public override IEvent RewardedVideoCalled(string place) { return new CustomEvent(); }
+        public override IEvent RewardedVideoCalled(string place) { return new AdsRewardedCalled(); }
 
         public override IEvent RewardedVideoShow(int level, string place) { return new ShowRewardedAds(this.internetService.IsInternetAvailable, place); }
 

@@ -1,4 +1,6 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
+﻿using System;
+
+namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
     using DG.Tweening;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -16,10 +18,16 @@
 
         private Tween updateCurrencyTween;
 
+        private Color _defaultColor = Color.white;
+
         public void Subscribe(SignalBus signalBus, int initValue)
         {
             signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrency);
             this.UpdateData(initValue);
+            if (this.currencyValueText != null && this.currencyValueText.color != null)
+            {
+                _defaultColor = this.currencyValueText.color;
+            }
             this.ResetState();
         }
 
@@ -27,7 +35,7 @@
         {
             this.CurrencyIcon.transform.localScale = Vector3.one;
             this.updateCurrencyTween?.Kill();
-            this.currencyValueText.color = Color.white;
+            this.currencyValueText.color = _defaultColor;
         }
 
         private void UpdateData(int newValue) { this.currencyValueText.text = newValue.ToString(); }

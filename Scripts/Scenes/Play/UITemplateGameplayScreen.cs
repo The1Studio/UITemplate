@@ -72,7 +72,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         {
             this.View.BtnSkip?.BindData(this.AdPlacement);
             this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
-            if (this.View.LevelText)
+            if (this.View.LevelText != null)
             {
                 this.View.LevelText.text = "Level " + levelDataController.GetCurrentLevelData.Level;
             }

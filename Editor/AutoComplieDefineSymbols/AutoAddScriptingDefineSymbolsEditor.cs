@@ -13,7 +13,7 @@ public class AutoAddScriptingDefineSymbolsEditor : AssetPostprocessor
     {
         EditorApplication.update                        -= Initialize;
         //TODO enable when use another way to cache the scripting defination
-        // CompilationPipeline.assemblyCompilationFinished += CompilationPipelineOnassemblyCompilationFinished;
+        CompilationPipeline.assemblyCompilationFinished += CompilationPipelineOnassemblyCompilationFinished;
     }
 
     private static void CompilationPipelineOnassemblyCompilationFinished(string outputPath, CompilerMessage[] compilerMessages)

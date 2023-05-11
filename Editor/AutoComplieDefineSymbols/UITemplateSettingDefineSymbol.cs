@@ -70,7 +70,9 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
         {
             if (!this.IsEnable)
             {
-                Debug.LogError($"Not Enable auto custom define symbol");
+                Debug.LogWarning($"Not Enable auto custom define symbol");
+                EditorUtility.SetDirty(this);
+                AssetDatabase.SaveAssets();
 
                 return;
             }
@@ -121,6 +123,9 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
             {
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, finalDefine);
             }
+
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
         }
 
         private void CheckToAddDefineSymbol(string defineSymbolName, List<string> totalDefine)

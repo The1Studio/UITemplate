@@ -14,7 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
         /// </summary>
         public static Vector2 CalculateProjectileVelocityVector2D(Vector2 top, Vector2 source, Vector2 target, Vector2 gravity)
         {
-            float l = target.x - source.x;
+            float l = Mathf.Abs(target.x - source.x);
             float h0 = source.y - target.y;
             float h = top.y - target.y;
             float g = gravity.magnitude;
@@ -31,6 +31,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
             float vy = Mathf.Sin(alpha) * v;
             
             // Construct Unity velocity vector
+            if (target.x - source.x < 0)
+            {
+                vx = -vx;
+            }
             Vector2 initialVelocity = new Vector2(vx, vy);
             
             return initialVelocity;

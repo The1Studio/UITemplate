@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 {
     using System;
     using System.Collections.Generic;
+    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -12,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
+    using Zenject;
     using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido.LevelStart;
 
     public class WidoAnalyticEventFactory : BaseAnalyticEventFactory
@@ -21,13 +23,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         private readonly IInternetService              internetService;
         private readonly UITemplateLevelDataController uiTemplateLevelDataController;
 
-        #endregion
-
-        public WidoAnalyticEventFactory(IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController)
+        public WidoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController) : base(
+            signalBus, analyticServices)
         {
-            this.internetService = internetService;
+            this.internetService               = internetService;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
+
+        #endregion
 
         public override IEvent InterstitialEligible(string place) => new CustomEvent();
 

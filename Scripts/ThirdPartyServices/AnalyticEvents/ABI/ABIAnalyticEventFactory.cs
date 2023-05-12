@@ -1,4 +1,5 @@
 #if ABI
+
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI
 {
     using System;
@@ -6,7 +7,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using Core.AnalyticServices.Signal;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using Zenject;
@@ -15,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     {
         private readonly SignalBus         signalBus;
         private readonly IAnalyticServices analyticEvents;
-
+        public ABIAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
         public override IEvent InterstitialEligible(string place) => new AdsIntersEligible(place);
 
         public override IEvent InterstitialShow(int level, string place) => new AdInterShow(place);
@@ -115,31 +115,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 { nameof(LevelAchieved), "checkpoint" },
             }
         };
-
-        public ABIAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticEvents)
-        {
-            this.signalBus      = signalBus;
-            this.analyticEvents = analyticEvents;
-            this.signalBus.Subscribe<AdRevenueSignal>(this.OnAdRevenueEvent);
-        }
-
-        private void OnAdRevenueEvent(AdRevenueSignal obj)
-        {
-            this.analyticEvents.Track(new CustomEvent()
-            {
-                EventName = "ad_impression",
-                EventProperties = new Dictionary<string, object>()
-                {
-                    { "ad_platform", obj.AdsRevenueEvent.AdsRevenueSourceId },
-                    { "ad_source", obj.AdsRevenueEvent.AdNetwork },
-                    { "ad_unit_name", obj.AdsRevenueEvent.AdUnit },
-                    { "ad_format", obj.AdsRevenueEvent.AdFormat },
-                    { "placement", obj.AdsRevenueEvent.Placement },
-                    { "currency", obj.AdsRevenueEvent.Currency },
-                    { "value", obj.AdsRevenueEvent.Revenue },
-                }
-            });
-        }
     }
 }
 #endif

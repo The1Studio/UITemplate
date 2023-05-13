@@ -5,13 +5,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
     using Core.AdsServices;
     using global::Models;
     using UnityEngine;
+    using UnityEngine.Serialization;
 
     [Serializable]
     [CreateAssetMenu(fileName = "AdmobAOAConfig", menuName = "Configs/AdmobAOAConfig", order = 0)]
     public class AdmobAOAConfig : ScriptableObject, IGameConfig
     {
-        [SerializeField] private List<string> listAoaAppId    = new();
-        [SerializeField] private List<string> listAoaIOSAppId = new();
+        [FormerlySerializedAs("listAoaAppId")] [SerializeField]
+        private List<string> listAoaAdId = new();
+
+        [FormerlySerializedAs("listAoaIOSAppId")] [SerializeField]
+        private List<string> listAoaIOSAdId = new();
 
         [SerializeField] private int adMobAOAOpenAppThreshold = 5;
 
@@ -23,7 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
         [SerializeField] private List<string> listNativeAndroidId = new();
         [SerializeField] private List<string> listNativeIOSId     = new();
 
-        public List<string> ListAoaAppId             => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor or RuntimePlatform.OSXEditor ? this.listAoaAppId : this.listAoaIOSAppId;
+        public List<string> ListAoaAppId             => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor or RuntimePlatform.OSXEditor ? this.listAoaAdId : this.listAoaIOSAdId;
         public List<string> ListMRecId               => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor or RuntimePlatform.OSXEditor ? this.listMRecAndroidId : this.listMRecIOSId;
         public List<string> ListNativeId             => Application.platform is RuntimePlatform.Android or RuntimePlatform.WindowsEditor or RuntimePlatform.OSXEditor ? this.listNativeAndroidId : this.listNativeIOSId;
         public int          AdMObAOAOpenAppThreshold => this.adMobAOAOpenAppThreshold;

@@ -1,12 +1,11 @@
 namespace UITemplate.Editor
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using GameFoundation.Scripts.Interfaces;
-    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Scripts.Utilities.UserData;
     using Newtonsoft.Json;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
@@ -35,7 +34,7 @@ namespace UITemplate.Editor
                 return;
             }
 
-            var handleLocalDataServices = this.GetCurrentContainer().Resolve<HandleLocalDataServices>();
+            var handleLocalDataServices = this.GetCurrentContainer().Resolve<HandleLocalUserDataServices>();
             var cacheFieldInfo = handleLocalDataServices.GetType()
                                                         .GetField("localDataCaches", BindingFlags.Instance | BindingFlags.NonPublic);
             var localDataCaches = cacheFieldInfo?.GetValue(handleLocalDataServices) as Dictionary<string, object>;

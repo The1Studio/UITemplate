@@ -1,9 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using System;
-    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Scripts.Utilities.UserData;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using Zenject;
@@ -20,7 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         private void BindLocalData()
         {
             var logger             = this.Container.Resolve<ILogService>();
-            var handleDataServices = this.Container.Resolve<HandleLocalDataServices>();
+            var handleDataServices = this.Container.Resolve<IHandleUserDataServices>();
             var listLocalData      = ReflectionUtils.GetAllDerivedTypes<IUITemplateLocalData>();
 
             foreach (var localDataType in listLocalData)

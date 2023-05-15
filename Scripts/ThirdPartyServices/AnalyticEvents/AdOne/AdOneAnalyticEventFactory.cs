@@ -1,14 +1,17 @@
 #if ADONE
+
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.AdOne
 {
     using System;
     using System.Collections.Generic;
+    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using Zenject;
 
     public class AdOneAnalyticEventFactory : BaseAnalyticEventFactory
     {
@@ -19,9 +22,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         #endregion
 
-        public AdOneAnalyticEventFactory(IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController)
+        public AdOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController) : base(
+            signalBus, analyticServices)
         {
-            this.internetService = internetService;
+            this.internetService               = internetService;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 

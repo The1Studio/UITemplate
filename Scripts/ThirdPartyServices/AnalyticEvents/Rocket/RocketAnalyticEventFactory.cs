@@ -1,15 +1,19 @@
 #if ROCKET
+
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket
 {
     using System;
     using System.Collections.Generic;
+    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
+    using Zenject;
 
     public class RocketAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        public RocketAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
         public override IEvent InterstitialEligible(string place) => new CustomEvent();
 
         public override IEvent InterstitialShow(int level, string place) => new InterstitialShow(level, place);
@@ -68,7 +72,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
         public override string TotalVirtualCurrencySpentProperty  => "total_spent";
         public override string TotalVirtualCurrencyEarnedProperty => "total_earn";
         public override string DaysPlayedProperty                 => "days_playing";
-        
 
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {

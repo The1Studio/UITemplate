@@ -1,9 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 {
+    using System.Collections.Generic;
+    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using Core.AnalyticServices.Signal;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket;
+    using Zenject;
     using LevelSkipped = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket.LevelSkipped;
     using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket.LevelStart;
 
@@ -75,5 +79,33 @@
         public virtual AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new();
 
         public virtual AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new();
+
+        protected virtual string EvenName { get; } = "ad_impression";
+
+        private readonly IAnalyticServices analyticServices;
+
+        protected BaseAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
+        {
+            this.analyticServices = analyticServices;
+            signalBus.Subscribe<AdRevenueSignal>(this.OnAdsRevenue);
+        }
+
+        private void OnAdsRevenue(AdRevenueSignal obj)
+        {
+            this.analyticServices.Track(new CustomEvent()
+            {
+                EventName = this.EvenName,
+                EventProperties = new Dictionary<string, object>()
+                {
+                    { "ad_platform", obj.AdsRevenueEvent.AdsRevenueSourceId },
+                    { "ad_source", obj.AdsRevenueEvent.AdNetwork },
+                    { "ad_unit_name", obj.AdsRevenueEvent.AdUnit },
+                    { "ad_format", obj.AdsRevenueEvent.AdFormat },
+                    { "placement", obj.AdsRevenueEvent.Placement },
+                    { "currency", obj.AdsRevenueEvent.Currency },
+                    { "value", obj.AdsRevenueEvent.Revenue },
+                }
+            });
+        }
     }
 }

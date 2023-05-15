@@ -5,6 +5,7 @@
     using System.Linq;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities;
+    using GameFoundation.Scripts.Utilities.UserData;
     using UniRx;
     using UnityEngine;
     using UnityEngine.UI;
@@ -160,7 +161,7 @@
 
         public static void BindLocalData<TLocalData>(this DiContainer container) where TLocalData : class, ILocalData, new()
         {
-            container.Bind<TLocalData>().FromResolveGetter<HandleLocalDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();
+            container.Bind<TLocalData>().FromResolveGetter<HandleLocalUserDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();
         }
     }
 }

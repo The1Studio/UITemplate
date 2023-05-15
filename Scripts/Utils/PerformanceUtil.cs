@@ -12,7 +12,7 @@
 
     public class PerformanceUtil
     {
-        public Quality CheckDevicePerformance()
+        public static Quality CheckDevicePerformance()
         {
             Quality quality;
 
@@ -33,7 +33,7 @@
             return quality;
         }
         
-        public Quality CheckDevicePerformanceByVram()
+        public static Quality CheckDevicePerformanceByVram()
         {
             Quality deviceQuality;
 

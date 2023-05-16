@@ -154,6 +154,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
         [Header("ADJUST")]                 public bool adjust;
         [Header("FIREBASE_REMOTE_CONFIG")] public bool fireBaseRemoteConfig;
         [Header("FIREBASE_SDK_EXISTS")]    public bool fireBaseSDKExists;
+        [Header("FB_INSTANT")]             public bool fbInstant;
     }
 
     [Serializable]

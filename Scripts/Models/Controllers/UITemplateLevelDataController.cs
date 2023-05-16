@@ -77,8 +77,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).WinCount++;
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = time, CurrentIdToValue = null });
+            if(GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.uiTemplateUserLevelData.CurrentLevel++;
-            if(GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
         }
 
         /// <summary>

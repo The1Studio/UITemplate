@@ -112,6 +112,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(AdsRevenueEvent), "ad_impression_abi" },
+                { "AdsRevenueSourceId", "ad_platform" },
+                { "AdNetwork", "ad_source" },
+                { "AdUnit", "ad_unit_name" },
+                { "AdFormat", "ad_format" },
+                { "Placement", "placement" },
+                { "Currency", "currency" },
+                { "Revenue", "value" },
                 { nameof(LevelAchieved), "checkpoint" },
             }
         };

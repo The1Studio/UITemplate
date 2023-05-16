@@ -6,7 +6,6 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
     using System.Reflection;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using UnityEditor;
-    using UnityEditor.Compilation;
     using UnityEngine;
 
     [Serializable]
@@ -155,6 +154,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
         [Header("FIREBASE_REMOTE_CONFIG")] public bool fireBaseRemoteConfig;
         [Header("FIREBASE_SDK_EXISTS")]    public bool fireBaseSDKExists;
         [Header("FB_INSTANT")]             public bool fbInstant;
+        [Header("FIREBASE_WEBGL")]         public bool firebaseWebGL;
     }
 
     [Serializable]

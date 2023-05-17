@@ -14,8 +14,10 @@ public static class FireBasePostProcessBuild
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
         if (target != BuildTarget.WebGL) return;
+#if FIREBASE_WEBGL
         //Firebase Process build
         SetUpFirebaseForIndexHtml($"{pathToBuiltProject}/index.html");
+#endif
     }
 
     static void SetUpFirebaseForIndexHtml(string htmlPath)

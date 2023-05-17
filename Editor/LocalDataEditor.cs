@@ -15,7 +15,7 @@ namespace UITemplate.Editor
 
     public class LocalDataEditor : OdinEditorWindow
     {
-        private const string LocalDataPrefix = "LD-";
+        private const string LocalDataPrefix = BaseHandleUserDataServices.UserDataPrefix;
 
         [OdinSerialize, HideLabel]
         [ListDrawerSettings(Expanded = true, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]

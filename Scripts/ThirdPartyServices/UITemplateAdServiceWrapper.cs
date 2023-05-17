@@ -63,7 +63,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (this.isShowBannerAd)
             {
+            #if UNITY_EDITOR
+                this.logService.Log($"Dummy show banner ad");
+            #else
                 this.adServices.ShowBannerAd();
+            #endif
             }
 
             await UniTask.Delay(TimeSpan.FromSeconds(5));
@@ -148,7 +152,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 
-        public virtual bool IsRewardedAdReady(string place) { return this.adServices.IsRewardedAdReady(place); }
+        public virtual bool IsRewardedAdReady(string place)
+        {
+        #if UNITY_EDITOR
+            this.logService.Log($"Dummy return isRewardedAdReady");
+            return false;
+        #else
+            return this.adServices.IsRewardedAdReady(place);
+        #endif
+            
+        }
 
         public virtual void RewardedAdOffer(string place) { this.signalBus.Fire(new RewardedAdOfferSignal(place)); }
 

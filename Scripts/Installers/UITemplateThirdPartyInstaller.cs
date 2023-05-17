@@ -29,11 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             AnalyticServicesInstaller.Install(this.Container);
             FirebaseRemoteConfigInstaller.Install(this.Container);
 
-#if FIREBASE_REMOTE_CONFIG
-            this.Container.BindInterfacesTo<UITemplateFirebaseRemoteConfig>().FromNewComponentOnNewGameObject().AsCached().NonLazy();
-#else
-            this.Container.Bind<IUITemplateRemoteConfig>().To<UITemplateDummyManager>().AsCached().NonLazy();
-#endif
+
 
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<BaseAnalyticEventFactory>();
             var listFactory = this.Container.ResolveAll<IAnalyticEventFactory>();

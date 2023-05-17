@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.LogService;
+    using ServiceImplementation.FireBaseRemoteConfig;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE;
@@ -56,7 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             this.Container.Resolve<SignalBus>().Subscribe<RemoteConfigInitializeSucceededSignal>(() =>
             {
-                var remoteConfig = this.Container.Resolve<IUITemplateRemoteConfig>();
+                var remoteConfig = this.Container.Resolve<IRemoteConfig>();
                 var devices      = remoteConfig.GetRemoteConfigStringValue(debugKey, "");
 
                 if (devices.IsNullOrEmpty())

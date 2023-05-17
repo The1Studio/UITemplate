@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+    using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;

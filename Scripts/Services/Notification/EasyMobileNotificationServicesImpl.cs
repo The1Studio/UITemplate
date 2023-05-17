@@ -16,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Zenject;
     using Random = UnityEngine.Random;
     using EasyMobile;
+    using ServiceImplementation.FireBaseRemoteConfig;
     using RemoteNotification = EasyMobile.RemoteNotification;
     using LocalNotification = EasyMobile.LocalNotification;
 

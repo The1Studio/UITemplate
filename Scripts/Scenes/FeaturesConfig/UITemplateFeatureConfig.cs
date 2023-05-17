@@ -1,6 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
 {
-    using TheOneStudio.UITemplate.UITemplate.Interfaces;
+    using ServiceImplementation.FireBaseRemoteConfig;
     using Zenject;
 
     public class UITemplateFeatureConfig : IInitializable
@@ -16,9 +16,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
         private const string IsVFXEnableKey         = "IsVFXEnable";
         private const string IsSFXEnableKey         = "IsSFXEnable";      
         
-        private readonly IUITemplateRemoteConfig uiTemplateRemoteConfig;
+        private readonly IRemoteConfig uiTemplateRemoteConfig;
 
-        public UITemplateFeatureConfig(IUITemplateRemoteConfig uiTemplateRemoteConfig)
+        public UITemplateFeatureConfig(IRemoteConfig uiTemplateRemoteConfig)
         {
             this.uiTemplateRemoteConfig = uiTemplateRemoteConfig;
         }

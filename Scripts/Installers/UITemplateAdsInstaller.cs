@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using global::Models;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.AdsServices.EasyMobile;
+    using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
@@ -65,7 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             {
                 //Configure ad service
                 this.Container.Resolve<AdServicesConfig>().MinPauseSecondToShowAoaAd =
-                    this.Container.Resolve<IUITemplateRemoteConfig>().GetRemoteConfigIntValue(MinPauseSecondsToShowAoaRemoteConfigKey, 0);
+                    this.Container.Resolve<IRemoteConfig>().GetRemoteConfigIntValue(MinPauseSecondsToShowAoaRemoteConfigKey, 0);
             }
 
             this.Container.Resolve<SignalBus>().Subscribe<RemoteConfigInitializeSucceededSignal>(OnFirebaseInitialized);

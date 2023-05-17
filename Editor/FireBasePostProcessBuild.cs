@@ -24,6 +24,13 @@ public static class FireBasePostProcessBuild
     {
         var firebaseWebGlPath = $"{Application.dataPath}/FirebaseWebglConfig.txt";
 
+        if (!File.Exists(firebaseWebGlPath))
+        {
+            Debug.LogError($"Waring you are using firebase webgl but you don't have the file FirebaseWebglConfig.txt in {Application.dataPath}");
+
+            return;
+        }
+
         var fileStream = new FileStream(firebaseWebGlPath, FileMode.Open, FileAccess.Read);
 
         using var streamReader = new StreamReader(fileStream);

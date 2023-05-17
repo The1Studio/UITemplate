@@ -29,7 +29,8 @@
         "EasyMobile.Scripts",
         "3rd.IAP",
         "Reporter.Scripts",
-        "UltimateJoystick.Scripts"
+        "UltimateJoystick.Scripts",
+        "FirebaseRemoteConfig"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

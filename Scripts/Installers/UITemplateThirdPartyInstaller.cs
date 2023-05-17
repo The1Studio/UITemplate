@@ -5,11 +5,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.FirebaseAnalyticTracker;
+    using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using Zenject;
 #if !FIREBASE_REMOTE_CONFIG
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
+
 #elif FIREBASE_REMOTE_CONFIG
     using TheOneStudio.UITemplate.UITemplate.Services;
 #endif
@@ -25,6 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Third party service
             AdServiceInstaller.Install(this.Container);
             AnalyticServicesInstaller.Install(this.Container);
+            FirebaseRemoteConfigInstaller.Install(this.Container);
 
 #if FIREBASE_REMOTE_CONFIG
             this.Container.BindInterfacesTo<UITemplateFirebaseRemoteConfig>().FromNewComponentOnNewGameObject().AsCached().NonLazy();
@@ -33,7 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
 
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<BaseAnalyticEventFactory>();
-            var listFactory     = this.Container.ResolveAll<IAnalyticEventFactory>();
+            var listFactory = this.Container.ResolveAll<IAnalyticEventFactory>();
 
             if (listFactory.Count > 0)
             {

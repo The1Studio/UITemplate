@@ -20,4 +20,6 @@
    <assembly fullname="Newtonsoft.Json" preserve="all"> </assembly>
    <assembly fullname="AppsFlyer" preserve="all"> </assembly>
    <assembly fullname="MaxSdk.Scripts" preserve="all"> </assembly>
+   <assembly fullname="FirebaseRemoteConfig" preserve="all"> </assembly>
+   <assembly fullname="FBInstant" preserve="all"> </assembly>
 </linker>

@@ -2,23 +2,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using System.Linq;
     using GameFoundation.Scripts.Utilities.LogService;
+    using ServiceImplementation.FBInstant;
     using ServiceImplementation.FireBaseRemoteConfig;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE;
-    using TheOneStudio.UITemplate.UITemplate.Interfaces;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine;
     using Zenject;
-
 #if UITEMPLATE_DECORATION
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
-#endif
-
-#if FB_INSTANT
-    using ServiceImplementation.FBInstant;
 #endif
 
     public class UITemplateInstaller : Installer<GameObject, ToastController, UITemplateInstaller>
@@ -42,9 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UnityIapInstaller.Install(this.Container);
             FTUEInstaller.Install(this.Container);
             UITemplateServicesInstaller.Install(this.Container, this.soundGroupPrefab, this.toastCanvas);
-#if FB_INSTANT
             FBInstantInstaller.Install(this.Container); // depend on UITemplateThirdPartyInstaller for signals
-#endif
             UITemplateLocalDataInstaller.Install(this.Container); // bind after FBInstantInstaller for remote user data
             UITemplateThirdPartyInstaller.Install(this.Container); // bind after UITemplateLocalDataInstaller for local data analytics
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals

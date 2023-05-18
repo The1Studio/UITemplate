@@ -1,9 +1,11 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using System;
+    using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.UserData;
+    using ModestTree;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using Zenject;
@@ -19,23 +21,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         private void BindLocalData()
         {
-            var logger             = this.Container.Resolve<ILogService>();
-            var handleDataServices = this.Container.Resolve<IHandleUserDataServices>();
-            var listLocalData      = ReflectionUtils.GetAllDerivedTypes<IUITemplateLocalData>();
+            var logger            = this.Container.Resolve<ILogService>();
+            var handleDataService = this.Container.Resolve<IHandleUserDataServices>();
+            var listLocalData     = ReflectionUtils.GetAllDerivedTypes<ILocalData>();
 
             foreach (var localDataType in listLocalData)
             {
-                var localData = handleDataServices.Load(localDataType);
-                var property  = localDataType.GetProperty("ControllerType");
+                var localData = handleDataService.Load(localDataType);
 
-                if (property.GetValue(localData) == null)
+                if (localDataType.DerivesFrom<IUITemplateLocalData>() && localDataType.GetProperty(nameof(IUITemplateLocalData.ControllerType))?.GetValue(localData) is Type controllerType)
                 {
-                    logger.Error($"Waring, the local data {localDataType.Name} has no controller, consider to create new controller");
-                    this.Container.Bind(localDataType).FromInstance(localData).AsCached();
+                    this.Container.Bind(localDataType).FromInstance(localData).WhenInjectedInto(controllerType);
                 }
                 else
                 {
-                    this.Container.Bind(localDataType).FromInstance(localData).WhenInjectedInto((Type)property.GetValue(localData));
+                    logger.Error($"Waring, the local data {localDataType.Name} has no controller, consider to create new controller");
+                    this.Container.Bind(localDataType).FromInstance(localData).AsCached();
                 }
             }
         }

@@ -30,6 +30,7 @@
         "3rd.IAP",
         "Reporter.Scripts",
         "UltimateJoystick.Scripts",
+        "3rd.FBInstant",
         "FirebaseRemoteConfig"
     ],
     "includePlatforms": [],

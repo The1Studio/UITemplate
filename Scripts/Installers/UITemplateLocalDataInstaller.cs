@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using System;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
@@ -14,12 +15,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         public override void InstallBindings()
         {
-            this.BindLocalData();
-            //Data controller
-            this.BindAllController();
+            this.BindLocalData().ContinueWith(this.BindAllController).Forget();
         }
 
-        private void BindLocalData()
+        private async UniTask BindLocalData()
         {
             var logger            = this.Container.Resolve<ILogService>();
             var handleDataService = this.Container.Resolve<IHandleUserDataServices>();
@@ -27,15 +26,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             foreach (var localDataType in listLocalData)
             {
-                var localData = handleDataService.Load(localDataType);
+                var localData = await handleDataService.Load(localDataType);
 
-                if (localDataType.DerivesFrom<IUITemplateLocalData>() && localDataType.GetProperty(nameof(IUITemplateLocalData.ControllerType))?.GetValue(localData) is Type controllerType)
+                if (localDataType.DerivesFrom<IUITemplateLocalData>())
                 {
-                    this.Container.Bind(localDataType).FromInstance(localData).WhenInjectedInto(controllerType);
+                    if (localDataType.GetProperty(nameof(IUITemplateLocalData.ControllerType))?.GetValue(localData) is Type controllerType)
+                    {
+                        this.Container.Bind(localDataType).FromInstance(localData).WhenInjectedInto(controllerType);
+                    }
+                    else
+                    {
+                        logger.Error($"Waring, the local data {localDataType.Name} has no controller, consider to create new controller");
+                        this.Container.Bind(localDataType).FromInstance(localData).AsCached();
+                    }
                 }
                 else
                 {
-                    logger.Error($"Waring, the local data {localDataType.Name} has no controller, consider to create new controller");
                     this.Container.Bind(localDataType).FromInstance(localData).AsCached();
                 }
             }

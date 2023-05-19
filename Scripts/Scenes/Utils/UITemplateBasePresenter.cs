@@ -67,14 +67,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 // At First, set all active state to false
                 if (!creativeService.IsShowUI)
                 {
-                    SetDeActiveRecursive(presenter.View.RectTransform, creativeService.IsShowUI, oldActiveStates);
+                    this.originalStates.Clear();
                 }
-                else
-                {
-                    SetActiveRecursive(presenter.View.RectTransform, this.originalStates);
-                }
-                
-
+                SetActiveRecursive(presenter.View.RectTransform, creativeService.IsShowUI, oldActiveStates);
                 // Retrieve all fields from the view
                 foreach (var fieldInfo in GetAllFieldInfosIncludeBaseClass(presenter.View.GetType()))
                 {
@@ -95,20 +90,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 }
             });
             
-            void SetDeActiveRecursive(Transform transform, bool active, Dictionary<GameObject, bool> oldActiveStates = null)
+            void SetActiveRecursive(Transform transform, bool active, Dictionary<GameObject, bool> oldActiveStates = null)
             {
                 try
                 {
-                    if (oldActiveStates is not null)
-                        oldActiveStates[transform.gameObject] = transform.gameObject.activeSelf;
-                    if (!this.originalStates.ContainsKey(transform.gameObject))
+                    var gameObject = transform.gameObject;
+                    if (!active)
                     {
-                        this.originalStates.Add(transform.gameObject,transform.gameObject.activeSelf);
+                        if (oldActiveStates is not null)
+                            oldActiveStates[gameObject] = transform.gameObject.activeSelf;
+                        if (!this.originalStates.ContainsKey(transform.gameObject))
+                        {
+                            this.originalStates.Add(transform.gameObject,gameObject.activeSelf);
+                        }
+                        transform.gameObject.SetActive(active);
                     }
-                    transform.gameObject.SetActive(active);
+                    else
+                    {
+                        if (this.originalStates is not null)
+                        {
+                            transform.gameObject.SetActive(this.originalStates[transform.gameObject]);
+                        }
+                    }
                     foreach (Transform child in transform)
                     {
-                        SetDeActiveRecursive(child, active, oldActiveStates);
+                        SetActiveRecursive(child, active, oldActiveStates);
                     }
                 }
                 catch (Exception)
@@ -117,31 +123,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 }
             }
             
-            void SetActiveRecursive(Transform transform, Dictionary<GameObject, bool> oldActiveStates = null)
-            {
-                try
-                {
-                    if (oldActiveStates is not null)
-                    {
-                        transform.gameObject.SetActive(oldActiveStates[transform.gameObject]);
-                    }
-                    foreach (Transform child in transform)
-                    {
-                        SetActiveRecursive(child, oldActiveStates);
-                    }
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
 
             void SetActiveForBranch(Transform transform, Transform topParent, bool active)
             {
                 transform.gameObject.SetActive(active);
                 foreach (Transform child in transform)
                 {
-                    SetDeActiveRecursive(child, active);
+                    SetActiveRecursive(child, active);
                 }
 
                 var parent = transform.parent;

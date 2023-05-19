@@ -21,6 +21,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
     {
         private readonly IAnalyticServices       analyticService;
         private readonly UITemplateSoundServices soundServices;
+        private Dictionary<GameObject,bool>              originalStates = new();
         
         public UITemplateBaseScreenUtils()
         {
@@ -56,16 +57,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 #if CREATIVE
         public void SetupCreativeMode<TView>(BaseScreenPresenter<TView> presenter) where TView : IScreenView
         {
-            var creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
+            var           creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
             creativeService.OnTripleTap.AddListener(() =>
             {
                 // If the view is not marked as HideOnCreative, then do nothing with it
                 if (presenter.View.GetType().GetCustomAttribute<CreativeAttribute>() is { HideOnCreative: false }) return;
-
                 var oldActiveStates = new Dictionary<GameObject, bool>();
 
                 // At First, set all active state to false
-                SetActiveRecursive(presenter.View.RectTransform, creativeService.IsShowUI, oldActiveStates);
+                if (!creativeService.IsShowUI)
+                {
+                    SetDeActiveRecursive(presenter.View.RectTransform, creativeService.IsShowUI, oldActiveStates);
+                }
+                else
+                {
+                    SetActiveRecursive(presenter.View.RectTransform, this.originalStates);
+                }
+                
 
                 // Retrieve all fields from the view
                 foreach (var fieldInfo in GetAllFieldInfosIncludeBaseClass(presenter.View.GetType()))
@@ -86,17 +94,40 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                     }
                 }
             });
-
-            void SetActiveRecursive(Transform transform, bool active, Dictionary<GameObject, bool> oldActiveStates = null)
+            
+            void SetDeActiveRecursive(Transform transform, bool active, Dictionary<GameObject, bool> oldActiveStates = null)
             {
                 try
                 {
                     if (oldActiveStates is not null)
                         oldActiveStates[transform.gameObject] = transform.gameObject.activeSelf;
+                    if (!this.originalStates.ContainsKey(transform.gameObject))
+                    {
+                        this.originalStates.Add(transform.gameObject,transform.gameObject.activeSelf);
+                    }
                     transform.gameObject.SetActive(active);
                     foreach (Transform child in transform)
                     {
-                        SetActiveRecursive(child, active, oldActiveStates);
+                        SetDeActiveRecursive(child, active, oldActiveStates);
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+            
+            void SetActiveRecursive(Transform transform, Dictionary<GameObject, bool> oldActiveStates = null)
+            {
+                try
+                {
+                    if (oldActiveStates is not null)
+                    {
+                        transform.gameObject.SetActive(oldActiveStates[transform.gameObject]);
+                    }
+                    foreach (Transform child in transform)
+                    {
+                        SetActiveRecursive(child, oldActiveStates);
                     }
                 }
                 catch (Exception)
@@ -110,7 +141,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 transform.gameObject.SetActive(active);
                 foreach (Transform child in transform)
                 {
-                    SetActiveRecursive(child, active);
+                    SetDeActiveRecursive(child, active);
                 }
 
                 var parent = transform.parent;

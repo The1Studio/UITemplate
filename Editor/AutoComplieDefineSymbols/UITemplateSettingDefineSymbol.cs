@@ -184,6 +184,7 @@ namespace UITemplate.Editor.AutoComplieDefineSymbols
         [Header("UITEMPLATE_DECORATION")] public bool decoration;
         [Header("SHOW_FPS")]              public bool showFPS;
         [Header("ENABLE_REPORTER")]       public bool showReporterRuntime;
+        [Header("FB_INSTANT_PRODUCTION")] public bool fbInstantProduction;
     }
 
     [Serializable]

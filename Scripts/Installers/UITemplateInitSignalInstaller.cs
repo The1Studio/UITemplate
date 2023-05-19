@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+    using GameFoundation.Scripts.Utilities.UserData;
     using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration;
@@ -38,6 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
             this.Container.DeclareSignal<BuildingOnMouseDownSignal>();
             this.Container.DeclareSignal<UITemplateUnlockBuildingSignal>();
+            this.Container.DeclareSignal<UserDataLoadedSignal>();
         }
     }
 }

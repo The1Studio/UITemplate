@@ -1,36 +1,31 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using System;
-    using System.Linq;
-    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
-    using GameFoundation.Scripts.Utilities.UserData;
     using ModestTree;
     using Sirenix.Utilities;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using TheOneStudio.UITemplate.UITemplate.UserData;
     using Zenject;
 
     public class UITemplateLocalDataInstaller : Installer<UITemplateLocalDataInstaller>
     {
         public override void InstallBindings()
         {
-            this.BindLocalData().ContinueWith(this.BindAllController).Forget();
+            this.BindLocalData();
+            this.BindAllController();
         }
 
-        private async UniTask BindLocalData()
+        private void BindLocalData()
         {
-            var logger            = this.Container.Resolve<ILogService>();
-            var handleDataService = this.Container.Resolve<IHandleUserDataServices>();
-            var types             = ReflectionUtils.GetAllDerivedTypes<ILocalData>().ToArray();
-            var datas             = await handleDataService.Load(types);
+            var logger = this.Container.Resolve<ILogService>();
 
-            Enumerable.Zip(types, datas, (type, data) => (type, data)).ForEach(p =>
+            ReflectionUtils.GetAllDerivedTypes<ILocalData>().ForEach(type =>
             {
-                var type = p.type;
-                var data = p.data;
+                var data = Activator.CreateInstance(type);
                 if (type.DerivesFrom<IUITemplateLocalData>())
                 {
                     if (type.GetProperty(nameof(IUITemplateLocalData.ControllerType))?.GetValue(data) is Type controllerType)
@@ -48,6 +43,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
                     this.Container.Bind(type).FromInstance(data).AsCached();
                 }
             });
+
+            this.Container.Bind<UserDataManager>().AsCached();
         }
 
         private void BindAllController()

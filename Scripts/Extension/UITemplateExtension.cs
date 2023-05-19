@@ -157,10 +157,5 @@
 
             return new Vector3(x, y, z);
         }
-
-        public static void BindLocalData<TLocalData>(this DiContainer container) where TLocalData : class, ILocalData, new()
-        {
-            container.Bind<TLocalData>().FromResolveGetter<IHandleUserDataServices>(services => services.Load<TLocalData>()).AsCached().NonLazy();
-        }
     }
 }

@@ -45,6 +45,7 @@
         "Firebase.RemoteConfig.dll",
         "Firebase.TaskExtension.dll",
         "Firebase.App.dll",
+        "Sirenix.Utilities.dll",
         "Sirenix.OdinInspector.Attributes.dll"
     ],
     "autoReferenced": true,

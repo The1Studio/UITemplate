@@ -40,7 +40,7 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
                 }
                 else
                 {
-                    data.CopyTo(this.container.Resolve(type) as ILocalData);
+                    data.CopyTo(this.container.Resolve(type));
                 }
             });
             this.signalBus.Fire<UserDataLoadedSignal>();

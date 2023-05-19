@@ -2124,6 +2124,7 @@ MonoBehaviour:
   screenTransition: {fileID: 0}
   PlayButton: {fileID: 2194286532512647466}
   LevelButton: {fileID: 4854712175978970371}
+  ShopButton: {fileID: 1280079609604827122}
   CoinText: {fileID: 957075819435587577}
   SettingButtonView: {fileID: 1745219867343550646}
 --- !u!224 &5790757826326026634 stripped

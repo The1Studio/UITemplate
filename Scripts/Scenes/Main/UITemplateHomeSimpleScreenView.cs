@@ -87,7 +87,7 @@
 
         public override UniTask BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
+            //this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             return UniTask.CompletedTask;
         }
 

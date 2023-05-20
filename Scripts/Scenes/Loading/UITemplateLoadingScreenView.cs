@@ -61,6 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private DateTime                startedLoadingTime;
         private DateTime                startedShowingAOATime;
         private bool                    isUserDataLoaded;
+        private bool                    isLoaded;
 
         protected virtual string NextSceneName               => "1.UITemplateMainScene";
         
@@ -129,12 +130,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 this.View.SetLoadingProgressValue(progressInView);
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             }
-
-            await UniTask.WaitUntil(() => this.isUserDataLoaded);
+            this.isLoaded = true;
+            
+            await UniTask.WaitUntil(this.IsLoadingFinished);
 
             await this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
             this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
+        
+        protected virtual bool IsLoadingFinished() => this.isLoaded && this.isUserDataLoaded;
 
         private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
 

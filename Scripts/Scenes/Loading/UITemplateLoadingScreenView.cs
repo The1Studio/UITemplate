@@ -35,7 +35,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
         private const string LoadingBlueprintStepName = "Loading static data...";
-        private const int    DefaultLoadingTime       = 5;
         private const int    MinLoadingTime           = 1;
 
         #region Inject
@@ -46,14 +45,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
         private readonly UserDataManager            userDataManager;
 
-        public UITemplateLoadingScreenPresenter(
-            SignalBus signalBus,
-            BlueprintReaderManager blueprintReaderManager,
-            SceneDirector sceneDirector,
-            IAOAAdService aoaAdService,
-            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            UserDataManager userDataManager
-        ) : base(signalBus)
+        public UITemplateLoadingScreenPresenter(SignalBus                  signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService,
+                                                UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UserDataManager userDataManager) : base(signalBus)
         {
             this.blueprintReaderManager     = blueprintReaderManager;
             this.sceneDirector              = sceneDirector;
@@ -70,7 +63,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private bool                    isUserDataLoaded;
 
         protected virtual string NextSceneName               => "1.UITemplateMainScene";
-        protected virtual float  MinimumLoadingBlueprintTime { get; set; } = DefaultLoadingTime; //seconds
+        
+        protected virtual float  MinimumLoadingBlueprintTime { get; set; } //seconds
 
         protected override void OnViewReady()
         {
@@ -82,7 +76,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             if (this.uiTemplateAdServiceWrapper.IsRemovedAds)
             {
-                this.MinimumLoadingBlueprintTime = DefaultLoadingTime;
+                this.MinimumLoadingBlueprintTime = MinLoadingTime;
+            }
+            else
+            {
+                this.MinimumLoadingBlueprintTime = this.aoaAdService.LoadingTimeToShowAOA;
             }
 
             this.startedLoadingTime = DateTime.Now;
@@ -138,14 +136,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
 
-        private void OnLoadProgress(IProgressPercent obj)
-        {
-            this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent;
-        }
+        private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
 
-        private void OnUserDataLoaded()
-        {
-            this.isUserDataLoaded = true;
-        }
+        private void OnUserDataLoaded() { this.isUserDataLoaded = true; }
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4627300068687190699}
   - component: {fileID: 129578480295625134}
   - component: {fileID: 7844806319727166619}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: vfx_youaregood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4892,7 +4892,7 @@ GameObject:
   - component: {fileID: 2952688927116794582}
   - component: {fileID: 5510121261620286226}
   - component: {fileID: 7177068539650592225}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: twinkle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

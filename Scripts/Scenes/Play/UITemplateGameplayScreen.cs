@@ -71,7 +71,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         public override UniTask BindData()
         {
             this.View.BtnSkip?.BindData(this.AdPlacement);
-            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
+            //this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
             if (this.View.LevelText != null)
             {
                 this.View.LevelText.text = "Level " + levelDataController.GetCurrentLevelData.Level;
@@ -82,7 +82,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         public override void Dispose()
         {
             this.View.BtnSkip?.Dispose();
-            this.View.CurrencyView.Unsubscribe(this.SignalBus);
+            //this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }
 
         protected virtual async void OnOpenHome() { await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>(); }

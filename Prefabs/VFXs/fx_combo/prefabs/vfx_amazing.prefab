@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6169290826832480878}
   - component: {fileID: 3535419898339509162}
   - component: {fileID: 2233124002340724057}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: twinkle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4881,7 +4881,7 @@ GameObject:
   - component: {fileID: 4418259212108696083}
   - component: {fileID: 8983534798985613590}
   - component: {fileID: 1277314158625838115}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: vfx_amazing
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -50,17 +50,19 @@
 
     public class ItemCollectionItemPresenter : BaseUIItemPresenter<ItemCollectionItemView, ItemCollectionItemModel>
     {
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly UITemplateInventoryDataController  uiTemplateInventoryDataController;
+        private readonly UITemplateItemCollectionViewHelper uiTemplateItemCollectionViewHelper;
 
-        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController) : base(gameAssets)
+        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
+            UITemplateItemCollectionViewHelper uiTemplateItemCollectionViewHelper) : base(gameAssets)
         {
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.uiTemplateInventoryDataController     = uiTemplateInventoryDataController;
+            this.uiTemplateItemCollectionViewHelper = uiTemplateItemCollectionViewHelper;
         }
 
         public override async void BindData(ItemCollectionItemModel param)
         {
-            this.View.imgIcon.sprite = await this.GameAssets.LoadAssetAsync<Sprite>(param.ItemBlueprintRecord.ImageAddress);
-            this.View.txtPrice.text  = $"{param.ShopBlueprintRecord.Price}";
+            this.uiTemplateItemCollectionViewHelper.BindDataItem(param, this.View);
 
             this.View.OnBuyAds         = () => param.OnBuyItem?.Invoke(param);
             this.View.OnBuyCoin        = () => param.OnBuyItem?.Invoke(param);
@@ -71,6 +73,12 @@
             this.View.OnBuyLuckySpin   = () => param.OnBuyItem?.Invoke(param);
             this.View.OnBuyStartPack   = () => param.OnBuyItem?.Invoke(param);
             this.SetButtonStatusAndBorderStatus(param);
+        }
+
+        public override void Dispose()
+        {
+            this.uiTemplateItemCollectionViewHelper.DisposeItem(this.View);
+            base.Dispose();
         }
 
         private void SetButtonStatusAndBorderStatus(ItemCollectionItemModel param)

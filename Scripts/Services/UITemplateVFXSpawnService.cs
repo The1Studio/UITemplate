@@ -17,7 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public UITemplateVFXSpawnService(SignalBus signalBus, IGameAssets gameAssets) { this.gameAssets = gameAssets; }
 
-        public async void SpawnVFX(Transform target, List<string> listVFXKey)
+        public async void SpawnVFX(Transform target, List<string> listVFXKey, bool randomRotate = true, bool isFloat = true)
         {
             var randomIndex = Random.Range(0, listVFXKey.Count - 1);
             var vfxKey      = listVFXKey[randomIndex];
@@ -27,12 +27,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             //spawn random position base on target's position
             position.x += Random.Range(-1f, 1f);
             position.y += Random.Range(0f, 2f);
-            position.z = -1;
+            position.z =  -1;
             // random vfx rotation
-            var rotation = Quaternion.Euler(0, 0, Random.Range(-50, 50));
+            var rotation = randomRotate ? Quaternion.Euler(0, 0, Random.Range(-50, 50)) : Quaternion.identity;
             // spawn vfx
             var vfxObj = vfxPrefab.Spawn(position, rotation);
-            vfxObj.transform.DOMoveY(position.y + 1f, 1f);
+            if (isFloat) vfxObj.transform.DOMoveY(position.y + 1f, 1f);
             await UniTask.Delay(2000);
             vfxObj.Recycle();
         }

@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine;
@@ -33,6 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             Application.targetFrameRate = 60;
             //Helper
             this.Container.Bind<UITemplateAnimationHelper>().AsCached();
+            this.Container.Bind<UITemplateCollectionItemViewHelper>().AsCached();
 
             UITemplateDeclareSignalInstaller.Install(this.Container);
             UnityIapInstaller.Install(this.Container);

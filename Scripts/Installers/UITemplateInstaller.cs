@@ -34,7 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             Application.targetFrameRate = 60;
             //Helper
             this.Container.Bind<UITemplateAnimationHelper>().AsCached();
-            this.Container.Bind<UITemplateItemCollectionViewHelper>().AsCached();
+            this.Container.Bind<UITemplateCollectionItemViewHelper>().AsCached();
 
             UITemplateDeclareSignalInstaller.Install(this.Container);
             UnityIapInstaller.Install(this.Container);

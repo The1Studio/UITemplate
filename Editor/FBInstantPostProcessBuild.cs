@@ -1,4 +1,4 @@
-#if UNITY_WEBGL
+#if FB_INSTANT
 using System.IO;
 using GameFoundation.BuildScripts.Runtime;
 using UnityEditor;
@@ -10,6 +10,7 @@ public static class FBInstantPostProcessBuild
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
         if (target != BuildTarget.WebGL) return;
+
         var webLoaderPath = Path.Combine(pathToBuiltProject, $"Build/{GameVersion.ProjectName}.loader.js");
         var scriptContent = File.ReadAllText(webLoaderPath);
 

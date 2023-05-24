@@ -94,7 +94,7 @@
         public override void Dispose()
         {
             base.Dispose();
-            this.View.CoinText.Unsubscribe(this.SignalBus);
+            //this.View.CoinText.Unsubscribe(this.SignalBus);
         }
 
         #region inject

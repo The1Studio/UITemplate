@@ -9,7 +9,7 @@ public static class FBInstantPostProcessBuild
     [PostProcessBuild]
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
-        if (target != BuildTarget.WebGL) return;
+        // if (target != BuildTarget.WebGL) return;
 
         var webLoaderPath = Path.Combine(pathToBuiltProject, $"Build/{GameVersion.ProjectName}.loader.js");
         var scriptContent = File.ReadAllText(webLoaderPath);

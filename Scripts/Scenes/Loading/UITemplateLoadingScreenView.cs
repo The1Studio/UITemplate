@@ -35,8 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
         private const string LoadingBlueprintStepName = "Loading static data...";
-        private const int    MinLoadingTime           = 2;
-
+        
         #region Inject
 
         private readonly BlueprintReaderManager     blueprintReaderManager;
@@ -65,7 +64,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         protected virtual string NextSceneName               => "1.UITemplateMainScene";
         
-        protected virtual float  MinimumLoadingBlueprintTime { get; set; } //seconds
+        protected virtual float MinimumLoadingBlueprintTime { get; set; } //seconds
+        protected virtual int   MinLoadingTime              => 2;
 
         protected override void OnViewReady()
         {

@@ -344,6 +344,31 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 94c52b4c8eadbf8418123bc022ad608b,
         type: 3}
+    - target: {fileID: 2094710753299755931, guid: 1e21d061560fac941b3696c3ae4eb5eb,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094710753299755931, guid: 1e21d061560fac941b3696c3ae4eb5eb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3367108007005773779, guid: 1e21d061560fac941b3696c3ae4eb5eb,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3367108007005773779, guid: 1e21d061560fac941b3696c3ae4eb5eb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3367108007005773782, guid: 1e21d061560fac941b3696c3ae4eb5eb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3367108008223084253, guid: 1e21d061560fac941b3696c3ae4eb5eb,
         type: 3}
       propertyPath: m_Sprite
@@ -629,6 +654,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3658421728137210260}
     m_Modifications:
+    - target: {fileID: 1983059162431666928, guid: a196ed1290aa2ba4cafcb319cf3d0260,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1983059163653336062, guid: a196ed1290aa2ba4cafcb319cf3d0260,
         type: 3}
       propertyPath: m_Sprite
@@ -639,6 +669,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ButtonMusic
+      objectReference: {fileID: 0}
+    - target: {fileID: 6730268945474412102, guid: a196ed1290aa2ba4cafcb319cf3d0260,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6730268946427613000, guid: a196ed1290aa2ba4cafcb319cf3d0260,
         type: 3}

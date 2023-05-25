@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7972751053129329099
 RectTransform:
   m_ObjectHideFlags: 0
@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -35}
-  m_SizeDelta: {x: 130, y: 470}
+  m_SizeDelta: {x: 130, y: 335}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &426489938546498535
 CanvasRenderer:
@@ -113,8 +113,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -250}
-  m_SizeDelta: {x: 130, y: 500}
+  m_AnchoredPosition: {x: 0, y: -185.98}
+  m_SizeDelta: {x: 130, y: 371.96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7852534262307360002
 GameObject:
@@ -294,6 +294,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: ButtonSetting
       objectReference: {fileID: 0}
+    - target: {fileID: 5382926160646604141, guid: 3342a71ce3f03ef429569dde62d82a34,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1cfc39fccd7ff1f43a5d72ea6962620d,
+        type: 3}
+    - target: {fileID: 7096277137466474448, guid: 3342a71ce3f03ef429569dde62d82a34,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7846812948896481278, guid: 3342a71ce3f03ef429569dde62d82a34,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1cfc39fccd7ff1f43a5d72ea6962620d,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3342a71ce3f03ef429569dde62d82a34, type: 3}
 --- !u!114 &1672815232133978295 stripped
@@ -321,6 +338,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3658421728137210260}
     m_Modifications:
+    - target: {fileID: 2094710752382165653, guid: 1e21d061560fac941b3696c3ae4eb5eb,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 94c52b4c8eadbf8418123bc022ad608b,
+        type: 3}
+    - target: {fileID: 3367108008223084253, guid: 1e21d061560fac941b3696c3ae4eb5eb,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1da2b4f107755364fb9893065e17bac6,
+        type: 3}
     - target: {fileID: 5623638594035051006, guid: 1e21d061560fac941b3696c3ae4eb5eb,
         type: 3}
       propertyPath: m_Name
@@ -568,6 +597,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ButtonVibrate
       objectReference: {fileID: 0}
+    - target: {fileID: 6285916496652462655, guid: 4cbc701829ac7fe458a911ad31e4a011,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4cbc701829ac7fe458a911ad31e4a011, type: 3}
 --- !u!224 &446414894569815737 stripped
@@ -595,11 +629,23 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3658421728137210260}
     m_Modifications:
+    - target: {fileID: 1983059163653336062, guid: a196ed1290aa2ba4cafcb319cf3d0260,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 166b8f1522625254ca5ce30406da63b4,
+        type: 3}
     - target: {fileID: 5118749400546219424, guid: a196ed1290aa2ba4cafcb319cf3d0260,
         type: 3}
       propertyPath: m_Name
       value: ButtonMusic
       objectReference: {fileID: 0}
+    - target: {fileID: 6730268946427613000, guid: a196ed1290aa2ba4cafcb319cf3d0260,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 18bb117b0c9f35845a98133fa79cef78,
+        type: 3}
     - target: {fileID: 6904468312076822776, guid: a196ed1290aa2ba4cafcb319cf3d0260,
         type: 3}
       propertyPath: m_Pivot.x

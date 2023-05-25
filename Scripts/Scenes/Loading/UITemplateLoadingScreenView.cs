@@ -82,11 +82,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             if (this.uiTemplateAdServiceWrapper.IsRemovedAds)
             {
-                this.MinimumLoadingBlueprintTime = MinLoadingTime;
+                this.MinimumLoadingBlueprintTime = this.MinLoadingTime;
             }
             else
             {
-                this.MinimumLoadingBlueprintTime = this.aoaAdService.LoadingTimeToShowAOA;
+                this.MinimumLoadingBlueprintTime = Math.Max(this.aoaAdService.LoadingTimeToShowAOA, this.MinLoadingTime);
             }
 
             this.startedLoadingTime = DateTime.Now;
@@ -113,7 +113,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Unsubscribe<UserDataLoadedSignal>(this.OnUserDataLoaded);
         }
 
-        private void OnAppOpenFullScreenContentOpened() { this.MinimumLoadingBlueprintTime = MinLoadingTime; }
+        private void OnAppOpenFullScreenContentOpened() { this.MinimumLoadingBlueprintTime = this.MinLoadingTime; }
 
         private async void ShowLoadingProgress(string loadingContent)
         {

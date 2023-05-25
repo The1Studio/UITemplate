@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.ObjectPool;
     using GameFoundation.Scripts.Utilities.UserData;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -63,6 +64,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private bool                    isUserDataLoaded;
         private bool                    isLoaded;
 
+        private static GameObject poolContainer;
+
         protected virtual string NextSceneName               => "1.UITemplateMainScene";
         
         protected virtual float  MinimumLoadingBlueprintTime { get; set; } //seconds
@@ -71,6 +74,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             base.OnViewReady();
             this.OpenViewAsync().Forget();
+
+            this.CreatePoolContainer();
         }
 
         public override UniTask BindData()
@@ -143,5 +148,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
 
         private void OnUserDataLoaded() { this.isUserDataLoaded = true; }
+
+        private void CreatePoolContainer()
+        {
+            poolContainer = new GameObject("ObjectPoolContainer");
+            GameObject.DontDestroyOnLoad(poolContainer);
+        }
+
+        public void CreatePoolDontDestroy(GameObject asset, int count = 1)
+        {
+            if (poolContainer == null)
+            {
+                this.CreatePoolContainer();
+            }
+            asset.CreatePool(count, poolContainer.gameObject);
+        }
     }
 }

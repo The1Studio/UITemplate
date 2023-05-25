@@ -69,6 +69,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             await UniTask.Delay(TimeSpan.FromSeconds(5));
             this.ShowBannerInterval();
         }
+        
+        public void ShowBannerNonInterval()
+        {
+            this.adServices.ShowBannerAd();
+        }
 
         public virtual void HideBannerAd()
         {

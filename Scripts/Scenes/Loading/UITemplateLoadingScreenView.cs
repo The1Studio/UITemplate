@@ -35,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
         private const string LoadingBlueprintStepName = "Loading static data...";
-        private const int    MinLoadingTime           = 1;
+        private const int    MinLoadingTime           = 2;
 
         #region Inject
 

@@ -44,15 +44,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private readonly IAOAAdService              aoaAdService;
         private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
         private readonly UserDataManager            userDataManager;
+        private readonly ObjectPoolManager          objectPoolManager;
 
         public UITemplateLoadingScreenPresenter(SignalBus                  signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService,
-                                                UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UserDataManager userDataManager) : base(signalBus)
+                                                UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UserDataManager userDataManager, ObjectPoolManager objectPoolManager) : base(signalBus)
         {
             this.blueprintReaderManager     = blueprintReaderManager;
             this.sceneDirector              = sceneDirector;
             this.aoaAdService               = aoaAdService;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
             this.userDataManager            = userDataManager;
+            this.objectPoolManager          = objectPoolManager;
         }
 
         #endregion
@@ -64,6 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private bool                    isLoaded;
 
         private static GameObject poolContainer;
+        private        List<bool> isCompleteTasks = new();
 
         protected virtual string NextSceneName               => "1.UITemplateMainScene";
         
@@ -142,8 +145,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             await this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
             this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
-        
-        protected virtual bool IsLoadingFinished() => this.isLoaded && this.isUserDataLoaded;
+
+        protected virtual bool IsLoadingFinished() => this.isLoaded && this.isUserDataLoaded && this.isCompleteTasks.All(x => x);
 
         private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
 
@@ -155,13 +158,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             GameObject.DontDestroyOnLoad(poolContainer);
         }
 
-        public void CreatePoolDontDestroy(GameObject asset, int count = 1)
+        protected async void CreatePoolDontDestroy(string asset, int count = 1)
         {
-            if (poolContainer == null)
-            {
-                this.CreatePoolContainer();
-            }
-            asset.CreatePool(count, poolContainer.gameObject);
+            var task  = this.objectPoolManager.CreatePool(asset, count, poolContainer.gameObject).AsUniTask();
+            var index = this.isCompleteTasks.Count;
+            this.isCompleteTasks.Add(false);
+            await task;
+            this.isCompleteTasks[index] = true;
         }
     }
 }

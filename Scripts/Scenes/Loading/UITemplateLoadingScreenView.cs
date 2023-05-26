@@ -19,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
+    using Object = UnityEngine.Object;
 
     public class UITemplateLoadingScreenView : BaseView
     {
@@ -36,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
         private const string LoadingBlueprintStepName = "Loading static data...";
-        
+
         #region Inject
 
         private readonly BlueprintReaderManager     blueprintReaderManager;
@@ -65,11 +66,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private bool                    isUserDataLoaded;
         private bool                    isLoaded;
 
-        private static GameObject poolContainer;
-        private        List<bool> isCompleteTasks = new();
+        private GameObject    poolContainer;
+        private List<UniTask> creatingPoolTask = new();
 
-        protected virtual string NextSceneName               => "1.UITemplateMainScene";
-        
+        protected virtual string NextSceneName => "1.UITemplateMainScene";
+
         protected virtual float MinimumLoadingBlueprintTime { get; set; } //seconds
         protected virtual int   MinLoadingTime              => 2;
 
@@ -138,15 +139,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 this.View.SetLoadingProgressValue(progressInView);
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             }
+
             this.isLoaded = true;
-            
+
             await UniTask.WaitUntil(this.IsLoadingFinished);
+            await UniTask.WhenAll(this.creatingPoolTask);
 
             await this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
             this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
 
-        protected virtual bool IsLoadingFinished() => this.isLoaded && this.isUserDataLoaded && this.isCompleteTasks.All(x => x);
+        protected virtual bool IsLoadingFinished() => this.isLoaded && this.isUserDataLoaded;
 
         private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
 
@@ -154,17 +157,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         private void CreatePoolContainer()
         {
-            poolContainer = new GameObject("ObjectPoolContainer");
-            GameObject.DontDestroyOnLoad(poolContainer);
+            this.poolContainer = new GameObject("InLoadingObjectPoolContainer");
+            Object.DontDestroyOnLoad(this.poolContainer);
         }
 
-        protected async void CreatePoolDontDestroy(string asset, int count = 1)
+        protected void CreatePoolDontDestroy(string asset, int count = 1)
         {
-            var task  = this.objectPoolManager.CreatePool(asset, count, poolContainer.gameObject).AsUniTask();
-            var index = this.isCompleteTasks.Count;
-            this.isCompleteTasks.Add(false);
-            await task;
-            this.isCompleteTasks[index] = true;
+            this.creatingPoolTask.Add(this.objectPoolManager.CreatePool(asset, count, this.poolContainer.gameObject).AsUniTask());
         }
     }
 }

@@ -19,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
+    using Object = UnityEngine.Object;
 
     public class UITemplateLoadingScreenView : BaseView
     {
@@ -36,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
         private const string LoadingBlueprintStepName = "Loading static data...";
-        
+
         #region Inject
 
         private readonly BlueprintReaderManager     blueprintReaderManager;
@@ -44,15 +45,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private readonly IAOAAdService              aoaAdService;
         private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
         private readonly UserDataManager            userDataManager;
+        private readonly ObjectPoolManager          objectPoolManager;
 
         public UITemplateLoadingScreenPresenter(SignalBus                  signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService,
-                                                UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UserDataManager userDataManager) : base(signalBus)
+                                                UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UserDataManager userDataManager, ObjectPoolManager objectPoolManager) : base(signalBus)
         {
             this.blueprintReaderManager     = blueprintReaderManager;
             this.sceneDirector              = sceneDirector;
             this.aoaAdService               = aoaAdService;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
             this.userDataManager            = userDataManager;
+            this.objectPoolManager          = objectPoolManager;
         }
 
         #endregion
@@ -63,10 +66,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private bool                    isUserDataLoaded;
         private bool                    isLoaded;
 
-        private static GameObject poolContainer;
+        private GameObject    poolContainer;
+        private List<UniTask> creatingPoolTask = new();
 
-        protected virtual string NextSceneName               => "1.UITemplateMainScene";
-        
+        protected virtual string NextSceneName => "1.UITemplateMainScene";
+
         protected virtual float MinimumLoadingBlueprintTime { get; set; } //seconds
         protected virtual int   MinLoadingTime              => 2;
 
@@ -135,14 +139,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 this.View.SetLoadingProgressValue(progressInView);
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             }
+
             this.isLoaded = true;
-            
+
             await UniTask.WaitUntil(this.IsLoadingFinished);
+            await UniTask.WhenAll(this.creatingPoolTask);
 
             await this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
             this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
-        
+
         protected virtual bool IsLoadingFinished() => this.isLoaded && this.isUserDataLoaded;
 
         private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
@@ -151,17 +157,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         private void CreatePoolContainer()
         {
-            poolContainer = new GameObject("ObjectPoolContainer");
-            GameObject.DontDestroyOnLoad(poolContainer);
+            this.poolContainer = new GameObject("InLoadingObjectPoolContainer");
+            Object.DontDestroyOnLoad(this.poolContainer);
         }
 
-        public void CreatePoolDontDestroy(GameObject asset, int count = 1)
+        protected void CreatePoolDontDestroy(string asset, int count = 1)
         {
-            if (poolContainer == null)
-            {
-                this.CreatePoolContainer();
-            }
-            asset.CreatePool(count, poolContainer.gameObject);
+            this.creatingPoolTask.Add(this.objectPoolManager.CreatePool(asset, count, this.poolContainer.gameObject).AsUniTask());
         }
     }
 }

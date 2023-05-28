@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Scripts.Utilities.UserData;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
@@ -16,15 +17,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateUserLevelData           uiTemplateUserLevelData;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly SignalBus                         signalBus;
+        private readonly IHandleUserDataServices           handleUserDataServices;
 
         #endregion
 
-        public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus)
+        public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices)
         {
             this.uiTemplateLevelBlueprint          = uiTemplateLevelBlueprint;
             this.uiTemplateUserLevelData           = uiTemplateUserLevelData;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.signalBus                         = signalBus;
+            this.handleUserDataServices            = handleUserDataServices;
         }
 
         public UITemplateItemData.UnlockType UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
@@ -79,6 +82,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = time, CurrentIdToValue = null });
             if(GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.uiTemplateUserLevelData.CurrentLevel++;
+            
+            this.handleUserDataServices.SaveAll();
         }
 
         /// <summary>

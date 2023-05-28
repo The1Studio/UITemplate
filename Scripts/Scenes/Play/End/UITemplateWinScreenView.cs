@@ -126,7 +126,7 @@
         private IDisposable spinDisposable;
         private Tween       tweenSpin;
 
-        protected override async void OnViewReady()
+        protected override void OnViewReady()
         {
             base.OnViewReady();
             this.View.BtnAds.OnViewReady(this.adService);

@@ -45,7 +45,7 @@
             this.View.Reconnect.onClick.AddListener(this.OnClickReconnect);
         }
 
-        private void OnConnectSuccess()
+        protected virtual void OnConnectSuccess()
         {
             this.CloseView();
         }

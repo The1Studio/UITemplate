@@ -146,7 +146,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             await UniTask.WhenAll(this.creatingPoolTask);
 
             await this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
-            this.uiTemplateAdServiceWrapper.ShowBannerAd();
+            // this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
 
         protected virtual bool IsLoadingFinished() => this.isLoaded && this.isUserDataLoaded;

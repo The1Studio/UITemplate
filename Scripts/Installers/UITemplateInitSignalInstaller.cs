@@ -39,7 +39,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
             this.Container.DeclareSignal<BuildingOnMouseDownSignal>();
             this.Container.DeclareSignal<UITemplateUnlockBuildingSignal>();
-            this.Container.DeclareSignal<UserDataLoadedSignal>();
         }
     }
 }

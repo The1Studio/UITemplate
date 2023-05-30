@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using Core.AdsServices;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -17,6 +18,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
     using UnityEngine;
+    using UnityEngine.ResourceManagement.AsyncOperations;
+    using UnityEngine.ResourceManagement.ResourceProviders;
+    using UnityEngine.SceneManagement;
     using UnityEngine.UI;
     using Zenject;
     using Object = UnityEngine.Object;
@@ -46,9 +50,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
         private readonly UserDataManager            userDataManager;
         private readonly ObjectPoolManager          objectPoolManager;
+        private readonly IGameAssets                gameAssets;
 
         public UITemplateLoadingScreenPresenter(SignalBus                  signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService,
-                                                UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UserDataManager userDataManager, ObjectPoolManager objectPoolManager) : base(signalBus)
+                                                UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UserDataManager userDataManager, ObjectPoolManager objectPoolManager, IGameAssets gameAssets) : base(signalBus)
         {
             this.blueprintReaderManager     = blueprintReaderManager;
             this.sceneDirector              = sceneDirector;
@@ -56,6 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
             this.userDataManager            = userDataManager;
             this.objectPoolManager          = objectPoolManager;
+            this.gameAssets                 = gameAssets;
         }
 
         #endregion
@@ -66,8 +72,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private bool                    isUserDataLoaded;
         private bool                    isLoaded;
 
-        private GameObject    poolContainer;
-        private List<UniTask> creatingPoolTask = new();
+        private GameObject                          poolContainer;
+        private List<UniTask>                       creatingPoolTask = new();
+        private AsyncOperationHandle<SceneInstance> nextSceneLoadingTask;
 
         protected virtual string NextSceneName => "1.UITemplateMainScene";
 
@@ -80,6 +87,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.OpenViewAsync().Forget();
 
             this.CreatePoolContainer();
+            this.blueprintReaderManager.LoadBlueprint().Forget();
         }
 
         public override UniTask BindData()
@@ -92,20 +100,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             {
                 this.MinimumLoadingBlueprintTime = Math.Max(this.aoaAdService.LoadingTimeToShowAOA, this.MinLoadingTime);
             }
-
+            
             this.startedLoadingTime = DateTime.Now;
             this.isUserDataLoaded   = false;
             this.SignalBus.Subscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
             this.SignalBus.Subscribe<ReadBlueprintProgressSignal>(this.OnLoadProgress);
+            this.SignalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintDataSucceed);
             this.SignalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppOpenFullScreenContentOpened);
             this.SignalBus.Subscribe<UserDataLoadedSignal>(this.OnUserDataLoaded);
 
             this.loadingTypeToProgressPercent = new Dictionary<Type, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f } };
 
             this.ShowLoadingProgress(LoadingBlueprintStepName);
-            this.blueprintReaderManager.LoadBlueprint().Forget();
             this.userDataManager.LoadUserData();
             return UniTask.CompletedTask;
+        }
+        
+        private void OnLoadBlueprintDataSucceed()
+        {
+            this.nextSceneLoadingTask = this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false);
         }
 
         public override void Dispose()
@@ -144,8 +157,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             await UniTask.WaitUntil(this.IsLoadingFinished);
             await UniTask.WhenAll(this.creatingPoolTask);
-
-            await this.sceneDirector.LoadSingleSceneAsync(this.NextSceneName);
+            
+            SceneDirector.CurrentSceneName = this.NextSceneName;
+            var screenInstance = await this.nextSceneLoadingTask;
+            await screenInstance.ActivateAsync();
+            
             this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }
 

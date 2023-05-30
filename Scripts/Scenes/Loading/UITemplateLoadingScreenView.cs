@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using GameFoundation.Scripts.Utilities.UserData;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -159,8 +160,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             await UniTask.WhenAll(this.creatingPoolTask);
             
             SceneDirector.CurrentSceneName = this.NextSceneName;
+            this.SignalBus.Fire<StartLoadingNewSceneSignal>();
             var screenInstance = await this.nextSceneLoadingTask;
             await screenInstance.ActivateAsync();
+            this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
+
             
             this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }

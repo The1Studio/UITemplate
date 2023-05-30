@@ -70,8 +70,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.ShowBannerInterval();
         }
         
-        public void ShowBannerNonInterval()
+        public async void ShowBannerNonInterval()
         {
+            if (this.adServices.IsRemoveAds())
+            {
+                return;
+            }
+            this.isShowBannerAd = true;
+            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             this.adServices.ShowBannerAd();
         }
 

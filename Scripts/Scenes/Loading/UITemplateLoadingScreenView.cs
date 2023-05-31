@@ -71,6 +71,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private DateTime                startedLoadingTime;
         private DateTime                startedShowingAOATime;
         private bool                    isUserDataLoaded;
+        private bool                    isBlueprintDataLoaded;
         private bool                    isLoaded;
 
         private GameObject                          poolContainer;
@@ -110,16 +111,26 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppOpenFullScreenContentOpened);
             this.SignalBus.Subscribe<UserDataLoadedSignal>(this.OnUserDataLoaded);
 
-            this.loadingTypeToProgressPercent = new Dictionary<Type, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f } };
+            this.loadingTypeToProgressPercent = new Dictionary<Type, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f }, {typeof(AsyncOperationHandle<SceneInstance>), 0f} };
 
             this.ShowLoadingProgress(LoadingBlueprintStepName);
             this.userDataManager.LoadUserData();
             return UniTask.CompletedTask;
         }
         
-        private void OnLoadBlueprintDataSucceed()
+        protected virtual void OnLoadBlueprintDataSucceed()
         {
-            this.nextSceneLoadingTask = this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false);
+            this.isBlueprintDataLoaded = true;
+            this.nextSceneLoadingTask  = this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false);
+            this.UpdateNextSceneLoadingProgress();
+        }
+
+        private async void UpdateNextSceneLoadingProgress()
+        {
+            this.loadingTypeToProgressPercent[typeof(AsyncOperationHandle<SceneInstance>)] = this.nextSceneLoadingTask.PercentComplete;
+            if (this.nextSceneLoadingTask.IsDone) return;
+            await UniTask.Yield();
+            this.UpdateNextSceneLoadingProgress();
         }
 
         public override void Dispose()
@@ -127,6 +138,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             base.Dispose();
             this.SignalBus.Unsubscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
             this.SignalBus.Unsubscribe<ReadBlueprintProgressSignal>(this.OnLoadProgress);
+            this.SignalBus.Unsubscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintDataSucceed);
             this.SignalBus.Unsubscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppOpenFullScreenContentOpened);
             this.SignalBus.Unsubscribe<UserDataLoadedSignal>(this.OnUserDataLoaded);
         }
@@ -173,17 +185,42 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
 
-        private void OnUserDataLoaded() { this.isUserDataLoaded = true; }
+        private void OnUserDataLoaded()
+        {
+            this.isUserDataLoaded = true; 
+        }
 
         private void CreatePoolContainer()
         {
             this.poolContainer = new GameObject("InLoadingObjectPoolContainer");
             Object.DontDestroyOnLoad(this.poolContainer);
         }
-
+        
+        /// <summary>
+        /// Create a object pool for asset and add it to pool container
+        /// </summary>
+        /// <param name="asset"></param>
+        /// <param name="count"></param>
         protected void CreatePoolDontDestroy(string asset, int count = 1)
         {
             this.creatingPoolTask.Add(this.objectPoolManager.CreatePool(asset, count, this.poolContainer.gameObject).AsUniTask());
+        }
+
+        /// <summary>
+        /// User to preload asset for next scene (1.MainScene for example)
+        /// </summary>
+        /// <param name="keys">addressable key</param>
+        /// <typeparam name="T">Type of assets</typeparam>
+        protected void PreloadAssetForNextScene<T>(params object[] keys)
+        {
+            this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys);
+        }
+
+        /// <summary>
+        /// Was called when user data and blueprint were loaded
+        /// </summary>
+        protected virtual void OnUserDataAndBlueprintLoaded()
+        {
         }
     }
 }

@@ -222,8 +222,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected void PreloadAssetForNextScene<T>(params object[] keys)
         {
             var progress = this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys);
-            this.loadingTypeToProgressPercent.Add(keys.GetHashCode(), 0);
-            this.OnUpdatePreloadAssetProgress(progress, keys.GetHashCode());
+            // this.loadingTypeToProgressPercent.Add(keys.GetHashCode(), 0);
+            // this.OnUpdatePreloadAssetProgress(progress, keys.GetHashCode());
         }
 
         private async void OnUpdatePreloadAssetProgress<T>(List<AsyncOperationHandle<T>> operationHandles, object key)

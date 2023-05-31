@@ -56,20 +56,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.isShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
-            this.ShowBannerInterval();
-        }
-
-        private async void ShowBannerInterval()
-        {
             if (this.isShowBannerAd)
             {
                 this.adServices.ShowBannerAd();
             }
-
-            await UniTask.Delay(TimeSpan.FromSeconds(5));
-            this.ShowBannerInterval();
         }
-
+        
         public virtual void HideBannerAd()
         {
             this.isShowBannerAd = false;

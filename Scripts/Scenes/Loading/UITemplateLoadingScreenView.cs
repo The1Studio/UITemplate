@@ -175,8 +175,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Fire<StartLoadingNewSceneSignal>();
             var screenInstance = await this.nextSceneLoadingTask;
             await screenInstance.ActivateAsync();
+            _ = Resources.UnloadUnusedAssets();
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
-
             
             this.uiTemplateAdServiceWrapper.ShowBannerAd();
         }

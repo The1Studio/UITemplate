@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using GameFoundation.Scripts.Utilities.UserData;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using UnityEngine;
     using Zenject;
 
     public class UITemplateLevelDataController : IUITemplateControllerData
@@ -81,7 +82,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <param name="time">Play time in seconds</param>
         public void PassCurrentLevel(int time = 0)
         {
-            this.gameAssets.UnloadUnusedAssets(SceneDirector.CurrentSceneName);
+            _ = Resources.UnloadUnusedAssets();
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).WinCount++;
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = time, CurrentIdToValue = null });

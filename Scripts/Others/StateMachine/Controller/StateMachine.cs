@@ -10,25 +10,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
 
     public abstract class StateMachine : IStateMachine
     {
-        protected readonly SignalBus   signalBus;
-        protected readonly ILogService logService;
-        
-        public           IState      CurrentState { get; private set; }
+        protected readonly SignalBus                SignalBus;
+        protected readonly ILogService              LogService;
+        protected readonly Dictionary<Type, IState> TypeToState;
 
-        private readonly Dictionary<Type, IState> typeToState;
+        public IState CurrentState { get; private set; }
 
         protected StateMachine(List<IState> listState, SignalBus signalBus, ILogService logService)
         {
-            this.signalBus   = signalBus;
-            this.logService  = logService;
-            this.typeToState = listState.ToDictionary(state => state.GetType(), state => state);
+            this.SignalBus   = signalBus;
+            this.LogService  = logService;
+            this.TypeToState = listState.ToDictionary(state => state.GetType(), state => state);
         }
 
         public void TransitionTo(Type stateType)
         {
             this.CurrentState?.Exit();
 
-            if (!this.typeToState.TryGetValue(stateType, out var nextState)) return;
+            if (!this.TypeToState.TryGetValue(stateType, out var nextState)) return;
 
             this.CurrentState = nextState;
             nextState.Enter();

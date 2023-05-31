@@ -10,7 +10,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
     public abstract class TargetStateMachine<TTarget> : StateMachine
     where TTarget : ITarget
     {
-        protected TargetStateMachine(TTarget target, List<IState> listState, SignalBus signalBus, ILogService logService) : base(listState, signalBus, logService)
+        protected TargetStateMachine(TTarget      target,
+                                     List<IState> listState,
+                                     SignalBus    signalBus,
+                                     ILogService  logService)
+            : base(listState, signalBus, logService)
         {
             foreach (var state in listState)
             {

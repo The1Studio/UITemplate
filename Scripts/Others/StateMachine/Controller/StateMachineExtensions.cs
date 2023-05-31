@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
 {
+
     using System;
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.HyperCasual.Others.StateMachine.Interface;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Interface;
     using UnityEngine.Assertions;
@@ -10,7 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
     {
         public static void InstallTargetStateMachine<TTarget, TTargetState, TTargetStateMachine>(this DiContainer container)
         where TTarget : ITarget
-        where TTargetState : ITargetState<ITarget>
+        where TTargetState : ITargetState<TTarget>
         where TTargetStateMachine : TargetStateMachine<TTarget>
         {
             container.Bind<IState>()
@@ -24,8 +26,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
         where TState : IState
         where TStateMachine : StateMachine
         {
-            Assert.IsFalse(typeof(ITargetState<>).IsAssignableFrom(typeof(TState)), $"State {typeof(TState)} must be non-target");
-            Assert.IsFalse(typeof(TargetStateMachine<>).IsAssignableFrom(typeof(IStateMachine)), $"State machine {typeof(TStateMachine)} must be non-target");
+            Assert.IsFalse(typeof(TState).IsSubclassOfRawGeneric(typeof(ITargetState<>)), $"State {typeof(TState)} must be non-target");
+            Assert.IsFalse(typeof(TStateMachine).IsSubclassOfRawGeneric(typeof(TargetStateMachine<>)), $"State machine {typeof(TStateMachine)} must be non-target");
 
             container.Bind<IState>()
                      .To(convention => convention.AllNonAbstractClasses().DerivingFrom<TState>())
@@ -33,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
                      .WhenInjectedInto<TStateMachine>()
                      .NonLazy();
 
-            container.Bind<TStateMachine>().AsSingle().NonLazy();
+            container.BindInterfacesAndSelfTo<TStateMachine>().AsSingle().NonLazy();
         }
 
         public static void UseStateMachine<TTarget, TTargetStateMachine>(this TTarget target, DiContainer container, Type initState)
@@ -65,5 +67,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
             target.StateMachine.CurrentState?.Exit();
             target.StateMachine = null;
         }
+
+        public static void TransitionTo<TState>(this IStateMachine stateMachine)
+        where TState : IState
+        {
+            var isTargetStateMachine = stateMachine.GetType().IsSubclassOfRawGeneric(typeof(TargetStateMachine<>));
+            var isTargetState        = typeof(TState).IsSubclassOfRawGeneric(typeof(ITargetState<>));
+
+            Assert.IsTrue(isTargetStateMachine == isTargetState, $"State machine {stateMachine.GetType()} and state {typeof(TState)} must be both target or non-target");
+
+            stateMachine.TransitionTo(typeof(TState));
+        }
     }
+
 }

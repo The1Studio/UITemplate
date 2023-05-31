@@ -23,7 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
             this.TypeToState = listState.ToDictionary(state => state.GetType(), state => state);
         }
 
-        public void TransitionTo(Type stateType)
+        public virtual void TransitionTo(Type stateType)
         {
             this.CurrentState?.Exit();
 

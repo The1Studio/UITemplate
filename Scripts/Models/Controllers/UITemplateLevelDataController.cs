@@ -98,6 +98,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public LevelData GetCurrentLevelData => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);
+        public int       CurrentLevel        => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).Level;
 
         public int MaxLevel
         {

@@ -26,12 +26,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
 
         public void TransitionTo(Type stateType)
         {
-            this.CurrentState?.Exit();
-
+            if (this.CurrentState != null)
+            {
+                this.CurrentState.Exit();
+                this.logService.Log($"Exit {this.CurrentState.GetType().Name} State!!!");
+            }
+            
             if (!this.typeToState.TryGetValue(stateType, out var nextState)) return;
 
             this.CurrentState = nextState;
             nextState.Enter();
+            this.logService.Log($"Enter {stateType.Name} State!!!");
+
         }
     }
 }

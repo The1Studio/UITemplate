@@ -222,15 +222,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected void PreloadAssetForNextScene<T>(params object[] keys)
         {
             var progress = this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys);
-            // this.loadingTypeToProgressPercent.Add(keys.GetHashCode(), 0);
-            // this.OnUpdatePreloadAssetProgress(progress, keys.GetHashCode());
+            // var hashCode = keys.GetHashCode();
+            // this.loadingTypeToProgressPercent.Add(hashCode, 0);
+            // this.OnUpdatePreloadAssetProgress(progress, hashCode);
         }
 
         private async void OnUpdatePreloadAssetProgress<T>(List<AsyncOperationHandle<T>> operationHandles, object key)
         {
             var progress = operationHandles.Average(handle => handle.PercentComplete);
             this.loadingTypeToProgressPercent[key] = progress;
-            if (operationHandles.All(operationHandle => operationHandle.IsDone)) return;
+            if (operationHandles.All(operationHandle => operationHandle.IsDone))
+            {
+                this.loadingTypeToProgressPercent[key] = 1;
+                return;
+            }
             await UniTask.Yield();
             this.OnUpdatePreloadAssetProgress(operationHandles, key);
         }

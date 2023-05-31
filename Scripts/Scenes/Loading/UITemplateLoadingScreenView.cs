@@ -67,7 +67,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         #endregion
 
-        private Dictionary<Type, float> loadingTypeToProgressPercent;
+        private Dictionary<object, float> loadingTypeToProgressPercent;
         private DateTime                startedLoadingTime;
         private DateTime                startedShowingAOATime;
         private bool                    isUserDataLoaded;
@@ -111,7 +111,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppOpenFullScreenContentOpened);
             this.SignalBus.Subscribe<UserDataLoadedSignal>(this.OnUserDataLoaded);
 
-            this.loadingTypeToProgressPercent = new Dictionary<Type, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f }, {typeof(AsyncOperationHandle<SceneInstance>), 0f} };
+            this.loadingTypeToProgressPercent = new Dictionary<object, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f }, {typeof(SceneInstance), 0f} };
 
             this.ShowLoadingProgress(LoadingBlueprintStepName);
             this.userDataManager.LoadUserData();
@@ -121,13 +121,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected virtual void OnLoadBlueprintDataSucceed()
         {
             this.isBlueprintDataLoaded = true;
+            if (this.isUserDataLoaded)
+            {
+                this.OnUserDataAndBlueprintLoaded();
+            }
             this.nextSceneLoadingTask  = this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false);
             this.UpdateNextSceneLoadingProgress();
         }
 
         private async void UpdateNextSceneLoadingProgress()
         {
-            this.loadingTypeToProgressPercent[typeof(AsyncOperationHandle<SceneInstance>)] = this.nextSceneLoadingTask.PercentComplete;
+            this.loadingTypeToProgressPercent[typeof(SceneInstance)] = this.nextSceneLoadingTask.PercentComplete;
             if (this.nextSceneLoadingTask.IsDone) return;
             await UniTask.Yield();
             this.UpdateNextSceneLoadingProgress();
@@ -187,7 +191,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         private void OnUserDataLoaded()
         {
-            this.isUserDataLoaded = true; 
+            this.isUserDataLoaded = true;
+            if (this.isBlueprintDataLoaded)
+            {
+                this.OnUserDataAndBlueprintLoaded();
+            }
         }
 
         private void CreatePoolContainer()
@@ -213,7 +221,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         /// <typeparam name="T">Type of assets</typeparam>
         protected void PreloadAssetForNextScene<T>(params object[] keys)
         {
-            this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys);
+            var progress = this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys);
+            this.loadingTypeToProgressPercent.Add(keys.GetHashCode(), 0);
+            this.OnUpdatePreloadAssetProgress(progress, keys.GetHashCode());
+        }
+
+        private async void OnUpdatePreloadAssetProgress<T>(List<AsyncOperationHandle<T>> operationHandles, object key)
+        {
+            var progress = operationHandles.Average(handle => handle.PercentComplete);
+            this.loadingTypeToProgressPercent[key] = progress;
+            if (operationHandles.All(operationHandle => operationHandle.IsDone)) return;
+            await UniTask.Yield();
+            this.OnUpdatePreloadAssetProgress(operationHandles, key);
         }
 
         /// <summary>

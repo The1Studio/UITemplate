@@ -64,6 +64,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void SelectLevel(int level)
         {
             this.uiTemplateUserLevelData.CurrentLevel = level;
+            
+            this.handleUserDataServices.SaveAll();
         }
 
         /// <summary>
@@ -74,6 +76,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = time, CurrentIdToValue = null });
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
+            
+            this.handleUserDataServices.SaveAll();
         }
 
         /// <summary>
@@ -101,6 +105,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             if(GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
             this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = time });
             this.uiTemplateUserLevelData.CurrentLevel++;
+            
+            this.handleUserDataServices.SaveAll();
         }
 
         public LevelData GetCurrentLevelData => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);

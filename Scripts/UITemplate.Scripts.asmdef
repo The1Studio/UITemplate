@@ -31,7 +31,8 @@
         "Reporter.Scripts",
         "UltimateJoystick.Scripts",
         "3rd.FBInstant",
-        "FirebaseRemoteConfig"
+        "FirebaseRemoteConfig",
+        "DOTween.Modules"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

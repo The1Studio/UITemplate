@@ -129,11 +129,16 @@
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.View.BtnAds.OnViewReady(this.adService);
-            this.View.BtnHome.onClick.AddListener(this.OnClickHome);
-            this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
-            this.View.BtnNext.onClick.AddListener(this.OnClickNext);
-            this.View.BtnAds.onClick.AddListener(this.OnClickAds);
+            if (this.View.BtnAds != null)
+                this.View.BtnAds.OnViewReady(this.adService);
+            if (this.View.BtnHome != null)
+                this.View.BtnHome.onClick.AddListener(this.OnClickHome);
+            if (this.View.BtnReplay != null)
+                this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
+            if (this.View.BtnNext != null)
+                this.View.BtnNext.onClick.AddListener(this.OnClickNext);
+            if (this.View.BtnAds != null)
+                this.View.BtnAds.onClick.AddListener(this.OnClickAds);
         }
 
         public override async UniTask BindData(UITemplateWinScreenModel model)

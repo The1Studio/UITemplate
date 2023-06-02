@@ -51,11 +51,45 @@
         #endregion
 
         protected virtual string AdPlacement => "replay";
+        
+        protected override void OnViewReady()
+        {
+            base.OnViewReady();
+            
+            if (this.View.SkipButton != null)
+            {
+                this.View.SkipButton.OnViewReady(this.adService);
+            }
+            
+            if (this.View.HomeButton != null)
+            {
+                this.View.HomeButton.onClick.AddListener(this.OnClickHome);
+
+            }
+            
+            if (this.View.ReplayButton != null)
+            {
+                this.View.ReplayButton.onClick.AddListener(this.OnClickReplay);
+            }
+
+            if (this.View.SkipButton != null)
+            {
+                this.View.SkipButton.onClick.AddListener(this.OnClickSkip);
+            }
+        }
+
 
         public override UniTask BindData()
         {
-            this.View.SkipButton?.BindData(this.AdPlacement);
-            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
+            if (this.View.SkipButton != null)
+            {
+                this.View.SkipButton.BindData(this.AdPlacement);
+            }
+
+            if (this.View.CurrencyView != null)
+            {
+                this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
+            }
             this.soundServices.PlaySoundLose();
             return UniTask.CompletedTask;
         }
@@ -63,19 +97,18 @@
         public override void Dispose()
         {
             base.Dispose();
-            this.View.SkipButton?.Dispose();
-            this.View.CurrencyView.Unsubscribe(this.SignalBus);
+            if (this.View.SkipButton != null)
+            {
+                this.View.SkipButton.Dispose();
+            }
+
+            if (this.View.CurrencyView != null)
+            {
+                this.View.CurrencyView.Unsubscribe(this.SignalBus);
+            }
         }
 
-        protected override void OnViewReady()
-        {
-            base.OnViewReady();
-            this.View.SkipButton?.OnViewReady(this.adService);
-            this.View.HomeButton?.onClick.AddListener(this.OnClickHome);
-            this.View.ReplayButton?.onClick.AddListener(this.OnClickReplay);
-            this.View.SkipButton?.onClick.AddListener(this.OnClickSkip);
-        }
-
+      
         protected virtual void OnClickHome()
         {
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();

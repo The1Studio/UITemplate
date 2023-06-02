@@ -41,8 +41,8 @@
             await this.OpenViewAsync();
             this.diContainer.Inject(this.View.SettingButtonView);
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
-            this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
-            this.View.ShopButton.onClick.AddListener(this.OnClickShop);
+            this.View.LevelButton?.onClick.AddListener(this.OnClickLevel);
+            this.View.ShopButton?.onClick.AddListener(this.OnClickShop);
         }
 
         protected virtual void OnClickLevel()

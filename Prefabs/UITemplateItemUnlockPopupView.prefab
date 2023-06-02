@@ -348,8 +348,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewRoot: {fileID: 0}
   screenTransition: {fileID: 0}
+  currencyView: {fileID: 0}
   imgItem: {fileID: 4561019315490461119}
-  btnGet: {fileID: 2748507598895516771}
+  btnHome: {fileID: 0}
+  btnSkip: {fileID: 0}
+  btnGet: {fileID: 0}
 --- !u!114 &7498748964361249046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,7 +437,8 @@ MonoBehaviour:
   m_text: GET
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9a2157e1f9c4c4d38841fbb92558f587, type: 2}
-  m_sharedMaterial: {fileID: -6360588970910393389, guid: 9a2157e1f9c4c4d38841fbb92558f587, type: 2}
+  m_sharedMaterial: {fileID: -6360588970910393389, guid: 9a2157e1f9c4c4d38841fbb92558f587,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

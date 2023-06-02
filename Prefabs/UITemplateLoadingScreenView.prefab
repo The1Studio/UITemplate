@@ -434,7 +434,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewRoot: {fileID: 0}
   screenTransition: {fileID: 3657031087832430787}
-  LoadingText: {fileID: 7709880843128188426}
   LoadingSlider: {fileID: 7709880844043663672}
 --- !u!224 &6130372744773763060 stripped
 RectTransform:
@@ -664,18 +663,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab611650c1e507446b4443106eaee1cf, type: 3}
---- !u!114 &7709880843128188426 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4095128692587070393, guid: ab611650c1e507446b4443106eaee1cf,
-    type: 3}
-  m_PrefabInstance: {fileID: 5920595368195075507}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7709880844043663672 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4095128691357029515, guid: ab611650c1e507446b4443106eaee1cf,

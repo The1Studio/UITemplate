@@ -10,11 +10,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
+    using GameFoundation.Scripts.Utilities.ObjectPool;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
-    using UniRx;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
     using UnityEngine.SceneManagement;
@@ -63,6 +62,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected readonly BlueprintReaderManager     blueprintManager;
         protected readonly UserDataManager            userDataManager;
         protected readonly IGameAssets                gameAssets;
+        private readonly   ObjectPoolManager          objectPoolManager;
 
         protected UITemplateNewLoadingScreenPresenter(
             SignalBus signalBus,
@@ -70,23 +70,36 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             IAOAAdService aoaAdService,
             BlueprintReaderManager blueprintManager,
             UserDataManager userDataManager,
-            IGameAssets gameAssets
+            IGameAssets gameAssets,
+            ObjectPoolManager objectPoolManager
         ) : base(signalBus)
         {
-            this.adService        = adService;
-            this.aoaAdService     = aoaAdService;
-            this.blueprintManager = blueprintManager;
-            this.userDataManager  = userDataManager;
-            this.gameAssets       = gameAssets;
+            this.adService         = adService;
+            this.aoaAdService      = aoaAdService;
+            this.blueprintManager  = blueprintManager;
+            this.userDataManager   = userDataManager;
+            this.gameAssets        = gameAssets;
+            this.objectPoolManager = objectPoolManager;
         }
 
         #endregion
 
-        protected virtual string NextSceneName  => "1.MainScene";
-        protected virtual string NextScreenName => nameof(UITemplateHomeSimpleScreenView);
+        protected virtual string NextSceneName => "1.MainScene";
 
-        private FloatReactiveProperty loadingProgress;
-        private int                   loadingSteps;
+        private float _loadingProgress;
+        private int   loadingSteps;
+
+        private float loadingProgress
+        {
+            get => this._loadingProgress;
+            set
+            {
+                this._loadingProgress = value;
+                this.View.SetProgress(value / this.loadingSteps);
+            }
+        }
+
+        private GameObject objectPoolContainer;
 
         protected override void OnViewReady()
         {
@@ -96,17 +109,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         public override UniTask BindData()
         {
-            this.loadingProgress = new(0f);
+            this.objectPoolContainer = new(nameof(this.objectPoolContainer));
+            Object.DontDestroyOnLoad(this.objectPoolContainer);
+
+            this.loadingProgress = 0f;
             this.loadingSteps    = 1;
 
-            this.loadingProgress.Subscribe(value => this.View.SetProgress(value / this.loadingSteps));
-
             UniTask.WhenAll(
-                this.PreloadAssets(),
+                this.Preload(),
                 this.WaitForAoa(),
                 UniTask.WhenAll(
-                    this.LoadBlueprint(),
-                    this.LoadUserData()
+                    this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
+                    this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
                 ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene);
 
@@ -144,6 +158,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return this.TrackProgress(UniTask.WaitUntil(() => !this.aoaAdService.IsShowingAd));
         }
 
+        protected virtual UniTask OnBlueprintLoaded()
+        {
+            return UniTask.CompletedTask;
+        }
+
+        protected virtual UniTask OnUserDataLoaded()
+        {
+            return UniTask.CompletedTask;
+        }
+
         protected virtual UniTask OnBlueprintAndUserDataLoaded()
         {
             return UniTask.CompletedTask;
@@ -154,9 +178,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return UniTask.CompletedTask;
         }
 
-        protected virtual UniTask PreloadAssets()
+        protected virtual UniTask Preload()
         {
-            return this.PreloadAssets<GameObject>(this.NextScreenName);
+            return UniTask.CompletedTask;
         }
 
         protected UniTask PreloadAssets<T>(params object[] keys)
@@ -164,10 +188,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return UniTask.WhenAll(this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys).Select(this.TrackProgress));
         }
 
+        protected UniTask CreateObjectPool(string prefabName, int initialPoolSize = 1)
+        {
+            return this.TrackProgress(this.objectPoolManager.CreatePool(prefabName, initialPoolSize, this.objectPoolContainer));
+        }
+
         protected UniTask TrackProgress(UniTask task)
         {
             ++this.loadingSteps;
-            return task.ContinueWith(() => ++this.loadingProgress.Value);
+            return task.ContinueWith(() => ++this.loadingProgress);
         }
 
         protected UniTask<T> TrackProgress<T>(AsyncOperationHandle<T> aoh)
@@ -177,8 +206,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             void UpdateProgress(float progress)
             {
-                this.loadingProgress.Value += progress - localLoadingProgress;
-                localLoadingProgress       =  progress;
+                this.loadingProgress += progress - localLoadingProgress;
+                localLoadingProgress =  progress;
             }
 
             return aoh.ToUniTask(Progress.CreateOnlyValueChanged<float>(UpdateProgress))
@@ -194,15 +223,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             ++this.loadingSteps;
             var localLoadingProgress = 0f;
 
-            this.SignalBus.Subscribe<T>(UpdateReadProgress);
+            this.SignalBus.Subscribe<T>(UpdateProgress);
 
-            void UpdateReadProgress(T progress)
+            void UpdateProgress(T progress)
             {
-                this.loadingProgress.Value += progress.Percent - localLoadingProgress;
-                localLoadingProgress       =  progress.Percent;
+                this.loadingProgress += progress.Percent - localLoadingProgress;
+                localLoadingProgress =  progress.Percent;
                 if (progress.Percent >= 1f)
                 {
-                    this.SignalBus.Unsubscribe<T>(UpdateReadProgress);
+                    this.SignalBus.Unsubscribe<T>(UpdateProgress);
                 }
             }
         }

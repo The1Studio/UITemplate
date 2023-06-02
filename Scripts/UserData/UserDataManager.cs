@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
@@ -24,7 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
             this.handleUserDataService = handleUserDataService;
         }
 
-        public async void LoadUserData()
+        public async UniTask LoadUserData()
         {
             var types     = ReflectionUtils.GetAllDerivedTypes<ILocalData>().ToArray();
             var datas     = await this.handleUserDataService.Load(types);

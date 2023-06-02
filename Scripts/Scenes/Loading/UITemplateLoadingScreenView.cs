@@ -1,26 +1,22 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
     using Core.AdsServices;
-    using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
+    using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ObjectPool;
-    using GameFoundation.Scripts.Utilities.UserData;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
-    using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
     using UnityEngine.UI;
     using Zenject;
@@ -30,221 +26,200 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     {
         [SerializeField] private Slider LoadingSlider;
 
-        public void SetLoadingProgressValue(float value)
-        {
-            if (this.LoadingSlider == null) return;
+        private Tween tween;
+        private float trueProgress;
 
-            this.LoadingSlider.value = value;
+        private void Start() { this.LoadingSlider.value = 0f; }
+
+        public void SetProgress(float progress)
+        {
+            if (!this.LoadingSlider) return;
+            if (progress <= this.trueProgress) return;
+            this.tween.Kill();
+            this.tween = DOTween.To(
+                getter: () => this.LoadingSlider.value,
+                setter: value => this.LoadingSlider.value = value,
+                endValue: this.trueProgress = progress,
+                duration: 0.5f
+            );
+        }
+
+        public UniTask CompleteLoading()
+        {
+            this.SetProgress(1f);
+            return this.tween.AsyncWaitForCompletion().AsUniTask();
         }
     }
 
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
-        private const string LoadingBlueprintStepName = "Loading static data...";
-
         #region Inject
 
-        private readonly BlueprintReaderManager     blueprintReaderManager;
-        private readonly SceneDirector              sceneDirector;
-        private readonly IAOAAdService              aoaAdService;
-        private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
-        private readonly UserDataManager            userDataManager;
-        private readonly ObjectPoolManager          objectPoolManager;
-        private readonly IGameAssets                gameAssets;
+        protected readonly UITemplateAdServiceWrapper adService;
+        protected readonly IAOAAdService              aoaAdService;
+        protected readonly BlueprintReaderManager     blueprintManager;
+        protected readonly UserDataManager            userDataManager;
+        protected readonly IGameAssets                gameAssets;
+        private readonly   ObjectPoolManager          objectPoolManager;
 
-        public UITemplateLoadingScreenPresenter(SignalBus                  signalBus, BlueprintReaderManager blueprintReaderManager, SceneDirector sceneDirector, IAOAAdService aoaAdService,
-                                                UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, UserDataManager userDataManager, ObjectPoolManager objectPoolManager, IGameAssets gameAssets) : base(signalBus)
+        protected UITemplateLoadingScreenPresenter(
+            SignalBus signalBus,
+            UITemplateAdServiceWrapper adService,
+            IAOAAdService aoaAdService,
+            BlueprintReaderManager blueprintManager,
+            UserDataManager userDataManager,
+            IGameAssets gameAssets,
+            ObjectPoolManager objectPoolManager
+        ) : base(signalBus)
         {
-            this.blueprintReaderManager     = blueprintReaderManager;
-            this.sceneDirector              = sceneDirector;
-            this.aoaAdService               = aoaAdService;
-            this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
-            this.userDataManager            = userDataManager;
-            this.objectPoolManager          = objectPoolManager;
-            this.gameAssets                 = gameAssets;
+            this.adService         = adService;
+            this.aoaAdService      = aoaAdService;
+            this.blueprintManager  = blueprintManager;
+            this.userDataManager   = userDataManager;
+            this.gameAssets        = gameAssets;
+            this.objectPoolManager = objectPoolManager;
         }
 
         #endregion
 
-        private Dictionary<object, float> loadingTypeToProgressPercent;
-        private DateTime                startedLoadingTime;
-        private DateTime                startedShowingAOATime;
-        private bool                    isUserDataLoaded;
-        private bool                    isBlueprintDataLoaded;
-        private bool                    isLoaded;
+        protected virtual string NextSceneName => "1.MainScene";
 
-        private GameObject                          poolContainer;
-        private List<UniTask>                       creatingPoolTask = new();
-        private AsyncOperationHandle<SceneInstance> nextSceneLoadingTask;
+        private float _loadingProgress;
+        private int   loadingSteps;
 
-        protected virtual string NextSceneName => "1.UITemplateMainScene";
+        private float loadingProgress
+        {
+            get => this._loadingProgress;
+            set
+            {
+                this._loadingProgress = value;
+                this.View.SetProgress(value / this.loadingSteps);
+            }
+        }
 
-        protected virtual float MinimumLoadingBlueprintTime { get; set; } //seconds
-        protected virtual int   MinLoadingTime              => 2;
+        private GameObject objectPoolContainer;
 
         protected override void OnViewReady()
         {
             base.OnViewReady();
             this.OpenViewAsync().Forget();
-
-            this.CreatePoolContainer();
-            this.blueprintReaderManager.LoadBlueprint().Forget();
         }
 
         public override UniTask BindData()
         {
-            if (this.uiTemplateAdServiceWrapper.IsRemovedAds)
-            {
-                this.MinimumLoadingBlueprintTime = this.MinLoadingTime;
-            }
-            else
-            {
-                this.MinimumLoadingBlueprintTime = Math.Max(this.aoaAdService.LoadingTimeToShowAOA, this.MinLoadingTime);
-            }
-            
-            this.startedLoadingTime = DateTime.Now;
-            this.isUserDataLoaded   = false;
-            this.SignalBus.Subscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
-            this.SignalBus.Subscribe<ReadBlueprintProgressSignal>(this.OnLoadProgress);
-            this.SignalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintDataSucceed);
-            this.SignalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppOpenFullScreenContentOpened);
-            this.SignalBus.Subscribe<UserDataLoadedSignal>(this.OnUserDataLoaded);
+            this.objectPoolContainer = new(nameof(this.objectPoolContainer));
+            Object.DontDestroyOnLoad(this.objectPoolContainer);
 
-            this.loadingTypeToProgressPercent = new Dictionary<object, float> { { typeof(LoadBlueprintDataProgressSignal), 0f }, { typeof(ReadBlueprintProgressSignal), 0f }, {typeof(SceneInstance), 0f} };
+            this.loadingProgress = 0f;
+            this.loadingSteps    = 1;
 
-            this.ShowLoadingProgress(LoadingBlueprintStepName);
-            this.userDataManager.LoadUserData();
+            UniTask.WhenAll(
+                this.Preload(),
+                this.WaitForAoa(),
+                UniTask.WhenAll(
+                    this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
+                    this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
+                ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
+            ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene);
+
             return UniTask.CompletedTask;
         }
-        
-        protected virtual void OnLoadBlueprintDataSucceed()
+
+        private async UniTask LoadNextScene()
         {
-            this.isBlueprintDataLoaded = true;
-            if (this.isUserDataLoaded)
-            {
-                this.OnUserDataAndBlueprintLoaded();
-            }
-            this.nextSceneLoadingTask  = this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false);
-            this.UpdateNextSceneLoadingProgress();
-        }
-
-        private async void UpdateNextSceneLoadingProgress()
-        {
-            this.loadingTypeToProgressPercent[typeof(SceneInstance)] = this.nextSceneLoadingTask.PercentComplete;
-            if (this.nextSceneLoadingTask.IsDone) return;
-            await UniTask.Yield();
-            this.UpdateNextSceneLoadingProgress();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            this.SignalBus.Unsubscribe<LoadBlueprintDataProgressSignal>(this.OnLoadProgress);
-            this.SignalBus.Unsubscribe<ReadBlueprintProgressSignal>(this.OnLoadProgress);
-            this.SignalBus.Unsubscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintDataSucceed);
-            this.SignalBus.Unsubscribe<AppOpenFullScreenContentOpenedSignal>(this.OnAppOpenFullScreenContentOpened);
-            this.SignalBus.Unsubscribe<UserDataLoadedSignal>(this.OnUserDataLoaded);
-        }
-
-        private void OnAppOpenFullScreenContentOpened() { this.MinimumLoadingBlueprintTime = this.MinLoadingTime; }
-
-        private async void ShowLoadingProgress(string loadingContent)
-        {
-            var progressInView = 0f;
-
-            while (progressInView < 1f)
-            {
-                if (this.aoaAdService.IsShowingAd)
-                {
-                    if (this.startedShowingAOATime == default) this.startedShowingAOATime = DateTime.Now;
-
-                    await UniTask.WaitUntil(() => !this.aoaAdService.IsShowingAd);
-                    this.startedLoadingTime = this.startedLoadingTime.Add(DateTime.Now - this.startedShowingAOATime);
-                }
-
-                var currentProgress       = this.loadingTypeToProgressPercent.Values.ToList().Average();
-                var maximumLoadingPercent = (float)(DateTime.Now - this.startedLoadingTime).TotalSeconds / this.MinimumLoadingBlueprintTime;
-                progressInView = Mathf.Min(currentProgress, maximumLoadingPercent);
-                this.View.SetLoadingProgressValue(progressInView);
-                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
-            }
-
-            this.isLoaded = true;
-
-            await UniTask.WaitUntil(this.IsLoadingFinished);
-            await UniTask.WhenAll(this.creatingPoolTask);
-            
             SceneDirector.CurrentSceneName = this.NextSceneName;
+
             this.SignalBus.Fire<StartLoadingNewSceneSignal>();
-            var screenInstance = await this.nextSceneLoadingTask;
-            await screenInstance.ActivateAsync();
-            _ = Resources.UnloadUnusedAssets();
+            var nextScene =
+                await this.TrackProgress(
+                    this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false));
+            await this.View.CompleteLoading();
+            await nextScene.ActivateAsync();
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
-            
-            this.uiTemplateAdServiceWrapper.ShowBannerAd();
+
+            Resources.UnloadUnusedAssets().ToUniTask().Forget();
+            this.adService.ShowBannerAd();
         }
 
-        protected virtual bool IsLoadingFinished() => this.isLoaded && this.isUserDataLoaded;
-
-        private void OnLoadProgress(IProgressPercent obj) { this.loadingTypeToProgressPercent[obj.GetType()] = obj.Percent; }
-
-        private void OnUserDataLoaded()
+        private UniTask LoadBlueprint()
         {
-            this.isUserDataLoaded = true;
-            if (this.isBlueprintDataLoaded)
+            this.TrackProgress<LoadBlueprintDataProgressSignal>();
+            this.TrackProgress<ReadBlueprintProgressSignal>();
+            return this.blueprintManager.LoadBlueprint();
+        }
+
+        private UniTask LoadUserData() { return this.TrackProgress(this.userDataManager.LoadUserData()); }
+
+        private UniTask WaitForAoa()
+        {
+            var startWaitingAoaTime = DateTime.Now;
+            return this.TrackProgress(UniTask.WaitUntil(() => !this.aoaAdService.IsShowingAd || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.aoaAdService.LoadingTimeToShowAOA)));
+        }
+
+        protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
+
+        protected virtual UniTask OnUserDataLoaded() { return UniTask.CompletedTask; }
+
+        protected virtual UniTask OnBlueprintAndUserDataLoaded() { return UniTask.CompletedTask; }
+
+        protected virtual UniTask OnLoadingCompleted() { return UniTask.CompletedTask; }
+
+        protected virtual UniTask Preload() { return UniTask.CompletedTask; }
+
+        protected UniTask PreloadAssets<T>(params object[] keys)
+        {
+            return UniTask.WhenAll(this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys)
+                .Select(this.TrackProgress));
+        }
+
+        protected UniTask CreateObjectPool(string prefabName, int initialPoolSize = 1)
+        {
+            return this.TrackProgress(
+                this.objectPoolManager.CreatePool(prefabName, initialPoolSize, this.objectPoolContainer));
+        }
+
+        protected UniTask TrackProgress(UniTask task)
+        {
+            ++this.loadingSteps;
+            return task.ContinueWith(() => ++this.loadingProgress);
+        }
+
+        protected UniTask<T> TrackProgress<T>(AsyncOperationHandle<T> aoh)
+        {
+            ++this.loadingSteps;
+            var localLoadingProgress = 0f;
+
+            void UpdateProgress(float progress)
             {
-                this.OnUserDataAndBlueprintLoaded();
+                this.loadingProgress += progress - localLoadingProgress;
+                localLoadingProgress =  progress;
             }
+
+            return aoh.ToUniTask(Progress.CreateOnlyValueChanged<float>(UpdateProgress))
+                .ContinueWith(result =>
+                {
+                    UpdateProgress(1f);
+                    return result;
+                });
         }
 
-        private void CreatePoolContainer()
+        protected void TrackProgress<T>() where T : IProgressPercent
         {
-            this.poolContainer = new GameObject("InLoadingObjectPoolContainer");
-            Object.DontDestroyOnLoad(this.poolContainer);
-        }
-        
-        /// <summary>
-        /// Create a object pool for asset and add it to pool container
-        /// </summary>
-        /// <param name="asset"></param>
-        /// <param name="count"></param>
-        protected void CreatePoolDontDestroy(string asset, int count = 1)
-        {
-            this.creatingPoolTask.Add(this.objectPoolManager.CreatePool(asset, count, this.poolContainer.gameObject).AsUniTask());
-        }
+            ++this.loadingSteps;
+            var localLoadingProgress = 0f;
 
-        /// <summary>
-        /// User to preload asset for next scene (1.MainScene for example)
-        /// </summary>
-        /// <param name="keys">addressable key</param>
-        /// <typeparam name="T">Type of assets</typeparam>
-        protected void PreloadAssetForNextScene<T>(params object[] keys)
-        {
-            var progress = this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys);
-            // var hashCode = keys.GetHashCode();
-            // this.loadingTypeToProgressPercent.Add(hashCode, 0);
-            // this.OnUpdatePreloadAssetProgress(progress, hashCode);
-        }
+            this.SignalBus.Subscribe<T>(UpdateProgress);
 
-        private async void OnUpdatePreloadAssetProgress<T>(List<AsyncOperationHandle<T>> operationHandles, object key)
-        {
-            var progress = operationHandles.Average(handle => handle.PercentComplete);
-            this.loadingTypeToProgressPercent[key] = progress;
-            if (operationHandles.All(operationHandle => operationHandle.IsDone))
+            void UpdateProgress(T progress)
             {
-                this.loadingTypeToProgressPercent[key] = 1;
-                return;
+                this.loadingProgress += progress.Percent - localLoadingProgress;
+                localLoadingProgress =  progress.Percent;
+                if (progress.Percent >= 1f)
+                {
+                    this.SignalBus.Unsubscribe<T>(UpdateProgress);
+                }
             }
-            await UniTask.Yield();
-            this.OnUpdatePreloadAssetProgress(operationHandles, key);
-        }
-
-        /// <summary>
-        /// Was called when user data and blueprint were loaded
-        /// </summary>
-        protected virtual void OnUserDataAndBlueprintLoaded()
-        {
         }
     }
 }

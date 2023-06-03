@@ -433,6 +433,15 @@ namespace BuildReportTool
 		public static void DebugLogBuildReport(UnityEditor.Build.Reporting.BuildReport report)
 		{
 			var sb = new System.Text.StringBuilder();
+			#if UNITY_2022_3_OR_NEWER
+			sb.AppendFormat("Build Files {0}\n\n", report.GetFiles().Length.ToString());
+
+			for (int i = 0; i < report.GetFiles().Length; i++)
+			{
+				sb.AppendFormat("File {0}: {1} ({2}) {3}\n",
+					(i+1).ToString(), report.GetFiles()[i].path, report.GetFiles()[i].role,
+					BuildReportTool.Util.GetBytesReadable(report.GetFiles()[i].size));
+			#else
 			sb.AppendFormat("Build Files {0}\n\n", report.files.Length.ToString());
 
 			for (int i = 0; i < report.files.Length; i++)
@@ -440,6 +449,7 @@ namespace BuildReportTool
 				sb.AppendFormat("File {0}: {1} ({2}) {3}\n",
 					(i+1).ToString(), report.files[i].path, report.files[i].role,
 					BuildReportTool.Util.GetBytesReadable(report.files[i].size));
+			#endif
 				if ((i+1) % 100 == 0)
 				{
 					Debug.Log(sb.ToString());

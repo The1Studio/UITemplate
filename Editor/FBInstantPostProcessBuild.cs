@@ -14,7 +14,7 @@ public static class FBInstantPostProcessBuild
         var scriptContent = File.ReadAllText(webLoaderPath);
     
         //  Facebook block the blob when UnityWebGL try to create, so it's needed to specify the relative path 
-        scriptContent = scriptContent.Replace("URL.createObjectURL(new Blob([e],{type:\"application/javascript\"}))", $"\"Build/{GameVersion.ProjectName}.framework.js\"");
+        scriptContent = scriptContent.Replace("URL.createObjectURL(new Blob([e],{type:\"application/javascript\"}))", $"\"Build/{GameVersion.ProjectName}.framework.js{(PlayerSettings.WebGL.compressionFormat == WebGLCompressionFormat.Disabled ? "" : ".unityweb")}\"");
     
         File.WriteAllText(webLoaderPath, scriptContent);
     }

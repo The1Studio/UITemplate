@@ -1,4 +1,4 @@
-#if UNITY_WEBGL
+#if UNITY_WEBGL && FB_INSTANT_PRODUCTION
 using System.IO;
 using GameFoundation.BuildScripts.Runtime;
 using UnityEditor;

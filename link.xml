@@ -3,7 +3,9 @@
       <type fullname="Zenject.ZenjectManagersInstaller" preserve="all"/>
    </assembly>
 <!--   <assembly fullname="Zenject-Signals" preserve="all"> </assembly>-->
-<!--   <assembly fullname="GameFoundation.Script" preserve="all"> </assembly>-->
+   <assembly fullname="GameFoundation.Script" preserve="all">
+      <type fullname="GameFoundationInstaller" preserve="all"/>
+   </assembly>
 <!--   <assembly fullname="GameFoundation.BlueprintFlow" preserve="all"> </assembly>-->
 <!--   <assembly fullname="GameFoundation.AssetLibrary" preserve="all"> </assembly>-->
 <!--   <assembly fullname="GameFoundation.Models" preserve="all"> </assembly>-->

@@ -3,7 +3,7 @@
       <type fullname="Zenject.ZenjectManagersInstaller" preserve="all"/>
    </assembly>
    <assembly fullname="Zenject-Signals">
-      <type fullname="Zenject.SignalBusInstaller" preserve="all"/>
+<!--      <type fullname="Zenject.SignalBusInstaller" preserve="all"/>-->
    </assembly>
    <assembly fullname="GameFoundation.Script" preserve="all"> </assembly>
    <assembly fullname="GameFoundation.BlueprintFlow" preserve="all"> </assembly>
@@ -13,7 +13,7 @@
    <assembly fullname="GameFoundation.Utilities" preserve="all"> </assembly>
    <assembly fullname="UITemplate.Scripts" preserve="all"> </assembly>
    <assembly fullname="HyperCasualGame.Scripts" preserve="all"> </assembly>
-   <assembly fullname="Sirenix.Serialization" preserve="all"> </assembly>
+<!--   <assembly fullname="Sirenix.Serialization" preserve="all"> </assembly>-->
    <assembly fullname="3rdCore.Ads" preserve="all"> </assembly>
    <assembly fullname="3rdCore.Analytic" preserve="all"> </assembly>
    <assembly fullname="3rd.IAP" preserve="all"> </assembly>

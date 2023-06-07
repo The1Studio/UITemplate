@@ -2,7 +2,9 @@
    <assembly fullname="Zenject-Source" preserve="all">
       <type fullname="Zenject.ZenjectManagersInstaller" preserve="all"/>
    </assembly>
-<!--   <assembly fullname="Zenject-Signals" preserve="all"> </assembly>-->
+   <assembly fullname="Zenject-Signals" preserve="all">
+      <type fullname="Zenject.SignalBusInstaller" preserve="all"/>
+   </assembly>
    <assembly fullname="GameFoundation.Script" preserve="all">
       <type fullname="GameFoundationInstaller" preserve="all"/>
    </assembly>

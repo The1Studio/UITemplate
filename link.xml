@@ -5,6 +5,7 @@
    </assembly>
    <assembly fullname="Zenject-Signals">
       <type fullname="Zenject.SignalBusInstaller" preserve="all"/>
+      <type fullname="Zenject.SignalDeclarationAsyncInitializer" preserve="all"/>
    </assembly>
    <assembly fullname="GameFoundation.Script" preserve="all"> </assembly>
    <assembly fullname="GameFoundation.BlueprintFlow" preserve="all"> </assembly>
@@ -26,5 +27,7 @@
 <!--   <assembly fullname="Newtonsoft.Json" preserve="all"> </assembly>-->
 <!--   <assembly fullname="AppsFlyer" preserve="all"> </assembly>-->
 <!--   <assembly fullname="MaxSdk.Scripts" preserve="all"> </assembly>-->
-<!--   <assembly fullname="FirebaseRemoteConfig" preserve="all"> </assembly>-->
+   <assembly fullname="FirebaseRemoteConfig" preserve="all">\
+      <type fullname="ServiceImplementation.FireBaseRemoteConfig.FirebaseRemoteConfigInstaller" preserve="all"/>
+   </assembly>
 </linker>

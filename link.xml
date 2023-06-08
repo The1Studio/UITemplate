@@ -9,7 +9,9 @@
    <assembly fullname="GameFoundation.Utilities" preserve="all"> </assembly>
    <assembly fullname="UITemplate.Scripts" preserve="all"> </assembly>
    <assembly fullname="HyperCasualGame.Scripts" preserve="all"> </assembly>
-<!--   <assembly fullname="Sirenix.Serialization" preserve="all"> </assembly>-->
+   <assembly fullname="Sirenix.Serialization">
+      <type fullname="Sirenix.Serialization.Int32Serializer" preserve="all"/>
+   </assembly>
    <assembly fullname="3rdCore.Ads" preserve="all"> </assembly>
    <assembly fullname="3rdCore.Analytic" preserve="all"> </assembly>
    <assembly fullname="3rd.IAP" preserve="all"> </assembly>

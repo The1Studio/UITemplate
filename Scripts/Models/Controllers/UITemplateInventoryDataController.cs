@@ -203,12 +203,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 // if item exist in shop blueprint, it's status will be unlocked or owned if IsDefaultItem is true
                 // else it's status will be locked
 
-                var status = UITemplateItemData.Status.Locked;
+                var status = itemRecord.IsUnlockedInstantly ? UITemplateItemData.Status.Unlocked : UITemplateItemData.Status.Locked;
 
-                if (this.uiTemplateShopBlueprint.TryGetValue(itemRecord.Id, out var shopRecord))
-                {
-                    status = UITemplateItemData.Status.Unlocked;
-                }
+                this.uiTemplateShopBlueprint.TryGetValue(itemRecord.Id, out var shopRecord);
 
                 if (itemRecord.IsDefaultItem)
                 {

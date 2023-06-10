@@ -11,9 +11,9 @@
 
         #endregion
 
-        public bool IsSoundOn => this.soundSetting.SoundValue.Value > 0;
+        public bool IsSoundOn => this.soundSetting.SoundVolume > 0;
 
-        public bool IsMusicOn     => this.soundSetting.MusicValue.Value > 0;
+        public bool IsMusicOn     => this.soundSetting.MusicVolume > 0;
         public bool IsVibrationOn => this.uiTemplateUserSettingData.IsVibrationEnable;
 
         public bool IsFlashLightOn => this.uiTemplateUserSettingData.IsFlashLightEnable;
@@ -24,9 +24,9 @@
             this.soundSetting              = soundSetting;
         }
 
-        public void SetSoundOnOff() { this.soundSetting.SoundValue.Value = this.IsSoundOn ? 0 : 1; }
+        public void SetSoundOnOff() { this.soundSetting.SoundVolume = this.IsSoundOn ? 0 : 1; }
 
-        public void SetMusicOnOff() { this.soundSetting.MusicValue.Value = this.IsMusicOn ? 0 : 1; }
+        public void SetMusicOnOff() { this.soundSetting.MusicVolume = this.IsMusicOn ? 0 : 1; }
 
         public void SetVibrationOnOff() { this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable; }
 

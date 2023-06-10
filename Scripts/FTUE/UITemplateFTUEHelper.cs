@@ -23,7 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.uiTemplateFtueControllerData  = uiTemplateFtueControllerData;
         }
 
-        public bool IsAnyFtueActive() => this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);
+        public bool IsAnyFtueActive() => this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen);
 
         public bool IsAnyFtueActive(IScreenPresenter screenPresenter)
         {

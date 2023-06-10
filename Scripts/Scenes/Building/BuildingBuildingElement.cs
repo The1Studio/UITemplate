@@ -90,7 +90,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
             
             if (this.uiTemplateInventoryDataController.GetCurrencyValue() < this.uiTemplateBuildingBlueprint[this.BuildingId].UnlockPrice && !this.isBuildingComplete)
             {
-                if ((this.screenManager.CurrentActiveScreen.Value is not UITemplateBuildingNotEnoughCoinPopupPresenter) && !this.isShowPopup)
+                if ((this.screenManager.CurrentActiveScreen is not UITemplateBuildingNotEnoughCoinPopupPresenter) && !this.isShowPopup)
                 {
                     this.isShowPopup = true;
                     this.signalBus.Fire(new UITemplateUnlockBuildingSignal(false));

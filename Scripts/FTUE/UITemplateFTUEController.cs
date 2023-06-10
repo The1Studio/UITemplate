@@ -4,8 +4,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
-    using UniRx;
-    using UniRx.Triggers;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -18,7 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
         private Transform originPath;
 
-        private CompositeDisposable disposables = new();
+        // private CompositeDisposable disposables = new();
 
         #region Zenject
 
@@ -70,7 +68,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
         private void PrepareTutorial(bool status, string triggerId)
         {
-            var currentActiveScreen = this.screenManager.CurrentActiveScreen.Value;
+            var currentActiveScreen = this.screenManager.CurrentActiveScreen;
             var childTransform      = currentActiveScreen.CurrentTransform.GetComponentsInChildren<Transform>();
             var record              = this.uiTemplateFtueBlueprint[triggerId];
             var highLightPath       = record.HighLightPath;
@@ -79,7 +77,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
             if (status)
             {
-                this.disposables = new CompositeDisposable();
+                // this.disposables = new CompositeDisposable();
 
                 foreach (var current in childTransform)
                 {
@@ -96,7 +94,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
                     if (btn != null && buttonCanClick)
                     {
-                        this.disposables.Add(btn.OnPointerClickAsObservable().Subscribe(data => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, triggerId)); }));
+                        // this.disposables.Add(btn.OnPointerClickAsObservable().Subscribe(data => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, triggerId)); }));
                     }
 
                     this.ConfigHandPosition(current.gameObject, record);
@@ -104,7 +102,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             }
             else
             {
-                this.disposables.Dispose();
+                // this.disposables.Dispose();
                 this.hand.transform.SetParent(this.transform, false);
 
                 foreach (var current in childTransform)

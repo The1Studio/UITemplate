@@ -59,7 +59,7 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         private async void FixedUpdate()
         {
             await this.IsInjected.Task;
-            this.GraphicRaycaster.enabled = this.screenManager.CurrentActiveScreen.Value is UITemplateBuildingScreenPresenter;
+            this.GraphicRaycaster.enabled = this.screenManager.CurrentActiveScreen is UITemplateBuildingScreenPresenter;
             var h = UltimateJoystick.GetHorizontalAxis("move");
             var v = UltimateJoystick.GetVerticalAxis("move");
             this.buildingCarController.Moving(v, h);

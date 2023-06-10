@@ -60,9 +60,9 @@ namespace TheOneStudio.HyperCasual.DrawCarBase.Scripts.Runtime.Scenes.Building
         {
             await this.IsInjected.Task;
             this.GraphicRaycaster.enabled = this.screenManager.CurrentActiveScreen is UITemplateBuildingScreenPresenter;
-            var h = UltimateJoystick.GetHorizontalAxis("move");
-            var v = UltimateJoystick.GetVerticalAxis("move");
-            this.buildingCarController.Moving(v, h);
+            // var h = UltimateJoystick.GetHorizontalAxis("move");
+            // var v = UltimateJoystick.GetVerticalAxis("move");
+            // this.buildingCarController.Moving(v, h);
         }
     }
 }

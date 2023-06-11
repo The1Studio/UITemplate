@@ -12,16 +12,4 @@
   <assembly fullname="Sirenix.Serialization">
     <type fullname="Sirenix.Serialization.Int32Serializer" preserve="all"></type>
   </assembly>
-  <assembly fullname="3rdCore.Ads" preserve="all"></assembly>
-  <assembly fullname="3rdCore.Analytic" preserve="all"></assembly>
-  <assembly fullname="3rd.IAP" preserve="all"></assembly>
-  <assembly fullname="3rd.ServiceImplementation.Ads" preserve="all"></assembly>
-  <assembly fullname="3rd.ServiceImplementation.Adjust" preserve="all"></assembly>
-  <assembly fullname="3rd.ServiceImplementation.Appsflyer" preserve="all"></assembly>
-  <assembly fullname="3rd.FBInstant" preserve="all"></assembly>
-  <assembly fullname="FirebaseTracker" preserve="all"></assembly>
-  <assembly fullname="Newtonsoft.Json" preserve="all"></assembly>
-  <assembly fullname="AppsFlyer" preserve="all"></assembly>
-  <assembly fullname="MaxSdk.Scripts" preserve="all"></assembly>
-  <assembly fullname="FirebaseRemoteConfig" preserve="all"></assembly>
 </linker>

@@ -3,6 +3,7 @@
     <type fullname="Zenject.ZenjectManagersInstaller" preserve="all"/>
     <type fullname="Zenject.SceneContextRegistry" preserve="all"/>
     <type fullname="Zenject.PoolableMemoryPool`2" preserve="all"/>
+    <type fullname="Zenject.SceneContextRegistryAdderAndRemover" preserve="all"/>
   </assembly>
   <assembly fullname="Zenject-Signals" preserve="all"></assembly>
   <assembly fullname="GameFoundation.Script" preserve="all"></assembly>

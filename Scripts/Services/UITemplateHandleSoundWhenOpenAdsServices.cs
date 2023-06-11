@@ -8,11 +8,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
     public class UITemplateHandleSoundWhenOpenAdsServices
     {
-        private readonly IAudioManager audioManager;
+        private readonly IAudioService audioService;
 
-        public UITemplateHandleSoundWhenOpenAdsServices(SignalBus signalBus, IAdServices adServices, IAudioManager audioManager)
+        public UITemplateHandleSoundWhenOpenAdsServices(SignalBus signalBus, IAdServices adServices, IAudioService audioService)
         {
-            this.audioManager = audioManager;
+            this.audioService = audioService;
 
             signalBus.Subscribe<RewardedAdDisplayedSignal>(this.OnDisplayRewardedAd);
             signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedAdEnded);
@@ -46,8 +46,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void OnDisplayRewardedAd(RewardedAdDisplayedSignal obj) { this.PauseSound(); }
 
-        private void PauseSound() { this.audioManager.PauseEverything(); }
+        private void PauseSound() { this.audioService.PauseEverything(); }
 
-        private void ResumeSound() { this.audioManager.ResumeEverything(); }
+        private void ResumeSound() { this.audioService.ResumeEverything(); }
     }
 }

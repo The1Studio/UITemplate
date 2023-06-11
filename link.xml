@@ -2,7 +2,7 @@
   <assembly fullname="Zenject-Source" preserve="all"></assembly>
   <assembly fullname="Zenject-Signals" preserve="all"></assembly>
   <assembly fullname="GameFoundation.Script">
-    <assembly fullname="GameFoundation.Script.GameFoundationInstaller" preserve="all"></assembly>
+    <assembly fullname="GameFoundation.Scripts.GameFoundationInstaller" preserve="all"></assembly>
   </assembly>
 
 

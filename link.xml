@@ -1,5 +1,8 @@
 <linker>
-  <assembly fullname="Zenject-Source" preserve="all"></assembly>
+  <assembly fullname="Zenject-Source">
+    <type fullname="Zenject.ZenjectManagersInstaller" preserve="all"/>
+    <type fullname="Zenject.SceneContextRegistry" preserve="all"/>
+  </assembly>
   <assembly fullname="Zenject-Signals" preserve="all"></assembly>
   <assembly fullname="GameFoundation.Script" preserve="all"></assembly>
   <assembly fullname="GameFoundation.BlueprintFlow" preserve="all"></assembly>
@@ -14,12 +17,5 @@
   </assembly>
   <assembly fullname="3rdCore.Ads" preserve="all"></assembly>
   <assembly fullname="3rd.ServiceImplementation.Ads" preserve="all"></assembly>
-<!--  <assembly fullname="3rd.ServiceImplementation.Adjust" preserve="all"></assembly>-->
-<!--  <assembly fullname="3rd.ServiceImplementation.Appsflyer" preserve="all"></assembly>-->
   <assembly fullname="3rd.FBInstant" preserve="all"></assembly>
-<!--  <assembly fullname="FirebaseTracker" preserve="all"></assembly>-->
-<!--  <assembly fullname="Newtonsoft.Json" preserve="all"></assembly>-->
-<!--  <assembly fullname="AppsFlyer" preserve="all"></assembly>-->
-<!--  <assembly fullname="MaxSdk.Scripts" preserve="all"></assembly>-->
-<!--  <assembly fullname="FirebaseRemoteConfig" preserve="all"></assembly>-->
 </linker>

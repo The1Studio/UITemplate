@@ -3,6 +3,7 @@
   <assembly fullname="Zenject-Signals" preserve="all"></assembly>
   <assembly fullname="GameFoundation.Script">
     <type fullname="GameFoundation.Scripts.GameFoundationInstaller" preserve="all"></type>
+    <type fullname="GameFoundation.Scripts.UIModule.ScreenFlow.Managers.ScreenFlowInstaller" preserve="all"></type>
   </assembly>
   <assembly fullname="GameFoundation.BlueprintFlow" preserve="all">
     <type fullname="BlueprintFlow.BlueprintControlFlow.BlueprintServicesInstaller" preserve="all"></type>

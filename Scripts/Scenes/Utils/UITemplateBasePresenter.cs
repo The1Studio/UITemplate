@@ -1,32 +1,23 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
-    using Core.AnalyticServices;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
-    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
     public class UITemplateBaseScreenUtils
     {
-        private readonly IAnalyticServices       analyticService;
         private readonly UITemplateSoundServices soundServices;
-        private Dictionary<GameObject,bool>              originalStates = new();
         
         public UITemplateBaseScreenUtils()
         {
             var diContainer = ZenjectUtils.GetCurrentContainer();
-            this.analyticService = diContainer.Resolve<IAnalyticServices>();
             this.soundServices   = diContainer.Resolve<UITemplateSoundServices>();
         }
 
@@ -46,7 +37,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             Init();
             this.soundServices.PlaySoundClick();
-            this.analyticService.Track(new ButtonClick(screenName, button.gameObject.name));
         }
 
         public void BindOnClickButton(string screenName, Button[] buttons)
@@ -260,9 +250,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             base.OnViewReady();
             UITemplateBaseScreenUtils.Instance.BindOnClickButton(this.View.GetType().Name, this.View.RectTransform.GetComponentsInChildren<Button>());
-#if CREATIVE
-            UITemplateBaseScreenUtils.Instance.SetupCreativeMode(this);
-#endif
         }
     }
 }

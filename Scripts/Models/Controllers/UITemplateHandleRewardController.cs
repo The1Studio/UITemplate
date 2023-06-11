@@ -4,20 +4,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Collections.Generic;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
-    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
 
     public class UITemplateHandleRewardController:IUITemplateControllerData
     {
         private readonly UITemplateRewardData uiTemplateRewardData;
         private readonly ILogService          logger;
-        private readonly InternetService      internetService;
 
-        public UITemplateHandleRewardController(UITemplateRewardData uiTemplateRewardData, ILogService logger, InternetService internetService)
+        public UITemplateHandleRewardController(UITemplateRewardData uiTemplateRewardData, ILogService logger)
         {
             this.uiTemplateRewardData = uiTemplateRewardData;
             this.logger               = logger;
-            this.internetService      = internetService;
         }
 
         public void CheckToAddReward(string packID, Dictionary<string, UITemplateRewardItemData> rewardItemDatas)
@@ -77,33 +74,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public bool IsRewardExist(string packId, string rewardId)
         {
             return this.uiTemplateRewardData.IapPackIdToRewards.ContainsKey(packId) && this.uiTemplateRewardData.IapPackIdToRewards[packId].ContainsKey(rewardId);
-        }
-
-        public Dictionary<string, Dictionary<string, UITemplateRewardItemData>> GetAllRewardCanReceiveAtThisTimeToDay()
-        {
-            var data = new Dictionary<string, Dictionary<string, UITemplateRewardItemData>>();
-
-            foreach (var iapPackIdToReward in this.uiTemplateRewardData.IapPackIdToRewards)
-            {
-                data.Add(iapPackIdToReward.Key, new Dictionary<string, UITemplateRewardItemData>());
-
-                foreach (var rewardItemData in iapPackIdToReward.Value)
-                {
-                    var totalDiffDay = this.internetService.ToTalDiffDay(rewardItemData.Value.LastTimeReceive, DateTime.Now);
-
-                    if (totalDiffDay >= rewardItemData.Value.Repeat && rewardItemData.Value.TotalDayLeft >= 0)
-                    {
-                        data[iapPackIdToReward.Key].Add(rewardItemData.Key, rewardItemData.Value);
-                    }
-                }
-
-                if (data[iapPackIdToReward.Key].Count == 0)
-                {
-                    data.Remove(iapPackIdToReward.Key);
-                }
-            }
-
-            return data;
         }
 
         public UITemplateRewardData CurrentReward => this.uiTemplateRewardData;

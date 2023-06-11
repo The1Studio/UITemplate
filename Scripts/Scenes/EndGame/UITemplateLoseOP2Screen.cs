@@ -1,6 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -29,7 +28,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         public override UniTask BindData()
         {
             base.BindData();
-            this.UITemplateAdService.ShowMREC(AdViewPosition.Centered);
             this.SoundServices.PlaySoundLose();
             return UniTask.CompletedTask;
         }
@@ -37,12 +35,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         protected virtual void OnContinue()
         {
             this.UITemplateAdService.ShowRewardedAd("Lose_Continue", this.AfterWatchAd);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose(); 
-            this.UITemplateAdService.HideMREC(AdViewPosition.Centered);
         }
 
         protected virtual void AfterWatchAd()

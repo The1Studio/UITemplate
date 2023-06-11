@@ -9,12 +9,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
-    using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.IapScene;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
@@ -47,7 +45,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         public UITemplateNewCollectionScreenPresenter(
             SignalBus                         signalBus,
             EventSystem                       eventSystem,
-            IUnityIapServices                 unityUnityIapServices,
             ILogService                       logger,
             UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
             IGameAssets                       gameAssets,
@@ -60,7 +57,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         ) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
-            this.unityUnityIapServices             = unityUnityIapServices;
             this.logger                            = logger;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.gameAssets                        = gameAssets;
@@ -272,10 +268,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                     break;
                 case UITemplateItemData.UnlockType.None:
                     break;
-                case UITemplateItemData.UnlockType.IAP:
-                    this.BuyWithIAP(obj);
-
-                    break;
                 case UITemplateItemData.UnlockType.StartedPack:
                     this.BuyWithStartedPack(obj);
 
@@ -302,10 +294,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private void BuyWithStartedPack(ItemCollectionItemModel itemCollectionItemModel)
         {
-            this.ScreenManager.OpenScreen<UITemplateStartPackScreenPresenter, UITemplateStaterPackModel>(new UITemplateStaterPackModel()
-            {
-                OnComplete = this.OnBuyStartedPackComplete
-            });
+            // this.ScreenManager.OpenScreen<UITemplateStartPackScreenPresenter, UITemplateStaterPackModel>(new UITemplateStaterPackModel()
+            // {
+            //     OnComplete = this.OnBuyStartedPackComplete
+            // });
         }
 
         protected virtual void OnBuyStartedPackComplete(string packId)
@@ -326,7 +318,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly   EventSystem                       eventSystem;
-        private readonly   IUnityIapServices                 unityUnityIapServices;
         private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;
@@ -365,14 +356,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private void BuyWithAds(ItemCollectionItemModel obj)
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
-            {
-                this.BuyItemCompleted(obj);
-            });
-        }
-
-        private void BuyWithIAP(ItemCollectionItemModel obj)
-        {
-            this.unityUnityIapServices.BuyProductID(obj.ShopBlueprintRecord.Id, x =>
             {
                 this.BuyItemCompleted(obj);
             });

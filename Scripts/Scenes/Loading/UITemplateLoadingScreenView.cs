@@ -57,7 +57,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         #region Inject
 
         protected readonly UITemplateAdServiceWrapper adService;
-        protected readonly IAOAAdService              aoaAdService;
         protected readonly BlueprintReaderManager     blueprintManager;
         protected readonly UserDataManager            userDataManager;
         protected readonly IGameAssets                gameAssets;
@@ -66,7 +65,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected UITemplateLoadingScreenPresenter(
             SignalBus signalBus,
             UITemplateAdServiceWrapper adService,
-            IAOAAdService aoaAdService,
             BlueprintReaderManager blueprintManager,
             UserDataManager userDataManager,
             IGameAssets gameAssets,
@@ -74,7 +72,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         ) : base(signalBus)
         {
             this.adService         = adService;
-            this.aoaAdService      = aoaAdService;
             this.blueprintManager  = blueprintManager;
             this.userDataManager   = userDataManager;
             this.gameAssets        = gameAssets;
@@ -116,7 +113,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             UniTask.WhenAll(
                 this.Preload(),
-                this.WaitForAoa(),
                 UniTask.WhenAll(
                     this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
@@ -150,12 +146,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         }
 
         private UniTask LoadUserData() { return this.TrackProgress(this.userDataManager.LoadUserData()); }
-
-        private UniTask WaitForAoa()
-        {
-            var startWaitingAoaTime = DateTime.Now;
-            return this.TrackProgress(UniTask.WaitUntil(() => !this.aoaAdService.IsShowingAd || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.aoaAdService.LoadingTimeToShowAOA)));
-        }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
 

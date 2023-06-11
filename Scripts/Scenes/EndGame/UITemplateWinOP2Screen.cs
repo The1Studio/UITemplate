@@ -1,6 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -40,7 +39,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         public override UniTask BindData()
         {
             base.BindData();
-            this.UITemplateAdService.ShowMREC(AdViewPosition.Centered);
             this.SoundServices.PlaySoundWin();
             this.View.currencyView.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             this.UITemplateAdService.HideBannerAd();
@@ -63,7 +61,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         public override void Dispose()
         {
             base.Dispose();
-            this.UITemplateAdService.HideMREC(AdViewPosition.Centered);
             this.UITemplateAdService.ShowBannerAd();
             this.View.currencyView.Unsubscribe(this.SignalBus);
         }

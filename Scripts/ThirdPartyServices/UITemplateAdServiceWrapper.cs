@@ -2,14 +2,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Core.AdsServices;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
-    using ServiceImplementation.AdsServices;
-    using TheOneStudio.UITemplate.UITemplate.Models;
-    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
@@ -19,11 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region inject
 
         private readonly IAdServices             adServices;
-        private readonly List<IMRECAdService>    mrecAdServices;
-        private readonly UITemplateAdsController uiTemplateAdsController;
-        private readonly IAOAAdService           aoaAdService;
         private readonly ILogService             logService;
-        private readonly AdServicesConfig        adServicesConfig;
         private readonly SignalBus               signalBus;
 
         #endregion
@@ -32,16 +24,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     isBannerLoaded = false;
         private bool     isShowBannerAd;
 
-        public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
-            UITemplateAdsController uiTemplateAdsController,
-            IAOAAdService aoaAdService)
+        public UITemplateAdServiceWrapper(ILogService logService, SignalBus signalBus, IAdServices adServices)
         {
             this.adServices              = adServices;
-            this.mrecAdServices          = mrecAdServices;
-            this.uiTemplateAdsController = uiTemplateAdsController;
-            this.aoaAdService            = aoaAdService;
             this.logService              = logService;
-            this.adServicesConfig        = adServicesConfig;
             this.signalBus               = signalBus;
         }
 
@@ -92,13 +78,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool ShowInterstitialAd(string place, bool force = false)
         {
-            if ((DateTime.Now - this.LastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval && !force)
-            {
-                this.logService.Warning("InterstitialAd was not passed interval");
-
-                return false;
-            }
-
             this.signalBus.Fire(new InterstitialAdEligibleSignal(place));
 
             if (!this.adServices.IsInterstitialAdReady(place))
@@ -109,8 +88,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.signalBus.Fire(new InterstitialAdCalledSignal(place));
-            this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
-            this.aoaAdService.IsResumedFromAdsOrIAP = true;
             this.adServices.ShowInterstitialAd(place);
 
             return true;
@@ -135,8 +112,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
-            this.uiTemplateAdsController.UpdateWatchedRewardedAds();
-            this.aoaAdService.IsResumedFromAdsOrIAP = true;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 
@@ -145,41 +120,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual void RewardedAdOffer(string place) { this.signalBus.Fire(new RewardedAdOfferSignal(place)); }
 
         #endregion
-
-        public virtual void ShowMREC(AdViewPosition adViewPosition)
-        {
-            if (this.adServices.IsRemoveAds()) return;
-
-            var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(adViewPosition));
-
-            if (mrecAdService != null)
-            {
-                mrecAdService.ShowMREC(adViewPosition);
-
-                if (adViewPosition == AdViewPosition.BottomCenter)
-                {
-                    this.adServices.HideBannedAd();
-                }
-            }
-        }
-
-        public virtual void HideMREC(AdViewPosition adViewPosition)
-        {
-            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(adViewPosition)).ToList();
-
-            if (mrecAdServices.Count > 0)
-            {
-                foreach (var mrecAdService in mrecAdServices)
-                {
-                    mrecAdService.HideMREC(adViewPosition);
-                }
-
-                if (adViewPosition == AdViewPosition.BottomCenter)
-                {
-                    this.adServices.ShowBannerAd();
-                }
-            }
-        }
 
         public bool IsRemovedAds => this.adServices.IsRemoveAds();
     }

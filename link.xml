@@ -4,9 +4,9 @@
   <assembly fullname="GameFoundation.Script">
     <type fullname="GameFoundation.Scripts.GameFoundationInstaller" preserve="all"></type>
   </assembly>
-
-
-  <!--   <assembly fullname="GameFoundation.BlueprintFlow" preserve="all"> </assembly>-->
+  <assembly fullname="GameFoundation.BlueprintFlow" preserve="all">
+    <type fullname="BlueprintFlow.BlueprintControlFlow.BlueprintServicesInstaller" preserve="all"></type>
+  </assembly>
   <!--   <assembly fullname="GameFoundation.AssetLibrary" preserve="all"> </assembly>-->
   <!--   <assembly fullname="GameFoundation.Models" preserve="all"> </assembly>-->
   <!--   <assembly fullname="GameFoundation.UIModule" preserve="all"> </assembly>-->

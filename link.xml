@@ -1,29 +1,24 @@
 <linker>
   <assembly fullname="Zenject-Source" preserve="all"></assembly>
   <assembly fullname="Zenject-Signals" preserve="all"></assembly>
-  <assembly fullname="GameFoundation.Script">
-    <type fullname="GameFoundation.Scripts.GameFoundationInstaller" preserve="all"></type>
-    <type fullname="GameFoundation.Scripts.UIModule.ScreenFlow.Managers.ScreenFlowInstaller" preserve="all"></type>
-  </assembly>
-  <assembly fullname="GameFoundation.BlueprintFlow" preserve="all">
-    <type fullname="BlueprintFlow.BlueprintControlFlow.BlueprintServicesInstaller" preserve="all"></type>
-  </assembly>
-  <!--   <assembly fullname="GameFoundation.AssetLibrary" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="GameFoundation.Models" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="GameFoundation.UIModule" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="GameFoundation.Utilities" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="UITemplate.Scripts" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="HyperCasualGame.Scripts" preserve="all"> </assembly>-->
+  <assembly fullname="GameFoundation.Script" preserve="all"></assembly>
+  <assembly fullname="GameFoundation.BlueprintFlow" preserve="all"></assembly>
+  <assembly fullname="GameFoundation.AssetLibrary" preserve="all"></assembly>
+  <assembly fullname="GameFoundation.Models" preserve="all"></assembly>
+  <assembly fullname="GameFoundation.UIModule" preserve="all"></assembly>
+  <assembly fullname="GameFoundation.Utilities" preserve="all"></assembly>
+  <assembly fullname="UITemplate.Scripts" preserve="all"></assembly>
+  <assembly fullname="HyperCasualGame.Scripts" preserve="all"></assembly>
   <assembly fullname="Sirenix.Serialization">
     <type fullname="Sirenix.Serialization" preserve="all"></type>
   </assembly>
-  <!--   <assembly fullname="3rdCore.Ads" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="3rdCore.Analytic" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="3rd.IAP" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="3rd.ServiceImplementation.Ads" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="3rd.ServiceImplementation.Adjust" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="3rd.ServiceImplementation.Appsflyer" preserve="all"> </assembly>-->
-  <!--   <assembly fullname="3rd.FBInstant" preserve="all"> </assembly>-->
+  <assembly fullname="3rdCore.Ads" preserve="all"></assembly>
+  <assembly fullname="3rdCore.Analytic" preserve="all"></assembly>
+  <assembly fullname="3rd.IAP" preserve="all"></assembly>
+  <assembly fullname="3rd.ServiceImplementation.Ads" preserve="all"></assembly>
+  <assembly fullname="3rd.ServiceImplementation.Adjust" preserve="all"></assembly>
+  <assembly fullname="3rd.ServiceImplementation.Appsflyer" preserve="all"></assembly>
+  <assembly fullname="3rd.FBInstant" preserve="all"></assembly>
   <assembly fullname="FirebaseTracker" preserve="all"></assembly>
   <assembly fullname="Newtonsoft.Json" preserve="all"></assembly>
   <assembly fullname="AppsFlyer" preserve="all"></assembly>

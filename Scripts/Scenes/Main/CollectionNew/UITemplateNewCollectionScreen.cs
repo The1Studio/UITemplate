@@ -10,7 +10,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -23,7 +22,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     public class UITemplateNewCollectionScreen : BaseView
     {
         public Button                    btnHome;
-        public Button                    btnUnlockRandom;
         public Button                    btnAddMoreCoin;
         public TopButtonBarAdapter       topButtonBarAdapter;
         public ItemCollectionGridAdapter itemCollectionGridAdapter;
@@ -44,7 +42,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         public UITemplateNewCollectionScreenPresenter(
             SignalBus                         signalBus,
-            EventSystem                       eventSystem,
             ILogService                       logger,
             UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
             IGameAssets                       gameAssets,
@@ -56,7 +53,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             UITemplateLevelDataController     levelDataController
         ) : base(signalBus)
         {
-            this.eventSystem                       = eventSystem;
             this.logger                            = logger;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.gameAssets                        = gameAssets;
@@ -74,7 +70,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
             base.OnViewReady();
             this.View.btnHome.onClick.AddListener(this.OnClickHomeButton);
-            this.View.btnUnlockRandom.onClick.AddListener(this.OnClickUnlockRandomButton);
             this.View.btnAddMoreCoin.onClick.AddListener(this.OnClickAddMoreCoinButton);
         }
 
@@ -98,41 +93,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
             await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
             this.View.itemCollectionGridAdapter.Refresh();
-        }
-
-        protected virtual void OnClickUnlockRandomButton()
-        {
-            this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
-            {
-                this.eventSystem.enabled = false;
-                var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
-
-                var collectionModel = this.itemCollectionItemModels
-                                          .Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory) &&
-                                                      !this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id)).ToList();
-
-                foreach (var model in this.itemCollectionItemModels) model.IndexItemSelected = -1;
-
-                var maxTime = collectionModel.Count == 1 ? 0.3f : 3;
-
-                collectionModel.GachaItemWithTimer(this.randomTimerDispose, model =>
-                {
-                    foreach (var itemCollectionItemModel in collectionModel) itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
-
-                    this.OnRandomItemComplete(model);
-                    this.BuyItemCompleted(model);
-                    this.eventSystem.enabled = true;
-                }, model =>
-                {
-                    foreach (var itemCollectionItemModel in collectionModel) itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
-
-                    this.View.itemCollectionGridAdapter.Refresh();
-                }, maxTime, 0.1f);
-            });
-        }
-
-        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model)
-        {
         }
 
         protected virtual async void OnClickHomeButton()
@@ -212,8 +172,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
             await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel, this.diContainer);
             this.View.topButtonBarAdapter.Refresh();
-            var hasOwnAllItem = tempModel.All(x => this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id));
-            this.View.btnUnlockRandom.gameObject.SetActive(!hasOwnAllItem);
         }
 
         private void OnUseItem(ItemCollectionItemModel obj)
@@ -268,11 +226,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                     break;
                 case UITemplateItemData.UnlockType.None:
                     break;
-                case UITemplateItemData.UnlockType.StartedPack:
-                    this.BuyWithStartedPack(obj);
-
-                    break;
-
                 case UITemplateItemData.UnlockType.Progression:
                     break;
                 case UITemplateItemData.UnlockType.Gift:
@@ -292,18 +245,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             }
         }
 
-        private void BuyWithStartedPack(ItemCollectionItemModel itemCollectionItemModel)
-        {
-            // this.ScreenManager.OpenScreen<UITemplateStartPackScreenPresenter, UITemplateStaterPackModel>(new UITemplateStaterPackModel()
-            // {
-            //     OnComplete = this.OnBuyStartedPackComplete
-            // });
-        }
-
-        protected virtual void OnBuyStartedPackComplete(string packId)
-        {
-        }
-
         public override void Dispose()
         {
             base.Dispose();
@@ -317,7 +258,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
         private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly   EventSystem                       eventSystem;
         private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;

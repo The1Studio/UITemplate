@@ -1,9 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
-    using System;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
@@ -117,7 +115,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                     this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
                 ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
-            ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene);
+            ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene).Forget();
 
             return UniTask.CompletedTask;
         }

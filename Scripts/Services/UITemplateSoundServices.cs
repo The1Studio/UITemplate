@@ -18,7 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public void PlaySound(string key) { AudioService.Instance.PlaySound(key); }
 
-        public void StopSound(string key) { AudioService.Instance.StopAllSound(key); }
+        public void StopSound(string key) { AudioService.Instance.StopAllSound(); }
 
         public void PlayMusic(string playList)
         {

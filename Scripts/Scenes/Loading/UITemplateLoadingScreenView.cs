@@ -111,12 +111,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.loadingSteps    = 1;
 
             UniTask.WhenAll(
+                this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded).ContinueWith(
+                        this.LoadUserData).ContinueWith(this.OnUserDataLoaded)
+                    .ContinueWith(this.OnBlueprintAndUserDataLoaded),
                 this.Preload(),
-                this.PreLoadDefaultStuff(),
-                UniTask.WhenAll(
-                    this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
-                    this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
-                ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
+                this.PreLoadDefaultStuff()
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene).Forget();
 
             return UniTask.CompletedTask;

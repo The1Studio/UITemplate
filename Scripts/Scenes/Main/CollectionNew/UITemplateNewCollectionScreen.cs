@@ -174,7 +174,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.topButtonBarAdapter.Refresh();
         }
 
-        private void OnUseItem(ItemCollectionItemModel obj)
+        protected void OnUseItem(ItemCollectionItemModel obj)
         {
             // If the item is not owned, do not use it
             if (!this.uiTemplateInventoryDataController.TryGetItemData(obj.ItemData.Id, out var itemData) || itemData.CurrentStatus != UITemplateItemData.Status.Owned) return;
@@ -254,14 +254,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         #region inject
 
-        private readonly   DiContainer                       diContainer;
-        private readonly   UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
-        private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
-        private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly   ILogService                       logger;
-        private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
-        private readonly   IGameAssets                       gameAssets;
-        private readonly   UITemplateLevelDataController     levelDataController;
+        protected readonly DiContainer                       diContainer;
+        protected readonly UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
+        protected readonly UITemplateItemBlueprint           uiTemplateItemBlueprint;
+        protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        protected readonly ILogService                       logger;
+        protected readonly UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
+        protected readonly IGameAssets                       gameAssets;
+        protected readonly UITemplateLevelDataController     levelDataController;
         protected readonly IScreenManager                    ScreenManager;
 
         #endregion
@@ -301,7 +301,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             });
         }
 
-        private void BuyItemCompleted(ItemCollectionItemModel obj)
+        protected virtual void BuyItemCompleted(ItemCollectionItemModel obj)
         {
             obj.ItemData.RemainingAdsProgress--;
 

@@ -111,8 +111,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.loadingSteps    = 1;
 
             UniTask.WhenAll(
-                this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded).ContinueWith(
-                        this.LoadUserData).ContinueWith(this.OnUserDataLoaded)
+                this.LoadUserData().ContinueWith(this.OnUserDataLoaded).ContinueWith(
+                        this.LoadBlueprint).ContinueWith(this.OnBlueprintLoaded)
                     .ContinueWith(this.OnBlueprintAndUserDataLoaded),
                 this.Preload(),
                 this.PreLoadDefaultStuff()

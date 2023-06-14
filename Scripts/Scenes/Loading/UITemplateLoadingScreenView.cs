@@ -24,7 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using Zenject;
     using Object = UnityEngine.Object;
 
-    public class UITemplateLoadingScreenView : BaseView
+    public abstract class UITemplateLoadingScreenView : BaseView
     {
         [SerializeField] private Slider LoadingSlider;
 
@@ -57,7 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     }
 
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
-    public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
+    public abstract class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
         #region Inject
 
@@ -156,25 +156,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.tasks.Add(this.TrackProgress(this.userDataManager.LoadUserData()));
         }
 
-        protected virtual void OnBlueprintLoaded()
-        {
-        }
+        protected abstract void Preload();
 
-        protected virtual void OnUserDataLoaded()
-        {
-        }
 
-        protected virtual void OnBlueprintAndUserDataLoaded()
-        {
-        }
+        protected abstract void OnBlueprintLoaded();
 
-        protected virtual void OnLoadCompleted()
-        {
-        }
+        protected abstract void OnUserDataLoaded();
 
-        protected virtual void Preload()
-        {
-        }
+        protected abstract void OnBlueprintAndUserDataLoaded();
+
+        protected abstract void OnLoadCompleted();
 
         private void PreLoadDefaultStuff()
         {

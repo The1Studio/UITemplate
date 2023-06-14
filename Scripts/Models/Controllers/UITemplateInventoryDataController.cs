@@ -61,7 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                        {
                            Debug.Log($"phuong 3 itemData==null {(itemData==null)}");
                            Debug.Log($"phuong 4 itemData.ItemBlueprintRecord==null {(itemData.ItemBlueprintRecord==null)}");
-                           Debug.Log($"phuong 5 itemData.ItemBlueprintRecord.Category {(itemData.ItemBlueprintRecord.Category)}");
+                           Debug.Log($"phuong 5 name {itemData.ItemBlueprintRecord.Name} Id {itemData.ItemBlueprintRecord.Id} Category {(itemData.ItemBlueprintRecord.Category)} IsDefaultItem {(itemData.ItemBlueprintRecord.IsDefaultItem)}");
                            return itemData.ItemBlueprintRecord.Category;
                        })
                        .ToDictionary(

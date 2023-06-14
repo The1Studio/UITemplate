@@ -1,5 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
+    using System;
+    using System.Collections.Generic;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
     using Cysharp.Threading.Tasks;
@@ -10,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities;
+    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -28,7 +31,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private Tween tween;
         private float trueProgress;
 
-        private void Start() { this.LoadingSlider.value = 0f; }
+        private void Start()
+        {
+            this.LoadingSlider.value = 0f;
+        }
 
         public void SetProgress(float progress)
         {
@@ -96,6 +102,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         private GameObject objectPoolContainer;
 
+        protected List<UniTask> tasks = new();
+
         protected override void OnViewReady()
         {
             base.OnViewReady();
@@ -108,22 +116,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             Object.DontDestroyOnLoad(this.objectPoolContainer);
 
             this.loadingProgress = 0f;
-            this.loadingSteps    = 1;
+            this.loadingSteps    = 5;
 
-            UniTask.WhenAll(
-                this.LoadUserData().ContinueWith(this.OnUserDataLoaded).ContinueWith(
-                        this.LoadBlueprint).ContinueWith(this.OnBlueprintLoaded)
-                    .ContinueWith(this.OnBlueprintAndUserDataLoaded),
-                this.Preload(),
-                this.PreLoadDefaultStuff()
-            ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene).Forget();
+            this.CreateTask(this.Preload, this.PreLoadDefaultStuff, this.LoadUserData)
+                .ContinueWith(() => this.CreateTask(this.OnUserDataLoaded))
+                .ContinueWith(() => this.CreateTask(this.LoadBlueprint))
+                .ContinueWith(() => this.CreateTask(this.OnBlueprintLoaded))
+                .ContinueWith(() => this.CreateTask(this.OnBlueprintAndUserDataLoaded))
+                .ContinueWith(() => this.CreateTask(this.OnLoadCompleted))
+                .ContinueWith(this.LoadNextScene)
+                .Forget();
 
             return UniTask.CompletedTask;
-        }
-
-        private UniTask PreLoadDefaultStuff()
-        {
-            return UniTask.WhenAll(this.CreateObjectPool(AudioService.AudioSourceKey, 10));
         }
 
         private async UniTask LoadNextScene()
@@ -131,9 +135,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             SceneDirector.CurrentSceneName = this.NextSceneName;
 
             this.SignalBus.Fire<StartLoadingNewSceneSignal>();
-            var nextScene =
-                await this.TrackProgress(
-                    this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false));
+            var nextScene = await this.TrackProgress(this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false));
             await this.View.CompleteLoading();
             await nextScene.ActivateAsync();
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
@@ -142,35 +144,58 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.adService.ShowBannerAd();
         }
 
-        private UniTask LoadBlueprint()
+        private void LoadBlueprint()
         {
             this.TrackProgress<LoadBlueprintDataProgressSignal>();
             this.TrackProgress<ReadBlueprintProgressSignal>();
-            return this.blueprintManager.LoadBlueprint();
+            this.tasks.Add(this.blueprintManager.LoadBlueprint());
         }
 
-        private UniTask LoadUserData() { return this.TrackProgress(this.userDataManager.LoadUserData()); }
-
-        protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
-
-        protected virtual UniTask OnUserDataLoaded() { return UniTask.CompletedTask; }
-
-        protected virtual UniTask OnBlueprintAndUserDataLoaded() { return UniTask.CompletedTask; }
-
-        protected virtual UniTask OnLoadingCompleted() { return UniTask.CompletedTask; }
-
-        protected virtual UniTask Preload() { return UniTask.CompletedTask; }
-
-        protected UniTask PreloadAssets<T>(params object[] keys)
+        private void LoadUserData()
         {
-            return UniTask.WhenAll(this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys)
-                .Select(this.TrackProgress));
+            this.tasks.Add(this.TrackProgress(this.userDataManager.LoadUserData()));
         }
 
-        protected UniTask CreateObjectPool(string prefabName, int initialPoolSize = 1)
+        protected virtual void OnBlueprintLoaded()
         {
-            return this.TrackProgress(
-                this.objectPoolManager.CreatePool(prefabName, initialPoolSize, this.objectPoolContainer));
+        }
+
+        protected virtual void OnUserDataLoaded()
+        {
+        }
+
+        protected virtual void OnBlueprintAndUserDataLoaded()
+        {
+        }
+
+        protected virtual void OnLoadCompleted()
+        {
+        }
+
+        protected virtual void Preload()
+        {
+        }
+
+        private void PreLoadDefaultStuff()
+        {
+            this.CreateObjectPool(AudioService.AudioSourceKey, 10);
+        }
+
+        private UniTask CreateTask(params Action[] factories)
+        {
+            this.tasks.Clear();
+            factories.ForEach(factory => factory());
+            return UniTask.WhenAll(this.tasks);
+        }
+
+        protected void PreloadAssets<T>(params object[] keys)
+        {
+            this.tasks.AddRange(this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys).Select(aoh => this.TrackProgress(aoh).AsUniTask()));
+        }
+
+        protected void CreateObjectPool(string prefabName, int initialPoolSize = 1)
+        {
+            this.tasks.Add(this.TrackProgress(this.objectPoolManager.CreatePool(prefabName, initialPoolSize, this.objectPoolContainer)));
         }
 
         protected UniTask TrackProgress(UniTask task)
@@ -191,11 +216,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             }
 
             return aoh.ToUniTask(Progress.CreateOnlyValueChanged<float>(UpdateProgress))
-                .ContinueWith(result =>
-                {
-                    UpdateProgress(1f);
-                    return result;
-                });
+                      .ContinueWith(result =>
+                      {
+                          UpdateProgress(1f);
+                          return result;
+                      });
         }
 
         protected void TrackProgress<T>() where T : IProgressPercent

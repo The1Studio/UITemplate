@@ -36,7 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.LoadingSlider.value = 0f;
         }
 
-        public void SetProgress(float progress)
+        public void SetProgress(float progress, float minLoadingTime)
         {
             if (!this.LoadingSlider) return;
             if (progress <= this.trueProgress) return;
@@ -45,13 +45,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 getter: () => this.LoadingSlider.value,
                 setter: value => this.LoadingSlider.value = value,
                 endValue: this.trueProgress = progress,
-                duration: 0.5f
+                duration: (progress - this.LoadingSlider.value) * minLoadingTime
             );
         }
 
-        public UniTask CompleteLoading()
+        public UniTask CompleteLoading(float minLoadingTime)
         {
-            this.SetProgress(1f);
+            this.SetProgress(1f, minLoadingTime);
             return this.tween.AsyncWaitForCompletion().AsUniTask();
         }
     }
@@ -85,7 +85,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         #endregion
 
-        protected virtual string NextSceneName => "1.MainScene";
+        protected virtual string NextSceneName  => "1.MainScene";
+        protected virtual float  MinLoadingTime => 1f; // higher = slower but smoother
 
         private float _loadingProgress;
         private int   loadingSteps;
@@ -96,7 +97,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             set
             {
                 this._loadingProgress = value;
-                this.View.SetProgress(value / this.loadingSteps);
+                this.View.SetProgress(value / this.loadingSteps, this.MinLoadingTime);
             }
         }
 
@@ -112,11 +113,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         public override UniTask BindData()
         {
-            this.objectPoolContainer = new(nameof(this.objectPoolContainer));
-            Object.DontDestroyOnLoad(this.objectPoolContainer);
-
+            this.loadingSteps    = 5; // weight of last step
             this.loadingProgress = 0f;
-            this.loadingSteps    = 5;
 
             this.CreateTask(this.Preload, this.PreLoadDefaultStuff, this.LoadUserData)
                 .ContinueWith(() => this.CreateTask(this.OnUserDataLoaded))
@@ -136,7 +134,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             this.SignalBus.Fire<StartLoadingNewSceneSignal>();
             var nextScene = await this.TrackProgress(this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false));
-            await this.View.CompleteLoading();
+            await this.View.CompleteLoading(this.MinLoadingTime);
             await nextScene.ActivateAsync();
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
 
@@ -158,7 +156,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         protected abstract void Preload();
 
-
         protected abstract void OnBlueprintLoaded();
 
         protected abstract void OnUserDataLoaded();
@@ -171,9 +168,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             async UniTask CreateAudioPool()
             {
-                var audioSourcePrefab = (GameObject)await Resources.LoadAsync(AudioService.AudioSourceKey);
+                var audioSourcePrefab = await this.TrackProgress<GameObject>(Resources.LoadAsync(AudioService.AudioSourceKey));
                 this.objectPoolManager.CreatePool(audioSourcePrefab, 10, this.objectPoolContainer);
             }
+
+            this.objectPoolContainer = new(nameof(this.objectPoolContainer));
+            Object.DontDestroyOnLoad(this.objectPoolContainer);
 
             this.tasks.Add(CreateAudioPool());
         }
@@ -218,6 +218,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                           UpdateProgress(1f);
                           return result;
                       });
+        }
+
+        protected UniTask<T> TrackProgress<T>(ResourceRequest rr) where T : Object
+        {
+            ++this.loadingSteps;
+            var localLoadingProgress = 0f;
+
+            void UpdateProgress(float progress)
+            {
+                this.loadingProgress += progress - localLoadingProgress;
+                localLoadingProgress =  progress;
+            }
+
+            return rr.ToUniTask(Progress.CreateOnlyValueChanged<float>(UpdateProgress))
+                     .ContinueWith(result =>
+                     {
+                         UpdateProgress(1f);
+                         return (T)result;
+                     });
         }
 
         protected void TrackProgress<T>() where T : IProgressPercent

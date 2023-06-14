@@ -24,7 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using Zenject;
     using Object = UnityEngine.Object;
 
-    public abstract class UITemplateLoadingScreenView : BaseView
+    public class UITemplateLoadingScreenView : BaseView
     {
         [SerializeField] private Slider LoadingSlider;
 

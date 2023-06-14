@@ -53,12 +53,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public Dictionary<string, List<UITemplateItemData>> GetDefaultItemWithCategory()
         {
+            Debug.Log($"phuong 0 this.uiTemplateInventoryData==null {(this.uiTemplateInventoryData==null)}");
+            Debug.Log($"phuong 1 this.uiTemplateInventoryData.IDToItemData.Values.Count {this.uiTemplateInventoryData.IDToItemData.Values.Count}");
+            Debug.Log($"phuong 2 this.uiTemplateInventoryData==null {(this.uiTemplateInventoryData==null)}");
             return this.uiTemplateInventoryData.IDToItemData.Values
-                       .GroupBy(itemData => itemData.ItemBlueprintRecord.Category)
+                       .GroupBy(itemData => 
+                       {
+                           Debug.Log($"phuong 3 itemData==null {(itemData==null)}");
+                           Debug.Log($"phuong 4 itemData.ItemBlueprintRecord==null {(itemData.ItemBlueprintRecord==null)}");
+                           Debug.Log($"phuong 5 itemData.ItemBlueprintRecord.Category {(itemData.ItemBlueprintRecord.Category)}");
+                           return itemData.ItemBlueprintRecord.Category;
+                       })
                        .ToDictionary(
                            group => group.Key,
-                           group => group.Where(itemData => itemData.ItemBlueprintRecord.IsDefaultItem).ToList()
-                       );
+                           group => group.Where(itemData =>
+                           {
+                               Debug.Log($"phuong 6 itemData.ItemBlueprintRecord.IsDefaultItem {(itemData.ItemBlueprintRecord.IsDefaultItem)}");
+                               return itemData.ItemBlueprintRecord.IsDefaultItem;
+                           }).ToList());
         }
 
         public string GetTempCurrencyKey(string currency) => $"Temp_{currency}";

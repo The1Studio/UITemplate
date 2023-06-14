@@ -24,7 +24,8 @@
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
     public class UITemplateHomeSimpleScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateInventoryDataController uiTemplateInventoryDataController) :
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateInventoryDataController uiTemplateInventoryDataController)
+            :
             base(signalBus)
         {
             this.diContainer                       = diContainer;
@@ -41,14 +42,10 @@
             this.View.LevelButton?.onClick.AddListener(this.OnClickLevel);
             this.View.ShopButton?.onClick.AddListener(this.OnClickShop);
         }
-        private void OnClickShop()
-        {
-        }
-
+        
+        protected virtual void OnClickShop()  { }
         protected virtual void OnClickLevel() { }
-        protected virtual void OnClickPlay()
-        {
-        }
+        protected virtual void OnClickPlay()  { }
 
         public override UniTask BindData()
         {

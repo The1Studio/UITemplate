@@ -123,7 +123,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         private UniTask PreLoadDefaultStuff()
         {
-            return UniTask.WhenAll(this.CreateObjectPool(AudioService.AudioSourceKey, 10));
+            var audioSourcePrefab = Resources.Load<GameObject>(AudioService.AudioSourceKey);
+            this.objectPoolManager.CreatePool(audioSourcePrefab, 10, this.objectPoolContainer);
+            return UniTask.CompletedTask;
         }
 
         private async UniTask LoadNextScene()

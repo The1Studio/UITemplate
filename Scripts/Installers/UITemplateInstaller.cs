@@ -9,16 +9,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateInstaller : Installer<GameObject, ToastController, UITemplateInstaller>
+    public class UITemplateInstaller : Installer<ToastController, UITemplateInstaller>
     {
-        private readonly GameObject      soundGroupPrefab;
         private readonly ToastController toastCanvas;
 
-        public UITemplateInstaller(GameObject soundGroupPrefab, ToastController toastCanvas)
-        {
-            this.soundGroupPrefab = soundGroupPrefab;
-            this.toastCanvas      = toastCanvas;
-        }
+        public UITemplateInstaller(ToastController toastCanvas) { this.toastCanvas = toastCanvas; }
 
         public override void InstallBindings()
         {
@@ -28,7 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<UITemplateCollectionItemViewHelper>().AsCached();
 
             UITemplateDeclareSignalInstaller.Install(this.Container);
-            UITemplateServicesInstaller.Install(this.Container, this.soundGroupPrefab, this.toastCanvas);
+            UITemplateServicesInstaller.Install(this.Container, this.toastCanvas);
 #if FB_INSTANT
             FBInstantInstaller.Install(this.Container); // depend on UITemplateThirdPartyInstaller for signals
 #endif
@@ -36,6 +31,5 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateThirdPartyInstaller.Install(this.Container); // bind after UITemplateLocalDataInstaller for local data analytics
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
         }
-
     }
 }

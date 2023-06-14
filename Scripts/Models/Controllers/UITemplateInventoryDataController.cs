@@ -53,7 +53,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public Dictionary<string, List<UITemplateItemData>> GetDefaultItemWithCategory()
         {
-            return this.uiTemplateInventoryData.IDToItemData.Values
+            return this.uiTemplateInventoryData.IDToItemData.Values.Where(x => !string.IsNullOrEmpty(x.ItemBlueprintRecord.Id))
                        .GroupBy(itemData => itemData.ItemBlueprintRecord.Category)
                        .ToDictionary(
                            group => group.Key,

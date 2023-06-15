@@ -5,7 +5,6 @@ using UnityEditor.Callbacks;
 
 public static class FBInstantPostProcessBuild
 {
-#if FB_INSTANT
     [PostProcessBuild]
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
@@ -18,5 +17,4 @@ public static class FBInstantPostProcessBuild
         
         File.WriteAllText(webLoaderPath, scriptContent);
     }
-#endif
 }

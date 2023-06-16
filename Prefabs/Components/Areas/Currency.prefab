@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3214f7652cfb4c48b9b9944b7e8789b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetFlyingAnimation: {fileID: 781697343458700321}
   currencyValueText: {fileID: 8921256228301687418}
   currencyId: Coin
   CurrencyIcon: {fileID: 825177334867264997}

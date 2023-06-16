@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
@@ -17,7 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         #region Inject
 
         private readonly UITemplateInventoryData           uiTemplateInventoryData;
-        private readonly UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency;
+        private readonly UITemplateFlyingAnimationController uiTemplateFlyingAnimationController;
         private readonly UITemplateCurrencyBlueprint       uiTemplateCurrencyBlueprint;
         private readonly UITemplateShopBlueprint           uiTemplateShopBlueprint;
         private readonly SignalBus                         signalBus;
@@ -29,12 +30,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public const string DefaultChestRoomKeyCurrencyID      = "ChestRoomKey";
         public const string DefaultLuckySpinFreeTurnCurrencyID = "LuckySpinFreeTurn";
 
-        public UITemplateInventoryDataController(UITemplateInventoryData     uiTemplateInventoryData,     UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency,
+        public UITemplateInventoryDataController(UITemplateInventoryData     uiTemplateInventoryData,     UITemplateFlyingAnimationController uiTemplateFlyingAnimationController,
                                                  UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint           uiTemplateShopBlueprint, SignalBus signalBus,
                                                  UITemplateItemBlueprint     uiTemplateItemBlueprint)
         {
             this.uiTemplateInventoryData           = uiTemplateInventoryData;
-            this.uiTemplateFlyingAnimationCurrency = uiTemplateFlyingAnimationCurrency;
+            this.uiTemplateFlyingAnimationController = uiTemplateFlyingAnimationController;
             this.uiTemplateCurrencyBlueprint       = uiTemplateCurrencyBlueprint;
             this.uiTemplateShopBlueprint           = uiTemplateShopBlueprint;
             this.signalBus                         = signalBus;
@@ -125,7 +126,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             if (startAnimationRect != null)
             {
-                await this.uiTemplateFlyingAnimationCurrency.PlayAnimation(startAnimationRect);
+                await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(startAnimationRect);
             }
 
             var lastValue = this.GetCurrencyValue(id);

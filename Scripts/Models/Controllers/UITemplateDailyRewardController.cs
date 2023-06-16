@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
 
@@ -17,24 +18,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         #region inject
 
-        private readonly IInternetService                  internetService;
-        private readonly UITemplateDailyRewardData         uiTemplateDailyRewardData;
-        private readonly UITemplateDailyRewardBlueprint    uiTemplateDailyRewardBlueprint;
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency;
+        private readonly IInternetService                    internetService;
+        private readonly UITemplateDailyRewardData           uiTemplateDailyRewardData;
+        private readonly UITemplateDailyRewardBlueprint      uiTemplateDailyRewardBlueprint;
+        private readonly UITemplateInventoryDataController   uiTemplateInventoryDataController;
+        private readonly UITemplateFlyingAnimationController uiTemplateFlyingAnimationController;
 
         #endregion
 
         private SemaphoreSlim mySemaphoreSlim = new(1, 1);
 
         public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
-            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFlyingAnimationCurrency uiTemplateFlyingAnimationCurrency)
+            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFlyingAnimationController uiTemplateFlyingAnimationController)
         {
-            this.internetService                   = internetService;
-            this.uiTemplateDailyRewardData         = uiTemplateDailyRewardData;
-            this.uiTemplateDailyRewardBlueprint    = uiTemplateDailyRewardBlueprint;
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.uiTemplateFlyingAnimationCurrency = uiTemplateFlyingAnimationCurrency;
+            this.internetService                     = internetService;
+            this.uiTemplateDailyRewardData           = uiTemplateDailyRewardData;
+            this.uiTemplateDailyRewardBlueprint      = uiTemplateDailyRewardBlueprint;
+            this.uiTemplateInventoryDataController   = uiTemplateInventoryDataController;
+            this.uiTemplateFlyingAnimationController = uiTemplateFlyingAnimationController;
         }
 
         public async UniTask CheckRewardStatus()
@@ -102,7 +103,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                     if (reward.ContainsKey(UITemplateInventoryDataController.DefaultSoftCurrencyID))
                     {
-                        playAnimTask = this.uiTemplateFlyingAnimationCurrency.PlayAnimation(dailyIndexToRectTransform[i]);
+                        playAnimTask = this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(dailyIndexToRectTransform[i]);
                     }
 
                     rewardsList.Add(reward);

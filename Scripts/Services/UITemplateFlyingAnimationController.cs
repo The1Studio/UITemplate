@@ -14,26 +14,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
 
-    public class UITemplateFlyingAnimationCurrency
+    public class UITemplateFlyingAnimationController
     {
         private readonly ScreenManager screenManager;
         private readonly IGameAssets   gameAssets;
         private const    string        PrefabName = "UITemplateFlyingAnimationItem";
 
-        public UITemplateFlyingAnimationCurrency(ScreenManager screenManager, IGameAssets gameAssets)
+        public UITemplateFlyingAnimationController(ScreenManager screenManager, IGameAssets gameAssets)
         {
             this.screenManager = screenManager;
             this.gameAssets    = gameAssets;
         }
 
-        public async UniTask PlayAnimation(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "")
+        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "")
+            where T : UITemplateFlyingAnimationView
         {
-            var currencyView = this.screenManager.RootUICanvas.RootUIShowTransform.GetComponentsInChildren<UITemplateCurrencyView>().First();
+            var currencyView = this.screenManager.RootUICanvas.RootUIShowTransform.GetComponentsInChildren<T>().First();
             var endUiPos     = Vector3.zero;
 
             if (currencyView != null)
             {
-                endUiPos = currencyView.CurrencyIcon.transform.position;
+                endUiPos = currencyView.TargetFlyingAnimation.position;
             }
 
             if (target != null)
@@ -79,10 +80,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(flyingTime));
 
-                item.transform.DOMove(endUiPos, timeAnim).SetEase(Ease.InBack).OnComplete(() =>
-                                                                                          {
-                                                                                              item.Recycle();
-                                                                                          });
+                item.transform.DOMove(endUiPos, timeAnim).SetEase(Ease.InBack).OnComplete(() => { item.Recycle(); });
             }
         }
 

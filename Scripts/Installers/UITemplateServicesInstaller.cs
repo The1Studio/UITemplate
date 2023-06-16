@@ -39,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateScreenShowServices>().AsCached();
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<UITemplateBaseScreenShow>();
             //FlyingAnimation Currency
-            this.Container.Bind<UITemplateFlyingAnimationCurrency>().AsCached().NonLazy();
+            this.Container.Bind<UITemplateFlyingAnimationController>().AsCached().NonLazy();
             //Utils
             this.Container.Bind<GameAssetUtil>().AsCached();
             //Vibration

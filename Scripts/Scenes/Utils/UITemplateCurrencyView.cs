@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
+﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
     using DG.Tweening;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -8,7 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateCurrencyView : MonoBehaviour
+    public class UITemplateCurrencyView : UITemplateFlyingAnimationView
     {
         [SerializeField] private TMP_Text currencyValueText;
 
@@ -28,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             {
                 _defaultColor = this.currencyValueText.color;
             }
+
             this.ResetState();
         }
 

@@ -1,9 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
-    using GameFoundation.Scripts.Utilities.UserData;
     using ServiceImplementation.FireBaseRemoteConfig;
-    using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -19,8 +16,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         public override void InstallBindings()
         {
             //FTUE
-            this.Container.DeclareSignal<FTUEButtonClickSignal>();
-            this.Container.DeclareSignal<FTUETriggerSignal>();
             this.Container.DeclareSignal<TutorialCompletionSignal>();
 
             //Signal
@@ -36,7 +31,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<RemoteConfigInitializeSucceededSignal>();
             this.Container.DeclareSignal<ScaleDecoration2DItem>();
             this.Container.DeclareSignal<UITemplateAddRewardsSignal>();
-            this.Container.DeclareSignal<UITemplateDecorItemsInitSucceedSignal>();
             this.Container.DeclareSignal<BuildingOnMouseDownSignal>();
             this.Container.DeclareSignal<UITemplateUnlockBuildingSignal>();
         }

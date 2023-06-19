@@ -7,9 +7,6 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Gacha.Jackpot;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration.UI;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
@@ -47,39 +44,9 @@
 
         protected virtual void OnClickLevel()
         {
-            this.ScreenManager.OpenScreen<UITemplateJackpotSpinPopupPresenter, UITemplateJackpotSpinPopupModel>(new UITemplateJackpotSpinPopupModel(() =>
-            {
-                Debug.Log($"Get Reward from Jackpot Complete");
-            }));
         }
 
         protected virtual void OnClickShop() { }
-
-        private UITemplateGachaPopupModel FakeGachaPage()
-        {
-            var       result = new UITemplateGachaPopupModel();
-            const int count  = 3;
-
-            for (var i = 0; i < count; i++)
-            {
-                result.GachaPageModels.Add(new UITemplateGachaPageModel { PageId = i, ListGachaItem = this.FakeListItemInPageData() });
-            }
-
-            return result;
-        }
-
-        private List<UITemplateGachaItemModel> FakeListItemInPageData()
-        {
-            var result = new List<UITemplateGachaItemModel>();
-            var count  = Random.Range(4, 10);
-
-            for (var i = 0; i < count; i++)
-            {
-                result.Add(new UITemplateGachaItemModel { ItemId = i, IsSelected = i == 0, IsLocked = i > 0 && Random.Range(0, 2) == 0 });
-            }
-
-            return result.OrderBy(o => o.IsLocked).ToList();
-        }
 
         protected virtual void OnClickPlay()
         {

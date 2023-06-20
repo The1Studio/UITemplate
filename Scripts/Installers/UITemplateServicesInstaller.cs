@@ -45,13 +45,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Vibration
             this.Container.Bind<IVibrate>().To<UITemPlateVibrateServices>().AsCached();
             //FlashLight
-#if UNITY_EDITOR
-            this.Container.Bind<IFlashLight>().To<FlashLightEditor>().AsSingle().NonLazy();
-#elif UNITY_ANDROID && !UNITY_EDITOR
-            this.Container.Bind<IFlashLight>().To<FlashlightPluginAndroid>().AsSingle().NonLazy();
-#elif UNITY_IOS && !UNITY_EDITOR
-            this.Container.Bind<IFlashLight>().To<FlashLightPluginIOS>().AsSingle().NonLazy();
-#endif
             this.Container.Bind<UITemplateHandleSoundWhenOpenAdsServices>().AsCached().NonLazy();
             //Reward Handle
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<IUITemplateBaseReward>();

@@ -1,17 +1,15 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
-    using Core.AdsServices;
     using Core.AdsServices.Signals;
     using GameFoundation.Scripts.Utilities;
     using TheOneStudio.UITemplate.UITemplate.Signals;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
     using Zenject;
 
     public class UITemplateHandleSoundWhenOpenAdsServices
     {
-        private readonly IAudioManager audioManager;
+        private readonly IAudioService audioManager;
 
-        public UITemplateHandleSoundWhenOpenAdsServices(SignalBus signalBus, IAdServices adServices, IAudioManager audioManager)
+        public UITemplateHandleSoundWhenOpenAdsServices(SignalBus signalBus, IAudioService audioManager)
         {
             this.audioManager = audioManager;
 

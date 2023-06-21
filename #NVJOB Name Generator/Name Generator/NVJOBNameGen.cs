@@ -370,6 +370,22 @@ public static class NVJOBNameGen
         //--------------
     }
 
+    public static string GiveAnimalName(int type = 0)
+    {
+        if (type == 0)
+        {
+            var catName = new string[]
+            {
+                "Lucky", "Bandit", "Billy", "Raymond", "Oliver", "Atticus", "Custard", "Bilbo", "Smeagol", "Cheeto", "Milo",
+                "Rocky", "Cody", "Hercules", "Guiness", "Hamish", "Tom", "Thunder", "Toby", "Peanut", "Sox", "Salem", "Reggie",
+                "Jackson", "Barty", "Jasper", "Doughnut", "Yondu", "Walter", "Dash", "Bertie", "Django", "Otis"
+            };
+
+            return catName[Random.Range(0, catName.Length)];
+        }
+
+        return string.Empty;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

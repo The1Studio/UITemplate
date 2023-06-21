@@ -82,34 +82,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             
             void SetActiveRecursive(Transform transform, bool active, Dictionary<GameObject, bool> oldActiveStates = null)
             {
-                try
+                var gameObject = transform.gameObject;
+                if (!active)
                 {
-                    var gameObject = transform.gameObject;
-                    if (!active)
+                    if (oldActiveStates is not null)
+                        oldActiveStates[gameObject] = transform.gameObject.activeSelf;
+                    if (!this.originalStates.ContainsKey(transform.gameObject))
                     {
-                        if (oldActiveStates is not null)
-                            oldActiveStates[gameObject] = transform.gameObject.activeSelf;
-                        if (!this.originalStates.ContainsKey(transform.gameObject))
-                        {
-                            this.originalStates.Add(transform.gameObject,gameObject.activeSelf);
-                        }
-                        transform.gameObject.SetActive(active);
+                        this.originalStates.Add(transform.gameObject,gameObject.activeSelf);
                     }
-                    else
+                    transform.gameObject.SetActive(active);
+                }
+                else
+                {
+                    if (this.originalStates is not null)
                     {
-                        if (this.originalStates is not null)
-                        {
-                            transform.gameObject.SetActive(this.originalStates[transform.gameObject]);
-                        }
-                    }
-                    foreach (Transform child in transform)
-                    {
-                        SetActiveRecursive(child, active, oldActiveStates);
+                        transform.gameObject.SetActive(this.originalStates[transform.gameObject]);
                     }
                 }
-                catch (Exception)
+                foreach (Transform child in transform)
                 {
-                    // ignored
+                    SetActiveRecursive(child, active, oldActiveStates);
                 }
             }
             
@@ -132,24 +125,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
             GameObject GetGameObjectFromFieldInfo(FieldInfo fieldInfo)
             {
-                try
+                var value = fieldInfo.GetValue(presenter.View);
+                if (value is GameObject gameObject)
                 {
-                    var value = fieldInfo.GetValue(presenter.View);
-                    if (value is GameObject gameObject)
-                    {
-                        return gameObject;
-                    }
-
-                    if (value is Component component)
-                    {
-                        return component.gameObject;
-                    }
-                }
-                catch (Exception)
-                {
-                    // ignored
+                    return gameObject;
                 }
 
+                if (value is Component component)
+                {
+                    return component.gameObject;
+                }
                 return null;
             }
 

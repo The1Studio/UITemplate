@@ -16,23 +16,7 @@ public static class NVJOBNameGen
 {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-    public static string GiveAName(int type)
-    {
-        //--------------
-
-        string nameFinal = "";
-        string[] firstName = new string[] { };
-
-        //--------------
-
-        if (type > 0)
-        {
-            if (type <= 4)  //  Normal English Names ---------------------------
-            {
-                if (type == 1)  //  Female Old Name (321)
-                {
-                    firstName = new string[] { "Alicia", "Amanda", "Amy", "Angela", "Anna", "Anne", "Annie", "April", "Audrey", "Barbara", "Becky", "Belinda",
+    private static string[] firstName1 = { "Alicia", "Amanda", "Amy", "Angela", "Anna", "Anne", "Annie", "April", "Audrey", "Barbara", "Becky", "Belinda",
                         "Beth", "Betty", "Bonnie", "Brenda", "Carla", "Carmen", "Carole", "Carolyn", "Catherine", "Charlene", "Charlotte", "Christina",
                         "Christine", "Cindy", "Claudia", "Colleen", "Constance", "Crystal", "Cynthia", "Dana", "Darlene", "Dawn", "Deanna", "Debbie",
                         "Deborah", "Debra", "Delores", "Denise", "Diana", "Diane", "Dianne", "Dolores", "Donna", "Doreen", "Doris", "Dorothy", "Eileen",
@@ -56,10 +40,7 @@ public static class NVJOBNameGen
                         "Johnnie", "Lena", "Leona", "Lillie", "Lola", "Lucille", "Lucy", "Lula", "Mae", "Margie", "Marguerite", "Marian", "Marion", "Maryann",
                         "Mattie", "Maxine", "Minnie", "Myrna", "Myrtle", "Naomi", "Nellie", "Nina", "Pat", "Paulette", "Pauline", "Pearl", "Priscilla", "Ramona",
                         "Rosalie", "Rosemarie", "Rosie", "Stella", "Thelma", "Velma", "Vera", "Verna", "Viola", "Violet", "Willie", "Wilma", "Yvonne" };
-                }
-                else if (type == 2)  //  Female New Name (386)
-                {
-                    firstName = new string[] { "Aaliyah", "Abby", "Abigail", "Addison", "Adriana", "Adrianna", "Alana", "Alejandra", "Alexa", "Alexandra",
+    private static string[] firstName2 = { "Aaliyah", "Abby", "Abigail", "Addison", "Adriana", "Adrianna", "Alana", "Alejandra", "Alexa", "Alexandra",
                         "Alexandria", "Alexia", "Alexis", "Alison", "Allison", "Alondra", "Alyssa", "Amanda", "Amber", "Amelia", "Amy", "Ana", "Andrea",
                         "Angel", "Angelica", "Angelina", "Ariana", "Arianna", "Ariel", "Ashlee", "Ashley", "Ashlyn", "Aubrey", "Audrey", "Autumn", "Ava",
                         "Avery", "Bailey", "Bethany", "Bianca", "Brandi", "Brandy", "Breanna", "Brenda", "Briana", "Brianna", "Brittany", "Brittney",
@@ -89,10 +70,7 @@ public static class NVJOBNameGen
                         "Sheila", "Shelley", "Shelly", "Sheri", "Sherri", "Sherry", "Sonia", "Sonya", "Stacey", "Stacie", "Stacy", "Stefanie", "Susan",
                         "Suzanne", "Tabitha", "Tamara", "Tammy", "Tanya", "Tasha", "Teresa", "Terri", "Theresa", "Tina", "Toni", "Tonya", "Tracey", "Traci",
                         "Tracie", "Tracy", "Tricia", "Virginia", "Wanda", "Wendy", "Yolanda", "Yvonne" };
-                }
-                else if (type == 3)  //  Male Old Name (280)
-                {
-                    firstName = new string[] { "Aaron", "Adam", "Alan", "Albert", "Alexander", "Alfred", "Allan", "Allen", "Alvin", "Andre", "Andrew", "Anthony",
+    private static string[] firstName3 = { "Aaron", "Adam", "Alan", "Albert", "Alexander", "Alfred", "Allan", "Allen", "Alvin", "Andre", "Andrew", "Anthony",
                         "Antonio", "Arnold", "Arthur", "Barry", "Benjamin", "Bernard", "Bill", "Billy", "Bob", "Bobby", "Brad", "Bradley", "Brent", "Brett", "Brian",
                         "Bruce", "Bryan", "Calvin", "Carl", "Carlos", "Chad", "Charles", "Charlie", "Chris", "Christopher", "Clarence", "Clifford", "Clyde", "Craig",
                         "Curtis", "Dale", "Dan", "Dana", "Daniel", "Danny", "Darin", "Darrell", "Darren", "Darryl", "Daryl", "Dave", "David", "Dean", "Dennis", "Derek",
@@ -112,10 +90,7 @@ public static class NVJOBNameGen
                         "Elmer", "Everett", "Fredrick", "Homer", "Horace", "Hubert", "Hugh", "Jessie", "Junior", "Lowell", "Luther", "Lyle", "Marion", "Marshall",
                         "Max", "Morris", "Nathaniel", "Nelson", "Oliver", "Oscar", "Otis", "Roland", "Roosevelt", "Rudolph", "Salvatore", "Sam", "Sammy",
                         "Sidney", "Virgil", "Wallace", "Wendell", "Wilbur", "Willard", "Willis" };
-                }
-                else if (type == 4)  //  Male New Name (320)
-                {
-                    firstName = new string[] { "Aaron", "Abraham", "Adam", "Adrian", "Aidan", "Aiden", "Alan", "Alec", "Alejandro", "Alex", "Alexander", "Alexis",
+    private static string[] firstName4 = { "Aaron", "Abraham", "Adam", "Adrian", "Aidan", "Aiden", "Alan", "Alec", "Alejandro", "Alex", "Alexander", "Alexis",
                         "Allen", "Andre", "Andres", "Andrew", "Angel", "Anthony", "Antonio", "Ashton", "Austin", "Ayden", "Benjamin", "Blake", "Braden", "Bradley",
                         "Brady", "Brandon", "Brayden", "Brendan", "Brent", "Brett", "Brian", "Brody", "Bryan", "Bryce", "Bryson", "Caden", "Caleb", "Calvin",
                         "Cameron", "Carlos", "Carson", "Carter", "Casey", "Cesar", "Chad", "Charles", "Chase", "Christian", "Christopher", "Clayton", "Cody",
@@ -138,9 +113,100 @@ public static class NVJOBNameGen
                         "Kelly", "Kristopher", "Kurt", "Lance", "Lawrence", "Lee", "Leonard", "Louis", "Marc", "Marvin", "Maurice", "Melvin", "Micheal", "Neil",
                         "Ralph", "Randall", "Reginald", "Ricky", "Rodney", "Roger", "Ronnie", "Ross", "Roy", "Russell", "Shannon", "Shaun", "Stanley", "Steve",
                         "Terrance", "Terrence", "Terry", "Theodore", "Todd", "Tommy", "Tracy", "Tyrone", "Walter", "Wayne", "Willie" };
-                }
-                //  Second Name (828)
-                string[] secondName = new string[] { "Abbott", "Adams", "Adkins", "Aguirre", "Albert", "Alexander", "Alford", "Allen", "Allison", "Alston", "Anderson",
+    private static string[] firstName5 = { "Aerilaya", "Aelrie", "Aelua", "Aelynthi", "Aenwyn", "Aerith", "Ahrendue", "Ahshala", "Aila", "Alagossa",
+                        "Alais", "Alanis", "Alasse", "Alavara", "Alea", "Aleesia", "Alenia", "Aleratha", "Allannia", "Allisa", "Alloralla", "Allynna",
+                        "Almedha", "Almithara", "Alvaerelle", "Alyndra", "Amara", "Amaranthae", "Amarille", "Amedee", "Ameria", "Amisra", "Amnestria",
+                        "Amra", "Anarzee", "Aneirin", "Anhaern", "Annallee", "Ara", "Arasne", "Aravae", "Arcaena", "Ariawyn", "Arilemna", "Arlayna",
+                        "Arnarra", "Arryn", "Arthion", "Artin", "Ashera", "Ashryn", "Aurae", "Ava", "Axilya", "Ayda", "Ayla", "Azariah", "Baerinda",
+                        "Bellaluna", "Bemere", "Bonaluria", "Burolia", "Caeda", "Caerthynna", "Calarel", "Celaena", "Cellica", "Chaenath", "Chalia",
+                        "Chalsarda", "Chamylla", "Chandrelle", "Chasianna", "Ciliren", "Ciradyl", "Cithrel", "Clanire", "Cremia", "Daethie", "Daratrine",
+                        "Darshee", "Darunia", "Dasyra", "Delimira", "Delsanra", "Dessielle", "Deulara", "Dilya", "Dirue", "Ealirel", "Ecaeris", "Edea",
+                        "Edraele", "Eirina", "Elanalue", "Elanil", "Elasha", "Elenaril", "Eletha", "Elincia", "Elisen", "Eliyen", "Ellarian", "Elmyra",
+                        "Eloimaya", "Elora", "Elyon", "Ena", "Enania", "Eshenesra", "Esiyae", "Essaerae", "Esta", "Falenas", "Faraine", "Farryn", "Faunalyn",
+                        "Fayeth", "Faylen", "Fhaertala", "Filaurel", "Filauria", "Fildarae", "Finnea", "Gaelira", "Gaerradh", "Gaylia", "Geminara",
+                        "Ghilanna", "Glynnii", "Gweyir", "Gwynnestri", "Gylledhia", "Haciathra", "Haera", "Halaema", "Halanaestra", "Hamalitia", "Haramara",
+                        "Helartha", "Holone", "Huethea", "Hycis", "Ialantha", "Ikeshia", "Ildilyntra", "Ilmadia", "Ilsevel", "Ilyana", "Ilyrana", "Ilythyrra",
+                        "Imizael", "Immianthe", "Imra", "Imryll", "Ioelena", "Irhaal", "Isarrel", "Isilynor", "Ithronel", "Itireae", "Itylara", "Jastira",
+                        "Jeardra", "Jhaerithe", "Jhanandra", "Jhilsara", "Kali", "Kasula", "Kavrala", "Kaylessa", "Kaylin", "Keenor", "Keerla", "Keishara",
+                        "Kenia", "Kethryllia", "Keya", "Kilyn", "Kylantha", "Kythaela", "Laamtora", "Laerdya", "Lazziar", "Leena", "Leilatha", "Lenna",
+                        "Lensa", "Lethhonel", "Lierin", "Liluth", "Lithoniel", "Lixiss", "Llamiryl", "Llorva", "Loreleia", "Lura", "Lusha", "Lusserina",
+                        "Lyeecia", "Lyeneru", "Lymseia", "Lyndis", "Lyra", "Lyrei", "Lythienne", "Madris", "Maelyrra", "Maeralya", "Maescia", "Makaela",
+                        "Malonne", "Malruthiia", "Mariona", "Mathienne", "Maylin", "Meira", "Melarue", "Meorise", "Merethyl", "Merialeth", "Meriel",
+                        "Merlara", "Mhoryga", "Micaiah", "Minuvae", "Muelara", "Myantha", "Mylaela", "Mylaerla", "Myriani", "Myrrh", "Nabeora",
+                        "Naesala", "Naevys", "Naexi", "Nakiasha", "Nalaea", "Nambra", "Namys", "Nanthaliene", "Neia", "Nephinae", "Nimeroni", "Nimue",
+                        "Nithenoel", "Nithroel", "Nuala", "Nueleth", "Nuovis", "Nushala", "Nyana", "Nylathria", "Ochilysse", "Omylia", "Osonia", "Penelo",
+                        "Phaerille", "Phelorna", "Phinara", "Phyrra", "Pyria", "Qamara", "Radelia", "Raenisa", "Rallientha", "Rania", "Ratha", "Rathiain",
+                        "Renestrae", "Renna", "Rina", "Riniya", "Rophalin", "Rosanhi", "Rosaniya", "Roshia", "Rubarae", "Ryllae", "Saelihn", "Saida",
+                        "Sakaala", "Salihn", "Sana", "Saphielle", "Saria", "Sariandi", "Sarya", "Seldanna", "Selphie", "Selussa", "Shael", "Shaerra",
+                        "Shalaevar", "Shalana", "Shalendra", "Shalheira", "Shalia", "Shanaera", "Shandalar", "Shanyrria", "Shelara", "Shenarah", "Sillavana",
+                        "Sionia", "Siora", "Siphanien", "Siraye", "Solana", "Soliana", "Sorisana", "Sumina", "Syllia", "Sylmare", "Symania", "Syndra", "Syvis",
+                        "Taenya", "Talanashta", "Talindra", "Tanelia", "Tanila", "Tanulia", "Tarasynora", "Tehlarissa", "Tephysea", "Teriani", "Thaciona",
+                        "Thalia", "Thaola", "Thasinia", "Thessalia", "Tialha", "Tinesi", "Tiriana", "Tisha", "Tsarra", "Tyrael", "Ulesse", "Umilythe", "Uneathen",
+                        "Urricea", "Usamea", "Vaeri", "Valindra", "Vanya", "Vasati", "Velatha", "Verrona", "Vestele", "Vianola", "Viessa", "Wynather", "Yaereene",
+                        "Yalanue", "Yathanae", "Ygannea", "Ynaselle", "Yralissa", "Yrathea", "Yrneha", "Ysildea", "Yumanea", "Yunaesa", "Zaleria", "Zentha",
+                        "Zestari", "Zilyana", "Adorellan", "Adresin", "Aelrindel", "Aerendyl", "Aien", "Ailen", "Ailre", "Aimer", "Aire", "Aithlin", "Alaion",
+                        "Alosrin", "Amrynn", "Anfalen", "Anlyth", "Arbane", "Ardreth", "Arel", "Aubron", "Avourel", "Ayen", "Aymer", "Ayre", "Aywin", "Bellas",
+                        "Bialaer", "Cohnal", "Conall", "Cornaith", "Cyran", "Dain", "Ehlark", "Ehrendil", "Elaith", "Elandorr", "Elas", "Elauthin", "Eldaerenth",
+                        "Eldrin", "Elen", "Elidyr", "Elion", "Ellisar", "Elluin", "Elnaril", "Elpharae", "Elred", "Emmyth", "Erendriel", "Eroan", "Estelar",
+                        "Faelyn", "Falael", "Felaern", "Feno", "Filverel", "Folen", "Folre", "Fylson", "Gaeleath", "Gaelin", "Galan", "Goras", "Goren", "Haemir",
+                        "Halamar", "Haldir", "Halueth", "Halueve", "Hamon", "Horith", "Iefyr", "Ilbryen", "Iliphar", "Ilphas", "Inchel", "Ivasaar", "Jandar",
+                        "Jassin", "Jhaan", "Jorildyn", "Kailu", "Katar", "Kelvhan", "Kendel", "Keryth", "Kharis", "Khidell", "Khiiral", "Khyrmin", "Kindreth",
+                        "Kymil", "Laeroth", "Larrel", "Lathlaeril", "Lethonel", "Lhoris", "Llewel", "Lorsan", "Lyari", "Lysanthir", "Maeral", "Maiele", "Malon",
+                        "Merellien", "Merith", "Methild", "Mirthal", "Mnementh", "Myrdin", "Myriil", "Myrin", "Narbeth", "Nasir", "Navarre", "Nelaeryn",
+                        "Neremyn", "Nesterin", "Nhamashal", "Nieven", "Nym", "Orym", "Paeral", "Paeris", "Pelleas", "Phraan", "Rennyn", "Rhalyf", "Riluaneth",
+                        "Rolim", "Ruehnar", "Ruvaen", "Ruven", "Ruvyn", "Ryo", "Saelethil", "Saevel", "Saleh", "Sanev", "Selanar", "Sharian", "Sinaht",
+                        "Sylvar", "Taenaran", "Taeral", "Tamnaeth", "Tanathil", "Tannatar", "Tannyll", "Tanyl", "Tanyth", "Taranth", "Tarathiel", "Thalanil",
+                        "Thallan", "Vaeril", "Vamir", "Venali", "Virion", "Vulen", "Vulmar", "Vulmer", "Vulwin", "Wirenth", "Yesanith", "Zeno" };
+    private static string[] firstName6 = { "Adorellan", "Abarat", "Adamar", "Adresin", "Aelrindel", "Aerendyl", "Aeson", "Afamrail", "Agandaur",
+                        "Agis", "Aias", "Aiduin", "Aien", "Ailas", "Ailduin", "Ailen", "Ailluin", "Ailmar", "Ailmer", "Ailmon", "Ailre", "Ailred",
+                        "Ailuin", "Ailwin", "Aimar", "Aimer", "Aimon", "Airdan", "Aire", "Aired", "Aithlin", "Aiwin", "Akkar", "Alabyran", "Alaion",
+                        "Alas", "Alen", "Alinar", "Alluin", "Almar", "Almer", "Almon", "Alok", "Alosrin", "Alre", "Alred", "Althidon", "Alwin",
+                        "Amrynn", "Andrathath", "Anfalen", "Anlyth", "Aolis", "Aquilan", "Arathorn", "Arbane", "Arbelladon", "Ardreth", "Ardryll",
+                        "Arel", "Arlen", "Arun", "Ascal", "Athtar", "Aubron", "Aumanas", "Aumrauth", "Avourel", "Ayas", "Ayduin", "Ayen", "Ayluin",
+                        "Aymar", "Aymer", "Aymon", "Ayre", "Ayred", "Aywin", "Belanor", "Beldroth", "Bellas", "Beluar", "Biafyndar", "Bialaer",
+                        "Braern", "Cailu", "Camus", "Castien", "Chathanglas", "Cohnal", "Conall", "Connak", "Cornaith", "Corym", "Cyran", "Dain",
+                        "Dakath", "Dalyor", "Darcassan", "Darfin", "Darthoridan", "Darunia", "Deldrach", "Delmuth", "Delsaran", "Devdan", "Drannor",
+                        "Druindar", "Durlan", "Durothil", "Dyffros", "Edwyrd", "Edyrm", "Ehlark", "Ehrendil", "Eilauver", "Elaith", "Elandorr",
+                        "Elas", "Elashor", "Elauthin", "Eldaerenth", "Eldar", "Eldrin", "Elduin", "Elen", "Elephon", "Elidyr", "Elion", "Elkhazel",
+                        "Ellisar", "Elluin", "Elmar", "Elmer", "Elmon", "Elnaril", "Elorshin", "Elpharae", "Elre", "Elred", "Eltaor", "Elwin",
+                        "Elyon", "Emmyth", "Entrydal", "Erendriel", "Eriladar", "Erlan", "Erlareo", "Erlathan", "Eroan", "Erolith", "Estelar",
+                        "Ethlando", "Ettrian", "Evindal", "Faelar", "Faelyn", "Faeranduil", "Falael", "Felaern", "Fenian", "Feno", "Feyrith",
+                        "Fhaornik", "Filarion", "Filvendor", "Filverel", "Flardryn", "Flinar", "Folas", "Folduin", "Folen", "Folluin", "Folmar",
+                        "Folmer", "Folmon", "Folre", "Folred", "Folwin", "Fylson", "Gaeleath", "Gaelin", "Galaeron", "Galan", "Galather",
+                        "Ganamede", "Gantar", "Garrik", "Garynnon", "Giullis", "Glanduil", "Glarald", "Glorandal", "Goras", "Gorduin", "Goren",
+                        "Gorluin", "Gormar", "Gormer", "Gormon", "Gorre", "Gorred", "Gorwin", "Grathgor", "Haemir", "Hagas", "Hagduin",
+                        "Hagen", "Hagluin", "Hagmar", "Hagmer", "Hagre", "Hagred", "Hagwin", "Haladavar", "Halafarin", "Halamar", "Haldir",
+                        "Halflar", "Halueth", "Halueve", "Hamon", "Haryk", "Hastios", "Hatharal", "Horith", "Hubys", "Iefyr", "Ievis", "Ilbryen",
+                        "Ilimitar", "Iliphar", "Illianaro", "Illithor", "Illitran", "Ilphas", "Ilrune", "Ilthuryn", "Ilvisar", "Inchel", "Inialos",
+                        "Intevar", "Iolas", "Iolrath", "Itham", "Ivaran", "Ivasaar", "Iymbryl", "Iyrandrar", "Jandar", "Jannalor", "Jaonos", "Jassin",
+                        "Jhaan", "Jhaartael", "Jhaeros", "Jonik", "Jorildyn", "Kailu", "Katar", "Katyr", "Kellam", "Kelvhan", "Kendel", "Kerym",
+                        "Keryth", "Kesefeon", "Kharis", "Khatar", "Khidell", "Khiiral", "Khilseith", "Khuumal", "Khyrmin", "Kieran", "Kiirion",
+                        "Kindroth", "Kivessin", "Klaern", "Kolvar", "Kuskyn", "Kymil", "Kyrenic", "Kyrtaar", "Laeroth", "Lafarallin", "Laiex",
+                        "Lamruil", "Larongar", "Larrel", "Lathai", "Lathlaeril", "Lhoris", "Lianthorn", "Llarm", "Llewel", "Lorsan", "Luirlan",
+                        "Luthais", "Luvon", "Lyari", "Lyklor", "Lysanthir", "Maeral", "Maiele", "Malgath", "Malon", "Maradeim", "Marikoth", "Marlevaur",
+                        "Melandrach", "Merellien", "Merith", "Methild", "Mhaenal", "Mitalar", "Mihangyl", "Miirphys", "Mirthal", "Mlartlar", "Mnementh",
+                        "Morthil", "Myrdin", "Myriil", "Myrin", "Mythanar", "Naertho", "Naeryndam", "Naesala", "Narbeth", "Nardual", "Nasir", "Navarre",
+                        "Nelaeryn", "Neldor", "Neremyn", "Nesterin", "Nevarth", "Nhamashal", "Nieven", "Nindrol", "Ninleyn", "Ninthalor", "Niossae",
+                        "Nuvian", "Nylian", "Nym", "Nyvorlas", "Olaurae", "Onas", "Oncith", "Onvyr", "Orist", "Ornthalas", "Orrian", "Orym", "Otaehryn",
+                        "Othorion", "Paeral", "Paeris", "Pelleas", "Phaendar", "Pharom", "Phraan", "Pirphal", "Purtham", "Pyrravyn", "Pywaln", "Qildor",
+                        "Raeran", "Raibyn", "Ralnor", "Ranaeril", "Rathal", "Reluraun", "Reluvethel", "Rennyn", "Reptar", "Respen", "Revalor", "Rhalyf",
+                        "Rhangyl", "Rhistel", "Rhothomir", "Rhys", "Rilitar", "Riluaneth", "Rolim", "Rothilion", "Ruehnar", "Ruith", "Ruvaen", "Ruven",
+                        "Ruvyn", "Rychell", "Rydel", "Ryfon", "Ryo", "Ryul", "Saelethil", "Saevel", "Saleh", "Samblar", "Sanev", "Scalanis", "Selanar",
+                        "Sharian", "Shaundyl", "Shyrrik", "Sihnion", "Silvyr", "Simimar", "Sinaht", "Siveril", "Sontar", "Sudryal", "Sundamar", "Sylvar",
+                        "Sythaeryn", "Taegen", "Taenaran", "Taeral", "Taerentym", "Taleasin", "Tamnaeth", "Tanithil", "Tannatar", "Tannivh", "Tannyll",
+                        "Tanyl", "Tanyth", "Taranath", "Tarathiel", "Taredd", "Tarron", "Tasar", "Tassarion", "Tathaln", "Thalanil", "Thallan", "Theodas",
+                        "Theodemar", "Theoden", "Theodluin", "Theodmer", "Theodmon", "Theodre", "Theodred", "Thuridan", "Tiarsus", "Tolith", "Tordynnar",
+                        "Toross", "Traeliorn", "Travaran", "Triandal", "Ualiar", "Uevareth", "Uldreyin", "Urdusin", "Usunaar", "Uthorim", "Vaalyun",
+                        "Vaeril", "Vamir", "Varitan", "Velethuil", "Venali", "Vesryn", "Vesstan", "Virion", "Volodar", "Voron", "Vuduin", "Vulas",
+                        "Vulen", "Vulluin", "Vulmar", "Vulmer", "Vulmon", "Vulre", "Vulred", "Vulwin", "Wirenth", "Wistari", "Wyn", "Wyninn", "Wyrran",
+                        "Yalathanil", "Yesanith", "Yhendorn", "Ylyndar", "Zaos", "Zelphar", "Zeno", "Zhoron", "Aenwyn", "Aerith", "Alais", "Alanis",
+                        "Alasse", "Amra", "Aneirin", "Anhaern", "Ariawyn", "Arryn", "Arthion", "Artin", "Ashryn", "Axilya", "Azariah", "Bemere",
+                        "Caeda", "Calarel", "Chaenath", "Ciliren", "Ciradyl", "Cithrel", "Elanil", "Elisen", "Falenas", "Farryn", "Filaurel", "Gaerradh",
+                        "Gweyir", "Halaema", "Hycis", "Imizael", "Irhaal", "Isarrel", "Isilynor", "Ithronel", "Keenor", "Kilyn", "Kindreth", "Lazziar",
+                        "Lethonel", "Lierin", "Malonne", "Meriel", "Micaiah", "Myrrh", "Naevys", "Namys", "Nithenoel", "Nueleth", "Nuovis", "Rathiain",
+                        "Ryllae", "Saelihn", "Saida", "Shalaevar", "Shandalar", "Sylmare", "Syvis", "Tanathil", "Taranth", "Tyrael", "Uneathen", "Wynather" };
+    
+    private static string[] secondNames = { "Abbott", "Adams", "Adkins", "Aguirre", "Albert", "Alexander", "Alford", "Allen", "Allison", "Alston", "Anderson",
                     "Andrews", "Anthony", "Armstrong", "Arnold", "Ashley", "Atkins", "Atkinson", "Austin", "Avery", "Bailey", "Baird", "Baker", "Baldwin", "Ball",
                     "Ballard", "Banks", "Barber", "Barker", "Barlow", "Barnes", "Barnett", "Barr", "Barrera", "Barrett", "Barron", "Barry", "Bartlett", "Barton",
                     "Bass", "Bates", "Battle", "Bauer", "Baxter", "Beach", "Bean", "Beard", "Beasley", "Beck", "Becker", "Bell", "Bender", "Benjamin", "Bennett",
@@ -200,107 +266,50 @@ public static class NVJOBNameGen
                     "Whitehead", "Whitfield", "Whitley", "Whitney", "Wiggins", "Wilcox", "Wilder", "Wiley", "Wilkerson", "Wilkins", "Wilkinson", "William", "Williams",
                     "Williamson", "Willis", "Wilson", "Winters", "Wise", "Witt", "Wolf", "Wolfe", "Wood", "Woodard", "Woods", "Woodward", "Workman", "Wright",
                     "Wyatt", "Yates", "York", "Young" };
+    
+
+    public static string GiveAName(int type)
+    {
+        //--------------
+
+        string nameFinal = "";
+        string[] firstName = new string[] { };
+
+        //--------------
+
+        if (type > 0)
+        {
+            if (type <= 4)  //  Normal English Names ---------------------------
+            {
+                if (type == 1)  //  Female Old Name (321)
+                {
+                    firstName = firstName1;
+                }
+                else if (type == 2)  //  Female New Name (386)
+                {
+                    firstName = firstName2;
+                }
+                else if (type == 3)  //  Male Old Name (280)
+                {
+                    firstName = firstName3;
+                }
+                else if (type == 4)  //  Male New Name (320)
+                {
+                    firstName = firstName4;
+                }
+                //  Second Name (828)
+                string[] secondName = secondNames;
                 nameFinal = firstName[Random.Range(0, firstName.Length)] + " " + secondName[Random.Range(0, secondName.Length)];
             }
             else if (type == 5 || type == 6)  //  Fantasy Names ---------------------------
             {
                 if (type == 5)  //  Female Fantasy Name (534)
                 {
-                    firstName = new string[] { "Aerilaya", "Aelrie", "Aelua", "Aelynthi", "Aenwyn", "Aerith", "Ahrendue", "Ahshala", "Aila", "Alagossa",
-                        "Alais", "Alanis", "Alasse", "Alavara", "Alea", "Aleesia", "Alenia", "Aleratha", "Allannia", "Allisa", "Alloralla", "Allynna",
-                        "Almedha", "Almithara", "Alvaerelle", "Alyndra", "Amara", "Amaranthae", "Amarille", "Amedee", "Ameria", "Amisra", "Amnestria",
-                        "Amra", "Anarzee", "Aneirin", "Anhaern", "Annallee", "Ara", "Arasne", "Aravae", "Arcaena", "Ariawyn", "Arilemna", "Arlayna",
-                        "Arnarra", "Arryn", "Arthion", "Artin", "Ashera", "Ashryn", "Aurae", "Ava", "Axilya", "Ayda", "Ayla", "Azariah", "Baerinda",
-                        "Bellaluna", "Bemere", "Bonaluria", "Burolia", "Caeda", "Caerthynna", "Calarel", "Celaena", "Cellica", "Chaenath", "Chalia",
-                        "Chalsarda", "Chamylla", "Chandrelle", "Chasianna", "Ciliren", "Ciradyl", "Cithrel", "Clanire", "Cremia", "Daethie", "Daratrine",
-                        "Darshee", "Darunia", "Dasyra", "Delimira", "Delsanra", "Dessielle", "Deulara", "Dilya", "Dirue", "Ealirel", "Ecaeris", "Edea",
-                        "Edraele", "Eirina", "Elanalue", "Elanil", "Elasha", "Elenaril", "Eletha", "Elincia", "Elisen", "Eliyen", "Ellarian", "Elmyra",
-                        "Eloimaya", "Elora", "Elyon", "Ena", "Enania", "Eshenesra", "Esiyae", "Essaerae", "Esta", "Falenas", "Faraine", "Farryn", "Faunalyn",
-                        "Fayeth", "Faylen", "Fhaertala", "Filaurel", "Filauria", "Fildarae", "Finnea", "Gaelira", "Gaerradh", "Gaylia", "Geminara",
-                        "Ghilanna", "Glynnii", "Gweyir", "Gwynnestri", "Gylledhia", "Haciathra", "Haera", "Halaema", "Halanaestra", "Hamalitia", "Haramara",
-                        "Helartha", "Holone", "Huethea", "Hycis", "Ialantha", "Ikeshia", "Ildilyntra", "Ilmadia", "Ilsevel", "Ilyana", "Ilyrana", "Ilythyrra",
-                        "Imizael", "Immianthe", "Imra", "Imryll", "Ioelena", "Irhaal", "Isarrel", "Isilynor", "Ithronel", "Itireae", "Itylara", "Jastira",
-                        "Jeardra", "Jhaerithe", "Jhanandra", "Jhilsara", "Kali", "Kasula", "Kavrala", "Kaylessa", "Kaylin", "Keenor", "Keerla", "Keishara",
-                        "Kenia", "Kethryllia", "Keya", "Kilyn", "Kylantha", "Kythaela", "Laamtora", "Laerdya", "Lazziar", "Leena", "Leilatha", "Lenna",
-                        "Lensa", "Lethhonel", "Lierin", "Liluth", "Lithoniel", "Lixiss", "Llamiryl", "Llorva", "Loreleia", "Lura", "Lusha", "Lusserina",
-                        "Lyeecia", "Lyeneru", "Lymseia", "Lyndis", "Lyra", "Lyrei", "Lythienne", "Madris", "Maelyrra", "Maeralya", "Maescia", "Makaela",
-                        "Malonne", "Malruthiia", "Mariona", "Mathienne", "Maylin", "Meira", "Melarue", "Meorise", "Merethyl", "Merialeth", "Meriel",
-                        "Merlara", "Mhoryga", "Micaiah", "Minuvae", "Muelara", "Myantha", "Mylaela", "Mylaerla", "Myriani", "Myrrh", "Nabeora",
-                        "Naesala", "Naevys", "Naexi", "Nakiasha", "Nalaea", "Nambra", "Namys", "Nanthaliene", "Neia", "Nephinae", "Nimeroni", "Nimue",
-                        "Nithenoel", "Nithroel", "Nuala", "Nueleth", "Nuovis", "Nushala", "Nyana", "Nylathria", "Ochilysse", "Omylia", "Osonia", "Penelo",
-                        "Phaerille", "Phelorna", "Phinara", "Phyrra", "Pyria", "Qamara", "Radelia", "Raenisa", "Rallientha", "Rania", "Ratha", "Rathiain",
-                        "Renestrae", "Renna", "Rina", "Riniya", "Rophalin", "Rosanhi", "Rosaniya", "Roshia", "Rubarae", "Ryllae", "Saelihn", "Saida",
-                        "Sakaala", "Salihn", "Sana", "Saphielle", "Saria", "Sariandi", "Sarya", "Seldanna", "Selphie", "Selussa", "Shael", "Shaerra",
-                        "Shalaevar", "Shalana", "Shalendra", "Shalheira", "Shalia", "Shanaera", "Shandalar", "Shanyrria", "Shelara", "Shenarah", "Sillavana",
-                        "Sionia", "Siora", "Siphanien", "Siraye", "Solana", "Soliana", "Sorisana", "Sumina", "Syllia", "Sylmare", "Symania", "Syndra", "Syvis",
-                        "Taenya", "Talanashta", "Talindra", "Tanelia", "Tanila", "Tanulia", "Tarasynora", "Tehlarissa", "Tephysea", "Teriani", "Thaciona",
-                        "Thalia", "Thaola", "Thasinia", "Thessalia", "Tialha", "Tinesi", "Tiriana", "Tisha", "Tsarra", "Tyrael", "Ulesse", "Umilythe", "Uneathen",
-                        "Urricea", "Usamea", "Vaeri", "Valindra", "Vanya", "Vasati", "Velatha", "Verrona", "Vestele", "Vianola", "Viessa", "Wynather", "Yaereene",
-                        "Yalanue", "Yathanae", "Ygannea", "Ynaselle", "Yralissa", "Yrathea", "Yrneha", "Ysildea", "Yumanea", "Yunaesa", "Zaleria", "Zentha",
-                        "Zestari", "Zilyana", "Adorellan", "Adresin", "Aelrindel", "Aerendyl", "Aien", "Ailen", "Ailre", "Aimer", "Aire", "Aithlin", "Alaion",
-                        "Alosrin", "Amrynn", "Anfalen", "Anlyth", "Arbane", "Ardreth", "Arel", "Aubron", "Avourel", "Ayen", "Aymer", "Ayre", "Aywin", "Bellas",
-                        "Bialaer", "Cohnal", "Conall", "Cornaith", "Cyran", "Dain", "Ehlark", "Ehrendil", "Elaith", "Elandorr", "Elas", "Elauthin", "Eldaerenth",
-                        "Eldrin", "Elen", "Elidyr", "Elion", "Ellisar", "Elluin", "Elnaril", "Elpharae", "Elred", "Emmyth", "Erendriel", "Eroan", "Estelar",
-                        "Faelyn", "Falael", "Felaern", "Feno", "Filverel", "Folen", "Folre", "Fylson", "Gaeleath", "Gaelin", "Galan", "Goras", "Goren", "Haemir",
-                        "Halamar", "Haldir", "Halueth", "Halueve", "Hamon", "Horith", "Iefyr", "Ilbryen", "Iliphar", "Ilphas", "Inchel", "Ivasaar", "Jandar",
-                        "Jassin", "Jhaan", "Jorildyn", "Kailu", "Katar", "Kelvhan", "Kendel", "Keryth", "Kharis", "Khidell", "Khiiral", "Khyrmin", "Kindreth",
-                        "Kymil", "Laeroth", "Larrel", "Lathlaeril", "Lethonel", "Lhoris", "Llewel", "Lorsan", "Lyari", "Lysanthir", "Maeral", "Maiele", "Malon",
-                        "Merellien", "Merith", "Methild", "Mirthal", "Mnementh", "Myrdin", "Myriil", "Myrin", "Narbeth", "Nasir", "Navarre", "Nelaeryn",
-                        "Neremyn", "Nesterin", "Nhamashal", "Nieven", "Nym", "Orym", "Paeral", "Paeris", "Pelleas", "Phraan", "Rennyn", "Rhalyf", "Riluaneth",
-                        "Rolim", "Ruehnar", "Ruvaen", "Ruven", "Ruvyn", "Ryo", "Saelethil", "Saevel", "Saleh", "Sanev", "Selanar", "Sharian", "Sinaht",
-                        "Sylvar", "Taenaran", "Taeral", "Tamnaeth", "Tanathil", "Tannatar", "Tannyll", "Tanyl", "Tanyth", "Taranth", "Tarathiel", "Thalanil",
-                        "Thallan", "Vaeril", "Vamir", "Venali", "Virion", "Vulen", "Vulmar", "Vulmer", "Vulwin", "Wirenth", "Yesanith", "Zeno" };
+                    firstName = firstName5;
                 }
                 else if (type == 6)  //  Male Fantasy Name (561)
                 {
-                    firstName = new string[] { "Adorellan", "Abarat", "Adamar", "Adresin", "Aelrindel", "Aerendyl", "Aeson", "Afamrail", "Agandaur",
-                        "Agis", "Aias", "Aiduin", "Aien", "Ailas", "Ailduin", "Ailen", "Ailluin", "Ailmar", "Ailmer", "Ailmon", "Ailre", "Ailred",
-                        "Ailuin", "Ailwin", "Aimar", "Aimer", "Aimon", "Airdan", "Aire", "Aired", "Aithlin", "Aiwin", "Akkar", "Alabyran", "Alaion",
-                        "Alas", "Alen", "Alinar", "Alluin", "Almar", "Almer", "Almon", "Alok", "Alosrin", "Alre", "Alred", "Althidon", "Alwin",
-                        "Amrynn", "Andrathath", "Anfalen", "Anlyth", "Aolis", "Aquilan", "Arathorn", "Arbane", "Arbelladon", "Ardreth", "Ardryll",
-                        "Arel", "Arlen", "Arun", "Ascal", "Athtar", "Aubron", "Aumanas", "Aumrauth", "Avourel", "Ayas", "Ayduin", "Ayen", "Ayluin",
-                        "Aymar", "Aymer", "Aymon", "Ayre", "Ayred", "Aywin", "Belanor", "Beldroth", "Bellas", "Beluar", "Biafyndar", "Bialaer",
-                        "Braern", "Cailu", "Camus", "Castien", "Chathanglas", "Cohnal", "Conall", "Connak", "Cornaith", "Corym", "Cyran", "Dain",
-                        "Dakath", "Dalyor", "Darcassan", "Darfin", "Darthoridan", "Darunia", "Deldrach", "Delmuth", "Delsaran", "Devdan", "Drannor",
-                        "Druindar", "Durlan", "Durothil", "Dyffros", "Edwyrd", "Edyrm", "Ehlark", "Ehrendil", "Eilauver", "Elaith", "Elandorr",
-                        "Elas", "Elashor", "Elauthin", "Eldaerenth", "Eldar", "Eldrin", "Elduin", "Elen", "Elephon", "Elidyr", "Elion", "Elkhazel",
-                        "Ellisar", "Elluin", "Elmar", "Elmer", "Elmon", "Elnaril", "Elorshin", "Elpharae", "Elre", "Elred", "Eltaor", "Elwin",
-                        "Elyon", "Emmyth", "Entrydal", "Erendriel", "Eriladar", "Erlan", "Erlareo", "Erlathan", "Eroan", "Erolith", "Estelar",
-                        "Ethlando", "Ettrian", "Evindal", "Faelar", "Faelyn", "Faeranduil", "Falael", "Felaern", "Fenian", "Feno", "Feyrith",
-                        "Fhaornik", "Filarion", "Filvendor", "Filverel", "Flardryn", "Flinar", "Folas", "Folduin", "Folen", "Folluin", "Folmar",
-                        "Folmer", "Folmon", "Folre", "Folred", "Folwin", "Fylson", "Gaeleath", "Gaelin", "Galaeron", "Galan", "Galather",
-                        "Ganamede", "Gantar", "Garrik", "Garynnon", "Giullis", "Glanduil", "Glarald", "Glorandal", "Goras", "Gorduin", "Goren",
-                        "Gorluin", "Gormar", "Gormer", "Gormon", "Gorre", "Gorred", "Gorwin", "Grathgor", "Haemir", "Hagas", "Hagduin",
-                        "Hagen", "Hagluin", "Hagmar", "Hagmer", "Hagre", "Hagred", "Hagwin", "Haladavar", "Halafarin", "Halamar", "Haldir",
-                        "Halflar", "Halueth", "Halueve", "Hamon", "Haryk", "Hastios", "Hatharal", "Horith", "Hubys", "Iefyr", "Ievis", "Ilbryen",
-                        "Ilimitar", "Iliphar", "Illianaro", "Illithor", "Illitran", "Ilphas", "Ilrune", "Ilthuryn", "Ilvisar", "Inchel", "Inialos",
-                        "Intevar", "Iolas", "Iolrath", "Itham", "Ivaran", "Ivasaar", "Iymbryl", "Iyrandrar", "Jandar", "Jannalor", "Jaonos", "Jassin",
-                        "Jhaan", "Jhaartael", "Jhaeros", "Jonik", "Jorildyn", "Kailu", "Katar", "Katyr", "Kellam", "Kelvhan", "Kendel", "Kerym",
-                        "Keryth", "Kesefeon", "Kharis", "Khatar", "Khidell", "Khiiral", "Khilseith", "Khuumal", "Khyrmin", "Kieran", "Kiirion",
-                        "Kindroth", "Kivessin", "Klaern", "Kolvar", "Kuskyn", "Kymil", "Kyrenic", "Kyrtaar", "Laeroth", "Lafarallin", "Laiex",
-                        "Lamruil", "Larongar", "Larrel", "Lathai", "Lathlaeril", "Lhoris", "Lianthorn", "Llarm", "Llewel", "Lorsan", "Luirlan",
-                        "Luthais", "Luvon", "Lyari", "Lyklor", "Lysanthir", "Maeral", "Maiele", "Malgath", "Malon", "Maradeim", "Marikoth", "Marlevaur",
-                        "Melandrach", "Merellien", "Merith", "Methild", "Mhaenal", "Mitalar", "Mihangyl", "Miirphys", "Mirthal", "Mlartlar", "Mnementh",
-                        "Morthil", "Myrdin", "Myriil", "Myrin", "Mythanar", "Naertho", "Naeryndam", "Naesala", "Narbeth", "Nardual", "Nasir", "Navarre",
-                        "Nelaeryn", "Neldor", "Neremyn", "Nesterin", "Nevarth", "Nhamashal", "Nieven", "Nindrol", "Ninleyn", "Ninthalor", "Niossae",
-                        "Nuvian", "Nylian", "Nym", "Nyvorlas", "Olaurae", "Onas", "Oncith", "Onvyr", "Orist", "Ornthalas", "Orrian", "Orym", "Otaehryn",
-                        "Othorion", "Paeral", "Paeris", "Pelleas", "Phaendar", "Pharom", "Phraan", "Pirphal", "Purtham", "Pyrravyn", "Pywaln", "Qildor",
-                        "Raeran", "Raibyn", "Ralnor", "Ranaeril", "Rathal", "Reluraun", "Reluvethel", "Rennyn", "Reptar", "Respen", "Revalor", "Rhalyf",
-                        "Rhangyl", "Rhistel", "Rhothomir", "Rhys", "Rilitar", "Riluaneth", "Rolim", "Rothilion", "Ruehnar", "Ruith", "Ruvaen", "Ruven",
-                        "Ruvyn", "Rychell", "Rydel", "Ryfon", "Ryo", "Ryul", "Saelethil", "Saevel", "Saleh", "Samblar", "Sanev", "Scalanis", "Selanar",
-                        "Sharian", "Shaundyl", "Shyrrik", "Sihnion", "Silvyr", "Simimar", "Sinaht", "Siveril", "Sontar", "Sudryal", "Sundamar", "Sylvar",
-                        "Sythaeryn", "Taegen", "Taenaran", "Taeral", "Taerentym", "Taleasin", "Tamnaeth", "Tanithil", "Tannatar", "Tannivh", "Tannyll",
-                        "Tanyl", "Tanyth", "Taranath", "Tarathiel", "Taredd", "Tarron", "Tasar", "Tassarion", "Tathaln", "Thalanil", "Thallan", "Theodas",
-                        "Theodemar", "Theoden", "Theodluin", "Theodmer", "Theodmon", "Theodre", "Theodred", "Thuridan", "Tiarsus", "Tolith", "Tordynnar",
-                        "Toross", "Traeliorn", "Travaran", "Triandal", "Ualiar", "Uevareth", "Uldreyin", "Urdusin", "Usunaar", "Uthorim", "Vaalyun",
-                        "Vaeril", "Vamir", "Varitan", "Velethuil", "Venali", "Vesryn", "Vesstan", "Virion", "Volodar", "Voron", "Vuduin", "Vulas",
-                        "Vulen", "Vulluin", "Vulmar", "Vulmer", "Vulmon", "Vulre", "Vulred", "Vulwin", "Wirenth", "Wistari", "Wyn", "Wyninn", "Wyrran",
-                        "Yalathanil", "Yesanith", "Yhendorn", "Ylyndar", "Zaos", "Zelphar", "Zeno", "Zhoron", "Aenwyn", "Aerith", "Alais", "Alanis",
-                        "Alasse", "Amra", "Aneirin", "Anhaern", "Ariawyn", "Arryn", "Arthion", "Artin", "Ashryn", "Axilya", "Azariah", "Bemere",
-                        "Caeda", "Calarel", "Chaenath", "Ciliren", "Ciradyl", "Cithrel", "Elanil", "Elisen", "Falenas", "Farryn", "Filaurel", "Gaerradh",
-                        "Gweyir", "Halaema", "Hycis", "Imizael", "Irhaal", "Isarrel", "Isilynor", "Ithronel", "Keenor", "Kilyn", "Kindreth", "Lazziar",
-                        "Lethonel", "Lierin", "Malonne", "Meriel", "Micaiah", "Myrrh", "Naevys", "Namys", "Nithenoel", "Nueleth", "Nuovis", "Rathiain",
-                        "Ryllae", "Saelihn", "Saida", "Shalaevar", "Shandalar", "Sylmare", "Syvis", "Tanathil", "Taranth", "Tyrael", "Uneathen", "Wynather" };
+                    firstName = firstName6;
                 }
                 //  Second Name 0 (98)
                 string[] secondName0 = new string[] { "Ad", "Al", "Ae", "An", "Ara", "Ana", "Am", "Bal", "Bei", "Bi", "Bry", "Cai", "Car", "Chae", "Cra",
@@ -368,6 +377,22 @@ public static class NVJOBNameGen
         return char.ToUpper(u[0]) + u.Substring(1);
 
         //--------------
+    }
+
+    public static string GiveFirstName(int type = 0)
+    {
+        var firstName = new string[]{};
+        switch (type)
+        {
+            case 0: firstName = firstName1; break;
+            case 1: firstName = firstName2; break;
+            case 2: firstName = firstName3; break;
+            case 3: firstName = firstName4; break;
+            case 4: firstName = firstName5; break;
+            case 5: firstName = firstName6; break;
+        }
+
+        return firstName[Random.Range(0, firstName.Length)];
     }
 
     public static string GiveAnimalName(int type = 0)

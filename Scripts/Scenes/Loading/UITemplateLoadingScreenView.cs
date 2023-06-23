@@ -154,7 +154,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private UniTask WaitForAoa()
         {
             var startWaitingAoaTime = DateTime.Now;
-            return this.TrackProgress(UniTask.WaitUntil(() => !this.aoaAdService.IsShowingAd || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.aoaAdService.LoadingTimeToShowAOA)));
+            return this.TrackProgress(UniTask.WaitUntil(() => this.aoaAdService.IsShowedFirstOpen || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.aoaAdService.LoadingTimeToShowAOA)));
         }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }

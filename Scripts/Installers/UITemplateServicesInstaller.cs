@@ -12,26 +12,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateServicesInstaller : Installer<GameObject, ToastController, UITemplateServicesInstaller>
+    public class UITemplateServicesInstaller : Installer<ToastController, UITemplateServicesInstaller>
     {
-        private readonly GameObject      soundGroupPrefab;
         private readonly ToastController toastController;
 
-        public UITemplateServicesInstaller(GameObject soundGroupPrefab, ToastController toastController)
+        public UITemplateServicesInstaller(ToastController toastController)
         {
-            this.soundGroupPrefab = soundGroupPrefab;
             this.toastController  = toastController;
         }
 
         public override void InstallBindings()
         {
             this.Container.BindInterfacesAndSelfTo<UITemplateFeatureConfig>().AsCached().NonLazy();
-            //reporter
-#if ENABLE_REPORTER
-            this.Container.Bind<Reporter>().FromComponentInNewPrefabResource("Reporter").AsSingle().NonLazy();
-#endif
             // Master Audio
-            this.Container.InstantiatePrefab(this.soundGroupPrefab);
             this.Container.Bind<UITemplateSoundServices>().AsCached();
             //Build-in service
             this.Container.BindInterfacesAndSelfTo<InternetService>().AsSingle().NonLazy();
@@ -44,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<GameAssetUtil>().AsCached();
             //Vibration
             this.Container.Bind<IVibrate>().To<UITemPlateVibrateServices>().AsCached();
-            //FlashLight
+
             this.Container.Bind<UITemplateHandleSoundWhenOpenAdsServices>().AsCached().NonLazy();
             //Reward Handle
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<IUITemplateBaseReward>();

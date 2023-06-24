@@ -17,14 +17,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Decoration
 #endif
 
-    public class UITemplateInstaller : Installer<GameObject, ToastController, UITemplateInstaller>
+    public class UITemplateInstaller : Installer<ToastController, UITemplateInstaller>
     {
-        private readonly GameObject      soundGroupPrefab;
         private readonly ToastController toastCanvas;
 
-        public UITemplateInstaller(GameObject soundGroupPrefab, ToastController toastCanvas)
+        public UITemplateInstaller(ToastController toastCanvas)
         {
-            this.soundGroupPrefab = soundGroupPrefab;
             this.toastCanvas      = toastCanvas;
         }
 
@@ -37,7 +35,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             UITemplateDeclareSignalInstaller.Install(this.Container);
             UnityIapInstaller.Install(this.Container);
-            UITemplateServicesInstaller.Install(this.Container, this.soundGroupPrefab, this.toastCanvas);
 #if FB_INSTANT
             FBInstantInstaller.Install(this.Container); // depend on UITemplateThirdPartyInstaller for signals
 #endif

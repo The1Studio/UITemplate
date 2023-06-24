@@ -15,7 +15,7 @@
    <assembly fullname="UITemplate.Scripts" preserve="all"> </assembly>
    <assembly fullname="HyperCasualGame.Scripts" preserve="all"> </assembly>
    <assembly fullname="Sirenix.Serialization">
-      <type fullname="Sirenix.Serialization.Int32Serializer" preserve="all"></type>
+      <type fullname="Sirenix.Serialization.Int32Serializer" preserve="all"/>
    </assembly>
    <assembly fullname="3rdCore.Ads" preserve="all"> </assembly>
    <assembly fullname="3rdCore.Analytic" preserve="all"> </assembly>

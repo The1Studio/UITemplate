@@ -28,7 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateAdServiceWrapper>().AsCached();
 #endif
 
-#if EM_ADMOB
+#if ADMOB
             var admobConfig = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>();
 
             var adMobWrapperConfig = new AdModWrapper.Config(admobConfig.ListAoaAppId)
@@ -50,7 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
 #endif
 
-#if CREATIVE && EM_ADMOB
+#if CREATIVE && ADMOB
             adMobWrapperConfig.IsShowAOAAtOpenApp = false;
             adMobWrapperConfig.OpenAOAAfterResuming = false;
 #endif

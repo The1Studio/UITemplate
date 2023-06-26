@@ -32,7 +32,8 @@
         "UltimateJoystick.Scripts",
         "3rd.FBInstant",
         "FirebaseRemoteConfig",
-        "DOTween.Modules"
+        "DOTween.Modules",
+        "3rd.Configs"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

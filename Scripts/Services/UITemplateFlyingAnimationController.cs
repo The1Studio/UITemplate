@@ -29,7 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "")
             where T : UITemplateFlyingAnimationView
         {
-            var currencyView = this.screenManager.RootUICanvas.RootUIShowTransform.GetComponentsInChildren<T>().First();
+            var currencyView = this.screenManager.RootUICanvas.GetComponentsInChildren<T>().First();
             var endUiPos     = Vector3.zero;
 
             if (currencyView != null)

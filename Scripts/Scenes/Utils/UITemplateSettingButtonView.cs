@@ -4,6 +4,7 @@
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -41,6 +42,7 @@
 
         private void Awake()
         {
+            this.GetCurrentContainer().Inject(this);
             this.SettingButton.onClick.AddListener(this.OnClick);
             this.ReverseButtonList = new List<RectTransform>(this.ButtonList);
             this.ReverseButtonList.Reverse();

@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -115,6 +116,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.loadingSteps    = 1;
 
             UniTask.WhenAll(
+                this.CreateObjectPool(AudioService.AudioSourceKey, 3),
                 this.Preload(),
                 this.WaitForAoa(),
                 UniTask.WhenAll(

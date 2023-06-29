@@ -5,7 +5,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using GameFoundation.Scripts.Utilities.Extension;
     using global::Models;
     using ServiceImplementation.AdsServices;
+#if ADMOB || IRONSOURCE
     using ServiceImplementation.AdsServices.EasyMobile;
+#endif
     using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;

@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3017088889580894180}
-  - component: {fileID: 2417156833066255616}
   m_Layer: 5
   m_Name: UITemplatePagingDotItemView
   m_TagString: Untagged
@@ -32,26 +31,13 @@ RectTransform:
   - {fileID: 712801895692145624}
   - {fileID: 8969837899380534902}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2417156833066255616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3313723356959897364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5951bfcf68294614b5528ad7bf2c2679, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imgPageDotActive: {fileID: 1393708066560600088}
 --- !u!1 &5943167159635900417
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,8 +27,8 @@
         protected static string ChannelId          => "default_channel_id";
         protected static string ChannelName        => Application.productName;
         protected static string ChannelDescription => Application.productName;
-        protected static string SmallIcon          => "small";
-        protected static string LargeIcon          => "large";
+        protected static string SmallIcon          => "icon_0";
+        protected static string LargeIcon          => "icon_1";
 
         protected BaseUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint,

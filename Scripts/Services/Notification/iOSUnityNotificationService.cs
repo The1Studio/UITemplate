@@ -1,12 +1,14 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services
 {
-    using System;
     using Core.AnalyticServices;
-    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using Unity.Notifications.iOS;
     using Zenject;
+#if UNITY_IOS
+    using System;
+    using Cysharp.Threading.Tasks;
+    using Unity.Notifications.iOS;
+#endif
 
     public class IOSUnityNotificationService : BaseUnityNotificationService
     {
@@ -15,7 +17,8 @@
             uiTemplateNotificationDataBlueprint, logger, analyticServices)
         {
         }
-
+        
+#if UNITY_IOS
         protected override void RegisterNotification() { }
 
         protected override async void CheckOpenedByNotification()
@@ -48,5 +51,6 @@
             };
             iOSNotificationCenter.ScheduleNotification(notification);
         }
+#endif
     }
 }

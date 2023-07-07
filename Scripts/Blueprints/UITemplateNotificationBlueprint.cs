@@ -14,7 +14,6 @@
         public string    Id            { get; set; }
         public List<int> HourRangeShow { get; set; } = new();
         public List<int> TimeToShow    { get; set; } = new();
-        public string    Repeat        { get; set; } = "None";
         public bool      RandomAble    { get; set; }
         public string    Title         { get; set; } = "";
         public string    Body          { get; set; } = "";

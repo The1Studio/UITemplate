@@ -13,13 +13,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public DummyNotificationService(ILogService logService) { this.logService = logService; }
 
-        public void SetupCustomNotification(string notificationId)
-        {
-            this.logService.Log($"Notify: Id - {notificationId}");
-        }
-        public void SetupCustomNotification(string notificationId, TimeSpan delayTime)
-        {
-            this.logService.Log($"Notify: Id - {notificationId}, delay - {delayTime}");
-        }
+        public void SetupCustomNotification(string notificationId, TimeSpan? delayTime = null) { this.logService.Log($"Notify: Id - {notificationId}, delay - {delayTime}"); }
     }
 }

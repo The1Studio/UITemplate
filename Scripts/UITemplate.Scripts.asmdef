@@ -33,7 +33,9 @@
         "3rd.FBInstant",
         "FirebaseRemoteConfig",
         "DOTween.Modules",
-        "3rd.Configs"
+        "3rd.Configs",
+        "Unity.Notifications.Android",
+        "Unity.Notifications.iOS"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

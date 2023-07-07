@@ -1,5 +1,0 @@
--keep class com.unity.** { *;}
--keep class com.unity.androidnotifications.** { *;}
--keepclassmembers class com.unity.androidnotifications.** { *;}
--keepnames class com.unity.androidnotifications.** { *;}
--keepclassmembernames class com.unity.androidnotifications.** { *;}

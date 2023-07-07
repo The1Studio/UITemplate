@@ -6,6 +6,7 @@
     using BlueprintFlow.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
@@ -47,9 +48,9 @@
 
         #region Initial
 
-        private void InitNotification()
+        private async void InitNotification()
         {
-            this.CheckPermission();
+            await this.CheckPermission();
             this.RegisterNotification();
             this.CheckOpenedByNotification();
             this.SetUpNotification();
@@ -76,7 +77,7 @@
 
         #region Schedule Notification
 
-        protected virtual void CheckPermission() { }
+        protected virtual async UniTask CheckPermission() { }
 
         private void SetUpNotification()
         {
@@ -95,6 +96,7 @@
 
         private void ScheduleNotification(UITemplateNotificationRecord notificationData, TimeSpan delayTime, NotificationContent notificationContent = null)
         {
+            this.Logger.Log($"onelog: Notification Schedule: {notificationData.Title} - {notificationData.Body}");
             var fireTime = DateTime.Now.Date.AddHours(delayTime.Hours);
             var highHour = notificationData.HourRangeShow[1];
             var lowHour  = notificationData.HourRangeShow[0];

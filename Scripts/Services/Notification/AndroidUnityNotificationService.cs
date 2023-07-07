@@ -31,23 +31,32 @@
                 this.TrackEventClick(new NotificationContent(intent.Notification.Title, intent.Notification.Text));
         }
 
-        protected override void CheckPermission()
+        protected override async UniTask CheckPermission()
         {
+            var isWaitingForPermission = false;
+            if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS"))
+            {
+                isWaitingForPermission = true;
+                var permissionCallbacks = new PermissionCallbacks();
+                permissionCallbacks.PermissionDenied                += _ => { isWaitingForPermission = false; };
+                permissionCallbacks.PermissionDeniedAndDontAskAgain += _ => { isWaitingForPermission = false; };
+                permissionCallbacks.PermissionGranted               += _ => { isWaitingForPermission = false; };
+                Permission.RequestUserPermission("android.permission.POST_NOTIFICATIONS", permissionCallbacks);
+                this.Logger.Log($"onelog: Notification RequestPermission: ");
+            }
+
+            await UniTask.WaitUntil(() => !isWaitingForPermission);
+
             var isPermissionAllow = AndroidNotificationCenter.UserPermissionToPost is not (PermissionStatus.RequestPending or PermissionStatus.NotRequested);
 
             this.Logger.Log($"onelog: Notification CheckPermission: {isPermissionAllow}");
-            if (isPermissionAllow) return;
-
-            if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS"))
-            {
-                Permission.RequestUserPermission("android.permission.POST_NOTIFICATIONS");
-            }
         }
 
         protected override void CancelNotification() { AndroidNotificationCenter.CancelAllNotifications(); }
 
         protected override void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
         {
+            this.Logger.Log($"onelog: Notification SendNotification: {title} - {body} - {fireTime} - {delayTime}");
             var notification = new AndroidNotification
             {
                 Title     = title,

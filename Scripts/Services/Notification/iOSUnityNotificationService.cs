@@ -30,12 +30,13 @@
                 this.TrackEventClick(new NotificationContent(intent.Title, intent.Body));
         }
 
-        protected override void CheckPermission()
+        protected override async UniTask CheckPermission()
         {
             var iOSNotificationSettings = iOSNotificationCenter.GetNotificationSettings();
             if (iOSNotificationSettings.AuthorizationStatus == AuthorizationStatus.NotDetermined)
             {
                 using var req = new AuthorizationRequest(AuthorizationOption.Alert | AuthorizationOption.Badge, true);
+                await UniTask.WaitUntil(() => req.IsFinished);
             }
         }
 

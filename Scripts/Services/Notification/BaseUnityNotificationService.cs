@@ -96,11 +96,11 @@
 
         private void ScheduleNotification(UITemplateNotificationRecord notificationData, TimeSpan delayTime, NotificationContent notificationContent = null)
         {
-            this.Logger.Log($"onelog: Notification Schedule: {notificationData.Title} - {notificationData.Body}");
-            var fireTime = DateTime.Now.Date.AddHours(delayTime.Hours);
+            var fireTime = DateTime.Now.Add(delayTime);
             var highHour = notificationData.HourRangeShow[1];
             var lowHour  = notificationData.HourRangeShow[0];
 
+            this.Logger.Log($"onelog: Notification Schedule: {notificationData.Title} - {notificationData.Body} - {fireTime}");
             if (fireTime.Hour >= highHour || fireTime.Hour <= lowHour) return;
 
             var title = notificationContent != null ? notificationContent.Title : notificationData.Title;

@@ -1,4 +1,5 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Services
+﻿#if NOTIFICATION
+namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using Core.AnalyticServices;
@@ -69,3 +70,5 @@
         }
     }
 }
+
+#endif

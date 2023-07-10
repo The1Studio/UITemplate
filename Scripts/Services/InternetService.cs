@@ -22,7 +22,7 @@
     {
         private readonly ILogService logService;
 
-        public static string WorldTimeAPIUrl  => "http://worldtimeapi.org/api";
+        public static string WorldTimeAPIUrl  => "https://worldtimeapi.org/api";
         public static string CheckInternetUrl => "https://www.google.com/";
 
         private bool isInternetAvailable = true;

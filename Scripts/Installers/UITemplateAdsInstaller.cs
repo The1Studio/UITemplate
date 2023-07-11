@@ -5,7 +5,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using GameFoundation.Scripts.Utilities.Extension;
     using global::Models;
     using ServiceImplementation.AdsServices;
+#if APPLOVIN
     using ServiceImplementation.AdsServices.AppLovin;
+#endif
 #if ADMOB || IRONSOURCE
     using ServiceImplementation.AdsServices.EasyMobile;
 #endif

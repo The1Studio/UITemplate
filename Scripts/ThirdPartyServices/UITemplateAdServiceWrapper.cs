@@ -7,8 +7,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
-    using ServiceImplementation.AdsServices;
-    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -22,6 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly List<IMRECAdService>    mrecAdServices;
         private readonly UITemplateAdsController uiTemplateAdsController;
         private readonly IAOAAdService           aoaAdService;
+        private readonly IBackFillAdsService     backFillAdsService;
         private readonly ILogService             logService;
         private readonly AdServicesConfig        adServicesConfig;
         private readonly SignalBus               signalBus;
@@ -34,12 +33,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController,
-            IAOAAdService aoaAdService)
+            IAOAAdService aoaAdService, IBackFillAdsService backFillAdsService)
         {
             this.adServices              = adServices;
             this.mrecAdServices          = mrecAdServices;
             this.uiTemplateAdsController = uiTemplateAdsController;
             this.aoaAdService            = aoaAdService;
+            this.backFillAdsService      = backFillAdsService;
             this.logService              = logService;
             this.adServicesConfig        = adServicesConfig;
             this.signalBus               = signalBus;
@@ -103,9 +103,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (!this.adServices.IsInterstitialAdReady(place))
             {
-                this.logService.Warning("InterstitialAd was not loaded");
+                if (!this.backFillAdsService.IsInterstitialAdReady(place))
+                {
+                    this.logService.Warning("InterstitialAd was not loaded");
 
-                return false;
+                    return false;  
+                }
+                
+                this.signalBus.Fire(new InterstitialAdCalledSignal(place));
+                this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
+                this.aoaAdService.IsResumedFromAdsOrIAP = true;
+                this.backFillAdsService.ShowInterstitialAd(place);
+                return true;
             }
 
             this.signalBus.Fire(new InterstitialAdCalledSignal(place));

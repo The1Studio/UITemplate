@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using GameFoundation.Scripts.Utilities.Extension;
     using global::Models;
     using ServiceImplementation.AdsServices;
+    using ServiceImplementation.AdsServices.AppLovin;
 #if ADMOB || IRONSOURCE
     using ServiceImplementation.AdsServices.EasyMobile;
 #endif
@@ -50,6 +51,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             }
 
             this.Container.Bind<AdModWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdModWrapper>();
+#endif
+
+#if APPLOVIN
+            var adConfig = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>();
+
+            var adViewPositionToId = new Dictionary<AdViewPosition, string>();
+            for (var i = adConfig.ListMRecId.Count - 1; i >= 0; i--)
+            {
+                adViewPositionToId.Add(adConfig.listMRecAdViewPosition[i], adConfig.ListMRecId[i]);
+            }
+
+            this.Container.Bind<Dictionary<AdViewPosition, string>>().FromInstance(adViewPositionToId).WhenInjectedInto<AppLovinAdsWrapper>();
 #endif
 
 #if CREATIVE && ADMOB

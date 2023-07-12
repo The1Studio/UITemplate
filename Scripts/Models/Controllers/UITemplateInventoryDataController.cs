@@ -303,8 +303,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                 foreach (var (category, defaultItems) in defaultItemWithCategory)
                 {
-                    if (this.GetCurrentItemSelected(category) is not null) continue;
                     if (defaultItems is null or { Count: 0 }) continue;
+
+                    if (this.GetCurrentItemSelected(category) is { } currentSelectedItem)
+                    {
+                        // in case current selected item is not null but the choose item has been deleted
+                        if (!this.uiTemplateItemBlueprint.TryGetValue(currentSelectedItem, out _))
+                        {
+                            this.UpdateCurrentSelectedItem(category, defaultItems[0].Id);
+                            continue;
+                        }
+                    }
+
                     this.UpdateCurrentSelectedItem(category, defaultItems[0].Id);
                 }
             }

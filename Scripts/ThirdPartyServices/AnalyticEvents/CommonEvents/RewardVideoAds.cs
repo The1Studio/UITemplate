@@ -1,7 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents
 {
     using Core.AnalyticServices.Data;
-    using UnityEditorInternal;
 
     public class RewardedAdLoaded : IEvent
     {

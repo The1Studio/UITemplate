@@ -19,15 +19,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<TutorialCompletionSignal>();
 
             //Signal
-            this.Container.DeclareSignal<RewardedAdEligibleSignal>();
-            this.Container.DeclareSignal<RewardedAdCalledSignal>();
-            this.Container.DeclareSignal<RewardedAdOfferSignal>();
             this.Container.DeclareSignal<UpdateCurrencySignal>();
             this.Container.DeclareSignal<LevelStartedSignal>();
             this.Container.DeclareSignal<LevelEndedSignal>();
             this.Container.DeclareSignal<LevelSkippedSignal>();
-            this.Container.DeclareSignal<InterstitialAdCalledSignal>();
-            this.Container.DeclareSignal<InterstitialAdEligibleSignal>();
             this.Container.DeclareSignal<RemoteConfigInitializeSucceededSignal>();
             this.Container.DeclareSignal<ScaleDecoration2DItem>();
             this.Container.DeclareSignal<UITemplateAddRewardsSignal>();

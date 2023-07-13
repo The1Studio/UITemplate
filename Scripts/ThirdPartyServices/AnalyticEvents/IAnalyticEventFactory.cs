@@ -36,6 +36,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent RewardedVideoShowFail(string place, string msg);
 
+        IEvent AppOpenCalled();
+        IEvent AppOpenEligible();
+        IEvent AppOpenLoadFailed();
+        IEvent AppOpenLoaded();
+        IEvent AppOpenFullScreenContentClosed();
+        IEvent AppOpenFullScreenContentFailed();
+        IEvent AppOpenFullScreenContentOpened();
+
         IEvent LevelLose(int level, int timeSpent, int loseCount);
 
         IEvent LevelStart(int level, int gold);

@@ -2,18 +2,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using System.Collections.Generic;
-    using Core.AdsServices;
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
-    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using UnityEngine;
     using Zenject;
 
     public class UITemplateAnalyticHandler : IInitializable, IDisposable
@@ -22,29 +19,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private readonly SignalBus                         signalBus;
         private readonly IAnalyticServices                 analyticServices;
-        private readonly List<IAnalyticEventFactory>       analyticEventList;
-        private readonly IAdServices                       adServices;
-        private readonly ILogService                       logService;
+        private readonly List<IAnalyticEventFactory>       analyticEventFactories;
         private readonly UITemplateLevelDataController     uiTemplateLevelDataController;
         private readonly UITemplateInventoryDataController uITemplateInventoryDataController;
         private readonly UITemplateDailyRewardController   uiTemplateDailyRewardController;
 
         #endregion
 
-        public UITemplateAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, List<IAnalyticEventFactory> analyticEventList,
-            IAdServices adServices, ILogService logService, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateInventoryDataController uITemplateInventoryDataController,
+        public UITemplateAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, List<IAnalyticEventFactory> analyticEventFactories,
+            UITemplateLevelDataController uiTemplateLevelDataController, UITemplateInventoryDataController uITemplateInventoryDataController,
             UITemplateDailyRewardController uiTemplateDailyRewardController)
         {
             this.signalBus                         = signalBus;
             this.analyticServices                  = analyticServices;
-            this.analyticEventList                 = analyticEventList;
-            this.adServices                        = adServices;
-            this.logService                        = logService;
+            this.analyticEventFactories            = analyticEventFactories;
             this.uiTemplateLevelDataController     = uiTemplateLevelDataController;
             this.uITemplateInventoryDataController = uITemplateInventoryDataController;
             this.uiTemplateDailyRewardController   = uiTemplateDailyRewardController;
 
-            switch (analyticEventList.Count)
+            switch (analyticEventFactories.Count)
             {
                 case > 1:
                     throw new Exception("Error: More than one analytic event factory found. Please remove one of them (Project Setting/Script Define Symbols).");
@@ -55,12 +48,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void Track(IEvent trackEvent)
         {
-            this.analyticEventList.ForEach(x => x.ForceUpdateAllProperties());
+            this.analyticEventFactories.ForEach(x => x.ForceUpdateAllProperties());
 
             if (trackEvent is CustomEvent customEvent && string.IsNullOrEmpty(customEvent.EventName))
                 return;
 
             this.analyticServices.Track(trackEvent);
+        }
+        
+        private void DoAnalyticWithFactories(Action<IAnalyticEventFactory> action)
+        {
+            foreach (var analytic in this.analyticEventFactories)
+            {
+                action(analytic);
+            }
         }
 
         public void Initialize()
@@ -69,18 +70,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             //Game events
             this.signalBus.Subscribe<TutorialCompletionSignal>(this.TutorialCompletionHandler);
-
             this.signalBus.Subscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
+
+            //Interstitial ads
             this.signalBus.Subscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Subscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);
             this.signalBus.Subscribe<InterstitialAdDownloadedSignal>(this.InterstitialAdLoadedHandler);
             this.signalBus.Subscribe<InterstitialAdLoadFailedSignal>(this.InterstitialAdFailedHandler);
             this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.InterstitialAdDisplayedHandler);
+            this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
 
+            //Reward ads
             this.signalBus.Subscribe<RewardedInterstitialAdCompletedSignal>(this.RewardedInterstitialAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
             this.signalBus.Subscribe<RewardedAdEligibleSignal>(this.RewardedAdEligibleHandler);
@@ -89,241 +93,178 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.RewardedAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
             this.signalBus.Subscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
+            this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedAdCompleted);
+            this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedAdSkipped);
+
+            //App open
+            this.signalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.AppOpenFullScreenContentOpenedHandler);
+            this.signalBus.Subscribe<AppOpenFullScreenContentFailedSignal>(this.AppOpenFullScreenContentFailedHandler);
+            this.signalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.AppOpenFullScreenContentClosedHandler);
+            this.signalBus.Subscribe<AppOpenLoadedSignal>(this.AppOpenLoadedHandler);
+            this.signalBus.Subscribe<AppOpenLoadFailedSignal>(this.AppOpenLoadFailedHandler);
+            this.signalBus.Subscribe<AppOpenEligibleSignal>(this.AppOpenEligibleHandler);
+            this.signalBus.Subscribe<AppOpenCalledSignal>(this.AppOpenCalledHandler);
 
             this.signalBus.Subscribe<PopupShowedSignal>(this.PopupShowedHandler);
             this.signalBus.Subscribe<UITemplateUnlockBuildingSignal>(this.UnlockBuildingHandler);
 
-            //Ads events
-            this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
-            this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedAdCompleted);
-            this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedAdSkipped);
-
             this.TotalDaysPlayedChange();
         }
 
-        private void OnRewardedAdSkipped(RewardedSkippedSignal obj)
+
+        private void AppOpenCalledHandler(AppOpenCalledSignal obj)
         {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.RewardedVideoShowCompleted(0, obj.Placement, false));
-            }
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenCalled()));
+        }
+        private void AppOpenEligibleHandler(AppOpenEligibleSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenEligible()));
+        }
+        private void AppOpenLoadFailedHandler(AppOpenLoadFailedSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenLoadFailed()));
+        }
+        private void AppOpenLoadedHandler(AppOpenLoadedSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenLoaded()));
+        }
+        private void AppOpenFullScreenContentClosedHandler(AppOpenFullScreenContentClosedSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenFullScreenContentClosed()));
+        }
+        private void AppOpenFullScreenContentFailedHandler(AppOpenFullScreenContentFailedSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenFullScreenContentFailed()));
+        }
+        private void AppOpenFullScreenContentOpenedHandler(AppOpenFullScreenContentOpenedSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenFullScreenContentOpened()));
         }
 
-        private void OnRewardedAdCompleted(RewardedAdCompletedSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.RewardedVideoShowCompleted(0, obj.Placement, true));
-            }
-        }
+        private void OnRewardedAdSkipped(RewardedSkippedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoShowCompleted(0, obj.Placement, false))); }
 
-        private void OnInterstitialAdClosed(InterstitialAdClosedSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.InterstitialShowCompleted(0, obj.Placement));
-            }
-        }
+        private void OnRewardedAdCompleted(RewardedAdCompletedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoShowCompleted(0, obj.Placement, true))); }
+
+        private void OnInterstitialAdClosed(InterstitialAdClosedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialShowCompleted(0, obj.Placement))); }
 
         #region Interstitial Ads Signal Handler
 
-        private void InterstitialAdEligibleHandler(InterstitialAdEligibleSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.InterstitialEligible(obj.place));
-            }
-        }
+        private void InterstitialAdEligibleHandler(InterstitialAdEligibleSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialEligible(obj.Placement))); }
 
-        private void InterstitialAdClickedHandler(InterstitialAdClickedSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.InterstitialClick(obj.Placement));
-            }
-        }
+        private void InterstitialAdClickedHandler(InterstitialAdClickedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialClick(obj.Placement))); }
 
-        private void InterstitialAdLoadedHandler(InterstitialAdDownloadedSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.InterstitialDownloaded(obj.Placement));
-            }
-        }
+        private void InterstitialAdLoadedHandler(InterstitialAdDownloadedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialDownloaded(obj.Placement))); }
 
         private void InterstitialAdFailedHandler(InterstitialAdLoadFailedSignal obj)
         {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.InterstitialShowFail(obj.Placement, obj.Message));
-            }
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialShowFail(obj.Placement, obj.Message)));
         }
 
         private void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
         {
-            foreach (var analytic in this.analyticEventList)
+            this.DoAnalyticWithFactories(eventFactory =>
             {
-                this.analyticServices.UserProperties[analytic.LastAdsPlacementProperty]     = obj.Placement;
-                this.analyticServices.UserProperties[analytic.TotalInterstitialAdsProperty] = obj.Placement;
-                this.Track(analytic.InterstitialShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
-            }
+                this.analyticServices.UserProperties[eventFactory.LastAdsPlacementProperty]     = obj.Placement;
+                this.analyticServices.UserProperties[eventFactory.TotalInterstitialAdsProperty] = obj.Placement;
+                this.Track(eventFactory.InterstitialShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
+            });
         }
 
-        private void InterstitialAdCalledHandler(InterstitialAdCalledSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.InterstitialCalled(obj.place));
-            }
-        }
+        private void InterstitialAdCalledHandler(InterstitialAdCalledSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialCalled(obj.Placement))); }
 
         private void RewardedInterstitialAdDisplayedHandler(RewardedInterstitialAdCompletedSignal obj)
         {
-            foreach (var analytic in this.analyticEventList)
+            this.DoAnalyticWithFactories(eventFactory =>
             {
-                this.analyticServices.UserProperties[analytic.LastAdsPlacementProperty] = obj.Placement;
-                this.analyticServices.UserProperties[analytic.TotalRewardedAdsProperty] = obj.Placement;
-                this.Track(analytic.RewardedInterstitialAdDisplayed(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
-            }
+                this.analyticServices.UserProperties[eventFactory.LastAdsPlacementProperty] = obj.Placement;
+                this.analyticServices.UserProperties[eventFactory.TotalRewardedAdsProperty] = obj.Placement;
+                this.Track(eventFactory.RewardedInterstitialAdDisplayed(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
+            });
         }
 
         #endregion
 
         #region Rewarded Ads Signal Handler
 
-        private void RewardedAdEligibleHandler(RewardedAdEligibleSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.RewardedVideoEligible(obj.place));
-            }
-        }
+        private void RewardedAdEligibleHandler(RewardedAdEligibleSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoEligible(obj.Placement))); }
 
-        private void RewardedAdFailedHandler(RewardedAdLoadFailedSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.RewardedVideoShowFail(obj.Placement, obj.Message));
-            }
-        }
+        private void RewardedAdFailedHandler(RewardedAdLoadFailedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoShowFail(obj.Placement, obj.Message))); }
 
-        private void RewardedAdOfferHandler(RewardedAdOfferSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.RewardedVideoOffer(obj.Place));
-            }
-        }
+        private void RewardedAdOfferHandler(RewardedAdOfferSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoOffer(obj.Placement))); }
 
-        private void RewardedAdDownloadedHandler(RewardedAdLoadedSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.RewardedVideoDownloaded(obj.Placement));
-            }
-        }
+        private void RewardedAdDownloadedHandler(RewardedAdLoadedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoDownloaded(obj.Placement))); }
 
-        private void RewardedAdClickedHandler(RewardedAdLoadClickedSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.RewardedVideoClick(obj.Placement));
-            }
-        }
+        private void RewardedAdClickedHandler(RewardedAdLoadClickedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoClick(obj.Placement))); }
 
         private void RewardedAdDisplayedHandler(RewardedAdDisplayedSignal obj)
         {
-            foreach (var analytic in this.analyticEventList)
+            this.DoAnalyticWithFactories(eventFactory =>
             {
-                this.analyticServices.UserProperties[analytic.LastAdsPlacementProperty] = obj.Placement;
-                this.analyticServices.UserProperties[analytic.TotalRewardedAdsProperty] = obj.Placement;
-                this.Track(analytic.RewardedVideoShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
-            }
+                this.analyticServices.UserProperties[eventFactory.LastAdsPlacementProperty] = obj.Placement;
+                this.analyticServices.UserProperties[eventFactory.TotalRewardedAdsProperty] = obj.Placement;
+                this.Track(eventFactory.RewardedVideoShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
+            });
         }
 
-        private void RewardedAdCalledHandler(RewardedAdCalledSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.RewardedVideoCalled(obj.place));
-            }
-        }
+        private void RewardedAdCalledHandler(RewardedAdCalledSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoCalled(obj.Placement))); }
 
         #endregion
 
         private void PopupShowedHandler(PopupShowedSignal obj) { }
 
-        private void LevelSkippedHandler(LevelSkippedSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.LevelSkipped(obj.Level, obj.Time));
-            }
-        }
+        private void LevelSkippedHandler(LevelSkippedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.LevelSkipped(obj.Level, obj.Time))); }
 
         private void LevelEndedHandler(LevelEndedSignal obj)
         {
             var levelData = this.uiTemplateLevelDataController.GetLevelData(obj.Level);
 
-            foreach (var analytic in this.analyticEventList)
+            this.DoAnalyticWithFactories(eventFactory =>
             {
-                this.analyticServices.UserProperties[analytic.LevelMaxProperty] = this.uiTemplateLevelDataController.MaxLevel;
+                this.analyticServices.UserProperties[eventFactory.LevelMaxProperty] = this.uiTemplateLevelDataController.MaxLevel;
 
                 this.Track(obj.IsWin
-                    ? analytic.LevelWin(obj.Level, obj.Time, levelData.WinCount)
-                    : analytic.LevelLose(obj.Level, obj.Time, levelData.LoseCount));
+                    ? eventFactory.LevelWin(obj.Level, obj.Time, levelData.WinCount)
+                    : eventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount));
 
                 if (obj.IsWin && levelData.WinCount == 1)
                 {
-                    this.Track(analytic.FirstWin(obj.Level, obj.Time));
+                    this.Track(eventFactory.FirstWin(obj.Level, obj.Time));
                 }
-            }
+            });
         }
 
-        private void TutorialCompletionHandler(TutorialCompletionSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.TutorialCompletion(obj.Success, obj.TutorialId));
-            }
-        }
+        private void TutorialCompletionHandler(TutorialCompletionSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.TutorialCompletion(obj.Success, obj.TutorialId))); }
 
         private void LevelStartedHandler(LevelStartedSignal obj)
         {
-            foreach (var analytic in this.analyticEventList)
+            this.DoAnalyticWithFactories(eventFactory =>
             {
-                this.analyticServices.UserProperties[analytic.LastLevelProperty] = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
-                this.Track(analytic.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
-            }
+                this.analyticServices.UserProperties[eventFactory.LastLevelProperty] = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
+                this.Track(eventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
+            });
         }
 
         private void UpdateCurrencyHandler(UpdateCurrencySignal obj)
         {
-            foreach (var analytic in this.analyticEventList)
+            this.DoAnalyticWithFactories(eventFactory =>
             {
                 if (obj.Amount > 0)
-                    this.analyticServices.UserProperties[analytic.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned;
+                    this.analyticServices.UserProperties[eventFactory.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned;
                 else
-                    this.analyticServices.UserProperties[analytic.TotalVirtualCurrencySpentProperty] =
+                    this.analyticServices.UserProperties[eventFactory.TotalVirtualCurrencySpentProperty] =
                         this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned - this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).Value;
-            }
+            });
         }
 
         private void TotalDaysPlayedChange()
         {
-            foreach (var analytic in this.analyticEventList)
+            this.DoAnalyticWithFactories(eventFactory =>
             {
-                this.analyticServices.UserProperties[analytic.DaysPlayedProperty] = (int)(DateTime.Now.Date - this.uiTemplateDailyRewardController.GetFirstTimeOpenedDate.Date).TotalDays;
-            }
+                this.analyticServices.UserProperties[eventFactory.DaysPlayedProperty] = (int)(DateTime.Now.Date - this.uiTemplateDailyRewardController.GetFirstTimeOpenedDate.Date).TotalDays;
+            });
         }
 
-        private void UnlockBuildingHandler(UITemplateUnlockBuildingSignal obj)
-        {
-            foreach (var analytic in this.analyticEventList)
-            {
-                this.Track(analytic.BuildingUnlock(obj.IsUnlockSuccess));
-            }   
-        }
+        private void UnlockBuildingHandler(UITemplateUnlockBuildingSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.BuildingUnlock(obj.IsUnlockSuccess))); }
 
         public void Dispose()
         {
@@ -347,6 +288,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
             this.signalBus.Unsubscribe<PopupShowedSignal>(this.PopupShowedHandler);
             this.signalBus.Unsubscribe<UITemplateUnlockBuildingSignal>(this.UnlockBuildingHandler);
+
+            //App open
+            this.signalBus.Unsubscribe<AppOpenFullScreenContentOpenedSignal>(this.AppOpenFullScreenContentOpenedHandler);
+            this.signalBus.Unsubscribe<AppOpenFullScreenContentFailedSignal>(this.AppOpenFullScreenContentFailedHandler);
+            this.signalBus.Unsubscribe<AppOpenFullScreenContentClosedSignal>(this.AppOpenFullScreenContentClosedHandler);
+            this.signalBus.Unsubscribe<AppOpenLoadedSignal>(this.AppOpenLoadedHandler);
+            this.signalBus.Unsubscribe<AppOpenLoadFailedSignal>(this.AppOpenLoadFailedHandler);
+            this.signalBus.Unsubscribe<AppOpenEligibleSignal>(this.AppOpenEligibleHandler);
+            this.signalBus.Unsubscribe<AppOpenCalledSignal>(this.AppOpenCalledHandler);
         }
     }
 }

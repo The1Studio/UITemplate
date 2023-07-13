@@ -5,63 +5,74 @@
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using Zenject;
-    using LevelSkipped = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket.LevelSkipped;
-    using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket.LevelStart;
 
     public abstract class BaseAnalyticEventFactory : IAnalyticEventFactory
     {
-        public virtual IEvent InterstitialEligible(string place) => new CustomEvent();
+        //Interstitial ads
+        public virtual IEvent InterstitialEligible(string place) => new InterstitialAdEligible(place);
 
-        public virtual IEvent InterstitialShow(int level, string place) => new InterstitialShow(level, place);
+        public virtual IEvent InterstitialShow(int level, string place) => new InterstitialAdDisplayed(level, place);
 
-        public virtual IEvent InterstitialShowCompleted(int level, string place) => new InterstitialShowCompleted(place);
+        public virtual IEvent InterstitialShowCompleted(int level, string place) => new InterstitialAdClosed(place);
 
-        public virtual IEvent InterstitialShowFail(string place, string msg) => new CustomEvent();
+        public virtual IEvent InterstitialShowFail(string place, string msg) => new InterstitialAdDisplayedFailed(place);
 
-        public virtual IEvent InterstitialClick(string place) => new CustomEvent();
+        public virtual IEvent InterstitialClick(string place) => new InterstitialAdClicked(place);
 
-        public virtual IEvent InterstitialDownloaded(string place) => new CustomEvent();
+        public virtual IEvent InterstitialDownloaded(string place) => new InterstitialAdDownloaded(place);
 
-        public virtual IEvent InterstitialCalled(string place) => new CustomEvent();
+        public virtual IEvent InterstitialCalled(string place) => new InterstitialAdCalled(place);
 
-        public IEvent RewardedInterstitialAdDisplayed(int level, string place) => new CustomEvent();
+        //Rewarded Interstitital
+        public virtual IEvent RewardedInterstitialAdDisplayed(int level, string place) => new CustomEvent();
 
-        public virtual IEvent RewardedVideoEligible(string place) => new CustomEvent();
+        //RewardVideo Ads
+        public virtual IEvent RewardedVideoEligible(string place) => new RewardedAdEligible(place);
 
-        public virtual IEvent RewardedVideoOffer(string place) => new CustomEvent();
+        public virtual IEvent RewardedVideoOffer(string place) => new RewardedAdOffer(place);
 
-        public virtual IEvent RewardedVideoDownloaded(string place) => new CustomEvent();
+        public virtual IEvent RewardedVideoDownloaded(string place) => new RewardedAdLoaded(place);
 
-        public virtual IEvent RewardedVideoCalled(string place) => new CustomEvent();
+        public virtual IEvent RewardedVideoCalled(string place) => new RewardedAdCalled(place);
 
-        public virtual IEvent RewardedVideoShow(int level, string place) => new RewardedVideoShow(level, place);
+        public virtual IEvent RewardedVideoShow(int level, string place) => new RewardedAdDisplayed(place, level);
 
-        public virtual IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) => new RewardedAdsShowCompleted(place, isRewarded ? "success" : "skip");
+        public virtual IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)
+        {
+            return isRewarded ? new RewardedAdCompleted(place) : new RewardedSkipped(place);
+        }
 
         public virtual IEvent RewardedVideoClick(string place) { return new CustomEvent(); }
 
-        public virtual IEvent RewardedVideoShowFail(string place, string msg) { return new CustomEvent(); }
+        public virtual IEvent RewardedVideoShowFail(string place, string msg) => new CustomEvent();
 
-        public virtual IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
+        //App open
+        public virtual IEvent AppOpenCalled()                  => new AppOpenCalled();
+        public virtual IEvent AppOpenEligible()                => new AppOpenEligible();
+        public virtual IEvent AppOpenLoadFailed()              => new AppOpenLoadFailed();
+        public virtual IEvent AppOpenLoaded()                  => new AppOpenLoaded();
+        public virtual IEvent AppOpenFullScreenContentClosed() => new AppOpenFullScreenContentClosed();
+        public virtual IEvent AppOpenFullScreenContentFailed() => new AppOpenFullScreenContentFailed();
+        public virtual IEvent AppOpenFullScreenContentOpened() => new AppOpenFullScreenContentOpened();
 
-        public virtual IEvent LevelStart(int level, int gold) => new LevelStart(level);
+        //Level
+        public virtual IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);
 
         public virtual IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelWin(level, timeSpent);
+        
+        public virtual IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
 
-        public virtual IEvent FirstWin(int level, int timeSpent) => new CustomEvent();
+        public virtual IEvent FirstWin(int level, int timeSpent) => new FirstWin(level, timeSpent);
 
         public virtual IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
 
-        public virtual IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) { return new CustomEvent(); }
+        public virtual IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) => new EarnVirtualCurrency(virtualCurrencyName, value, source);
 
-        public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) { return new CustomEvent(); }
+        public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) => SpendVirtualCurrency(virtualCurrencyName, value, itemName);
 
-        public virtual IEvent TutorialCompletion(bool success, string tutorialId) { return new CustomEvent(); }
-
-        public virtual IEvent EarnVirtualCurrency(string type, int amount) { return new CustomEvent(); }
+        public virtual IEvent TutorialCompletion(bool success, string tutorialId) => new TutorialCompletion(success, tutorialId);
 
         public virtual IEvent BuildingUnlock(bool success) => new BuildingUnlock(success);
 

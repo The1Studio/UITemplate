@@ -45,13 +45,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         private readonly UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint;
         private readonly DiContainer                  diContainer;
         private readonly LoadImageHelper              loadImageHelper;
-        private readonly IUnityIapServices            iapServices;
+        private readonly IIapServices            iapServices;
         private          string                       IapPack = "";
 
         public UITemplateStartPackScreenPresenter(SignalBus signalBus, IAdServices adServices, UITemplateShopPackBlueprint uiTemplateShopPackBlueprint, UITemplateIapServices uiTemplateIapServices,
             UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint, DiContainer diContainer,
             LoadImageHelper loadImageHelper,
-            IUnityIapServices iapServices, ILogService logger) : base(signalBus,
+            IIapServices iapServices, ILogService logger) : base(signalBus,
             logger)
         {
             this.adServices                   = adServices;

@@ -47,7 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         public UITemplateNewCollectionScreenPresenter(
             SignalBus                         signalBus,
             EventSystem                       eventSystem,
-            IUnityIapServices                 unityUnityIapServices,
+            IIapServices                 iapServices,
             ILogService                       logger,
             UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
             IGameAssets                       gameAssets,
@@ -60,7 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         ) : base(signalBus)
         {
             this.eventSystem                       = eventSystem;
-            this.unityUnityIapServices             = unityUnityIapServices;
+            this.iapServices             = iapServices;
             this.logger                            = logger;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.gameAssets                        = gameAssets;
@@ -326,7 +326,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly   EventSystem                       eventSystem;
-        private readonly   IUnityIapServices                 unityUnityIapServices;
+        private readonly   IIapServices                 iapServices;
         private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;
@@ -372,7 +372,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private void BuyWithIAP(ItemCollectionItemModel obj)
         {
-            this.unityUnityIapServices.BuyProductID(obj.ShopBlueprintRecord.Id, x =>
+            this.iapServices.BuyProductID(obj.ShopBlueprintRecord.Id, x =>
             {
                 this.BuyItemCompleted(obj);
             });

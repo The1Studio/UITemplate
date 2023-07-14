@@ -25,7 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             UITemplateDeclareSignalInstaller.Install(this.Container);
             UITemplateServicesInstaller.Install(this.Container, this.toastCanvas);
-            UnityIapInstaller.Install(this.Container);
+            IapInstaller.Install(this.Container);
             UITemplateLocalDataInstaller.Install(this.Container); // bind after FBInstantInstaller for remote user data
             UITemplateThirdPartyInstaller.Install(this.Container); // bind after UITemplateLocalDataInstaller for local data analytics
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals

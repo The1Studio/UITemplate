@@ -14,27 +14,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateIapServices
+    public class UITemplateIapServices : IInitializable, IDisposable
     {
         private readonly SignalBus                            signalBus;
         private readonly ILogService                          logger;
         private readonly IAdServices                          adServices;
         private readonly UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData;
         private readonly UITemplateShopPackBlueprint          uiTemplateShopPackBlueprint;
-        private readonly IUnityIapServices                    unityIapServices;
+        private readonly IIapServices                         iapServices;
 
         public UITemplateIapServices(SignalBus signalBus, ILogService logger, IAdServices adServices, UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
             UITemplateShopPackBlueprint uiTemplateShopPackBlueprint,
-            IUnityIapServices unityIapServices)
+            IIapServices iapServices)
         {
             this.signalBus                            = signalBus;
             this.logger                               = logger;
             this.adServices                           = adServices;
             this.uiTemplateIAPOwnerPackControllerData = uiTemplateIAPOwnerPackControllerData;
             this.uiTemplateShopPackBlueprint          = uiTemplateShopPackBlueprint;
-            this.unityIapServices                     = unityIapServices;
-            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnBlueprintLoaded);
-            this.signalBus.Subscribe<UnityIAPOnRestorePurchaseCompleteSignal>(this.OnHandleRestorePurchase);
+            this.iapServices                          = iapServices;
         }
 
         private void OnBlueprintLoaded(LoadBlueprintDataSucceedSignal obj)
@@ -50,14 +48,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 });
             }
 
-            this.unityIapServices.InitIapServices(dicData);
+            this.iapServices.InitIapServices(dicData);
         }
 
         public void BuyProduct(GameObject source, string productId, Action<string> onComplete = null, Action<string> onFail = null)
         {
             this.logger.Warning($"BuyProduct {productId}");
 
-            this.unityIapServices.BuyProductID(productId, (x) =>
+            this.iapServices.BuyProductID(productId, (x) =>
             {
                 this.OnPurchaseComplete(productId, source);
                 onComplete?.Invoke(x);
@@ -81,22 +79,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
         }
 
-        private void OnHandleRestorePurchase(UnityIAPOnRestorePurchaseCompleteSignal obj) { this.OnPurchaseComplete(obj.ProductID, null); }
+        private void OnHandleRestorePurchase(OnRestorePurchaseCompleteSignal obj) { this.OnPurchaseComplete(obj.ProductID, null); }
 
-        public void RestorePurchase(Action onComplete = null) { this.unityIapServices.RestorePurchases(onComplete); }
+        public void RestorePurchase(Action onComplete = null) { this.iapServices.RestorePurchases(onComplete); }
 
         public bool IsProductOwned(string productId = "")
         {
             //Todo check with pack ID
-            foreach (var shopPackRecord in this.uiTemplateShopPackBlueprint.Values.Where(x => x.RewardIdToRewardDatas.Count > 1))
-            {
-                if (this.uiTemplateIAPOwnerPackControllerData.IsOwnerPack(shopPackRecord.Id))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return this.uiTemplateShopPackBlueprint.Values.Where(x => x.RewardIdToRewardDatas.Count > 1).Any(shopPackRecord => this.uiTemplateIAPOwnerPackControllerData.IsOwnerPack(shopPackRecord.Id));
+        }
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnBlueprintLoaded);
+            this.signalBus.Subscribe<OnRestorePurchaseCompleteSignal>(this.OnHandleRestorePurchase);
+        }
+        public void Dispose()
+        {
+            this.signalBus.Unsubscribe<LoadBlueprintDataSucceedSignal>(this.OnBlueprintLoaded);
+            this.signalBus.Unsubscribe<OnRestorePurchaseCompleteSignal>(this.OnHandleRestorePurchase);
         }
     }
 }

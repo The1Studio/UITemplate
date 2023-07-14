@@ -50,6 +50,7 @@
 
         private async void InitNotification()
         {
+            await UniTask.Delay(500);
             await this.CheckPermission();
             this.RegisterNotification();
             this.CheckOpenedByNotification();

@@ -7,9 +7,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
+    using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
     public class UITemplateAdServiceWrapper : IInitializable
@@ -74,6 +73,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
+            this.signalBus.Subscribe<RemoveAdsCompleteSignal>(this.OnRemoveAdsComplete);
         }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)
@@ -107,9 +107,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     this.logService.Warning("InterstitialAd was not loaded");
 
-                    return false;  
+                    return false;
                 }
-                
+
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
                 this.aoaAdService.IsResumedFromAdsOrIAP = true;
@@ -188,6 +188,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     this.adServices.ShowBannerAd();
                 }
             }
+        }
+
+        private void OnRemoveAdsComplete()
+        {
+            foreach (var mrecAdService in this.mrecAdServices)
+            {
+                mrecAdService.HideAllMREC();
+            }
+
+            this.adServices.DestroyBannerAd();
         }
 
         public bool IsRemovedAds => this.adServices.IsRemoveAds();

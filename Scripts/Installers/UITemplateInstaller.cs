@@ -37,7 +37,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #else
             this.Container.Bind<INotificationService>().To<DummyNotificationService>().AsCached().NonLazy();
 #endif
-
+#if IAP
+            this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
+#endif
         }
     }
 }

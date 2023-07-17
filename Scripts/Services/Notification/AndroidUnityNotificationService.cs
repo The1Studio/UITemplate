@@ -1,14 +1,16 @@
 ﻿#if NOTIFICATION
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
-    using System;
     using Core.AnalyticServices;
-    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using Zenject;
+#if UNITY_ANDROID
+    using System;
     using Unity.Notifications.Android;
     using UnityEngine.Android;
-    using Zenject;
+    using Cysharp.Threading.Tasks;
+#endif
 
     public class AndroidUnityNotificationService : BaseUnityNotificationService
     {
@@ -17,7 +19,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             uiTemplateNotificationDataBlueprint, logger, analyticServices)
         {
         }
-
+        
+    #if UNITY_ANDROID
         protected override void RegisterNotification()
         {
             var channel = new AndroidNotificationChannel(ChannelId, ChannelName, ChannelDescription, Importance.Default);
@@ -68,6 +71,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             };
             AndroidNotificationCenter.SendNotification(notification, ChannelId);
         }
+    #endif
     }
 }
 

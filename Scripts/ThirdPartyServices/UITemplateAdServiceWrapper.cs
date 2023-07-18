@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using Zenject;
 
     public class UITemplateAdServiceWrapper : IInitializable
@@ -72,6 +73,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
+            this.signalBus.Subscribe<UITemplateAddRewardsSignal>(this.OnRemoveAdsComplete);
         }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)
@@ -122,6 +124,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             return true;
         }
+
+        public virtual void LoadInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdDownloadedSignal(place)); }
 
         #endregion
 
@@ -186,8 +190,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        private void OnRemoveAdsComplete()
+        private void OnRemoveAdsComplete(UITemplateAddRewardsSignal signal)
         {
+            if (!signal.RewardItemDatas.Keys.Contains("remove_ads")) return;
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();

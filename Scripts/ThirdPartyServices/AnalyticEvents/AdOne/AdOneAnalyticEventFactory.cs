@@ -29,35 +29,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 
-        public override IEvent InterstitialEligible(string place) => new CustomEvent();
-
         public override IEvent InterstitialShow(int level, string place) { return new ShowInterstitialAds(this.internetService.IsInternetAvailable, place); }
 
         public override IEvent InterstitialShowCompleted(int level, string place) { return new InterstitialAdsSuccess(place); }
 
-        public override IEvent InterstitialShowFail(string place, string msg) { return new CustomEvent(); }
-
-        public override IEvent InterstitialClick(string place) { return new CustomEvent(); }
-
-        public override IEvent InterstitialDownloaded(string place) { return new CustomEvent(); }
-
-        public override IEvent InterstitialCalled(string place) { return new CustomEvent(); }
-
-        public override IEvent RewardedVideoEligible(string place) => new CustomEvent();
-
-        public override IEvent RewardedVideoOffer(string place) { return new CustomEvent(); }
-
-        public override IEvent RewardedVideoDownloaded(string place) { return new CustomEvent(); }
-
-        public override IEvent RewardedVideoCalled(string place) { return new CustomEvent(); }
-
         public override IEvent RewardedVideoShow(int level, string place) { return new ShowRewardedAds(this.internetService.IsInternetAvailable, place); }
 
         public override IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) { return new RewardedAdsSuccess(place, isRewarded ? "success" : "skip"); }
-
-        public override IEvent RewardedVideoClick(string place) { return new CustomEvent(); }
-
-        public override IEvent RewardedVideoShowFail(string place, string msg) { return new CustomEvent(); }
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelFailed(level, timeSpent); }
 
@@ -65,15 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelPassed(level, timeSpent); }
 
-        public override IEvent FirstWin(int level, int timeSpent) { return new CustomEvent(); }
-
         public override IEvent LevelSkipped(int level, int timeSpent) { return new LevelSkipped(level, timeSpent); }
-
-        public override IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) { return new CustomEvent(); }
-
-        public override IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) { return new CustomEvent(); }
-
-        public override IEvent TutorialCompletion(bool success, string tutorialId) { return new CustomEvent(); }
 
         public override void ForceUpdateAllProperties() { }
 

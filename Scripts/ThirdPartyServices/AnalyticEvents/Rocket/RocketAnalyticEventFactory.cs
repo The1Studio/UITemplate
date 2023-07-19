@@ -14,35 +14,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
     public class RocketAnalyticEventFactory : BaseAnalyticEventFactory
     {
         public RocketAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
-        public override IEvent InterstitialEligible(string place) => new CustomEvent();
 
         public override IEvent InterstitialShow(int level, string place) => new InterstitialShow(level, place);
 
         public override IEvent InterstitialShowCompleted(int level, string place) => new InterstitialShowCompleted(place);
 
-        public override IEvent InterstitialShowFail(string place, string msg) => new CustomEvent();
-
-        public override IEvent InterstitialClick(string place) => new CustomEvent();
-
-        public override IEvent InterstitialDownloaded(string place) => new CustomEvent();
-
-        public override IEvent InterstitialCalled(string place) => new CustomEvent();
-
-        public override IEvent RewardedVideoEligible(string place) => new CustomEvent();
-
-        public override IEvent RewardedVideoOffer(string place) => new CustomEvent();
-
-        public override IEvent RewardedVideoDownloaded(string place) => new CustomEvent();
-
-        public override IEvent RewardedVideoCalled(string place) => new CustomEvent();
-
         public override IEvent RewardedVideoShow(int level, string place) => new RewardedVideoShow(level, place);
 
         public override IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) => new RewardedAdsShowCompleted(place, isRewarded ? "success" : "skip");
-
-        public override IEvent RewardedVideoClick(string place) { return new CustomEvent(); }
-
-        public override IEvent RewardedVideoShowFail(string place, string msg) { return new CustomEvent(); }
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
 
@@ -50,17 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelWin(level, timeSpent);
 
-        public override IEvent FirstWin(int level, int timeSpent) => new CustomEvent();
-
         public override IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
-
-        public override IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) { return new CustomEvent(); }
-
-        public override IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) { return new CustomEvent(); }
-
-        public override IEvent TutorialCompletion(bool success, string tutorialId) { return new CustomEvent(); }
-
-        public override IEvent EarnVirtualCurrency(string type, int amount) { return new CustomEvent(); }
 
         public override void ForceUpdateAllProperties() { }
 

@@ -7,7 +7,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
-    using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using Zenject;
 
@@ -73,7 +72,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
-            this.signalBus.Subscribe<RemoveAdsCompleteSignal>(this.OnRemoveAdsComplete);
         }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)
@@ -124,8 +122,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             return true;
         }
-
-        public virtual void LoadInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdDownloadedSignal(place)); }
 
         #endregion
 

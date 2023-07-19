@@ -20,8 +20,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent InterstitialShow(int level, string place) => new AdInterShow(place);
 
-        public override IEvent InterstitialShowCompleted(int level, string place) => new CustomEvent();
-
         public override IEvent InterstitialShowFail(string place, string msg) => new AdInterFail(msg);
 
         public override IEvent InterstitialClick(string place) => new AdInterClick(place);
@@ -39,13 +37,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         public override IEvent RewardedVideoCalled(string place) => new AdsRewardedCalled();
 
         public override IEvent RewardedVideoShow(int level, string place) => new AdsRewardShow(place);
-
-        public override IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)
-        {
-            if (!isRewarded) return new CustomEvent();
-
-            return new AdsRewardComplete(place);
-        }
 
         public override IEvent RewardedVideoClick(string place) => new AdsRewardClick(place);
 

@@ -92,6 +92,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool ShowInterstitialAd(string place, bool force = false)
         {
+            if (this.adServices.IsRemoveAds()) return false;
+
             if ((DateTime.Now - this.LastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");

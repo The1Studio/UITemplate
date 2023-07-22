@@ -5,10 +5,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     public class AdsRewardEligible : IEvent
 
     {
-        private readonly string place;
-        public AdsRewardEligible(string place)
+        private readonly string placement;
+        public AdsRewardEligible(string placement)
         {
-            this.place = place;
+            this.placement = placement;
         }
     }
 }

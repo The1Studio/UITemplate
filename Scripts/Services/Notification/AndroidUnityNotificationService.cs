@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using UnityEngine;
     using Zenject;
 #if UNITY_ANDROID
     using System;
@@ -19,8 +20,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             uiTemplateNotificationDataBlueprint, logger, analyticServices)
         {
         }
-        
-    #if UNITY_ANDROID
+
+#if UNITY_ANDROID
         protected override void RegisterNotification()
         {
             var channel = new AndroidNotificationChannel(ChannelId, ChannelName, ChannelDescription, Importance.Default);
@@ -38,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         protected override async UniTask CheckPermission()
         {
             var isWaitingForPermission = false;
-            if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS"))
+            if (GetSDKVersionInt() >= 28 && !Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS"))
             {
                 isWaitingForPermission = true;
                 var permissionCallbacks = new PermissionCallbacks();
@@ -56,6 +57,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Logger.Log($"onelog: Notification CheckPermission: {isPermissionAllow}");
         }
 
+        public static int GetSDKVersionInt()
+        {
+            using (var version = new AndroidJavaClass("android.os.Build$VERSION"))
+            {
+                return version.GetStatic<int>("SDK_INT");
+            }
+        }
+
         protected override void CancelNotification() { AndroidNotificationCenter.CancelAllNotifications(); }
 
         protected override void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
@@ -71,7 +80,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             };
             AndroidNotificationCenter.SendNotification(notification, ChannelId);
         }
-    #endif
+#endif
     }
 }
 

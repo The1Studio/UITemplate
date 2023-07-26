@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using UnityEngine;
     using Zenject;
 #if UNITY_ANDROID
     using System;
@@ -38,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         protected override async UniTask CheckPermission()
         {
             var isWaitingForPermission = false;
-            if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS"))
+            if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS") && GetSDKVersionInt() >= 28)
             {
                 isWaitingForPermission = true;
                 var permissionCallbacks = new PermissionCallbacks();
@@ -54,6 +55,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             var isPermissionAllow = AndroidNotificationCenter.UserPermissionToPost is not (PermissionStatus.RequestPending or PermissionStatus.NotRequested);
 
             this.Logger.Log($"onelog: Notification CheckPermission: {isPermissionAllow}");
+        }
+        
+        public static int GetSDKVersionInt()
+        {
+            using (var version = new AndroidJavaClass("android.os.Build$VERSION"))
+            {
+                return version.GetStatic<int>("SDK_INT");
+            }
         }
 
         protected override void CancelNotification() { AndroidNotificationCenter.CancelAllNotifications(); }

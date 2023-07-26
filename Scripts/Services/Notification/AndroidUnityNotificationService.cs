@@ -4,7 +4,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using UnityEngine;
     using Zenject;
 #if UNITY_ANDROID
     using System;
@@ -59,10 +58,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public static int GetSDKVersionInt()
         {
+#if !UNITY_EDITOR
             using (var version = new AndroidJavaClass("android.os.Build$VERSION"))
             {
                 return version.GetStatic<int>("SDK_INT");
             }
+#else
+            return 30;
+#endif
         }
 
         protected override void CancelNotification() { AndroidNotificationCenter.CancelAllNotifications(); }

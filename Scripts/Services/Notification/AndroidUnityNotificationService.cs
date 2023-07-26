@@ -1,4 +1,4 @@
-﻿#if NOTIFICATION
+﻿#if NOTIFICATION && UNITY_ANDROID
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using Core.AnalyticServices;

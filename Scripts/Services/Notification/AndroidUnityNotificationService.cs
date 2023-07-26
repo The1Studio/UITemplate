@@ -20,8 +20,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             uiTemplateNotificationDataBlueprint, logger, analyticServices)
         {
         }
-        
-    #if UNITY_ANDROID
+
+#if UNITY_ANDROID
         protected override void RegisterNotification()
         {
             var channel = new AndroidNotificationChannel(ChannelId, ChannelName, ChannelDescription, Importance.Default);
@@ -39,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         protected override async UniTask CheckPermission()
         {
             var isWaitingForPermission = false;
-            if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS") && GetSDKVersionInt() >= 28)
+            if (GetSDKVersionInt() >= 28 && !Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS"))
             {
                 isWaitingForPermission = true;
                 var permissionCallbacks = new PermissionCallbacks();
@@ -56,7 +56,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             this.Logger.Log($"onelog: Notification CheckPermission: {isPermissionAllow}");
         }
-        
+
         public static int GetSDKVersionInt()
         {
             using (var version = new AndroidJavaClass("android.os.Build$VERSION"))
@@ -80,7 +80,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             };
             AndroidNotificationCenter.SendNotification(notification, ChannelId);
         }
-    #endif
+#endif
     }
 }
 

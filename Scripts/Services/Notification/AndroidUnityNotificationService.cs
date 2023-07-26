@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using Zenject;
 #if UNITY_ANDROID
+    using UnityEngine;
     using System;
     using Unity.Notifications.Android;
     using UnityEngine.Android;

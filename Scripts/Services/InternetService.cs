@@ -23,7 +23,6 @@
         private readonly ILogService logService;
 
         public static string WorldTimeAPIUrl  => "https://worldtimeapi.org/api";
-        public static string CheckInternetUrl => "https://www.google.com/";
 
         private bool isInternetAvailable = true;
 
@@ -54,9 +53,9 @@
 
         private async UniTask CheckInternetInterval()
         {
-            await this.CheckInternet();
+            this.CheckInternet();
             await UniTask.Delay(TimeSpan.FromSeconds(2));
-            this.CheckInternetInterval();
+            _ = this.CheckInternetInterval();
         }
 
         private async UniTask<WorldTimeAPIResponse> GetTimeIPAsync()
@@ -103,21 +102,9 @@
 
         public bool IsInternetAvailable => this.isInternetAvailable;
 
-        private async UniTask CheckInternet()
+        private void CheckInternet()
         {
-            try
-            {
-                var req = (HttpWebRequest)WebRequest.Create(CheckInternetUrl);
-
-                using (var resp = (HttpWebResponse)await req.GetResponseAsync())
-                {
-                    this.isInternetAvailable = (int)resp.StatusCode < 299 && (int)resp.StatusCode >= 200;
-                }
-            }
-            catch (Exception)
-            {
-                this.isInternetAvailable = false;
-            }
+            this.isInternetAvailable = Application.internetReachability != NetworkReachability.NotReachable;
         }
 
         public class WorldTimeAPIResponse

@@ -28,7 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private DateTime LastEndInterstitial;
         private bool     isBannerLoaded = false;
-        private bool     isShowBannerAd;
+        private bool     isShowBannerAd = true;
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController,
@@ -81,6 +81,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.adServices.IsRemoveAds())
             {
                 this.adServices.DestroyBannerAd();
+            } else if (!this.isShowBannerAd)
+            {
+                this.adServices.HideBannedAd();
             }
         }
 

@@ -1,24 +1,22 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Services
+﻿#if NOTIFICATION && UNITY_IOS
+namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using Zenject;
-#if UNITY_IOS
     using System;
     using Cysharp.Threading.Tasks;
     using Unity.Notifications.iOS;
-#endif
 
     public class IOSUnityNotificationService : BaseUnityNotificationService
     {
         public IOSUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
-            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, ILogService logger, IAnalyticServices analyticServices) : base(signalBus, uiTemplateNotificationBlueprint,
-            uiTemplateNotificationDataBlueprint, logger, analyticServices)
+            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper, ILogService logger, IAnalyticServices analyticServices) :
+            base(signalBus, uiTemplateNotificationBlueprint, uiTemplateNotificationDataBlueprint, notificationMappingHelper, logger, analyticServices)
         {
         }
-        
-#if UNITY_IOS
+
         protected override void RegisterNotification() { }
 
         protected override async void CheckOpenedByNotification()
@@ -46,12 +44,13 @@
         {
             var notification = new iOSNotification()
             {
-                Title   = title,
-                Body    = body,
+                Title = title,
+                Body = body,
                 Trigger = new iOSNotificationTimeIntervalTrigger() { TimeInterval = delayTime }
             };
             iOSNotificationCenter.ScheduleNotification(notification);
         }
-#endif
     }
 }
+
+#endif

@@ -1,10 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services
 {
+    using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
 
     public class NotificationMappingHelper
     {
+        private const    string                                 Pattern = @"{.*?}";
+        
         private readonly UITemplateNotificationMappingBlueprint notificationMappingBlueprint;
 
         public NotificationMappingHelper(UITemplateNotificationMappingBlueprint notificationMappingBlueprint)
@@ -14,13 +17,12 @@
 
         public string GetFormatString(string input)
         {
-            const string pattern = "{.*}";
-            var          regex   = new Regex(pattern);
-            var          result  = input;
+            var regex  = new Regex(Pattern);
+            var result = input;
 
-            foreach (Match item in regex.Matches(input))
+            foreach (Match item in regex.Matches(result))
             {
-                input = input.Replace(item.Value, this.GetReplacement(item.Value));
+                result = result.Replace(item.Value, this.GetReplacement(item.Value));
             }
 
             return result;
@@ -29,8 +31,12 @@
         private string GetReplacement(string id)
         {
             id = id.Replace("{", "").Replace("}", "");
-            var record = this.notificationMappingBlueprint.GetDataById(id);
-            return record?.Replacement;
+
+            if (this.ReplacementCustoms.TryGetValue(id, out var result)) return result;
+
+            return this.notificationMappingBlueprint.GetDataById(id).Replacement;
         }
+
+        protected virtual Dictionary<string, string> ReplacementCustoms { get; set; } = new();
     }
 }

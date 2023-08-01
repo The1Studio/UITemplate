@@ -37,6 +37,6 @@
             return this.notificationMappingBlueprint.GetDataById(id).Replacement;
         }
 
-        protected virtual Dictionary<string, string> ReplacementCustoms { get; set; } = new();
+        public Dictionary<string, string> ReplacementCustoms { get; set; } = new();
     }
 }

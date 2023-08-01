@@ -81,7 +81,7 @@
 
         protected virtual async UniTask CheckPermission() { }
 
-        public virtual void SetUpNotification()
+        public void SetUpNotification()
         {
             // Cancels all pending local notifications.
             this.CancelNotification();

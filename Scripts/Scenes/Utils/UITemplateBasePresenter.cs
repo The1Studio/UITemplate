@@ -85,7 +85,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                     // If the field is not marked as HideOnCreative, then set the active state to the old active state
                     if (creativeAttribute is { HideOnCreative: false })
                     {
-                        SetActiveForBranch(gameObject.transform, presenter.View.RectTransform.parent, oldActiveStates[gameObject]);
+                        SetActiveForBranch(gameObject.transform, presenter.View.RectTransform.parent, true);
                     }
                 }
             });

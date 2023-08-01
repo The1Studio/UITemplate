@@ -4,9 +4,7 @@
 
     [BlueprintReader("UITemplateNotificationMapping", true)]
     [CsvHeaderKey("Id")]
-    public class
-        UITemplateNotificationMappingBlueprint : GenericBlueprintReaderByRow<string,
-            UITemplateNotificationMappingRecord>
+    public class UITemplateNotificationMappingBlueprint : GenericBlueprintReaderByRow<string, UITemplateNotificationMappingRecord>
     {
     }
 

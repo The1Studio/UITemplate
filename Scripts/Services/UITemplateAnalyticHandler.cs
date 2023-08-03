@@ -55,7 +55,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             this.analyticServices.Track(trackEvent);
         }
-        
+
         private void DoAnalyticWithFactories(Action<IAnalyticEventFactory> action)
         {
             foreach (var analytic in this.analyticEventFactories)
@@ -84,8 +84,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.InterstitialAdDisplayedHandler);
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
 
-            //Reward ads
             this.signalBus.Subscribe<RewardedInterstitialAdCompletedSignal>(this.RewardedInterstitialAdDisplayedHandler);
+
+            //Reward ads
             this.signalBus.Subscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
             this.signalBus.Subscribe<RewardedAdEligibleSignal>(this.RewardedAdEligibleHandler);
             this.signalBus.Subscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);
@@ -112,22 +113,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         }
 
 
-        private void AppOpenCalledHandler(AppOpenCalledSignal obj)
-        {
-            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenCalled()));
-        }
-        private void AppOpenEligibleHandler(AppOpenEligibleSignal obj)
-        {
-            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenEligible()));
-        }
-        private void AppOpenLoadFailedHandler(AppOpenLoadFailedSignal obj)
-        {
-            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenLoadFailed()));
-        }
-        private void AppOpenLoadedHandler(AppOpenLoadedSignal obj)
-        {
-            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenLoaded()));
-        }
+        private void AppOpenCalledHandler(AppOpenCalledSignal obj)         { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenCalled())); }
+        private void AppOpenEligibleHandler(AppOpenEligibleSignal obj)     { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenEligible())); }
+        private void AppOpenLoadFailedHandler(AppOpenLoadFailedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenLoadFailed())); }
+        private void AppOpenLoadedHandler(AppOpenLoadedSignal obj)         { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenLoaded())); }
         private void AppOpenFullScreenContentClosedHandler(AppOpenFullScreenContentClosedSignal obj)
         {
             this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenFullScreenContentClosed()));
@@ -149,7 +138,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region Interstitial Ads Signal Handler
 
-        private void InterstitialAdEligibleHandler(InterstitialAdEligibleSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialEligible(obj.Placement))); }
+        private void InterstitialAdEligibleHandler(InterstitialAdEligibleSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory =>
+            {
+                this.Track(eventFactory.InterstitialEligible(obj.Placement));
+                this.Track(new CustomEvent { EventName = $"Interstitial_Eligible_{obj.Placement}" });
+            });
+        }
 
         private void InterstitialAdClickedHandler(InterstitialAdClickedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialClick(obj.Placement))); }
 
@@ -167,6 +163,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.analyticServices.UserProperties[eventFactory.LastAdsPlacementProperty]     = obj.Placement;
                 this.analyticServices.UserProperties[eventFactory.TotalInterstitialAdsProperty] = obj.Placement;
                 this.Track(eventFactory.InterstitialShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
+                this.Track(new CustomEvent { EventName = $"Interstitial_Displayed_{obj.Placement}" });
             });
         }
 
@@ -186,9 +183,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region Rewarded Ads Signal Handler
 
-        private void RewardedAdEligibleHandler(RewardedAdEligibleSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoEligible(obj.Placement))); }
+        private void RewardedAdEligibleHandler(RewardedAdEligibleSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory =>
+            {
+                this.Track(eventFactory.RewardedVideoEligible(obj.Placement));
+                this.Track(new CustomEvent { EventName = $"Rewarded_Eligible_{obj.Placement}" });
+            });
+        }
 
-        private void RewardedAdFailedHandler(RewardedAdLoadFailedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoShowFail(obj.Placement, obj.Message))); }
+        private void RewardedAdFailedHandler(RewardedAdLoadFailedSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoShowFail(obj.Placement, obj.Message)));
+        }
 
         private void RewardedAdOfferHandler(RewardedAdOfferSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoOffer(obj.Placement))); }
 
@@ -203,6 +210,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.analyticServices.UserProperties[eventFactory.LastAdsPlacementProperty] = obj.Placement;
                 this.analyticServices.UserProperties[eventFactory.TotalRewardedAdsProperty] = obj.Placement;
                 this.Track(eventFactory.RewardedVideoShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
+                this.Track(new CustomEvent { EventName = $"Rewarded_Displayed_{obj.Placement}" });
             });
         }
 

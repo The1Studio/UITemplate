@@ -3,17 +3,11 @@
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using UnityEngine;
 
     public class NotificationMappingHelper
     {
-        private const    string                                 Pattern = @"{.*?}";
-        
-        private readonly UITemplateNotificationMappingBlueprint notificationMappingBlueprint;
-
-        public NotificationMappingHelper(UITemplateNotificationMappingBlueprint notificationMappingBlueprint)
-        {
-            this.notificationMappingBlueprint = notificationMappingBlueprint;
-        }
+        private const string Pattern = @"{.*?}";
 
         public string GetFormatString(string input)
         {
@@ -32,9 +26,7 @@
         {
             id = id.Replace("{", "").Replace("}", "");
 
-            if (this.ReplacementCustoms.TryGetValue(id, out var result)) return result;
-
-            return this.notificationMappingBlueprint.GetDataById(id).Replacement;
+            return this.ReplacementCustoms.TryGetValue(id, out var result) ? result : Application.productName;
         }
 
         public Dictionary<string, string> ReplacementCustoms { get; set; } = new();

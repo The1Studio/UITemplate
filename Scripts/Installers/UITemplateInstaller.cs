@@ -29,14 +29,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateLocalDataInstaller.Install(this.Container); // bind after FBInstantInstaller for remote user data
             UITemplateThirdPartyInstaller.Install(this.Container); // bind after UITemplateLocalDataInstaller for local data analytics
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
+            NotificationInstaller.Install(this.Container);
             
-#if NOTIFICATION && UNITY_ANDROID
-            this.Container.Bind<INotificationService>().To<AndroidUnityNotificationService>().AsCached().NonLazy();
-#elif NOTIFICATION && UNITY_IOS
-            this.Container.Bind<INotificationService>().To<IOSUnityNotificationService>().AsCached().NonLazy();
-#else
-            this.Container.Bind<INotificationService>().To<DummyNotificationService>().AsCached().NonLazy();
-#endif
 #if IAP
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
 #endif

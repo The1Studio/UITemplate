@@ -5,23 +5,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using Zenject;
-#if UNITY_ANDROID
     using UnityEngine;
     using System;
     using Unity.Notifications.Android;
     using UnityEngine.Android;
     using Cysharp.Threading.Tasks;
-#endif
 
     public class AndroidUnityNotificationService : BaseUnityNotificationService
     {
         public AndroidUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
-            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, ILogService logger, IAnalyticServices analyticServices) : base(signalBus, uiTemplateNotificationBlueprint,
-            uiTemplateNotificationDataBlueprint, logger, analyticServices)
+            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper, ILogService logger, IAnalyticServices analyticServices) :
+            base(signalBus, uiTemplateNotificationBlueprint, uiTemplateNotificationDataBlueprint, notificationMappingHelper, logger, analyticServices)
         {
         }
 
-#if UNITY_ANDROID
         protected override void RegisterNotification()
         {
             var channel = new AndroidNotificationChannel(ChannelId, ChannelName, ChannelDescription, Importance.Default);
@@ -43,9 +40,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 isWaitingForPermission = true;
                 var permissionCallbacks = new PermissionCallbacks();
-                permissionCallbacks.PermissionDenied                += _ => { isWaitingForPermission = false; };
+                permissionCallbacks.PermissionDenied += _ => { isWaitingForPermission = false; };
                 permissionCallbacks.PermissionDeniedAndDontAskAgain += _ => { isWaitingForPermission = false; };
-                permissionCallbacks.PermissionGranted               += _ => { isWaitingForPermission = false; };
+                permissionCallbacks.PermissionGranted += _ => { isWaitingForPermission = false; };
                 Permission.RequestUserPermission("android.permission.POST_NOTIFICATIONS", permissionCallbacks);
                 this.Logger.Log($"onelog: Notification RequestPermission: ");
             }
@@ -76,15 +73,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Logger.Log($"onelog: Notification SendNotification: {title} - {body} - {fireTime} - {delayTime}");
             var notification = new AndroidNotification
             {
-                Title     = title,
-                Text      = body,
+                Title = title,
+                Text = body,
                 SmallIcon = SmallIcon,
                 LargeIcon = LargeIcon,
-                FireTime  = fireTime
+                FireTime = fireTime
             };
             AndroidNotificationCenter.SendNotification(notification, ChannelId);
         }
-#endif
     }
 }
 

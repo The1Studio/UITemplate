@@ -20,6 +20,7 @@
         protected readonly SignalBus                           SignalBus;
         protected readonly UITemplateNotificationBlueprint     UITemplateNotificationBlueprint;
         protected readonly UITemplateNotificationDataBlueprint UITemplateNotificationDataBlueprint;
+        private readonly   NotificationMappingHelper           notificationMappingHelper;
         protected readonly ILogService                         Logger;
         protected readonly IAnalyticServices                   AnalyticServices;
 
@@ -32,12 +33,13 @@
         protected static string LargeIcon          => "icon_1";
 
         protected BaseUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
-            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint,
+            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper,
             ILogService logger, IAnalyticServices analyticServices)
         {
             this.SignalBus                           = signalBus;
             this.UITemplateNotificationBlueprint     = uiTemplateNotificationBlueprint;
             this.UITemplateNotificationDataBlueprint = uiTemplateNotificationDataBlueprint;
+            this.notificationMappingHelper           = notificationMappingHelper;
             this.Logger                              = logger;
             this.AnalyticServices                    = analyticServices;
 
@@ -79,7 +81,7 @@
 
         protected virtual async UniTask CheckPermission() { }
 
-        private void SetUpNotification()
+        public void SetUpNotification()
         {
             // Cancels all pending local notifications.
             this.CancelNotification();
@@ -132,24 +134,24 @@
             {
                 if (itemRandom != null)
                 {
-                    title = itemRandom.GetTitle(new object[] { Application.productName });
+                    title = this.notificationMappingHelper.GetFormatString(itemRandom.Title);
                 }
             }
             else
             {
-                title = this.UITemplateNotificationDataBlueprint[record.Title].GetTitle(new object[] { Application.productName });
+                title = this.notificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Title].Title);
             }
 
             if (record.Body.Equals("Random"))
             {
                 if (itemRandom != null)
                 {
-                    body = itemRandom.GetBody(new object[] { Application.productName });
+                    body = this.notificationMappingHelper.GetFormatString(itemRandom.Body);
                 }
             }
             else
             {
-                body = this.UITemplateNotificationDataBlueprint[record.Body].GetBody(new object[] { Application.productName });
+                body = this.notificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Body].Body);
             }
 
             return new NotificationContent(title, body);

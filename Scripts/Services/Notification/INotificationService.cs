@@ -5,5 +5,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     public interface INotificationService
     {
         void SetupCustomNotification(string notificationId, TimeSpan? delayTime = null);
+        void SetUpNotification();
     }
 }

@@ -8,17 +8,16 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
-#if UNITY_WEBGL
 public static class FireBasePostProcessBuild
 {
     [PostProcessBuild]
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
-        
         Console.WriteLine($"Start Post ProcessBuild");
-        if (target != BuildTarget.WebGL) return;
+       
 #if FIREBASE_WEBGL
         //Firebase Process build
+        
         SetUpFirebaseForIndexHtml($"{pathToBuiltProject}/index.html");
 #endif
         
@@ -72,4 +71,3 @@ public static class FireBasePostProcessBuild
         Console.WriteLine($"On Post ProcessBuild finish {finalConfig}");
     }
 }
-#endif

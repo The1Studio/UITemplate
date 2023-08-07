@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,17 +14,20 @@ public static class FireBasePostProcessBuild
     [PostProcessBuild]
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
+        
+        Console.WriteLine($"Start Post ProcessBuild");
         if (target != BuildTarget.WebGL) return;
 #if FIREBASE_WEBGL
         //Firebase Process build
         SetUpFirebaseForIndexHtml($"{pathToBuiltProject}/index.html");
 #endif
+        
     }
 
     static void SetUpFirebaseForIndexHtml(string htmlPath)
     {
         var firebaseWebGlPath = $"{Application.dataPath}/FirebaseWebglConfig.txt";
-
+        Console.WriteLine($"On Post ProcessBuild {firebaseWebGlPath}");
         if (!File.Exists(firebaseWebGlPath))
         {
             Debug.LogError($"Waring you are using firebase webgl but you don't have the file FirebaseWebglConfig.txt in {Application.dataPath}");
@@ -38,6 +42,7 @@ public static class FireBasePostProcessBuild
         var firebaseConfig = streamReader.ReadToEnd();
         var html           = ReadTextFile(htmlPath);
         ConditionRegexFirebase(htmlPath, html, "const firebaseConfig .*[\\s\\S]*};", firebaseConfig);
+        
     }
 
     private static string ReadTextFile(string pFilePath)
@@ -64,6 +69,7 @@ public static class FireBasePostProcessBuild
         var regex       = new Regex(string.Join("|", map.Keys.Select(Regex.Escape)));
         var finalConfig = regex.Replace(htmlInput, m => map[m.Value]);
         File.WriteAllText(htmlPath, finalConfig);
+        Console.WriteLine($"On Post ProcessBuild finish {finalConfig}");
     }
 }
 #endif

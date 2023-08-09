@@ -58,9 +58,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void DoAnalyticWithFactories(Action<IAnalyticEventFactory> action)
         {
-            foreach (var analytic in this.analyticEventFactories)
+            foreach (var factory in this.analyticEventFactories)
             {
-                action(analytic);
+                action(factory);
             }
         }
 
@@ -74,6 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
+            this.signalBus.Subscribe<ScreenShowSignal>(this.ScreenShowHandler);
 
             //Interstitial ads
             this.signalBus.Subscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
@@ -111,7 +112,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             this.TotalDaysPlayedChange();
         }
-
 
         private void AppOpenCalledHandler(AppOpenCalledSignal obj)         { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenCalled())); }
         private void AppOpenEligibleHandler(AppOpenEligibleSignal obj)     { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenEligible())); }
@@ -263,6 +263,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                         this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned - this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).Value;
             });
         }
+        
+             
+        private void ScreenShowHandler(ScreenShowSignal obj)
+        {
+            this.Track(new CustomEvent()
+            {
+                EventName = $"Enter{obj.ScreenPresenter.GetType().Name.Replace("Screen", "").Replace("Popup","").Replace("Presenter","")}"
+            });
+        }
 
         private void TotalDaysPlayedChange()
         {
@@ -280,6 +289,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Unsubscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
+            this.signalBus.Unsubscribe<ScreenShowSignal>(this.ScreenShowHandler);
+            
             this.signalBus.Unsubscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Unsubscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Unsubscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);

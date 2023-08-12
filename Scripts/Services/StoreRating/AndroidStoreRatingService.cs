@@ -1,53 +1,48 @@
 #if UNITY_ANDROID && STORE_RATING
 namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 {
-    using Cysharp.Threading.Tasks;
+    using System.Collections;
     using Google.Play.Review;
     using UnityEngine;
 
-    public class AndroidStoreRatingService : IStoreRatingService
+    public class AndroidStoreRatingService : MonoBehaviour, IStoreRatingService
     {
         private ReviewManager  reviewManager;
         private PlayReviewInfo playReviewInfo;
+        private Coroutine      coroutine;
 
-        private readonly UniTask initRatingTask;
+        private void Start() { this.coroutine = this.StartCoroutine(this.InitReview()); }
 
-        public AndroidStoreRatingService() { this.initRatingTask = this.InitRating(); }
+        public void LaunchStoreRating() { this.StartCoroutine(this.LaunchReview()); }
 
-        private async UniTask InitRating(bool force = false)
+        private IEnumerator InitReview(bool force = false)
         {
             this.reviewManager ??= new ReviewManager();
 
             var requestFlowOperation = this.reviewManager.RequestReviewFlow();
-            await requestFlowOperation;
+            yield return requestFlowOperation;
             if (requestFlowOperation.Error != ReviewErrorCode.NoError)
             {
                 if (force) this.DirectlyOpen();
-                return;
+                yield break;
             }
 
             this.playReviewInfo = requestFlowOperation.GetResult();
         }
 
-        public async UniTask LaunchStoreRating()
+        private IEnumerator LaunchReview()
         {
             if (this.playReviewInfo == null)
             {
-                if (this.initRatingTask.Status != UniTaskStatus.Succeeded)
-                {
-                    this.initRatingTask.Forget();
-                }
-
-                await this.InitRating(true);
+                if (this.coroutine != null) this.StopCoroutine(this.coroutine);
+                yield return this.StartCoroutine(this.InitReview(true));
             }
 
             var launchFlowOperation = this.reviewManager.LaunchReviewFlow(this.playReviewInfo);
-            await launchFlowOperation;
+            yield return launchFlowOperation;
             this.playReviewInfo = null;
-            if (launchFlowOperation.Error != ReviewErrorCode.NoError)
-            {
-                this.DirectlyOpen();
-            }
+            if (launchFlowOperation.Error == ReviewErrorCode.NoError) yield break;
+            this.DirectlyOpen();
         }
 
         private void DirectlyOpen() { Application.OpenURL($"https://play.google.com/store/apps/details?id={Application.identifier}"); }

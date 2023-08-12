@@ -10,7 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
             this.Container.Bind<IStoreRatingService>().To<DummyStoreRatingService>().AsSingle().NonLazy();
 #endif
 #if UNITY_ANDROID
-            this.Container.Bind<IStoreRatingService>().To<AndroidStoreRatingService>().AsSingle().NonLazy();
+            this.Container.Bind<IStoreRatingService>().To<AndroidStoreRatingService>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 #endif
 #if UNITY_IOS
             this.Container.Bind<IStoreRatingService>().To<IosStoreRatingService>().AsSingle().NonLazy();

@@ -4,6 +4,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 
     public interface IStoreRatingService
     {
-        UniTask LaunchStoreRating();
+        void LaunchStoreRating();
     }
 }

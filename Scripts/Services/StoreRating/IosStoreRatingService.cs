@@ -6,10 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 
     public class IosStoreRatingService : IStoreRatingService
     {
-        public UniTask LaunchStoreRating()
+        public void LaunchStoreRating()
         {
             Device.RequestStoreReview();
-            return UniTask.CompletedTask;
         }
     }
 }

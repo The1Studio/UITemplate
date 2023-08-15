@@ -15,6 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 #if UNITY_IOS
             this.Container.Bind<IStoreRatingService>().To<IosStoreRatingService>().AsSingle().NonLazy();
 #endif
+            this.Container.Bind<UITemplateStoreRatingHandler>().AsSingle().NonLazy();
         }
     }
 }

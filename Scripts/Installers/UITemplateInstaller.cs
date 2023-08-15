@@ -11,10 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     {
         private readonly ToastController toastCanvas;
 
-        public UITemplateInstaller(ToastController toastCanvas)
-        {
-            this.toastCanvas      = toastCanvas;
-        }
+        public UITemplateInstaller(ToastController toastCanvas) { this.toastCanvas = toastCanvas; }
 
         public override void InstallBindings()
         {
@@ -30,10 +27,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateThirdPartyInstaller.Install(this.Container); // bind after UITemplateLocalDataInstaller for local data analytics
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
             NotificationInstaller.Install(this.Container);
-            
-#if IAP
+
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
-#endif
         }
     }
 }

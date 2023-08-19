@@ -38,6 +38,16 @@
                 currentCooldownTime -= currentCycle;
             });
         }
+        
+        public static T RandomGachaWithWeight<T>(this IDictionary<T, int> dictionary, int defaultElementIndex = 0)
+        {
+            return dictionary.Keys.ToList().RandomGachaWithWeight(dictionary.Values.Cast<float>().ToList());
+        }
+        
+        public static T RandomGachaWithWeight<T>(this IDictionary<T, float> dictionary, int defaultElementIndex = 0)
+        {
+            return dictionary.Keys.ToList().RandomGachaWithWeight(dictionary.Values.ToList());
+        }
 
         public static T RandomGachaWithWeight<T>(this IList<T> elements, IList<float> weights, int defaultElementIndex = 0)
         {

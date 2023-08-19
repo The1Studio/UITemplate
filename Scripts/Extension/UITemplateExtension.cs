@@ -41,7 +41,7 @@
         
         public static T RandomGachaWithWeight<T>(this IDictionary<T, int> dictionary, int defaultElementIndex = 0)
         {
-            return dictionary.Keys.ToList().RandomGachaWithWeight(dictionary.Values.Cast<float>().ToList());
+            return dictionary.Keys.ToList().RandomGachaWithWeight(dictionary.Values.Select(weight => weight * 1f).ToList());
         }
         
         public static T RandomGachaWithWeight<T>(this IDictionary<T, float> dictionary, int defaultElementIndex = 0)

@@ -81,7 +81,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Subscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);
             this.signalBus.Subscribe<InterstitialAdDownloadedSignal>(this.InterstitialAdLoadedHandler);
-            this.signalBus.Subscribe<InterstitialAdLoadFailedSignal>(this.InterstitialAdFailedHandler);
+            this.signalBus.Subscribe<InterstitialAdLoadFailedSignal>(this.InterstitialDownloadAdFailedHandler);
             this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.InterstitialAdDisplayedHandler);
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosed);
 
@@ -151,9 +151,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void InterstitialAdLoadedHandler(InterstitialAdDownloadedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialDownloaded(obj.Placement))); }
 
-        private void InterstitialAdFailedHandler(InterstitialAdLoadFailedSignal obj)
+        private void InterstitialDownloadAdFailedHandler(InterstitialAdLoadFailedSignal obj)
         {
-            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialShowFail(obj.Placement, obj.Message)));
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialDownloadFailed(obj.Placement)));
         }
 
         private void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
@@ -295,7 +295,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Unsubscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);
             this.signalBus.Unsubscribe<InterstitialAdDownloadedSignal>(this.InterstitialAdLoadedHandler);
-            this.signalBus.Unsubscribe<InterstitialAdLoadFailedSignal>(this.InterstitialAdFailedHandler);
+            this.signalBus.Unsubscribe<InterstitialAdLoadFailedSignal>(this.InterstitialDownloadAdFailedHandler);
             this.signalBus.Unsubscribe<InterstitialAdDisplayedSignal>(this.InterstitialAdDisplayedHandler);
             this.signalBus.Unsubscribe<RewardedInterstitialAdCompletedSignal>(this.RewardedInterstitialAdDisplayedHandler);
             this.signalBus.Unsubscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);

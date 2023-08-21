@@ -21,7 +21,9 @@
 
         public virtual IEvent InterstitialClick(string place) => new InterstitialAdClicked(place);
 
-        public virtual IEvent InterstitialDownloaded(string place) => new InterstitialAdDownloaded(place);
+        public virtual IEvent InterstitialDownloaded(string place)     => new InterstitialAdDownloaded(place);
+        
+        public virtual IEvent InterstitialDownloadFailed(string place) => new InterstitialAdLoadFailed(place);
 
         public virtual IEvent InterstitialCalled(string place) => new InterstitialAdCalled(place);
 

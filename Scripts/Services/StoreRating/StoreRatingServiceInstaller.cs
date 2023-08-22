@@ -6,13 +6,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
     {
         public override void InstallBindings()
         {
-#if !UNITY_ANDROID && !UNITY_IOS
+#if UNITY_EDITOR
             this.Container.Bind<IStoreRatingService>().To<DummyStoreRatingService>().AsSingle().NonLazy();
 #endif
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
             this.Container.Bind<IStoreRatingService>().To<AndroidStoreRatingService>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 #endif
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
             this.Container.Bind<IStoreRatingService>().To<IosStoreRatingService>().AsSingle().NonLazy();
 #endif
             this.Container.Bind<UITemplateStoreRatingHandler>().AsSingle().NonLazy();

@@ -3,10 +3,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine;
     using Zenject;
+#if STORE_RATING
+    using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
+#endif
 
     public class UITemplateInstaller : Installer<ToastController, UITemplateInstaller>
     {

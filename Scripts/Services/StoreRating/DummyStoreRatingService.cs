@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 {
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using UnityEngine;
 
@@ -13,6 +14,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 
         public DummyStoreRatingService(ILogService logService) { this.logService = logService; }
 
-        public void LaunchStoreRating() { this.logService.LogWithColor("Launch Rating", Color.cyan); }
+        public UniTask LaunchStoreRating()
+        {
+            this.logService.LogWithColor("Launch Rating", Color.cyan);
+            return UniTask.CompletedTask;
+        }
     }
 }

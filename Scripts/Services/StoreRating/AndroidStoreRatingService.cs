@@ -1,47 +1,51 @@
 #if UNITY_ANDROID && STORE_RATING
 namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 {
-    using System.Collections;
+    using System.Threading;
+    using Cysharp.Threading.Tasks;
     using Google.Play.Review;
     using UnityEngine;
+    using Zenject;
 
-    public class AndroidStoreRatingService : MonoBehaviour, IStoreRatingService
+    public class AndroidStoreRatingService : IInitializable, IStoreRatingService
     {
-        private ReviewManager  reviewManager;
-        private PlayReviewInfo playReviewInfo;
-        private Coroutine      coroutine;
+        private ReviewManager           reviewManager;
+        private PlayReviewInfo          playReviewInfo;
+        private CancellationTokenSource initReviewTaskSource;
 
-        private void Start() { this.coroutine = this.StartCoroutine(this.InitReview()); }
+        public async UniTask LaunchStoreRating() { await this.LaunchReview(); }
 
-        public void LaunchStoreRating() { this.StartCoroutine(this.LaunchReview()); }
+        public void Initialize() { }
 
-        private IEnumerator InitReview(bool force = false)
+        private async UniTask InitReview(bool force = false)
         {
-            this.reviewManager ??= new ReviewManager();
+            this.initReviewTaskSource =   new CancellationTokenSource();
+            this.reviewManager        ??= new ReviewManager();
 
             var requestFlowOperation = this.reviewManager.RequestReviewFlow();
-            yield return requestFlowOperation;
+            await requestFlowOperation.ToUniTask(cancellationToken: this.initReviewTaskSource.Token);
             if (requestFlowOperation.Error != ReviewErrorCode.NoError)
             {
                 if (force) this.DirectlyOpen();
-                yield break;
+                return;
             }
 
             this.playReviewInfo = requestFlowOperation.GetResult();
+            this.initReviewTaskSource?.Dispose();
         }
 
-        private IEnumerator LaunchReview()
+        private async UniTask LaunchReview()
         {
             if (this.playReviewInfo == null)
             {
-                if (this.coroutine != null) this.StopCoroutine(this.coroutine);
-                yield return this.StartCoroutine(this.InitReview(true));
+                this.initReviewTaskSource?.Dispose();
+                await this.InitReview(true);
             }
 
             var launchFlowOperation = this.reviewManager.LaunchReviewFlow(this.playReviewInfo);
-            yield return launchFlowOperation;
+            await launchFlowOperation;
             this.playReviewInfo = null;
-            if (launchFlowOperation.Error == ReviewErrorCode.NoError) yield break;
+            if (launchFlowOperation.Error == ReviewErrorCode.NoError) return;
             this.DirectlyOpen();
         }
 

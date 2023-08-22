@@ -6,6 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine;
     using Zenject;
+#if STORE_RATING
+    using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
+#endif
 
     public class UITemplateInstaller : Installer<ToastController, UITemplateInstaller>
     {
@@ -27,7 +30,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateThirdPartyInstaller.Install(this.Container); // bind after UITemplateLocalDataInstaller for local data analytics
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
             NotificationInstaller.Install(this.Container);
-
+#if STORE_RATING
+            StoreRatingServiceInstaller.Install(this.Container);
+#endif
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
         }
     }

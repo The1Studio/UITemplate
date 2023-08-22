@@ -35,7 +35,9 @@
         "DOTween.Modules",
         "3rd.Configs",
         "Unity.Notifications.Android",
-        "Unity.Notifications.iOS"
+        "Unity.Notifications.iOS",
+        "Google.Play.Review",
+        "Google.Play.Common"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

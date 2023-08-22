@@ -7,7 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
     using UnityEngine;
     using Zenject;
 
-    public class AndroidStoreRatingService : IInitializable, IStoreRatingService
+    public class AndroidStoreRatingService : IStoreRatingService
     {
         private ReviewManager           reviewManager;
         private PlayReviewInfo          playReviewInfo;
@@ -15,12 +15,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 
         public async UniTask LaunchStoreRating() { await this.LaunchReview(); }
 
-        public void Initialize() { }
-
         private async UniTask InitReview(bool force = false)
         {
-            this.initReviewTaskSource =   new CancellationTokenSource();
-            this.reviewManager        ??= new ReviewManager();
+            this.initReviewTaskSource = new CancellationTokenSource();
+            this.reviewManager ??= new ReviewManager();
 
             var requestFlowOperation = this.reviewManager.RequestReviewFlow();
             await requestFlowOperation.ToUniTask(cancellationToken: this.initReviewTaskSource.Token);

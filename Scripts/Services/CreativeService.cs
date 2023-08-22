@@ -13,17 +13,17 @@
         private          float       touchTime = 0.25f;
         private          float       counter;
 
-        public bool IsShowUI { get; private set; } = true;
+        public  bool IsShowUI        { get; private set; } = true;
+        private bool EnableTripleTap { get; set; }         = true;
 
         public readonly UnityEvent OnTripleTap = new();
 
-        public CreativeService(EventSystem eventSystem)
-        {
-            this.eventSystem = eventSystem;
-        }
+        public CreativeService(EventSystem eventSystem) { this.eventSystem = eventSystem; }
 
         public void Tick()
         {
+            if (!this.EnableTripleTap) return;
+
             for (var i = 0; i < Input.touchCount; ++i)
             {
                 if (Input.GetTouch(i).phase != TouchPhase.Began) continue;
@@ -57,5 +57,7 @@
                 }
             }
         }
+
+        public void DisableTripleTap() { this.EnableTripleTap = false; }
     }
 }

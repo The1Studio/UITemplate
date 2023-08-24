@@ -89,7 +89,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                                                            this.BuyItemCompleted);
         }
 
-        private async void BuyItemCompleted()
+        protected async void BuyItemCompleted()
         {
             await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
             this.View.itemCollectionGridAdapter.Refresh();
@@ -293,7 +293,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.BuyItemCompleted(obj);
         }
 
-        private void BuyWithAds(ItemCollectionItemModel obj)
+        protected virtual void BuyWithAds(ItemCollectionItemModel obj)
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
             {

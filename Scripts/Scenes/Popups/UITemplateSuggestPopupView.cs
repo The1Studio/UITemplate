@@ -87,7 +87,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 
         protected virtual void OnClaimButtonClicked()
         {
-            this.uiTemplateAdServiceWrapper.ShowRewardedAd("Suggest", this.OnClaimSuccess);
+            // this.uiTemplateAdServiceWrapper.ShowRewardedAd("Suggest", this.OnClaimSuccess);
+            this.OnClaimSuccess();
         }
 
         protected virtual void OnClaimSuccess()

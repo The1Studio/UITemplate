@@ -137,7 +137,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var lastValue = this.GetCurrencyValue(id);
             this.SetCurrencyWithCap(lastValue + addingValue, id);
 
-            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = addingValue, FinalValue = lastValue + addingValue, });
+            this.signalBus.Fire(new UpdateCurrencySignal(id, addingValue, lastValue + addingValue));
         }
 
         public void UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID)
@@ -145,7 +145,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var lastValue = this.GetCurrencyValue(id);
 
             this.SetCurrencyWithCap(finalValue, id);
-            this.signalBus.Fire(new UpdateCurrencySignal() { Id = id, Amount = finalValue - lastValue, FinalValue = finalValue, });
+            this.signalBus.Fire(new UpdateCurrencySignal(id, finalValue - lastValue, finalValue));
         }
 
         private void SetCurrencyWithCap(int value, string id)

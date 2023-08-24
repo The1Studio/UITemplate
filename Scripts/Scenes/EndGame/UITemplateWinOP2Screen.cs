@@ -42,7 +42,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             base.BindData();
             this.UITemplateAdService.ShowMREC(AdViewPosition.Centered);
             this.SoundServices.PlaySoundWin();
-            this.View.currencyView.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             this.UITemplateAdService.HideBannerAd();
             return UniTask.CompletedTask;
         }
@@ -65,7 +64,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
             base.Dispose();
             this.UITemplateAdService.HideMREC(AdViewPosition.Centered);
             this.UITemplateAdService.ShowBannerAd();
-            this.View.currencyView.Unsubscribe(this.SignalBus);
         }
     }
 }

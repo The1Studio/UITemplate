@@ -144,7 +144,6 @@
         public override async UniTask BindData(UITemplateWinScreenModel model)
         {
             this.View.BtnAds.BindData(this.AdPlacement);
-            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
             this.ItemUnlockProgress(model.ItemUnlockLastValue, model.ItemUnlockNewValue);
             this.soundService.PlaySoundWin();
             
@@ -249,7 +248,6 @@
             base.Dispose();
             this.View.BtnAds.Dispose();
             DOTween.Kill(this.tweenSpin);
-            this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }
     }
 }

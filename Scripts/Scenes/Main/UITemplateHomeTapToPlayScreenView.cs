@@ -44,7 +44,6 @@
 
         public override UniTask BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             return UniTask.CompletedTask;
         }
 
@@ -56,12 +55,6 @@
         protected virtual void OnClickTapToPlayButton()
         {
             this.ScreenManager.OpenScreen<UITemplateGameplayScreenPresenter>();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            this.View.CoinText.Unsubscribe(this.SignalBus);
         }
 
         #region inject

@@ -1,6 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
+    using System;
     using DG.Tweening;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UnityEngine;
@@ -8,6 +10,13 @@
 
     public class UITemplateCurrencyView : UITemplateFlyingAnimationView
     {
+        #region inject
+
+        private SignalBus                         signalBus;
+        private UITemplateInventoryDataController uiTemplateInventoryDataController;
+
+        #endregion
+        
         [SerializeField] private TMP_Text currencyValueText;
 
         [SerializeField] private string currencyId;
@@ -16,30 +25,42 @@
 
         private Tween updateCurrencyTween;
 
-        private Color _defaultColor = Color.white;
+        private Color defaultColor = Color.white;
 
-        public void Subscribe(SignalBus signalBus, int initValue)
+        [Inject]
+        public void Constructor(SignalBus signalBus, UITemplateInventoryDataController uiTemplateInventoryDataController)
         {
-            signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrency);
-            this.UpdateData(initValue);
-            if (this.currencyValueText != null && this.currencyValueText.color != null)
-            {
-                _defaultColor = this.currencyValueText.color;
-            }
-
+            this.signalBus                         = signalBus;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            
+            this.Initialize();
             this.ResetState();
         }
 
+        private void Initialize()
+        {
+            this.signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrency);
+            this.UpdateData(this.uiTemplateInventoryDataController.GetCurrencyValue(this.currencyId));
+            if (this.currencyValueText != null)
+            {
+                this.defaultColor = this.currencyValueText.color;
+            }
+        }
+        
         private void ResetState()
         {
             this.CurrencyIcon.transform.localScale = Vector3.one;
             this.updateCurrencyTween?.Kill();
-            this.currencyValueText.color = _defaultColor;
+            this.currencyValueText.color = this.defaultColor;
         }
 
         private void UpdateData(int newValue) { this.currencyValueText.text = newValue.ToString(); }
 
-        public void Unsubscribe(SignalBus signalBus) { signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrency); }
+
+        private void OnDestroy()
+        {
+            this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrency);
+        }
 
         private void UpdateCurrency(UpdateCurrencySignal obj)
         {

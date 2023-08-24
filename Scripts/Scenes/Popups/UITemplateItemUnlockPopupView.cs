@@ -85,7 +85,6 @@
         public override async UniTask BindData(UITemplateItemUnlockPopupModel popupModel)
         {
             this.View.BtnGet.BindData(this.AdPlacement);
-            this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
             var itemImageAddress = this.itemBlueprint.Values.First(record => record.Id.Equals(popupModel.ItemId)).ImageAddress;
             var itemSprite       = await this.gameAssets.LoadAssetAsync<Sprite>(itemImageAddress);
             this.View.ImgItem.sprite = itemSprite;
@@ -94,7 +93,6 @@
         public override void Dispose()
         {
             this.View.BtnGet.Dispose();
-            this.View.CurrencyView.Unsubscribe(this.SignalBus);
         }
 
         protected virtual void OnClickHome()

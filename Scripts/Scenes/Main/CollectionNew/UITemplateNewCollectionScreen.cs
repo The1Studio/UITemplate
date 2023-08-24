@@ -84,8 +84,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         public override async UniTask BindData()
         {
-            this.View.coinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
-
             this.itemCollectionItemModels.Clear();
             this.PrePareModel();
             await this.BindDataCollectionForAdapter();
@@ -305,7 +303,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
             base.Dispose();
             this.randomTimerDispose?.Dispose();
-            this.View.coinText.Unsubscribe(this.SignalBus);
         }
 
         #region inject

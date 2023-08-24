@@ -91,11 +91,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
                 this.View.BtnSkip.BindData(this.AdPlacement);
             }
 
-            if (this.View.CurrencyView != null)
-            {
-                this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
-            }
-
             if (this.View.LevelText != null)
             {
                 this.View.LevelText.text = "Level " + levelDataController.GetCurrentLevelData.Level;
@@ -108,11 +103,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             if (this.View.BtnSkip != null)
             {
                 this.View.BtnSkip.Dispose();
-            }
-
-            if (this.View.CurrencyView != null)
-            {
-                this.View.CurrencyView.Unsubscribe(this.SignalBus);
             }
         }
 

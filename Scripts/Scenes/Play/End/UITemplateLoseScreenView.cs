@@ -86,10 +86,6 @@
                 this.View.SkipButton.BindData(this.AdPlacement);
             }
 
-            if (this.View.CurrencyView != null)
-            {
-                this.View.CurrencyView.Subscribe(this.SignalBus, this.inventoryDataController.GetCurrencyValue());
-            }
             this.soundServices.PlaySoundLose();
             return UniTask.CompletedTask;
         }
@@ -100,11 +96,6 @@
             if (this.View.SkipButton != null)
             {
                 this.View.SkipButton.Dispose();
-            }
-
-            if (this.View.CurrencyView != null)
-            {
-                this.View.CurrencyView.Unsubscribe(this.SignalBus);
             }
         }
 

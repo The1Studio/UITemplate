@@ -44,17 +44,10 @@
 
         public override async UniTask BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             var levelList    = this.getLevelList();
             var currentLevel = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
             await this.View.LevelGridAdapter.InitItemAdapter(levelList, this.diContainer);
             this.View.LevelGridAdapter.SmoothScrollTo(currentLevel, 1);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            this.View.CoinText.Unsubscribe(this.SignalBus);
         }
 
         private List<LevelData> getLevelList() { return this.uiTemplateLevelDataController.GetAllLevels(); }

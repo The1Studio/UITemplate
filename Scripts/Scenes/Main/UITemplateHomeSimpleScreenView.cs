@@ -1,14 +1,10 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
-    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
@@ -17,19 +13,17 @@
         public Button                      PlayButton;
         public Button                      LevelButton;
         public Button                      ShopButton;
-        public UITemplateCurrencyView      CoinText;
         public UITemplateSettingButtonView SettingButtonView;
     }
 
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
     public class UITemplateHomeSimpleScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, UITemplateInventoryDataController uiTemplateInventoryDataController) :
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) :
             base(signalBus)
         {
             this.diContainer                       = diContainer;
             this.ScreenManager                     = screenManager;
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
         protected override async void OnViewReady()
@@ -54,21 +48,13 @@
 
         public override UniTask BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             return UniTask.CompletedTask;
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            this.View.CoinText.Unsubscribe(this.SignalBus);
         }
 
         #region inject
 
         protected readonly DiContainer                       diContainer;
         protected readonly IScreenManager                    ScreenManager;
-        protected readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
 
         #endregion
     }

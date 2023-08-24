@@ -58,7 +58,6 @@
 
         public override UniTask BindData()
         {
-            this.View.CoinText.Subscribe(this.SignalBus, this.uiTemplateInventoryDataController.GetCurrencyValue());
             this.GetItemDataList(this.itemLists);
             this.SelectTabCategory(CatCharacter);
             return UniTask.CompletedTask;
@@ -141,12 +140,6 @@
         {
             this.View.CharactersButton.SetOnOff(isCharacterActive);
             this.View.ItemsButton.SetOnOff(isItemActive);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            this.View.CoinText.Unsubscribe(this.SignalBus);
         }
 
         #region Inject

@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Linq;
     using BlueprintFlow.Signals;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -23,6 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateShopBlueprint             uiTemplateShopBlueprint;
         private readonly SignalBus                           signalBus;
         private readonly UITemplateItemBlueprint             uiTemplateItemBlueprint;
+        private readonly IScreenManager                      screenManager;
 
         #endregion
 
@@ -32,7 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateFlyingAnimationController uiTemplateFlyingAnimationController,
             UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus,
-            UITemplateItemBlueprint uiTemplateItemBlueprint)
+            UITemplateItemBlueprint uiTemplateItemBlueprint, IScreenManager screenManager)
         {
             this.uiTemplateInventoryData             = uiTemplateInventoryData;
             this.uiTemplateFlyingAnimationController = uiTemplateFlyingAnimationController;
@@ -40,6 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateShopBlueprint             = uiTemplateShopBlueprint;
             this.signalBus                           = signalBus;
             this.uiTemplateItemBlueprint             = uiTemplateItemBlueprint;
+            this.screenManager                       = screenManager;
 
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
         }
@@ -131,7 +134,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             if (startAnimationRect != null)
             {
-                await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(startAnimationRect);
+                var flyingObject =  this.uiTemplateCurrencyBlueprint.GetDataById(id).FlyingObject;
+                var currencyView = this.screenManager.RootUICanvas.GetComponentsInChildren<UITemplateCurrencyView>().First(viewTarget => viewTarget.CurrencyKey.Equals(id));
+                await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(startAnimationRect,prefabName:flyingObject, target:currencyView.gameObject.transform as RectTransform);
             }
 
             var lastValue = this.GetCurrencyValue(id);

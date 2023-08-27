@@ -31,7 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Toast
             };
         }
 
-        public async void SetContent(string message, float offsetX = 0, float offsetY = 0, ToastPosition position = ToastPosition.Bottom)
+        public async void SetContent(string message, float offsetX = 0, float offsetY = 0, ToastPosition position = ToastPosition.Center)
         {
             this.toastObj.SetActive(false);
             this.toastObj.transform.SetParent(this.GetParentObj(position).transform);

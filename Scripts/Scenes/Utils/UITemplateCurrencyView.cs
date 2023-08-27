@@ -1,6 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
-    using System;
     using DG.Tweening;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -65,6 +64,7 @@
         private void UpdateCurrency(UpdateCurrencySignal obj)
         {
             if (!this.currencyId.Equals(obj.Id)) return;
+            
             var duration   = 1.5f;
             var yoyoTime   = 4;
             var scaleValue = 1.2f;
@@ -78,5 +78,6 @@
                 this.ResetState();
             });
         }
+        public override string CurrencyKey => this.currencyId;
     }
 }

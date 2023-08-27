@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
+    using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using Zenject;
 
     public class UITemplateAdServiceWrapper : IInitializable
@@ -20,6 +21,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly UITemplateAdsController uiTemplateAdsController;
         private readonly IAOAAdService           aoaAdService;
         private readonly IBackFillAdsService     backFillAdsService;
+        private readonly ToastController         toastController;
         private readonly ILogService             logService;
         private readonly AdServicesConfig        adServicesConfig;
         private readonly SignalBus               signalBus;
@@ -32,13 +34,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController,
-            IAOAAdService aoaAdService, IBackFillAdsService backFillAdsService)
+            IAOAAdService aoaAdService, IBackFillAdsService backFillAdsService, ToastController toastController)
         {
             this.adServices              = adServices;
             this.mrecAdServices          = mrecAdServices;
             this.uiTemplateAdsController = uiTemplateAdsController;
             this.aoaAdService            = aoaAdService;
             this.backFillAdsService      = backFillAdsService;
+            this.toastController         = toastController;
             this.logService              = logService;
             this.adServicesConfig        = adServicesConfig;
             this.signalBus               = signalBus;
@@ -144,6 +147,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.logService.Warning("Rewarded was not loaded");
                 onFail?.Invoke();
+                this.toastController.SetContent("There is no Ads!");
 
                 return;
             }

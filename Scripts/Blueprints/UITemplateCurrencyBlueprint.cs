@@ -12,5 +12,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     {
         public string Id;
         public int    Max;
+        public string FlyingObject;
     }
 }

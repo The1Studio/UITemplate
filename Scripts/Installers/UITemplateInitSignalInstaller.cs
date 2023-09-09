@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using ServiceImplementation.FireBaseRemoteConfig;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -17,6 +18,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         {
             //FTUE
             this.Container.DeclareSignal<TutorialCompletionSignal>();
+            this.Container.DeclareSignal<FTUEButtonClickSignal>();
+            this.Container.DeclareSignal<FTUETriggerSignal>();
 
             //Signal
             this.Container.DeclareSignal<UpdateCurrencySignal>();

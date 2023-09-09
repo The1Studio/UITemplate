@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
+    using System.Linq;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
@@ -25,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         private ScreenManager           screenManager;
         private UITemplateFTUEBlueprint uiTemplateFtueBlueprint;
         private SignalBus               signalBus;
+        private Transform               highLightTransform;
 
         [Inject]
         public void Init(ScreenManager screenManager, SignalBus signalBus, UITemplateFTUEBlueprint uiTemplateFtueBlueprint)
@@ -65,56 +67,54 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         public void SetTutorialStatus(bool status, string stepId)
         {
             this.gameObject.SetActive(status);
-            this.PrepareTutorial(status, stepId);
-        }
-
-        private void PrepareTutorial(bool status, string triggerId)
-        {
-            var currentActiveScreen = this.screenManager.CurrentActiveScreen.Value;
-            var childTransform      = currentActiveScreen.CurrentTransform.GetComponentsInChildren<Transform>();
-            var record              = this.uiTemplateFtueBlueprint[triggerId];
-            var highLightPath       = record.HighLightPath;
-            var buttonCanClick      = record.ButtonCanClick;
-            this.btnCompleteStep.onClick.RemoveAllListeners();
-
             if (status)
             {
-                this.disposables = new CompositeDisposable();
+                this.PrepareTutorial(stepId);
 
-                foreach (var current in childTransform)
-                {
-                    if (!current.name.Equals(highLightPath)) continue;
-                    current.gameObject.AddComponent<UITemplateFTUEControlElement>();
-                    var btn = current.GetComponent<Button>();
-
-                    this.btnCompleteStep.gameObject.SetActive(!buttonCanClick);
-
-                    if (!buttonCanClick)
-                    {
-                        this.btnCompleteStep.onClick.AddListener(() => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, triggerId)); });
-                    }
-
-                    if (btn != null && buttonCanClick)
-                    {
-                        this.disposables.Add(btn.OnPointerClickAsObservable().Subscribe(data => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, triggerId)); }));
-                    }
-
-                    this.ConfigHandPosition(current.gameObject, record);
-                }
             }
             else
             {
-                this.disposables.Dispose();
-                this.hand.transform.SetParent(this.transform, false);
-
-                foreach (var current in childTransform)
-                {
-                    if (current.GetComponent<UITemplateFTUEControlElement>() != null)
-                    {
-                        Destroy(current.GetComponent<UITemplateFTUEControlElement>());
-                    }
-                }
+                this.DisableTutorial();
             }
+        }
+
+        private void DisableTutorial()
+        {
+            this.disposables.Dispose();
+            this.hand.transform.SetParent(this.transform, false);
+
+            if (this.highLightTransform != null &&this.highLightTransform.TryGetComponent<UITemplateFTUEControlElement>(out var uITemplateFtueControlElement))
+            {
+                Destroy(uITemplateFtueControlElement);
+                this.highLightTransform = null;
+            }
+        }
+
+        private void PrepareTutorial(string triggerId)
+        {
+            var currentActiveScreen = this.screenManager.CurrentActiveScreen.Value;
+            var childTransforms     = currentActiveScreen.CurrentTransform.GetComponentsInChildren<Transform>();
+            var record              = this.uiTemplateFtueBlueprint[triggerId];
+            this.highLightTransform = childTransforms.First(childTransform => childTransform.name.Equals(record.HighLightPath));
+            this.btnCompleteStep.onClick.RemoveAllListeners();
+
+            this.disposables = new CompositeDisposable();
+            this.highLightTransform.gameObject.AddComponent<UITemplateFTUEControlElement>();
+            var btn = this.highLightTransform.GetComponent<Button>();
+
+            this.btnCompleteStep.gameObject.SetActive(!record.ButtonCanClick);
+
+            if (!record.ButtonCanClick)
+            {
+                this.btnCompleteStep.onClick.AddListener(() => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, triggerId)); });
+            }
+
+            if (btn != null && record.ButtonCanClick)
+            {
+                this.disposables.Add(btn.OnPointerClickAsObservable().Subscribe(data => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, triggerId)); }));
+            }
+
+            this.ConfigHandPosition(this.highLightTransform.gameObject, record);
         }
 
         private void ConfigHandPosition(GameObject targetHighlight, UITemplateFTUERecord record)

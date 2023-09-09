@@ -64,22 +64,9 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.transform.SetAsLastSibling();
         }
 
-        public void SetTutorialStatus(bool status, string stepId)
+        public void DisableTutorial()
         {
-            this.gameObject.SetActive(status);
-            if (status)
-            {
-                this.PrepareTutorial(stepId);
-
-            }
-            else
-            {
-                this.DisableTutorial();
-            }
-        }
-
-        private void DisableTutorial()
-        {
+            this.gameObject.SetActive(false);
             this.disposables.Dispose();
             this.hand.transform.SetParent(this.transform, false);
 
@@ -90,8 +77,9 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             }
         }
 
-        private void PrepareTutorial(string triggerId)
+        public void PrepareTutorial(string triggerId)
         {
+            this.gameObject.SetActive(true);
             var currentActiveScreen = this.screenManager.CurrentActiveScreen.Value;
             var childTransforms     = currentActiveScreen.CurrentTransform.GetComponentsInChildren<Transform>();
             var record              = this.uiTemplateFtueBlueprint[triggerId];

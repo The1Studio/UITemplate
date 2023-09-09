@@ -1,100 +1,45 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using System;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
     public class UITemplateFTUEHelper
     {
-        private readonly ScreenManager                 screenManager;
-        private readonly UITemplateLevelDataController uiTemplateLevelDataController;
-        private readonly UITemplateFTUEBlueprint       ftueBlueprint;
-        private readonly UITemplateFTUEControllerData  uiTemplateFtueControllerData;
-
-        public UITemplateFTUEHelper(ScreenManager screenManager, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateFTUEBlueprint ftueBlueprint,
-            UITemplateFTUEControllerData uiTemplateFtueControllerData
-        )
+        private class FTUECondition
         {
-            this.screenManager                 = screenManager;
-            this.uiTemplateLevelDataController = uiTemplateLevelDataController;
-            this.ftueBlueprint                 = ftueBlueprint;
-            this.uiTemplateFtueControllerData  = uiTemplateFtueControllerData;
+            public const string Equal     = "Equal";
+            public const string NotEqual  = "NotEqual";
+            public const string Higher    = "Higher";
+            public const string Lower     = "Lower";
+            public const string HighEqual = "HighEqual";
+            public const string LowEqual  = "LowEqual";
         }
-
-        public bool IsAnyFtueActive() => this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);
-
-        public bool IsAnyFtueActive(IScreenPresenter screenPresenter)
+        
+        public bool CompareIntWithCondition(int leftValue, int rightValue, string condition)
         {
-            var currentScreen = screenPresenter.GetType().Name;
-
-            foreach (var stepBlueprintRecord in this.ftueBlueprint.Values)
-            {
-                if (!currentScreen.Equals(stepBlueprintRecord.ScreenLocation)) continue;
-
-                if (!this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(stepBlueprintRecord.RequireTriggerComplete)) continue;
-                if (this.uiTemplateFtueControllerData.IsFinishedStep(stepBlueprintRecord.Id)) continue;
-
-                var isPassedCondition = this.IsPassedCondition(stepBlueprintRecord.Id);
-
-                if (!isPassedCondition) continue;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool IsPassedCondition(string stepId)
-        {
-            foreach (var requireCondition in this.ftueBlueprint[stepId].GetRequireCondition())
-            {
-                var isPass = requireCondition.RequireId switch
-                {
-                    UITemplateFTUEStaticValue.RequireConditionId.RoundLevelRequire => this.IsPassedRoundLevelRequire(requireCondition.RequireValue, requireCondition.Condition),
-                    UITemplateFTUEStaticValue.RequireConditionId.PlayerLevelRequire => this.IsPassedPlayerLevelRequire(requireCondition.RequireValue, requireCondition.Condition),
-                    _ => false
-                };
-
-                if (!isPass)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        #region Check Pass Condition
-
-        private bool IsPassedRoundLevelRequire(string requireLevel, string condition)
-        {
-            var level = int.Parse(requireLevel);
-
             return condition switch
             {
-                UITemplateFTUEStaticValue.FTUECondition.Equal => this.uiTemplateLevelDataController.CurrentLevel == level,
-                UITemplateFTUEStaticValue.FTUECondition.NotEqual => this.uiTemplateLevelDataController.CurrentLevel != level,
-                UITemplateFTUEStaticValue.FTUECondition.Higher => this.uiTemplateLevelDataController.CurrentLevel > level,
-                UITemplateFTUEStaticValue.FTUECondition.Lower => this.uiTemplateLevelDataController.CurrentLevel < level,
-                UITemplateFTUEStaticValue.FTUECondition.HighEqual => this.uiTemplateLevelDataController.CurrentLevel >= level,
-                UITemplateFTUEStaticValue.FTUECondition.LowEqual => this.uiTemplateLevelDataController.CurrentLevel <= level,
+                FTUECondition.Equal => leftValue == rightValue,
+                FTUECondition.NotEqual => leftValue != rightValue,
+                FTUECondition.Higher => leftValue > rightValue,
+                FTUECondition.Lower => leftValue < rightValue,
+                FTUECondition.HighEqual => leftValue >= rightValue,
+                FTUECondition.LowEqual => leftValue <= rightValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(condition), condition, null)
             };
         }
-
-        private bool IsPassedPlayerLevelRequire(string requireLevel, string condition)
+        
+        public bool CompareFloatWithCondition(float leftValue, float rightValue, string condition)
         {
-            var level = int.Parse(requireLevel);
-
-            //Todo Fill player Level
             return condition switch
             {
+                FTUECondition.Equal => Math.Abs(leftValue - rightValue) < float.Epsilon,
+                FTUECondition.NotEqual => Math.Abs(leftValue - rightValue) > float.Epsilon,
+                FTUECondition.Higher => leftValue > rightValue,
+                FTUECondition.Lower => leftValue < rightValue,
+                FTUECondition.HighEqual => leftValue >= rightValue,
+                FTUECondition.LowEqual => leftValue <= rightValue,
                 _ => throw new ArgumentOutOfRangeException(nameof(condition), condition, null)
             };
         }
-
-        #endregion
     }
 }

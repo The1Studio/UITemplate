@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     using BlueprintFlow.BlueprintReader;
     using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
     using UnityEngine;
 
     [BlueprintReader("UITemplateFTUE", true)]
@@ -28,24 +29,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public Vector2      HandSizeDelta          { get; set; }
 
         public List<RequireCondition> GetRequireCondition() => JsonConvert.DeserializeObject<List<RequireCondition>>(this.RequireCondition);
-
-        /// <summary>
-        /// For test Generate Json require condition
-        /// </summary>
+        
         public UITemplateFTUERecord()
         {
             var list = new List<RequireCondition>();
-            list.Add(new RequireCondition() { RequireId = "Round_level", RequireValue = "8" });
+            list.Add(new RequireCondition() { RequireId = "passed_level", ConditionDetail = (new FTUEPassedLevelConditionModel(){Level = 1}).ToJson() });
 #if UNITY_EDITOR
             Debug.Log($"{list.ToJson()}");
 #endif
         }
     }
+    
 
     public class RequireCondition
     {
-        public string RequireId    { get; set; }
-        public string Condition    { get; set; } = "Equal"; //Equal, NotEqual, Higher, Lower, Higher, Lower, HigherEqual, LowerEqual
-        public string RequireValue { get; set; }
+        public string RequireId       { get; set; }
+        public string ConditionDetail { get; set; }
     }
 }

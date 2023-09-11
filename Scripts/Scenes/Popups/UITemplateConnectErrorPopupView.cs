@@ -23,9 +23,12 @@
     [PopupInfo(nameof(UITemplateConnectErrorPopupView), true, false)]
     public class UITemplateConnectErrorPresenter : UITemplateBasePopupPresenter<UITemplateConnectErrorPopupView>
     {
-        private static readonly double checkTimeout        = 5;
-        private static readonly string connectingMessage   = "Trying to reconnect...\nPlease wait...";
-        private static readonly string connectErrorMessage = "Your connection has been lost!\nCheck your internet connection and try again";
+        protected virtual double CheckTimeout        => 5;
+        protected virtual string ConnectingMessage   => "Trying to reconnect...\nPlease wait...";
+        protected virtual string ConnectErrorMessage => "Your connection has been lost!\nCheck your internet connection and try again";
+
+        protected virtual string ReconnectButtonMessage    => "Reconnect";
+        protected virtual string ReconnectingButtonMessage => "Reconnecting";
 
         public UITemplateConnectErrorPresenter(SignalBus signalBus, IScreenManager screenManager, IInternetService internetService) : base(signalBus)
         {
@@ -45,10 +48,7 @@
             this.View.Reconnect.onClick.AddListener(this.OnClickReconnect);
         }
 
-        protected virtual void OnConnectSuccess()
-        {
-            this.CloseView();
-        }
+        protected virtual void OnConnectSuccess() { this.CloseView(); }
 
         private void UpdateImage(bool isConnecting)
         {
@@ -58,8 +58,8 @@
 
         private void UpdateContent(bool isConnecting)
         {
-            this.View.Message.text           = isConnecting ? connectingMessage : connectErrorMessage;
-            this.View.ButtonText.text        = isConnecting ? "Reconnecting" : "Reconnect";
+            this.View.Message.text           = isConnecting ? this.ConnectingMessage : this.ConnectErrorMessage;
+            this.View.ButtonText.text        = isConnecting ? this.ReconnectingButtonMessage : this.ReconnectButtonMessage;
             this.View.Reconnect.interactable = !isConnecting;
             this.UpdateImage(isConnecting);
         }
@@ -79,7 +79,7 @@
                     timeSinceLastConnectCheck = Time.realtimeSinceStartup;
                 }
 
-                return isConnected || Time.realtimeSinceStartup - time > checkTimeout;
+                return isConnected || Time.realtimeSinceStartup - time > this.CheckTimeout;
             });
 
             if (isConnected)

@@ -33,16 +33,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.TrackEventClick(new NotificationContent(intent.Notification.Title, intent.Notification.Text));
         }
 
-        protected override async UniTask CheckPermission()
+        public override async UniTask CheckPermission()
         {
             var isWaitingForPermission = false;
             if (GetSDKVersionInt() >= 28 && !Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS"))
             {
                 isWaitingForPermission = true;
                 var permissionCallbacks = new PermissionCallbacks();
-                permissionCallbacks.PermissionDenied += _ => { isWaitingForPermission = false; };
+                permissionCallbacks.PermissionDenied                += _ => { isWaitingForPermission = false; };
                 permissionCallbacks.PermissionDeniedAndDontAskAgain += _ => { isWaitingForPermission = false; };
-                permissionCallbacks.PermissionGranted += _ => { isWaitingForPermission = false; };
+                permissionCallbacks.PermissionGranted               += _ => { isWaitingForPermission = false; };
                 Permission.RequestUserPermission("android.permission.POST_NOTIFICATIONS", permissionCallbacks);
                 this.Logger.Log($"onelog: Notification RequestPermission: ");
             }
@@ -66,18 +66,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 #endif
         }
 
-        protected override void CancelNotification() { AndroidNotificationCenter.CancelAllNotifications(); }
+        public override void CancelNotification() { AndroidNotificationCenter.CancelAllNotifications(); }
 
-        protected override void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
+        public override void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
         {
             this.Logger.Log($"onelog: Notification SendNotification: {title} - {body} - {fireTime} - {delayTime}");
             var notification = new AndroidNotification
             {
-                Title = title,
-                Text = body,
+                Title     = title,
+                Text      = body,
                 SmallIcon = SmallIcon,
                 LargeIcon = LargeIcon,
-                FireTime = fireTime
+                FireTime  = fireTime
             };
             AndroidNotificationCenter.SendNotification(notification, ChannelId);
         }

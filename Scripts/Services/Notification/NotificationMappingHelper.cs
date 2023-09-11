@@ -2,17 +2,19 @@
 {
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using Cysharp.Threading.Tasks;
+    using TheOneStudio.UITemplate.UITemplate.Utils;
     using UnityEngine;
 
     public class NotificationMappingHelper
     {
-        private const string Pattern = @"{.*?}";
+        private const string Pattern                     = @"{.*?}";
+        private const string LocalizationTableCollection = "Notification";
 
-        public string GetFormatString(string input)
+        public async UniTask<string> GetFormatString(string input)
         {
             var regex  = new Regex(Pattern);
-            var result = input;
+            var result = await LocalizationHelper.GetLocalizationString(LocalizationTableCollection, input);
 
             foreach (Match item in regex.Matches(result))
             {

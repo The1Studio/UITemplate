@@ -1,4 +1,5 @@
 ﻿#if NOTIFICATION && UNITY_IOS
+
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using Core.AnalyticServices;
@@ -28,7 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.TrackEventClick(new NotificationContent(intent.Title, intent.Body));
         }
 
-        protected override async UniTask CheckPermission()
+        public override async UniTask CheckPermission()
         {
             var iOSNotificationSettings = iOSNotificationCenter.GetNotificationSettings();
             if (iOSNotificationSettings.AuthorizationStatus == AuthorizationStatus.NotDetermined)
@@ -38,14 +39,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
         }
 
-        protected override void CancelNotification() { iOSNotificationCenter.RemoveAllScheduledNotifications(); }
+        public override void CancelNotification() { iOSNotificationCenter.RemoveAllScheduledNotifications(); }
 
-        protected override void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
+        public override void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
         {
             var notification = new iOSNotification()
             {
-                Title = title,
-                Body = body,
+                Title   = title,
+                Body    = body,
                 Trigger = new iOSNotificationTimeIntervalTrigger() { TimeInterval = delayTime }
             };
             iOSNotificationCenter.ScheduleNotification(notification);

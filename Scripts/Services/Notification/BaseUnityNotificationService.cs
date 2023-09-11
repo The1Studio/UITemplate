@@ -20,9 +20,9 @@
         protected readonly SignalBus                           SignalBus;
         protected readonly UITemplateNotificationBlueprint     UITemplateNotificationBlueprint;
         protected readonly UITemplateNotificationDataBlueprint UITemplateNotificationDataBlueprint;
-        private readonly   NotificationMappingHelper           notificationMappingHelper;
         protected readonly ILogService                         Logger;
         protected readonly IAnalyticServices                   AnalyticServices;
+        protected readonly NotificationMappingHelper           NotificationMappingHelper;
 
         #endregion
 
@@ -39,23 +39,27 @@
             this.SignalBus                           = signalBus;
             this.UITemplateNotificationBlueprint     = uiTemplateNotificationBlueprint;
             this.UITemplateNotificationDataBlueprint = uiTemplateNotificationDataBlueprint;
-            this.notificationMappingHelper           = notificationMappingHelper;
+            this.NotificationMappingHelper           = notificationMappingHelper;
             this.Logger                              = logger;
             this.AnalyticServices                    = analyticServices;
 
             this.SignalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintComplete);
         }
 
-        private void OnLoadBlueprintComplete(LoadBlueprintDataSucceedSignal obj) { this.InitNotification(); }
+        private async void OnLoadBlueprintComplete(LoadBlueprintDataSucceedSignal obj)
+        {
+            await this.InitNotification();
+            this.SetUpNotification();
+        }
 
         #region Initial
 
-        private async void InitNotification()
+        private async UniTask InitNotification()
         {
             await this.CheckPermission();
             this.RegisterNotification();
             this.CheckOpenedByNotification();
-            this.SetUpNotification();
+            this.IsInitialized = true;
         }
 
         protected virtual void RegisterNotification() { }
@@ -79,22 +83,35 @@
 
         #region Schedule Notification
 
-        protected virtual async UniTask CheckPermission() { }
+        public               bool    IsInitialized     { get; set; } = false;
+        public virtual async UniTask CheckPermission() { }
 
-        public void SetUpNotification()
+        public async void SetUpNotification()
         {
+            if (!this.IsInitialized) return;
+
             // Cancels all pending local notifications.
             this.CancelNotification();
 
             // Prepare the Remind
-            foreach (var notificationData in this.UITemplateNotificationBlueprint.Values.Where(x => x.RandomAble))
+            var tasks                         = new List<UniTask<NotificationContent>>();
+            var uiTemplateNotificationRecords = this.UITemplateNotificationBlueprint.Values.Where(x => x.RandomAble).ToList();
+
+            foreach (var notificationData in uiTemplateNotificationRecords)
             {
-                var delayTime = new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
-                this.ScheduleNotification(notificationData, delayTime, this.PrepareRemind(notificationData));
+                tasks.Add(this.PrepareRemind(notificationData));
+            }
+
+            var notificationContents = await UniTask.WhenAll(tasks);
+            for (var i = 0; i < uiTemplateNotificationRecords.Count; i++)
+            {
+                var notificationData = uiTemplateNotificationRecords[i];
+                var delayTime        = new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
+                this.ScheduleNotification(notificationData, delayTime, notificationContents[i]);
             }
         }
 
-        protected virtual void CancelNotification() { }
+        public virtual void CancelNotification() { }
 
         private void ScheduleNotification(UITemplateNotificationRecord notificationData, TimeSpan delayTime, NotificationContent notificationContent = null)
         {
@@ -111,13 +128,13 @@
             this.SendNotification(title, body, fireTime, delayTime);
         }
 
-        protected virtual void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime) { }
+        public virtual void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime) { }
 
         #endregion
 
         #region Set Up Notification Content
 
-        private NotificationContent PrepareRemind(UITemplateNotificationRecord record)
+        private async UniTask<NotificationContent> PrepareRemind(UITemplateNotificationRecord record)
         {
             var title = "";
             var body  = "";
@@ -134,24 +151,24 @@
             {
                 if (itemRandom != null)
                 {
-                    title = this.notificationMappingHelper.GetFormatString(itemRandom.Title);
+                    title = await this.NotificationMappingHelper.GetFormatString(itemRandom.Title);
                 }
             }
             else
             {
-                title = this.notificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Title].Title);
+                title = await this.NotificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Title].Title);
             }
 
             if (record.Body.Equals("Random"))
             {
                 if (itemRandom != null)
                 {
-                    body = this.notificationMappingHelper.GetFormatString(itemRandom.Body);
+                    body = await this.NotificationMappingHelper.GetFormatString(itemRandom.Body);
                 }
             }
             else
             {
-                body = this.notificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Body].Body);
+                body = await this.NotificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Body].Body);
             }
 
             return new NotificationContent(title, body);

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using BlueprintFlow.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -13,7 +14,7 @@
     using UnityEngine;
     using Zenject;
 
-    public abstract class BaseUnityNotificationService : INotificationService
+    public abstract class BaseUnityNotificationService : INotificationService, IDisposable
     {
         #region Inject
 
@@ -26,11 +27,13 @@
 
         #endregion
 
-        protected static string ChannelId          => "default_channel_id";
-        protected static string ChannelName        => Application.productName;
-        protected static string ChannelDescription => Application.productName;
-        protected static string SmallIcon          => "icon_0";
-        protected static string LargeIcon          => "icon_1";
+        private CancellationTokenSource ctsSetupNotification;
+
+        protected string ChannelId          { get; set; } = "default_channel_id";
+        protected string ChannelName        { get; set; } = Application.productName;
+        protected string ChannelDescription { get; set; } = Application.productName;
+        protected string SmallIcon          { get; set; } = "icon_0";
+        protected string LargeIcon          { get; set; } = "icon_1";
 
         protected BaseUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper,
@@ -59,8 +62,22 @@
             await this.CheckPermission();
             this.RegisterNotification();
             this.CheckOpenedByNotification();
+#if LOCALIZATION
+            UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += this.OnLanguageChange;
+#endif
             this.IsInitialized = true;
         }
+
+        public void Dispose()
+        {
+#if LOCALIZATION
+            UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= this.OnLanguageChange;
+#endif
+        }
+
+#if LOCALIZATION
+        private void OnLanguageChange(UnityEngine.Localization.Locale obj) { this.SetUpNotification(); }
+#endif
 
         protected virtual void RegisterNotification() { }
 
@@ -90,24 +107,34 @@
         {
             if (!this.IsInitialized) return;
 
-            // Cancels all pending local notifications.
-            this.CancelNotification();
-
-            // Prepare the Remind
-            var tasks                         = new List<UniTask<NotificationContent>>();
-            var uiTemplateNotificationRecords = this.UITemplateNotificationBlueprint.Values.Where(x => x.RandomAble).ToList();
-
-            foreach (var notificationData in uiTemplateNotificationRecords)
+            try
             {
-                tasks.Add(this.PrepareRemind(notificationData));
+                this.ctsSetupNotification?.Cancel();
+                this.ctsSetupNotification = new CancellationTokenSource();
+
+                // Cancels all pending local notifications.
+                this.CancelNotification();
+
+                // Prepare the Remind
+                var tasks                         = new List<UniTask<NotificationContent>>();
+                var uiTemplateNotificationRecords = this.UITemplateNotificationBlueprint.Values.Where(x => x.RandomAble).ToList();
+
+                foreach (var notificationData in uiTemplateNotificationRecords)
+                {
+                    tasks.Add(this.PrepareRemind(notificationData));
+                }
+
+                var notificationContents = await UniTask.WhenAll(tasks).AttachExternalCancellation(this.ctsSetupNotification.Token);
+                for (var i = 0; i < uiTemplateNotificationRecords.Count; i++)
+                {
+                    var notificationData = uiTemplateNotificationRecords[i];
+                    var delayTime        = new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
+                    this.ScheduleNotification(notificationData, delayTime, notificationContents[i]);
+                }
             }
-
-            var notificationContents = await UniTask.WhenAll(tasks);
-            for (var i = 0; i < uiTemplateNotificationRecords.Count; i++)
+            catch (Exception e)
             {
-                var notificationData = uiTemplateNotificationRecords[i];
-                var delayTime        = new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
-                this.ScheduleNotification(notificationData, delayTime, notificationContents[i]);
+                // ignored
             }
         }
 
@@ -181,6 +208,16 @@
             delayTime ??= new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
             this.ScheduleNotification(notificationData, delayTime.Value);
         }
+
+        #endregion
+
+        #region Setter
+
+        public void SetChannelId(string val)          { this.ChannelId          = val; }
+        public void SetChannelName(string val)        { this.ChannelName        = val; }
+        public void SetChannelDescription(string val) { this.ChannelDescription = val; }
+        public void SetSmallIcon(string val)          { this.SmallIcon          = val; }
+        public void SetLargeIcon(string val)          { this.LargeIcon          = val; }
 
         #endregion
     }

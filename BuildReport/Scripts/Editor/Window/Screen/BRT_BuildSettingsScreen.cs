@@ -949,7 +949,7 @@ namespace BuildReportTool.Window.Screen
 			DrawSetting("Use GPU skinning:", settings.UseGPUSkinning);
 			DrawSetting("Enable Virtual Reality Support:", settings.EnableVirtualRealitySupport);
 
-#if UNITY_2020_2_OR_NEWER
+#if UNITY_2020_2_OR_NEWER && !UNITY_2023_1_OR_NEWER
 			if (unityBuildReport != null)
 			{
 				DrawSetting("Enable Shader Livelink Support:",
@@ -1266,9 +1266,8 @@ namespace BuildReportTool.Window.Screen
 
 		public override void DrawGUI(Rect position,
 			BuildInfo buildReportToDisplay, AssetDependencies assetDependencies, TextureData textureData, MeshData meshData,
-			UnityBuildReport unityBuildReport,
-			out bool requestRepaint
-		)
+			UnityBuildReport unityBuildReport, BuildReportTool.ExtraData extraData,
+			out bool requestRepaint)
 		{
 			if (buildReportToDisplay == null)
 			{

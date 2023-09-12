@@ -103,6 +103,12 @@ hopefully UT would provide proper script access to this
 
 namespace BuildReportTool
 {
+	public struct ExtraData
+	{
+		public string SavedPath;
+		public string Contents;
+	}
+
 	[System.Serializable]
 #if UNITY_2018_1_OR_NEWER
 	public partial class ReportGenerator : UnityEditor.Build.IPreprocessBuildWithReport, UnityEditor.Build.IPostprocessBuildWithReport
@@ -270,7 +276,14 @@ namespace BuildReportTool
 
 			// --------------------
 
-#if UNITY_5_6_OR_NEWER
+#if UNITY_2023_1_OR_NEWER
+			BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
+			BuildTargetGroup targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
+			var namedBuildTarget = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(targetGroup);
+
+			buildInfo.MonoLevel =
+				PlayerSettings.GetApiCompatibilityLevel(namedBuildTarget);
+#elif UNITY_5_6_OR_NEWER
 			buildInfo.MonoLevel =
 				PlayerSettings.GetApiCompatibilityLevel(EditorUserBuildSettings.selectedBuildTargetGroup);
 #else
@@ -297,9 +310,11 @@ namespace BuildReportTool
 
 			// --------------------
 
-			//#if (UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6)
+#if UNITY_2023_1_OR_NEWER
+			buildInfo.AndroidUseAPKExpansionFiles = PlayerSettings.Android.splitApplicationBinary;
+#else
 			buildInfo.AndroidUseAPKExpansionFiles = PlayerSettings.Android.useAPKExpansionFiles;
-			//#endif
+#endif
 
 			buildInfo.AndroidCreateProject = buildInfo.BuildTargetUsed == BuildTarget.Android &&
 			                                 !Util.IsFileOfType(buildInfo.BuildFilePath, ".apk");
@@ -2873,7 +2888,7 @@ namespace BuildReportTool
 			// the next part of the code that gets executed is BRT_BuildReportWindow.OnFinishGeneratingBuildReport()
 		}
 
-		public static string OnFinishedGetValues(BuildReportTool.BuildInfo buildInfo, BuildReportTool.AssetDependencies assetDependencies, BuildReportTool.TextureData textureData, BuildReportTool.MeshData meshData)
+		public static string OnFinishedGetValues(BuildReportTool.BuildInfo buildInfo, BuildReportTool.AssetDependencies assetDependencies, BuildReportTool.TextureData textureData, BuildReportTool.MeshData meshData, string customSavePath = null)
 		{
 			string resultingFilePath = null;
 
@@ -2997,21 +3012,25 @@ namespace BuildReportTool
 			{
 				BuildReportTool.Util.ShouldSaveGottenBuildReportNow = false;
 
-				resultingFilePath = BuildReportTool.Util.SerializeAtFolder(buildInfo, _lastSavePath);
+				string savePathToUse = string.IsNullOrEmpty(customSavePath)
+					? _lastSavePath
+					: customSavePath;
+
+				resultingFilePath = BuildReportTool.Util.SerializeAtFolder(buildInfo, savePathToUse);
 
 				if (BuildReportTool.Options.CalculateAssetDependencies)
 				{
-					BuildReportTool.Util.SerializeAtFolder(assetDependencies, _lastSavePath);
+					BuildReportTool.Util.SerializeAtFolder(assetDependencies, savePathToUse);
 				}
 
 				if (BuildReportTool.Options.CollectTextureImportSettings)
 				{
-					BuildReportTool.Util.SerializeAtFolder(textureData, _lastSavePath);
+					BuildReportTool.Util.SerializeAtFolder(textureData, savePathToUse);
 				}
 
 				if (BuildReportTool.Options.CollectMeshData)
 				{
-					BuildReportTool.Util.SerializeAtFolder(meshData, _lastSavePath);
+					BuildReportTool.Util.SerializeAtFolder(meshData, savePathToUse);
 				}
 			}
 

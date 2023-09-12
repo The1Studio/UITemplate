@@ -11,9 +11,8 @@ namespace BuildReportTool.Window.Screen
 
 		public abstract void DrawGUI(Rect position,
 			BuildInfo buildReportToDisplay, AssetDependencies assetDependencies, TextureData textureData, MeshData meshData,
-			UnityBuildReport unityBuildReport,
-			out bool requestRepaint
-		);
+			UnityBuildReport unityBuildReport, BuildReportTool.ExtraData extraData,
+			out bool requestRepaint);
 
 		public virtual void Update(double timeNow, double deltaTime, BuildInfo buildReportToDisplay,
 			AssetDependencies assetDependencies)

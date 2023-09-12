@@ -166,7 +166,11 @@ namespace BuildReportTool
 			// -----------------------------------------------------------------------
 
 			result.SpriteImportMode = textureImporter.spriteImportMode.ToString();
+#if !UNITY_2022_2_OR_NEWER
 			result.SpritePackingTag = textureImporter.spritePackingTag;
+#else
+			result.SpritePackingTag = null; // Sprite Packing Tag removed, replaced with Sprite Atlas assets
+#endif
 			result.SpritePixelsPerUnit = textureImporter.spritePixelsPerUnit;
 			result.QualifiesForSpritePacking = textureImporter.qualifiesForSpritePacking;
 

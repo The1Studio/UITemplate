@@ -1,5 +1,18 @@
+Version 3.10.2
+- FIX: Fixed compatibility with Unity 2023.1+.
+
+Version 3.10.1
+- FIX: Fixed compatibility with Unity 2022.2+.
+
+Version 3.10
+- NEW: When manually creating a Build Report from a build script,
+  you can now specify the folder where the XML files will be saved to.
+- NEW: When manually creating a Build Report from a build script,
+  you can now save any extra string data and have it displayed
+  in the Build Report window.
+
 Version 3.9.6
-- FIX: Fixed compatibility with Unity 5 in response to a request.
+- FIX: Fixed compatibility with Unity 5 in response to a user request.
 
 Version 3.9.5
 - NEW: Unused Asset batching can now be turned off (default value is on),

@@ -90,6 +90,7 @@ namespace BuildReportTool.Window
 		public const string SIZE_STATS_CATEGORY_LABEL = "Total Size";
 		public const string USED_ASSETS_CATEGORY_LABEL = "Used Assets";
 		public const string UNUSED_ASSETS_CATEGORY_LABEL = "Unused Assets";
+		public const string EXTRA_DATA_CATEGORY_LABEL = "Extra Data";
 		public const string OPTIONS_CATEGORY_LABEL = "Options";
 		public const string HELP_CATEGORY_LABEL = "Help & Info";
 

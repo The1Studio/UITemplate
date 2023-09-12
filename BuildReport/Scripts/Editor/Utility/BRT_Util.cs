@@ -433,23 +433,18 @@ namespace BuildReportTool
 		public static void DebugLogBuildReport(UnityEditor.Build.Reporting.BuildReport report)
 		{
 			var sb = new System.Text.StringBuilder();
-			#if UNITY_2022_3_OR_NEWER
-			sb.AppendFormat("Build Files {0}\n\n", report.GetFiles().Length.ToString());
+#if !UNITY_2022_1_OR_NEWER
+			var files = report.files;
+#else
+			var files = report.GetFiles();
+#endif
+			sb.AppendFormat("Build Files {0}\n\n", files.Length.ToString());
 
-			for (int i = 0; i < report.GetFiles().Length; i++)
+			for (int i = 0; i < files.Length; i++)
 			{
 				sb.AppendFormat("File {0}: {1} ({2}) {3}\n",
-					(i+1).ToString(), report.GetFiles()[i].path, report.GetFiles()[i].role,
-					BuildReportTool.Util.GetBytesReadable(report.GetFiles()[i].size));
-			#else
-			sb.AppendFormat("Build Files {0}\n\n", report.files.Length.ToString());
-
-			for (int i = 0; i < report.files.Length; i++)
-			{
-				sb.AppendFormat("File {0}: {1} ({2}) {3}\n",
-					(i+1).ToString(), report.files[i].path, report.files[i].role,
-					BuildReportTool.Util.GetBytesReadable(report.files[i].size));
-			#endif
+					(i+1).ToString(), files[i].path, files[i].role,
+					BuildReportTool.Util.GetBytesReadable(files[i].size));
 				if ((i+1) % 100 == 0)
 				{
 					Debug.Log(sb.ToString());
@@ -1088,6 +1083,15 @@ namespace BuildReportTool
 				return filepath;
 			}
 			return System.IO.Path.GetFileName(filepath);
+		}
+
+		public static string GetFileNameOnlyNoExtension(this string filepath)
+		{
+			if ((filepath.StartsWith("Built-in") && filepath.EndsWith(":")) || filepath.DoesFileHaveInvalidPathChars())
+			{
+				return filepath;
+			}
+			return System.IO.Path.GetFileNameWithoutExtension(filepath);
 		}
 
 		public static bool IsFileName(string filepath, string filenameToCheck)
@@ -2316,6 +2320,13 @@ namespace BuildReportTool
 			return string.Format("{0}/UBR-{1}", folderPath, filename);
 		}
 
+		public static string GetExtraDataFilename(string filepath)
+		{
+			var folderPath = System.IO.Path.GetDirectoryName(filepath);
+			var filename = filepath.GetFileNameOnlyNoExtension();
+			return string.Format("{0}/ExtraData-{1}.txt", folderPath, filename);
+		}
+
 		// ---------------------------------
 
 		public static string SerializeAtFolder<T>(T data,
@@ -2329,7 +2340,15 @@ namespace BuildReportTool
 					System.IO.Directory.CreateDirectory(folderPathToSaveTo);
 				}
 
-				filePath = string.Format("{0}/{1}", folderPathToSaveTo, data.GetDefaultFilename());
+				char lastChar = folderPathToSaveTo[folderPathToSaveTo.Length - 1];
+				if (lastChar == '/' || lastChar == '\\' || lastChar == ':')
+				{
+					filePath = string.Format("{0}{1}", folderPathToSaveTo, data.GetDefaultFilename());
+				}
+				else
+				{
+					filePath = string.Format("{0}/{1}", folderPathToSaveTo, data.GetDefaultFilename());
+				}
 			}
 			else
 			{

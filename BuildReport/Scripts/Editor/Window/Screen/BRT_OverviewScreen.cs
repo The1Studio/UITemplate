@@ -30,9 +30,8 @@ namespace BuildReportTool.Window.Screen
 
 		public override void DrawGUI(Rect position,
 			BuildInfo buildReportToDisplay, AssetDependencies assetDependencies, TextureData textureData, MeshData meshData,
-			UnityBuildReport unityBuildReport,
-			out bool requestRepaint
-		)
+			UnityBuildReport unityBuildReport, BuildReportTool.ExtraData extraData,
+			out bool requestRepaint)
 		{
 			if (buildReportToDisplay == null)
 			{
@@ -259,6 +258,14 @@ namespace BuildReportTool.Window.Screen
 			{
 				GUILayout.Label("Additional Unity Build Report file used:", smallLabelStyle);
 				GUILayout.Label(unityBuildReport.SavedPath, smallValueStyle);
+
+				GUILayout.Space(10);
+			}
+
+			if (!string.IsNullOrEmpty(extraData.Contents))
+			{
+				GUILayout.Label("Extra Data file used:", smallLabelStyle);
+				GUILayout.Label(extraData.SavedPath, smallValueStyle);
 
 				GUILayout.Space(10);
 			}

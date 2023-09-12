@@ -81,8 +81,10 @@ namespace BuildReportTool.Window.Screen
 
 		// ================================================================================================
 
-		public override void DrawGUI(Rect position, BuildInfo buildReportToDisplay, AssetDependencies assetDependencies,
-			TextureData textureData, MeshData meshData, UnityBuildReport unityBuildReport, out bool requestRepaint)
+		public override void DrawGUI(Rect position,
+			BuildInfo buildReportToDisplay, AssetDependencies assetDependencies, TextureData textureData, MeshData meshData,
+			UnityBuildReport unityBuildReport, BuildReportTool.ExtraData extraData,
+			out bool requestRepaint)
 		{
 			requestRepaint = false;
 			if (unityBuildReport == null)

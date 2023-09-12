@@ -27,7 +27,7 @@ namespace BuildReportTool
 		/// using <see cref="UnityEditor.EditorUserBuildSettings.activeBuildTarget"/>.</para>
 		///
 		/// <para>If your build scripts are overriding the project's current build settings,
-		/// you should use <see cref="CreateReport(string[], string, BuildTarget, string)"/>
+		/// you should use <see cref="CreateReport(string[], string, BuildTarget, string, string)"/>
 		/// instead.</para>
 		/// </remarks>
 		///
@@ -35,11 +35,15 @@ namespace BuildReportTool
 		/// the default path, specify it here. Otherwise, leave this null so that
 		/// BuildReportTool will just use the default location of the Editor.log file.</param>
 		///
+		/// <param name="customSavePath">Path to folder where the Build Report XML file will be saved.
+		/// Leave this null so that BuildReportTool will just use the path specified in the saved options.</param>
+		///
 		/// <returns>The full path and filename of the created Build Report XML file,
 		/// or null if no Build Report was created.</returns>
-		public static string CreateReport(string customEditorLogPath = null)
+		public static string CreateReport(string customEditorLogPath = null, string customSavePath = null)
 		{
-			return CreateReport(null, null, EditorUserBuildSettings.activeBuildTarget, customEditorLogPath);
+			return CreateReport(null, null, EditorUserBuildSettings.activeBuildTarget,
+				customEditorLogPath, customSavePath);
 		}
 
 #if UNITY_5_5_OR_NEWER
@@ -70,12 +74,16 @@ namespace BuildReportTool
 		/// the default path, specify it here. Otherwise, leave this null so that
 		/// BuildReportTool will just use the default location of the Editor.log file.</param>
 		///
+		/// <param name="customSavePath">Path to folder where the Build Report XML file will be saved.
+		/// Leave this null so that BuildReportTool will just use the path specified in the saved options.</param>
+		///
 		/// <returns>The full path and filename of the created Build Report XML file,
 		/// or null if no Build Report was created.</returns>
-		public static string CreateReport(BuildPlayerOptions buildPlayerOptions, string customEditorLogPath = null)
+		public static string CreateReport(BuildPlayerOptions buildPlayerOptions,
+			string customEditorLogPath = null, string customSavePath = null)
 		{
 			return CreateReport(buildPlayerOptions.scenes, buildPlayerOptions.locationPathName, buildPlayerOptions.target,
-				customEditorLogPath);
+				customEditorLogPath, customSavePath);
 		}
 #endif
 
@@ -93,7 +101,7 @@ namespace BuildReportTool
 		/// location, and the build target yourself.</para>
 		///
 		/// <para>But if your build scripts didn't override the project's build settings,
-		/// you can instead use <see cref="CreateReport(string)"/>.</para>
+		/// you can instead use <see cref="CreateReport(string, string)"/>.</para>
 		/// </remarks>
 		///
 		/// <param name="scenes">Which scenes were included in the build. Can be set to null
@@ -116,10 +124,13 @@ namespace BuildReportTool
 		/// default path, specify it here. Otherwise, leave this null so that BuildReportTool
 		/// will just use the default location of the Editor.log file.</param>
 		///
+		/// <param name="customSavePath">Path to folder where the Build Report XML file will be saved.
+		/// Leave this null so that BuildReportTool will just use the path specified in the saved options.</param>
+		///
 		/// <returns>The full path and filename of the created Build Report XML file,
 		/// or null if no Build Report was created.</returns>
 		public static string CreateReport(string[] scenes, string buildLocation, BuildTarget buildTarget,
-			string customEditorLogPath = null)
+			string customEditorLogPath = null, string customSavePath = null)
 		{
 			BuildReportTool.Util.BuildTargetOfLastBuild = buildTarget;
 
@@ -215,7 +226,7 @@ namespace BuildReportTool
 
 			CreateBuildReport(_lastKnownBuildInfo);
 
-			var savedFilePath = OnFinishedGetValues(_lastKnownBuildInfo, _lastKnownAssetDependencies, _lastKnownTextureData, _lastKnownMeshData);
+			var savedFilePath = OnFinishedGetValues(_lastKnownBuildInfo, _lastKnownAssetDependencies, _lastKnownTextureData, _lastKnownMeshData, customSavePath);
 
 			return savedFilePath;
 		}

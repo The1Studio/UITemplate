@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using BlueprintFlow.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -13,24 +14,26 @@
     using UnityEngine;
     using Zenject;
 
-    public abstract class BaseUnityNotificationService : INotificationService
+    public abstract class BaseUnityNotificationService : INotificationService, IDisposable
     {
         #region Inject
 
         protected readonly SignalBus                           SignalBus;
         protected readonly UITemplateNotificationBlueprint     UITemplateNotificationBlueprint;
         protected readonly UITemplateNotificationDataBlueprint UITemplateNotificationDataBlueprint;
-        private readonly   NotificationMappingHelper           notificationMappingHelper;
         protected readonly ILogService                         Logger;
         protected readonly IAnalyticServices                   AnalyticServices;
+        protected readonly NotificationMappingHelper           NotificationMappingHelper;
 
         #endregion
 
-        protected static string ChannelId          => "default_channel_id";
-        protected static string ChannelName        => Application.productName;
-        protected static string ChannelDescription => Application.productName;
-        protected static string SmallIcon          => "icon_0";
-        protected static string LargeIcon          => "icon_1";
+        private CancellationTokenSource ctsSetupNotification;
+
+        protected string ChannelId          { get; set; } = "default_channel_id";
+        protected string ChannelName        { get; set; } = Application.productName;
+        protected string ChannelDescription { get; set; } = Application.productName;
+        protected string SmallIcon          { get; set; } = "icon_0";
+        protected string LargeIcon          { get; set; } = "icon_1";
 
         protected BaseUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper,
@@ -39,24 +42,42 @@
             this.SignalBus                           = signalBus;
             this.UITemplateNotificationBlueprint     = uiTemplateNotificationBlueprint;
             this.UITemplateNotificationDataBlueprint = uiTemplateNotificationDataBlueprint;
-            this.notificationMappingHelper           = notificationMappingHelper;
+            this.NotificationMappingHelper           = notificationMappingHelper;
             this.Logger                              = logger;
             this.AnalyticServices                    = analyticServices;
 
             this.SignalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintComplete);
         }
 
-        private void OnLoadBlueprintComplete(LoadBlueprintDataSucceedSignal obj) { this.InitNotification(); }
+        private async void OnLoadBlueprintComplete(LoadBlueprintDataSucceedSignal obj)
+        {
+            await this.InitNotification();
+            this.SetUpNotification();
+        }
 
         #region Initial
 
-        private async void InitNotification()
+        private async UniTask InitNotification()
         {
             await this.CheckPermission();
             this.RegisterNotification();
             this.CheckOpenedByNotification();
-            this.SetUpNotification();
+#if LOCALIZATION
+            UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += this.OnLanguageChange;
+#endif
+            this.IsInitialized = true;
         }
+
+        public void Dispose()
+        {
+#if LOCALIZATION
+            UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= this.OnLanguageChange;
+#endif
+        }
+
+#if LOCALIZATION
+        private void OnLanguageChange(UnityEngine.Localization.Locale obj) { this.SetUpNotification(); }
+#endif
 
         protected virtual void RegisterNotification() { }
 
@@ -79,22 +100,45 @@
 
         #region Schedule Notification
 
-        protected virtual async UniTask CheckPermission() { }
+        public               bool    IsInitialized     { get; set; } = false;
+        public virtual async UniTask CheckPermission() { }
 
-        public void SetUpNotification()
+        public async void SetUpNotification()
         {
-            // Cancels all pending local notifications.
-            this.CancelNotification();
+            if (!this.IsInitialized) return;
 
-            // Prepare the Remind
-            foreach (var notificationData in this.UITemplateNotificationBlueprint.Values.Where(x => x.RandomAble))
+            try
             {
-                var delayTime = new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
-                this.ScheduleNotification(notificationData, delayTime, this.PrepareRemind(notificationData));
+                this.ctsSetupNotification?.Cancel();
+                this.ctsSetupNotification = new CancellationTokenSource();
+
+                // Cancels all pending local notifications.
+                this.CancelNotification();
+
+                // Prepare the Remind
+                var tasks                         = new List<UniTask<NotificationContent>>();
+                var uiTemplateNotificationRecords = this.UITemplateNotificationBlueprint.Values.Where(x => x.RandomAble).ToList();
+
+                foreach (var notificationData in uiTemplateNotificationRecords)
+                {
+                    tasks.Add(this.PrepareRemind(notificationData));
+                }
+
+                var notificationContents = await UniTask.WhenAll(tasks).AttachExternalCancellation(this.ctsSetupNotification.Token);
+                for (var i = 0; i < uiTemplateNotificationRecords.Count; i++)
+                {
+                    var notificationData = uiTemplateNotificationRecords[i];
+                    var delayTime        = new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
+                    this.ScheduleNotification(notificationData, delayTime, notificationContents[i]);
+                }
+            }
+            catch (Exception e)
+            {
+                // ignored
             }
         }
 
-        protected virtual void CancelNotification() { }
+        public virtual void CancelNotification() { }
 
         private void ScheduleNotification(UITemplateNotificationRecord notificationData, TimeSpan delayTime, NotificationContent notificationContent = null)
         {
@@ -111,13 +155,13 @@
             this.SendNotification(title, body, fireTime, delayTime);
         }
 
-        protected virtual void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime) { }
+        public virtual void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime) { }
 
         #endregion
 
         #region Set Up Notification Content
 
-        private NotificationContent PrepareRemind(UITemplateNotificationRecord record)
+        private async UniTask<NotificationContent> PrepareRemind(UITemplateNotificationRecord record)
         {
             var title = "";
             var body  = "";
@@ -134,24 +178,24 @@
             {
                 if (itemRandom != null)
                 {
-                    title = this.notificationMappingHelper.GetFormatString(itemRandom.Title);
+                    title = await this.NotificationMappingHelper.GetFormatString(itemRandom.Title);
                 }
             }
             else
             {
-                title = this.notificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Title].Title);
+                title = await this.NotificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Title].Title);
             }
 
             if (record.Body.Equals("Random"))
             {
                 if (itemRandom != null)
                 {
-                    body = this.notificationMappingHelper.GetFormatString(itemRandom.Body);
+                    body = await this.NotificationMappingHelper.GetFormatString(itemRandom.Body);
                 }
             }
             else
             {
-                body = this.notificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Body].Body);
+                body = await this.NotificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Body].Body);
             }
 
             return new NotificationContent(title, body);
@@ -164,6 +208,16 @@
             delayTime ??= new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
             this.ScheduleNotification(notificationData, delayTime.Value);
         }
+
+        #endregion
+
+        #region Setter
+
+        public void SetChannelId(string val)          { this.ChannelId          = val; }
+        public void SetChannelName(string val)        { this.ChannelName        = val; }
+        public void SetChannelDescription(string val) { this.ChannelDescription = val; }
+        public void SetSmallIcon(string val)          { this.SmallIcon          = val; }
+        public void SetLargeIcon(string val)          { this.LargeIcon          = val; }
 
         #endregion
     }

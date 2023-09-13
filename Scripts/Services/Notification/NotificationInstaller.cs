@@ -7,11 +7,11 @@
         public override void InstallBindings()
         {
 #if NOTIFICATION && UNITY_ANDROID
-            this.Container.Bind<INotificationService>().To<AndroidUnityNotificationService>().AsCached().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<AndroidUnityNotificationService>().AsCached().NonLazy();
 #elif NOTIFICATION && UNITY_IOS
-            this.Container.Bind<INotificationService>().To<IOSUnityNotificationService>().AsCached().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<IOSUnityNotificationService>().AsCached().NonLazy();
 #else
-            this.Container.Bind<INotificationService>().To<DummyNotificationService>().AsCached().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<DummyNotificationService>().AsCached().NonLazy();
 #endif
             this.Container.Bind<NotificationMappingHelper>().AsCached().NonLazy();
         }

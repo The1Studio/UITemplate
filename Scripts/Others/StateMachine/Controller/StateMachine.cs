@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.HyperCasual.Others.StateMachine.Interface;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Interface;
+    using UnityEngine;
     using Zenject;
 
     public abstract class StateMachine : IStateMachine
@@ -29,7 +30,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
             if (this.CurrentState != null)
             {
                 this.CurrentState.Exit();
-                this.logService.Log($"Exit {this.CurrentState.GetType().Name} State!!!");
+                this.logService.LogWithColor($"Exit {this.CurrentState.GetType().Name} State!!!", Color.yellow);
             }
             
             if (!this.typeToState.TryGetValue(stateType, out var nextState)) return;

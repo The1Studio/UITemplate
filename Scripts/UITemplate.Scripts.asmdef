@@ -38,7 +38,8 @@
     "Unity.Notifications.iOS",
     "Google.Play.Review",
     "Google.Play.Common",
-    "Unity.Localization"
+    "Unity.Localization",
+    "Lofelt.NiceVibrations"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

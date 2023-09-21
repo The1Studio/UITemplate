@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
+    using TheOneStudio.UITemplate.UITemplate.Services.Vibration;
     using TheOneStudio.UITemplate.UITemplate.Utils;
     using UnityEngine;
     using Zenject;

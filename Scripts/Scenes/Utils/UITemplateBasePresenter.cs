@@ -19,9 +19,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
     public class UITemplateBaseScreenUtils
     {
-        private readonly IAnalyticServices       analyticService;
-        private readonly UITemplateSoundServices soundServices;
-        
+        private readonly IAnalyticServices            analyticService;
+        private readonly UITemplateSoundServices      soundServices;
+        private readonly Dictionary<GameObject, bool> oldActiveStates = new();
+
         public UITemplateBaseScreenUtils()
         {
             var diContainer = ZenjectUtils.GetCurrentContainer();
@@ -57,46 +58,68 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         public void SetupCreativeMode<TView>(BaseScreenPresenter<TView> presenter) where TView : IScreenView
         {
             var creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
-            creativeService.OnTripleTap.AddListener(() =>
+            creativeService.OnTripleTap.AddListener(() => this.CreativeUIHandler(presenter));
+        }
+
+        public void CreativeUIHandler<TView>(BaseScreenPresenter<TView> presenter) where TView : IScreenView
+        {
+            // If the view is not marked as HideOnCreative, then do nothing with it
+            if (presenter.View.GetType().GetCustomAttribute<CreativeAttribute>() is { HideOnCreative: false }) return;
+
+            var creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
+
+            if (creativeService.IsShowUI)
             {
-                // If the view is not marked as HideOnCreative, then do nothing with it
-                if (presenter.View.GetType().GetCustomAttribute<CreativeAttribute>() is { HideOnCreative: false }) return;
-
-                var oldActiveStates = new Dictionary<GameObject, bool>();
-
-                // At First, set all active state to false
-                SetActiveRecursive(presenter.View.RectTransform, creativeService.IsShowUI, oldActiveStates);
-
-                // Retrieve all fields from the view
-                foreach (var fieldInfo in GetAllFieldInfosIncludeBaseClass(presenter.View.GetType()))
+                SetActiveRecursive(presenter.View.RectTransform, BackupPredicate);
+            }
+            else
+            {
+                this.oldActiveStates.Clear();
+                SetActiveRecursive(presenter.View.RectTransform, transform =>
                 {
-                    var gameObject = GetGameObjectFromFieldInfo(fieldInfo);
+                    this.oldActiveStates[transform.gameObject] = transform.gameObject.activeSelf;
+                    return false;
+                });
+            }
 
-                    if (gameObject is null)
-                    {
-                        continue;
-                    }
+            // Retrieve all fields from the view
+            foreach (var fieldInfo in GetAllFieldInfosIncludeBaseClass(presenter.View.GetType()))
+            {
+                var gameObject = GetGameObjectFromFieldInfo(fieldInfo);
 
-                    var creativeAttribute = fieldInfo.GetCustomAttribute<CreativeAttribute>() ?? new CreativeAttribute();
-
-                    // If the field is not marked as HideOnCreative, then set the active state to the old active state
-                    if (creativeAttribute is { HideOnCreative: false })
-                    {
-                        SetActiveForBranch(gameObject.transform, presenter.View.RectTransform.parent, oldActiveStates[gameObject]);
-                    }
+                if (gameObject is null)
+                {
+                    continue;
                 }
-            });
 
-            void SetActiveRecursive(Transform transform, bool active, Dictionary<GameObject, bool> oldActiveStates = null)
+                var creativeAttribute = fieldInfo.GetCustomAttribute<CreativeAttribute>() ?? new CreativeAttribute();
+
+                // If the field is not marked as HideOnCreative, then set the active state to the old active state
+                if (creativeAttribute is { HideOnCreative: false })
+                {
+                    SetActiveForBranch(
+                        gameObject.transform,
+                        presenter.View.RectTransform.parent,
+                        BackupPredicate
+                    );
+                }
+            }
+
+            return;
+
+            bool BackupPredicate(Transform transform)
+            {
+                return !this.oldActiveStates.ContainsKey(transform.gameObject) || this.oldActiveStates[transform.gameObject];
+            }
+
+            void SetActiveRecursive(Transform transform, Func<Transform, bool> predicate)
             {
                 try
                 {
-                    if (oldActiveStates is not null)
-                        oldActiveStates[transform.gameObject] = transform.gameObject.activeSelf;
-                    transform.gameObject.SetActive(active);
+                    transform.gameObject.SetActive(predicate(transform));
                     foreach (Transform child in transform)
                     {
-                        SetActiveRecursive(child, active, oldActiveStates);
+                        SetActiveRecursive(child, predicate);
                     }
                 }
                 catch (Exception)
@@ -105,18 +128,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 }
             }
 
-            void SetActiveForBranch(Transform transform, Transform topParent, bool active)
+            void SetActiveForBranch(Transform transform, Transform topParent, Func<Transform, bool> predicate)
             {
-                transform.gameObject.SetActive(active);
-                foreach (Transform child in transform)
-                {
-                    SetActiveRecursive(child, active);
-                }
+                SetActiveRecursive(transform, predicate);
 
                 var parent = transform.parent;
                 while (parent != topParent)
                 {
-                    parent.gameObject.SetActive(active);
+                    parent.gameObject.SetActive(predicate(transform));
                     parent = parent.parent;
                 }
             }
@@ -126,14 +145,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 try
                 {
                     var value = fieldInfo.GetValue(presenter.View);
-                    if (value is GameObject gameObject)
+                    switch (value)
                     {
-                        return gameObject;
-                    }
-
-                    if (value is Component component)
-                    {
-                        return component.gameObject;
+                        case GameObject gameObject:
+                            return gameObject;
+                        case Component component:
+                            return component.gameObject;
                     }
                 }
                 catch (Exception)
@@ -144,7 +161,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 return null;
             }
 
-            FieldInfo[] GetAllFieldInfosIncludeBaseClass(Type type)
+            IEnumerable<FieldInfo> GetAllFieldInfosIncludeBaseClass(Type type)
             {
                 if (type == null || type == typeof(object))
                 {
@@ -155,7 +172,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 var thisClassFieldInfos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 var fieldInfosSet       = new HashSet<FieldInfo>(baseClassFieldInfos, new FieldInfoComparer());
                 fieldInfosSet.UnionWith(thisClassFieldInfos);
-                return fieldInfosSet.ToArray();
+                return fieldInfosSet;
             }
         }
 #endif

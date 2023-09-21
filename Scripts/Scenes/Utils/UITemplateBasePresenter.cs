@@ -21,7 +21,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
     {
         private readonly IAnalyticServices       analyticService;
         private readonly UITemplateSoundServices soundServices;
-        private Dictionary<GameObject,bool>              originalStates = new();
         
         public UITemplateBaseScreenUtils()
         {
@@ -57,19 +56,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 #if CREATIVE
         public void SetupCreativeMode<TView>(BaseScreenPresenter<TView> presenter) where TView : IScreenView
         {
-            var           creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
+            var creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
             creativeService.OnTripleTap.AddListener(() =>
             {
                 // If the view is not marked as HideOnCreative, then do nothing with it
                 if (presenter.View.GetType().GetCustomAttribute<CreativeAttribute>() is { HideOnCreative: false }) return;
+
                 var oldActiveStates = new Dictionary<GameObject, bool>();
 
                 // At First, set all active state to false
-                if (!creativeService.IsShowUI)
-                {
-                    this.originalStates.Clear();
-                }
                 SetActiveRecursive(presenter.View.RectTransform, creativeService.IsShowUI, oldActiveStates);
+
                 // Retrieve all fields from the view
                 foreach (var fieldInfo in GetAllFieldInfosIncludeBaseClass(presenter.View.GetType()))
                 {
@@ -89,29 +86,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                     }
                 }
             });
-            
+
             void SetActiveRecursive(Transform transform, bool active, Dictionary<GameObject, bool> oldActiveStates = null)
             {
                 try
                 {
-                    var gameObject = transform.gameObject;
-                    if (!active)
-                    {
-                        if (oldActiveStates is not null)
-                            oldActiveStates[gameObject] = transform.gameObject.activeSelf;
-                        if (!this.originalStates.ContainsKey(transform.gameObject))
-                        {
-                            this.originalStates.Add(transform.gameObject,gameObject.activeSelf);
-                        }
-                        transform.gameObject.SetActive(active);
-                    }
-                    else
-                    {
-                        if (this.originalStates is not null)
-                        {
-                            transform.gameObject.SetActive(this.originalStates[transform.gameObject]);
-                        }
-                    }
+                    if (oldActiveStates is not null)
+                        oldActiveStates[transform.gameObject] = transform.gameObject.activeSelf;
+                    transform.gameObject.SetActive(active);
                     foreach (Transform child in transform)
                     {
                         SetActiveRecursive(child, active, oldActiveStates);
@@ -122,7 +104,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                     // ignored
                 }
             }
-            
 
             void SetActiveForBranch(Transform transform, Transform topParent, bool active)
             {

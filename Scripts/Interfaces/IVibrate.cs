@@ -4,6 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Interfaces
 
     public interface IVibrate
     {
-        void VibratePresetType(VibrationPresetType vibrationPresetType);
+        void PlayPresetType(VibrationPresetType vibrationPresetType);
+        void PlayEmphasis(float amplitude, float frequency);
+        void PlayConstant(float amplitude, float frequency, float duration);
     }
 }

@@ -39,9 +39,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Vibration
             };
         }
 
-        public void VibratePresetType(VibrationPresetType vibrationPresetType)
+        public void PlayPresetType(VibrationPresetType vibrationPresetType)
         {
             HapticPatterns.PlayPreset(this.GetHapticPatternsPresetType(vibrationPresetType));
+        }
+        
+        public void PlayEmphasis(float amplitude, float frequency)
+        {
+            HapticPatterns.PlayEmphasis(amplitude, frequency);
+        }
+        
+        public void PlayConstant(float amplitude, float frequency, float duration)
+        {
+            HapticPatterns.PlayConstant(amplitude, frequency, duration);
         }
     }
 }

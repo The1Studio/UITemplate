@@ -37,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Utils
             this.Container.Bind<GameAssetUtil>().AsCached();
             //Vibration
-            this.Container.Bind<IVibrate>().To<UITemPlateVibrateServices>().AsCached();
+            this.Container.Bind<IVibrationService>().To<UITemPlateVibrationService>().AsCached();
 
             this.Container.Bind<UITemplateHandleSoundWhenOpenAdsServices>().AsCached().NonLazy();
             //Reward Handle

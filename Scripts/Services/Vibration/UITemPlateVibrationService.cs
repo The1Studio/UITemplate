@@ -5,7 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Vibration
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
-    public class UITemPlateVibrateServices : IVibrate
+    public class UITemPlateVibrationService : IVibrationService
     {
         #region inject
 
@@ -15,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Vibration
 
         private readonly bool hapticsSupported;
 
-        public UITemPlateVibrateServices(UITemplateSettingDataController uiTemplateSettingDataController)
+        public UITemPlateVibrationService(UITemplateSettingDataController uiTemplateSettingDataController)
         {
             this.uiTemplateSettingDataController = uiTemplateSettingDataController;
             this.hapticsSupported = DeviceCapabilities.isVersionSupported;

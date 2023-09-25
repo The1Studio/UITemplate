@@ -2,7 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Interfaces
 {
     using TheOneStudio.UITemplate.UITemplate.Services.Vibration;
 
-    public interface IVibrate
+    public interface IVibrationService
     {
         void PlayPresetType(VibrationPresetType vibrationPresetType);
         void PlayEmphasis(float amplitude, float frequency);

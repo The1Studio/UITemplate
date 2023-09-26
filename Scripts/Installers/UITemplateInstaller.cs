@@ -1,8 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using ServiceImplementation.IAPServices;
-    using TheOneStudio.UITemplate.UITemplate.FTUE;
-    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
@@ -31,7 +29,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
             NotificationInstaller.Install(this.Container);
             StoreRatingServiceInstaller.Install(this.Container);
-            UITemplateFTUEInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
         }
     }

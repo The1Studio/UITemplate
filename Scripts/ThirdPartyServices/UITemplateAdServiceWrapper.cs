@@ -29,8 +29,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #endregion
 
         private DateTime LastEndInterstitial;
-        private bool     isBannerLoaded = false;
-        private bool     isShowBannerAd = true;
+        private bool     isBannerLoaded     = false;
+        private bool     isShowBannerAd     = true;
+
+        public bool isWatchingVideoAds = false;
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController,
@@ -77,6 +79,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
             this.signalBus.Subscribe<UITemplateAddRewardsSignal>(this.OnRemoveAdsComplete);
+            this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedVideoComplete);
+            this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedVideoSkipped);
+        }
+        
+        private void OnRewardedVideoSkipped(RewardedSkippedSignal obj)
+        {
+            this.isWatchingVideoAds = false;
+        }
+        
+        private void OnRewardedVideoComplete(RewardedAdCompletedSignal obj)
+        {
+            this.isWatchingVideoAds = false;
         }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)
@@ -155,6 +169,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.aoaAdService.IsResumedFromAdsOrIAP = true;
+            this.isWatchingVideoAds                 = true;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 

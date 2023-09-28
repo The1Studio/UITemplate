@@ -3,13 +3,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GameFoundation.Scripts.AssetLibrary;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
-    using UnityEngine;
     using Zenject;
 
     public class UITemplateLevelDataController : IUITemplateControllerData
@@ -21,18 +18,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly SignalBus                         signalBus;
         private readonly IHandleUserDataServices           handleUserDataServices;
-        private readonly IGameAssets                       gameAssets;
 
         #endregion
 
-        public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices, IGameAssets gameAssets)
+        public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices)
         {
             this.uiTemplateLevelBlueprint          = uiTemplateLevelBlueprint;
             this.uiTemplateUserLevelData           = uiTemplateUserLevelData;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.signalBus                         = signalBus;
             this.handleUserDataServices            = handleUserDataServices;
-            this.gameAssets                        = gameAssets;
         }
 
         public UITemplateItemData.UnlockType UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
@@ -80,6 +75,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.handleUserDataServices.SaveAll();
         }
 
+        public int TotalLose => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.LoseCount);
+        public int TotalWin => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.WinCount);
+        
         /// <summary>
         /// Called when player win current level
         /// </summary>

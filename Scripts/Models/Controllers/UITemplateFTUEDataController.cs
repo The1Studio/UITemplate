@@ -4,7 +4,7 @@
     using System.Linq;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
 
-    public class UITemplateFTUEControllerData:IUITemplateControllerData
+    public class UITemplateFTUEDataController : IUITemplateControllerData
     {
         #region inject
 
@@ -13,7 +13,7 @@
 
         #endregion
 
-        public UITemplateFTUEControllerData(UITemplateFTUEData templateFtueData, UITemplateFTUEBlueprint uiTemplateFtueBlueprint)
+        public UITemplateFTUEDataController(UITemplateFTUEData templateFtueData, UITemplateFTUEBlueprint uiTemplateFtueBlueprint)
         {
             this.templateFtueData        = templateFtueData;
             this.uiTemplateFtueBlueprint = uiTemplateFtueBlueprint;
@@ -28,12 +28,8 @@
             {
                 this.CompleteStep(previousStep);
             }
-            
         }
 
-        public bool IsCompleteAllRequireCondition(List<string> listStepRequire)
-        {
-            return listStepRequire.Count == 0 || listStepRequire.All(step => this.templateFtueData.FinishedStep.Contains(step));
-        }
+        public bool IsCompleteAllRequireCondition(List<string> listStepRequire) { return listStepRequire.Count == 0 || listStepRequire.All(step => this.templateFtueData.FinishedStep.Contains(step)); }
     }
 }

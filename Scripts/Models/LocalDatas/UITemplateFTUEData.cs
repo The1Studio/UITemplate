@@ -15,6 +15,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         public void Init() { }
 
-        public Type ControllerType => typeof(UITemplateFTUEControllerData);
+        public Type ControllerType => typeof(UITemplateFTUEDataController);
     }
 }

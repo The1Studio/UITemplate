@@ -27,6 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         private UITemplateFTUEBlueprint uiTemplateFtueBlueprint;
         private SignalBus               signalBus;
         private Transform               highLightTransform;
+        private string                  currentActiveStepId;
 
         [Inject]
         public void Init(ScreenManager screenManager, SignalBus signalBus, UITemplateFTUEBlueprint uiTemplateFtueBlueprint)
@@ -64,8 +65,9 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.transform.SetAsLastSibling();
         }
 
-        public void DisableTutorial()
+        public void DisableTutorial(string stepId)
         {
+            if (!stepId.Equals(this.currentActiveStepId)) return;
             this.gameObject.SetActive(false);
             this.disposables.Dispose();
             this.hand.transform.SetParent(this.transform, false);
@@ -77,12 +79,13 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             }
         }
 
-        public void PrepareTutorial(string triggerId)
+        public void DoActiveFTUE(string stepId)
         {
+            this.currentActiveStepId = stepId;
             this.gameObject.SetActive(true);
             var currentActiveScreen = this.screenManager.CurrentActiveScreen.Value;
             var childTransforms     = currentActiveScreen.CurrentTransform.GetComponentsInChildren<Transform>();
-            var record              = this.uiTemplateFtueBlueprint[triggerId];
+            var record              = this.uiTemplateFtueBlueprint[stepId];
             this.highLightTransform = childTransforms.First(childTransform => childTransform.name.Equals(record.HighLightPath));
             this.btnCompleteStep.onClick.RemoveAllListeners();
 
@@ -94,12 +97,12 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
             if (!record.ButtonCanClick)
             {
-                this.btnCompleteStep.onClick.AddListener(() => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, triggerId)); });
+                this.btnCompleteStep.onClick.AddListener(() => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, stepId)); });
             }
 
             if (btn != null && record.ButtonCanClick)
             {
-                this.disposables.Add(btn.OnPointerClickAsObservable().Subscribe(data => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, triggerId)); }));
+                this.disposables.Add(btn.OnPointerClickAsObservable().Subscribe(data => { this.signalBus.Fire(new FTUEButtonClickSignal(btn.name, stepId)); }));
             }
 
             this.ConfigHandPosition(this.highLightTransform.gameObject, record);

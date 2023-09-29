@@ -17,7 +17,7 @@
 
         private readonly SignalBus                    signalBus;
         private readonly UITemplateFTUEControllerData uiTemplateFtueControllerData;
-        private readonly UITemplateFTUEBlueprint      ftueBlueprint;
+        private readonly UITemplateFTUEBlueprint      uiTemplateFtueBlueprint;
         private readonly UITemplateFTUEController     uiTemplateFtueController;
         private readonly IScreenManager               screenManager;
 
@@ -27,11 +27,11 @@
 
         public UITemplateFTUESystem(SignalBus signalBus,
             UITemplateFTUEControllerData uiTemplateFtueControllerData,
-            UITemplateFTUEBlueprint ftueBlueprint, UITemplateFTUEController uiTemplateFtueController, IScreenManager screenManager, List<IFtueCondition> ftueConditions)
+            UITemplateFTUEBlueprint uiTemplateFtueBlueprint, UITemplateFTUEController uiTemplateFtueController, IScreenManager screenManager, List<IFtueCondition> ftueConditions)
         {
             this.signalBus                    = signalBus;
             this.uiTemplateFtueControllerData = uiTemplateFtueControllerData;
-            this.ftueBlueprint                = ftueBlueprint;
+            this.uiTemplateFtueBlueprint                = uiTemplateFtueBlueprint;
             this.uiTemplateFtueController     = uiTemplateFtueController;
             this.screenManager                = screenManager;
             this.idToFtueConditions           = ftueConditions.ToDictionary(condition => condition.Id, condition => condition);
@@ -41,34 +41,43 @@
         public void Initialize()
         {
             this.signalBus.Subscribe<FTUETriggerSignal>(this.OnTriggerFTUE);
-            this.signalBus.Subscribe<FTUEButtonClickSignal>(this.OnFTUEButtonClick);
+            this.signalBus.Subscribe<FTUEButtonClickSignal>(this.OnFTUEButtonClick); 
         }
 
+        //TODO : need to refactor for contunious FTUE
         private void OnFTUEButtonClick(FTUEButtonClickSignal obj)
         {
-            this.uiTemplateFtueController.DisableTutorial();
             this.uiTemplateFtueControllerData.CompleteStep(obj.StepId);
-            var nextStepId = this.ftueBlueprint[obj.StepId].NextStepId;
+            var nextStepId = this.uiTemplateFtueBlueprint[obj.StepId].NextStepId;
 
-            if (nextStepId.IsNullOrEmpty()) return;
-            this.OnTriggerFTUE(new FTUETriggerSignal(nextStepId));
+            if (!nextStepId.IsNullOrEmpty())
+            {
+                this.OnTriggerFTUE(new FTUETriggerSignal(nextStepId));
+            }
+            else
+            {
+                this.uiTemplateFtueController.DisableTutorial(obj.StepId);
+            }
         }
 
         private void OnTriggerFTUE(FTUETriggerSignal obj)
         {
             if (obj.StepId.IsNullOrEmpty()) return;
-            var isCompleteAllRequire = this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(this.ftueBlueprint[obj.StepId].RequireTriggerComplete);
+            if (!this.IsFTUEActive(obj.StepId)) return;
 
-            if (!isCompleteAllRequire || this.uiTemplateFtueControllerData.IsFinishedStep(obj.StepId)) return;
-
-            this.uiTemplateFtueController.PrepareTutorial(obj.StepId);
+            this.uiTemplateFtueController.DoActiveFTUE(obj.StepId);
         }
 
-        private bool IsPassedStepCondition(string stepId)
+        private bool IsFTUEActive(string stepId)
         {
-            var ftueRecord = this.ftueBlueprint.GetDataById(stepId);
+            if (this.uiTemplateFtueControllerData.IsFinishedStep(stepId)) return false;
 
-            return ftueRecord.GetRequireCondition().All(requireCondition => this.idToFtueConditions[requireCondition.RequireId].IsPassedCondition(requireCondition.ConditionDetail));
+            if (!this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(this.uiTemplateFtueBlueprint.GetDataById(stepId).RequireTriggerComplete)) return false;
+            
+            if (!this.uiTemplateFtueBlueprint.GetDataById(stepId).GetRequireCondition().All(requireCondition => this.idToFtueConditions[requireCondition.RequireId].IsPassedCondition(requireCondition.ConditionDetail))) return
+                false;
+
+            return true;
         }
 
         public bool IsAnyFtueActive() => this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);
@@ -77,16 +86,10 @@
         {
             var currentScreen = screenPresenter.GetType().Name;
 
-            foreach (var stepBlueprintRecord in this.ftueBlueprint.Values)
+            foreach (var stepBlueprintRecord in this.uiTemplateFtueBlueprint.Values)
             {
                 if (!currentScreen.Equals(stepBlueprintRecord.ScreenLocation)) continue;
-
-                if (!this.uiTemplateFtueControllerData.IsCompleteAllRequireCondition(stepBlueprintRecord.RequireTriggerComplete)) continue;
-                if (this.uiTemplateFtueControllerData.IsFinishedStep(stepBlueprintRecord.Id)) continue;
-
-                var isPassedCondition = this.IsPassedStepCondition(stepBlueprintRecord.Id);
-
-                if (!isPassedCondition) continue;
+                if (!this.IsFTUEActive(stepBlueprintRecord.Id)) continue;
 
                 return true;
             }

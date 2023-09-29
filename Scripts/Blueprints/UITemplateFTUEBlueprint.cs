@@ -18,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public string       Id                     { get; set; }
         public bool         EnableTrigger          { get; set; }
         public string       NextStepId             { get; set; }
+        public List<string> PreviousSteps          { get; set; }
         public string       ScreenLocation         { get; set; }
         public List<string> RequireTriggerComplete { get; set; } = new();
         public string       RequireCondition       { get; set; }

@@ -61,7 +61,7 @@
         {
             if (this.signalBus == null)
             {
-                throw new Exception($"Please inject for GameObject: {this.gameObject.name}");
+                throw new Exception($"Please inject for GameObject: {this.gameObject.name} - {this.gameObject.transform.parent}");
             }
             this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrency);
         }

@@ -42,9 +42,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         protected readonly UITemplateSoundServices           SoundServices;
         protected readonly UITemplateInventoryDataController inventoryDataController;
         protected readonly UITemplateLevelDataController     levelDataController;
+        private readonly   DiContainer                       diContainer;
 
         public UITemplateGameplayScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, ScreenManager screenManager, UITemplateAdServiceWrapper adService, UITemplateSoundServices soundServices,
-                                                 UITemplateInventoryDataController inventoryDataController, UITemplateLevelDataController levelDataController) : base(signalBus)
+                                                 UITemplateInventoryDataController inventoryDataController, UITemplateLevelDataController levelDataController, DiContainer diContainer) : base(signalBus)
         {
             this.SceneDirector           = sceneDirector;
             this.ScreenManager           = screenManager;
@@ -52,6 +53,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             this.SoundServices           = soundServices;
             this.inventoryDataController = inventoryDataController;
             this.levelDataController     = levelDataController;
+            this.diContainer             = diContainer;
         }
 
         #endregion
@@ -80,6 +82,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             if (this.View.BtnSkip != null)
             {
                 this.View.BtnSkip.onClick.AddListener(this.OnClickSkip);
+            }
+
+            if (this.View.CurrencyView != null)
+            {
+                this.diContainer.Inject(this.View.CurrencyView);
             }
         }
 

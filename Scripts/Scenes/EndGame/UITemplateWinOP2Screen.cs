@@ -22,19 +22,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         #region inject
 
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly DiContainer                       diContainer;
 
         #endregion
 
-        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices, UITemplateInventoryDataController uiTemplateInventoryDataController) :
+        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices, UITemplateInventoryDataController uiTemplateInventoryDataController, DiContainer diContainer) :
             base(signalBus, uiTemplateAdService, soundServices)
         {
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.diContainer                       = diContainer;
         }
 
         protected override void OnViewReady()
         {
             base.OnViewReady();
             this.View.btnX2Reward.onClick.AddListener(this.OnX2Reward);
+            if (this.View.currencyView != null)
+            {
+                this.diContainer.Inject(this.View.currencyView);
+            }
         }
 
         public override UniTask BindData()

@@ -178,6 +178,7 @@ namespace UITemplate.Editor.ShaderHelper
         }
 
 
+        [ButtonGroup("Action")]
         [Button("Replace Shader", ButtonSizes.Medium)]
         [EnableIf("CanReplaceShader")]
         [GUIColor(0.3f, 0.8f, 0.3f)]
@@ -204,6 +205,28 @@ namespace UITemplate.Editor.ShaderHelper
                 window.Repaint();
             }
         }
+        
+        [ButtonGroup("Action")]
+        [Button("Select All", ButtonSizes.Medium)]
+        [GUIColor(0.6f, 0.8f, 1f)]
+        public void SelectAllMaterials()
+        {
+            foreach (var materialInfo in this.Materials)
+            {
+                materialInfo.ShouldReplace = true;
+            }
+        }
+
+        [ButtonGroup("Action")]
+        [Button("Deselect All", ButtonSizes.Medium)]
+        [GUIColor(1f, 0.6f, 0.6f)]
+        public void DeselectAllMaterials()
+        {
+            foreach (var materialInfo in this.Materials)
+            {
+                materialInfo.ShouldReplace = false;
+            }
+        }
     }
 
     [System.Serializable]
@@ -213,6 +236,32 @@ namespace UITemplate.Editor.ShaderHelper
         public Material Material;
         [ReadOnly]
         public List<GameObject> UsingObjects = new();
-        public bool ShouldReplace = true; // Default to true if you want them all selected initially.
+        private bool isImportedAsset;
+
+        [ShowInInspector]
+        public bool ShouldReplace 
+        {
+            get
+            {
+                // If the asset is imported (like materials in FBX), always return false.
+                if (isImportedAsset)
+                    return false;
+                return _shouldReplace;
+            }
+            set
+            {
+                if (!isImportedAsset)
+                    _shouldReplace = value;
+            }
+        }
+        private bool _shouldReplace = true; 
+
+        public MaterialInfo()
+        {
+            // Check if the material is part of an imported asset.
+            string        assetPath = AssetDatabase.GetAssetPath(Material);
+            AssetImporter importer  = AssetImporter.GetAtPath(assetPath);
+            isImportedAsset = importer != null && importer.assetPath != assetPath;
+        }
     }
 }

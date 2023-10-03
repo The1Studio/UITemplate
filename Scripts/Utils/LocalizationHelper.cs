@@ -6,7 +6,7 @@
     {
         public static async UniTask<string> GetLocalizationString(string tableName, string entryKey)
         {
-#if LOCALIZATION
+#if THEONE_LOCALIZATION
             var table = await UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTableAsync(tableName);
             if (table != null)
             {

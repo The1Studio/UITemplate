@@ -1,3 +1,4 @@
+#if THEONE_LOCALIZATION
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -147,3 +148,4 @@ public class TMPTextInfo
         }
     }
 }
+#endif

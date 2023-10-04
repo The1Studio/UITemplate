@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
+    using System;
     using GameFoundation.Scripts.Models;
 
     public class UITemplateSettingDataController:IUITemplateControllerData
@@ -18,6 +19,10 @@
 
         public bool IsFlashLightOn => this.uiTemplateUserSettingData.IsFlashLightEnable;
 
+        public float MusicValue => this.soundSetting.MusicValue.Value;
+
+        public float SoundValue => this.soundSetting.SoundValue.Value;
+
         public UITemplateSettingDataController(UITemplateUserSettingData uiTemplateUserSettingData, SoundSetting soundSetting)
         {
             this.uiTemplateUserSettingData = uiTemplateUserSettingData;
@@ -27,6 +32,10 @@
         public void SetSoundOnOff() { this.soundSetting.SoundValue.Value = this.IsSoundOn ? 0 : 1; }
 
         public void SetMusicOnOff() { this.soundSetting.MusicValue.Value = this.IsMusicOn ? 0 : 1; }
+
+        public void SetMusicValue(float value) { this.soundSetting.MusicValue.Value = Math.Clamp(value, 0, 1);}
+        
+        public void SetSoundValue(float value) { this.soundSetting.SoundValue.Value = Math.Clamp(value, 0, 1);}
 
         public void SetVibrationOnOff() { this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable; }
 

@@ -28,9 +28,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        private DateTime LastEndInterstitial;
-        private bool     isBannerLoaded     = false;
-        private bool     isShowBannerAd     = true;
+        private DateTime     LastEndInterstitial;
+        private bool         isBannerLoaded = false;
+        private bool         isShowBannerAd = true;
+        private Action<bool> OnInterstitialFinishedAction;
 
         public bool isWatchingVideoAds = false;
 
@@ -77,12 +78,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public void Initialize()
         {
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
+            this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.OnInterstitialDisplayedFailedHandler);
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
             this.signalBus.Subscribe<UITemplateAddRewardsSignal>(this.OnRemoveAdsComplete);
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedVideoComplete);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedVideoSkipped);
         }
-        
+
         private void OnRewardedVideoSkipped(RewardedSkippedSignal obj)
         {
             this.isWatchingVideoAds = false;
@@ -104,13 +106,29 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        private void OnInterstitialAdClosedHandler() { this.LastEndInterstitial = DateTime.Now; }
+        
+        private void OnInterstitialDisplayedFailedHandler(InterstitialAdDisplayedFailedSignal obj)
+        {
+            this.DoOnInterstitialFinishedAction(false);
+        }
+        
+        private void OnInterstitialAdClosedHandler()
+        {
+            this.DoOnInterstitialFinishedAction(true);
+            this.LastEndInterstitial = DateTime.Now;
+        }
 
+        private void DoOnInterstitialFinishedAction(bool isShowSuccess)
+        {
+            this.OnInterstitialFinishedAction?.Invoke(isShowSuccess);
+            this.OnInterstitialFinishedAction = null;
+        }
+        
         #region InterstitialAd
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
 
-        public virtual bool ShowInterstitialAd(string place, bool force = false)
+        public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> OnShowInterstitialFinished = null)
         {
             if (this.adServices.IsRemoveAds()) return false;
 
@@ -139,6 +157,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return true;
             }
 
+            this.OnInterstitialFinishedAction = OnShowInterstitialFinished;
             this.signalBus.Fire(new InterstitialAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
             this.aoaAdService.IsResumedFromAdsOrIAP = true;

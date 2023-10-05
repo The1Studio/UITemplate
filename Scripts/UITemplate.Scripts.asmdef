@@ -39,7 +39,8 @@
     "Google.Play.Review",
     "Google.Play.Common",
     "Unity.Localization",
-    "Lofelt.NiceVibrations"
+    "Lofelt.NiceVibrations",
+    "Unity.Advertisement.IosSupport"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

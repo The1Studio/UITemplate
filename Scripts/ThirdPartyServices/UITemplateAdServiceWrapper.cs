@@ -136,6 +136,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
+                this.OnInterstitialFinishedAction?.Invoke(false);
                 return false;
             }
 
@@ -147,6 +148,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     this.logService.Warning("InterstitialAd was not loaded");
 
+                    this.OnInterstitialFinishedAction?.Invoke(false);
                     return false;
                 }
 

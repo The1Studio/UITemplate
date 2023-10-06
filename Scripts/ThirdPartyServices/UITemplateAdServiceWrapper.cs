@@ -130,13 +130,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> OnShowInterstitialFinished = null)
         {
-            if (this.adServices.IsRemoveAds()) return false;
+            if (this.adServices.IsRemoveAds())
+            {
+                OnShowInterstitialFinished?.Invoke(false);
+                return false;
+            }
 
             if ((DateTime.Now - this.LastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
-                this.OnInterstitialFinishedAction?.Invoke(false);
+                OnShowInterstitialFinished?.Invoke(false);
                 return false;
             }
 
@@ -148,24 +152,26 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     this.logService.Warning("InterstitialAd was not loaded");
 
-                    this.OnInterstitialFinishedAction?.Invoke(false);
+                    OnShowInterstitialFinished?.Invoke(false);
                     return false;
                 }
 
-                this.signalBus.Fire(new InterstitialAdCalledSignal(place));
-                this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
-                this.aoaAdService.IsResumedFromAdsOrIAP = true;
+                InternalShowInterstitial();
                 this.backFillAdsService.ShowInterstitialAd(place);
                 return true;
             }
 
-            this.OnInterstitialFinishedAction = OnShowInterstitialFinished;
-            this.signalBus.Fire(new InterstitialAdCalledSignal(place));
-            this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
-            this.aoaAdService.IsResumedFromAdsOrIAP = true;
+            InternalShowInterstitial();
             this.adServices.ShowInterstitialAd(place);
-
             return true;
+
+            void InternalShowInterstitial()
+            {
+                this.signalBus.Fire(new InterstitialAdCalledSignal(place));
+                this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
+                this.aoaAdService.IsResumedFromAdsOrIAP = true;
+                this.OnInterstitialFinishedAction       = OnShowInterstitialFinished;
+            }
         }
 
         public virtual void LoadInterstitialAd(string place) { this.signalBus.Fire(new InterstitialAdDownloadedSignal(place)); }

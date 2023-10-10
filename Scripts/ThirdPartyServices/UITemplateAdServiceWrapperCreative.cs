@@ -19,7 +19,11 @@
         public override void ShowBannerAd() { }
         public override void HideBannerAd() { }
 
-        public override bool ShowInterstitialAd(string place, bool force = false, Action<bool> OnInterstitialFinished = null) { return true; }
+        public override bool ShowInterstitialAd(string place, bool force = false, Action<bool> onInterstitialFinished = null)
+        {
+            onInterstitialFinished?.Invoke(true);
+            return true;
+        }
 
         public override void ShowRewardedAd(string place, Action onComplete, Action onFail = null) { onComplete.Invoke(); }
 

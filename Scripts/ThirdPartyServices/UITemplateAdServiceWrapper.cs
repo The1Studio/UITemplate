@@ -28,10 +28,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        private DateTime     LastEndInterstitial;
+        private DateTime     lastEndInterstitial;
         private bool         isBannerLoaded = false;
         private bool         isShowBannerAd = true;
-        private Action<bool> OnInterstitialFinishedAction;
+        private Action<bool> onInterstitialFinishedAction;
 
         public bool isWatchingVideoAds = false;
 
@@ -115,32 +115,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void OnInterstitialAdClosedHandler()
         {
             this.DoOnInterstitialFinishedAction(true);
-            this.LastEndInterstitial = DateTime.Now;
+            this.lastEndInterstitial = DateTime.Now;
         }
 
         private void DoOnInterstitialFinishedAction(bool isShowSuccess)
         {
-            this.OnInterstitialFinishedAction?.Invoke(isShowSuccess);
-            this.OnInterstitialFinishedAction = null;
+            this.onInterstitialFinishedAction?.Invoke(isShowSuccess);
+            this.onInterstitialFinishedAction = null;
         }
         
         #region InterstitialAd
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
 
-        public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> OnShowInterstitialFinished = null)
+        public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
         {
             if (this.adServices.IsRemoveAds())
             {
-                OnShowInterstitialFinished?.Invoke(false);
+                onShowInterstitialFinished?.Invoke(false);
                 return false;
             }
 
-            if ((DateTime.Now - this.LastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval && !force)
+            if ((DateTime.Now - this.lastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
-                OnShowInterstitialFinished?.Invoke(false);
+                onShowInterstitialFinished?.Invoke(false);
                 return false;
             }
 
@@ -152,7 +152,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     this.logService.Warning("InterstitialAd was not loaded");
 
-                    OnShowInterstitialFinished?.Invoke(false);
+                    onShowInterstitialFinished?.Invoke(false);
                     return false;
                 }
 
@@ -170,7 +170,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
                 this.aoaAdService.IsResumedFromAdsOrIAP = true;
-                this.OnInterstitialFinishedAction       = OnShowInterstitialFinished;
+                this.onInterstitialFinishedAction       = onShowInterstitialFinished;
             }
         }
 

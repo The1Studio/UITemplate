@@ -74,7 +74,8 @@
         {
             var objectSet = this.StepIdToEnableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             objectSet.Add(gameObject);
-            gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId));
+            //In the case the game object in the initialized screen
+            gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId) || this.IsFTUEActiveAble(stepId));
         }
         
         public void RegisterDisableObjectToStepId(GameObject gameObject, string stepId)

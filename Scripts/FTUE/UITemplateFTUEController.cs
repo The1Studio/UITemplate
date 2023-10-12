@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
+    using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
@@ -65,9 +66,12 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.transform.SetAsLastSibling();
         }
 
-        public void DisableTutorial(string stepId)
+        public void DisableHighlight(string stepId)
         {
             if (!stepId.Equals(this.currentActiveStepId)) return;
+            var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
+            if (string.IsNullOrEmpty(record.HighLightPath)) return;
+            
             this.gameObject.SetActive(false);
             this.disposables.Dispose();
             this.hand.transform.SetParent(this.transform, false);
@@ -79,17 +83,30 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             }
         }
 
-        public void DoActiveFTUE(string stepId)
+        public void DoActiveFTUE(string stepId, HashSet<GameObject> disableObjectSet)
         {
             this.currentActiveStepId = stepId;
+            foreach (var disableObject in disableObjectSet)
+            {
+                disableObject.SetActive(true);
+            }
+            
+            this.SetHighlightButton(stepId, this.uiTemplateFtueBlueprint.GetDataById(stepId));
+        }
+        
+        private void SetHighlightButton(string stepId, UITemplateFTUERecord record)
+        {
+            if (string.IsNullOrEmpty(record.HighLightPath)) return;
+            
             this.gameObject.SetActive(true);
             var currentActiveScreen = this.screenManager.CurrentActiveScreen.Value;
             var childTransforms     = currentActiveScreen.CurrentTransform.GetComponentsInChildren<Transform>();
-            var record              = this.uiTemplateFtueBlueprint[stepId];
+            
             if (this.highLightButtonTransform != null)
             {
                 Destroy(this.highLightButtonTransform.GetComponent<UITemplateFTUEControlElement>());
             }
+
             this.highLightButtonTransform = childTransforms.First(childTransform => childTransform.name.Equals(record.HighLightPath));
             this.btnCompleteStep.onClick.RemoveAllListeners();
 

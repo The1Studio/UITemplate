@@ -1,6 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE.Signal
 {
-    public class FTUEButtonClickSignal
+    public class FTUEButtonClickSignal : IHaveStepId
     {
         public string ButtonId { get; set; }
         public string StepId   { get; set; }

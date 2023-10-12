@@ -19,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //FTUE
             this.Container.DeclareSignal<TutorialCompletionSignal>();
             this.Container.DeclareSignal<FTUEButtonClickSignal>();
+            this.Container.DeclareSignal<FTUEDoActionSignal>();
             this.Container.DeclareSignal<FTUETriggerSignal>();
 
             //Signal

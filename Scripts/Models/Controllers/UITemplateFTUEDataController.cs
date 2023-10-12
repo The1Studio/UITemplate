@@ -1,7 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
 
     public class UITemplateFTUEDataController : IUITemplateControllerData
@@ -29,7 +27,5 @@
                 this.CompleteStep(previousStep);
             }
         }
-
-        public bool IsCompleteAllRequireCondition(List<string> listStepRequire) { return listStepRequire.Count == 0 || listStepRequire.All(step => this.templateFtueData.FinishedStep.Contains(step)); }
     }
 }

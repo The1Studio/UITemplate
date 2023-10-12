@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
@@ -91,23 +92,31 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
                 disableObject.SetActive(true);
             }
             
-            this.SetHighlightButton(stepId, this.uiTemplateFtueBlueprint.GetDataById(stepId));
+            this.SetHighlightButton(stepId, this.uiTemplateFtueBlueprint.GetDataById(stepId)).Forget();
         }
         
-        private void SetHighlightButton(string stepId, UITemplateFTUERecord record)
+        //Some time the button need time to create
+        private async UniTaskVoid SetHighlightButton(string stepId, UITemplateFTUERecord record)
         {
             if (string.IsNullOrEmpty(record.HighLightPath)) return;
             
             this.gameObject.SetActive(true);
-            var currentActiveScreen = this.screenManager.CurrentActiveScreen.Value;
-            var childTransforms     = currentActiveScreen.CurrentTransform.GetComponentsInChildren<Transform>();
-            
             if (this.highLightButtonTransform != null)
             {
                 Destroy(this.highLightButtonTransform.GetComponent<UITemplateFTUEControlElement>());
+                this.highLightButtonTransform = null;
             }
 
-            this.highLightButtonTransform = childTransforms.First(childTransform => childTransform.name.Equals(record.HighLightPath));
+            while (this.highLightButtonTransform == null)
+            {
+                var buttons = this.screenManager.CurrentActiveScreen.Value.CurrentTransform.GetComponentsInChildren<Button>();
+                this.highLightButtonTransform = buttons.FirstOrDefault(button => button.gameObject.name.Equals(record.HighLightPath))?.transform;
+                if (this.highLightButtonTransform == null)
+                {
+                    await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+                }
+            }
+            
             this.btnCompleteStep.onClick.RemoveAllListeners();
 
             this.disposables = new CompositeDisposable();

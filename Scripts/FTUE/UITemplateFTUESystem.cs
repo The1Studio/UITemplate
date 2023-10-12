@@ -74,6 +74,7 @@
         {
             var objectSet = this.StepIdToEnableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             objectSet.Add(gameObject);
+            gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId));
         }
         
         public void RegisterDisableObjectToStepId(GameObject gameObject, string stepId)
@@ -111,7 +112,7 @@
         {
             if (this.uiTemplateFtueDataController.IsFinishedStep(stepId)) return false;
 
-            if (!this.uiTemplateFtueDataController.IsCompleteAllRequireCondition(this.uiTemplateFtueBlueprint.GetDataById(stepId).RequireTriggerComplete)) return false;
+            if (this.uiTemplateFtueBlueprint.GetDataById(stepId).RequireTriggerComplete.Any(stepId => !this.uiTemplateFtueDataController.IsFinishedStep(stepId))) return false;
 
             var requireConditions = this.uiTemplateFtueBlueprint.GetDataById(stepId).GetRequireCondition();
             if (requireConditions!= null && !requireConditions.All(requireCondition => this.IDToFtueConditions[requireCondition.RequireId].IsPassedCondition(requireCondition.ConditionDetail))) return

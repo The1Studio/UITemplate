@@ -42,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         protected readonly UITemplateSoundServices           SoundServices;
         protected readonly UITemplateInventoryDataController inventoryDataController;
         protected readonly UITemplateLevelDataController     levelDataController;
-        private readonly   DiContainer                       diContainer;
+        protected readonly   DiContainer                       diContainer;
 
         public UITemplateGameplayScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, ScreenManager screenManager, UITemplateAdServiceWrapper adService, UITemplateSoundServices soundServices,
                                                  UITemplateInventoryDataController inventoryDataController, UITemplateLevelDataController levelDataController, DiContainer diContainer) : base(signalBus)

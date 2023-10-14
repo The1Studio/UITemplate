@@ -58,6 +58,7 @@
         public virtual IEvent AppOpenFullScreenContentClosed() => new AppOpenFullScreenContentClosed();
         public virtual IEvent AppOpenFullScreenContentFailed() => new AppOpenFullScreenContentFailed();
         public virtual IEvent AppOpenFullScreenContentOpened() => new AppOpenFullScreenContentOpened();
+        public virtual IEvent AppOpenClicked()                 => new AppOpenClicked();
 
         //Level
         public virtual IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);

@@ -19,7 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly IAdServices             adServices;
         private readonly List<IMRECAdService>    mrecAdServices;
         private readonly UITemplateAdsController uiTemplateAdsController;
-        private readonly IAOAAdService           aoaAdService;
+        private readonly List<IAOAAdService>     aoaAdServices;
         private readonly IBackFillAdsService     backFillAdsService;
         private readonly ToastController         toastController;
         private readonly ILogService             logService;
@@ -37,12 +37,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController,
-            IAOAAdService aoaAdService, IBackFillAdsService backFillAdsService, ToastController toastController)
+            List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController)
         {
             this.adServices              = adServices;
             this.mrecAdServices          = mrecAdServices;
             this.uiTemplateAdsController = uiTemplateAdsController;
-            this.aoaAdService            = aoaAdService;
+            this.aoaAdServices           = aoaAdServices;
             this.backFillAdsService      = backFillAdsService;
             this.toastController         = toastController;
             this.logService              = logService;
@@ -169,8 +169,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
-                this.aoaAdService.IsResumedFromAdsOrIAP = true;
-                this.onInterstitialFinishedAction       = onShowInterstitialFinished;
+                this.aoaAdServices.ForEach(aoaAdService => aoaAdService.IsResumedFromAdsOrIAP = true);
+                this.onInterstitialFinishedAction = onShowInterstitialFinished;
             }
         }
 
@@ -195,8 +195,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
-            this.aoaAdService.IsResumedFromAdsOrIAP = true;
-            this.isWatchingVideoAds                 = true;
+            this.aoaAdServices.ForEach(aoaAdService => aoaAdService.IsResumedFromAdsOrIAP = true);
+            this.isWatchingVideoAds = true;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 

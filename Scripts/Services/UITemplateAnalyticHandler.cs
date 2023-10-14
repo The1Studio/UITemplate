@@ -106,13 +106,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<AppOpenLoadFailedSignal>(this.AppOpenLoadFailedHandler);
             this.signalBus.Subscribe<AppOpenEligibleSignal>(this.AppOpenEligibleHandler);
             this.signalBus.Subscribe<AppOpenCalledSignal>(this.AppOpenCalledHandler);
+            this.signalBus.Subscribe<AppOpenClickedSignal>(this.AppOpenClickedHandler);
+
 
             this.signalBus.Subscribe<PopupShowedSignal>(this.PopupShowedHandler);
             this.signalBus.Subscribe<UITemplateUnlockBuildingSignal>(this.UnlockBuildingHandler);
 
             this.TotalDaysPlayedChange();
         }
-
+        private void AppOpenClickedHandler(AppOpenClickedSignal obj)
+        {
+            this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenClicked()));
+        }
         private void AppOpenCalledHandler(AppOpenCalledSignal obj)         { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenCalled())); }
         private void AppOpenEligibleHandler(AppOpenEligibleSignal obj)     { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenEligible())); }
         private void AppOpenLoadFailedHandler(AppOpenLoadFailedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenLoadFailed())); }

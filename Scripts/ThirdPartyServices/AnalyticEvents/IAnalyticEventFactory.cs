@@ -46,6 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent AppOpenFullScreenContentClosed();
         IEvent AppOpenFullScreenContentFailed();
         IEvent AppOpenFullScreenContentOpened();
+        IEvent AppOpenClicked();
 
         IEvent LevelLose(int level, int timeSpent, int loseCount);
 

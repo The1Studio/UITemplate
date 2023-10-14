@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
     using Core.AdsServices;
@@ -58,7 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         #region Inject
 
         protected readonly UITemplateAdServiceWrapper adService;
-        protected readonly IAOAAdService              aoaAdService;
+        protected readonly List<IAOAAdService>        aoaAdServices;
         protected readonly BlueprintReaderManager     blueprintManager;
         protected readonly UserDataManager            userDataManager;
         protected readonly IGameAssets                gameAssets;
@@ -67,7 +69,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected UITemplateLoadingScreenPresenter(
             SignalBus signalBus,
             UITemplateAdServiceWrapper adService,
-            IAOAAdService aoaAdService,
+            List<IAOAAdService> aoaAdServices,
             BlueprintReaderManager blueprintManager,
             UserDataManager userDataManager,
             IGameAssets gameAssets,
@@ -75,7 +77,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         ) : base(signalBus)
         {
             this.adService         = adService;
-            this.aoaAdService      = aoaAdService;
+            this.aoaAdServices      = aoaAdServices;
             this.blueprintManager  = blueprintManager;
             this.userDataManager   = userDataManager;
             this.gameAssets        = gameAssets;
@@ -156,7 +158,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private UniTask WaitForAoa()
         {
             var startWaitingAoaTime = DateTime.Now;
-            return this.TrackProgress(UniTask.WaitUntil(() => this.aoaAdService.IsShowedFirstOpen || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.aoaAdService.LoadingTimeToShowAOA)));
+            return this.TrackProgress(UniTask.WaitUntil(() => this.aoaAdServices.Any(aoaService => aoaService.IsShowedFirstOpen) || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.aoaAdServices.First().LoadingTimeToShowAOA)));
         }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }

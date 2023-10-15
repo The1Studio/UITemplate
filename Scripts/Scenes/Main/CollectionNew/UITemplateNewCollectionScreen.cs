@@ -40,6 +40,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private int         currentSelectedCategoryIndex;
         private IDisposable randomTimerDispose;
 
+        protected Action ActionCantBuy;
+
         public UITemplateNewCollectionScreenPresenter(
             SignalBus                         signalBus,
             ILogService                       logger,
@@ -285,7 +287,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             if (currentCoin < obj.ShopBlueprintRecord.Price)
             {
                 this.logger.Log($"Not Enough {obj.ShopBlueprintRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.ShopBlueprintRecord.Price}");
-
+                this.ActionCantBuy?.Invoke();   
                 return;
             }
 

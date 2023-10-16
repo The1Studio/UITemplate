@@ -27,6 +27,9 @@
         public void SetSoundOnOff() { this.soundSetting.SoundValue.Value = this.IsSoundOn ? 0 : 1; }
 
         public void SetMusicOnOff() { this.soundSetting.MusicValue.Value = this.IsMusicOn ? 0 : 1; }
+        
+        public void SetSound (float value) { this.soundSetting.SoundValue.Value = value; }
+        public void SetMusic (float value) { this.soundSetting.MusicValue.Value = value; }
 
         public void SetVibrationOnOff() { this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable; }
 

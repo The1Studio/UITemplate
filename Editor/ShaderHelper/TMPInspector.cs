@@ -1,76 +1,126 @@
 #if THEONE_LOCALIZATION
-using System;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
 using TMPro;
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceLocations;
+using UnityEditor.Localization;
+using UnityEngine.Localization.Components;
+using UnityEngine.Localization.Metadata;
+using UnityEngine.Localization.Tables;
 
-public class LocalizationToolWindow : OdinEditorWindow
+public class TMPOdinInspector : OdinEditorWindow
 {
-    // Create a menu item in Unity's toolbar to open the window
-    [MenuItem("Tools/Localization Tool")]
-    private static void OpenWindow() { GetWindow<LocalizationToolWindow>().Show(); }
+    // Toggle to filter results
+    [HorizontalGroup("Search Group")]
+    [LabelText("Filter by LocalizeStringEvent")]
+    public bool filterByLocalizeStringEvent = false;
 
-    // Button to trigger loading all prefabs
-    [Button("Load All Prefabs")]
-    public void LoadAllPrefabs()
+    [HorizontalGroup("Search Group")]
+    [Button("Search TMP in Addressables")]
+    private void SearchTMPInAddressables()
     {
-        AllTMPTexts.Clear();
+        foundTMPTextInfos = new List<TMPTextInfo>();
 
-        // Load all prefab locations from Addressables without filtering by label
-        var locations = Addressables.LoadResourceLocationsAsync(typeof(GameObject));
-        locations.Completed += OnLocationsLoaded;
-    }
+        AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+        if (settings == null)
+            return;
 
-    private void OnLocationsLoaded(AsyncOperationHandle<IList<IResourceLocation>> handle)
-    {
-        if (handle.Status == AsyncOperationStatus.Succeeded)
+        foreach (AddressableAssetGroup group in settings.groups)
         {
-            foreach (var location in handle.Result)
+            foreach (AddressableAssetEntry entry in group.entries)
             {
-                var prefabInstance = Addressables.InstantiateAsync(location);
-                prefabInstance.Completed += OnPrefabInstantiated;
+                string     assetPath = AssetDatabase.GUIDToAssetPath(entry.guid);
+                GameObject obj       = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+
+                if (obj)
+                {
+                    TextMeshProUGUI[] tmpComponents = obj.GetComponentsInChildren<TextMeshProUGUI>(true);
+                    foreach (var tmp in tmpComponents)
+                    {
+                        // Apply filter here
+                        if (!filterByLocalizeStringEvent || tmp.GetComponent<LocalizeStringEvent>())
+                        {
+                            foundTMPTextInfos.Add(new TMPTextInfo(tmp));
+                        }
+                    }
+                }
             }
         }
     }
 
-    private void OnPrefabInstantiated(AsyncOperationHandle<GameObject> handle)
-    {
-        if (handle.Status == AsyncOperationStatus.Succeeded)
-        {
-            var prefab = handle.Result;
-            var texts  = prefab.GetComponentsInChildren<TMP_Text>(true);
-            foreach (var text in texts)
-            {
-                AllTMPTexts.Add(new LocalizedTextData { gameObject = text.gameObject, tmpText = text, localizationType = LocalizationType.NoLocalized });
-            }
+    [ShowInInspector]
+    [TableList]
+    private List<TMPTextInfo> foundTMPTextInfos;
 
-            DestroyImmediate(prefab);
+    [MenuItem("Window/TMP Odin Inspector")]
+    private static void OpenWindow()
+    {
+        GetWindow<TMPOdinInspector>().Show();
+    }
+}
+
+[System.Serializable]
+public class TMPTextInfo
+{
+    [ShowInInspector, ReadOnly]
+    private TextMeshProUGUI tmpText;
+    
+    [ShowInInspector, ReadOnly]
+    public string DisplayText => tmpText.text;
+
+    [ShowInInspector, ReadOnly]
+    public string PrefabAssetPath => tmpText ? PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(tmpText.gameObject) : "";
+
+    [ShowInInspector, ReadOnly]
+    public string RelativePathInsidePrefab
+    {
+        get
+        {
+            if (tmpText)
+            {
+                Transform currentTransform = tmpText.transform;
+                string path = currentTransform.name;
+                while (currentTransform.parent != null)
+                {
+                    currentTransform = currentTransform.parent;
+                    path = currentTransform.name + "/" + path;
+                }
+                return path;
+            }
+            return "";
         }
     }
 
-    // Display all the TMP_Text components in the editor window
-    [Title("All TMP Texts")] [ShowInInspector, ListDrawerSettings(Expanded = true)]
-    public List<LocalizedTextData> AllTMPTexts = new List<LocalizedTextData>();
-}
+    private static ICollection<StringTableEntry> GetAllTableEntries()
+    {
+        // TODO: Retrieve your list of available TableEntryReference values from wherever they're stored
+        // This is just a placeholder for demonstration.
+        return UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTableAsync("StringLocalizationAssets").Result.Values;
+    }
 
-public enum LocalizationType
-{
-    StaticLocalized,
-    DynamicLocalized,
-    NoLocalized
-}
+    public TMPTextInfo(TextMeshProUGUI text)
+    {
+        tmpText = text;
+    }
 
-[Serializable]
-public class LocalizedTextData
-{
-    public GameObject       gameObject;
-    public TMP_Text         tmpText;
-    public LocalizationType localizationType;
+    [Button("Navigate")]
+    private void NavigateToText()
+    {
+        if (tmpText)
+        {
+            Selection.activeGameObject = tmpText.gameObject;
+            EditorGUIUtility.PingObject(tmpText.gameObject);
+
+            if (PrefabUtility.GetPrefabAssetType(tmpText.gameObject) != PrefabAssetType.NotAPrefab)
+            {
+                string assetPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(tmpText.gameObject);
+                PrefabUtility.LoadPrefabContents(assetPath);
+            }
+        }
+    }
 }
 #endif

@@ -86,7 +86,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
                     this.Container.Resolve<IRemoteConfig>().GetRemoteConfigIntValue(MinPauseSecondsToShowAoaRemoteConfigKey, 0);
             }
 
-            this.Container.Resolve<SignalBus>().Subscribe<RemoteConfigInitializeSucceededSignal>(OnFirebaseInitialized);
+            this.Container.Resolve<SignalBus>().Subscribe<RemoteConfigFetchedSucceededSignal>(OnFirebaseInitialized);
         }
     }
 }

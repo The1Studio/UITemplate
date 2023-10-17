@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
+    using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
@@ -84,7 +85,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedVideoComplete);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedVideoSkipped);
         }
-
         private void OnRewardedVideoSkipped(RewardedSkippedSignal obj)
         {
             this.isWatchingVideoAds = false;

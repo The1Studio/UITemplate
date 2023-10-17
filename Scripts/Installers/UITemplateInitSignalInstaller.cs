@@ -27,7 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<LevelStartedSignal>();
             this.Container.DeclareSignal<LevelEndedSignal>();
             this.Container.DeclareSignal<LevelSkippedSignal>();
-            this.Container.DeclareSignal<RemoteConfigInitializeSucceededSignal>();
+            this.Container.DeclareSignal<RemoteConfigFetchedSucceededSignal>();
             this.Container.DeclareSignal<ScaleDecoration2DItem>();
             this.Container.DeclareSignal<UITemplateAddRewardsSignal>();
             this.Container.DeclareSignal<BuildingOnMouseDownSignal>();

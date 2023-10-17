@@ -1,5 +1,6 @@
 #if THEONE_LOCALIZATION
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using Sirenix.OdinInspector;
@@ -7,10 +8,14 @@ using Sirenix.OdinInspector.Editor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using TMPro;
-using UnityEditor.Localization;
 using UnityEngine.Localization.Components;
-using UnityEngine.Localization.Metadata;
-using UnityEngine.Localization.Tables;
+
+public enum TextMeshType
+{
+    NoLocalized,
+    StaticLocalized,
+    DynamicLocalized
+}
 
 public class TMPOdinInspector : OdinEditorWindow
 {
@@ -73,9 +78,6 @@ public class TMPTextInfo
     public string DisplayText => tmpText.text;
 
     [ShowInInspector, ReadOnly]
-    public string PrefabAssetPath => tmpText ? PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(tmpText.gameObject) : "";
-
-    [ShowInInspector, ReadOnly]
     public string RelativePathInsidePrefab
     {
         get
@@ -94,12 +96,16 @@ public class TMPTextInfo
             return "";
         }
     }
+    
+    [ValueDropdown("GetAllTableEntries")]
+    [ShowInInspector]
+    public string SelectedLocalizationKey;
 
-    private static ICollection<StringTableEntry> GetAllTableEntries()
+    private static List<string> GetAllTableEntries()
     {
         // TODO: Retrieve your list of available TableEntryReference values from wherever they're stored
         // This is just a placeholder for demonstration.
-        return UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTableAsync("StringLocalizationAssets").Result.Values;
+        return UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTableAsync("StringLocalizationAssets").Result.Values.Select(value => value.Key).ToList();
     }
 
     public TMPTextInfo(TextMeshProUGUI text)

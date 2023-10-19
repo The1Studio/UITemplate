@@ -80,6 +80,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.btnHome.onClick.AddListener(this.OnClickHomeButton);
             this.View.btnUnlockRandom.onClick.AddListener(this.OnClickUnlockRandomButton);
             this.View.btnAddMoreCoin.onClick.AddListener(this.OnClickAddMoreCoinButton);
+            this.diContainer.Inject(this.View.coinText);
         }
 
         public override async UniTask BindData()

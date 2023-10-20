@@ -119,7 +119,7 @@ public class TMPLocalization : OdinEditorWindow
     [ShowInInspector, TabGroup("DynamicLocalized"), TableList]
     private List<TMPTextInfo> dynamicLocalizedTextInfos = new();
 
-    [MenuItem("Window/TheOne/Localization")]
+    [MenuItem("TheOne/Localization")]
     private static void OpenWindow() { GetWindow<TMPLocalization>().Show(); }
 }
 

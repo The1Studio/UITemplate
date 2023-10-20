@@ -19,7 +19,7 @@ namespace UITemplate.Editor.ShaderHelper
         [ListDrawerSettings(Expanded = true)] [TableList] [ShowInInspector]
         private List<ShaderMaterialInfo> shaderInfos = new List<ShaderMaterialInfo>();
 
-        [MenuItem("Window/TheOne/Shader List")]
+        [MenuItem("TheOne/Shader List")]
         private static void OpenWindow() { GetWindow<ShaderListOdinWindow>().Show(); }
     
         private List<ShaderMaterialInfo> FindAllShadersAndMaterials()

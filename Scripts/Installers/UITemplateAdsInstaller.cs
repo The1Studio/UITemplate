@@ -40,7 +40,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             {
                 ADModMRecIds         = new Dictionary<AdViewPosition, string>(),
                 NativeAdIds          = admobConfig.ListNativeId,
-                AOAOpenAppThreshHold = admobConfig.AdMObAOAOpenAppThreshold
             };
 
             this.ConfigureFirebaseRemoteConfig();

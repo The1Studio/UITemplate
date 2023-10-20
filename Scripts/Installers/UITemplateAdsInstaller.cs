@@ -36,7 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if ADMOB
             var admobConfig = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>();
 
-            var adMobWrapperConfig = new AdMobWrapper.Config(admobConfig.ListAoaAppId)
+            var adMobWrapperConfig = new AdMobWrapper.Config()
             {
                 ADModMRecIds         = new Dictionary<AdViewPosition, string>(),
                 NativeAdIds          = admobConfig.ListNativeId,

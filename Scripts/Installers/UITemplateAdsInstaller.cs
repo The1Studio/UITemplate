@@ -34,35 +34,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #endif
 
 #if ADMOB
-            var admobConfig = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>();
 
-            var adMobWrapperConfig = new AdMobWrapper.Config()
-            {
-                ADModMRecIds         = new Dictionary<AdViewPosition, string>()
-            };
-
-            this.ConfigureFirebaseRemoteConfig();
-
-            var listMRecAndroidAdViewPosition = admobConfig.listMRecAdViewPosition;
-
-            for (var i = admobConfig.ListMRecId.Count - 1; i >= 0; i--)
-            {
-                adMobWrapperConfig.ADModMRecIds.Add(listMRecAndroidAdViewPosition[i], admobConfig.ListMRecId[i]);
-            }
-
+            var adMobWrapperConfig = new AdMobWrapper.Config();
             this.Container.Bind<AdMobWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdMobWrapper>();
-#endif
-
-#if APPLOVIN
-            var adConfig = this.Container.Resolve<GDKConfig>().GetGameConfig<AdmobAOAConfig>();
-
-            var adViewPositionToId = new Dictionary<AdViewPosition, string>();
-            for (var i = adConfig.ListMRecId.Count - 1; i >= 0; i--)
-            {
-                adViewPositionToId.Add(adConfig.listMRecAdViewPosition[i], adConfig.ListMRecId[i]);
-            }
-
-            this.Container.Bind<Dictionary<AdViewPosition, string>>().FromInstance(adViewPositionToId).WhenInjectedInto<AppLovinAdsWrapper>();
 #endif
 
 #if CREATIVE && ADMOB
@@ -73,18 +47,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if CREATIVE
             this.Container.BindInterfacesAndSelfTo<CreativeService>().AsCached().NonLazy();
 #endif
-        }
-
-        private void ConfigureFirebaseRemoteConfig()
-        {
-            void OnFirebaseInitialized()
-            {
-                //Configure ad service
-                this.Container.Resolve<AdServicesConfig>().MinPauseSecondToShowAoaAd =
-                    this.Container.Resolve<IRemoteConfig>().GetRemoteConfigIntValue(MinPauseSecondsToShowAoaRemoteConfigKey, 0);
-            }
-
-            this.Container.Resolve<SignalBus>().Subscribe<RemoteConfigFetchedSucceededSignal>(OnFirebaseInitialized);
         }
     }
 }

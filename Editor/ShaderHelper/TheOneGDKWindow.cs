@@ -20,14 +20,11 @@ namespace UITemplate.Editor.ShaderHelper
         [InlineEditor]
         public ThirdPartiesConfig ThirdPartiesConfig;
         [InlineEditor]
-        [TabGroup("AdsConfig")]
-        public AdmobAOAConfig AdmobAOAConfig;
 
         private void OnEnable()
         {
             this.AnalyticConfig     = Resources.Load<AnalyticConfig>("GameConfigs/AnalyticConfig");
             this.ThirdPartiesConfig = Resources.Load<ThirdPartiesConfig>("GameConfigs/ThirdPartiesConfig");
-            this.AdmobAOAConfig     = Resources.Load<AdmobAOAConfig>("GameConfigs/AdmobAOAConfig");
         }
         
         protected override void OnGUI()

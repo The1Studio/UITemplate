@@ -38,8 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             var adMobWrapperConfig = new AdMobWrapper.Config()
             {
-                ADModMRecIds         = new Dictionary<AdViewPosition, string>(),
-                NativeAdIds          = admobConfig.ListNativeId,
+                ADModMRecIds         = new Dictionary<AdViewPosition, string>()
             };
 
             this.ConfigureFirebaseRemoteConfig();

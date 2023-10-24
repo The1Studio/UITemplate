@@ -2,29 +2,39 @@ namespace UITemplate.Editor.ShaderHelper
 {
     using Core.AnalyticServices;
     using ServiceImplementation.Configs;
+    using ServiceImplementation.FireBaseRemoteConfig;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using UnityEditor;
     using UnityEngine;
+    using UnityEngine.Serialization;
 
     public class TheOneWindow : OdinEditorWindow
     {
         [MenuItem("TheOne/Configuration And Tools")]
         private static void OpenWindow() { GetWindow<TheOneWindow>().Show(); }
         
-        [TabGroup("AnalyticsConfig")]
+        [TabGroup("Analytics Config")]
         [InlineEditor]
         public AnalyticConfig AnalyticConfig;
-        [TabGroup("AdsConfig")]
+        [TabGroup("Ads Config")]
         [InlineEditor]
         public ThirdPartiesConfig ThirdPartiesConfig;
-        [InlineEditor]
+        
+        [FormerlySerializedAs("RemoteConfig")] [InlineEditor][TabGroup("Remote Config")]
+        public RemoteConfigSetting remoteConfigSetting;
 
         private void OnEnable()
         {
-            this.AnalyticConfig     = Resources.Load<AnalyticConfig>("GameConfigs/AnalyticConfig");
-            this.ThirdPartiesConfig = Resources.Load<ThirdPartiesConfig>("GameConfigs/ThirdPartiesConfig");
+            this.AnalyticConfig      = Resources.Load<AnalyticConfig>($"GameConfigs/{nameof(AnalyticConfig)}");
+            this.ThirdPartiesConfig  = Resources.Load<ThirdPartiesConfig>($"GameConfigs/{nameof(ThirdPartiesConfig)}");
+            this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);
+            
+            if (this.remoteConfigSetting == null)
+            {
+                AssetDatabase.CreateAsset(CreateInstance<RemoteConfigSetting>(), $"Assets/Resources/{RemoteConfigSetting.ResourcePath}.asset");
+                this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>($"GameConfigs/{nameof(RemoteConfigSetting)}");
+            }
         }
         
         protected override void OnGUI()

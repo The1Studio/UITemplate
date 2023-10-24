@@ -32,6 +32,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             FirebaseRemoteConfigInstaller.Install(this.Container);
             var thirdPartiesConfig = Resources.Load<ThirdPartiesConfig>(ThirdPartiesConfig.ResourcePath);
             this.Container.Bind<ThirdPartiesConfig>().FromInstance(thirdPartiesConfig).AsSingle();
+            
+            var remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);
+            this.Container.Bind<RemoteConfigSetting>().FromInstance(remoteConfigSetting).AsSingle();
 
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<BaseAnalyticEventFactory>();
             var listFactory = this.Container.ResolveAll<IAnalyticEventFactory>();

@@ -25,14 +25,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             // spawn vfx follow target's position
             var position = target.position;
             //spawn random position base on target's position
-            position.x += Random.Range(-1f, 1f);
-            position.y += Random.Range(0f, 2f);
+            position.x += Random.Range(-0.2f, 0.2f);
+            position.y += Random.Range(0f, 0.2f);
             position.z =  -1;
             // random vfx rotation
             var rotation = randomRotate ? Quaternion.Euler(0, 0, Random.Range(-50, 50)) : Quaternion.identity;
             // spawn vfx
             var vfxObj = vfxPrefab.Spawn(position, rotation);
-            if (isFloat) vfxObj.transform.DOMoveY(position.y + 1f, 1f);
+            if (isFloat) vfxObj.transform.DOMoveY(position.y + 0.2f, 1f);
             await UniTask.Delay(2000);
             vfxObj.Recycle();
         }

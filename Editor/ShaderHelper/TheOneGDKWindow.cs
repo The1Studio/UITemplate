@@ -35,6 +35,12 @@ namespace UITemplate.Editor.ShaderHelper
                 AssetDatabase.CreateAsset(CreateInstance<RemoteConfigSetting>(), $"Assets/Resources/{RemoteConfigSetting.ResourcePath}.asset");
                 this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>($"GameConfigs/{nameof(RemoteConfigSetting)}");
             }
+            
+            this.ThirdPartiesConfig.AdSettings.AdMob.OnDataChange = (admobSetting) =>
+            {
+                EditorUtility.SetDirty(admobSetting);
+                AssetDatabase.SaveAssets();
+            };
         }
         
         protected override void OnGUI()

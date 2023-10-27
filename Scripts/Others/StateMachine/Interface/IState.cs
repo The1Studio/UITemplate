@@ -5,4 +5,9 @@ namespace TheOneStudio.HyperCasual.Others.StateMachine.Interface
         void Enter();
         void Exit();
     }
+    
+    public interface IState<in TModel> : IState
+    {
+        public TModel Model { set; }
+    }
 }

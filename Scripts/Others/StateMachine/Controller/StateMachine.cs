@@ -10,34 +10,54 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
 
     public abstract class StateMachine : IStateMachine
     {
-        protected readonly SignalBus   signalBus;
-        protected readonly ILogService logService;
-        
-        public           IState      CurrentState { get; private set; }
+        protected readonly ILogService              LogService;
+        protected readonly SignalBus                SignalBus;
+        protected readonly Dictionary<Type, IState> TypeToState;
 
-        private readonly Dictionary<Type, IState> typeToState;
-
-        protected StateMachine(List<IState> listState, SignalBus signalBus, ILogService logService)
+        protected StateMachine(
+            List<IState>           listState,
+            SignalBus              signalBus,
+            ILogService            logService
+        )
         {
-            this.signalBus   = signalBus;
-            this.logService  = logService;
-            this.typeToState = listState.ToDictionary(state => state.GetType(), state => state);
+            this.SignalBus              = signalBus;
+            this.LogService             = logService;
+            this.TypeToState            = listState.ToDictionary(state => state.GetType(), state => state);
         }
 
-        public void TransitionTo(Type stateType)
+        public IState CurrentState { get; private set; }
+
+        public void TransitionTo<T>() where T : class, IState
+        {
+            this.TransitionTo(typeof(T));
+        }
+
+        public void TransitionTo<TState, TModel>(TModel model) where TState : class, IState<TModel>
+        {
+            this.CurrentState?.Exit();
+            this.CurrentState = this.TypeToState.GetValueOrDefault(typeof(TState));
+            if (this.CurrentState is not TState nextState) return;
+            nextState.Model = model;
+            nextState.Enter();
+        }
+
+        public virtual void TransitionTo(Type stateType)
         {
             if (this.CurrentState != null)
             {
                 this.CurrentState.Exit();
-                this.logService.Log($"Exit {this.CurrentState.GetType().Name} State!!!");
+                this.LogService.Log($"Exit {this.CurrentState.GetType().Name} State!!!");
             }
-            
-            if (!this.typeToState.TryGetValue(stateType, out var nextState)) return;
+
+            if (!this.TypeToState.TryGetValue(stateType, out var nextState)) return;
 
             this.CurrentState = nextState;
             nextState.Enter();
-            this.logService.Log($"Enter {stateType.Name} State!!!");
+            this.LogService.Log($"Enter {stateType.Name} State!!!");
+        }
 
+        public void Dispose()
+        {
         }
     }
 }

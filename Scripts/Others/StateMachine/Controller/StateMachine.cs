@@ -8,19 +8,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Interface;
     using Zenject;
 
-    public abstract class StateMachine : IStateMachine
+    public abstract class StateMachine : IStateMachine, ITickable
     {
         protected readonly ILogService              LogService;
-        protected readonly SignalBus                SignalBus;
         protected readonly Dictionary<Type, IState> TypeToState;
 
         protected StateMachine(
             List<IState>           listState,
-            SignalBus              signalBus,
             ILogService            logService
         )
         {
-            this.SignalBus              = signalBus;
             this.LogService             = logService;
             this.TypeToState            = listState.ToDictionary(state => state.GetType(), state => state);
         }
@@ -56,8 +53,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
             this.LogService.Log($"Enter {stateType.Name} State!!!");
         }
 
-        public void Dispose()
+        public void Tick()
         {
+            if (this.CurrentState is not ITickable tickableState) return;
+            tickableState.Tick();
         }
     }
 }

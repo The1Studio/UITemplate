@@ -22,15 +22,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AppTracking
             if (IsRequestTrackingComplete()) return;
 
 #if UNITY_IOS
-            Unity.Advertisement.IosSupport.ATTrackingStatusBinding.RequestAuthorizationTracking();
-            await UniTask.WaitUntil(IsRequestTrackingComplete);
+            // Unity.Advertisement.IosSupport.ATTrackingStatusBinding.RequestAuthorizationTracking();
+            // await UniTask.WaitUntil(IsRequestTrackingComplete);
 #endif
         }
 
         private static bool IsRequestTrackingComplete()
         {
 #if UNITY_IOS && !UNITY_EDITOR
-                return Unity.Advertisement.IosSupport.ATTrackingStatusBinding.GetAuthorizationTrackingStatus() != Unity.Advertisement.IosSupport.ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED;
+                // return Unity.Advertisement.IosSupport.ATTrackingStatusBinding.GetAuthorizationTrackingStatus() != Unity.Advertisement.IosSupport.ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED;
 #endif
 
             return true;

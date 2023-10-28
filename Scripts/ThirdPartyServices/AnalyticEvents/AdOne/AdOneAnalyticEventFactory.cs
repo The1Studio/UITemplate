@@ -66,6 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(AdInterShow), "af_inters" },
+                {nameof(AppOpenFullScreenContentOpened), "af_AOA"},
                 { nameof(AdsRewardShow), "af_reward" }
             }
         };
@@ -78,7 +79,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 { nameof(InterstitialAdsSuccess), "af_inters" },
                 { nameof(AdsRewardShow), "reward_attempt" },
                 { nameof(AdInterShow), "inter_attempt" },
-                { nameof(AdsRewardComplete), "af_reward" }
+                { nameof(AdsRewardComplete), "af_reward" },
+                {nameof(AppOpenFullScreenContentOpened), "af_AOA"},
             }
         };
     }

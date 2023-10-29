@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using ServiceImplementation.IAPServices;
+    using TheOneStudio.UITemplate.UITemplate.Leaderboard;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.AppTracking;
@@ -24,6 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             UITemplateDeclareSignalInstaller.Install(this.Container);
             UITemplateServicesInstaller.Install(this.Container, this.toastCanvas);
+            UITemplateLeaderboardInstaller.Install(this.Container);
             IapInstaller.Install(this.Container);
             UITemplateLocalDataInstaller.Install(this.Container); // bind after FBInstantInstaller for remote user data
             UITemplateThirdPartyInstaller.Install(this.Container); // bind after UITemplateLocalDataInstaller for local data analytics

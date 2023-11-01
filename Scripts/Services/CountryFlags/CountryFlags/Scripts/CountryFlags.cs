@@ -60,15 +60,12 @@
         private const string LANG_CODE_DEFAULT    = "en";
 
         private          Sprite                     spFlagDefault;
-        private readonly Dictionary<string, Sprite> dictFlags       = new();
+        private readonly Dictionary<string, Sprite> dictFlags = new();
 
         private static readonly List<string> ListPreferCountry   = new() { "us", "kr", "vn", "jp", "in", "sa", "es", "pt", "tr", "pl", "th", "ru" };
         private const           int          RATE_PREFER_COUNTRY = 85;
 
-        private void Awake()
-        {
-            this.InitialResources();
-        }
+        private void Awake() { this.InitialResources(); }
 
         public void InitialResources()
         {
@@ -86,10 +83,10 @@
         //
         // Summary:
         //     The country code the user's operating system is running in.
-        public string GetCountryCode(string lang)
+        public static string GetCountryCode(string lang)
         {
             var countryCode = COUNTRY_CODE_DEFAULT;
-            var langCode = LANG_CODE_DEFAULT;
+            var langCode    = LANG_CODE_DEFAULT;
             lang = lang.ToLower();
 
             for (var i = 0; i < ListLang.Length; i++)
@@ -112,17 +109,14 @@
         //
         // Summary:
         //     The country code the user's operating system is running in.
-        public string GetCountryCodeByDeviceLang()
-        {
-            return this.GetCountryCode(Application.systemLanguage.ToString());
-        }
+        public static string GetCountryCodeByDeviceLang() { return GetCountryCode(Application.systemLanguage.ToString()); }
 
         //
         // Summary:
         //     Get the sprite country flags of operating system is running in.
         public Sprite GetLocalDeviceFlagByDeviceLang()
         {
-            var countryCode = this.GetCountryCodeByDeviceLang();
+            var countryCode = GetCountryCodeByDeviceLang();
             return this.dictFlags.TryGetValue(countryCode, out var spriteReturn) ? spriteReturn : this.spFlagDefault;
         }
 
@@ -150,7 +144,7 @@
         public Sprite GetRandomFlag(out string countryCode)
         {
             var randCountryCode = Random.Range(0, 100) < RATE_PREFER_COUNTRY
-                ? ListPreferCountry[Random.Range(0,    ListPreferCountry.Count)]
+                ? ListPreferCountry[Random.Range(0, ListPreferCountry.Count)]
                 : this.listCountryCode[Random.Range(0, this.listCountryCode.Count)];
 
             countryCode = randCountryCode;
@@ -160,8 +154,8 @@
         public static void ApplyFlagToImage(Image imgTarget, Sprite spFlag)
         {
             var rectTarget = imgTarget.GetComponent<RectTransform>();
-            var width = rectTarget.sizeDelta.x;
-            var height = width * 0.75f; // 3/4 is standard ratio flag
+            var width      = rectTarget.sizeDelta.x;
+            var height     = width * 0.75f; // 3/4 is standard ratio flag
 
             imgTarget.sprite     = spFlag;
             rectTarget.sizeDelta = new Vector2(width, height);

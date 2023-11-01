@@ -17,9 +17,9 @@
 
         #endregion
         
-        [SerializeField] private TMP_Text currencyValueText;
+        [SerializeField] public TMP_Text currencyValueText;
 
-        [SerializeField] private string currencyId;
+        [SerializeField] public string currencyId;
 
         public GameObject CurrencyIcon;
 

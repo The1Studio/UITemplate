@@ -17,15 +17,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     {
         #region inject
 
-        private readonly IAdServices             adServices;
-        private readonly List<IMRECAdService>    mrecAdServices;
-        private readonly UITemplateAdsController uiTemplateAdsController;
-        private readonly List<IAOAAdService>     aoaAdServices;
-        private readonly IBackFillAdsService     backFillAdsService;
-        private readonly ToastController         toastController;
-        private readonly ILogService             logService;
-        private readonly AdServicesConfig        adServicesConfig;
-        private readonly SignalBus               signalBus;
+        private readonly IAdServices                   adServices;
+        private readonly List<IMRECAdService>          mrecAdServices;
+        private readonly UITemplateAdsController       uiTemplateAdsController;
+        private readonly List<IAOAAdService>           aoaAdServices;
+        private readonly IBackFillAdsService           backFillAdsService;
+        private readonly ToastController               toastController;
+        private readonly UITemplateLevelDataController levelDataController;
+        private readonly ILogService                   logService;
+        private readonly AdServicesConfig              adServicesConfig;
+        private readonly SignalBus                     signalBus;
 
         #endregion
 
@@ -38,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController,
-            List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController)
+            List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController)
         {
             this.adServices              = adServices;
             this.mrecAdServices          = mrecAdServices;
@@ -46,6 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.aoaAdServices           = aoaAdServices;
             this.backFillAdsService      = backFillAdsService;
             this.toastController         = toastController;
+            this.levelDataController     = levelDataController;
             this.logService              = logService;
             this.adServicesConfig        = adServicesConfig;
             this.signalBus               = signalBus;
@@ -55,7 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual async void ShowBannerAd()
         {
-            if (this.adServices.IsRemoveAds())
+            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd)
             {
                 return;
             }
@@ -130,7 +132,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
         {
-            if (this.adServices.IsRemoveAds())
+            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableInterstitialAd || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
             {
                 onShowInterstitialFinished?.Invoke(false);
                 return false;
@@ -182,6 +184,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowRewardedAd(string place, Action onComplete, Action onFail = null)
         {
+            if (!this.adServicesConfig.EnableRewardedAd)
+            {
+                onComplete?.Invoke();
+                return;
+            }
+            
             this.signalBus.Fire(new RewardedAdEligibleSignal(place));
 
             if (!this.adServices.IsRewardedAdReady(place))
@@ -208,7 +216,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowMREC(AdViewPosition adViewPosition)
         {
-            if (this.adServices.IsRemoveAds()) return;
+            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableMRECAd) return;
 
             var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(adViewPosition));
 

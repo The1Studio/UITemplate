@@ -11,8 +11,8 @@
     public class UITemplateAdServiceWrapperCreative : UITemplateAdServiceWrapper
     {
         public UITemplateAdServiceWrapperCreative(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
-            UITemplateAdsController uiTemplateAdsController, List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController) : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController,
-            aoaAdServices, backFillAdsService, toastController)
+            UITemplateAdsController uiTemplateAdsController, List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController uiTemplateLevelDataController) : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController,
+            aoaAdServices, backFillAdsService, toastController, uiTemplateLevelDataController)
         {
         }
 

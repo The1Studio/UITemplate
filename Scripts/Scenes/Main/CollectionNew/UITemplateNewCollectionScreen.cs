@@ -334,14 +334,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             // this.uiTemplateLuckySpinServices.OpenLuckySpin();
         }
 
-        private void BuyWithSoftCurrency(ItemCollectionItemModel obj)
+        protected virtual void BuyWithSoftCurrency(ItemCollectionItemModel obj,Action onFail = null)
         {
             var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(obj.ShopBlueprintRecord.CurrencyID);
 
             if (currentCoin < obj.ShopBlueprintRecord.Price)
             {
                 this.logger.Log($"Not Enough {obj.ShopBlueprintRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.ShopBlueprintRecord.Price}");
-
+                onFail?.Invoke();
                 return;
             }
 

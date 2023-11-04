@@ -33,12 +33,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateAdServiceWrapper>().AsCached();
 #endif
 
-#if ADMOB
-
-            var adMobWrapperConfig = new AdMobWrapper.Config();
-            this.Container.Bind<AdMobWrapper.Config>().FromInstance(adMobWrapperConfig).WhenInjectedInto<AdMobWrapper>();
-#endif
-
 #if CREATIVE && ADMOB
             adMobWrapperConfig.IsShowAOAAtOpenApp = false;
             adMobWrapperConfig.OpenAOAAfterResuming = false;

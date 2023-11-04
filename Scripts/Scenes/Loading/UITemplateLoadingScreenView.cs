@@ -15,6 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.ObjectPool;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
@@ -60,28 +61,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         #region Inject
 
         protected readonly UITemplateAdServiceWrapper adService;
-        protected readonly List<IAOAAdService>        aoaAdServices;
         protected readonly BlueprintReaderManager     blueprintManager;
         protected readonly UserDataManager            userDataManager;
         protected readonly IGameAssets                gameAssets;
         private readonly   ObjectPoolManager          objectPoolManager;
+        private readonly   UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
 
         protected UITemplateLoadingScreenPresenter(
             SignalBus signalBus,
             UITemplateAdServiceWrapper adService,
-            List<IAOAAdService> aoaAdServices,
             BlueprintReaderManager blueprintManager,
             UserDataManager userDataManager,
             IGameAssets gameAssets,
-            ObjectPoolManager objectPoolManager
+            ObjectPoolManager objectPoolManager,
+            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper
         ) : base(signalBus)
         {
-            this.adService         = adService;
-            this.aoaAdServices      = aoaAdServices;
-            this.blueprintManager  = blueprintManager;
-            this.userDataManager   = userDataManager;
-            this.gameAssets        = gameAssets;
-            this.objectPoolManager = objectPoolManager;
+            this.adService                  = adService;
+            this.blueprintManager           = blueprintManager;
+            this.userDataManager            = userDataManager;
+            this.gameAssets                 = gameAssets;
+            this.objectPoolManager          = objectPoolManager;
+            this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
         }
 
         #endregion
@@ -158,7 +159,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private UniTask WaitForAoa()
         {
             var startWaitingAoaTime = DateTime.Now;
-            return this.TrackProgress(UniTask.WaitUntil(() => this.aoaAdServices.Any(aoaService => aoaService.IsShowedFirstOpen) || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.aoaAdServices.First().LoadingTimeToShowAOA)));
+            return this.TrackProgress(UniTask.WaitUntil(() => this.uiTemplateAdServiceWrapper.IsShowedFirstOpen || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA)));
         }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }

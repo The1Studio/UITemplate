@@ -33,11 +33,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateAdServiceWrapper>().AsCached();
 #endif
 
-#if CREATIVE && ADMOB
-            adMobWrapperConfig.IsShowAOAAtOpenApp = false;
-            adMobWrapperConfig.OpenAOAAfterResuming = false;
-#endif
-
 #if CREATIVE
             this.Container.BindInterfacesAndSelfTo<CreativeService>().AsCached().NonLazy();
 #endif

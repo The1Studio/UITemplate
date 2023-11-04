@@ -17,16 +17,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     {
         #region inject
 
-        private readonly IAdServices                   adServices;
-        private readonly List<IMRECAdService>          mrecAdServices;
-        private readonly UITemplateAdsController       uiTemplateAdsController;
-        private readonly List<IAOAAdService>           aoaAdServices;
-        private readonly IBackFillAdsService           backFillAdsService;
-        private readonly ToastController               toastController;
-        private readonly UITemplateLevelDataController levelDataController;
-        private readonly ILogService                   logService;
-        private readonly AdServicesConfig              adServicesConfig;
-        private readonly SignalBus                     signalBus;
+        private readonly IAdServices                         adServices;
+        private readonly List<IMRECAdService>                mrecAdServices;
+        private readonly UITemplateAdsController             uiTemplateAdsController;
+        private readonly UITemplateGameSessionDataController gameSessionDataController;
+        private readonly List<IAOAAdService>                 aoaAdServices;
+        private readonly IBackFillAdsService                 backFillAdsService;
+        private readonly ToastController                     toastController;
+        private readonly UITemplateLevelDataController       levelDataController;
+        private readonly ILogService                         logService;
+        private readonly AdServicesConfig                    adServicesConfig;
+        private readonly SignalBus                           signalBus;
 
         #endregion
 
@@ -38,19 +39,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public bool isWatchingVideoAds = false;
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
-            UITemplateAdsController uiTemplateAdsController,
+            UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
             List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController)
         {
-            this.adServices              = adServices;
-            this.mrecAdServices          = mrecAdServices;
-            this.uiTemplateAdsController = uiTemplateAdsController;
-            this.aoaAdServices           = aoaAdServices;
-            this.backFillAdsService      = backFillAdsService;
-            this.toastController         = toastController;
-            this.levelDataController     = levelDataController;
-            this.logService              = logService;
-            this.adServicesConfig        = adServicesConfig;
-            this.signalBus               = signalBus;
+            this.adServices                = adServices;
+            this.mrecAdServices            = mrecAdServices;
+            this.uiTemplateAdsController   = uiTemplateAdsController;
+            this.gameSessionDataController = gameSessionDataController;
+            this.aoaAdServices             = aoaAdServices;
+            this.backFillAdsService        = backFillAdsService;
+            this.toastController           = toastController;
+            this.levelDataController       = levelDataController;
+            this.logService                = logService;
+            this.adServicesConfig          = adServicesConfig;
+            this.signalBus                 = signalBus;
         }
 
         #region banner
@@ -87,33 +89,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedVideoComplete);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedVideoSkipped);
         }
-        private void OnRewardedVideoSkipped(RewardedSkippedSignal obj)
-        {
-            this.isWatchingVideoAds = false;
-        }
-        
-        private void OnRewardedVideoComplete(RewardedAdCompletedSignal obj)
-        {
-            this.isWatchingVideoAds = false;
-        }
+
+        private void OnRewardedVideoSkipped(RewardedSkippedSignal obj) { this.isWatchingVideoAds = false; }
+
+        private void OnRewardedVideoComplete(RewardedAdCompletedSignal obj) { this.isWatchingVideoAds = false; }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)
         {
             if (this.adServices.IsRemoveAds())
             {
                 this.adServices.DestroyBannerAd();
-            } else if (!this.isShowBannerAd)
+            }
+            else if (!this.isShowBannerAd)
             {
                 this.adServices.HideBannedAd();
             }
         }
 
-        
-        private void OnInterstitialDisplayedFailedHandler(InterstitialAdDisplayedFailedSignal obj)
-        {
-            this.DoOnInterstitialFinishedAction(false);
-        }
-        
+        private void OnInterstitialDisplayedFailedHandler(InterstitialAdDisplayedFailedSignal obj) { this.DoOnInterstitialFinishedAction(false); }
+
         private void OnInterstitialAdClosedHandler()
         {
             this.DoOnInterstitialFinishedAction(true);
@@ -125,20 +119,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.onInterstitialFinishedAction?.Invoke(isShowSuccess);
             this.onInterstitialFinishedAction = null;
         }
-        
+
         #region InterstitialAd
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
 
         public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
         {
+            this.logService.Log(
+                $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {this.adServicesConfig.EnableInterstitialAd} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
             if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableInterstitialAd || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
             {
                 onShowInterstitialFinished?.Invoke(false);
                 return false;
             }
 
-            if ((DateTime.Now - this.lastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval && !force)
+            this.logService.Log(
+                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {(DateTime.Now - this.lastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval} check2 {(DateTime.Now - this.gameSessionDataController.FirstInstallDate).TotalSeconds < this.adServicesConfig.DelayFirstInterstitialAdInterval}");
+            if (((DateTime.Now - this.lastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval
+              || (DateTime.Now - this.gameSessionDataController.FirstInstallDate).TotalSeconds < this.adServicesConfig.DelayFirstInterstitialAdInterval) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
@@ -148,6 +147,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.signalBus.Fire(new InterstitialAdEligibleSignal(place));
 
+            this.logService.Log(
+                $"onelog: ShowInterstitialAd3 {place} force {force} check1 {this.adServices.IsInterstitialAdReady(place)} check2 {this.backFillAdsService.IsInterstitialAdReady(place)}");
             if (!this.adServices.IsInterstitialAdReady(place))
             {
                 if (!this.backFillAdsService.IsInterstitialAdReady(place))
@@ -163,6 +164,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return true;
             }
 
+            this.logService.Log($"onelog: ShowInterstitialAd4 {place} force {force}");
             InternalShowInterstitial();
             this.adServices.ShowInterstitialAd(place);
             return true;
@@ -189,7 +191,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 onComplete?.Invoke();
                 return;
             }
-            
+
             this.signalBus.Fire(new RewardedAdEligibleSignal(place));
 
             if (!this.adServices.IsRewardedAdReady(place))

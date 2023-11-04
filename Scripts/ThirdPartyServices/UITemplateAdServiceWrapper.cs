@@ -35,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #endregion
 
         //Interstitial
-        private float        totalNoInterAdsPlayingTime;
+        private float        totalNoAdsPlayingTime;
         private Action<bool> onInterstitialFinishedAction;
 
         //Banner
@@ -196,7 +196,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void OnInterstitialAdClosedHandler()
         {
             this.DoOnInterstitialFinishedAction(true);
-            this.totalNoInterAdsPlayingTime = 0;
+            this.totalNoAdsPlayingTime = 0;
         }
 
         private void DoOnInterstitialFinishedAction(bool isShowSuccess)
@@ -220,9 +220,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.logService.Log(
-                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoInterAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoInterAdsPlayingTime < this.adServicesConfig.DelayFirstInterstitialAdInterval}");
-            if ((this.totalNoInterAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval
-              || this.totalNoInterAdsPlayingTime < this.adServicesConfig.DelayFirstInterstitialAdInterval) && !force)
+                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.adServicesConfig.DelayFirstInterstitialAdInterval}");
+            if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval
+              || this.totalNoAdsPlayingTime < this.adServicesConfig.DelayFirstInterstitialAdInterval) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
@@ -244,7 +244,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     return false;
                 }
 
-                this.totalNoInterAdsPlayingTime = 0;
+                this.totalNoAdsPlayingTime = 0;
                 InternalShowInterstitial();
                 this.backFillAdsService.ShowInterstitialAd(place);
                 return true;
@@ -289,6 +289,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
+            this.totalNoAdsPlayingTime = 0;
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAdsOrIAP = true;
@@ -352,7 +353,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
        
         public void Tick()
         {
-            this.totalNoInterAdsPlayingTime += Time.deltaTime;
+            this.totalNoAdsPlayingTime += Time.deltaTime;
             if (!this.IsShowedFirstOpen)
             {
                 this.CheckShowFirstOpen();

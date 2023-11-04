@@ -1,21 +1,21 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using GameFoundation.Scripts.Utilities.Extension;
-    using GameFoundation.Scripts.Utilities.UserData;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
-    using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
-    public class UITemplateGameSessionDataController : IUITemplateControllerData
+    public class UITemplateGameSessionDataController : IUITemplateControllerData, IInitializable
     {
         private readonly UITemplateGameSessionData gameSessionData;
 
         public UITemplateGameSessionDataController(UITemplateGameSessionData gameSessionData) { this.gameSessionData = gameSessionData; }
 
         public DateTime FirstInstallDate => this.gameSessionData.FirstInstallDate;
+        public int OpenTime => this.gameSessionData.OpenTime;
+        
+        public void Initialize()
+        {
+            this.gameSessionData.OpenTime++;
+        }
     }
 }

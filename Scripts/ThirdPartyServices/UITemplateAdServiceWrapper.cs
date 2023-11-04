@@ -7,13 +7,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
-    using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
+    using UnityEngine;
     using Zenject;
 
-    public class UITemplateAdServiceWrapper : IInitializable
+    public class UITemplateAdServiceWrapper : IInitializable, ITickable
     {
         #region inject
 
@@ -31,7 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        private DateTime     lastEndInterstitial;
+        private float        totalNoInterAdsPlayingTime;
         private bool         isBannerLoaded = false;
         private bool         isShowBannerAd = true;
         private Action<bool> onInterstitialFinishedAction;
@@ -111,7 +111,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void OnInterstitialAdClosedHandler()
         {
             this.DoOnInterstitialFinishedAction(true);
-            this.lastEndInterstitial = DateTime.Now;
+            this.totalNoInterAdsPlayingTime = 0;
         }
 
         private void DoOnInterstitialFinishedAction(bool isShowSuccess)
@@ -135,9 +135,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.logService.Log(
-                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {(DateTime.Now - this.lastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval} check2 {(DateTime.Now - this.gameSessionDataController.FirstInstallDate).TotalSeconds < this.adServicesConfig.DelayFirstInterstitialAdInterval}");
-            if (((DateTime.Now - this.lastEndInterstitial).TotalSeconds < this.adServicesConfig.InterstitialAdInterval
-              || (DateTime.Now - this.gameSessionDataController.FirstInstallDate).TotalSeconds < this.adServicesConfig.DelayFirstInterstitialAdInterval) && !force)
+                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoInterAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoInterAdsPlayingTime < this.adServicesConfig.DelayFirstInterstitialAdInterval}");
+            if ((this.totalNoInterAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval
+              || this.totalNoInterAdsPlayingTime < this.adServicesConfig.DelayFirstInterstitialAdInterval) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
@@ -159,6 +159,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     return false;
                 }
 
+                this.totalNoInterAdsPlayingTime = 0;
                 InternalShowInterstitial();
                 this.backFillAdsService.ShowInterstitialAd(place);
                 return true;
@@ -263,5 +264,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         public bool IsRemovedAds => this.adServices.IsRemoveAds();
+       
+        public void Tick()
+        {
+            this.totalNoInterAdsPlayingTime += Time.deltaTime;
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
+    using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
@@ -209,6 +210,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
 
+        private int FirstInterstitialAdsDelayTime => this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval; 
+        
         public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
         {
             this.logService.Log(

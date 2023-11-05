@@ -5,6 +5,7 @@
     using Core.AdsServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
+    using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using Zenject;

@@ -66,10 +66,14 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.transform.SetParent(parent, false);
             this.transform.SetAsLastSibling();
         }
+        
+        public bool ThereIsFTUEActive() => !string.IsNullOrEmpty(this.currentActiveStepId);
 
-        public void DisableHighlight(string stepId)
+        public void DoDeactiveFTUE(string stepId)
         {
             if (!stepId.Equals(this.currentActiveStepId)) return;
+            this.currentActiveStepId = null;
+            
             var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
             if (string.IsNullOrEmpty(record.HighLightPath)) return;
             

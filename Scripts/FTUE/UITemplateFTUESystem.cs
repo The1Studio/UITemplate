@@ -66,7 +66,7 @@
             }
             else
             {
-                this.uiTemplateFtueController.DisableHighlight(obj.StepId);
+                this.uiTemplateFtueController.DoDeactiveFTUE(obj.StepId);
             }
         }
 
@@ -89,6 +89,7 @@
         {
             var stepId = obj.StepId;
             if (stepId.IsNullOrEmpty()) return;
+            if (this.uiTemplateFtueController.ThereIsFTUEActive()) return;
             
             var enableObjectSet = this.StepIdToEnableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             if (!this.IsFTUEActiveAble(stepId))

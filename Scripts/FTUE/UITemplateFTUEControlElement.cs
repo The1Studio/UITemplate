@@ -1,10 +1,13 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
+    using System;
     using UnityEngine;
     using UnityEngine.UI;
 
     public class UITemplateFTUEControlElement : MonoBehaviour
     {
+        private const string CanvasSortingLayerName = "UI";
+        
         private Canvas           canvas;
         private GraphicRaycaster graphicRaycaster;
 
@@ -13,8 +16,22 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.canvas                  = this.gameObject.AddComponent<Canvas>();
             this.canvas.overrideSorting  = true;
             this.canvas.sortingOrder     = 1;
-            this.canvas.sortingLayerName = "UI";
+            if (!this.DoesSortingLayerExist(CanvasSortingLayerName))
+            {
+                throw new Exception("You need to create new sorting layer with name: " + CanvasSortingLayerName + " in Edit -> Project Settings -> Tags and Layers");
+            }
+            this.canvas.sortingLayerName = CanvasSortingLayerName;
             this.graphicRaycaster        = this.gameObject.AddComponent<GraphicRaycaster>();
+        }
+        
+        public bool DoesSortingLayerExist(string layerName)
+        {
+            foreach (SortingLayer layer in SortingLayer.layers)
+            {
+                if (layer.name.Equals(layerName))
+                    return true;
+            }
+            return false;
         }
 
         private void OnDestroy()

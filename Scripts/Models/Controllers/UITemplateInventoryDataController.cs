@@ -14,17 +14,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateInventoryDataController : IUITemplateControllerData
+    public class UITemplateInventoryDataController : IUITemplateControllerData, IInitializable
     {
         #region Inject
 
+        private readonly SignalBus                           signalBus;
+        private readonly IScreenManager                      screenManager;
         private readonly UITemplateInventoryData             uiTemplateInventoryData;
         private readonly UITemplateFlyingAnimationController uiTemplateFlyingAnimationController;
         private readonly UITemplateCurrencyBlueprint         uiTemplateCurrencyBlueprint;
         private readonly UITemplateShopBlueprint             uiTemplateShopBlueprint;
-        private readonly SignalBus                           signalBus;
         private readonly UITemplateItemBlueprint             uiTemplateItemBlueprint;
-        private readonly IScreenManager                      screenManager;
 
         #endregion
 
@@ -43,8 +43,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus                           = signalBus;
             this.uiTemplateItemBlueprint             = uiTemplateItemBlueprint;
             this.screenManager                       = screenManager;
-
-            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
         }
 
         public List<UITemplateItemData> GetDefaultItemByCategory(string category)
@@ -206,8 +204,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         private void OnLoadBlueprintSuccess()
         {
-            this.signalBus.Unsubscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
-
+            //remove item that don't exist in blueprint anymore
+            foreach (var notExistKey in this.uiTemplateInventoryData.IDToItemData.Keys.Where(itemKey => !this.uiTemplateItemBlueprint.ContainsKey(itemKey)).ToList())
+            {
+                this.uiTemplateInventoryData.IDToItemData.Remove(notExistKey);
+            }
+            
             foreach (var itemRecord in this.uiTemplateItemBlueprint.Values)
             {
                 // Add item to inventory
@@ -300,6 +302,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return this.uiTemplateInventoryData.IDToItemData
                 .Where(itemData => itemData.Value.CurrentStatus != UITemplateItemData.Status.Owned && itemData.Value.CurrentStatus == UITemplateItemData.Status.Unlocked)
                 .ToDictionary(itemData => itemData.Key, itemData => itemData.Value);
+        }
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
         }
     }
 }

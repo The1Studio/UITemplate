@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
+    using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
@@ -111,6 +112,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.CloseAdInDifferentProcessHandler);
+            this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
+        }
+        
+        private void OnStartDoingIAPHandler()
+        {
+            this.IsResumedFromAdsOrIAP = true;
         }
 
         private void CloseAdInDifferentProcessHandler() { this.IsResumedFromAdsOrIAP = false; }

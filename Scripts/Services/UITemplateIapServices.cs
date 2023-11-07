@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AdsServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.IAPServices;
+    using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;

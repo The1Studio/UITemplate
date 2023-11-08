@@ -294,7 +294,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.logService.Warning("Rewarded was not loaded");
                 onFail?.Invoke();
-                this.toastController.SetContent("There is no Ads!");
+                this.toastController.ShowToast("There is no Ads!");
 
                 return;
             }

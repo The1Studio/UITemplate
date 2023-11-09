@@ -126,7 +126,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         
         private void CheckShowFirstOpen()
         {
-            if (this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession) return;
+            if (this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAStartSession) return;
             
             var totalLoadingTime = (DateTime.Now - this.StartLoadingAOATime).TotalSeconds;
                 

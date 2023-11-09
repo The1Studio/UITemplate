@@ -134,8 +134,12 @@
         //     Get random the sprite country flags
         public Sprite GetRandomFlag()
         {
-            var randCountryCode = this.listCountryCode[Random.Range(0, this.listCountryCode.Count)];
-            return this.dictFlags.TryGetValue(randCountryCode, out var spriteReturn) ? spriteReturn : this.spFlagDefault;
+            return this.dictFlags.TryGetValue(this.RandomCountryCode(), out var spriteReturn) ? spriteReturn : this.spFlagDefault;
+        }
+
+        public string RandomCountryCode()
+        {
+            return this.listCountryCode[Random.Range(0, this.listCountryCode.Count)];
         }
 
         //

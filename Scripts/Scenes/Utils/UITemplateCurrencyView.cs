@@ -73,7 +73,7 @@
             var duration   = 1.5f;
             var yoyoTime   = 4;
             var scaleValue = 1.2f;
-            this.CurrencyIcon.transform.DOScale(Vector3.one * scaleValue, duration / yoyoTime).SetLoops(yoyoTime, LoopType.Yoyo);
+            this.CurrencyIcon.transform.DOScale(Vector3.one * scaleValue, duration / yoyoTime).SetLoops(yoyoTime, LoopType.Yoyo).SetUpdate(isIndependentUpdate:true);
             this.updateCurrencyTween?.Kill();
             this.currencyValueText.color = obj.Amount >= 0 ? Color.green : Color.red;
 
@@ -81,7 +81,7 @@
             {
                 this.UpdateData(obj.FinalValue);
                 this.ResetState();
-            });
+            }).SetUpdate(isIndependentUpdate:true);
         }
         public override string CurrencyKey => this.currencyId;
     }

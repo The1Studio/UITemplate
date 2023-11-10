@@ -9,7 +9,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using Zenject;
@@ -32,11 +31,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent InterstitialShow(int level, string place) { return new AdInterShow(place); }
 
-        public override IEvent InterstitialCalled(string place) { return new AdInterCalled(); }
+        public override IEvent InterstitialCalled(string place) { return new AdInterCalled(place); }
 
         public override IEvent RewardedVideoShow(int level, string place) { return new AdsRewardShow(place); }
 
-        public override IEvent RewardedVideoCalled(string place) { return new AdsRewardedCalled(); }
+        public override IEvent RewardedVideoCalled(string place) { return new AdsRewardedCalled(place); }
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelFailed(level, timeSpent); }
 

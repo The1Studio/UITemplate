@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using Zenject;
@@ -29,13 +30,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 
-        public override IEvent InterstitialShow(int level, string place) { return new ShowInterstitialAds(this.internetService.IsInternetAvailable, place); }
+        public override IEvent InterstitialShow(int level, string place) { return new AdInterShow(place); }
 
-        public override IEvent InterstitialShowCompleted(int level, string place) { return new InterstitialAdsSuccess(place); }
+        public override IEvent InterstitialCalled(string place) { return new AdInterCalled(); }
 
-        public override IEvent RewardedVideoShow(int level, string place) { return new ShowRewardedAds(this.internetService.IsInternetAvailable, place); }
+        public override IEvent RewardedVideoShow(int level, string place) { return new AdsRewardShow(place); }
 
-        public override IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) { return new RewardedAdsSuccess(place, isRewarded ? "success" : "skip"); }
+        public override IEvent RewardedVideoCalled(string place) { return new AdsRewardedCalled(); }
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelFailed(level, timeSpent); }
 
@@ -66,8 +67,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(AdInterShow), "af_inters" },
-                {nameof(AppOpenFullScreenContentOpened), "af_AOA"},
-                { nameof(AdsRewardShow), "af_reward" }
+                { nameof(AppOpenFullScreenContentOpened), "af_AOA" },
+                { nameof(AdsRewardShow), "af_rewarded" }
             }
         };
 
@@ -76,11 +77,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             IgnoreEvents = new HashSet<Type>(),
             CustomEventKeys = new Dictionary<string, string>()
             {
-                { nameof(InterstitialAdsSuccess), "af_inters" },
-                { nameof(AdsRewardShow), "reward_attempt" },
-                { nameof(AdInterShow), "inter_attempt" },
-                { nameof(AdsRewardComplete), "af_reward" },
-                {nameof(AppOpenFullScreenContentOpened), "af_AOA"},
+                { nameof(AppOpenFullScreenContentOpened), "af_AOA" },
+                { nameof(AdInterShow), "af_inters" },
+                { nameof(AdInterCalled), "inter_attempt" },
+                { nameof(AdsRewardShow), "af_rewarded" },
+                { nameof(AdsRewardedCalled), "reward_attempt" }
             }
         };
     }

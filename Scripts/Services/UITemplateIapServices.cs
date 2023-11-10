@@ -4,7 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System.Collections.Generic;
     using System.Linq;
     using BlueprintFlow.Signals;
-    using Core.AdsServices;
+    using Core.AnalyticServices;
+    using Core.AnalyticServices.CommonEvents;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.IAPServices;
     using ServiceImplementation.IAPServices.Signals;
@@ -19,21 +20,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     {
         private readonly SignalBus                            signalBus;
         private readonly ILogService                          logger;
-        private readonly IAdServices                          adServices;
         private readonly UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData;
         private readonly UITemplateShopPackBlueprint          uiTemplateShopPackBlueprint;
         private readonly IIapServices                         iapServices;
+        private readonly List<IAnalyticServices>              analyticServicesList;
 
-        public UITemplateIapServices(SignalBus signalBus, ILogService logger, IAdServices adServices, UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
+        public UITemplateIapServices(SignalBus signalBus, ILogService logger, UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
             UITemplateShopPackBlueprint uiTemplateShopPackBlueprint,
-            IIapServices iapServices)
+            IIapServices iapServices, List<IAnalyticServices> analyticServicesList)
         {
             this.signalBus                            = signalBus;
             this.logger                               = logger;
-            this.adServices                           = adServices;
             this.uiTemplateIAPOwnerPackControllerData = uiTemplateIAPOwnerPackControllerData;
             this.uiTemplateShopPackBlueprint          = uiTemplateShopPackBlueprint;
             this.iapServices                          = iapServices;
+            this.analyticServicesList                 = analyticServicesList;
         }
 
         private void OnBlueprintLoaded(LoadBlueprintDataSucceedSignal obj)
@@ -68,6 +69,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             var dataShopPackRecord = this.uiTemplateShopPackBlueprint[productId];
             var rewardItemDatas    = new Dictionary<string, UITemplateRewardItemData>();
             this.uiTemplateIAPOwnerPackControllerData.AddPack(productId);
+
+            var productData = this.iapServices.GetProductData(productId);
+            foreach (var analyticService in this.analyticServicesList)
+            {
+                analyticService.Track(new IapTransactionDidSucceed()
+                {
+                    OfferSku = productId,
+                    CurrencyCode = productData.CurrencyCode,
+                    Price = decimal.ToDouble(productData.Price),
+                });
+            }
 
             foreach (var rewardIdToData in dataShopPackRecord.RewardIdToRewardDatas.Values)
             {

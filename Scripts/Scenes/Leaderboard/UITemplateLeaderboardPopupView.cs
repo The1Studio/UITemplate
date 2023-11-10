@@ -111,21 +111,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             //Do animation
             //Do scale up
             this.animationTweenList.Clear();
-            this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one * 1.1f, scaleTime).SetEase(Ease.InOutBack));
-            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime), cancellationToken: this.animationCancelTokenSource.Token);
+            this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one * 1.1f, scaleTime).SetEase(Ease.InOutBack).SetUpdate(isIndependentUpdate:true));
+            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime), cancellationToken: this.animationCancelTokenSource.Token, ignoreTimeScale:true);
             //Do move to new rank
             cloneView.ShowRankUP();
-            this.animationTweenList.Add(DOTween.To(() => 0, setValue => cloneView.SetRankUp(setValue), oldRank - newRank, scrollDuration));
+            this.animationTweenList.Add(DOTween.To(() => 0, setValue => cloneView.SetRankUp(setValue), oldRank - newRank, scrollDuration).SetUpdate(isIndependentUpdate:true));
             this.animationTweenList.Add(DOTween.To(() => oldRank, setValue =>
                                                                   {
                                                                       cloneView.SetRank(setValue);
                                                                       this.View.BetterThanText.text = this.GetBetterThanText(setValue);
-                                                                  }, newRank, scrollDuration));
+                                                                  }, newRank, scrollDuration).SetUpdate(isIndependentUpdate:true));
             this.View.Adapter.SmoothScrollTo(newIndex - indexPadding, scrollDuration);
-            await UniTask.Delay(TimeSpan.FromSeconds(scrollDuration), cancellationToken: this.animationCancelTokenSource.Token);
+            await UniTask.Delay(TimeSpan.FromSeconds(scrollDuration), cancellationToken: this.animationCancelTokenSource.Token, ignoreTimeScale:true);
             //Do scale down
-            this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack));
-            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime + 2), cancellationToken: this.animationCancelTokenSource.Token);
+            this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack).SetUpdate(isIndependentUpdate:true));
+            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime + 2), cancellationToken: this.animationCancelTokenSource.Token, ignoreTimeScale:true);
             this.CloseView();
         }
 

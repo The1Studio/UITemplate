@@ -21,6 +21,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using TheOneStudio.UITemplate.UITemplate.UserData;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
+    using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
     using UnityEngine.UI;
     using Zenject;
@@ -136,9 +137,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             SceneDirector.CurrentSceneName = this.NextSceneName;
 
             this.SignalBus.Fire<StartLoadingNewSceneSignal>();
-            var nextScene =
-                await this.TrackProgress(
-                    this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false));
+            var nextScene = await this.TrackProgress(this.LoadSceneAsync());
             await this.View.CompleteLoading();
             await nextScene.ActivateAsync();
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
@@ -146,6 +145,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             Resources.UnloadUnusedAssets().ToUniTask().Forget();
             this.adService.ShowBannerAd();
         }
+
+        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 
         private UniTask LoadBlueprint()
         {

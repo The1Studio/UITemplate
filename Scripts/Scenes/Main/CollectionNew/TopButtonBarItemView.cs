@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -11,14 +12,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     {
         public int                        Index         { get; set; }
         public int                        SelectedIndex { get; set; }
+        public string                     Title         { get; set; }
         public Sprite                     Icon          { get; set; }
         public Action<TopButtonItemModel> OnSelected    { get; set; }
     }
 
     public class TopButtonBarItemView : TViewMono
     {
-        public Button btnChoose, btnNormal;
-        public Image  imgIcon;
+        public Button   btnChoose, btnNormal;
+        public Image    imgIcon;
+        public TMP_Text txtTittle;
 
         public Action OnButtonClick;
 
@@ -46,19 +49,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         public override async void BindData(TopButtonItemModel param)
         {
-            this.View.imgIcon.sprite = param.Icon;
+            if (this.View.txtTittle != null)
+            {
+                this.View.txtTittle.text = param.Title;
+            }
+
+            if (this.View.imgIcon != null)
+            {
+                this.View.imgIcon.sprite = param.Icon;
+            }
+
             this.View.btnChoose.gameObject.SetActive(param.Index == param.SelectedIndex);
             this.View.btnNormal.gameObject.SetActive(param.Index != param.SelectedIndex);
 
-            this.View.OnButtonClick = () =>
-            {
-                param.OnSelected?.Invoke(param);
-            };
+            this.View.OnButtonClick = () => { param.OnSelected?.Invoke(param); };
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
+        public override void Dispose() { base.Dispose(); }
     }
 }

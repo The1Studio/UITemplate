@@ -171,7 +171,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             {
                 var icon = await this.gameAssets.LoadAssetAsync<Sprite>(record.Icon);
 
-                this.topButtonItemModels.Add(new TopButtonItemModel { Icon = icon, OnSelected = this.OnButtonCategorySelected, SelectedIndex = this.currentSelectedCategoryIndex, Index = index });
+                this.topButtonItemModels.Add(new TopButtonItemModel { Title = record.Title, Icon = icon, OnSelected = this.OnButtonCategorySelected, SelectedIndex = this.currentSelectedCategoryIndex, Index = index });
 
                 index++;
             }

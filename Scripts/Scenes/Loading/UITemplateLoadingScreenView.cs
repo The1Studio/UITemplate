@@ -132,7 +132,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return UniTask.CompletedTask;
         }
 
-        private async UniTask LoadNextScene()
+        protected virtual async UniTask LoadNextScene()
         {
             SceneDirector.CurrentSceneName = this.NextSceneName;
 
@@ -160,7 +160,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private UniTask WaitForAoa()
         {
             var startWaitingAoaTime = DateTime.Now;
-            return this.TrackProgress(UniTask.WaitUntil(() => this.uiTemplateAdServiceWrapper.IsShowedFirstOpen || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA)));
+            return this.TrackProgress(UniTask.WaitUntil(() =>
+                this.uiTemplateAdServiceWrapper.IsShowedFirstOpen || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA)));
         }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
@@ -176,7 +177,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected UniTask PreloadAssets<T>(params object[] keys)
         {
             return UniTask.WhenAll(this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys)
-                .Select(this.TrackProgress));
+                                       .Select(this.TrackProgress));
         }
 
         protected UniTask CreateObjectPool(string prefabName, int initialPoolSize = 1)
@@ -203,11 +204,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             }
 
             return aoh.ToUniTask(Progress.CreateOnlyValueChanged<float>(UpdateProgress))
-                .ContinueWith(result =>
-                {
-                    UpdateProgress(1f);
-                    return result;
-                });
+                      .ContinueWith(result =>
+                      {
+                          UpdateProgress(1f);
+                          return result;
+                      });
         }
 
         protected void TrackProgress<T>() where T : IProgressPercent

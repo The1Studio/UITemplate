@@ -245,7 +245,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             foreach (var (category, defaultItems) in defaultItemWithCategory)
             {
-                if (this.GetCurrentItemSelected(category) is not null) continue;
+                var currentItemSelected = this.GetCurrentItemSelected(category);
+                if (currentItemSelected is not null && this.uiTemplateItemBlueprint.ContainsKey(currentItemSelected)) continue;
                 if (defaultItems is null or { Count: 0 }) continue;
                 this.UpdateCurrentSelectedItem(category, defaultItems[0].Id);
             }

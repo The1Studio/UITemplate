@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -107,7 +108,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         public override async UniTask BindData(UITemplateStaterPackModel screenModel)
         {
             var starterPacks = this.uiTemplateShopPackBlueprint.GetPack().Where(x => x.RewardIdToRewardDatas.Count > 1).ToList();
-            this.IapPack = starterPacks.First(packRecord => packRecord.RewardIdToRewardDatas.ContainsKey("remove_ads") != this.adServices.IsRemoveAds()).Id;
+            this.IapPack = starterPacks.First(packRecord => packRecord.RewardIdToRewardDatas.ContainsKey(UITemplateRemoveAdReward.REWARD_ID) != this.adServices.IsRemoveAds()).Id;
 
             this.View.txtPrice.text = $"Special Offer: Only {this.iapServices.GetPriceById(this.IapPack, this.uiTemplateShopPackBlueprint.GetDataById(this.IapPack).DefaultPrice)}";
 

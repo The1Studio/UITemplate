@@ -13,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
+    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine;
     using Zenject;
@@ -356,7 +357,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnRemoveAdsComplete(UITemplateAddRewardsSignal signal)
         {
-            if (!signal.RewardIdToData.Keys.Contains("remove_ads")) return;
+            if (!signal.RewardIdToData.Keys.Contains(UITemplateRemoveAdReward.REWARD_ID)) return;
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();

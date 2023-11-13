@@ -39,11 +39,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         //Interstitial
         private float        totalNoAdsPlayingTime;
         private Action<bool> onInterstitialFinishedAction;
+        private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool         isBannerLoaded = false;
-        private bool         isShowBannerAd = true;
-        
+        private bool isBannerLoaded = false;
+        private bool isShowBannerAd = true;
+
         //AOA
         private DateTime StartLoadingAOATime;
         private DateTime StartBackgroundTime;
@@ -54,7 +55,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
-            List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController, ThirdPartiesConfig thirdPartiesConfig)
+            List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController,
+            ThirdPartiesConfig thirdPartiesConfig)
         {
             this.adServices                = adServices;
             this.mrecAdServices            = mrecAdServices;
@@ -104,32 +106,35 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedVideoComplete);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedVideoSkipped);
             this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnApplicationPauseHandler);
-            
+
             //AOA
             this.StartLoadingAOATime = DateTime.Now;
-            this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.ShownAdInDifferentProcessHandler);
+            this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
         }
-        
-        private void OnStartDoingIAPHandler()
+
+        private void OnInterstitialAdDisplayedHandler()
         {
-            this.IsResumedFromAdsOrIAP = true;
+            this.totalInterstitialAdsShowedInSession++;
+            this.ShownAdInDifferentProcessHandler();
         }
+
+        private void OnStartDoingIAPHandler() { this.IsResumedFromAdsOrIAP = true; }
 
         private void CloseAdInDifferentProcessHandler() { this.IsResumedFromAdsOrIAP = false; }
 
         private void ShownAdInDifferentProcessHandler() { this.IsResumedFromAdsOrIAP = true; }
-        
+
         private void CheckShowFirstOpen()
         {
             if (this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAStartSession) return;
-            
+
             var totalLoadingTime = (DateTime.Now - this.StartLoadingAOATime).TotalSeconds;
-                
+
             if (totalLoadingTime <= this.LoadingTimeToShowAOA)
             {
                 this.ShowAOAAdsIfAvailable();
@@ -217,8 +222,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
 
-        private int FirstInterstitialAdsDelayTime => this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval; 
-        
+        private int FirstInterstitialAdsDelayTime =>
+            this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
+
         public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
         {
             this.logService.Log(
@@ -232,7 +238,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService.Log(
                 $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.adServicesConfig.DelayFirstInterstitialAdInterval}");
             if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval
-              || this.totalNoAdsPlayingTime < this.adServicesConfig.DelayFirstInterstitialAdInterval) && !force)
+              || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.adServicesConfig.DelayFirstInterstitialAdInterval)) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
@@ -269,7 +275,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
-                this.IsResumedFromAdsOrIAP = true;
+                this.IsResumedFromAdsOrIAP        = true;
                 this.onInterstitialFinishedAction = onShowInterstitialFinished;
             }
         }
@@ -303,7 +309,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAdsOrIAP = true;
-            this.isWatchingVideoAds = true;
+            this.isWatchingVideoAds    = true;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 
@@ -360,7 +366,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         public bool IsRemovedAds => this.adServices.IsRemoveAds();
-       
+
         public void Tick()
         {
             this.totalNoAdsPlayingTime += Time.deltaTime;

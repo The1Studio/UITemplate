@@ -15,18 +15,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
 
     public class UITemplateRewardItemData
     {
-        public string   RewardValue           { get; }
+        public int      RewardValue           { get; set; }
         public int      Repeat                { get; set; }
-        public string   AddressableFlyingItem { get; }
-        public int      TotalDayLeft          { get; set; }
+        public string   AddressableFlyingItem { get; set; }
         public DateTime LastTimeReceive       { get; set; }
 
-        public UITemplateRewardItemData(string rewardValue, int repeat, string addressableFlyingItem, int totalDayLeft = 0)
+        public UITemplateRewardItemData(int rewardValue, int repeat, string addressableFlyingItem)
         {
             this.AddressableFlyingItem = addressableFlyingItem;
             this.RewardValue           = rewardValue;
             this.Repeat                = repeat;
-            this.TotalDayLeft          = totalDayLeft;
         }
     }
 }

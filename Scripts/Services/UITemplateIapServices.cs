@@ -67,7 +67,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void OnPurchaseComplete(string productId, GameObject source)
         {
             var dataShopPackRecord = this.uiTemplateShopPackBlueprint[productId];
-            var rewardItemDatas    = new Dictionary<string, UITemplateRewardItemData>();
             this.uiTemplateIAPOwnerPackControllerData.AddPack(productId);
 
             var productData = this.iapServices.GetProductData(productId);
@@ -81,14 +80,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 });
             }
 
-            foreach (var rewardIdToData in dataShopPackRecord.RewardIdToRewardDatas.Values)
-            {
-                rewardItemDatas.Add(rewardIdToData.RewardId, new UITemplateRewardItemData(rewardIdToData.RewardValue, rewardIdToData.Repeat, rewardIdToData.AddressableFlyingItem));
-            }
+            var rewardItemData = dataShopPackRecord.RewardIdToRewardDatas.ToDictionary(keyPairValue => keyPairValue.Key,
+                keyPairValue => new UITemplateRewardItemData(keyPairValue.Value.RewardValue, keyPairValue.Value.Repeat, keyPairValue.Value.AddressableFlyingItem));
 
-            if (rewardItemDatas.Count > 0)
+            if (rewardItemData.Count > 0)
             {
-                this.signalBus.Fire(new UITemplateAddRewardsSignal(productId, rewardItemDatas, source));
+                this.signalBus.Fire(new UITemplateAddRewardsSignal(productId, rewardItemData, source));
             }
         }
 

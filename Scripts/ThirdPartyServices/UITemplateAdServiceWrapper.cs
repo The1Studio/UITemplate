@@ -356,7 +356,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnRemoveAdsComplete(UITemplateAddRewardsSignal signal)
         {
-            if (!signal.RewardItemDatas.Keys.Contains("remove_ads")) return;
+            if (!signal.RewardIdToData.Keys.Contains("remove_ads")) return;
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();

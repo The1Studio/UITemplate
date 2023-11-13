@@ -16,7 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
             return this.Values.Where(x => x.Platforms.Contains("Android")).ToList();
 #elif UNITY_IOS||UNITY_IPHONE
             return this.Values.Where(x => x.Platforms.Contains("IOS")).ToList();
-#else 
+#else
             return this.Values.ToList();
 #endif
         }
@@ -39,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     public class UITemplateRewardBlueprintData
     {
         public string RewardId              { get; set; }
-        public string RewardValue           { get; set; }
+        public int    RewardValue           { get; set; }
         public int    Repeat                { get; set; }
         public string RewardIcon            { get; set; }
         public string RewardContent         { get; set; }

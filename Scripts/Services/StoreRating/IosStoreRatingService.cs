@@ -1,4 +1,4 @@
-#if UNITY_IOS && STORE_RATING
+#if UNITY_IOS && THEONE_STORE_RATING
 namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 {
     using Cysharp.Threading.Tasks;

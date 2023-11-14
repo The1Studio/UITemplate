@@ -1,4 +1,4 @@
-#if UNITY_ANDROID && STORE_RATING
+#if UNITY_ANDROID && THEONE_STORE_RATING
 namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 {
     using System.Threading;

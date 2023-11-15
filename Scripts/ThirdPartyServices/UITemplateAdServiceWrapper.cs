@@ -143,6 +143,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             else
             {
                 this.logService.Log($"AOA loading time for first open over the threshold {totalLoadingTime} > {this.LoadingTimeToShowAOA}!");
+                this.IsShowedFirstOpen = true; //prevent check AOA for first open again
             }
         }
 

@@ -111,19 +111,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
-            this.signalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAppOpenFullScreenContentClosedHandler);
         }
         
-        private void OnAppOpenFullScreenContentClosedHandler(AppOpenFullScreenContentClosedSignal obj)
-        {
-            #if IRONSOURCE
-            if (this.isShowBannerAd)
-            {
-                this.adServices.ShowBannerAd();
-            }
-            #endif
-        }
-
         private void OnInterstitialAdDisplayedHandler()
         {
             this.totalInterstitialAdsShowedInSession++;

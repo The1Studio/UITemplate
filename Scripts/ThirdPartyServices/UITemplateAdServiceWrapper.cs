@@ -43,7 +43,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool isBannerLoaded = false;
         private bool isShowBannerAd = true;
 
         //AOA
@@ -51,9 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private DateTime StartBackgroundTime;
         private bool     IsResumedFromAdsOrIAP;
         public  bool     IsShowedFirstOpen { get; private set; } = false;
-
-        public bool isWatchingVideoAds = false;
-
+        
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
             List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController,
@@ -104,8 +101,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.OnInterstitialDisplayedFailedHandler);
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
             this.signalBus.Subscribe<UITemplateAddRewardsSignal>(this.OnRemoveAdsComplete);
-            this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedVideoComplete);
-            this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedVideoSkipped);
             this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnApplicationPauseHandler);
 
             //AOA
@@ -116,6 +111,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
+            this.signalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAppOpenFullScreenContentClosedHandler);
+        }
+        
+        private void OnAppOpenFullScreenContentClosedHandler(AppOpenFullScreenContentClosedSignal obj)
+        {
+            #if IRONSOURCE
+            if (this.isShowBannerAd)
+            {
+                this.adServices.ShowBannerAd();
+            }
+            #endif
         }
 
         private void OnInterstitialAdDisplayedHandler()
@@ -189,10 +195,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.ShowAOAAdsIfAvailable();
             }
         }
-
-        private void OnRewardedVideoSkipped(RewardedSkippedSignal obj) { this.isWatchingVideoAds = false; }
-
-        private void OnRewardedVideoComplete(RewardedAdCompletedSignal obj) { this.isWatchingVideoAds = false; }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)
         {
@@ -311,7 +313,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAdsOrIAP = true;
-            this.isWatchingVideoAds    = true;
             this.adServices.ShowRewardedAd(place, onComplete);
         }
 

@@ -13,7 +13,7 @@
 
         public void Initialize()
         {
-            var clickStream = Observable.EveryUpdate().Where(_ => Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
+            var clickStream = Observable.EveryUpdate().Where(_ => Input.GetMouseButtonDown(0));
 
             clickStream.Buffer(clickStream.Throttle(TimeSpan.FromMilliseconds(250)))
                        .Where(xs => xs.Count >= 3)

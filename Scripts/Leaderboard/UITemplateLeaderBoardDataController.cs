@@ -57,8 +57,11 @@
             }
             
             //Highest score
-            if (this.uiTemplateLeaderBoardData.AllTimeHighestScore < newScore) this.uiTemplateLeaderBoardData.AllTimeHighestScore = newScore;
-            this.signalBus.Fire(new NewAllTimeHighestScoreSignal(todayHighestScore, newScore));
+            if (this.uiTemplateLeaderBoardData.AllTimeHighestScore < newScore)
+            {
+                this.uiTemplateLeaderBoardData.AllTimeHighestScore = newScore;
+                this.signalBus.Fire(new NewAllTimeHighestScoreSignal(todayHighestScore, newScore));
+            }
         }
 
         public int GetThisWeekHighestScore()

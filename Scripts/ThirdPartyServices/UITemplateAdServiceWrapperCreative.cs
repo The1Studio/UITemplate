@@ -25,7 +25,7 @@
         public override bool ShowInterstitialAd(string place, bool force = false, Action<bool> onInterstitialFinished = null)
         {
             onInterstitialFinished?.Invoke(true);
-            return true;
+            return false;
         }
 
         public override void ShowRewardedAd(string place, Action onComplete, Action onFail = null) { onComplete.Invoke(); }

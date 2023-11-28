@@ -22,7 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Toast
         [SerializeField] private TextMeshProUGUI txtToast;
 
         private CancellationTokenSource cts;
-
+        private Tween                   toastTween;
         private GameObject GetParentObj(ToastPosition position)
         {
             return position switch
@@ -43,13 +43,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Toast
             try
             {
                 this.toastObj.SetActive(false);
-                this.toastObj.transform.DOKill();
+                this.toastTween?.Kill();
                 this.toastObj.transform.SetParent(this.GetParentObj(position).transform);
                 this.toastObj.transform.localPosition = Vector3.zero + new Vector3(offsetX, offsetY, 0);
                 this.txtToast.text                    = message;
 
                 this.toastObj.SetActive(true);
-                this.toastObj.transform.DOLocalMoveY(100, 1f);
+                this.toastTween           = this.toastObj.transform.DOLocalMoveY(100, 1f);
+                this.toastTween.timeScale = 1;
                 await UniTask.Delay(1000, cancellationToken: this.cts.Token);
                 this.toastObj.SetActive(false);
             }

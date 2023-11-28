@@ -21,8 +21,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Toast
         [SerializeField] private GameObject      toastObj;
         [SerializeField] private TextMeshProUGUI txtToast;
 
-        private CancellationTokenSource cts;
-        private Tween                   toastTween;
         private GameObject GetParentObj(ToastPosition position)
         {
             return position switch
@@ -34,25 +32,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Toast
             };
         }
 
-        public async void ShowToast(string message, float offsetX = 0, float offsetY = 0, ToastPosition position = ToastPosition.Center)
+        public void ShowToast(string message, float offsetX = 0, float offsetY = 0, ToastPosition position = ToastPosition.Center)
         {
-            this.cts?.Cancel();
-            this.cts?.Dispose();
-            this.cts = new CancellationTokenSource();
-
             try
             {
                 this.toastObj.SetActive(false);
-                this.toastTween?.Kill();
+                this.toastObj.transform.DOKill();
                 this.toastObj.transform.SetParent(this.GetParentObj(position).transform);
                 this.toastObj.transform.localPosition = Vector3.zero + new Vector3(offsetX, offsetY, 0);
                 this.txtToast.text                    = message;
 
                 this.toastObj.SetActive(true);
-                this.toastTween           = this.toastObj.transform.DOLocalMoveY(100, 1f);
-                this.toastTween.timeScale = 1;
-                await UniTask.Delay(1000, cancellationToken: this.cts.Token);
-                this.toastObj.SetActive(false);
+                this.toastObj.transform.DOLocalMoveY(100, 1f).SetUpdate(true).OnComplete(() =>
+                {
+                    this.toastObj.SetActive(false);
+                });
             }
             catch (System.Exception e)
             {

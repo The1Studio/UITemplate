@@ -21,6 +21,7 @@
         {
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.CloseView);
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.CloseView);
+            this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.CloseView);
 
             return UniTask.CompletedTask;
         }
@@ -29,6 +30,7 @@
         {
             this.signalBus.Unsubscribe<InterstitialAdClosedSignal>(this.CloseView);
             this.signalBus.Unsubscribe<InterstitialAdDisplayedFailedSignal>(this.CloseView);
+            this.signalBus.Unsubscribe<InterstitialAdDisplayedSignal>(this.CloseView);
         }
     }
 }

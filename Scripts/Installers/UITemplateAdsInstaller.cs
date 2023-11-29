@@ -1,24 +1,12 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
-    using System.Collections.Generic;
-    using Core.AdsServices;
-    using GameFoundation.Scripts.Utilities.Extension;
-    using global::Models;
-    using ServiceImplementation.AdsServices;
-#if APPLOVIN
-    using ServiceImplementation.AdsServices.AppLovin;
-#endif
-#if ADMOB || IRONSOURCE
-    using ServiceImplementation.AdsServices.EasyMobile;
-#endif
-    using ServiceImplementation.FireBaseRemoteConfig;
-    using TheOneStudio.UITemplate.UITemplate.Interfaces;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using Zenject;
+#if APPLOVIN
+#endif
+#if ADMOB || IRONSOURCE
+#endif
 
     public class UITemplateAdsInstaller : Installer<UITemplateAdsInstaller>
     {
@@ -31,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<UITemplateAdServiceWrapper>().To<UITemplateAdServiceWrapperCreative>().AsCached();
 #else
             this.Container.BindInterfacesAndSelfTo<UITemplateAdServiceWrapper>().AsCached();
+            this.Container.BindInterfacesAndSelfTo<UITemplateAutoHideMRECService>().AsCached().NonLazy();
 #endif
 
 #if CREATIVE

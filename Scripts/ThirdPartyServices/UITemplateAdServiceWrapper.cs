@@ -306,11 +306,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            this.totalNoAdsPlayingTime = 0;
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAdsOrIAP = true;
-            this.adServices.ShowRewardedAd(place, onComplete);
+            this.adServices.ShowRewardedAd(place, OnRewardedAdCompleted);
+            return;
+
+            void OnRewardedAdCompleted()
+            {
+                onComplete?.Invoke();
+
+                if (this.adServicesConfig.ResetInterAdIntervalAfterRewardAd)
+                {
+                    this.totalNoAdsPlayingTime = 0;
+                }
+            }
         }
 
         public virtual bool IsRewardedAdReady(string place) { return this.adServices.IsRewardedAdReady(place); }

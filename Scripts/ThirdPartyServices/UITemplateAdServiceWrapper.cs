@@ -50,7 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private DateTime StartBackgroundTime;
         private bool     IsResumedFromAdsOrIAP;
         public  bool     IsShowedFirstOpen { get; private set; } = false;
-        
+
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
             List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController,
@@ -112,7 +112,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
         }
-        
+
         private void OnInterstitialAdDisplayedHandler()
         {
             this.totalInterstitialAdsShowedInSession++;
@@ -298,11 +298,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            this.totalNoAdsPlayingTime = 0;
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAdsOrIAP = true;
-            this.adServices.ShowRewardedAd(place, onComplete);
+            this.adServices.ShowRewardedAd(place, OnRewardedAdCompleted);
+            return;
+
+            void OnRewardedAdCompleted()
+            {
+                onComplete?.Invoke();
+
+                if (this.adServicesConfig.ResetInterAdIntervalAfterRewardAd)
+                {
+                    this.totalNoAdsPlayingTime = 0;
+                }
+            }
         }
 
         public virtual bool IsRewardedAdReady(string place) { return this.adServices.IsRewardedAdReady(place); }

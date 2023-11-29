@@ -50,7 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private DateTime StartBackgroundTime;
         private bool     IsResumedFromAdsOrIAP;
         public  bool     IsShowedFirstOpen { get; private set; } = false;
-        
+
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
             List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController,
@@ -112,7 +112,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
         }
-        
+
         private void OnInterstitialAdDisplayedHandler()
         {
             this.totalInterstitialAdsShowedInSession++;
@@ -218,11 +218,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int FirstInterstitialAdsDelayTime =>
             this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
 
+        private bool IsInterstitialAdEnable(string placement)
+        {
+            if (!this.adServicesConfig.EnableInterstitialAd) return false;
+            return this.adServicesConfig.InterstitialAdActivePlacements.Contains("")
+                || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
+        }
+
         public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
         {
+            var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log(
-                $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {this.adServicesConfig.EnableInterstitialAd} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
-            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableInterstitialAd || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
+                $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {isInterstitialAdEnable} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
+            if (this.adServices.IsRemoveAds() || !isInterstitialAdEnable || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
             {
                 onShowInterstitialFinished?.Invoke(false);
                 return false;

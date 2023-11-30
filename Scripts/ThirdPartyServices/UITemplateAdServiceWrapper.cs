@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
@@ -31,6 +32,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly ToastController                     toastController;
         private readonly UITemplateLevelDataController       levelDataController;
         private readonly ThirdPartiesConfig                  thirdPartiesConfig;
+        private readonly UITemplateAutoHideMRECService       autoHideMrecService;
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
@@ -54,7 +56,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
             List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController,
-            ThirdPartiesConfig thirdPartiesConfig)
+            ThirdPartiesConfig thirdPartiesConfig, UITemplateAutoHideMRECService autoHideMrecService)
         {
             this.adServices                = adServices;
             this.mrecAdServices            = mrecAdServices;
@@ -65,6 +67,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.toastController           = toastController;
             this.levelDataController       = levelDataController;
             this.thirdPartiesConfig        = thirdPartiesConfig;
+            this.autoHideMrecService       = autoHideMrecService;
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
@@ -222,7 +225,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (!this.adServicesConfig.EnableInterstitialAd) return false;
             return this.adServicesConfig.InterstitialAdActivePlacements.Contains("")
-                || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
+                   || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
         }
 
         public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
@@ -239,7 +242,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService.Log(
                 $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
             if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval
-              || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
+                 || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
@@ -329,7 +332,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        public virtual void ShowMREC(AdViewPosition adViewPosition)
+        public virtual void ShowMREC<TPresenter>(AdViewPosition adViewPosition) where TPresenter : IScreenPresenter
         {
             if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableMRECAd) return;
 
@@ -337,6 +340,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
+                this.autoHideMrecService.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
 
                 if (adViewPosition == AdViewPosition.BottomCenter)

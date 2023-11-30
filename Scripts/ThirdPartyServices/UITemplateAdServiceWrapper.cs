@@ -332,7 +332,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        public virtual void ShowMREC(AdViewPosition adViewPosition, IScreenPresenter showOnScreen)
+        public virtual void ShowMREC<TPresenter>(AdViewPosition adViewPosition) where TPresenter : IScreenPresenter
         {
             if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableMRECAd) return;
 
@@ -340,7 +340,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
-                this.autoHideMrecService.AddScreenCanShowMREC(showOnScreen.GetType());
+                this.autoHideMrecService.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
 
                 if (adViewPosition == AdViewPosition.BottomCenter)

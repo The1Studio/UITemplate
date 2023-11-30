@@ -39,7 +39,7 @@
 
         public override bool IsInterstitialAdReady(string place) { return true; }
 
-        public override void ShowMREC(AdViewPosition adViewPosition, IScreenPresenter showOnScreen) { }
+        public override void ShowMREC<TPresenter>(AdViewPosition adViewPosition) { }
 
         public override void HideMREC(AdViewPosition adViewPosition) { }
     }

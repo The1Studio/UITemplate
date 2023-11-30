@@ -33,9 +33,9 @@
             this.signalBus.Subscribe<MRecAdDismissedSignal>(this.OnMRECDismissed);
         }
 
-        private void OnMRECDismissed() { this.hasMRECShow = true; }
+        private void OnMRECDisplayed() { this.hasMRECShow = true; }
 
-        private void OnMRECDisplayed() { this.hasMRECShow = false; }
+        private void OnMRECDismissed() { this.hasMRECShow = false; }
 
         internal void AddScreenCanShowMREC(Type screenType)
         {

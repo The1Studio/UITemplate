@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Core.AdsServices;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
@@ -14,8 +15,10 @@
     {
         public UITemplateAdServiceWrapperCreative(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController, List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService,
-            ToastController toastController, UITemplateLevelDataController levelDataController, ThirdPartiesConfig thirdPartiesConfig) : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController,
-            gameSessionDataController, aoaAdServices, backFillAdsService, toastController, levelDataController, thirdPartiesConfig)
+            ToastController toastController, UITemplateLevelDataController levelDataController, ThirdPartiesConfig thirdPartiesConfig,
+            UITemplateAutoHideMRECService autoHideMrecService)
+            : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController,
+                gameSessionDataController, aoaAdServices, backFillAdsService, toastController, levelDataController, thirdPartiesConfig, autoHideMrecService)
         {
         }
 
@@ -36,7 +39,7 @@
 
         public override bool IsInterstitialAdReady(string place) { return true; }
 
-        public override void ShowMREC(AdViewPosition adViewPosition) { }
+        public override void ShowMREC(AdViewPosition adViewPosition, IScreenPresenter showOnScreen) { }
 
         public override void HideMREC(AdViewPosition adViewPosition) { }
     }

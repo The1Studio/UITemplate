@@ -18,8 +18,8 @@
 
         #endregion
 
-        private bool       hasMRECShow;
-        private List<Type> screenAutoHideMREC = new();
+        private bool          hasMRECShow;
+        private HashSet<Type> screenCanShowMREC = new();
 
         public UITemplateAutoHideMRECService(IScreenManager screenManager,
             UITemplateAdServiceWrapper adServiceWrapper,
@@ -37,22 +37,22 @@
 
         private void OnMRECDisplayed() { this.hasMRECShow = false; }
 
-        public void AddScreenAutoHideMREC(Type screenType)
+        internal void AddScreenHasShowMREC(Type screenType)
         {
-            if (this.screenAutoHideMREC.Contains(screenType))
+            if (this.screenCanShowMREC.Contains(screenType))
             {
                 Debug.LogError($"Screen: {screenType.Name} contained, can't add to collection!");
                 return;
             }
 
-            this.screenAutoHideMREC.Add(screenType);
+            this.screenCanShowMREC.Add(screenType);
         }
 
         private void AutoHideMREC()
         {
             if (!this.hasMRECShow) return;
             if (!this.screenManager.CurrentActiveScreen.HasValue) return;
-            if (!this.screenAutoHideMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+            if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
 
             foreach (AdViewPosition position in Enum.GetValues(typeof(AdViewPosition)))
             {

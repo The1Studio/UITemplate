@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.AppTracking;
+    using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine;
@@ -32,6 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
             NotificationInstaller.Install(this.Container);
             StoreRatingServiceInstaller.Install(this.Container);
+            BreakAdsInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
         }

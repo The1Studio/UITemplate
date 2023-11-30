@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using Zenject;

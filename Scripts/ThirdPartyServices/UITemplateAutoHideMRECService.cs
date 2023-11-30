@@ -37,7 +37,7 @@
 
         private void OnMRECDisplayed() { this.hasMRECShow = false; }
 
-        internal void AddScreenHasShowMREC(Type screenType)
+        internal void AddScreenCanShowMREC(Type screenType)
         {
             if (this.screenCanShowMREC.Contains(screenType))
             {

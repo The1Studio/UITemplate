@@ -340,7 +340,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
-                this.autoHideMrecService.AddScreenHasShowMREC(showOnScreen.GetType());
+                this.autoHideMrecService.AddScreenCanShowMREC(showOnScreen.GetType());
                 mrecAdService.ShowMREC(adViewPosition);
 
                 if (adViewPosition == AdViewPosition.BottomCenter)

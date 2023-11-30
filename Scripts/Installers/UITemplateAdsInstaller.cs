@@ -14,12 +14,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
+            this.Container.BindInterfacesAndSelfTo<UITemplateAutoHideMRECService>().AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
 #if CREATIVE
             this.Container.Bind<UITemplateAdServiceWrapper>().To<UITemplateAdServiceWrapperCreative>().AsCached();
 #else
             this.Container.BindInterfacesAndSelfTo<UITemplateAdServiceWrapper>().AsCached();
-            this.Container.BindInterfacesAndSelfTo<UITemplateAutoHideMRECService>().AsCached().NonLazy();
 #endif
 
 #if CREATIVE

@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
@@ -32,7 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly ToastController                     toastController;
         private readonly UITemplateLevelDataController       levelDataController;
         private readonly ThirdPartiesConfig                  thirdPartiesConfig;
-        private readonly UITemplateAutoHideMRECService       autoHideMrecService;
+        private readonly IScreenManager                      screenManager;
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
@@ -56,7 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
             List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController,
-            ThirdPartiesConfig thirdPartiesConfig, UITemplateAutoHideMRECService autoHideMrecService)
+            ThirdPartiesConfig thirdPartiesConfig, IScreenManager screenManager)
         {
             this.adServices                = adServices;
             this.mrecAdServices            = mrecAdServices;
@@ -67,7 +68,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.toastController           = toastController;
             this.levelDataController       = levelDataController;
             this.thirdPartiesConfig        = thirdPartiesConfig;
-            this.autoHideMrecService       = autoHideMrecService;
+            this.screenManager             = screenManager;
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
@@ -114,6 +115,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
+
+            //MREC
+            this.signalBus.Subscribe<MRecAdDisplayedSignal>(this.OnMRECDisplayed);
+            this.signalBus.Subscribe<MRecAdDismissedSignal>(this.OnMRECDismissed);
         }
 
         private void OnInterstitialAdDisplayedHandler()
@@ -340,7 +345,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
-                this.autoHideMrecService.AddScreenCanShowMREC(typeof(TPresenter));
+                this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
 
                 if (adViewPosition == AdViewPosition.BottomCenter)
@@ -388,6 +393,42 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.CheckShowFirstOpen();
             }
+
+            this.AutoHideMREC();
         }
+
+        #region Auto Hide MREC
+
+        private bool          hasMRECShow;
+        private HashSet<Type> screenCanShowMREC = new();
+
+        private void OnMRECDisplayed() { this.hasMRECShow = true; }
+
+        private void OnMRECDismissed() { this.hasMRECShow = false; }
+
+        private void AddScreenCanShowMREC(Type screenType)
+        {
+            if (this.screenCanShowMREC.Contains(screenType))
+            {
+                Debug.LogError($"Screen: {screenType.Name} contained, can't add to collection!");
+                return;
+            }
+
+            this.screenCanShowMREC.Add(screenType);
+        }
+
+        private void AutoHideMREC()
+        {
+            if (!this.hasMRECShow) return;
+            if (!this.screenManager.CurrentActiveScreen.HasValue) return;
+            if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+
+            foreach (AdViewPosition position in Enum.GetValues(typeof(AdViewPosition)))
+            {
+                this.HideMREC(position);
+            }
+        }
+
+        #endregion
     }
 }

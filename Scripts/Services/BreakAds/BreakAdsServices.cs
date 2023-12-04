@@ -23,14 +23,12 @@
 
         #endregion
 
-        private BreakAdsPopupPresenter breakAdsPopupPresenter;
-
         public void Initialize()
         {
             if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
                 this.signalBus.Subscribe<InterstitialAdCalledSignal>(this.OpenBreakAds);
         }
 
-        private void OpenBreakAds() { this.screenManager.OpenScreen<BreakAdsPopupPresenter>().Forget(); }
+        protected virtual void OpenBreakAds() { this.screenManager.OpenScreen<BreakAdsPopupPresenter>().Forget(); }
     }
 }

@@ -74,7 +74,7 @@ namespace UITemplate.Editor
             Debug.LogError($"Clear Complete");
         }
 
-        [MenuItem("Tools/TheOneStudio/Local Data Editor")]
+        [MenuItem("TheOne/Local Data Editor")]
         public static void ShowWindow()
         {
             GetWindow(typeof(LocalDataEditor));

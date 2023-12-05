@@ -162,7 +162,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             var startWaitingAoaTime = DateTime.Now;
             // sometimes AOA delay when shown, we need 0.5s to wait for it
             return this.TrackProgress(UniTask.WaitUntil(() =>
-                this.uiTemplateAdServiceWrapper.IsShowedFirstOpen || ((DateTime.Now - startWaitingAoaTime).TotalSeconds > (this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA + 0.5f))));
+                (this.uiTemplateAdServiceWrapper.IsShowedFirstOpen && this.uiTemplateAdServiceWrapper.IsClosedFirstOpen) || 
+                (!this.uiTemplateAdServiceWrapper.IsShowedFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > (this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA + 0.5f))));
         }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }

@@ -53,6 +53,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private DateTime StartBackgroundTime;
         private bool     IsResumedFromAdsOrIAP;
         public  bool     IsShowedFirstOpen { get; private set; } = false;
+        public  bool     IsClosedFirstOpen { get; private set; } = false;
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
@@ -115,11 +116,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
+            this.signalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAOAClosedHandler);
 
             //MREC
             this.signalBus.Subscribe<MRecAdDisplayedSignal>(this.OnMRECDisplayed);
             this.signalBus.Subscribe<MRecAdDismissedSignal>(this.OnMRECDismissed);
         }
+
+        private void OnAOAClosedHandler() { this.IsClosedFirstOpen = true; }
 
         private void OnInterstitialAdDisplayedHandler()
         {

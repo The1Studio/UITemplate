@@ -10,25 +10,25 @@
     {
         #region inject
 
-        private readonly SignalBus          signalBus;
-        private readonly IScreenManager     screenManager;
-        private readonly ThirdPartiesConfig thirdPartiesConfig;
+        protected readonly SignalBus          SignalBus;
+        protected readonly IScreenManager     ScreenManager;
+        protected readonly ThirdPartiesConfig ThirdPartiesConfig;
 
         public BreakAdsServices(SignalBus signalBus, IScreenManager screenManager, ThirdPartiesConfig thirdPartiesConfig)
         {
-            this.signalBus          = signalBus;
-            this.screenManager      = screenManager;
-            this.thirdPartiesConfig = thirdPartiesConfig;
+            this.SignalBus          = signalBus;
+            this.ScreenManager      = screenManager;
+            this.ThirdPartiesConfig = thirdPartiesConfig;
         }
 
         #endregion
 
         public void Initialize()
         {
-            if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
-                this.signalBus.Subscribe<InterstitialAdCalledSignal>(this.OpenBreakAds);
+            if (this.ThirdPartiesConfig.AdSettings.EnableBreakAds)
+                this.SignalBus.Subscribe<InterstitialAdCalledSignal>(this.OpenBreakAds);
         }
 
-        protected virtual void OpenBreakAds() { this.screenManager.OpenScreen<BreakAdsPopupPresenter>().Forget(); }
+        protected virtual void OpenBreakAds() { this.ScreenManager.OpenScreen<BreakAdsPopupPresenter>().Forget(); }
     }
 }

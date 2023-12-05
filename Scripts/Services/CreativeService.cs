@@ -1,6 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
 {
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using UnityEngine;
     using UnityEngine.Events;
     using UnityEngine.EventSystems;
@@ -13,8 +12,8 @@
         private          float       touchTime = 0.25f;
         private          float       counter;
 
-        public  bool IsShowUI        { get; private set; } = true;
-        private bool EnableTripleTap { get; set; }         = true;
+        public bool IsShowUI        { get; private set; } = true;
+        public bool EnableTripleTap { get; set; }         = false;
 
         public readonly UnityEvent OnTripleTap = new();
 

@@ -46,7 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
         }
 
-        private void Track(IEvent trackEvent)
+        public void Track(IEvent trackEvent)
         {
             this.analyticEventFactories.ForEach(x => x.ForceUpdateAllProperties());
 
@@ -56,7 +56,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticServices.Track(trackEvent);
         }
 
-        private void DoAnalyticWithFactories(Action<IAnalyticEventFactory> action)
+        public void DoAnalyticWithFactories(Action<IAnalyticEventFactory> action)
         {
             foreach (var factory in this.analyticEventFactories)
             {

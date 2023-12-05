@@ -13,8 +13,8 @@
         private          float       touchTime = 0.25f;
         private          float       counter;
 
-        public  bool IsShowUI        { get; private set; } = true;
-        private bool EnableTripleTap { get; set; }         = true;
+        public bool IsShowUI        { get; private set; } = true;
+        public bool EnableTripleTap { get; set; }         = true;
 
         public readonly UnityEvent OnTripleTap = new();
 
@@ -57,7 +57,5 @@
                 }
             }
         }
-
-        public void DisableTripleTap() { this.EnableTripleTap = false; }
     }
 }

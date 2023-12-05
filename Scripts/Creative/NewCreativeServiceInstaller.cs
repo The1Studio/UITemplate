@@ -15,7 +15,11 @@
 
             this.Container.BindInterfacesAndSelfTo<NewCreativeService>().AsCached().NonLazy();
 
-            this.Container.Resolve<CreativeService>().DisableTripleTap();
+#if TRIPLE_TAP_CREATIVE
+            this.Container.Resolve<CreativeService>().EnableTripleTap = true;
+#else
+            this.Container.Resolve<CreativeService>().EnableTripleTap = false;
+#endif
         }
     }
 }

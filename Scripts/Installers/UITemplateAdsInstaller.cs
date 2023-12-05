@@ -24,6 +24,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
 #if CREATIVE
             this.Container.BindInterfacesAndSelfTo<CreativeService>().AsCached().NonLazy();
+#if TRIPLE_TAP_CREATIVE
+            this.Container.Resolve<CreativeService>().EnableTripleTap = true;
+#else
+            this.Container.Resolve<CreativeService>().EnableTripleTap = false;
+#endif
 #endif
         }
     }

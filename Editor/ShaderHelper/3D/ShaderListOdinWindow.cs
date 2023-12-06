@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.ShaderHelper
+namespace UITemplate.Editor.ShaderHelper._3D
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,30 +8,29 @@ namespace UITemplate.Editor.ShaderHelper
     using UnityEditor.AddressableAssets;
     using UnityEditor.SceneManagement;
     using UnityEngine;
-    using UnityEngine.SceneManagement;
 
     public class ShaderListOdinWindow : OdinEditorWindow
     {
-        [Button("Refresh Shaders and Materials")]
+        [Button("Refresh Shaders andMaterials")]
         [GUIColor(0.3f, 0.8f, 0.3f)]
         public void RefreshShadersAndMaterials() { this.shaderInfos = this.FindAllShadersAndMaterials(); }
 
         [ListDrawerSettings(Expanded = true)] [TableList] [ShowInInspector]
         private List<ShaderMaterialInfo> shaderInfos = new List<ShaderMaterialInfo>();
 
-        [MenuItem("TheOne/Shader List")]
+        [MenuItem("TheOne/3D/Shader List")]
         private static void OpenWindow() { GetWindow<ShaderListOdinWindow>().Show(); }
     
         private List<ShaderMaterialInfo> FindAllShadersAndMaterials()
         {
-            Dictionary<string, ShaderMaterialInfo> shaderDict = new Dictionary<string, ShaderMaterialInfo>();
+            var shaderDict = new Dictionary<string, ShaderMaterialInfo>();
 
             // Store the original scene path so we can return to it later.
-            string originalScenePath = EditorSceneManager.GetActiveScene().path;
+            var originalScenePath = EditorSceneManager.GetActiveScene().path;
 
             var scenes      = EditorBuildSettings.scenes;
-            int totalSteps  = scenes.Length + 1; // +1 for addressables processing.
-            int currentStep = 0;
+            var totalSteps  = scenes.Length + 1; // +1 for addressables processing.
+            var currentStep = 0;
 
             // Get all scenes from the build settings:
             foreach (var sceneInBuild in scenes)
@@ -48,27 +47,23 @@ namespace UITemplate.Editor.ShaderHelper
                     continue;
                 }
 
-                Scene scene = EditorSceneManager.OpenScene(sceneInBuild.path, OpenSceneMode.Single);
+                EditorSceneManager.OpenScene(sceneInBuild.path, OpenSceneMode.Single);
 
-                Renderer[] renderers = GameObject.FindObjectsOfType<Renderer>();
-                foreach (Renderer renderer in renderers)
+                var renderers = GameObject.FindObjectsOfType<Renderer>();
+                foreach (var renderer in renderers)
                 {
-                    foreach (Material mat in renderer.sharedMaterials)
+                    foreach (var mat in renderer.sharedMaterials)
                     {
-                        if (mat && mat.shader)
-                        {
-                            if (!shaderDict.ContainsKey(mat.shader.name))
-                            {
-                                shaderDict[mat.shader.name] = new ShaderMaterialInfo { OriginalShader = mat.shader };
-                            }
+                        if (!mat || !mat.shader) continue;
+                        
+                        shaderDict.TryAdd(mat.shader.name, new ShaderMaterialInfo { OriginalShader = mat.shader });
 
-                            shaderDict[mat.shader.name].AddUniqueMaterial(mat, renderer.gameObject);
-                        }
+                        shaderDict[mat.shader.name].AddUniqueMaterial(mat, renderer.gameObject);
                     }
                 }
             }
 
-            // Handle addressables:
+            // Handle addressable:
             EditorUtility.DisplayProgressBar("Refreshing Shaders and Materials", "Processing Addressables", currentStep / (float)totalSteps);
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             if (settings)
@@ -77,20 +72,16 @@ namespace UITemplate.Editor.ShaderHelper
                 {
                     foreach (var entry in group.entries)
                     {
-                        string     path       = AssetDatabase.GUIDToAssetPath(entry.guid);
-                        GameObject mainObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                        var     path       = AssetDatabase.GUIDToAssetPath(entry.guid);
+                        var mainObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                        List<string> dependencies = this.GetAllDependencies(path);
-                        foreach (var depPath in dependencies)
+                        var dependencies = this.GetAllDependencies(path);
+                        foreach (var mat in dependencies.Select(depPath => AssetDatabase.LoadAssetAtPath<Material>(depPath)).Where(mat => mat))
                         {
-                            Material mat = AssetDatabase.LoadAssetAtPath<Material>(depPath);
-                            if (mat)
-                            {
-                                shaderDict.TryAdd(mat.shader.name, new ShaderMaterialInfo { OriginalShader = mat.shader });
+                            shaderDict.TryAdd(mat.shader.name, new ShaderMaterialInfo { OriginalShader = mat.shader });
 
-                                ShaderMaterialInfo info = shaderDict[mat.shader.name];
-                                info.AddUniqueMaterial(mat, mainObject); // Assume the mainObject is using the material.
-                            }
+                            var info = shaderDict[mat.shader.name];
+                            info.AddUniqueMaterial(mat, mainObject); // Assume the mainObject is using the material.
                         }
                     }
                 }
@@ -123,8 +114,8 @@ namespace UITemplate.Editor.ShaderHelper
             var dropdown = new ValueDropdownList<Shader>();
             foreach (var shader in shaders)
             {
-                string path = AssetDatabase.GUIDToAssetPath(shader);
-                Shader s    = AssetDatabase.LoadAssetAtPath<Shader>(path);
+                var path = AssetDatabase.GUIDToAssetPath(shader);
+                var s    = AssetDatabase.LoadAssetAtPath<Shader>(path);
                 dropdown.Add(s.name, s);
             }
 
@@ -160,11 +151,11 @@ namespace UITemplate.Editor.ShaderHelper
 
         public void AddUniqueMaterial(Material material, GameObject obj)
         {
-            MaterialInfo existingInfo = this.Materials.FirstOrDefault(m => m.Material == material);
+            var existingInfo = this.Materials.FirstOrDefault(m => m.Material == material);
 
             if (existingInfo == null)
             {
-                MaterialInfo newInfo = new MaterialInfo { Material = material };
+                var newInfo = new MaterialInfo { Material = material };
                 newInfo.UsingObjects.Add(obj);
                 this.Materials.Add(newInfo);
             }
@@ -198,7 +189,7 @@ namespace UITemplate.Editor.ShaderHelper
             }
 
             // After replacing shaders, refresh the shaderInfos list:
-            ShaderListOdinWindow window = (ShaderListOdinWindow)EditorWindow.GetWindow(typeof(ShaderListOdinWindow));
+            var window = (ShaderListOdinWindow)EditorWindow.GetWindow(typeof(ShaderListOdinWindow));
             if (window != null)
             {
                 window.RefreshShadersAndMaterials();
@@ -244,14 +235,14 @@ namespace UITemplate.Editor.ShaderHelper
             get
             {
                 // If the asset is imported (like materials in FBX), always return false.
-                if (isImportedAsset)
+                if (this.isImportedAsset)
                     return false;
-                return _shouldReplace;
+                return this._shouldReplace;
             }
             set
             {
-                if (!isImportedAsset)
-                    _shouldReplace = value;
+                if (!this.isImportedAsset)
+                    this._shouldReplace = value;
             }
         }
         private bool _shouldReplace = true; 
@@ -259,9 +250,9 @@ namespace UITemplate.Editor.ShaderHelper
         public MaterialInfo()
         {
             // Check if the material is part of an imported asset.
-            string        assetPath = AssetDatabase.GetAssetPath(Material);
-            AssetImporter importer  = AssetImporter.GetAtPath(assetPath);
-            isImportedAsset = importer != null && importer.assetPath != assetPath;
+            var assetPath = AssetDatabase.GetAssetPath(this.Material);
+            var importer  = AssetImporter.GetAtPath(assetPath);
+            this.isImportedAsset = importer != null && importer.assetPath != assetPath;
         }
     }
 }

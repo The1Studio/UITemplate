@@ -232,7 +232,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (!this.adServicesConfig.EnableInterstitialAd) return false;
             return this.adServicesConfig.InterstitialAdActivePlacements.Contains("")
-                   || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
+                || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
         }
 
         public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
@@ -249,7 +249,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService.Log(
                 $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
             if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval
-                 || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
+              || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
@@ -319,7 +319,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAdsOrIAP = true;
-            this.adServices.ShowRewardedAd(place, OnRewardedAdCompleted);
+            this.adServices.ShowRewardedAd(place, OnRewardedAdCompleted, onFail);
             return;
 
             void OnRewardedAdCompleted()

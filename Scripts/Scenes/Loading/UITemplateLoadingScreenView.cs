@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
     using Core.AdsServices;
+    using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
@@ -90,6 +91,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         protected virtual string NextSceneName => "1.MainScene";
 
+        private bool IsClosedFirstOpen { get; set; }
+
         private float _loadingProgress;
         private int   loadingSteps;
 
@@ -113,6 +116,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         public override UniTask BindData()
         {
+            this.SignalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAOAClosedHandler);
+            this.SignalBus.Subscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
+            
             this.objectPoolContainer = new(nameof(this.objectPoolContainer));
             Object.DontDestroyOnLoad(this.objectPoolContainer);
 
@@ -131,6 +137,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             return UniTask.CompletedTask;
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.SignalBus.Unsubscribe<AppOpenFullScreenContentClosedSignal>(this.OnAOAClosedHandler);
+            this.SignalBus.Unsubscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
+        }
+
+        private void OnAOAClosedHandler() { this.IsClosedFirstOpen = true; }
 
         protected virtual async UniTask LoadNextScene()
         {
@@ -162,8 +177,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             var startWaitingAoaTime = DateTime.Now;
             // sometimes AOA delay when shown, we need 0.5s to wait for it
             return this.TrackProgress(UniTask.WaitUntil(() =>
-                (this.uiTemplateAdServiceWrapper.IsShowedFirstOpen && this.uiTemplateAdServiceWrapper.IsClosedFirstOpen) || 
-                (!this.uiTemplateAdServiceWrapper.IsShowedFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > (this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA + 0.5f))));
+                (this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && this.IsClosedFirstOpen) || 
+                (!this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA)));
         }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }

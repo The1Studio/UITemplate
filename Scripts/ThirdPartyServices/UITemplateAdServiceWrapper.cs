@@ -413,6 +413,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void AutoHideMREC()
         {
+            if (!this.screenManager.CurrentActiveScreen.HasValue)
+            {
+                this.HideAllMREC();
+                return;
+            }
+
             if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
             this.HideAllMREC();
         }

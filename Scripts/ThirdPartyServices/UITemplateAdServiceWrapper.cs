@@ -8,7 +8,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
@@ -119,8 +118,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
 
             //MREC
-            this.signalBus.Subscribe<ScreenShowSignal>(this.OnShowScreen);
             this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
+            this.signalBus.Subscribe<MRecAdLoadFailedSignal>(this.OnMRECLoadFailed);
         }
 
         private void OnInterstitialAdDisplayedHandler()
@@ -348,6 +347,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
+                this.OnCallShowMREC();
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
 
@@ -396,19 +396,34 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.CheckShowFirstOpen();
             }
+
+            this.AutoHideMREC();
         }
 
         #region Auto Hide MREC
 
         private HashSet<Type> screenCanShowMREC = new();
 
-        private void OnShowScreen(ScreenShowSignal signal)
+        private bool isMRECLoading;
+        private bool isMRECLoaded;
+
+        private void OnCallShowMREC()
         {
-            if (this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType())) return;
-            this.HideAllMREC();
+            this.isMRECLoading = true;
+            this.isMRECLoaded  = false;
         }
 
-        private void OnMRECLoaded() { this.AutoHideMREC(); }
+        private void OnMRECLoaded()
+        {
+            this.isMRECLoaded  = true;
+            this.isMRECLoading = false;
+        }
+
+        private void OnMRECLoadFailed()
+        {
+            this.isMRECLoading = false;
+            this.isMRECLoaded  = false;
+        }
 
         private void AddScreenCanShowMREC(Type screenType)
         {
@@ -423,6 +438,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void AutoHideMREC()
         {
+            if (this.isMRECLoading) return;
+            if (!this.isMRECLoaded) return;
             if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
             this.HideAllMREC();
         }
@@ -433,6 +450,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.HideMREC(position);
             }
+
+            this.isMRECLoaded = false;
         }
 
         #endregion

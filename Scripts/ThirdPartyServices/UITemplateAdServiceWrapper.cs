@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
@@ -118,6 +119,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
 
             //MREC
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnShowScreen);
             this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
         }
 
@@ -400,6 +402,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private HashSet<Type> screenCanShowMREC = new();
 
+        private void OnShowScreen(ScreenShowSignal signal)
+        {
+            if (this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType())) return;
+            this.HideAllMREC();
+        }
+
         private void OnMRECLoaded() { this.AutoHideMREC(); }
 
         private void AddScreenCanShowMREC(Type screenType)
@@ -416,7 +424,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void AutoHideMREC()
         {
             if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+            this.HideAllMREC();
+        }
 
+        private void HideAllMREC()
+        {
             foreach (AdViewPosition position in Enum.GetValues(typeof(AdViewPosition)))
             {
                 this.HideMREC(position);

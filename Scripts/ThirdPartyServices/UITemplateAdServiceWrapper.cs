@@ -421,8 +421,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void AutoHideMREC()
         {
-            if (!this.hasMRECShow) return;
-            if (!this.screenManager.CurrentActiveScreen.HasValue) return;
+            // if (!this.hasMRECShow) return;
             if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
 
             foreach (AdViewPosition position in Enum.GetValues(typeof(AdViewPosition)))

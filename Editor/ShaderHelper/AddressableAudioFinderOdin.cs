@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Castle.Components.DictionaryAdapter;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
     using UnityEditor;
@@ -90,7 +91,7 @@
                         {
                             var assetPath = AssetDatabase.GetAssetPath(item);
                             var importer  = AssetImporter.GetAtPath(assetPath) as AudioImporter;
-                            if (importer == null) continue;
+                            if (importer == null || this.GetAllAudioClipInAllList().Contains(item)) continue;
                             var serializedObject = new SerializedObject(importer);
                             var normalize        = serializedObject.FindProperty("m_Normalize").boolValue;
                             var audioSetting     = importer.defaultSampleSettings;
@@ -151,6 +152,74 @@
         private bool IsLongSound(AudioClip item) => item.length >= this.audioCompressSetting.longAudioLength;
 
         private List<string> GetAllDependencies(string assetPath) { return new List<string>(AssetDatabase.GetDependencies(assetPath, true)); }
+
+        #region Check Duplicate Audio
+
+        [BoxGroup("---", CenterLabel = true, Order = 10)]
+        [Button(ButtonSizes.Medium)]
+        [GUIColor(1, 1, 0.5f)]
+        public void CheckDuplicateAudios()
+        {
+            if (!this.GetAllAudioClipInAllList().Any()) this.FindAudiosInAddressables();
+
+            this.DuplicateAudios.Clear();
+            var audioClips = this.GetAllAudioClipInAllList().ToList();
+            if (audioClips.Count <= 1) return;
+            for (var i = 0; i < audioClips.Count - 1; i++)
+            {
+                for (var j = i + 1; j < audioClips.Count; j++)
+                {
+                    if (!this.AreAudioClipsEqual(audioClips[i], audioClips[j])) continue;
+
+                    if (this.DuplicateAudios.All(x => !x.Contains(audioClips[i])))
+                    {
+                        this.DuplicateAudios.Add(new HashSet<AudioClip> { audioClips[i], audioClips[j] });
+                    }
+                    else
+                    {
+                        this.DuplicateAudios.First(x => x.Contains(audioClips[i])).Add(audioClips[j]);
+                    }
+
+                    Debug.Log($"AudioClips {i} and {j} have the same audio data.");
+                }
+            }
+        }
+
+        private IEnumerable<AudioClip> GetAllAudioClipInAllList()
+        {
+            return this.wrongCompressionAudioInfoList.Concat(this.shortCompressedAudioInfoList).Concat(this.longCompressedAudioInfoList).Select(x => x.Audio);
+        }
+
+        [BoxGroup("---")] [ShowIf("@this.DuplicateAudios.Count > 0")]
+        public List<HashSet<AudioClip>> DuplicateAudios = new();
+
+        bool AreAudioClipsEqual(AudioClip clipA, AudioClip clipB)
+        {
+            if (clipA.samples != clipB.samples || clipA.channels != clipB.channels || clipA.frequency != clipB.frequency)
+            {
+                // AudioClips have different settings
+                return false;
+            }
+
+            float[] dataA = new float[clipA.samples * clipA.channels];
+            float[] dataB = new float[clipB.samples * clipB.channels];
+
+            clipA.GetData(dataA, 0);
+            clipB.GetData(dataB, 0);
+
+            // Compare audio data sample by sample
+            for (int i = 0; i < dataA.Length; i++)
+            {
+                if (dataA[i] != dataB[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        #endregion
 
         [Serializable]
         private class AudioCompressSetting

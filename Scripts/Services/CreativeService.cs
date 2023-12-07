@@ -37,7 +37,7 @@
 
             if (this.counter > 0)
             {
-                this.counter -= Time.deltaTime;
+                this.counter -= Time.unscaledDeltaTime;
             }
             else
             {

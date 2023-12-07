@@ -403,7 +403,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public void Tick()
         {
-            this.totalNoAdsPlayingTime += Time.deltaTime;
+            this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
             if (!this.IsCheckedShowFirstOpen)
             {
                 this.CheckShowFirstOpen();

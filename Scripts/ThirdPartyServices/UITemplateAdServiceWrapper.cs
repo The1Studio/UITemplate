@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
@@ -118,8 +119,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
 
             //MREC
-            this.signalBus.Subscribe<MRecAdDisplayedSignal>(this.OnMRECDisplayed);
-            this.signalBus.Subscribe<MRecAdDismissedSignal>(this.OnMRECDismissed);
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+            this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenClose);
+            this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
         }
 
         private void OnInterstitialAdDisplayedHandler()
@@ -232,7 +234,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (!this.adServicesConfig.EnableInterstitialAd) return false;
             return this.adServicesConfig.InterstitialAdActivePlacements.Contains("")
-                || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
+                   || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
         }
 
         public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
@@ -249,7 +251,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService.Log(
                 $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
             if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval
-              || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
+                 || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
@@ -395,18 +397,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.CheckShowFirstOpen();
             }
-
-            this.AutoHideMREC();
         }
 
         #region Auto Hide MREC
 
-        private bool          hasMRECShow;
         private HashSet<Type> screenCanShowMREC = new();
 
-        private void OnMRECDisplayed() { this.hasMRECShow = true; }
+        private void OnScreenShow(ScreenShowSignal signal) { this.CloseMRECWhenOpenNewScreen(signal.ScreenPresenter); }
 
-        private void OnMRECDismissed() { this.hasMRECShow = false; }
+        private void OnScreenClose(ScreenCloseSignal signal) { this.CloseMRECWhenCloseScreen(signal.ScreenPresenter); }
+
+        private void OnMRECLoaded() { this.CheckCurrentScreenCanShowMREC(); }
 
         private void AddScreenCanShowMREC(Type screenType)
         {
@@ -419,12 +420,33 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.screenCanShowMREC.Add(screenType);
         }
 
-        private void AutoHideMREC()
+        private void CheckCurrentScreenCanShowMREC()
         {
-            if (!this.hasMRECShow) return;
-            if (!this.screenManager.CurrentActiveScreen.HasValue) return;
-            if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+            if (this.screenManager == null) return;
+            if (this.screenManager.CurrentActiveScreen == null)
+            {
+                this.HideAllMREC();
+                return;
+            }
 
+            if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+            this.HideAllMREC();
+        }
+
+        private void CloseMRECWhenCloseScreen(IScreenPresenter screenPresenter)
+        {
+            if (!this.screenCanShowMREC.Contains(screenPresenter.GetType())) return;
+            this.HideAllMREC();
+        }
+
+        private void CloseMRECWhenOpenNewScreen(IScreenPresenter screenPresenter)
+        {
+            if (this.screenCanShowMREC.Contains(screenPresenter.GetType())) return;
+            this.HideAllMREC();
+        }
+
+        private void HideAllMREC()
+        {
             foreach (AdViewPosition position in Enum.GetValues(typeof(AdViewPosition)))
             {
                 this.HideMREC(position);

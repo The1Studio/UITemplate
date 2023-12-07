@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
@@ -116,6 +117,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
+
+            //MREC
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+            this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenClose);
+            this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
         }
 
         private void OnInterstitialAdDisplayedHandler()
@@ -391,14 +397,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.CheckShowFirstOpen();
             }
-
-            this.AutoHideMREC();
         }
 
         #region Auto Hide MREC
 
         private HashSet<Type> screenCanShowMREC = new();
 
+        private void OnScreenShow(ScreenShowSignal signal) { this.CloseMRECWhenOpenNewScreen(signal.ScreenPresenter); }
+
+        private void OnScreenClose(ScreenCloseSignal signal) { this.CloseMRECWhenCloseScreen(signal.ScreenPresenter); }
+
+        private void OnMRECLoaded() { this.CheckCurrentScreenCanShowMREC(); }
 
         private void AddScreenCanShowMREC(Type screenType)
         {
@@ -411,16 +420,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.screenCanShowMREC.Add(screenType);
         }
 
-        private void AutoHideMREC()
+        private void CheckCurrentScreenCanShowMREC()
         {
             if (this.screenManager == null) return;
-            if (this.screenManager.CurrentActiveScreen.Value == null)
+            if (this.screenManager.CurrentActiveScreen == null)
             {
                 this.HideAllMREC();
                 return;
             }
 
             if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+            this.HideAllMREC();
+        }
+
+        private void CloseMRECWhenCloseScreen(IScreenPresenter screenPresenter)
+        {
+            if (!this.screenCanShowMREC.Contains(screenPresenter.GetType())) return;
+            this.HideAllMREC();
+        }
+
+        private void CloseMRECWhenOpenNewScreen(IScreenPresenter screenPresenter)
+        {
+            if (this.screenCanShowMREC.Contains(screenPresenter.GetType())) return;
             this.HideAllMREC();
         }
 

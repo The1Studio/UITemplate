@@ -139,7 +139,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnStartDoingIAPHandler() { this.IsResumedFromAdsOrIAP = true; }
 
-        private void CloseAdInDifferentProcessHandler() { this.IsResumedFromAdsOrIAP = false; }
+        private async void CloseAdInDifferentProcessHandler()
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            this.IsResumedFromAdsOrIAP = false;
+        }
 
         private void ShownAdInDifferentProcessHandler() { this.IsResumedFromAdsOrIAP = true; }
 

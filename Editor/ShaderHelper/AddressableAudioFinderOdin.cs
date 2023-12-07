@@ -181,6 +181,8 @@
                     Debug.Log($"AudioClips {i} and {j} have the same audio data.");
                 }
             }
+
+            if (!this.DuplicateAudios.Any()) this.ShowNotification(new GUIContent("No Duplicate Audios"));
         }
 
         private IEnumerable<AudioClip> GetAllAudioClipInAllList()

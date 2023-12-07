@@ -3,13 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Castle.Components.DictionaryAdapter;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
     using UnityEditor;
     using UnityEditor.AddressableAssets;
     using UnityEngine;
-    using Object = UnityEngine.Object;
 
     public class AddressableAudioFinderOdin : OdinEditorWindow
     {

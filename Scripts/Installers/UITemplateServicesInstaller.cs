@@ -42,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<UITemplateHandleSoundWhenOpenAdsServices>().AsCached().NonLazy();
             //Reward Handle
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<IUITemplateBaseReward>();
-            this.Container.BindInterfacesAndSelfTo<UITemplateHandleRewardServices>().AsCached().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<UITemplateRewardHandler>().AsCached().NonLazy();
             this.Container.Bind<UITemplateGetRealRewardHelper>().AsCached().NonLazy();
 
             // this.Container.BindInterfacesTo<UITemplateAutoOpenStartedPackServices>().AsCached().NonLazy();

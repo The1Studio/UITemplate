@@ -6,7 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateHandleRewardServices : IInitializable
+    public class UITemplateRewardHandler : IInitializable
     {
         #region inject
 
@@ -16,10 +16,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
 
         #endregion
-        
-        private          Dictionary<string, IUITemplateBaseReward> dicRewardHandle = new();
 
-        public UITemplateHandleRewardServices(List<IUITemplateBaseReward> listRewardHandle, UITemplateHandleRewardController uiTemplateHandleRewardController, SignalBus signalBus, UITemplateInventoryDataController uiTemplateInventoryDataController)
+        private Dictionary<string, IUITemplateBaseReward> dicRewardHandle = new();
+
+        public UITemplateRewardHandler(List<IUITemplateBaseReward> listRewardHandle, UITemplateHandleRewardController uiTemplateHandleRewardController, SignalBus signalBus,
+            UITemplateInventoryDataController uiTemplateInventoryDataController)
         {
             this.listRewardHandle                  = listRewardHandle;
             this.uiTemplateHandleRewardController  = uiTemplateHandleRewardController;

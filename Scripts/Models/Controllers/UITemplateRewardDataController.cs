@@ -37,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             return this.uiTemplateRewardData.PackIdToIdToRewardData.Values
                 .SelectMany(rewardIdToData => rewardIdToData.ToList())
-                .Where(keyPairValue => keyPairValue.Value.LastTimeReceive.Day + keyPairValue.Value.Repeat >= DateTime.Now.Day)
+                .Where(keyPairValue => keyPairValue.Value.LastTimeReceive.DayOfYear + keyPairValue.Value.Repeat <= DateTime.Now.DayOfYear)
                 .GroupBy(keyPairValue => keyPairValue.Key)
                 .ToDictionary(group => group.Key, group => group.Sum(keyPairValue => keyPairValue.Value.RewardValue));
         }

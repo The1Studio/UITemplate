@@ -254,6 +254,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 this.analyticServices.UserProperties[eventFactory.LastLevelProperty] = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
                 this.Track(eventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
+                
+                if (obj.Level > 50) return;
                 this.Track(new CustomEvent()
                 {
                     EventName = $"play_level_{obj.Level}"

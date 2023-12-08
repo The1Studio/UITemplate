@@ -146,15 +146,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void ShownAdInDifferentProcessHandler() { this.IsResumedFromAdsOrIAP = true; }
 
+        private bool IsFiredFirstOpenEligibleSignal = false;
         private void CheckShowFirstOpen()
         {
-            if (this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAStartSession) return;
+            if (!this.IsFiredFirstOpenEligibleSignal)
+            {
+                this.signalBus.Fire(new AppOpenEligibleSignal(""));
+                this.IsFiredFirstOpenEligibleSignal = true;
+            }
 
             var totalLoadingTime = (DateTime.Now - this.StartLoadingAOATime).TotalSeconds;
 
             if (totalLoadingTime <= this.LoadingTimeToShowAOA)
             {
-                this.ShowAOAAdsIfAvailable();
+                this.ShowAOAAdsIfAvailable(false);
             }
             else
             {
@@ -165,11 +170,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public double LoadingTimeToShowAOA => this.thirdPartiesConfig.AdSettings.AOAThreshHold;
 
-        private void ShowAOAAdsIfAvailable()
+        private void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true)
         {
             if (!this.adServicesConfig.EnableAOAAd) return;
 
-            this.signalBus.Fire(new AppOpenEligibleSignal(""));
+            if (isFireEligibleSignal)
+            {
+                this.signalBus.Fire(new AppOpenEligibleSignal(""));
+            }
+            
             if (this.aoaAdServices.Any(aoaService => aoaService.IsAOAReady()))
             {
                 this.signalBus.Fire(new AppOpenCalledSignal(""));
@@ -402,7 +411,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public void Tick()
         {
             this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
-            if (!this.IsCheckedShowFirstOpen)
+
+            if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession)
             {
                 this.CheckShowFirstOpen();
             }

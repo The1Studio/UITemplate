@@ -7,10 +7,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
 
     public class UITemplateRewardData : ILocalData, IUITemplateLocalData
     {
-        public Dictionary<string, Dictionary<string, UITemplateRewardItemData>> IapPackIdToRewards { get; set; } = new();
+        public Dictionary<string, Dictionary<string, UITemplateRewardItemData>> PackIdToIdToRewardData { get; set; } = new();
 
         public void Init()         { }
-        public Type ControllerType => typeof(UITemplateHandleRewardController);
+        public Type ControllerType => typeof(UITemplateRewardDataController);
     }
 
     public class UITemplateRewardItemData

@@ -91,7 +91,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             if (rewardItemData.Count > 0)
             {
-                this.uiTemplateRewardHandler.AddRewards(productId, rewardItemData, source);
+                this.uiTemplateRewardHandler.AddRewardsWithPackId(productId, rewardItemData, source);
             }
         }
 

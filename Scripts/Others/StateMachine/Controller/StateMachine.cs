@@ -6,52 +6,68 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.HyperCasual.Others.StateMachine.Interface;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Interface;
+    using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Signals;
     using Zenject;
 
     public abstract class StateMachine : IStateMachine, ITickable
     {
+        #region inject
+
         protected readonly ILogService              LogService;
+        private readonly   SignalBus                signalBus;
         protected readonly Dictionary<Type, IState> TypeToState;
 
+        #endregion
+
+
         protected StateMachine(
-            List<IState>           listState,
-            ILogService            logService
+            List<IState> listState,
+            ILogService logService,
+            SignalBus signalBus
         )
         {
-            this.LogService             = logService;
-            this.TypeToState            = listState.ToDictionary(state => state.GetType(), state => state);
+            this.LogService  = logService;
+            this.signalBus   = signalBus;
+            this.TypeToState = listState.ToDictionary(state => state.GetType(), state => state);
         }
 
         public IState CurrentState { get; private set; }
 
-        public void TransitionTo<T>() where T : class, IState
-        {
-            this.TransitionTo(typeof(T));
-        }
+        public void TransitionTo<T>() where T : class, IState { this.TransitionTo(typeof(T)); }
 
         public void TransitionTo<TState, TModel>(TModel model) where TState : class, IState<TModel>
         {
-            this.CurrentState?.Exit();
-            this.CurrentState = this.TypeToState.GetValueOrDefault(typeof(TState));
-            if (this.CurrentState is not TState nextState) return;
-            nextState.Model = model;
-            nextState.Enter();
+            var stateType = typeof(TState);
+            if (!this.TypeToState.TryGetValue(stateType, out var nextState)) return;
+
+            if (nextState is not TState nextStateT) return;
+            nextStateT.Model = model;
+
+            this.InternalStateTransition(nextState);
         }
 
         public virtual void TransitionTo(Type stateType)
         {
+            if (!this.TypeToState.TryGetValue(stateType, out var nextState)) return;
+
+            this.InternalStateTransition(nextState);
+        }
+
+        private void InternalStateTransition(IState nextState)
+        {
             if (this.CurrentState != null)
             {
                 this.CurrentState.Exit();
+                this.signalBus.Fire(new OnStateExitSignal(this.CurrentState));
                 this.LogService.Log($"Exit {this.CurrentState.GetType().Name} State!!!");
             }
 
-            if (!this.TypeToState.TryGetValue(stateType, out var nextState)) return;
-
             this.CurrentState = nextState;
             nextState.Enter();
-            this.LogService.Log($"Enter {stateType.Name} State!!!");
+            this.signalBus.Fire(new OnStateEnterSignal(this.CurrentState));
+            this.LogService.Log($"Enter {nextState.GetType().Name} State!!!");
         }
+
 
         public void Tick()
         {

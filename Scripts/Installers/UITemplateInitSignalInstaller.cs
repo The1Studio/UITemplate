@@ -29,10 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<LevelEndedSignal>();
             this.Container.DeclareSignal<LevelSkippedSignal>();
             this.Container.DeclareSignal<RemoteConfigFetchedSucceededSignal>();
-            this.Container.DeclareSignal<ScaleDecoration2DItem>();
-            this.Container.DeclareSignal<UITemplateAddRewardsSignal>();
-            this.Container.DeclareSignal<BuildingOnMouseDownSignal>();
-            this.Container.DeclareSignal<UITemplateUnlockBuildingSignal>();
+            this.Container.DeclareSignal<OnRemoveAdsSucceedSignal>();
             
             //State machine
             this.Container.DeclareSignal<OnStateEnterSignal>();

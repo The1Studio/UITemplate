@@ -2,7 +2,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
 {
     using System.Collections.Generic;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using Zenject;
 
@@ -10,16 +12,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
     {
         #region inject
 
-        private readonly List<IUITemplateBaseReward>       listRewardHandle;
-        private readonly UITemplateHandleRewardController  uiTemplateHandleRewardController;
         private readonly SignalBus                         signalBus;
+        private readonly List<IUITemplateRewardExecutor>       listRewardHandle;
+        private readonly UITemplateHandleRewardController  uiTemplateHandleRewardController;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
 
         #endregion
 
-        private Dictionary<string, IUITemplateBaseReward> dicRewardHandle = new();
+        private Dictionary<string, IUITemplateRewardExecutor> rewardIdToRewardExecutor = new();
 
-        public UITemplateRewardHandler(List<IUITemplateBaseReward> listRewardHandle, UITemplateHandleRewardController uiTemplateHandleRewardController, SignalBus signalBus,
+        public UITemplateRewardHandler(List<IUITemplateRewardExecutor> listRewardHandle, UITemplateHandleRewardController uiTemplateHandleRewardController, SignalBus signalBus,
             UITemplateInventoryDataController uiTemplateInventoryDataController)
         {
             this.listRewardHandle                  = listRewardHandle;
@@ -32,25 +34,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
         {
             foreach (var data in this.listRewardHandle)
             {
-                this.dicRewardHandle.Add(data.RewardId, data);
+                this.rewardIdToRewardExecutor.Add(data.RewardId, data);
             }
-
-            this.signalBus.Subscribe<UITemplateAddRewardsSignal>(this.OnAddAndOnReceiveRewardNow);
         }
-
-        private void OnAddAndOnReceiveRewardNow(UITemplateAddRewardsSignal obj)
+        
+        public void AddRewards(string iapPackId, Dictionary<string, UITemplateRewardItemData> rewardIdToData, GameObject sourceGameObject)
         {
-            this.uiTemplateHandleRewardController.AddRepeatedReward(obj.IapPackId, obj.RewardIdToData);
+            this.uiTemplateHandleRewardController.AddRepeatedReward(iapPackId, rewardIdToData);
 
-            foreach (var data in obj.RewardIdToData)
+            foreach (var data in rewardIdToData)
             {
-                this.ReceiveReward(data.Key, data.Value.RewardValue, obj.SourceGameObject == null ? null : obj.SourceGameObject.transform as RectTransform);
+                this.ReceiveReward(data.Key, data.Value.RewardValue, sourceGameObject == null ? null : sourceGameObject.transform as RectTransform);
             }
         }
 
         private void ReceiveReward(string rewardKey, int rewardValue, RectTransform startPos = null)
         {
-            if (this.dicRewardHandle.TryGetValue(rewardKey, out var dicRewardRecord))
+            if (this.rewardIdToRewardExecutor.TryGetValue(rewardKey, out var dicRewardRecord))
             {
                 dicRewardRecord.ReceiveReward(rewardValue, startPos);
             }

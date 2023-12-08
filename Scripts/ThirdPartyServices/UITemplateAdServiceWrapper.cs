@@ -15,9 +15,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using Zenject;
 
@@ -106,7 +106,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.OnInterstitialDisplayedFailedHandler);
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
-            this.signalBus.Subscribe<UITemplateAddRewardsSignal>(this.OnRemoveAdsComplete);
             this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnApplicationPauseHandler);
 
             //AOA
@@ -388,9 +387,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        private void OnRemoveAdsComplete(UITemplateAddRewardsSignal signal)
+        private void OnRemoveAdsComplete()
         {
-            if (!signal.RewardIdToData.Keys.Contains(UITemplateRemoveAdReward.REWARD_ID)) return;
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();
@@ -465,5 +463,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         #endregion
+
+        public void RemoveAds()
+        {
+            this.adServices.RemoveAds();
+            this.OnRemoveAdsComplete();
+            this.signalBus.Fire<OnRemoveAdsSucceedSignal>();
+        }
     }
 }

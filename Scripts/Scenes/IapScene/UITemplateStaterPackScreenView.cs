@@ -108,7 +108,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         public override async UniTask BindData(UITemplateStaterPackModel screenModel)
         {
             var starterPacks = this.uiTemplateShopPackBlueprint.GetPack().Where(x => x.RewardIdToRewardDatas.Count > 1).ToList();
-            this.IapPack = starterPacks.First(packRecord => packRecord.RewardIdToRewardDatas.ContainsKey(UITemplateRemoveAdReward.REWARD_ID) != this.adServices.IsRemoveAds()).Id;
+            this.IapPack = starterPacks.First(packRecord => packRecord.RewardIdToRewardDatas.ContainsKey(UITemplateRemoveAdRewardExecutorBase.REWARD_ID) != this.adServices.IsRemoveAds()).Id;
 
             this.View.txtPrice.text = $"Special Offer: Only {this.iapServices.GetPriceById(this.IapPack, this.uiTemplateShopPackBlueprint.GetDataById(this.IapPack).DefaultPrice)}";
 

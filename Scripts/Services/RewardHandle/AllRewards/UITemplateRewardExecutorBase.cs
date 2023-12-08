@@ -2,13 +2,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards
 {
     using UnityEngine;
 
-    public interface IUITemplateBaseReward
+    public interface IUITemplateRewardExecutor
     {
         string RewardId { get; }
         void   ReceiveReward(int value, RectTransform startPosAnimation);
     }
 
-    public abstract class UITemplateBaseReward : IUITemplateBaseReward
+    public abstract class UITemplateRewardExecutorBase : IUITemplateRewardExecutor
     {
         public abstract string RewardId { get; }
 

@@ -15,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
+    using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
@@ -292,19 +292,48 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     return false;
                 }
 
-                this.totalNoAdsPlayingTime = 0;
-                InternalShowInterstitial();
-                this.backFillAdsService.ShowInterstitialAd(place);
-                return true;
+                if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
+                {
+                    ShowDelayInter(() =>
+                    {
+                        InternalShowInterstitial();
+                        this.backFillAdsService.ShowInterstitialAd(place);
+                    }).Forget();
+                }
+                else
+                {
+                    InternalShowInterstitial();
+                    this.backFillAdsService.ShowInterstitialAd(place);
+                }
+                return true; 
             }
 
-            this.logService.Log($"onelog: ShowInterstitialAd4 {place} force {force}");
-            InternalShowInterstitial();
-            this.adServices.ShowInterstitialAd(place);
+            if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
+            {
+                ShowDelayInter(() =>
+                {
+                    InternalShowInterstitial();
+                    this.adServices.ShowInterstitialAd(place);
+                }).Forget();
+            }
+            else
+            {
+                InternalShowInterstitial();
+                this.adServices.ShowInterstitialAd(place);
+            }
             return true;
+            
+            async UniTaskVoid ShowDelayInter(Action action)
+            {
+                this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f), DelayType.UnscaledDeltaTime);
+                action.Invoke();
+            } 
 
             void InternalShowInterstitial()
             {
+                this.logService.Log($"onelog: ShowInterstitialAd4 {place} force {force}");
+                this.totalNoAdsPlayingTime = 0;
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
                 this.IsResumedFromAdsOrIAP        = true;

@@ -33,7 +33,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
             NotificationInstaller.Install(this.Container);
             StoreRatingServiceInstaller.Install(this.Container);
-            BreakAdsInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
         }

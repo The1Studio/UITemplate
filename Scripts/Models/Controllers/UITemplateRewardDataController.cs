@@ -33,13 +33,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
         
-        public Dictionary<string, int> GetAvailableRepeatedReward()
+        public List<KeyValuePair<string, UITemplateRewardItemData>> GetAvailableRepeatedReward()
         {
             return this.uiTemplateRewardData.PackIdToIdToRewardData.Values
                 .SelectMany(rewardIdToData => rewardIdToData.ToList())
                 .Where(keyPairValue => keyPairValue.Value.LastTimeReceive.DayOfYear + keyPairValue.Value.Repeat <= DateTime.Now.DayOfYear)
-                .GroupBy(keyPairValue => keyPairValue.Key)
-                .ToDictionary(group => group.Key, group => group.Sum(keyPairValue => keyPairValue.Value.RewardValue));
+                .ToList();
+        }
+        
+        public bool IsExistAvailableRepeatedReward()
+        {
+            return this.GetAvailableRepeatedReward().Count > 0;
         }
     }
 }

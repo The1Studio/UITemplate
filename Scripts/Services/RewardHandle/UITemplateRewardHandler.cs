@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
@@ -37,12 +39,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
 
         public Dictionary<string, int> ClaimRepeatedReward()
         {
-            var availableRepeatedReward = this.uiTemplateRewardDataController.GetAvailableRepeatedReward();
+            var rewardList = this.uiTemplateRewardDataController.GetAvailableRepeatedReward();
+            var availableRepeatedReward = rewardList
+                .GroupBy(keyPairValue => keyPairValue.Key)
+                .ToDictionary(group => group.Key, group => group.Sum(keyPairValue => keyPairValue.Value.RewardValue));
             
             foreach (var (rewardId, value) in availableRepeatedReward)
             {
                 this.ReceiveReward(rewardId, value);
             }
+            
+            rewardList.ForEach(keyPairValue => keyPairValue.Value.LastTimeReceive = DateTime.Now);
 
             return availableRepeatedReward;
         }

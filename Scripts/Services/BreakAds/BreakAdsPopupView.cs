@@ -13,24 +13,14 @@
     [PopupInfo(nameof(BreakAdsPopupView))]
     public class BreakAdsPopupPresenter : BasePopupPresenter<BreakAdsPopupView>
     {
-        private readonly SignalBus signalBus;
+        private readonly BreakAdsViewHelper breakAdsViewHelper;
 
-        public BreakAdsPopupPresenter(SignalBus signalBus) : base(signalBus) { this.signalBus = signalBus; }
+        public BreakAdsPopupPresenter(SignalBus signalBus, BreakAdsViewHelper breakAdsViewHelper) : base(signalBus) { this.breakAdsViewHelper = breakAdsViewHelper; }
 
-        public override UniTask BindData()
-        {
-            this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.CloseView);
-            this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.CloseView);
-            this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.CloseView);
+        protected override void OnViewReady() { this.breakAdsViewHelper.OnViewReady(this.View, this); }
 
-            return UniTask.CompletedTask;
-        }
+        public override UniTask BindData() { return this.breakAdsViewHelper.BindData(); }
 
-        public override void Dispose()
-        {
-            this.signalBus.Unsubscribe<InterstitialAdClosedSignal>(this.CloseView);
-            this.signalBus.Unsubscribe<InterstitialAdDisplayedFailedSignal>(this.CloseView);
-            this.signalBus.Unsubscribe<InterstitialAdDisplayedSignal>(this.CloseView);
-        }
+        public override void Dispose() { this.breakAdsViewHelper.Dispose(); }
     }
 }

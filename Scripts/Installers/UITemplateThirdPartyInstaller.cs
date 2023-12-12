@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.Configs;
+    using ServiceImplementation.Configs.GameEvents;
     using ServiceImplementation.FirebaseAnalyticTracker;
     using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
@@ -33,8 +34,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             var thirdPartiesConfig = Resources.Load<ThirdPartiesConfig>(ThirdPartiesConfig.ResourcePath);
             this.Container.Bind<ThirdPartiesConfig>().FromInstance(thirdPartiesConfig).AsSingle();
             
+            //Remove config
             var remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);
             this.Container.Bind<RemoteConfigSetting>().FromInstance(remoteConfigSetting).AsSingle();
+            
+            //Game event config
+            var gameEventSetting = Resources.Load<GameEventsSetting>(GameEventsSetting.ResourcePath);
+            this.Container.Bind<GameEventsSetting>().FromInstance(gameEventSetting).AsSingle();
 
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<BaseAnalyticEventFactory>();
             var listFactory = this.Container.ResolveAll<IAnalyticEventFactory>();

@@ -8,7 +8,6 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
-    using Sirenix.Utilities;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using Zenject;
 

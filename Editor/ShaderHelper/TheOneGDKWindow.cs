@@ -2,10 +2,10 @@ namespace UITemplate.Editor.ShaderHelper
 {
     using Core.AnalyticServices;
     using ServiceImplementation.Configs;
-    using ServiceImplementation.Configs.GameEvents;
     using ServiceImplementation.FireBaseRemoteConfig;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
+    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using UnityEditor;
     using UnityEngine;
 

@@ -31,17 +31,19 @@
         #region inject
 
         private readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
-        private readonly IFactory<AutoCooldownTimer>   autoCooldownTimer;
+        private readonly IFactory<AutoCooldownTimer>         autoCooldownTimer;
+        private readonly DiContainer                         diContainer;
 
         #endregion
 
         private List<Tween> tweenList = new();
 
         public UITemplateRacingEventScreenPresenter(SignalBus signalBus,
-            UITemplateEventRacingDataController uiTemplateEventRacingDataController, IFactory<AutoCooldownTimer> autoCooldownTimer) : base(signalBus)
+            UITemplateEventRacingDataController uiTemplateEventRacingDataController, IFactory<AutoCooldownTimer> autoCooldownTimer, DiContainer diContainer) : base(signalBus)
         {
             this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController;
-            this.autoCooldownTimer             = autoCooldownTimer;
+            this.autoCooldownTimer                   = autoCooldownTimer;
+            this.diContainer                         = diContainer;
         }
 
         protected override void OnViewReady()
@@ -50,7 +52,11 @@
             this.View.closeButton.onClick.AddListener(this.CloseView);
             this.autoCooldownTimer.Create().CountDown(this.uiTemplateEventRacingDataController.RemainSecond,
                 _ => { this.View.countDownText.text = TimeSpan.FromSeconds(this.uiTemplateEventRacingDataController.RemainSecond).ToShortTimeString(); });
-
+            foreach (var uiTemplateRacingRowView in this.View.playerSliders)
+            {
+                this.diContainer.Inject(uiTemplateRacingRowView);
+            }
+            
             this.InitPlayerRowView();
         }
 

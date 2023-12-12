@@ -5,6 +5,7 @@
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.ObjectPool;
+    using ServiceImplementation.Configs.GameEvents;
     using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
@@ -30,6 +31,7 @@
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly SignalBus                         signalBus;
         private readonly IRemoteConfig                     remoteConfig;
+        private readonly GameEventsSetting                 gameEventsSetting;
 
         #endregion
 
@@ -37,13 +39,14 @@
         public  int          RacingScoreMax = 1000;
 
         public UITemplateEventRacingDataController(UITemplateEventRacingData uiTemplateEventRacingData, IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
-            SignalBus signalBus, IRemoteConfig remoteConfig)
+            SignalBus signalBus, IRemoteConfig remoteConfig, GameEventsSetting gameEventsSetting)
         {
             this.uiTemplateEventRacingData         = uiTemplateEventRacingData;
             this.gameAssets                        = gameAssets;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.signalBus                         = signalBus;
             this.remoteConfig                      = remoteConfig;
+            this.gameEventsSetting                 = gameEventsSetting;
         }
 
         public int      YourOldShowScore => this.uiTemplateEventRacingData.YourOldShowScore;
@@ -58,7 +61,6 @@
         public void Initialize()
         {
             this.countryFlags = this.gameAssets.LoadAssetAsync<GameObject>(CountryFlagsPrefab).WaitForCompletion().Spawn().GetComponent<CountryFlags>();
-            this.signalBus.Subscribe<OnMergedMergeItemSignal>(this.OnMergeItemMergedHandler);
             this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.OnFetchSucceedHandler);
         }
 

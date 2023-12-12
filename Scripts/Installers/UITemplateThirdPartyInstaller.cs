@@ -5,9 +5,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.Configs;
-    using ServiceImplementation.Configs.GameEvents;
     using ServiceImplementation.FirebaseAnalyticTracker;
     using ServiceImplementation.FireBaseRemoteConfig;
+    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using UnityEngine;
     using Zenject;

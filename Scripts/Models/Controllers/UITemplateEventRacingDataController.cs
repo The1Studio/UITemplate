@@ -5,8 +5,8 @@
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.ObjectPool;
-    using ServiceImplementation.Configs.GameEvents;
     using ServiceImplementation.FireBaseRemoteConfig;
+    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
@@ -17,7 +17,6 @@
     public class UITemplateEventRacingDataController : IUITemplateControllerData, IInitializable
     {
         private const string RacingEventMaxScoreKey      = "racing_event_max_score";
-        private const string RacingCurrency              = "OrangeRacing";
         private const float  RacingMaxProgressionPercent = 0.8f;
 
         public const int TotalRacingPlayer = 5;
@@ -52,7 +51,7 @@
         }
 
         public int      YourOldShowScore => this.uiTemplateEventRacingData.YourOldShowScore;
-        public int      YourNewScore     => this.uiTemplateInventoryDataController.GetCurrencyValue(RacingCurrency);
+        public int      YourNewScore     => this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameEventsSetting.RacingConfig.RacingCurrency);
         public int      YourIndex        => this.uiTemplateEventRacingData.yourIndex;
         public long     RemainSecond     => (long)(this.uiTemplateEventRacingData.endDate - DateTime.Now).TotalSeconds;
         public DateTime StartDate        => this.uiTemplateEventRacingData.startDate;
@@ -61,7 +60,7 @@
         public void UpdateUserOldShowScore()
         {
             this.uiTemplateEventRacingData.YourOldShowScore =
-                this.uiTemplateInventoryDataController.GetCurrencyValue(RacingCurrency);
+                this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameEventsSetting.RacingConfig.RacingCurrency);
         }
 
         public void Initialize()
@@ -107,7 +106,7 @@
                 racingPlayerData.IconAddressable = this.gameEventsSetting.RacingConfig.IconAddressableSet.PickRandom();
             }
 
-            if (isYou) racingPlayerData.Score = this.uiTemplateInventoryDataController.GetCurrencyValue(RacingCurrency);
+            if (isYou) racingPlayerData.Score = this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameEventsSetting.RacingConfig.RacingCurrency);
 
             return racingPlayerData;
         }

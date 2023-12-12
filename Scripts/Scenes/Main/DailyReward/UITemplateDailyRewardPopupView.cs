@@ -47,12 +47,12 @@
         private CancellationTokenSource              closeViewCts;
 
         public UITemplateDailyRewardPopupPresenter(
-            SignalBus signalBus,
-            ILogService logger,
-            DiContainer diContainer,
+            SignalBus                       signalBus,
+            ILogService                     logger,
+            DiContainer                     diContainer,
             UITemplateDailyRewardController uiTemplateDailyRewardController,
-            UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
-            UITemplateLevelDataController levelDataController
+            UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint,
+            UITemplateLevelDataController   levelDataController
         ) : base(signalBus, logger)
         {
             this.diContainer                     = diContainer;
@@ -74,10 +74,13 @@
         {
             this.popupModel = param;
 
-            this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values.Select(uiTemplateDailyRewardRecord =>
-                                                                                         new UITemplateDailyRewardItemModel(uiTemplateDailyRewardRecord,
-                                                                                                                            this.uiTemplateDailyRewardController
-                                                                                                                                .GetDateRewardStatus(uiTemplateDailyRewardRecord.Day))).ToList();
+            this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values
+                .Select(uiTemplateDailyRewardRecord =>
+                    new UITemplateDailyRewardItemModel(
+                        uiTemplateDailyRewardRecord,
+                        this.uiTemplateDailyRewardController.GetDateRewardStatus(uiTemplateDailyRewardRecord.Day)
+                    )
+                ).ToList();
 
             this.InitListDailyReward(this.listRewardModel);
 
@@ -87,7 +90,10 @@
             return UniTask.CompletedTask;
         }
 
-        private async void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels) { await this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer); }
+        private void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels)
+        {
+            this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget();
+        }
 
         private void ClaimReward()
         {
@@ -117,15 +123,17 @@
 
             this.View.dailyRewardAdapter.Refresh();
 
-            this.closeViewCts = new();
-            UniTask.Delay(TimeSpan.FromSeconds(1.5), cancellationToken: this.closeViewCts.Token).ContinueWith(this.CloseView);
+            UniTask.Delay(
+                TimeSpan.FromSeconds(1.5f),
+                cancellationToken: (this.closeViewCts = new()).Token
+            ).ContinueWith(this.CloseViewAsync).Forget();
         }
 
         public override void Dispose()
         {
             base.Dispose();
+            this.closeViewCts?.Cancel();
             this.closeViewCts?.Dispose();
-            this.closeViewCts = null;
         }
     }
 }

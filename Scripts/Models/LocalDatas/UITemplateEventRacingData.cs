@@ -1,0 +1,44 @@
+﻿namespace TheOneStudio.HyperCasual.GamePlay.Models
+{
+    using System;
+    using System.Collections.Generic;
+    using GameFoundation.Scripts.Interfaces;
+    using Sirenix.Serialization;
+    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+
+    public class UITemplateEventRacingData : ILocalData, IUITemplateLocalData
+    {
+        public DateTime startDate;
+        public DateTime endDate;
+        public DateTime lastRandomTime;
+
+        public int YourOldShowScore;
+        public int yourIndex;
+
+        [OdinSerialize] public Dictionary<int, RacingPlayerData> playerIndexToData = new();
+
+
+        //set startDate at start of local today and endDate at end of 7 days from today
+        //set playerIndexToScore to empty dictionary
+        //set yourIndex to random from 1 to 5
+        public void Init()
+        {
+            this.startDate      = DateTime.Today.AddDays(-0.75f);
+            this.lastRandomTime = this.startDate;
+            this.endDate        = this.startDate.AddDays(UITemplateEventRacingDataController.RacingDay - 0.75f);
+
+            this.playerIndexToData = new Dictionary<int, RacingPlayerData>();
+            this.yourIndex         = new Random().Next(0, UITemplateEventRacingDataController.TotalRacingPlayer);
+        }
+
+        public Type ControllerType => typeof(UITemplateEventRacingDataController);
+    }
+
+    public class RacingPlayerData
+    {
+        public string Name;
+        public string CountryCode;
+        public int    itemId;
+        public int    Score;
+    }
+}

@@ -15,7 +15,7 @@
         public int YourOldShowScore;
         public int yourIndex;
 
-        [OdinSerialize] public Dictionary<int, RacingPlayerData> playerIndexToData = new();
+        [OdinSerialize] public Dictionary<int, UITemplateRacingPlayerData> playerIndexToData = new();
 
 
         //set startDate at start of local today and endDate at end of 7 days from today
@@ -27,18 +27,18 @@
             this.lastRandomTime = this.startDate;
             this.endDate        = this.startDate.AddDays(UITemplateEventRacingDataController.RacingDay - 0.75f);
 
-            this.playerIndexToData = new Dictionary<int, RacingPlayerData>();
+            this.playerIndexToData = new Dictionary<int, UITemplateRacingPlayerData>();
             this.yourIndex         = new Random().Next(0, UITemplateEventRacingDataController.TotalRacingPlayer);
         }
 
         public Type ControllerType => typeof(UITemplateEventRacingDataController);
     }
 
-    public class RacingPlayerData
+    public class UITemplateRacingPlayerData
     {
         public string Name;
         public string CountryCode;
-        public int    itemId;
+        public string IconAddressable;
         public int    Score;
     }
 }

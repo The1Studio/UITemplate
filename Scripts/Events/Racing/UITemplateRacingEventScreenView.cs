@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
@@ -10,7 +9,6 @@
     using GameFoundation.Scripts.UIModule.Utilities.UIStuff;
     using TheOneStudio.HyperCasual.GamePlay.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
     using UIModule.Utilities;
     using UnityEngine.UI;
@@ -28,26 +26,22 @@
 
 
     [PopupInfo(nameof(UITemplateRacingEventScreenView))]
-    public abstract class RacingEventScreenPresenter : UITemplateBasePopupPresenter<UITemplateRacingEventScreenView>
+    public abstract class UITemplateRacingEventScreenPresenter : UITemplateBasePopupPresenter<UITemplateRacingEventScreenView>
     {
         #region inject
 
         private readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
         private readonly IFactory<AutoCooldownTimer>   autoCooldownTimer;
-        private readonly UITemplateAdServiceWrapper    adServiceWrapper;
 
         #endregion
 
         private List<Tween> tweenList = new();
 
-
-        public RacingEventScreenPresenter(SignalBus signalBus,
-            UITemplateEventRacingDataController uiTemplateEventRacingDataController, IFactory<AutoCooldownTimer> autoCooldownTimer,
-            UITemplateAdServiceWrapper adServiceWrapper) : base(signalBus)
+        public UITemplateRacingEventScreenPresenter(SignalBus signalBus,
+            UITemplateEventRacingDataController uiTemplateEventRacingDataController, IFactory<AutoCooldownTimer> autoCooldownTimer) : base(signalBus)
         {
             this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController;
             this.autoCooldownTimer             = autoCooldownTimer;
-            this.adServiceWrapper              = adServiceWrapper;
         }
 
         protected override void OnViewReady()
@@ -72,7 +66,6 @@
 
         public override UniTask BindData()
         {
-            this.adServiceWrapper.ShowMREC<RacingEventScreenPresenter>(AdViewPosition.BottomCenter);
             var oldShowScore = this.uiTemplateEventRacingDataController.YourOldShowScore;
             this.uiTemplateEventRacingDataController.UpdateUserOldShowScore();
             var yourNewScore = this.uiTemplateEventRacingDataController.YourNewScore;

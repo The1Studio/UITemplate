@@ -114,7 +114,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
-            
+
             //Resume can show AOA
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.CloseAdInDifferentProcessHandler);
@@ -178,7 +178,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.signalBus.Fire(new AppOpenEligibleSignal(""));
             }
-            
+
             if (this.aoaAdServices.Any(aoaService => aoaService.IsAOAReady()))
             {
                 this.signalBus.Fire(new AppOpenCalledSignal(""));
@@ -305,7 +305,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     InternalShowInterstitial();
                     this.backFillAdsService.ShowInterstitialAd(place);
                 }
-                return true; 
+                return true;
             }
 
             if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
@@ -322,13 +322,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.adServices.ShowInterstitialAd(place);
             }
             return true;
-            
+
             async UniTaskVoid ShowDelayInter(Action action)
             {
-                this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
+                await this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f), DelayType.UnscaledDeltaTime);
                 action.Invoke();
-            } 
+            }
 
             void InternalShowInterstitial()
             {

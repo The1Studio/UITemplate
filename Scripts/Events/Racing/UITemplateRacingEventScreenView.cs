@@ -66,11 +66,7 @@
             {
                 var rowView    = this.View.playerSliders[i];
                 var playerData = this.uiTemplateEventRacingDataController.GetPlayerData(i);
-                rowView.nameText.text    = playerData.Name;
-                rowView.scoreText.text   = playerData.Score.ToString();
-                rowView.yourIcon.sprite  = this.itemHelper.GetItemIconSprite(playerData.itemId);
-                rowView.yourEmoji.sprite = this.itemHelper.GetRandomEmoji(EmojiType.Start);
-                rowView.flagImage.sprite = this.uiTemplateEventRacingDataController.GetCountryFlagSprite(playerData.CountryCode);
+                rowView.InitView(playerData);
             }
         }
 

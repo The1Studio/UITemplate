@@ -17,13 +17,16 @@
         [OnValueChanged("OnChangeRacingEvent")]
         public bool enableRacingEvent;
 
-        [SerializeField] [ShowIf("enableRacingEvent")] [BoxGroup("Racing Event")] public GameEventRacingConfig racingConfig;
+        [SerializeField] [ShowIf("enableRacingEvent")] [BoxGroup("Racing Event")]
+        public GameEventRacingConfig racingConfig;
 
         public GameEventRacingConfig RacingConfig => this.racingConfig;
 
+#if UNITY_EDITOR
         private void OnChangeRacingEvent()
         {
             DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent);
         }
+#endif
     }
 }

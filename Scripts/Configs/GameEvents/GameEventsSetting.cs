@@ -1,6 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
 {
+#if UNITY_EDITOR
     using ServiceImplementation.Configs.Editor;
+#endif
     using Sirenix.OdinInspector;
     using UnityEngine;
 

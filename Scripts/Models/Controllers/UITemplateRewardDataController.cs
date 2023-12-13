@@ -19,7 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             foreach (var (rewardId, rewardData) in rewardIdToData)
             {
-                if (rewardData.Repeat == -1) continue;
+                if (rewardData.Repeat <= 0) continue;
 
                 if (storedRewardIdToData.TryGetValue(rewardId, out var currentRewardData))
                 {

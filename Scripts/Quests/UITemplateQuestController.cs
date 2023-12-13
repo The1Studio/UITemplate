@@ -1,0 +1,149 @@
+﻿namespace TheOneStudio.UITemplate.Quests
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOneStudio.UITemplate.Quests.Data;
+    using TheOneStudio.UITemplate.Quests.Data.Conditions;
+    using TheOneStudio.UITemplate.Quests.Data.Rewards;
+    using TheOneStudio.UITemplate.Quests.Signals;
+    using Zenject;
+
+    public class UITemplateQuestController
+    {
+        #region Constructor
+
+        private readonly IInstantiator                                                   instantiator;
+        private readonly SignalBus                                                       signalBus;
+        private readonly QuestStatusChangedSignal                                        changedSignal;
+        private readonly IReadOnlyDictionary<Type, IRewardHandler>                       rewardHandlers;
+        private readonly Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler> progressHandlers;
+
+        public UITemplateQuestController(
+            IInstantiator               instantiator,
+            SignalBus                   signalBus,
+            IEnumerable<IRewardHandler> rewardHandlers
+        )
+        {
+            this.instantiator     = instantiator;
+            this.signalBus        = signalBus;
+            this.changedSignal    = new QuestStatusChangedSignal(this);
+            this.rewardHandlers   = rewardHandlers.ToDictionary(controller => controller.RewardType);
+            this.progressHandlers = new Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler>();
+        }
+
+        #endregion
+
+        public QuestRecord.Quest   Record   { get; internal set; }
+        public QuestProgress.Quest Progress { get; internal set; }
+
+        public void CollectReward()
+        {
+            if (this.Progress.Status is not QuestStatus.NotCollected) return;
+            this.Progress.Status |= QuestStatus.Collected;
+            this.RemoveProgressHandlers(this.Progress.CompleteProgress);
+            foreach (var reward in this.Record.Rewards)
+            {
+                this.rewardHandlers[reward.GetType()].Handle(reward);
+            }
+        }
+
+        public IEnumerable<ICondition.IProgress.IHandler> GetCompleteProgressHandlers()
+        {
+            return this.Progress.CompleteProgress.Select(progress => this.progressHandlers[progress]);
+        }
+
+        public IEnumerable<ICondition.IProgress.IHandler> GetAllProgressHandlers()
+        {
+            return this.progressHandlers.Values;
+        }
+
+        #region Internal
+
+        internal void Initialize()
+        {
+            this.AddProgressHandlers(this.Record.ResetConditions, this.Progress.ResetProgress);
+            if (!this.Progress.Status.HasFlag(QuestStatus.Started))
+            {
+                this.AddProgressHandlers(this.Record.StartConditions, this.Progress.StartProgress);
+            }
+            if (!this.Progress.Status.HasFlag(QuestStatus.Shown))
+            {
+                this.AddProgressHandlers(this.Record.ShowConditions, this.Progress.ShowProgress);
+            }
+            if (this.Progress.Status.HasFlag(QuestStatus.Started) && !this.Progress.Status.HasFlag(QuestStatus.Collected))
+            {
+                this.AddProgressHandlers(this.Record.CompleteConditions, this.Progress.CompleteProgress);
+            }
+        }
+
+        internal void UpdateStatus()
+        {
+            if (!this.Progress.Status.HasFlag(QuestStatus.Started) && this.IsSatisfied(this.Progress.StartProgress))
+            {
+                this.Progress.Status |= QuestStatus.Started;
+                this.RemoveProgressHandlers(this.Progress.StartProgress);
+                this.AddProgressHandlers(this.Record.CompleteConditions, this.Progress.CompleteProgress);
+                this.signalBus.Fire(this.changedSignal);
+            }
+            if (!this.Progress.Status.HasFlag(QuestStatus.Shown) && this.IsSatisfied(this.Progress.ShowProgress))
+            {
+                this.Progress.Status |= QuestStatus.Shown;
+                this.RemoveProgressHandlers(this.Progress.ShowProgress);
+                this.signalBus.Fire(this.changedSignal);
+            }
+            if (this.Progress.Status.HasFlag(QuestStatus.Started) && !this.Progress.Status.HasFlag(QuestStatus.Completed) && this.IsSatisfied(this.Progress.CompleteProgress))
+            {
+                this.Progress.Status |= QuestStatus.Completed;
+                this.signalBus.Fire(this.changedSignal);
+            }
+        }
+
+        internal bool CanBeReset()
+        {
+            return this.Record.ResetConditions.Count > 0
+                && this.Progress.Status is not QuestStatus.NotCollected
+                && this.IsSatisfied(this.Progress.ResetProgress);
+        }
+
+        internal void Dispose()
+        {
+            this.progressHandlers.Values.ForEach(controller => controller.Dispose());
+            this.progressHandlers.Clear();
+        }
+
+        #endregion
+
+        #region Private
+
+        private bool IsSatisfied(IEnumerable<ICondition.IProgress> progresses)
+        {
+            return progresses.All(progress => this.progressHandlers[progress].IsSatisfied());
+        }
+
+        private void AddProgressHandlers(IEnumerable<ICondition> conditions, IEnumerable<ICondition.IProgress> progresses)
+        {
+            IterTools.StrictZip(conditions, progresses).ForEach((condition, progress) =>
+            {
+                if (this.progressHandlers.ContainsKey(progress)) return;
+                var handler = (ICondition.IProgress.IHandler)this.instantiator.Instantiate(progress.HandlerType);
+                handler.Condition = condition;
+                handler.Progress  = progress;
+                handler.Initialize();
+                this.progressHandlers.Add(progress, handler);
+            });
+        }
+
+        private void RemoveProgressHandlers(IEnumerable<ICondition.IProgress> progresses)
+        {
+            progresses.ForEach(progress =>
+            {
+                if (!this.progressHandlers.Remove(progress, out var controller)) return;
+                controller.Dispose();
+            });
+        }
+
+        #endregion
+    }
+}

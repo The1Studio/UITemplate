@@ -8,7 +8,7 @@ namespace TheOneStudio.UITemplate.Quests.Data
     using TheOneStudio.UITemplate.Quests.Data.Rewards;
     using UnityEngine;
 
-    [BlueprintReader("Quest")]
+    [BlueprintReader("UITemplateQuest")]
     public class QuestBlueprint : GenericBlueprintReaderByRow<string, QuestRecord>
     {
     }

@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
 
     public class UITemplateRewardData : ILocalData, IUITemplateLocalData
     {
+        //PackId can be any thing you want, it's just a key to store reward data
         [OdinSerialize]
         public Dictionary<string, Dictionary<string, UITemplateRewardItemData>> PackIdToIdToRewardData { get; set; } = new();
 

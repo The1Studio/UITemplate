@@ -31,11 +31,18 @@ namespace UITemplate.Editor.ShaderHelper
             this.AnalyticConfig      = Resources.Load<AnalyticConfig>($"GameConfigs/{nameof(AnalyticConfig)}");
             this.ThirdPartiesConfig  = Resources.Load<ThirdPartiesConfig>($"GameConfigs/{nameof(ThirdPartiesConfig)}");
             this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);
+            this.GameEventsSetting = Resources.Load<GameEventsSetting>(GameEventsSetting.ResourcePath);
 
             if (this.remoteConfigSetting == null)
             {
                 AssetDatabase.CreateAsset(CreateInstance<RemoteConfigSetting>(), $"Assets/Resources/{RemoteConfigSetting.ResourcePath}.asset");
                 this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>($"GameConfigs/{nameof(RemoteConfigSetting)}");
+            }
+            
+            if (this.GameEventsSetting == null)
+            {
+                AssetDatabase.CreateAsset(CreateInstance<GameEventsSetting>(), $"Assets/Resources/{GameEventsSetting.ResourcePath}.asset");
+                this.GameEventsSetting = Resources.Load<GameEventsSetting>($"GameConfigs/{nameof(GameEventsSetting)}");
             }
 
             this.ThirdPartiesConfig.AdSettings.AdMob.OnDataChange = (admobSetting) =>

@@ -15,9 +15,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
-    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
+    using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using Zenject;
 
@@ -106,7 +106,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.OnInterstitialDisplayedFailedHandler);
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
-            this.signalBus.Subscribe<UITemplateAddRewardsSignal>(this.OnRemoveAdsComplete);
             this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnApplicationPauseHandler);
 
             //AOA
@@ -115,7 +114,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
-            
+
             //Resume can show AOA
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.CloseAdInDifferentProcessHandler);
@@ -147,15 +146,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void ShownAdInDifferentProcessHandler() { this.IsResumedFromAdsOrIAP = true; }
 
+        private bool IsFiredFirstOpenEligibleSignal = false;
         private void CheckShowFirstOpen()
         {
-            if (this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAStartSession) return;
+            if (!this.IsFiredFirstOpenEligibleSignal)
+            {
+                this.signalBus.Fire(new AppOpenEligibleSignal(""));
+                this.IsFiredFirstOpenEligibleSignal = true;
+            }
 
             var totalLoadingTime = (DateTime.Now - this.StartLoadingAOATime).TotalSeconds;
 
             if (totalLoadingTime <= this.LoadingTimeToShowAOA)
             {
-                this.ShowAOAAdsIfAvailable();
+                this.ShowAOAAdsIfAvailable(false);
             }
             else
             {
@@ -166,11 +170,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public double LoadingTimeToShowAOA => this.thirdPartiesConfig.AdSettings.AOAThreshHold;
 
-        private void ShowAOAAdsIfAvailable()
+        private void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true)
         {
             if (!this.adServicesConfig.EnableAOAAd) return;
 
-            this.signalBus.Fire(new AppOpenEligibleSignal(""));
+            if (isFireEligibleSignal)
+            {
+                this.signalBus.Fire(new AppOpenEligibleSignal(""));
+            }
+
             if (this.aoaAdServices.Any(aoaService => aoaService.IsAOAReady()))
             {
                 this.signalBus.Fire(new AppOpenCalledSignal(""));
@@ -284,19 +292,48 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     return false;
                 }
 
-                this.totalNoAdsPlayingTime = 0;
-                InternalShowInterstitial();
-                this.backFillAdsService.ShowInterstitialAd(place);
+                if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
+                {
+                    ShowDelayInter(() =>
+                    {
+                        InternalShowInterstitial();
+                        this.backFillAdsService.ShowInterstitialAd(place);
+                    }).Forget();
+                }
+                else
+                {
+                    InternalShowInterstitial();
+                    this.backFillAdsService.ShowInterstitialAd(place);
+                }
                 return true;
             }
 
-            this.logService.Log($"onelog: ShowInterstitialAd4 {place} force {force}");
-            InternalShowInterstitial();
-            this.adServices.ShowInterstitialAd(place);
+            if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
+            {
+                ShowDelayInter(() =>
+                {
+                    InternalShowInterstitial();
+                    this.adServices.ShowInterstitialAd(place);
+                }).Forget();
+            }
+            else
+            {
+                InternalShowInterstitial();
+                this.adServices.ShowInterstitialAd(place);
+            }
             return true;
+
+            async UniTaskVoid ShowDelayInter(Action action)
+            {
+                await this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f), DelayType.UnscaledDeltaTime);
+                action.Invoke();
+            }
 
             void InternalShowInterstitial()
             {
+                this.logService.Log($"onelog: ShowInterstitialAd4 {place} force {force}");
+                this.totalNoAdsPlayingTime = 0;
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
                 this.IsResumedFromAdsOrIAP        = true;
@@ -388,9 +425,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        private void OnRemoveAdsComplete(UITemplateAddRewardsSignal signal)
+        private void OnRemoveAdsComplete()
         {
-            if (!signal.RewardIdToData.Keys.Contains(UITemplateRemoveAdReward.REWARD_ID)) return;
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();
@@ -404,7 +440,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public void Tick()
         {
             this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
-            if (!this.IsCheckedShowFirstOpen)
+
+            if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession)
             {
                 this.CheckShowFirstOpen();
             }
@@ -465,5 +502,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         #endregion
+
+        public void RemoveAds()
+        {
+            this.adServices.RemoveAds();
+            this.OnRemoveAdsComplete();
+            this.signalBus.Fire<OnRemoveAdsSucceedSignal>();
+        }
     }
 }

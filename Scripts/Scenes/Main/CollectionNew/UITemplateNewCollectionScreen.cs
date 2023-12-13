@@ -361,7 +361,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             {
                 return;
             }
-
             this.uiTemplateInventoryDataController.SetOwnedItemData(obj.ItemData, true);
             this.OnUseItem(obj);
         }

@@ -110,7 +110,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
 
             this.signalBus.Subscribe<PopupShowedSignal>(this.PopupShowedHandler);
-            this.signalBus.Subscribe<UITemplateUnlockBuildingSignal>(this.UnlockBuildingHandler);
 
             this.TotalDaysPlayedChange();
         }
@@ -292,8 +291,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             });
         }
 
-        private void UnlockBuildingHandler(UITemplateUnlockBuildingSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.BuildingUnlock(obj.IsUnlockSuccess))); }
-
         public void Dispose()
         {
             this.signalBus.Unsubscribe<LevelStartedSignal>(this.LevelStartedHandler);
@@ -317,7 +314,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
             this.signalBus.Unsubscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
             this.signalBus.Unsubscribe<PopupShowedSignal>(this.PopupShowedHandler);
-            this.signalBus.Unsubscribe<UITemplateUnlockBuildingSignal>(this.UnlockBuildingHandler);
 
             //App open
             this.signalBus.Unsubscribe<AppOpenFullScreenContentOpenedSignal>(this.AppOpenFullScreenContentOpenedHandler);

@@ -29,23 +29,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "")
             where T : UITemplateFlyingAnimationView
         {
-            var currencyView = this.screenManager.RootUICanvas.GetComponentsInChildren<T>().First();
-            var endUiPos     = Vector3.zero;
-
-            if (currencyView != null)
-            {
-                endUiPos = currencyView.TargetFlyingAnimation.position;
-            }
-
-            if (target != null)
-            {
-                endUiPos = target.position;
-            }
-
-            if (currencyView == null && target == null)
-            {
-                return;
-            }
+            var endPosition = target != null
+                ? target.position
+                : this.screenManager.RootUICanvas
+                    .GetComponentsInChildren<T>()
+                    .FirstOrDefault()?
+                    .TargetFlyingAnimation
+                    .position;
+            if (endPosition is null) return;
 
             var totalCount  = Random.Range(minAmount, maxAmount);
             var finalPrefab = string.IsNullOrEmpty(prefabName) ? PrefabName : prefabName;
@@ -68,10 +59,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             Object.Destroy(box2D.gameObject);
 
             await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
-            var flyingTime = 0.08f;
-            _ = this.DoFlyingItems(listItem, flyingTime, endUiPos, timeAnim);
+            const float FLYING_TIME = 0.08f;
+            this.DoFlyingItems(listItem, FLYING_TIME, endPosition.Value, timeAnim).Forget();
 
-            await UniTask.Delay(TimeSpan.FromSeconds(flyingTime + timeAnim));
+            await UniTask.Delay(TimeSpan.FromSeconds(FLYING_TIME + timeAnim));
         }
 
         private async UniTask DoFlyingItems(List<GameObject> listItem, float flyingTime, Vector3 endUiPos, float timeAnim)
@@ -80,7 +71,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(flyingTime));
 
-                item.transform.DOMove(endUiPos, timeAnim).SetEase(Ease.InBack).OnComplete(() => { item.Recycle(); });
+                item.transform.DOMove(endUiPos, timeAnim)
+                    .SetEase(Ease.InBack)
+                    .OnComplete(item.Recycle);
             }
         }
 

@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
+    using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -28,10 +29,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<LevelEndedSignal>();
             this.Container.DeclareSignal<LevelSkippedSignal>();
             this.Container.DeclareSignal<RemoteConfigFetchedSucceededSignal>();
-            this.Container.DeclareSignal<ScaleDecoration2DItem>();
-            this.Container.DeclareSignal<UITemplateAddRewardsSignal>();
-            this.Container.DeclareSignal<BuildingOnMouseDownSignal>();
-            this.Container.DeclareSignal<UITemplateUnlockBuildingSignal>();
+            this.Container.DeclareSignal<OnRemoveAdsSucceedSignal>();
+            
+            //State machine
+            this.Container.DeclareSignal<OnStateEnterSignal>();
+            this.Container.DeclareSignal<OnStateExitSignal>();
         }
     }
 }

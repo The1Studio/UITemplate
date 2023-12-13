@@ -18,16 +18,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
     public class UITemplateIapServices : IInitializable, IDisposable
     {
+        #region inject
+
         private readonly SignalBus                            signalBus;
         private readonly ILogService                          logger;
         private readonly UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData;
         private readonly UITemplateShopPackBlueprint          uiTemplateShopPackBlueprint;
         private readonly IIapServices                         iapServices;
         private readonly List<IAnalyticServices>              analyticServicesList;
+        private readonly UITemplateRewardHandler              uiTemplateRewardHandler;
 
+        #endregion"
+        
         public UITemplateIapServices(SignalBus signalBus, ILogService logger, UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
             UITemplateShopPackBlueprint uiTemplateShopPackBlueprint,
-            IIapServices iapServices, List<IAnalyticServices> analyticServicesList)
+            IIapServices iapServices, List<IAnalyticServices> analyticServicesList, UITemplateRewardHandler uiTemplateRewardHandler)
         {
             this.signalBus                            = signalBus;
             this.logger                               = logger;
@@ -35,6 +40,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.uiTemplateShopPackBlueprint          = uiTemplateShopPackBlueprint;
             this.iapServices                          = iapServices;
             this.analyticServicesList                 = analyticServicesList;
+            this.uiTemplateRewardHandler              = uiTemplateRewardHandler;
         }
 
         private void OnBlueprintLoaded(LoadBlueprintDataSucceedSignal obj)
@@ -85,7 +91,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             if (rewardItemData.Count > 0)
             {
-                this.signalBus.Fire(new UITemplateAddRewardsSignal(productId, rewardItemData, source));
+                this.uiTemplateRewardHandler.AddRewardsWithPackId(productId, rewardItemData, source);
             }
         }
 

@@ -1,21 +1,22 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards
 {
-    using System.Collections.Generic;
-    using Core.AdsServices;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
 
-    public class UITemplateRemoveAdReward : UITemplateBaseReward
+    public class UITemplateRemoveAdRewardExecutorBase : UITemplateRewardExecutorBase
     {
         public const string REWARD_ID = "remove_ads";
-        
-        private readonly List<IAdServices> adServices;
-        public override  string            RewardId => REWARD_ID;
 
-        public UITemplateRemoveAdReward(List<IAdServices> adServices) { this.adServices = adServices; }
+        #region inject
 
-        public override void ReceiveReward(int value, RectTransform startPosAnimation)
-        {
-            this.adServices.ForEach(adService => adService.RemoveAds());
-        }
+        private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
+
+        #endregion
+
+        public override string RewardId => REWARD_ID;
+
+        public UITemplateRemoveAdRewardExecutorBase(UITemplateAdServiceWrapper uiTemplateAdServiceWrapper) { this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper; }
+
+        public override void ReceiveReward(int value, RectTransform startPosAnimation) { this.uiTemplateAdServiceWrapper.RemoveAds(); }
     }
 }

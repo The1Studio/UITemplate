@@ -40,7 +40,8 @@
     "Google.Play.Common",
     "Unity.Localization",
     "Lofelt.NiceVibrations",
-    "Unity.Advertisement.IosSupport"
+    "Unity.Advertisement.IosSupport",
+    "3rd.Configs.Editor"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

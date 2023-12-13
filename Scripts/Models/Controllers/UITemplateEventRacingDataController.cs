@@ -35,7 +35,22 @@
 
         #endregion
 
+        private CountryFlags CountryFlags
+        {
+            get
+            {
+                if (this.countryFlags == null)
+                {
+                    this.countryFlags = this.gameAssets.LoadAssetAsync<GameObject>(CountryFlagsPrefab).WaitForCompletion()
+                        .Spawn().GetComponent<CountryFlags>();
+                }
+                return this.countryFlags;
+            }
+            set => this.countryFlags = value;
+        }
+
         private CountryFlags countryFlags;
+        
         public  int          RacingScoreMax = 1000;
 
         public UITemplateEventRacingDataController(UITemplateEventRacingData uiTemplateEventRacingData,
@@ -65,8 +80,6 @@
 
         public void Initialize()
         {
-            this.countryFlags = this.gameAssets.LoadAssetAsync<GameObject>(CountryFlagsPrefab).WaitForCompletion()
-                .Spawn().GetComponent<CountryFlags>();
             this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.OnFetchSucceedHandler);
         }
 
@@ -86,7 +99,7 @@
             this.uiTemplateEventRacingData.playerIndexToData[playIndex].Score += addedScore;
         }
 
-        public Sprite GetCountryFlagSprite(string countryCode) => this.countryFlags.GetFlag(countryCode);
+        public Sprite GetCountryFlagSprite(string countryCode) => this.CountryFlags.GetFlag(countryCode);
 
         public UITemplateRacingPlayerData GetPlayerData(int playIndex)
         {
@@ -97,7 +110,7 @@
                     Name  = isYou ? "You" : NVJOBNameGen.GiveAName(Random.Range(1, 8)),
                     Score = 0,
                     CountryCode =
-                        isYou ? CountryFlags.GetCountryCodeByDeviceLang() : this.countryFlags.RandomCountryCode(),
+                        isYou ? CountryFlags.GetCountryCodeByDeviceLang() : this.CountryFlags.RandomCountryCode(),
                     IconAddressable = this.gameEventsSetting.RacingConfig.IconAddressableSet.PickRandom()
                 });
 

@@ -72,7 +72,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.levelDataController               = levelDataController;
         }
 
-        protected virtual int CoinAddAmount => 500;
+        protected virtual int  CoinAddAmount => 500;
+        protected bool AfterPurchasingUseItemImmediately = true;
 
         protected override void OnViewReady()
         {
@@ -362,7 +363,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 return;
             }
 
-            this.uiTemplateInventoryDataController.SetOwnedItemData(obj.ItemData, true);
+            this.uiTemplateInventoryDataController.SetOwnedItemData(obj.ItemData, false);
             this.OnSelectItem(obj);
         }
 

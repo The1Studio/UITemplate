@@ -1,6 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
 {
+#if UNITY_EDITOR
     using ServiceImplementation.Configs.Editor;
+#endif
     using Sirenix.OdinInspector;
     using UnityEngine;
 
@@ -15,13 +17,16 @@
         [OnValueChanged("OnChangeRacingEvent")]
         public bool enableRacingEvent;
 
-        [SerializeField] [ShowIf("enableRacingEvent")] [BoxGroup("Racing Event")] public GameEventRacingConfig racingConfig;
+        [SerializeField] [ShowIf("enableRacingEvent")] [BoxGroup("Racing Event")]
+        public GameEventRacingConfig racingConfig;
 
         public GameEventRacingConfig RacingConfig => this.racingConfig;
 
+#if UNITY_EDITOR
         private void OnChangeRacingEvent()
         {
             DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent);
         }
+#endif
     }
 }

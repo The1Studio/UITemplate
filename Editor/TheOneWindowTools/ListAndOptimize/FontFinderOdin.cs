@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Editor.ShaderHelper
+﻿namespace UITemplate.Editor.TheOneWindowTools.ListAndOptimize
 {
     using System;
     using System.Collections.Generic;
@@ -16,7 +16,7 @@
         [ShowInInspector] [TableList] [Title("Non-Compressed Font", TitleAlignment = TitleAlignments.Centered)]
         private HashSet<FontInfo> noneCompressedFonts = new();
 
-        [MenuItem("TheOne/FontFinder")]
+        [MenuItem("TheOne/List And Optimize/Font List")]
         private static void OpenWindow() { GetWindow<FontFinderOdin>().Show(); }
 
         [ButtonGroup("Action")]

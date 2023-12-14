@@ -23,7 +23,7 @@
         [ShowInInspector] [HideReferenceObjectPicker] [Title("Audio Compress Settings", TitleAlignment = TitleAlignments.Centered)]
         private AudioCompressSetting audioCompressSetting = new();
 
-        [MenuItem("TheOne/ListAndOptimize/Audio List")]
+        [MenuItem("TheOne/List And Optimize/Audio List")]
         private static void OpenWindow() { GetWindow<AddressableAudioFinderOdin>().Show(); }
 
         [ButtonGroup("Action")]

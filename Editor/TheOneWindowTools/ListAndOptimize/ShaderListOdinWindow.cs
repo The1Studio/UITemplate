@@ -18,7 +18,7 @@ namespace UITemplate.Editor.TheOneWindowTools.ListAndOptimize
         [ListDrawerSettings(Expanded = true)] [TableList] [ShowInInspector]
         private List<ShaderMaterialInfo> shaderInfos = new List<ShaderMaterialInfo>();
 
-        [MenuItem("TheOne/ListAndOptimize/Shader List")]
+        [MenuItem("TheOne/List And Optimize/Shader List")]
         private static void OpenWindow() { GetWindow<ShaderListOdinWindow>().Show(); }
     
         private List<ShaderMaterialInfo> FindAllShadersAndMaterials()

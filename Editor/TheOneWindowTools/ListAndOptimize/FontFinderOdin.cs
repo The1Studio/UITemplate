@@ -16,7 +16,7 @@
         [ShowInInspector] [TableList] [Title("Non-Compressed Font", TitleAlignment = TitleAlignments.Centered)]
         private HashSet<FontInfo> noneCompressedFonts = new();
 
-        [MenuItem("TheOne/ListAndOptimize/Font List")]
+        [MenuItem("TheOne/List And Optimize/Font List")]
         private static void OpenWindow() { GetWindow<FontFinderOdin>().Show(); }
 
         [ButtonGroup("Action")]

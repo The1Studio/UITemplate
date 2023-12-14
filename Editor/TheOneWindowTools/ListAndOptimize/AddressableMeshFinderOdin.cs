@@ -22,7 +22,7 @@
         [ShowInInspector] [TableList] [Title("Hih Compression Meshes", TitleAlignment = TitleAlignments.Centered)]
         private HashSet<MeshInfo> highCompressionMeshInfoList = new();
 
-        [MenuItem("TheOne/ListAndOptimize/Mesh List")]
+        [MenuItem("TheOne/List And Optimize/Mesh List")]
         private static void OpenWindow() { GetWindow<AddressableMeshFinderOdin>().Show(); }
 
         [ButtonGroup("Action")]

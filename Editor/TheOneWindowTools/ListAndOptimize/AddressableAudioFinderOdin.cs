@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Editor.ShaderHelper._3D
+﻿namespace UITemplate.Editor.TheOneWindowTools.ListAndOptimize
 {
     using System;
     using System.Collections.Generic;
@@ -23,7 +23,7 @@
         [ShowInInspector] [HideReferenceObjectPicker] [Title("Audio Compress Settings", TitleAlignment = TitleAlignments.Centered)]
         private AudioCompressSetting audioCompressSetting = new();
 
-        [MenuItem("TheOne/Audio List")]
+        [MenuItem("TheOne/ListAndOptimize/Audio List")]
         private static void OpenWindow() { GetWindow<AddressableAudioFinderOdin>().Show(); }
 
         [ButtonGroup("Action")]

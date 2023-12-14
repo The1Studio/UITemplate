@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.ShaderHelper
+namespace UITemplate.Editor.TheOneWindowTools
 {
     using Core.AnalyticServices;
     using ServiceImplementation.Configs;
@@ -28,10 +28,10 @@ namespace UITemplate.Editor.ShaderHelper
 
         private void OnEnable()
         {
-            this.AnalyticConfig      = Resources.Load<AnalyticConfig>($"GameConfigs/{nameof(AnalyticConfig)}");
-            this.ThirdPartiesConfig  = Resources.Load<ThirdPartiesConfig>($"GameConfigs/{nameof(ThirdPartiesConfig)}");
+            this.AnalyticConfig      = Resources.Load<AnalyticConfig>($"GameConfigs/{nameof(this.AnalyticConfig)}");
+            this.ThirdPartiesConfig  = Resources.Load<ThirdPartiesConfig>($"GameConfigs/{nameof(this.ThirdPartiesConfig)}");
             this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);
-            this.GameEventsSetting = Resources.Load<GameEventsSetting>(GameEventsSetting.ResourcePath);
+            this.GameEventsSetting   = Resources.Load<GameEventsSetting>(GameEventsSetting.ResourcePath);
 
             if (this.remoteConfigSetting == null)
             {
@@ -42,7 +42,7 @@ namespace UITemplate.Editor.ShaderHelper
             if (this.GameEventsSetting == null)
             {
                 AssetDatabase.CreateAsset(CreateInstance<GameEventsSetting>(), $"Assets/Resources/{GameEventsSetting.ResourcePath}.asset");
-                this.GameEventsSetting = Resources.Load<GameEventsSetting>($"GameConfigs/{nameof(GameEventsSetting)}");
+                this.GameEventsSetting = Resources.Load<GameEventsSetting>($"GameConfigs/{nameof(this.GameEventsSetting)}");
             }
 
             this.ThirdPartiesConfig.AdSettings.AdMob.OnDataChange = (admobSetting) =>

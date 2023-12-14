@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Editor.ShaderHelper._3D
+﻿namespace UITemplate.Editor.TheOneWindowTools.ListAndOptimize
 {
     using System;
     using System.Collections.Generic;
@@ -22,7 +22,7 @@
         [ShowInInspector] [TableList] [Title("Hih Compression Meshes", TitleAlignment = TitleAlignments.Centered)]
         private HashSet<MeshInfo> highCompressionMeshInfoList = new();
 
-        [MenuItem("TheOne/3D/Mesh List")]
+        [MenuItem("TheOne/ListAndOptimize/Mesh List")]
         private static void OpenWindow() { GetWindow<AddressableMeshFinderOdin>().Show(); }
 
         [ButtonGroup("Action")]

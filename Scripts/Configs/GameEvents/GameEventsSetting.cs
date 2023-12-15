@@ -11,6 +11,8 @@
     public class GameEventsSetting : ScriptableObject
     {
         private const string RacingEventSymbol = "THEONE_RACING_EVENT";
+        private const string DailyRewardSymbol = "THEONE_DAILY_REWARD";
+
 
         public static string ResourcePath = $"GameConfigs/{nameof(GameEventsSetting)}";
 
@@ -21,11 +23,19 @@
         public GameEventRacingConfig racingConfig;
 
         public GameEventRacingConfig RacingConfig => this.racingConfig;
+        
+        [OnValueChanged("OnChangeDailyReward")]
+        public bool enableDailyReward;
 
 #if UNITY_EDITOR
         private void OnChangeRacingEvent()
         {
             DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent);
+        }
+        
+        private void OnChangeDailyReward()
+        {
+            DefineSymbolEditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward);
         }
 #endif
     }

@@ -29,13 +29,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateServicesInstaller.Install(this.Container, this.toastCanvas);
             UITemplateLeaderboardInstaller.Install(this.Container);
             IapInstaller.Install(this.Container);
-            UITemplateLocalDataInstaller.Install(this.Container);  // bind after FBInstantInstaller for remote user data
+            UITemplateLocalDataInstaller.Install(this.Container); // bind after FBInstantInstaller for remote user data
             UITemplateThirdPartyInstaller.Install(this.Container); // bind after UITemplateLocalDataInstaller for local data analytics
-            UITemplateAdsInstaller.Install(this.Container);        // this depend on third party service signals
+            UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
             NotificationInstaller.Install(this.Container);
             StoreRatingServiceInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
+
+            //Feature
+#if THEONE_DAILY_REWARD
+            this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardService>().AsCached().NonLazy();
+#endif
         }
     }
 }

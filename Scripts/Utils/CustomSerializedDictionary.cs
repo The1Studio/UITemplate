@@ -40,4 +40,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
     public class StringToButtonDictionary : SerializableDictionary<string, Button>
     {
     }
+    
+    [Serializable]
+    public class StringToIntDictionary : SerializableDictionary<string, int>
+    {
+    }
 }

@@ -138,7 +138,7 @@
             var playIndexToAddedScore = new Dictionary<int, (int, int)>();
 
             var currentTime = DateTime.Now;
-            if (currentTime > this.uiTemplateEventRacingData.endDate) return playIndexToAddedScore;
+            if (currentTime > this.EndDate) return playIndexToAddedScore;
 
             foreach (var (playerIndex, racingPlayerData) in this.uiTemplateEventRacingData.playerIndexToData)
             {

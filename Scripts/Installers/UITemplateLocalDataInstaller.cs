@@ -27,7 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
                 var data = Activator.CreateInstance(type);
                 if (type.DerivesFrom<IUITemplateLocalData>())
                 {
-                    if (type.GetProperty(nameof(IUITemplateLocalData.ControllerType))?.GetValue(data) is Type controllerType)
+                    if ((data as IUITemplateLocalData)?.ControllerType is { } controllerType)
                     {
                         this.Container.Bind(type).FromInstance(data).WhenInjectedInto(controllerType);
                     }

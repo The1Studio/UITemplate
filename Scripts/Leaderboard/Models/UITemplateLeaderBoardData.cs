@@ -2,20 +2,27 @@
 {
     using System;
     using System.Collections.Generic;
-    using GameFoundation.Scripts.Interfaces;
-    using Sirenix.Serialization;
-    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using GameFoundation.Scripts.Utilities.Extension;
+    using Newtonsoft.Json;
+    using TheOneStudio.UITemplate.Models;
 
-    
-    public class UITemplateLeaderBoardData : ILocalData, IUITemplateLocalData
+    public class UITemplateLeaderBoardData : UITemplateLocalData<UITemplateLeaderBoardDataController>
     {
-        [OdinSerialize] public Dictionary<int, Dictionary<int, Dictionary<int, int>>> YearToMonthToDayToHighestScore { get; set; } = new();
-        [OdinSerialize] public Dictionary<int, int>                                   WeekIndexToHighestScore        { get; set; } = new();
-        [OdinSerialize] public int                                                    AllTimeHighestScore            { get; set; }
+        [JsonProperty] private readonly Dictionary<string, Record> records = new Dictionary<string, Record>();
 
+        public Record this[object key] => this.records.GetOrAdd(key.ToString(), () => new Record());
 
-        public void Init() { }
+        public class Record
+        {
+            public int AllTimeHighScore { get; set; }
 
-        public Type ControllerType => typeof(UITemplateLeaderBoardDataController);
+            public Dictionary<DateTime, int> DailyHighScores { get; } = new Dictionary<DateTime, int>();
+
+            public Dictionary<DateTime, int> WeeklyHighScores { get; } = new Dictionary<DateTime, int>();
+
+            public Dictionary<DateTime, int> MonthlyHighScores { get; } = new Dictionary<DateTime, int>();
+
+            public Dictionary<DateTime, int> YearlyHighScores { get; } = new Dictionary<DateTime, int>();
+        }
     }
 }

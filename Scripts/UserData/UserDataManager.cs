@@ -1,6 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.UserData
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
@@ -28,15 +27,13 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
         {
             var types     = ReflectionUtils.GetAllDerivedTypes<ILocalData>().ToArray();
             var datas     = await this.handleUserDataService.Load(types);
-            var dataCache = (Dictionary<string, ILocalData>)typeof(BaseHandleUserDataServices).GetField("userDataCache", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(this.handleUserDataService);
-            Enumerable.Zip(types, datas, (type, data) => (type, data)).ForEach(p =>
+            var dataCache = (Dictionary<string, ILocalData>)typeof(BaseHandleUserDataServices).GetField("userDataCache", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(this.handleUserDataService);
+            IterTools.Zip(types, datas).ForEach((type, data) =>
             {
-                var type = p.type;
-                var data = p.data;
-                var boundData = type.GetProperty(nameof(IUITemplateLocalData.ControllerType))?.GetValue(data) is Type controllerType
+                var boundData = (data as IUITemplateLocalData)?.ControllerType is { } controllerType
                     ? controllerType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-                                    .First(fieldInfo => fieldInfo.FieldType == type)
-                                    .GetValue(this.container.Resolve(controllerType))
+                        .First(fieldInfo => fieldInfo.FieldType == type)
+                        .GetValue(this.container.Resolve(controllerType))
                     : this.container.Resolve(type);
 
                 data.CopyTo(boundData);

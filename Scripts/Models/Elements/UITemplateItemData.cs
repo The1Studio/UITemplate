@@ -55,6 +55,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             DailyReward  = 1 << 6,
             LuckySpin    = 1 << 7,
             StartedPack  = 1 << 8,
+            Shard        = 1 << 9,
             All          = -1,
             Default      = IAP | SoftCurrency | Ads | Progression | Gift | StartedPack
         }

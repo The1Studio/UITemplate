@@ -16,11 +16,9 @@
 
     public class UITemplateEventRacingDataController : IUITemplateControllerData, IInitializable
     {
-        private const string RacingEventMaxScoreKey      = "racing_event_max_score";
-        private const float  RacingMaxProgressionPercent = 0.8f;
+        private const string RacingEventMaxScoreKey = "racing_event_max_score";
 
         public const int TotalRacingPlayer = 5;
-        public const int RacingDay         = 7;
 
         private const string CountryFlagsPrefab = "CountryFlags";
 
@@ -44,14 +42,14 @@
                     this.countryFlags = this.gameAssets.LoadAssetAsync<GameObject>(CountryFlagsPrefab).WaitForCompletion()
                         .Spawn().GetComponent<CountryFlags>();
                 }
+
                 return this.countryFlags;
             }
             set => this.countryFlags = value;
         }
 
         private CountryFlags countryFlags;
-        
-        public  int          RacingScoreMax = 1000;
+        public  int          RacingScoreMax { get; set; }
 
         public UITemplateEventRacingDataController(UITemplateEventRacingData uiTemplateEventRacingData,
             IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
@@ -70,7 +68,17 @@
         public int      YourIndex        => this.uiTemplateEventRacingData.yourIndex;
         public long     RemainSecond     => (long)(this.uiTemplateEventRacingData.endDate - DateTime.Now).TotalSeconds;
         public DateTime StartDate        => this.uiTemplateEventRacingData.startDate;
-        public DateTime EndDate          => this.uiTemplateEventRacingData.endDate;
+        public DateTime EndDate
+        {
+            get
+            {
+                if (this.uiTemplateEventRacingData.endDate == DateTime.MinValue)
+                {
+                    this.uiTemplateEventRacingData.endDate = this.uiTemplateEventRacingData.startDate.AddDays(this.gameEventsSetting.RacingConfig.RacingDay - 0.75f);
+                }
+                return this.uiTemplateEventRacingData.endDate;
+            }
+        }
 
         public void UpdateUserOldShowScore()
         {
@@ -85,7 +93,7 @@
 
         private void OnFetchSucceedHandler(RemoteConfigFetchedSucceededSignal obj)
         {
-            this.RacingScoreMax = this.remoteConfig.GetRemoteConfigIntValue(RacingEventMaxScoreKey, 1000);
+            this.RacingScoreMax = this.remoteConfig.GetRemoteConfigIntValue(RacingEventMaxScoreKey, this.gameEventsSetting.racingConfig.RacingScoreMax);
         }
 
         public void AddPlayScore(int addedScore)
@@ -94,10 +102,7 @@
             this.uiTemplateEventRacingData.playerIndexToData[yourIndex].Score += addedScore;
         }
 
-        private void AddScore(int playIndex, int addedScore)
-        {
-            this.uiTemplateEventRacingData.playerIndexToData[playIndex].Score += addedScore;
-        }
+        private void AddScore(int playIndex, int addedScore) { this.uiTemplateEventRacingData.playerIndexToData[playIndex].Score += addedScore; }
 
         public Sprite GetCountryFlagSprite(string countryCode) => this.CountryFlags.GetFlag(countryCode);
 
@@ -129,7 +134,7 @@
         //The score of players will depend the time from lastRandomTime to now the gameEventRacingData.startDate (starting time of event) and gameEventRacingData.endDate (ending time of event
         public Dictionary<int, (int, int)> SimulatePlayerScore()
         {
-            var maxScore              = RacingScoreMax * RacingMaxProgressionPercent;
+            var maxScore              = this.RacingScoreMax * this.gameEventsSetting.racingConfig.RacingMaxProgressionPercent;
             var playIndexToAddedScore = new Dictionary<int, (int, int)>();
 
             var currentTime = DateTime.Now;

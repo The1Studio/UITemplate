@@ -9,6 +9,7 @@
     using GameFoundation.Scripts.UIModule.Utilities.UIStuff;
     using TheOneStudio.HyperCasual.GamePlay.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UIModule.Utilities;
     using UnityEngine.UI;
@@ -30,7 +31,7 @@
     {
         #region inject
 
-        private readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
+        protected readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
         private readonly IFactory<AutoCooldownTimer>         autoCooldownTimer;
         private readonly DiContainer                         diContainer;
 
@@ -66,7 +67,7 @@
             {
                 var rowView    = this.View.playerSliders[i];
                 var playerData = this.uiTemplateEventRacingDataController.GetPlayerData(i);
-                rowView.InitView(playerData);
+                rowView.InitView(playerData, this.CheckRacingEventComplete);
             }
         }
 
@@ -114,6 +115,11 @@
             return UniTask.CompletedTask;
         }
 
+        protected virtual void CheckRacingEventComplete()
+        {
+            if (!this.uiTemplateEventRacingDataController.RacingEventComplete()) return;
+            // Do something
+        }
 
         public override void Dispose()
         {

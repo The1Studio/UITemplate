@@ -56,6 +56,7 @@ MonoBehaviour:
   progressSlider: {fileID: 7705766494595142526}
   yourIcon: {fileID: 7978703301254873025}
   flagImage: {fileID: 6918141969827377761}
+  buttonChest: {fileID: 8495169230907070319}
 --- !u!1 &258858106217359663
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,8 +124,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: You
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b4ffeaec919f4fe4381df1fdbf60f1e5, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 4f21f8b4437784e4991885fec56ccfff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0b1f9897ebe8f854499b261223ad4dd3, type: 2}
+  m_sharedMaterial: {fileID: 355072334792139725, guid: 0b1f9897ebe8f854499b261223ad4dd3,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -148,7 +150,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 41.2
+  m_fontSize: 40.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -386,7 +388,6 @@ MonoBehaviour:
   _emitOnSurface: 1
   _emitterThickness: 0
   _loop: 1
-  _prewarm: 0
   _duration: 5
   _playMode: 1
   _startSize:
@@ -1652,16 +1653,12 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     m_ColorMin: {r: 0, g: 0, b: 0, a: 1}
     m_ColorMax: {r: 1, g: 1, b: 1, a: 1}
-  _trailMaterial: {fileID: 0}
   _inheritParticleColor: 0
   _dieWithParticle: 0
   _trailRatio: 1
-  _noiseOffset: {x: 0, y: 0}
+  _noiseOctaves: 1
   _noiseFrequency: 1
   _noiseStrength: 1
-  _multithreadModule:
-    enabled: 0
-  _multithreadEnabled: 0
   _onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -1681,8 +1678,6 @@ MonoBehaviour:
   moduleParticleFoldout: 1
   moduleMovementFoldout: 0
   moduleEventsFoldout: 0
-  moduleAdvancedFoldout: 0
-  m_Sprite: {fileID: 21300000, guid: 5c5f0b3010fe9415e982f02ff908e024, type: 3}
   m_Texture: {fileID: 0}
 --- !u!1 &3080608843856094358
 GameObject:
@@ -2053,8 +2048,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b4ffeaec919f4fe4381df1fdbf60f1e5, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 4f21f8b4437784e4991885fec56ccfff, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0b1f9897ebe8f854499b261223ad4dd3, type: 2}
+  m_sharedMaterial: {fileID: 355072334792139725, guid: 0b1f9897ebe8f854499b261223ad4dd3,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2334,7 +2330,6 @@ MonoBehaviour:
   _emitOnSurface: 1
   _emitterThickness: 0
   _loop: 1
-  _prewarm: 0
   _duration: 5
   _playMode: 1
   _startSize:
@@ -3609,16 +3604,12 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     m_ColorMin: {r: 0, g: 0, b: 0, a: 1}
     m_ColorMax: {r: 1, g: 1, b: 1, a: 1}
-  _trailMaterial: {fileID: 0}
   _inheritParticleColor: 0
   _dieWithParticle: 0
   _trailRatio: 1
-  _noiseOffset: {x: 0, y: 0}
+  _noiseOctaves: 1
   _noiseFrequency: 1
   _noiseStrength: 1
-  _multithreadModule:
-    enabled: 0
-  _multithreadEnabled: 0
   _onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -3638,8 +3629,6 @@ MonoBehaviour:
   moduleParticleFoldout: 1
   moduleMovementFoldout: 0
   moduleEventsFoldout: 0
-  moduleAdvancedFoldout: 0
-  m_Sprite: {fileID: 21300000, guid: 74ac16302f2994b898e17f225c303437, type: 3}
   m_Texture: {fileID: 0}
 --- !u!1 &7125377334973062212
 GameObject:
@@ -4157,7 +4146,6 @@ MonoBehaviour:
   _emitOnSurface: 1
   _emitterThickness: 0
   _loop: 1
-  _prewarm: 0
   _duration: 99
   _playMode: 1
   _startSize:
@@ -5266,7 +5254,7 @@ MonoBehaviour:
   _bursts:
   - time: 0
     count: 1
-    used: 0
+    used: 1
   _particleTrailRenderer: {fileID: 0}
   _trailModule:
     enabled: 0
@@ -5435,16 +5423,12 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     m_ColorMin: {r: 0, g: 0, b: 0, a: 1}
     m_ColorMax: {r: 1, g: 1, b: 1, a: 1}
-  _trailMaterial: {fileID: 0}
   _inheritParticleColor: 0
   _dieWithParticle: 0
   _trailRatio: 1
-  _noiseOffset: {x: 0, y: 0}
+  _noiseOctaves: 1
   _noiseFrequency: 1
   _noiseStrength: 1
-  _multithreadModule:
-    enabled: 0
-  _multithreadEnabled: 0
   _onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -5464,8 +5448,6 @@ MonoBehaviour:
   moduleParticleFoldout: 1
   moduleMovementFoldout: 0
   moduleEventsFoldout: 0
-  moduleAdvancedFoldout: 0
-  m_Sprite: {fileID: 21300000, guid: a978e3bf6a3944c23a38d0ed7832aa2f, type: 3}
   m_Texture: {fileID: 0}
 --- !u!1 &8968191539914449106
 GameObject:
@@ -5554,6 +5536,7 @@ GameObject:
   - component: {fileID: 3605588000043756452}
   - component: {fileID: 1464656621435255181}
   - component: {fileID: 2062354121950284593}
+  - component: {fileID: 8495169230907070319}
   m_Layer: 5
   m_Name: Chest
   m_TagString: Untagged
@@ -5639,3 +5622,47 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8495169230907070319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9093665565919287917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1464656621435255181}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []

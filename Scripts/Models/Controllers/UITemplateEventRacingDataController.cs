@@ -116,7 +116,8 @@
                     Score = 0,
                     CountryCode =
                         isYou ? CountryFlags.GetCountryCodeByDeviceLang() : this.CountryFlags.RandomCountryCode(),
-                    IconAddressable = this.gameEventsSetting.RacingConfig.IconAddressableSet.PickRandom()
+                    IconAddressable = this.gameEventsSetting.RacingConfig.IconAddressableSet.PickRandom(),
+                    IsPlayer = isYou
                 });
 
             if (racingPlayerData.IconAddressable.IsNullOrEmpty())
@@ -147,7 +148,7 @@
                 var totalSecondsFromLastSimulation =
                     (currentTime - this.uiTemplateEventRacingData.lastRandomTime).TotalSeconds;
                 var totalSecondsUntilEndEventFromLastSimulation =
-                    (this.uiTemplateEventRacingData.endDate - currentTime).TotalSeconds;
+                    (this.EndDate - currentTime).TotalSeconds;
                 var maxRandomScore = maxScore - racingPlayerData.Score;
 
                 //calculate random score
@@ -162,5 +163,7 @@
             this.uiTemplateEventRacingData.lastRandomTime = currentTime;
             return playIndexToAddedScore;
         }
+
+        public bool RacingEventComplete() => this.YourNewScore >= this.RacingScoreMax;
     }
 }

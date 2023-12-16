@@ -40,6 +40,5 @@
         public string CountryCode;
         public string IconAddressable;
         public int    Score;
-        public bool   IsPlayer;
     }
 }

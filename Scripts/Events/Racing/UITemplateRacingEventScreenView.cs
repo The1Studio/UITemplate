@@ -9,6 +9,7 @@
     using GameFoundation.Scripts.UIModule.Utilities.UIStuff;
     using TheOneStudio.HyperCasual.GamePlay.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UIModule.Utilities;
     using UnityEngine.UI;
@@ -72,6 +73,8 @@
 
         public override UniTask BindData()
         {
+            this.SignalBus.Subscribe<RacingEventCompleteSignal>(this.OnRacingEventComplete);
+            
             var oldShowScore = this.uiTemplateEventRacingDataController.YourOldShowScore;
             this.uiTemplateEventRacingDataController.UpdateUserOldShowScore();
             var yourNewScore = this.uiTemplateEventRacingDataController.YourNewScore;
@@ -114,10 +117,15 @@
             return UniTask.CompletedTask;
         }
 
+        protected virtual void OnRacingEventComplete(RacingEventCompleteSignal signal)
+        {
+            // Do something
+        }
 
         public override void Dispose()
         {
             base.Dispose();
+            this.SignalBus.Unsubscribe<RacingEventCompleteSignal>(this.OnRacingEventComplete);
 
             //Clear tween
             foreach (var tween in this.tweenList) tween.Kill();

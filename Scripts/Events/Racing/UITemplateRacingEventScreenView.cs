@@ -92,18 +92,11 @@
 
             if (yourNewProgress > yourOldProgress)
             {
-                // Progress
                 this.tweenList.Add(DOTween.To(() => yourOldProgress, x =>
                 {
                     this.View.progressSlider.value = x;
-                }, yourNewProgress, 1f).SetUpdate(isIndependentUpdate: true));
-
-                // Player
-                this.tweenList.Add(DOTween.To(() => yourOldProgress, x =>
-                {
                     this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].progressSlider.value = x;
-                }, Mathf.Clamp(yourNewProgress, 0, racingMaxProgression), 1f).SetUpdate(isIndependentUpdate: true));
-
+                }, yourNewProgress, 1f).SetUpdate(isIndependentUpdate: true));
                 this.tweenList.Add(DOTween.To(() => oldShowScore, x =>
                                           {
                                               this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].scoreText.text = x.ToString();

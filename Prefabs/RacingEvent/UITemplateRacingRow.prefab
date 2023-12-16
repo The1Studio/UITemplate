@@ -56,8 +56,8 @@ MonoBehaviour:
   progressSlider: {fileID: 7705766494595142526}
   yourIcon: {fileID: 7978703301254873025}
   flagImage: {fileID: 6918141969827377761}
-  buttonChest: {fileID: 8495169230907070319
-  animatorButtonChest: {fileID: 2062354121950284593}
+  buttonChest: {fileID: 8495169230907070319}
+  animatorButtonChest: {fileID: 0}
 --- !u!1 &258858106217359663
 GameObject:
   m_ObjectHideFlags: 0
@@ -3667,8 +3667,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 63.532993, y: 8.9431}
-  m_SizeDelta: {x: 724.2, y: 37.8862}
+  m_AnchoredPosition: {x: 3.9725, y: 8.9431}
+  m_SizeDelta: {x: 605.079, y: 37.8862}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7705766494595142526
 MonoBehaviour:
@@ -3717,7 +3717,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.058
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

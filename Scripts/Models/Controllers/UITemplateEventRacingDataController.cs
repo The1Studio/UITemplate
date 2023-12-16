@@ -74,7 +74,7 @@
             {
                 if (this.uiTemplateEventRacingData.endDate == DateTime.MinValue)
                 {
-                    this.uiTemplateEventRacingData.endDate = this.uiTemplateEventRacingData.startDate.AddDays(this.gameEventsSetting.RacingConfig.RacingDay - 0.75f);
+                    this.uiTemplateEventRacingData.endDate = this.uiTemplateEventRacingData.startDate.AddDays(this.gameEventsSetting.RacingConfig.RacingDay - Random.Range(0.5f, 1.5f));
                 }
                 return this.uiTemplateEventRacingData.endDate;
             }
@@ -138,7 +138,6 @@
             var playIndexToAddedScore = new Dictionary<int, (int, int)>();
 
             var currentTime = DateTime.Now;
-            if (currentTime > this.EndDate) return playIndexToAddedScore;
 
             foreach (var (playerIndex, racingPlayerData) in this.uiTemplateEventRacingData.playerIndexToData)
             {

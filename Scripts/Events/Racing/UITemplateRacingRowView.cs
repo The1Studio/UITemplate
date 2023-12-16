@@ -5,7 +5,7 @@
     using UnityEngine;
     using UnityEngine.UI;
     using TheOneStudio.HyperCasual.GamePlay.Models;
-    using Action = UnityEngine.Events.UnityAction;
+    using UnityEngine.Events;
 
     public class UITemplateRacingRowView : MonoBehaviour
     {
@@ -26,7 +26,7 @@
         [Inject]
         public void Constructor(UITemplateEventRacingDataController uiTemplateEventRacingDataController) { this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController; }
 
-        public virtual void InitView(UITemplateRacingPlayerData playerData, int indexPlayer, Action onOpenChest = null)
+        public virtual void InitView(UITemplateRacingPlayerData playerData, int indexPlayer, UnityAction onOpenChest = null)
         {
             this.IsPlayer = this.uiTemplateEventRacingDataController.IsPlayer(indexPlayer);
             this.nameText.text       = playerData.Name;

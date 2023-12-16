@@ -79,6 +79,8 @@
                 return this.uiTemplateEventRacingData.endDate;
             }
         }
+        
+        public float RacingMaxProgression => this.gameEventsSetting.racingConfig.RacingMaxProgressionPercent;
 
         public void UpdateUserOldShowScore()
         {
@@ -108,7 +110,7 @@
 
         public UITemplateRacingPlayerData GetPlayerData(int playIndex)
         {
-            var isYou = playIndex == this.uiTemplateEventRacingData.yourIndex;
+            var isYou = this.IsPlayer(playIndex);
             var racingPlayerData = this.uiTemplateEventRacingData.playerIndexToData.GetOrAdd(playIndex, () =>
                 new UITemplateRacingPlayerData
                 {
@@ -117,7 +119,6 @@
                     CountryCode =
                         isYou ? CountryFlags.GetCountryCodeByDeviceLang() : this.CountryFlags.RandomCountryCode(),
                     IconAddressable = this.gameEventsSetting.RacingConfig.IconAddressableSet.PickRandom(),
-                    IsPlayer = isYou
                 });
 
             if (racingPlayerData.IconAddressable.IsNullOrEmpty())
@@ -135,7 +136,7 @@
         //The score of players will depend the time from lastRandomTime to now the gameEventRacingData.startDate (starting time of event) and gameEventRacingData.endDate (ending time of event
         public Dictionary<int, (int, int)> SimulatePlayerScore()
         {
-            var maxScore              = this.RacingScoreMax * this.gameEventsSetting.racingConfig.RacingMaxProgressionPercent;
+            var maxScore              = this.RacingScoreMax * this.RacingMaxProgression;
             var playIndexToAddedScore = new Dictionary<int, (int, int)>();
 
             var currentTime = DateTime.Now;
@@ -165,5 +166,7 @@
         }
 
         public bool RacingEventComplete() => this.YourNewScore >= this.RacingScoreMax;
+
+        public bool IsPlayer(int playerIndex) => playerIndex == this.uiTemplateEventRacingData.yourIndex;
     }
 }

@@ -18,19 +18,28 @@
         public Image    flagImage;
         public Button   buttonChest;
 
-        [Inject]
-        public void Constructor(UITemplateEventRacingDataController uiTemplateEventRacingDataController)
-        {
-            this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController;
-        }
+        [Header("Animation")]
+        public Animator animatorButtonChest;
 
-        public virtual void InitView(UITemplateRacingPlayerData playerData, Action onOpenChest = null)
+        protected bool IsPlayer;
+
+        [Inject]
+        public void Constructor(UITemplateEventRacingDataController uiTemplateEventRacingDataController) { this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController; }
+
+        public virtual void InitView(UITemplateRacingPlayerData playerData, int indexPlayer, Action onOpenChest = null)
         {
+            this.IsPlayer = this.uiTemplateEventRacingDataController.IsPlayer(indexPlayer);
             this.nameText.text       = playerData.Name;
             this.scoreText.text      = playerData.Score.ToString();
             this.flagImage.sprite    = this.uiTemplateEventRacingDataController.GetCountryFlagSprite(playerData.CountryCode);
-            this.buttonChest.enabled = playerData.IsPlayer;
+            this.buttonChest.enabled = this.IsPlayer;
             this.buttonChest.onClick.AddListener(onOpenChest);
+        }
+
+        public virtual void CheckStatus()
+        {
+            var isWin = this.uiTemplateEventRacingDataController.RacingEventComplete();
+            this.animatorButtonChest.enabled =  isWin && this.IsPlayer;
         }
     }
 }

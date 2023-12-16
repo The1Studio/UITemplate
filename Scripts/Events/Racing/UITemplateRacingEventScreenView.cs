@@ -12,6 +12,7 @@
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UIModule.Utilities;
+    using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
@@ -25,22 +26,22 @@
         public TMP_Text countDownText;
     }
 
-
     [PopupInfo(nameof(UITemplateRacingEventScreenView))]
     public abstract class UITemplateRacingEventScreenPresenter : UITemplateBasePopupPresenter<UITemplateRacingEventScreenView>
     {
         #region inject
 
         protected readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
-        private readonly IFactory<AutoCooldownTimer>         autoCooldownTimer;
-        private readonly DiContainer                         diContainer;
+        private readonly   IFactory<AutoCooldownTimer>         autoCooldownTimer;
+        private readonly   DiContainer                         diContainer;
+
 
         #endregion
 
         private List<Tween> tweenList = new();
 
-        public UITemplateRacingEventScreenPresenter(SignalBus signalBus,
-            UITemplateEventRacingDataController uiTemplateEventRacingDataController, IFactory<AutoCooldownTimer> autoCooldownTimer, DiContainer diContainer) : base(signalBus)
+        public UITemplateRacingEventScreenPresenter(SignalBus                           signalBus,
+                                                    UITemplateEventRacingDataController uiTemplateEventRacingDataController, IFactory<AutoCooldownTimer> autoCooldownTimer, DiContainer diContainer) : base(signalBus)
         {
             this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController;
             this.autoCooldownTimer                   = autoCooldownTimer;
@@ -52,12 +53,15 @@
             base.OnViewReady();
             this.View.closeButton.onClick.AddListener(this.CloseView);
             this.autoCooldownTimer.Create().CountDown(this.uiTemplateEventRacingDataController.RemainSecond,
-                _ => { this.View.countDownText.text = TimeSpan.FromSeconds(this.uiTemplateEventRacingDataController.RemainSecond).ToShortTimeString(); });
+                                                      _ =>
+                                                      {
+                                                          this.View.countDownText.text = TimeSpan.FromSeconds(this.uiTemplateEventRacingDataController.RemainSecond).ToShortTimeString();
+                                                      });
             foreach (var uiTemplateRacingRowView in this.View.playerSliders)
             {
                 this.diContainer.Inject(uiTemplateRacingRowView);
             }
-            
+
             this.InitPlayerRowView();
         }
 
@@ -67,7 +71,7 @@
             {
                 var rowView    = this.View.playerSliders[i];
                 var playerData = this.uiTemplateEventRacingDataController.GetPlayerData(i);
-                rowView.InitView(playerData, this.CheckRacingEventComplete);
+                rowView.InitView(playerData, i, this.CheckRacingEventComplete);
             }
         }
 
@@ -77,22 +81,26 @@
             this.uiTemplateEventRacingDataController.UpdateUserOldShowScore();
             var yourNewScore = this.uiTemplateEventRacingDataController.YourNewScore;
 
-            var yourOldProgress = 1f * oldShowScore / this.uiTemplateEventRacingDataController.RacingScoreMax;
-            var yourNewProgress = 1f * yourNewScore / this.uiTemplateEventRacingDataController.RacingScoreMax;
+            var yourOldProgress      = 1f * oldShowScore / this.uiTemplateEventRacingDataController.RacingScoreMax;
+            var yourNewProgress      = 1f * yourNewScore / this.uiTemplateEventRacingDataController.RacingScoreMax;
+            var racingMaxProgression = this.uiTemplateEventRacingDataController.RacingMaxProgression;
 
             this.View.userCurrentAmountText.text = $"{yourNewScore}/{this.uiTemplateEventRacingDataController.RacingScoreMax}";
 
-            this.View.progressSlider.value                                                             = yourOldProgress;
-            this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].progressSlider.value = yourOldProgress;
+            this.View.progressSlider.value                                                                   = yourOldProgress;
+            this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].progressSlider.value = Mathf.Clamp(yourOldProgress, 0, racingMaxProgression);
+
             if (yourNewProgress > yourOldProgress)
             {
                 this.tweenList.Add(DOTween.To(() => yourOldProgress, x =>
                 {
-                    this.View.progressSlider.value                                                             = x;
+                    this.View.progressSlider.value = x;
                     this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].progressSlider.value = x;
                 }, yourNewProgress, 1f).SetUpdate(isIndependentUpdate: true));
-
-                this.tweenList.Add(DOTween.To(() => oldShowScore, x => { this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].scoreText.text = x.ToString(); }, yourNewScore, 1f)
+                this.tweenList.Add(DOTween.To(() => oldShowScore, x =>
+                                          {
+                                              this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].scoreText.text = x.ToString();
+                                          }, yourNewScore, 1f)
                                           .SetUpdate(isIndependentUpdate: true));
             }
 
@@ -106,11 +114,19 @@
                 this.View.playerSliders[playerIndex].progressSlider.value = oldProgress;
                 if (newProgress > oldProgress)
                 {
-                    this.tweenList.Add(DOTween.To(() => oldProgress, x => { this.View.playerSliders[playerIndex].progressSlider.value = x; }, newProgress, 1f).SetUpdate(isIndependentUpdate: true));
-                    this.tweenList.Add(DOTween.To(() => oldAndNewScore.Item1, x => { this.View.playerSliders[playerIndex].scoreText.text = x.ToString(); }, oldAndNewScore.Item2, 1f)
+                    this.tweenList.Add(DOTween.To(() => oldProgress, x =>
+                    {
+                        this.View.playerSliders[playerIndex].progressSlider.value = x;
+                    }, Mathf.Clamp(newProgress, 0, racingMaxProgression), 1f).SetUpdate(isIndependentUpdate: true));
+                    this.tweenList.Add(DOTween.To(() => oldAndNewScore.Item1, x =>
+                                              {
+                                                  this.View.playerSliders[playerIndex].scoreText.text = x.ToString();
+                                              }, oldAndNewScore.Item2, 1f)
                                               .SetUpdate(isIndependentUpdate: true));
                 }
             }
+
+            this.View.playerSliders.ForEach(item => item.CheckStatus());
 
             return UniTask.CompletedTask;
         }

@@ -168,7 +168,7 @@
         public bool RacingEventComplete() => this.YourNewScore >= this.RacingScoreMax;
 
         public bool IsPlayer(int playerIndex) => playerIndex == this.uiTemplateEventRacingData.yourIndex;
-
+        
         public bool ChangeStatusClaimItem(int idPlayer, bool status = true) { return this.uiTemplateEventRacingData.playerIndexToData[idPlayer].IsClaimItem = status; }
 
         public bool GetStatusClaimItem(int idPlayer = -1)

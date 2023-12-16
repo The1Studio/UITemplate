@@ -5,12 +5,11 @@
     using UnityEngine;
     using UnityEngine.UI;
     using TheOneStudio.HyperCasual.GamePlay.Models;
-    using TheOneStudio.UITemplate.UITemplate.Signals;
+    using Action = UnityEngine.Events.UnityAction;
 
     public class UITemplateRacingRowView : MonoBehaviour
     {
         private UITemplateEventRacingDataController uiTemplateEventRacingDataController;
-        private SignalBus                           signalBus;
 
         public TMP_Text nameText;
         public TMP_Text scoreText;
@@ -20,21 +19,18 @@
         public Button   buttonChest;
 
         [Inject]
-        public void Constructor(UITemplateEventRacingDataController uiTemplateEventRacingDataController, SignalBus newSignalBus)
+        public void Constructor(UITemplateEventRacingDataController uiTemplateEventRacingDataController)
         {
             this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController;
-            this.signalBus                           = newSignalBus;
         }
 
-        public virtual void InitView(UITemplateRacingPlayerData playerData)
+        public virtual void InitView(UITemplateRacingPlayerData playerData, Action onOpenChest = null)
         {
             this.nameText.text       = playerData.Name;
             this.scoreText.text      = playerData.Score.ToString();
             this.flagImage.sprite    = this.uiTemplateEventRacingDataController.GetCountryFlagSprite(playerData.CountryCode);
-            this.buttonChest.enabled = playerData.IsPlayer && this.uiTemplateEventRacingDataController.RacingEventComplete();
-            this.buttonChest.onClick.AddListener(this.OnOpenChest);
+            this.buttonChest.enabled = playerData.IsPlayer;
+            this.buttonChest.onClick.AddListener(onOpenChest);
         }
-
-        private void OnOpenChest() { this.signalBus.Fire<RacingEventCompleteSignal>(); }
     }
 }

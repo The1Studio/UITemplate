@@ -31,7 +31,7 @@
     {
         #region inject
 
-        private readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
+        protected readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
         private readonly IFactory<AutoCooldownTimer>         autoCooldownTimer;
         private readonly DiContainer                         diContainer;
 
@@ -67,14 +67,12 @@
             {
                 var rowView    = this.View.playerSliders[i];
                 var playerData = this.uiTemplateEventRacingDataController.GetPlayerData(i);
-                rowView.InitView(playerData);
+                rowView.InitView(playerData, this.CheckRacingEventComplete);
             }
         }
 
         public override UniTask BindData()
         {
-            this.SignalBus.Subscribe<RacingEventCompleteSignal>(this.OnRacingEventComplete);
-            
             var oldShowScore = this.uiTemplateEventRacingDataController.YourOldShowScore;
             this.uiTemplateEventRacingDataController.UpdateUserOldShowScore();
             var yourNewScore = this.uiTemplateEventRacingDataController.YourNewScore;
@@ -117,15 +115,15 @@
             return UniTask.CompletedTask;
         }
 
-        protected virtual void OnRacingEventComplete(RacingEventCompleteSignal signal)
+        protected virtual void CheckRacingEventComplete()
         {
+            if (!this.uiTemplateEventRacingDataController.RacingEventComplete()) return;
             // Do something
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            this.SignalBus.Unsubscribe<RacingEventCompleteSignal>(this.OnRacingEventComplete);
 
             //Clear tween
             foreach (var tween in this.tweenList) tween.Kill();

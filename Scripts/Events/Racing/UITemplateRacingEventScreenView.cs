@@ -9,6 +9,7 @@
     using GameFoundation.Scripts.UIModule.Utilities.UIStuff;
     using TheOneStudio.HyperCasual.GamePlay.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UIModule.Utilities;
     using UnityEngine;
@@ -33,6 +34,7 @@
         protected readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
         private readonly   IFactory<AutoCooldownTimer>         autoCooldownTimer;
         private readonly   DiContainer                         diContainer;
+
 
         #endregion
 

@@ -56,7 +56,7 @@ MonoBehaviour:
   progressSlider: {fileID: 7705766494595142526}
   yourIcon: {fileID: 7978703301254873025}
   flagImage: {fileID: 6918141969827377761}
-  buttonChest: {fileID: 8495169230907070319}
+  buttonChest: {fileID: 8495169230907070319
   animatorButtonChest: {fileID: 2062354121950284593}
 --- !u!1 &258858106217359663
 GameObject:

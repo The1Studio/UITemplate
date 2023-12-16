@@ -148,7 +148,7 @@
                 var totalSecondsFromLastSimulation =
                     (currentTime - this.uiTemplateEventRacingData.lastRandomTime).TotalSeconds;
                 var totalSecondsUntilEndEventFromLastSimulation =
-                    (this.uiTemplateEventRacingData.endDate - currentTime).TotalSeconds;
+                    (this.EndDate - currentTime).TotalSeconds;
                 var maxRandomScore = maxScore - racingPlayerData.Score;
 
                 //calculate random score

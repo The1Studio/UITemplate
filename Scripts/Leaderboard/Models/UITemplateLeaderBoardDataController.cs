@@ -25,7 +25,7 @@
 
         #endregion
 
-        public void SubmitScore(object key, DateTime dateTime, int score)
+        public void SubmitScore(string key, DateTime dateTime, int score)
         {
             var allTimeHighScore = this.leaderBoardData[key].AllTimeHighScore;
             if (score > allTimeHighScore)
@@ -67,27 +67,27 @@
             }
         }
 
-        public int GetAllTimeHighScore(object key)
+        public int GetAllTimeHighScore(string key)
         {
             return this.leaderBoardData[key].AllTimeHighScore;
         }
 
-        public int GetDailyHighScore(object key, DateTime dateTime)
+        public int GetDailyHighScore(string key, DateTime dateTime)
         {
             return this.leaderBoardData[key].DailyHighScores.GetOrDefault(dateTime.Date);
         }
 
-        public int GetWeeklyHighScore(object key, DateTime dateTime)
+        public int GetWeeklyHighScore(string key, DateTime dateTime)
         {
             return this.leaderBoardData[key].WeeklyHighScores.GetOrDefault(dateTime.GetFirstDayOfWeek());
         }
 
-        public int GetMonthlyHighScore(object key, DateTime dateTime)
+        public int GetMonthlyHighScore(string key, DateTime dateTime)
         {
             return this.leaderBoardData[key].MonthlyHighScores.GetOrDefault(dateTime.GetFirstDayOfMonth());
         }
 
-        public int GetYearlyHighScore(object key, DateTime dateTime)
+        public int GetYearlyHighScore(string key, DateTime dateTime)
         {
             return this.leaderBoardData[key].YearlyHighScores.GetOrDefault(dateTime.GetFirstDayOfYear());
         }
@@ -110,15 +110,15 @@
 
         #region Default Time
 
-        public void SubmitScore(object key, int score) => this.SubmitScore(key, DateTime.UtcNow, score);
+        public void SubmitScore(string key, int score) => this.SubmitScore(key, DateTime.UtcNow, score);
 
-        public int GetDailyHighScore(object key) => this.GetDailyHighScore(key, DateTime.UtcNow);
+        public int GetDailyHighScore(string key) => this.GetDailyHighScore(key, DateTime.UtcNow);
 
-        public int GetWeeklyHighScore(object key) => this.GetWeeklyHighScore(key, DateTime.UtcNow);
+        public int GetWeeklyHighScore(string key) => this.GetWeeklyHighScore(key, DateTime.UtcNow);
 
-        public int GetMonthlyHighScore(object key) => this.GetMonthlyHighScore(key, DateTime.UtcNow);
+        public int GetMonthlyHighScore(string key) => this.GetMonthlyHighScore(key, DateTime.UtcNow);
 
-        public int GetYearlyHighScore(object key) => this.GetYearlyHighScore(key, DateTime.UtcNow);
+        public int GetYearlyHighScore(string key) => this.GetYearlyHighScore(key, DateTime.UtcNow);
 
         #endregion
 

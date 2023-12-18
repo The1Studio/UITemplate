@@ -284,24 +284,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 $"onelog: ShowInterstitialAd3 {place} force {force} check1 {this.adServices.IsInterstitialAdReady(place)} check2 {this.backFillAdsService.IsInterstitialAdReady(place)}");
             if (!this.adServices.IsInterstitialAdReady(place))
             {
+                this.logService.Log($"onelog: 1111 test 1 inter not ready {place}");
                 if (!this.backFillAdsService.IsInterstitialAdReady(place))
                 {
                     this.logService.Warning("InterstitialAd was not loaded");
+                    this.logService.Log($"onelog: 1111 test 2 backfill not ready {place}");
 
                     onShowInterstitialFinished?.Invoke(false);
                     return false;
                 }
 
+                this.logService.Log($"onelog: 1111 test 3  this.thirdPartiesConfig.AdSettings.EnableBreakAds {this.thirdPartiesConfig.AdSettings.EnableBreakAds}");
                 if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
                 {
                     ShowDelayInter(() =>
                     {
+                        this.logService.Log($"onelog: 1111 test 4 show delay inter ");
                         InternalShowInterstitial();
                         this.backFillAdsService.ShowInterstitialAd(place);
+                        this.logService.Log($"onelog: 1111 test 5 show delay inter ");
                     }).Forget();
                 }
                 else
                 {
+                    this.logService.Log($"onelog: 1111 test 6 show delay inter ");
                     InternalShowInterstitial();
                     this.backFillAdsService.ShowInterstitialAd(place);
                 }

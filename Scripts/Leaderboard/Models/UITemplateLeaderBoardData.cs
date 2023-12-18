@@ -10,7 +10,7 @@
     {
         [JsonProperty] private readonly Dictionary<string, Record> records = new Dictionary<string, Record>();
 
-        public Record this[object key] => this.records.GetOrAdd(key.ToString(), () => new Record());
+        public Record this[string key] => this.records.GetOrAdd(key, () => new Record());
 
         public class Record
         {

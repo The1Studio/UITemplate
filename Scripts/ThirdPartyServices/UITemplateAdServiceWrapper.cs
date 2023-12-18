@@ -282,7 +282,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.logService.Log(
                 $"onelog: ShowInterstitialAd3 {place} force {force} check1 {this.adServices.IsInterstitialAdReady(place)} check2 {this.backFillAdsService.IsInterstitialAdReady(place)}");
-            if (!this.adServices.IsInterstitialAdReady(place))
+            // if (!this.adServices.IsInterstitialAdReady(place))
             {
                 this.logService.Log($"onelog: 1111 test 1 inter not ready {place}");
                 if (!this.backFillAdsService.IsInterstitialAdReady(place))

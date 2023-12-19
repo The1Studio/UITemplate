@@ -149,6 +149,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool IsFiredFirstOpenEligibleSignal = false;
         private void CheckShowFirstOpen()
         {
+            Debug.Log($"onelog: AOA CheckShowFirstOpen EnableAOAAd {this.adServicesConfig.EnableAOAAd} this.IsOpenedAOAFirstOpen {this.IsOpenedAOAFirstOpen}");
             if (!this.IsFiredFirstOpenEligibleSignal)
             {
                 this.signalBus.Fire(new AppOpenEligibleSignal(""));
@@ -172,8 +173,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true)
         {
+            Debug.Log($"onelog: AOA ShowAOAAdsIfAvailable this.adServicesConfig.EnableAOAAd {this.adServicesConfig.EnableAOAAd} this.IsOpenedAOAFirstOpen {this.IsOpenedAOAFirstOpen}");
             if (!this.adServicesConfig.EnableAOAAd) return;
-
+            Debug.Log($"onelog: AOA ShowAOAAdsIfAvailable2 this.adServicesConfig.EnableAOAAd {this.adServicesConfig.EnableAOAAd} this.IsOpenedAOAFirstOpen {this.IsOpenedAOAFirstOpen}");
             if (isFireEligibleSignal)
             {
                 this.signalBus.Fire(new AppOpenEligibleSignal(""));
@@ -185,6 +187,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.aoaAdServices.First(aoaService => aoaService.IsAOAReady()).ShowAOAAds();
                 this.IsCheckedShowFirstOpen = true;
                 this.IsOpenedAOAFirstOpen   = true;
+                Debug.Log($"onelog: AOA ShowAOAAdsIfAvailable3 this.adServicesConfig.EnableAOAAd {this.adServicesConfig.EnableAOAAd} this.IsOpenedAOAFirstOpen {this.IsOpenedAOAFirstOpen}");
             }
         }
 

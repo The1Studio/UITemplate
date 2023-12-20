@@ -1,5 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+#if CREATIVE
+    using TheOneStudio.UITemplate.UITemplate.Creative.CheatLevel;
+#endif
     using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Signals;
@@ -34,6 +37,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //State machine
             this.Container.DeclareSignal<OnStateEnterSignal>();
             this.Container.DeclareSignal<OnStateExitSignal>();
+
+#if CREATIVE
+            this.Container.DeclareSignal<ChangeLevelCreativeSignal>();
+#endif
         }
     }
 }

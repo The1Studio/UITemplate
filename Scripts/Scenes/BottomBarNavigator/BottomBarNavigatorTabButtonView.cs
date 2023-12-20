@@ -11,10 +11,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         public TMP_Text TabName;
         public Image    TabIcon;
 
+        public void Init()
+        {
+            this.SetActive(false);
+        }
+        
         public void SetActive(bool isActive)
         {
-            this.TabIcon.rectTransform.DOMoveY(-30, 0.3f).SetEase(Ease.InOutBack);
-            this.TabName.transform.DOScale(1.3f, 0.3f).SetEase(Ease.OutBounce);
+            var duration = 0.3f;
+
+            if (isActive)
+            {
+                this.TabIcon.rectTransform.DOMoveY(-30, duration).SetEase(Ease.InOutBack);
+                this.TabName.transform.DOScale(1.3f, duration).SetEase(Ease.OutBounce);   
+            }
+            else
+            {
+                this.TabIcon.rectTransform.DOMoveY(-100, duration).SetEase(Ease.InBack);
+                this.TabName.transform.DOScale(1f, duration).SetEase(Ease.InBack);   
+            }
         }
     }
 }

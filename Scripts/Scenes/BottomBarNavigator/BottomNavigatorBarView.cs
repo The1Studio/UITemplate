@@ -4,7 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
     using UnityEngine;
     using Zenject;
 
-    public class BottomBarNavigatorView : MonoBehaviour
+    public class BottomNavigatorBarView : MonoBehaviour
     {
         public List<BottomBarNavigatorTabButtonView> Buttons;
 

@@ -11,8 +11,6 @@
 #if !CREATIVE
             return;
 #endif
-            this.Container.DeclareSignal<ChangeLevelCreativeSignal>();
-
             this.Container.BindInterfacesAndSelfTo<NewCreativeService>().AsCached().NonLazy();
 
             this.Container.Resolve<CreativeService>().DisableTripleTap();

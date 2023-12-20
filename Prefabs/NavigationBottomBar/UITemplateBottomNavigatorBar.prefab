@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5978068, b: 0, a: 1}
+  m_Color: {r: 0.9811321, g: 0.7880716, b: 0.32766104, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -155,11 +155,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5418229540745456278}
   - {fileID: 4496141461591831965}
   - {fileID: 6038642050082513172}
   - {fileID: 6395215982041350514}
   - {fileID: 1729149087247105022}
+  - {fileID: 5376519317350735159}
   m_Father: {fileID: 7090477225622299709}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -430,6 +430,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BottomNavigatorBarButton_1
       objectReference: {fileID: 0}
+    - target: {fileID: 4234246499324999015, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -441,7 +446,7 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4072633688708501081}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &5606995941438345554
+--- !u!1001 &5511383123937666803
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -512,17 +517,17 @@ PrefabInstance:
     - target: {fileID: 495789676210453444, guid: 784886ac716ac76498e50f6834453ce8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 495789676210453444, guid: 784886ac716ac76498e50f6834453ce8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 495789676210453444, guid: 784886ac716ac76498e50f6834453ce8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 495789676210453444, guid: 784886ac716ac76498e50f6834453ce8,
         type: 3}
@@ -552,7 +557,7 @@ PrefabInstance:
     - target: {fileID: 4078050294813902669, guid: 784886ac716ac76498e50f6834453ce8,
         type: 3}
       propertyPath: m_Name
-      value: BottomNavigatorBarButton
+      value: BottomNavigatorBarButton_5
       objectReference: {fileID: 0}
     - target: {fileID: 6181460103443462777, guid: 784886ac716ac76498e50f6834453ce8,
         type: 3}
@@ -565,11 +570,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 784886ac716ac76498e50f6834453ce8, type: 3}
---- !u!224 &5418229540745456278 stripped
+--- !u!224 &5376519317350735159 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 495789676210453444, guid: 784886ac716ac76498e50f6834453ce8,
     type: 3}
-  m_PrefabInstance: {fileID: 5606995941438345554}
+  m_PrefabInstance: {fileID: 5511383123937666803}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6137551860928862928
 PrefabInstance:

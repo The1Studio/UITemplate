@@ -52,27 +52,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 item.transform.localScale = Vector3.one;
                 item.transform.position   = startPoint;
 
-                item.transform.DOPunchPosition(item.transform.position * 0.3f, 0.5f, 2, 0.5f);
+                item.transform.DOPunchPosition(item.transform.position * 0.3f, 0.5f, 2, 0.5f).SetUpdate(true);
                 listItem.Add(item);
             }
 
             Object.Destroy(box2D.gameObject);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
+            await UniTask.Delay(TimeSpan.FromSeconds(0.25f),DelayType.UnscaledDeltaTime);
             const float FLYING_TIME = 0.08f;
             this.DoFlyingItems(listItem, FLYING_TIME, endPosition.Value, timeAnim).Forget();
 
-            await UniTask.Delay(TimeSpan.FromSeconds(FLYING_TIME + timeAnim));
+            await UniTask.Delay(TimeSpan.FromSeconds(FLYING_TIME + timeAnim),DelayType.UnscaledDeltaTime);
         }
 
         private async UniTask DoFlyingItems(List<GameObject> listItem, float flyingTime, Vector3 endUiPos, float timeAnim)
         {
             foreach (var item in listItem)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(flyingTime));
+                await UniTask.Delay(TimeSpan.FromSeconds(flyingTime),DelayType.UnscaledDeltaTime);
 
                 item.transform.DOMove(endUiPos, timeAnim)
                     .SetEase(Ease.InBack)
+                    .SetUpdate(true)
                     .OnComplete(item.Recycle);
             }
         }

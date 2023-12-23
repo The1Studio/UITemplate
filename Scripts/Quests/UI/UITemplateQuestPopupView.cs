@@ -15,19 +15,20 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
     public class UITemplateQuestPopupModel
     {
-        public string Tag { get; }
+        public string Tab { get; }
 
-        public UITemplateQuestPopupModel(string tag = "")
+        public UITemplateQuestPopupModel(string tab = null)
         {
-            this.Tag = tag;
+            this.Tab = tab;
         }
     }
 
     public class UITemplateQuestPopupView : BaseView
     {
-        [field: SerializeField] public Button                  BtnClose          { get; private set; }
-        [field: SerializeField] public Transform               ItemViewContainer { get; private set; }
-        [field: SerializeField] public UITemplateQuestItemView ItemViewPrefab    { get; private set; }
+        [field: SerializeField] public Button                          BtnClose          { get; private set; }
+        [field: SerializeField] public Transform                       ItemViewContainer { get; private set; }
+        [field: SerializeField] public UITemplateQuestItemView         ItemViewPrefab    { get; private set; }
+        [field: SerializeField] public UITemplateQuestPopupTabButton[] TabButtons        { get; private set; }
     }
 
     [PopupInfo(nameof(UITemplateQuestPopupView))]
@@ -54,13 +55,23 @@ namespace TheOneStudio.UITemplate.Quests.UI
         protected override void OnViewReady()
         {
             base.OnViewReady();
+            this.View.TabButtons.ForEach(tabButton => tabButton.SetOnClick(this.OnClickTab, this.View.TabButtons));
             this.View.BtnClose.onClick.AddListener(this.OnClickClose);
         }
 
         public override UniTask BindData(UITemplateQuestPopupModel _)
         {
+            this.View.TabButtons
+                .First(tabButton => this.Model.Tab is null || tabButton.Tab == this.Model.Tab)
+                .SetActive();
+            return UniTask.CompletedTask;
+        }
+
+        private void OnClickTab(string tag)
+        {
+            this.objectPoolManager.RecycleAll(this.View.ItemViewPrefab);
             this.questManager.GetAllControllers()
-                .Where(controller => controller.Record.Tags.Contains(this.Model.Tag))
+                .Where(controller => controller.Record.Tags.Contains(tag))
                 .Where(controller => controller.Progress.Status is QuestStatus.NotCompleted or QuestStatus.NotCollected)
                 .ForEach(controller =>
                 {
@@ -68,15 +79,10 @@ namespace TheOneStudio.UITemplate.Quests.UI
                     itemView.Model = new UITemplateQuestItemModel(
                         controller: controller,
                         onClickGo: this.OnClickClose,
-                        onClickClaim: () =>
-                        {
-                            this.Dispose();
-                            this.BindData(this.Model).Forget();
-                        }
+                        onClickClaim: () => this.OnClickTab(tag)
                     );
                     itemView.OnSpawn();
                 });
-            return UniTask.CompletedTask;
         }
 
         private void OnClickClose()

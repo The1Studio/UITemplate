@@ -2082,7 +2082,7 @@ MonoBehaviour:
   txtProgress: {fileID: 5475022473650366378}
   sldProgress: {fileID: 3594609121124341888}
   btnGo: {fileID: 4880772905474175858}
-  btnClaim: {fileID: 0}
+  btnClaim: {fileID: 6200216749814074330}
   normalObjects:
   - {fileID: 4714196755674063359}
   - {fileID: 69608644166027538}

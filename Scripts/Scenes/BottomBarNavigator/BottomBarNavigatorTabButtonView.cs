@@ -11,6 +11,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         public TMP_Text TabName;
         public Image    TabIcon;
 
+        private bool isActive = false;
+        
         public void Init()
         {
             this.SetActive(false);
@@ -18,6 +20,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         
         public void SetActive(bool isActive)
         {
+            if (isActive == this.isActive) return;
+
+            this.isActive = isActive;
             var duration = 0.3f;
 
             if (isActive)

@@ -12,5 +12,6 @@
 
         NotCompleted = Started | Shown,
         NotCollected = Started | Shown | Completed,
+        All          = Started | Shown | Completed | Collected,
     }
 }

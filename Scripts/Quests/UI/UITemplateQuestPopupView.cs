@@ -5,23 +5,12 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.Extension;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
-
-    public class UITemplateQuestPopupModel
-    {
-        public string Tab { get; }
-
-        public UITemplateQuestPopupModel(string tab = null)
-        {
-            this.Tab = tab;
-        }
-    }
 
     public class UITemplateQuestPopupView : BaseView
     {
@@ -32,7 +21,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
     }
 
     [PopupInfo(nameof(UITemplateQuestPopupView))]
-    public class UITemplateQuestPopupPresenter : UITemplateBasePopupPresenter<UITemplateQuestPopupView, UITemplateQuestPopupModel>
+    public class UITemplateQuestPopupPresenter : UITemplateBasePopupPresenter<UITemplateQuestPopupView>
     {
         #region Inject
 
@@ -41,10 +30,9 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         public UITemplateQuestPopupPresenter(
             SignalBus              signalBus,
-            ILogService            logService,
             UITemplateQuestManager questManager,
             ObjectPoolManager      objectPoolManager
-        ) : base(signalBus, logService)
+        ) : base(signalBus)
         {
             this.questManager      = questManager;
             this.objectPoolManager = objectPoolManager;
@@ -59,11 +47,9 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.View.BtnClose.onClick.AddListener(this.OnClickClose);
         }
 
-        public override UniTask BindData(UITemplateQuestPopupModel _)
+        public override UniTask BindData()
         {
-            this.View.TabButtons
-                .First(tabButton => this.Model.Tab is null || tabButton.Tab == this.Model.Tab)
-                .SetActive();
+            this.View.TabButtons[0].SetActive();
             return UniTask.CompletedTask;
         }
 

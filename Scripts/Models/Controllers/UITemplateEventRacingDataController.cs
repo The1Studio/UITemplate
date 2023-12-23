@@ -11,6 +11,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
     using UnityEngine;
+    using Utilities.Utils;
     using Zenject;
     using Random = UnityEngine.Random;
 
@@ -40,7 +41,7 @@
                 if (this.countryFlags == null)
                 {
                     this.countryFlags = this.gameAssets.LoadAssetAsync<GameObject>(CountryFlagsPrefab).WaitForCompletion()
-                        .Spawn().GetComponent<CountryFlags>();
+                                            .Spawn().GetComponent<CountryFlags>();
                 }
 
                 return this.countryFlags;
@@ -68,6 +69,7 @@
         public int      YourIndex        => this.uiTemplateEventRacingData.yourIndex;
         public long     RemainSecond     => (long)(this.uiTemplateEventRacingData.endDate - DateTime.Now).TotalSeconds;
         public DateTime StartDate        => this.uiTemplateEventRacingData.startDate;
+
         public DateTime EndDate
         {
             get
@@ -76,10 +78,11 @@
                 {
                     this.uiTemplateEventRacingData.endDate = this.uiTemplateEventRacingData.startDate.AddDays(this.gameEventsSetting.RacingConfig.RacingDay - Random.Range(0, 1.5f));
                 }
+
                 return this.uiTemplateEventRacingData.endDate;
             }
         }
-        
+
         public float RacingMaxProgression => this.gameEventsSetting.racingConfig.RacingMaxProgressionPercent;
 
         public void UpdateUserOldShowScore()
@@ -88,10 +91,7 @@
                 this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameEventsSetting.RacingConfig.RacingCurrency);
         }
 
-        public void Initialize()
-        {
-            this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.OnFetchSucceedHandler);
-        }
+        public void Initialize() { this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.OnFetchSucceedHandler); }
 
         private void OnFetchSucceedHandler(RemoteConfigFetchedSucceededSignal obj)
         {
@@ -117,7 +117,7 @@
                     Name  = isYou ? "You" : NVJOBNameGen.GiveAName(Random.Range(1, 8)),
                     Score = 0,
                     CountryCode =
-                        isYou ? CountryFlags.GetCountryCodeByDeviceLang() : this.CountryFlags.RandomCountryCode(),
+                        isYou ? RegionHelper.GetCountryCodeByDeviceLang() : this.CountryFlags.RandomCountryCode(),
                     IconAddressable = this.gameEventsSetting.RacingConfig.IconAddressableSet.PickRandom(),
                 });
 
@@ -168,7 +168,7 @@
         public bool RacingEventComplete() => this.YourNewScore >= this.RacingScoreMax;
 
         public bool IsPlayer(int playerIndex) => playerIndex == this.uiTemplateEventRacingData.yourIndex;
-        
+
         public bool ChangeStatusClaimItem(int idPlayer, bool status = true) { return this.uiTemplateEventRacingData.playerIndexToData[idPlayer].IsClaimItem = status; }
 
         public bool GetStatusClaimItem(int idPlayer = -1)

@@ -14,7 +14,7 @@ namespace TheOneStudio.UITemplate.Quests
     using UnityEngine.UI;
     using Zenject;
 
-    public class UITemplateQuestNotificationService : MonoBehaviour, IInitializable
+    public class UITemplateQuestNotificationView : MonoBehaviour, IInitializable
     {
         [SerializeField] private Button    btn;
         [SerializeField] private Transform popup;
@@ -66,6 +66,8 @@ namespace TheOneStudio.UITemplate.Quests
             {
                 Action();
             }
+
+            return;
 
             void Action()
             {

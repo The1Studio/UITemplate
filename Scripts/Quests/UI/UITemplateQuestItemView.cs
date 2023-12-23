@@ -81,7 +81,10 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.normalObjects.ForEach(obj => obj.SetActive(this.sldProgress.value < 1f));
             this.completedObjects.ForEach(obj => obj.SetActive(this.sldProgress.value >= 1f));
 
-            this.transform.localScale = Vector3.one;
+            var localPosition = this.transform.localPosition;
+            localPosition.z              = 0f;
+            this.transform.localPosition = localPosition;
+            this.transform.localScale    = Vector3.one;
         }
 
         private void OnClickGo()

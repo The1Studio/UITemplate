@@ -5,7 +5,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
     public sealed class AfterTimeCondition : BaseCondition
     {
-        [JsonProperty] private DateTime Begin { get; }
+        [JsonProperty] private DateTime Begin { get; set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

@@ -7,8 +7,8 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
     public sealed class CollectCurrencyCondition : BaseCondition
     {
-        [JsonProperty] private string CurrencyId { get; }
-        [JsonProperty] private int    Count      { get; }
+        [JsonProperty] private string CurrencyId { get; set; }
+        [JsonProperty] private int    Count      { get; set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

@@ -41,9 +41,9 @@
         public void CollectReward()
         {
             if (this.Progress.Status is not QuestStatus.NotCollected) return;
-            this.Progress.Status |= QuestStatus.Collected;
-            this.RemoveProgressHandlers(this.Progress.CompleteProgress);
             this.Record.Rewards.ForEach(reward => this.rewardHandlers[reward.GetType()].Handle(reward));
+            this.RemoveProgressHandlers(this.Progress.CompleteProgress);
+            this.Progress.Status |= QuestStatus.Collected;
         }
 
         public IEnumerable<ICondition.IProgress.IHandler> GetCompleteProgressHandlers()

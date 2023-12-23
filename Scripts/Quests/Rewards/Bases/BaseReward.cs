@@ -5,9 +5,9 @@ namespace TheOneStudio.UITemplate.Quests.Rewards
 
     public abstract class BaseReward : IReward
     {
-        [JsonProperty] public string Id    { get; }
-        [JsonProperty] public int    Value { get; }
-        [JsonProperty] public string Image { get; }
+        [JsonProperty] public string Id    { get; private set; }
+        [JsonProperty] public int    Value { get; private set; }
+        [JsonProperty] public string Image { get; private set; }
 
         protected abstract class BaseHandler<TReward> : IReward.IHandler
         {

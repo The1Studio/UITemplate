@@ -14,7 +14,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
             protected override Type HandlerType => typeof(Handler);
 
-            private sealed class Handler : BaseHandler<NewDayCondition, Progress>
+            private sealed class Handler : BaseHandler<NewWeekCondition, Progress>
             {
                 protected override float CurrentProgress
                 {

@@ -6,7 +6,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
     public sealed class ReachLevelCondition : BaseCondition
     {
-        [JsonProperty] private int Level { get; }
+        [JsonProperty] private int Level { get; set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

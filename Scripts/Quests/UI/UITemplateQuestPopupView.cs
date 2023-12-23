@@ -76,7 +76,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
                 .ForEach(controller =>
                 {
                     var itemView = this.objectPoolManager.Spawn(this.View.ItemViewPrefab, this.View.ItemViewContainer);
-                    itemView.Model = new UITemplateQuestItemModel(
+                    itemView.Model = new(
                         controller: controller,
                         onClickGo: this.OnClickClose,
                         onClickClaim: () => this.OnClickTab(tag)

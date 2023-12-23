@@ -6,8 +6,8 @@
 
     public sealed class ReachHighScoreCondition : BaseCondition
     {
-        [JsonProperty] private string Key       { get; } = UITemplateLeaderBoardDataController.DEFAULT_KEY;
-        [JsonProperty] private int    HighScore { get; }
+        [JsonProperty] private string Key       { get; set; } = UITemplateLeaderBoardDataController.DEFAULT_KEY;
+        [JsonProperty] private int    HighScore { get; set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

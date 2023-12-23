@@ -101,11 +101,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                     var reward = this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1).Reward;
 
-                    if (reward.ContainsKey(UITemplateInventoryDataController.DefaultSoftCurrencyID))
-                    {
-                        playAnimTask = this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(dailyIndexToRectTransform[i]);
-                    }
-
                     rewardsList.Add(reward);
                 }
             }
@@ -114,9 +109,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             await UniTask.WhenAny(playAnimTask);
 
+            var rewardIndex = 0;
             foreach (var reward in sumReward)
             {
-                this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value);
+                this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value, dailyIndexToRectTransform[rewardIndex]);
+                rewardIndex += 1;
             }
         }
 

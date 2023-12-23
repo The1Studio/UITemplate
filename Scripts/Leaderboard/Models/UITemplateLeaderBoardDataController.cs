@@ -10,7 +10,7 @@
 
     public class UITemplateLeaderBoardDataController : IUITemplateControllerData
     {
-        private const string DEFAULT_KEY = "DEFAULT";
+        public const string DEFAULT_KEY = "DEFAULT";
 
         #region Constructor
 

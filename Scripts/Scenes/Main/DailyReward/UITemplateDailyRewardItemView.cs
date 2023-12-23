@@ -28,13 +28,15 @@
 
     public class UITemplateDailyRewardItemView : TViewMono
     {
+        public Image           imgBackground;
         public Image           imgReward;
         public GameObject      objLockReward;
         public GameObject      objClaimed;
         public TextMeshProUGUI txtValue;
         public TextMeshProUGUI txtDayLabel;
         public GameObject      objClaimedCheckIcon;
-
+        public Sprite sprBgNormal;
+        public Sprite sprBgCurrentDay;
 
         public void UpdateIconRectTransform(Vector2? position, Vector2? size)
         {
@@ -91,6 +93,9 @@
             this.View.txtDayLabel.text = this.model.DailyRewardRecord.Day == this.dailyRewardController.GetCurrentDayIndex() + 1
                 ? TodayLabel
                 : $"{PrefixLabel}{this.model.DailyRewardRecord.Day}";
+            this.View.imgBackground.sprite = this.model.DailyRewardRecord.Day == this.dailyRewardController.GetCurrentDayIndex() + 1
+                ? this.View.sprBgCurrentDay
+                : this.View.sprBgNormal;
             this.View.objLockReward.SetActive(this.model.RewardStatus == RewardStatus.Locked);
             this.View.objClaimed.SetActive(this.model.RewardStatus == RewardStatus.Claimed);
 

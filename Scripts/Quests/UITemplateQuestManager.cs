@@ -9,21 +9,20 @@ namespace TheOneStudio.UITemplate.Quests
     public class UITemplateQuestManager : IInitializable, ITickable
     {
         private readonly IInstantiator  instantiator;
-        private readonly QuestBlueprint questBlueprint;
-        private readonly QuestProgress  questProgress;
+        private readonly UITemplateQuestBlueprint questBlueprint;
+        private readonly UITemplateQuestProgress  questProgress;
 
-        private readonly Dictionary<string, UITemplateQuestController> controllers;
+        private readonly Dictionary<string, UITemplateQuestController> controllers = new Dictionary<string, UITemplateQuestController>();
 
         public UITemplateQuestManager(
             IInstantiator  instantiator,
-            QuestBlueprint questBlueprint,
-            QuestProgress  questProgress
+            UITemplateQuestBlueprint questBlueprint,
+            UITemplateQuestProgress  questProgress
         )
         {
             this.instantiator   = instantiator;
             this.questBlueprint = questBlueprint;
             this.questProgress  = questProgress;
-            this.controllers    = new Dictionary<string, UITemplateQuestController>();
         }
 
         void IInitializable.Initialize()
@@ -59,9 +58,9 @@ namespace TheOneStudio.UITemplate.Quests
 
         private void InstantiateHandler(string id)
         {
-            var record     = this.questBlueprint[id].Record;
-            var progress   = this.questProgress.Storage.GetOrAdd(record.Id, () => new QuestProgress.Quest(record));
-            var controller = this.instantiator.Instantiate<UITemplateQuestController>(new object[] { record, progress });
+            var record     = this.questBlueprint[id];
+            var progress   = this.questProgress.Storage.GetOrAdd(record.Id, () => new UITemplateQuestProgress.Quest(record));
+            var controller = this.instantiator.Instantiate<UITemplateQuestController>();
             controller.Record   = record;
             controller.Progress = progress;
             controller.Initialize();

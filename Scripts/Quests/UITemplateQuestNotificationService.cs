@@ -2,16 +2,21 @@ namespace TheOneStudio.UITemplate.Quests
 {
     using System;
     using System.Collections.Generic;
+    using Cysharp.Threading.Tasks;
     using DG.Tweening;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
+    using TheOneStudio.UITemplate.Quests.UI;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.UI;
     using Zenject;
 
     public class UITemplateQuestNotificationService : MonoBehaviour, IInitializable
     {
+        [SerializeField] private Button    btn;
         [SerializeField] private Transform popup;
         [SerializeField] private Transform destination;
         [SerializeField] private TMP_Text  txtTitle;
@@ -20,19 +25,10 @@ namespace TheOneStudio.UITemplate.Quests
         [SerializeField] private string unlockedTitle  = "New Quest";
         [SerializeField] private string completedTitle = "Quest Completed";
 
-        private SignalBus signalBus;
-
-        [Inject]
-        public void Construct(SignalBus signalBus)
-        {
-            this.signalBus = signalBus;
-        }
-
-        private readonly Queue<Action> actionQueue = new Queue<Action>();
-
-        private Vector3 startPosition;
-        private Vector3 stopPosition;
-        private Tween   tween;
+        private Vector3       startPosition;
+        private Vector3       stopPosition;
+        private SignalBus     signalBus;
+        private ScreenManager screenManager;
 
         private void Awake()
         {
@@ -40,10 +36,22 @@ namespace TheOneStudio.UITemplate.Quests
             this.stopPosition  = this.destination.position;
         }
 
+        [Inject]
+        public void Construct(SignalBus signalBus, ScreenManager screenManager)
+        {
+            this.signalBus     = signalBus;
+            this.screenManager = screenManager;
+        }
+
         void IInitializable.Initialize()
         {
             this.signalBus.Subscribe<QuestStatusChangedSignal>(this.OnQuestStatusChanged);
+            this.btn.onClick.AddListener(() => this.screenManager.OpenScreen<UITemplateQuestPopupPresenter>().Forget());
         }
+
+        private readonly Queue<Action> actionQueue = new Queue<Action>();
+
+        private Tween tween;
 
         private void OnQuestStatusChanged(QuestStatusChangedSignal signal)
         {
@@ -69,6 +77,7 @@ namespace TheOneStudio.UITemplate.Quests
                     .Append(this.popup.DOMove(this.stopPosition, 1f).SetEase(Ease.OutBack))
                     .AppendInterval(3f)
                     .Append(this.popup.DOMove(this.startPosition, 1f).SetEase(Ease.InBack))
+                    .SetUpdate(true)
                     .OnComplete(() => this.actionQueue.DequeueOrDefault()?.Invoke());
             }
         }

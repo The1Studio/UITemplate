@@ -77,6 +77,7 @@ namespace TheOneStudio.UITemplate.Quests
                     .Append(this.popup.DOMove(this.stopPosition, 1f).SetEase(Ease.OutBack))
                     .AppendInterval(3f)
                     .Append(this.popup.DOMove(this.startPosition, 1f).SetEase(Ease.InBack))
+                    .SetUpdate(true)
                     .OnComplete(() => this.actionQueue.DequeueOrDefault()?.Invoke());
             }
         }

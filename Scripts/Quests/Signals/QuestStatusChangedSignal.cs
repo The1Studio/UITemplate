@@ -1,6 +1,6 @@
 namespace TheOneStudio.UITemplate.Quests.Signals
 {
-    public class QuestStatusChangedSignal
+    public sealed class QuestStatusChangedSignal
     {
         public UITemplateQuestController QuestController { get; }
 

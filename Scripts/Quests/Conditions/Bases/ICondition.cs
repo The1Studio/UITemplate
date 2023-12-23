@@ -1,15 +1,15 @@
-namespace TheOneStudio.UITemplate.Quests.Data.Conditions
+namespace TheOneStudio.UITemplate.Quests.Conditions
 {
     using System;
     using Newtonsoft.Json;
 
     public interface ICondition
     {
-        public IProgress SetupProgress();
+        internal IProgress SetupProgress();
 
         public interface IProgress
         {
-            [JsonIgnore] public Type HandlerType { get; }
+            [JsonIgnore] internal Type HandlerType { get; }
 
             public interface IHandler
             {
@@ -21,14 +21,14 @@ namespace TheOneStudio.UITemplate.Quests.Data.Conditions
 
                 public float MaxProgress { get; }
 
-                public void Initialize();
+                internal void Initialize();
 
-                public void Dispose();
+                internal void Dispose();
             }
         }
     }
 
-    public static class ConditionProgressHandlerExtensions
+    public static class ConditionHandlerExtensions
     {
         public static bool IsSatisfied(this ICondition.IProgress.IHandler handler)
         {

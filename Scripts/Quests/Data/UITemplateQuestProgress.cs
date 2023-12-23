@@ -4,17 +4,15 @@ namespace TheOneStudio.UITemplate.Quests.Data
     using System.Linq;
     using GameFoundation.Scripts.Interfaces;
     using Newtonsoft.Json;
-    using TheOneStudio.UITemplate.Quests.Data.Conditions;
+    using TheOneStudio.UITemplate.Quests.Conditions;
 
-    public class QuestProgress : ILocalData
+    public sealed class UITemplateQuestProgress : ILocalData
     {
         public Dictionary<string, Quest> Storage { get; } = new Dictionary<string, Quest>();
 
-        void ILocalData.Init()
-        {
-        }
+        void ILocalData.Init() { }
 
-        public class Quest
+        public sealed class Quest
         {
             [JsonProperty] public QuestStatus Status { get; internal set; }
 
@@ -24,7 +22,7 @@ namespace TheOneStudio.UITemplate.Quests.Data
             [JsonProperty] public IReadOnlyList<ICondition.IProgress> ResetProgress    { get; }
 
             [JsonConstructor]
-            public Quest()
+            private Quest()
             {
                 this.StartProgress    = new List<ICondition.IProgress>();
                 this.ShowProgress     = new List<ICondition.IProgress>();
@@ -32,7 +30,7 @@ namespace TheOneStudio.UITemplate.Quests.Data
                 this.ResetProgress    = new List<ICondition.IProgress>();
             }
 
-            public Quest(QuestRecord.Quest record)
+            public Quest(QuestRecord record)
             {
                 this.StartProgress    = record.StartConditions.Select(condition => condition.SetupProgress()).ToList();
                 this.ShowProgress     = record.ShowConditions.Select(condition => condition.SetupProgress()).ToList();

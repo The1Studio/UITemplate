@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
+    using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Data;
-    using TheOneStudio.UITemplate.Quests.Data.Conditions;
-    using TheOneStudio.UITemplate.Quests.Data.Rewards;
+    using TheOneStudio.UITemplate.Quests.Rewards;
     using TheOneStudio.UITemplate.Quests.Signals;
     using Zenject;
 
@@ -17,13 +17,13 @@
         private readonly IInstantiator                                                   instantiator;
         private readonly SignalBus                                                       signalBus;
         private readonly QuestStatusChangedSignal                                        changedSignal;
-        private readonly IReadOnlyDictionary<Type, IRewardHandler>                       rewardHandlers;
+        private readonly IReadOnlyDictionary<Type, IReward.IHandler>                     rewardHandlers;
         private readonly Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler> progressHandlers;
 
         public UITemplateQuestController(
-            IInstantiator               instantiator,
-            SignalBus                   signalBus,
-            IEnumerable<IRewardHandler> rewardHandlers
+            IInstantiator                 instantiator,
+            SignalBus                     signalBus,
+            IEnumerable<IReward.IHandler> rewardHandlers
         )
         {
             this.instantiator     = instantiator;
@@ -35,18 +35,15 @@
 
         #endregion
 
-        public QuestRecord.Quest   Record   { get; internal set; }
-        public QuestProgress.Quest Progress { get; internal set; }
+        public QuestRecord         Record   { get; internal set; }
+        public UITemplateQuestProgress.Quest Progress { get; internal set; }
 
         public void CollectReward()
         {
             if (this.Progress.Status is not QuestStatus.NotCollected) return;
             this.Progress.Status |= QuestStatus.Collected;
             this.RemoveProgressHandlers(this.Progress.CompleteProgress);
-            foreach (var reward in this.Record.Rewards)
-            {
-                this.rewardHandlers[reward.GetType()].Handle(reward);
-            }
+            this.Record.Rewards.ForEach(reward => this.rewardHandlers[reward.GetType()].Handle(reward));
         }
 
         public IEnumerable<ICondition.IProgress.IHandler> GetCompleteProgressHandlers()

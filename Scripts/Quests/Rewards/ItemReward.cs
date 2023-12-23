@@ -1,11 +1,10 @@
-namespace TheOneStudio.UITemplate.Quests.Data.Rewards
+namespace TheOneStudio.UITemplate.Quests.Rewards
 {
-    using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
-    public class CurrencyReward : Reward
+    public sealed class ItemReward : BaseReward
     {
-        private class Handler : RewardHandler<CurrencyReward>
+        private sealed class Handler : BaseHandler<ItemReward>
         {
             private readonly UITemplateInventoryDataController inventoryDataController;
 
@@ -14,9 +13,10 @@ namespace TheOneStudio.UITemplate.Quests.Data.Rewards
                 this.inventoryDataController = inventoryDataController;
             }
 
-            protected override void Handle(CurrencyReward reward)
+            protected override void Handle(ItemReward reward)
             {
-                this.inventoryDataController.AddCurrency(reward.Value, reward.Id).Forget();
+                var item = this.inventoryDataController.GetItemData(reward.Id);
+                this.inventoryDataController.SetOwnedItemData(item);
             }
         }
     }

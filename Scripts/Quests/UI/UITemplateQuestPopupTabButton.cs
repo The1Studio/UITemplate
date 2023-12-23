@@ -1,6 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.Quests.UI
 {
-    using System;
     using GameFoundation.Scripts.Utilities.Extension;
     using UnityEngine;
     using UnityEngine.UI;
@@ -13,26 +12,22 @@
         [SerializeField] private GameObject[] activeObjects;
         [SerializeField] private GameObject[] inactiveObjects;
 
+        public UITemplateQuestPopupPresenter Parent { get; set; }
+
         private void Awake()
         {
-            this.GetComponent<Button>().onClick.AddListener(this.SetActive);
+            this.GetComponent<Button>().onClick.AddListener(this.OnClick);
         }
 
-        private Action onClick;
-
-        public void SetOnClick(Action<string> action, UITemplateQuestPopupTabButton[] tabButtons)
+        private void OnClick()
         {
-            this.onClick = () =>
-            {
-                action(this.Tab);
-                tabButtons.ForEach(tabButton =>
-                {
-                    tabButton.activeObjects.ForEach(obj => obj.SetActive(tabButton == this));
-                    tabButton.inactiveObjects.ForEach(obj => obj.SetActive(tabButton != this));
-                });
-            };
+            this.Parent.Tab = this.Tab;
         }
 
-        public void SetActive() => this.onClick();
+        public void SetActive(bool active)
+        {
+            this.activeObjects.ForEach(obj => obj.SetActive(active));
+            this.inactiveObjects.ForEach(obj => obj.SetActive(!active));
+        }
     }
 }

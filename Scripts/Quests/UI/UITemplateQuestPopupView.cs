@@ -5,8 +5,6 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.Extension;
-    using GameFoundation.Scripts.Utilities.ObjectPool;
-    using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
@@ -14,10 +12,10 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
     public class UITemplateQuestPopupView : BaseView
     {
-        [field: SerializeField] public Button                          BtnClose          { get; private set; }
-        [field: SerializeField] public Transform                       ItemViewContainer { get; private set; }
-        [field: SerializeField] public UITemplateQuestItemView         ItemViewPrefab    { get; private set; }
-        [field: SerializeField] public UITemplateQuestPopupTabButton[] TabButtons        { get; private set; }
+        [field: SerializeField] public Button                          BtnClose   { get; private set; }
+        [field: SerializeField] public UITemplateQuestListView         ListView   { get; private set; }
+        [field: SerializeField] public UITemplateQuestChestView        ChestView  { get; private set; }
+        [field: SerializeField] public UITemplateQuestPopupTabButton[] TabButtons { get; private set; }
     }
 
     [PopupInfo(nameof(UITemplateQuestPopupView))]
@@ -26,16 +24,13 @@ namespace TheOneStudio.UITemplate.Quests.UI
         #region Inject
 
         private readonly UITemplateQuestManager questManager;
-        private readonly ObjectPoolManager      objectPoolManager;
 
         public UITemplateQuestPopupPresenter(
             SignalBus              signalBus,
-            UITemplateQuestManager questManager,
-            ObjectPoolManager      objectPoolManager
+            UITemplateQuestManager questManager
         ) : base(signalBus)
         {
-            this.questManager      = questManager;
-            this.objectPoolManager = objectPoolManager;
+            this.questManager = questManager;
         }
 
         #endregion
@@ -43,42 +38,51 @@ namespace TheOneStudio.UITemplate.Quests.UI
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.View.TabButtons.ForEach(tabButton => tabButton.SetOnClick(this.OnClickTab, this.View.TabButtons));
-            this.View.BtnClose.onClick.AddListener(this.OnClickClose);
+            this.View.ListView.Parent  = this;
+            this.View.ChestView.Parent = this;
+            this.View.TabButtons.ForEach(tabButton => tabButton.Parent = this);
+            this.View.BtnClose.onClick.AddListener(() => this.CloseViewAsync().Forget());
         }
 
         public override UniTask BindData()
         {
-            this.View.TabButtons[0].SetActive();
+            this.Tab = this.View.TabButtons[0].Tab;
             return UniTask.CompletedTask;
         }
 
-        private void OnClickTab(string tag)
+        public void Refresh()
         {
-            this.objectPoolManager.RecycleAll(this.View.ItemViewPrefab);
-            this.questManager.GetAllControllers()
-                .Where(controller => controller.Record.Tags.Contains(tag))
-                .Where(controller => controller.Progress.Status is QuestStatus.NotCompleted or QuestStatus.NotCollected)
-                .ForEach(controller =>
-                {
-                    var itemView = this.objectPoolManager.Spawn(this.View.ItemViewPrefab, this.View.ItemViewContainer);
-                    itemView.Model = new(
-                        controller: controller,
-                        onClickGo: this.OnClickClose,
-                        onClickClaim: () => this.OnClickTab(tag)
-                    );
-                    itemView.OnSpawn();
-                });
-        }
+            this.View.TabButtons.ForEach(tabButton => tabButton.SetActive(tabButton.Tab == this.Tab));
 
-        private void OnClickClose()
-        {
-            this.CloseViewAsync().Forget();
+            var (chestQuests, normalQuests) = this.questManager.GetAllControllers()
+                .Where(quest => quest.Record.Tags.Contains(this.Tab))
+                .Split(quest => quest.Record.Tags.Contains("Chest"));
+
+            this.View.ListView.Dispose();
+            this.View.ListView.Model = new(normalQuests);
+            this.View.ListView.BindData();
+
+            this.View.ChestView.Dispose();
+            this.View.ChestView.Model = new(chestQuests);
+            this.View.ChestView.BindData();
         }
 
         public override void Dispose()
         {
-            this.objectPoolManager.RecycleAll(this.View.ItemViewPrefab);
+            this.View.ListView.Dispose();
+            this.View.ChestView.Dispose();
         }
+
+        public string Tab
+        {
+            get => this.tab;
+            set
+            {
+                this.tab = value;
+                this.Refresh();
+            }
+        }
+
+        private string tab;
     }
 }

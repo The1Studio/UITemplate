@@ -20,8 +20,7 @@
             {
                 this.Container.BindInterfacesAndSelfTo<UITemplateQuestNotificationService>()
                     .FromInstance(notificationService)
-                    .AsSingle()
-                    .NonLazy();
+                    .AsSingle();
             }
 
             this.Container.DeclareSignal<QuestStatusChangedSignal>();

@@ -1,7 +1,7 @@
 namespace TheOneStudio.UITemplate.Quests.UI
 {
-    using System;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.Utilities.Extension;
     using TMPro;
@@ -9,25 +9,17 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using UnityEngine.UI;
     using Zenject;
 
-    public class UITemplateQuestItemModel
+    public class UITemplateQuestListItemModel
     {
-        public UITemplateQuestController Controller   { get; }
-        public Action                    OnClickGo    { get; }
-        public Action                    OnClickClaim { get; }
+        public UITemplateQuestController Quest { get; }
 
-        public UITemplateQuestItemModel(
-            UITemplateQuestController controller,
-            Action                    onClickGo,
-            Action                    onClickClaim
-        )
+        public UITemplateQuestListItemModel(UITemplateQuestController quest)
         {
-            this.Controller   = controller;
-            this.OnClickGo    = onClickGo;
-            this.OnClickClaim = onClickClaim;
+            this.Quest = quest;
         }
     }
 
-    public class UITemplateQuestItemView : MonoBehaviour
+    public class UITemplateQuestListItemView : MonoBehaviour
     {
         // Left
         [SerializeField] private Image    imgReward;
@@ -55,18 +47,19 @@ namespace TheOneStudio.UITemplate.Quests.UI
         private IGameAssets gameAssets;
 
         [Inject]
-        public UITemplateQuestItemView Construct(IGameAssets gameAssets)
+        public void Construct(IGameAssets gameAssets)
         {
             this.gameAssets = gameAssets;
-            return this;
         }
 
-        public UITemplateQuestItemModel Model { get; set; }
+        public UITemplateQuestPopupPresenter Parent { get; set; }
 
-        public void OnSpawn()
+        public UITemplateQuestListItemModel Model { get; set; }
+
+        public void BindData()
         {
             // Left
-            var record = this.Model.Controller.Record;
+            var record = this.Model.Quest.Record;
             var reward = record.Rewards.Single();
             this.imgReward.sprite = this.gameAssets.LoadAssetAsync<Sprite>(reward.Image).WaitForCompletion();
             this.txtReward.text   = reward.Value.ToString();
@@ -74,7 +67,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.txtDesc.text     = record.Description;
 
             // Right
-            var progressHandler = this.Model.Controller.GetCompleteProgressHandlers().Single();
+            var progressHandler = this.Model.Quest.GetCompleteProgressHandlers().Single();
             this.txtProgress.text  = $"{progressHandler.CurrentProgress}/{progressHandler.MaxProgress}";
             this.sldProgress.value = progressHandler.CurrentProgress / progressHandler.MaxProgress;
 
@@ -89,13 +82,13 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         private void OnClickGo()
         {
-            this.Model.OnClickGo();
+            this.Parent.CloseViewAsync().Forget();
         }
 
         private void OnClickClaim()
         {
-            this.Model.Controller.CollectReward();
-            this.Model.OnClickClaim();
+            this.Model.Quest.CollectReward();
+            this.Parent.Refresh();
         }
     }
 }

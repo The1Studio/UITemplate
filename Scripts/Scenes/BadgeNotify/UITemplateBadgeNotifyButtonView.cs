@@ -22,8 +22,6 @@
 
         [SerializeField] private Button     badgeButton;
         [SerializeField] private GameObject badge;
-        [SerializeField] private string     key;
-
 
         [Inject]
         private void Construct(UITemplateBadgeNotifySystem uiTemplateBadgeNotifySystem, IScreenManager screenManager, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper)

@@ -78,7 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #region banner
 
-        public virtual async void ShowBannerAd()
+        public virtual async void ShowBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
         {
             if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd)
             {
@@ -89,7 +89,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             if (this.isShowBannerAd)
             {
-                this.adServices.ShowBannerAd();
+                this.adServices.ShowBannerAd(bannerAdsPosition, width, height);
             }
         }
 

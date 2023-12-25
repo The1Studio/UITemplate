@@ -22,12 +22,14 @@
         {
         }
 
-        public override void ShowBannerAd() { }
+        public override void ShowBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50) { }
+
         public override void HideBannerAd() { }
 
         public override bool ShowInterstitialAd(string place, bool force = false, Action<bool> onInterstitialFinished = null)
         {
             onInterstitialFinished?.Invoke(true);
+
             return false;
         }
 

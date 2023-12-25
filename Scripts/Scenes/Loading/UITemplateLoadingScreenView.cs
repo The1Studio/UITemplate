@@ -53,6 +53,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         public UniTask CompleteLoading()
         {
             this.SetProgress(1f);
+
             return this.tween.AsyncWaitForCompletion().AsUniTask();
         }
     }
@@ -118,7 +119,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             this.SignalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAOAClosedHandler);
             this.SignalBus.Subscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
-            
+
             this.objectPoolContainer = new(nameof(this.objectPoolContainer));
             Object.DontDestroyOnLoad(this.objectPoolContainer);
 
@@ -157,8 +158,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
 
             Resources.UnloadUnusedAssets().ToUniTask().Forget();
-            this.adService.ShowBannerAd();
+            this.ShowBannerAd();
         }
+
+        protected virtual void ShowBannerAd() { this.adService.ShowBannerAd(); }
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 
@@ -166,6 +169,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             this.TrackProgress<LoadBlueprintDataProgressSignal>();
             this.TrackProgress<ReadBlueprintProgressSignal>();
+
             return this.blueprintManager.LoadBlueprint();
         }
 
@@ -174,9 +178,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private UniTask WaitForAoa()
         {
             var startWaitingAoaTime = DateTime.Now;
+
             // sometimes AOA delay when shown, we need 0.5s to wait for it
             return this.TrackProgress(UniTask.WaitUntil(() =>
-                (this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && this.IsClosedFirstOpen) || 
+                (this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && this.IsClosedFirstOpen) ||
                 (!this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA)));
         }
 
@@ -193,7 +198,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected UniTask PreloadAssets<T>(params object[] keys)
         {
             return UniTask.WhenAll(this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys)
-                                       .Select(this.TrackProgress));
+                .Select(this.TrackProgress));
         }
 
         protected UniTask CreateObjectPool(string prefabName, int initialPoolSize = 1)
@@ -205,6 +210,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected UniTask TrackProgress(UniTask task)
         {
             ++this.loadingSteps;
+
             return task.ContinueWith(() => ++this.loadingProgress);
         }
 
@@ -220,11 +226,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             }
 
             return aoh.ToUniTask(Progress.CreateOnlyValueChanged<float>(UpdateProgress))
-                      .ContinueWith(result =>
-                      {
-                          UpdateProgress(1f);
-                          return result;
-                      });
+                .ContinueWith(result =>
+                {
+                    UpdateProgress(1f);
+
+                    return result;
+                });
         }
 
         protected void TrackProgress<T>() where T : IProgressPercent

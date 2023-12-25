@@ -2,8 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Scripts.Utilities.ObjectPool;
+    using TheOneStudio.UITemplate.Quests.Data;
     using UnityEngine;
+    using UnityEngine.UI;
+    using Zenject;
 
     public class UITemplateQuestChestModel
     {
@@ -17,16 +22,40 @@
 
     public class UITemplateQuestChestView : MonoBehaviour
     {
-        public UITemplateQuestPopupPresenter Parent { get; set; }
+        [SerializeField] private Transform                    itemViewContainer;
+        [SerializeField] private UITemplateQuestChestItemView itemViewPrefab;
+        [SerializeField] private Slider                       sld;
+
+        private void Awake()
+        {
+            ZenjectUtils.GetCurrentContainer().Inject(this);
+        }
+
+        private ObjectPoolManager objectPoolManager;
+
+        [Inject]
+        public void Construct(ObjectPoolManager objectPoolManager)
+        {
+            this.objectPoolManager = objectPoolManager;
+        }
 
         public UITemplateQuestChestModel Model { get; set; }
 
         public void BindData()
         {
+            this.Model.Quests.ForEach(quest =>
+            {
+                var itemView = this.objectPoolManager.Spawn(this.itemViewPrefab, this.itemViewContainer);
+                itemView.Model = new(quest);
+                itemView.BindData();
+            });
+            this.sld.value = (float)this.Model.Quests.Count(quest => quest.Progress.Status.HasFlag(QuestStatus.Completed))
+                / this.Model.Quests.Count;
         }
 
         public void Dispose()
         {
+            this.objectPoolManager.RecycleAll(this.itemViewPrefab);
         }
     }
 }

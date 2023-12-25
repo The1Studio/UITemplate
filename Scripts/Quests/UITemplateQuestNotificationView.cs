@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.Quests
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -55,6 +56,7 @@ namespace TheOneStudio.UITemplate.Quests
 
         private void OnQuestStatusChanged(QuestStatusChangedSignal signal)
         {
+            if (signal.QuestController.Record.Tags.Any(tag => tag.Contains("Chest"))) return;
             var status = signal.QuestController.Progress.Status;
             if (status is not QuestStatus.NotCompleted and not QuestStatus.NotCollected) return;
 

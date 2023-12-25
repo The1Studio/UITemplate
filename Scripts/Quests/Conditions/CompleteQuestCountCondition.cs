@@ -2,6 +2,7 @@
 {
     using System;
     using Newtonsoft.Json;
+    using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
     using Zenject;
 
@@ -37,6 +38,7 @@
 
                 private void QuestStatusChanged(QuestStatusChangedSignal @params)
                 {
+                    if (@params.QuestController.Progress.Status is not QuestStatus.NotCollected) return;
                     if (this.Condition.Tag is { } tag && !@params.QuestController.Record.Tags.Contains(tag)) return;
                     ++this.Progress.Count;
                 }

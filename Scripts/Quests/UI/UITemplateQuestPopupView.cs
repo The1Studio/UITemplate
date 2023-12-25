@@ -38,8 +38,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.View.ListView.Parent  = this;
-            this.View.ChestView.Parent = this;
+            this.View.ListView.Parent = this;
             this.View.TabButtons.ForEach(tabButton => tabButton.Parent = this);
             this.View.BtnClose.onClick.AddListener(() => this.CloseViewAsync().Forget());
         }
@@ -55,8 +54,8 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.View.TabButtons.ForEach(tabButton => tabButton.SetActive(tabButton.Tab == this.Tab));
 
             var (chestQuests, normalQuests) = this.questManager.GetAllControllers()
-                .Where(quest => quest.Record.Tags.Contains(this.Tab))
-                .Split(quest => quest.Record.Tags.Contains("Chest"));
+                .Where(quest => quest.Record.Tags.Any(tag => tag.Contains(this.Tab)))
+                .Split(quest => quest.Record.Tags.Any(tag => tag.Contains("Chest")));
 
             this.View.ListView.Dispose();
             this.View.ListView.Model = new(normalQuests);

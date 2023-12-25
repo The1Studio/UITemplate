@@ -16,10 +16,10 @@
 
             this.Container.BindInterfacesAndSelfTo<UITemplateQuestManager>().AsSingle();
 
-            if (Object.FindObjectOfType<UITemplateQuestNotificationView>() is { } notificationService)
+            if (Object.FindObjectOfType<UITemplateQuestNotificationView>() is { } notificationView)
             {
                 this.Container.BindInterfacesAndSelfTo<UITemplateQuestNotificationView>()
-                    .FromInstance(notificationService)
+                    .FromInstance(notificationView)
                     .AsSingle();
             }
 

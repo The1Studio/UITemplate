@@ -1,22 +1,40 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using GameFoundation.Scripts.Utilities.Extension;
+    using Zenject;
 
-    public class UITemplateBadgeNotifySystem
+    public class UITemplateBadgeNotifySystem : IInitializable
     {
-        private Dictionary<string, UItemplateBadgeNotifyView> badgeKeyToView      = new();
-        private Dictionary<string, string>                    badgeKeyToParentKey = new();
+        private Dictionary<Type, HashSet<UITemplateBadgeNotifyButtonView>> screenTypeToBadgeButtons    = new();
+        private Dictionary<UITemplateBadgeNotifyButtonView, Type>          badgeButtonToNextScreenType = new();
+        private Dictionary<UITemplateBadgeNotifyButtonView, Func<bool>>    badgeButtonToConditionFunc  = new();
 
-        public void RegisterBadge(UItemplateBadgeNotifyView badgeNotifyView, string key, string parentBadgeNotify)
+        public void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreen, Type nextScreenType)
         {
-            this.badgeKeyToView.Add(key, badgeNotifyView);
-            this.badgeKeyToParentKey.Add(key, parentBadgeNotify);
+            var badgeSet = this.screenTypeToBadgeButtons.GetOrAdd(parentScreen.GetType(), () => new HashSet<UITemplateBadgeNotifyButtonView>());
+            badgeSet.Add(badgeNotifyButtonView);
+            this.badgeButtonToNextScreenType.Add(badgeNotifyButtonView, nextScreenType);
         }
 
-        public void UpdateBadgeNotifyStatus()
+        public void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreenPresenter, Func<bool> condition)
         {
+            this.badgeButtonToConditionFunc.Add(badgeNotifyButtonView, condition);
         }
-        
-        
+
+        public bool GetBadgeStatus(UITemplateBadgeNotifyButtonView badgeNotifyButtonView)
+        {
+            if (this.badgeButtonToConditionFunc.TryGetValue(badgeNotifyButtonView, out var conditionFunc))
+            {
+                return conditionFunc.Invoke();
+            }
+
+            return this.screenTypeToBadgeButtons[this.badgeButtonToNextScreenType[badgeNotifyButtonView]].Any(this.GetBadgeStatus);
+        }
+
+        public void Initialize() { }
     }
 }

@@ -16,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         public void Init()
         {
             this.SetActive(false);
+            this.TabName.transform.localScale = Vector3.zero;
         }
         
         public void SetActive(bool isActive)
@@ -27,13 +28,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
             if (isActive)
             {
-                this.TabIcon.rectTransform.DOMoveY(-30, duration).SetEase(Ease.InOutBack);
-                this.TabName.transform.DOScale(1.3f, duration).SetEase(Ease.OutBounce);   
+                this.TabIcon.rectTransform.DOAnchorPosY(-30, duration).SetEase(Ease.OutBounce);
+                this.TabIcon.transform.DOScale(1.3f, duration).SetEase(Ease.OutBounce);
+                this.TabName.transform.DOScale(1, duration).SetEase(Ease.OutBack);
             }
             else
             {
-                this.TabIcon.rectTransform.DOMoveY(-100, duration).SetEase(Ease.InBack);
-                this.TabName.transform.DOScale(1f, duration).SetEase(Ease.InBack);   
+                this.TabIcon.rectTransform.DOAnchorPosY(-100, duration).SetEase(Ease.InBack);
+                this.TabIcon.transform.DOScale(1f, duration).SetEase(Ease.InBack);   
+                this.TabName.transform.DOScale(0, duration).SetEase(Ease.InBack);
             }
         }
     }

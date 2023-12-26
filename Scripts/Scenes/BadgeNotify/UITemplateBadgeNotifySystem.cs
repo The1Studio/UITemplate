@@ -5,9 +5,8 @@
     using System.Linq;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.Utilities.Extension;
-    using Zenject;
 
-    public class UITemplateBadgeNotifySystem : IInitializable
+    public class UITemplateBadgeNotifySystem
     {
         private Dictionary<Type, HashSet<UITemplateBadgeNotifyButtonView>> screenTypeToBadgeButtons    = new();
         private Dictionary<UITemplateBadgeNotifyButtonView, Type>          badgeButtonToNextScreenType = new();
@@ -34,7 +33,5 @@
 
             return this.screenTypeToBadgeButtons[this.badgeButtonToNextScreenType[badgeNotifyButtonView]].Any(this.GetBadgeStatus);
         }
-
-        public void Initialize() { }
     }
 }

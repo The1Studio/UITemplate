@@ -33,6 +33,11 @@
             this.uitemplateAdServiceWrapper  = uiTemplateAdServiceWrapper;
         }
 
+        private void OnEnable()
+        {
+            this.badge.SetActive(this.uiTemplateBadgeNotifySystem.GetBadgeStatus(this));
+        }
+
         public void Register<T>(IScreenPresenter parentScreenPresenter, string interPlacement = null) where T : IScreenPresenter
         {
             if (interPlacement.IsNullOrEmpty())
@@ -61,7 +66,6 @@
         }
 
         public void SetActive(bool isActive) { this.badge.SetActive(isActive); }
-
-        public bool GetStatus() => this.badge.activeSelf;
+        
     }
 }

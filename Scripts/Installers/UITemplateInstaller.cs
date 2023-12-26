@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Leaderboard;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.AppTracking;
@@ -40,6 +41,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Feature
 #if THEONE_DAILY_REWARD
             this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardService>().AsCached().NonLazy();
+#endif
+
+#if THEONE_BADGE_NOTIFY
+            this.Container.BindInterfacesAndSelfTo<UITemplateBadgeNotifySystem>().AsCached().NonLazy();
 #endif
         }
     }

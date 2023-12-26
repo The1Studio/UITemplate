@@ -20,22 +20,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly IGameAssets   gameAssets;
         private const    string        PrefabName = "UITemplateFlyingAnimationItem";
 
-        public UITemplateFlyingAnimationController(ScreenManager screenManager, IGameAssets gameAssets)
+        public UITemplateFlyingAnimationController(ScreenManager screenManager,
+                                                   IGameAssets gameAssets)
         {
             this.screenManager = screenManager;
             this.gameAssets    = gameAssets;
         }
 
-        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "")
-            where T : UITemplateFlyingAnimationView
+        public async UniTask PlayAnimation<T>(RectTransform startPointRect,
+                                              int minAmount = 6,
+                                              int maxAmount = 10,
+                                              float timeAnim = 1f,
+                                              RectTransform target = null,
+                                              string prefabName = "") where T : UITemplateFlyingAnimationView
         {
-            var endPosition = target != null
-                ? target.position
-                : this.screenManager.RootUICanvas
-                    .GetComponentsInChildren<T>()
-                    .FirstOrDefault()?
-                    .TargetFlyingAnimation
-                    .position;
+            var endPosition = target != null ? target.position : this.screenManager.RootUICanvas.GetComponentsInChildren<T>().FirstOrDefault()?.TargetFlyingAnimation.position;
             if (endPosition is null) return;
 
             var totalCount  = Random.Range(minAmount, maxAmount);
@@ -49,8 +48,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 var startPoint = box2D.bounds.RandomPointInBounds();
                 var item       = prefab.Spawn(this.screenManager.RootUICanvas.RootUIOverlayTransform.transform);
-                item.transform.localScale = Vector3.one;
-                item.transform.position   = startPoint;
+                item.transform.localScale    = Vector3.one;
+                item.transform.position      = startPoint;
+                item.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
                 item.transform.DOPunchPosition(item.transform.position * 0.3f, 0.5f, 2, 0.5f).SetUpdate(true);
                 listItem.Add(item);
@@ -58,23 +58,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             Object.Destroy(box2D.gameObject);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(0.25f),DelayType.UnscaledDeltaTime);
+            await UniTask.Delay(TimeSpan.FromSeconds(0.25f), DelayType.UnscaledDeltaTime);
             const float FLYING_TIME = 0.08f;
             this.DoFlyingItems(listItem, FLYING_TIME, endPosition.Value, timeAnim).Forget();
 
-            await UniTask.Delay(TimeSpan.FromSeconds(FLYING_TIME + timeAnim),DelayType.UnscaledDeltaTime);
+            await UniTask.Delay(TimeSpan.FromSeconds(FLYING_TIME + timeAnim), DelayType.UnscaledDeltaTime);
         }
 
-        private async UniTask DoFlyingItems(List<GameObject> listItem, float flyingTime, Vector3 endUiPos, float timeAnim)
+        private async UniTask DoFlyingItems(List<GameObject> listItem,
+                                            float flyingTime,
+                                            Vector3 endUiPos,
+                                            float timeAnim)
         {
             foreach (var item in listItem)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(flyingTime),DelayType.UnscaledDeltaTime);
+                await UniTask.Delay(TimeSpan.FromSeconds(flyingTime), DelayType.UnscaledDeltaTime);
 
-                item.transform.DOMove(endUiPos, timeAnim)
-                    .SetEase(Ease.InBack)
-                    .SetUpdate(true)
-                    .OnComplete(item.Recycle);
+                item.transform.DOMove(endUiPos, timeAnim).SetEase(Ease.InBack).SetUpdate(true).OnComplete(item.Recycle);
             }
         }
 

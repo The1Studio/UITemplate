@@ -43,8 +43,9 @@
         public void BindData()
         {
             var models = this.Model.Quests
-                .Where(quest => quest.Progress.Status is QuestStatus.NotCompleted or QuestStatus.NotCollected)
-                .OrderBy(quest => quest.Progress.Status is QuestStatus.NotCompleted)
+                .Where(quest => quest.Progress.Status.HasFlag(QuestStatus.Shown))
+                .OrderByDescending(quest => quest.Progress.Status is QuestStatus.NotCollected)
+                .ThenByDescending(quest => quest.Progress.Status is QuestStatus.NotCompleted)
                 .Select(quest => new UITemplateQuestListItemModel(this.Parent, quest))
                 .ToList();
             this.listItemAdapter.InitItemAdapter(models, this.diContainer).Forget();

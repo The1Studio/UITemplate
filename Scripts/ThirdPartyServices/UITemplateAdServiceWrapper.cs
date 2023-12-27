@@ -83,7 +83,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowFirstBanner()
         {
-            if(!this.thirdPartiesConfig.AdSettings.ShowBannerWhenOpen) return;
+            if(!this.thirdPartiesConfig.AdSettings.ShowFirstBanner) return;
             this.ShowBannerAd();
         }
 

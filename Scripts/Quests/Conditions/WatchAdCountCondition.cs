@@ -25,12 +25,12 @@
                     this.adsDataController = adsDataController;
                 }
 
-                protected override float CurrentProgress => this.adsDataController.WatchedAdsCount - this.Progress.StartCount!.Value;
+                protected override float CurrentProgress => this.adsDataController.WatchRewardedAds - this.Progress.StartCount!.Value;
                 protected override float MaxProgress     => this.Condition.Count;
 
                 protected override void Initialize()
                 {
-                    this.Progress.StartCount ??= this.adsDataController.WatchedAdsCount;
+                    this.Progress.StartCount ??= this.adsDataController.WatchRewardedAds;
                 }
             }
         }

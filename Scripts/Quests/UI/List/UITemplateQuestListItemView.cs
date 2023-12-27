@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.Utilities.Extension;
+    using TheOneStudio.UITemplate.Quests.Data;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
@@ -37,6 +38,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         [field: SerializeField] public GameObject[] NormalObjects    { get; private set; }
         [field: SerializeField] public GameObject[] CompletedObjects { get; private set; }
+        [field: SerializeField] public GameObject[] CollectedObjects { get; private set; }
     }
 
     public class UITemplateQuestListItemPresenter : BaseUIItemPresenter<UITemplateQuestListItemView, UITemplateQuestListItemModel>
@@ -63,12 +65,22 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.View.TxtDesc.text     = record.Description;
 
             // Right
-            var progressHandler = this.Model.Quest.GetCompleteProgressHandlers().Single();
-            this.View.TxtProgress.text  = $"{progressHandler.CurrentProgress}/{progressHandler.MaxProgress}";
-            this.View.SldProgress.value = progressHandler.CurrentProgress / progressHandler.MaxProgress;
+            var status = this.Model.Quest.Progress.Status;
+            if (status.HasFlag(QuestStatus.Completed))
+            {
+                this.View.TxtProgress.text  = "Completed";
+                this.View.SldProgress.value = 1;
+            }
+            else
+            {
+                var progressHandler = this.Model.Quest.GetCompleteProgressHandlers().Single();
+                this.View.TxtProgress.text  = $"{progressHandler.CurrentProgress}/{progressHandler.MaxProgress}";
+                this.View.SldProgress.value = progressHandler.CurrentProgress / progressHandler.MaxProgress;
+            }
 
-            this.View.NormalObjects.ForEach(obj => obj.SetActive(this.View.SldProgress.value < 1f));
-            this.View.CompletedObjects.ForEach(obj => obj.SetActive(this.View.SldProgress.value >= 1f));
+            this.View.NormalObjects.ForEach(obj => obj.SetActive(status is QuestStatus.NotCompleted));
+            this.View.CompletedObjects.ForEach(obj => obj.SetActive(status is QuestStatus.NotCollected));
+            this.View.CollectedObjects.ForEach(obj => obj.SetActive(status.HasFlag(QuestStatus.Collected)));
 
             this.View.BtnGo.onClick.AddListener(this.OnClickGo);
             this.View.BtnClaim.onClick.AddListener(this.OnClickClaim);

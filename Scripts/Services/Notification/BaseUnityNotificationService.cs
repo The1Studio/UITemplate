@@ -35,6 +35,8 @@
         protected string SmallIcon          { get; set; } = "icon_0";
         protected string LargeIcon          { get; set; } = "icon_1";
 
+        private string DefaultDataId { get; set; } = "Random";
+
         protected BaseUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper,
             ILogService logger, IAnalyticServices analyticServices)
@@ -166,7 +168,7 @@
             var title = "";
             var body  = "";
 
-            var listCanRandom = this.UITemplateNotificationDataBlueprint.Values.Where(x => x.RandomAble).ToList();
+            var listCanRandom = this.UITemplateNotificationDataBlueprint.GetDataById(this.DefaultDataId);
             var itemRandom    = listCanRandom.Count > 0 ? listCanRandom.PickRandom() : null;
 
             if (itemRandom == null)

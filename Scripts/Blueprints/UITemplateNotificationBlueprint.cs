@@ -11,11 +11,11 @@
 
     public class UITemplateNotificationRecord
     {
-        public string    Id            { get; set; }
-        public List<int> HourRangeShow { get; set; } = new();
-        public List<int> TimeToShow    { get; set; } = new();
-        public bool      RandomAble    { get; set; }
-        public string    Title         { get; set; } = "";
-        public string    Body          { get; set; } = "";
+        public string    Id             { get; set; }
+        public string    DataId         { get; set; }
+        public List<int> HourRangeShow  { get; set; } = new();
+        public List<int> TimeToShow     { get; set; } = new();
+        public bool      ShowOneContent { get; set; }
+        public bool      AutoShow       { get; set; }
     }
 }

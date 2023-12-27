@@ -44,6 +44,7 @@
         public void BindData()
         {
             this.Model.Quests
+                .OrderByDescending(quest => quest.Progress.Status is QuestStatus.NotCollected)
                 .Where(quest => quest.Progress.Status is QuestStatus.NotCompleted or QuestStatus.NotCollected)
                 .ForEach(quest =>
                 {

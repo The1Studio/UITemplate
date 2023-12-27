@@ -430,7 +430,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
                 if (adViewPosition == AdViewPosition.BottomCenter)
                 {
-                    this.adServices.HideBannedAd();
+                    this.HideBannerAd();
                 }
             }
         }
@@ -448,7 +448,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
                 if (adViewPosition == AdViewPosition.BottomCenter)
                 {
-                    this.adServices.ShowBannerAd();
+                    this.ShowBannerAd();
                 }
             }
         }

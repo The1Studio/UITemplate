@@ -37,9 +37,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     {
         private static readonly string placement = "Collection";
 
-        private readonly List<ItemCollectionItemModel> itemCollectionItemModels = new();
+        protected readonly List<ItemCollectionItemModel> itemCollectionItemModels = new();
 
-        private readonly List<TopButtonItemModel> topButtonItemModels = new();
+        protected readonly List<TopButtonItemModel> topButtonItemModels = new();
 
         private int         currentSelectedCategoryIndex;
         private IDisposable randomTimerDispose;
@@ -193,8 +193,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                     currentModel.IndexItemUsed = currentModel.IndexItemSelected = indexUsed == -1 ? 0 : indexUsed;
                 }
             }
-
+            this.RebindModelData();
             await this.View.topButtonBarAdapter.InitItemAdapter(this.topButtonItemModels, this.diContainer);
+        }
+
+        protected virtual void RebindModelData()
+        {
+            
         }
 
         protected virtual async void OnButtonCategorySelected(TopButtonItemModel obj)

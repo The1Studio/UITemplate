@@ -10,9 +10,15 @@
 
     public class UITemplateNotificationDataRecord
     {
-        public string Id         { get; set; }
-        public string Title      { get; set; }
-        public string Body       { get; set; }
-        public bool   RandomAble { get; set; }
+        public string                                                Id                 { get; set; }
+        public BlueprintByRow<string, NotificationContentDataRecord> ContentDataRecords { get; set; }
+    }
+
+    [CsvHeaderKey("ContentId")]
+    public class NotificationContentDataRecord
+    {
+        public string ContentId { get; set; }
+        public string Title     { get; set; }
+        public string Body      { get; set; }
     }
 }

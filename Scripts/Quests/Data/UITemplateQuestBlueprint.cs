@@ -16,17 +16,18 @@ namespace TheOneStudio.UITemplate.Quests.Data
     {
         static UITemplateQuestBlueprint()
         {
-            CsvHelper.RegisterTypeConverter(typeof(IReward), new Converter<IReward>());
-            CsvHelper.RegisterTypeConverter(typeof(ICondition), new Converter<ICondition>());
+            CsvHelper.RegisterTypeConverter(typeof(IReward), new JsonConverter<IReward>());
+            CsvHelper.RegisterTypeConverter(typeof(ICondition), new JsonConverter<ICondition>());
             CsvHelper.RegisterTypeConverter(typeof(List<IReward>), new ListGenericConverter(';'));
             CsvHelper.RegisterTypeConverter(typeof(List<ICondition>), new ListGenericConverter(';'));
+            CsvHelper.RegisterTypeConverter(typeof(HashSet<string>), new HashSetConverter());
         }
 
-        private class Converter<T> : ITypeConverter
+        private sealed class JsonConverter<T> : ITypeConverter
         {
             private readonly Dictionary<string, Type> typeMap;
 
-            public Converter()
+            public JsonConverter()
             {
                 var postFix = typeof(T).Name[1..];
                 this.typeMap = ReflectionUtils.GetAllDerivedTypes<T>()
@@ -48,6 +49,19 @@ namespace TheOneStudio.UITemplate.Quests.Data
             {
                 var typeStr = this.typeMap.First(kv => kv.Value == type).Key;
                 return $"{typeStr}:{JsonConvert.SerializeObject(obj)}";
+            }
+        }
+
+        private sealed class HashSetConverter : ITypeConverter
+        {
+            object ITypeConverter.ConvertFromString(string str, Type _)
+            {
+                return new HashSet<string>(str.Split(';'));
+            }
+
+            string ITypeConverter.ConvertToString(object obj, Type type)
+            {
+                return string.Join(';', (HashSet<string>)obj);
             }
         }
     }

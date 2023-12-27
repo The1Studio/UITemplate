@@ -1,9 +1,9 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Leaderboard
+﻿namespace TheOneStudio.UITemplate.HighScore
 {
-    using TheOneStudio.UITemplate.UITemplate.Leaderboard.Signals;
+    using TheOneStudio.UITemplate.HighScore.Signals;
     using Zenject;
 
-    public class UITemplateLeaderboardInstaller : Installer<UITemplateLeaderboardInstaller>
+    public class UITemplateHighScoreInstaller : Installer<UITemplateHighScoreInstaller>
     {
         public override void InstallBindings()
         {

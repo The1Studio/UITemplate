@@ -57,7 +57,6 @@ namespace TheOneStudio.UITemplate.Quests.UI
                 .Where(quest => quest.Record.HasTag(this.Tab))
                 .Split(quest => quest.Record.HasTag("Chest"));
 
-            this.View.ListView.Dispose();
             this.View.ListView.Model = new(normalQuests);
             this.View.ListView.BindData();
 
@@ -68,7 +67,6 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         public override void Dispose()
         {
-            this.View.ListView.Dispose();
             this.View.ChestView.Dispose();
         }
 

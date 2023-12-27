@@ -3,8 +3,8 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.Extension;
-    using GameFoundation.Scripts.Utilities.ObjectPool;
     using TheOneStudio.UITemplate.Quests.Data;
     using UnityEngine;
     using Zenject;
@@ -21,20 +21,19 @@
 
     public class UITemplateQuestListView : MonoBehaviour
     {
-        [SerializeField] private Transform                   itemViewContainer;
-        [SerializeField] private UITemplateQuestListItemView itemViewPrefab;
+        [SerializeField] private UITemplateQuestListItemAdapter listItemAdapter;
 
         private void Awake()
         {
             ZenjectUtils.GetCurrentContainer().Inject(this);
         }
 
-        private ObjectPoolManager objectPoolManager;
+        private DiContainer diContainer;
 
         [Inject]
-        public void Construct(ObjectPoolManager objectPoolManager)
+        public void Construct(DiContainer diContainer)
         {
-            this.objectPoolManager = objectPoolManager;
+            this.diContainer = diContainer;
         }
 
         public UITemplateQuestPopupPresenter Parent { get; set; }
@@ -43,21 +42,12 @@
 
         public void BindData()
         {
-            this.Model.Quests
-                .OrderByDescending(quest => quest.Progress.Status is QuestStatus.NotCollected)
+            var models = this.Model.Quests
                 .Where(quest => quest.Progress.Status is QuestStatus.NotCompleted or QuestStatus.NotCollected)
-                .ForEach(quest =>
-                {
-                    var itemView = this.objectPoolManager.Spawn(this.itemViewPrefab, this.itemViewContainer);
-                    itemView.Parent = this.Parent;
-                    itemView.Model  = new(quest);
-                    itemView.BindData();
-                });
-        }
-
-        public void Dispose()
-        {
-            this.objectPoolManager.RecycleAll(this.itemViewPrefab);
+                .OrderBy(quest => quest.Progress.Status is QuestStatus.NotCompleted)
+                .Select(quest => new UITemplateQuestListItemModel(this.Parent, quest))
+                .ToList();
+            this.listItemAdapter.InitItemAdapter(models, this.diContainer).Forget();
         }
     }
 }

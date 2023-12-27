@@ -162,7 +162,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.ShowBannerAd();
         }
 
-        protected virtual void ShowBannerAd() { this.adService.ShowBannerAd(); }
+        protected virtual void ShowBannerAd()
+        {
+            this.adService.ShowFirstBanner();
+        }
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 

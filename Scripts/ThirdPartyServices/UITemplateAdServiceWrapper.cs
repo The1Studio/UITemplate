@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using System.Collections.Generic;
     using System.Linq;
     using Core.AdsServices;
+    using Core.AdsServices.CollapsibleBanner;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
@@ -35,6 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly UITemplateLevelDataController       levelDataController;
         private readonly ThirdPartiesConfig                  thirdPartiesConfig;
         private readonly IScreenManager                      screenManager;
+        private readonly ICollapsibleBannerAd                collapsibleBannerAd;
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
@@ -59,7 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
             List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController,
-            ThirdPartiesConfig thirdPartiesConfig, IScreenManager screenManager)
+            ThirdPartiesConfig thirdPartiesConfig, IScreenManager screenManager, ICollapsibleBannerAd collapsibleBannerAd)
         {
             this.adServices                = adServices;
             this.mrecAdServices            = mrecAdServices;
@@ -71,12 +73,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.levelDataController       = levelDataController;
             this.thirdPartiesConfig        = thirdPartiesConfig;
             this.screenManager             = screenManager;
+            this.collapsibleBannerAd       = collapsibleBannerAd;
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
         }
 
         #region banner
+
+        public virtual void ShowFirstBanner()
+        {
+            if(!this.thirdPartiesConfig.AdSettings.ShowBannerWhenOpen) return;
+            this.ShowBannerAd();
+        }
 
         public virtual async void ShowBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
         {
@@ -101,6 +110,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
+        #region Collapsible Banner
+
+        public virtual void ShowCollapsibleBannerAd()
+        {
+            this.collapsibleBannerAd.ShowCollapsibleBannerAd();
+        }
+
+        public virtual void HideCollapsibleBannerAd()
+        {
+            this.collapsibleBannerAd.HideCollapsibleBannerAd();
+        }
+
+        public virtual void DestroyCollapsibleBanner()
+        {
+            this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
+        }
+
+        #endregion
+        
         public void Initialize()
         {
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);

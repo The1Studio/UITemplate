@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Core.AdsServices;
+    using Core.AdsServices.CollapsibleBanner;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
@@ -16,15 +17,23 @@
     {
         public UITemplateAdServiceWrapperCreative(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController, List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService,
-            ToastController toastController, UITemplateLevelDataController levelDataController, ThirdPartiesConfig thirdPartiesConfig, IScreenManager screenManager)
+            ToastController toastController, UITemplateLevelDataController levelDataController, ThirdPartiesConfig thirdPartiesConfig, IScreenManager screenManager, ICollapsibleBannerAd collapsibleBannerAd)
             : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController,
-                gameSessionDataController, aoaAdServices, backFillAdsService, toastController, levelDataController, thirdPartiesConfig, screenManager)
+                gameSessionDataController, aoaAdServices, backFillAdsService, toastController, levelDataController, thirdPartiesConfig, screenManager, collapsibleBannerAd)
         {
         }
+
+        public override void ShowFirstBanner() { }
 
         public override void ShowBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50) { }
 
         public override void HideBannerAd() { }
+
+        public override void ShowCollapsibleBannerAd() { }
+
+        public override void HideCollapsibleBannerAd() { }
+
+        public override void DestroyCollapsibleBanner() { }
 
         public override bool ShowInterstitialAd(string place, bool force = false, Action<bool> onInterstitialFinished = null)
         {

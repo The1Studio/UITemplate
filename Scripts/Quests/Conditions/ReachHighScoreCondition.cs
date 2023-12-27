@@ -3,11 +3,13 @@
     using System;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.HighScore;
+    using TheOneStudio.UITemplate.HighScore.Models;
 
     public sealed class ReachHighScoreCondition : BaseCondition
     {
-        [JsonProperty] private string Key       { get; set; } = UITemplateHighScoreDataController.DEFAULT_KEY;
-        [JsonProperty] private int    HighScore { get; set; }
+        [JsonProperty] private string        Key       { get; set; } = UITemplateHighScoreDataController.DEFAULT_KEY;
+        [JsonProperty] private HighScoreType Type      { get; set; } = HighScoreType.AllTime;
+        [JsonProperty] private int           HighScore { get; set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
@@ -24,7 +26,7 @@
                     this.highScoreDataController = highScoreDataController;
                 }
 
-                protected override float CurrentProgress => this.highScoreDataController.GetAllTimeHighScore(this.Condition.Key);
+                protected override float CurrentProgress => this.highScoreDataController.GetHighScore(this.Condition.Key, this.Condition.Type);
                 protected override float MaxProgress     => this.Condition.HighScore;
             }
         }

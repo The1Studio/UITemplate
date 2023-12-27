@@ -6,23 +6,28 @@
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.Models;
 
-    public class UITemplateHighScoreData : UITemplateLocalData<UITemplateHighScoreDataController>
+    public sealed class UITemplateHighScoreData : UITemplateLocalData<UITemplateHighScoreDataController>
     {
-        [JsonProperty] private readonly Dictionary<string, Record> records = new();
+        [JsonProperty] private readonly Dictionary<string, TypeToTimes> keyToTypes = new();
 
-        public Record this[string key] => this.records.GetOrAdd(key, () => new Record());
+        public TypeToTimes this[string key] => this.keyToTypes.GetOrAdd(key, () => new TypeToTimes());
 
-        public class Record
+        public sealed class TypeToTimes
         {
-            public int AllTimeHighScore { get; set; }
+            [JsonProperty] private readonly Dictionary<HighScoreType, TimeToHighScore> typeToTimes = new();
 
-            public Dictionary<DateTime, int> DailyHighScores { get; } = new();
+            public TimeToHighScore this[HighScoreType type] => this.typeToTimes.GetOrAdd(type, () => new TimeToHighScore());
 
-            public Dictionary<DateTime, int> WeeklyHighScores { get; } = new();
+            public sealed class TimeToHighScore
+            {
+                [JsonProperty] private readonly Dictionary<DateTime, int> timeToHighScore = new();
 
-            public Dictionary<DateTime, int> MonthlyHighScores { get; } = new();
-
-            public Dictionary<DateTime, int> YearlyHighScores { get; } = new();
+                public int this[DateTime time]
+                {
+                    get => this.timeToHighScore.GetOrDefault(time);
+                    set => this.timeToHighScore[time] = value;
+                }
+            }
         }
     }
 }

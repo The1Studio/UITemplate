@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.HighScore
 {
     using System;
+    using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.HighScore.Models;
     using TheOneStudio.UITemplate.HighScore.Signals;
@@ -26,84 +27,37 @@
 
         public void SubmitScore(string key, int newHighScore)
         {
-            var allTimeHighScore = this.highScoreData[key].AllTimeHighScore;
-            if (newHighScore > allTimeHighScore)
+            Enum.GetValues(typeof(HighScoreType)).Cast<HighScoreType>().ForEach(type =>
             {
-                this.highScoreData[key].AllTimeHighScore = newHighScore;
-                this.signalBus.Fire(new NewAllTimeHighScoreSignal(allTimeHighScore, newHighScore));
-            }
+                var time         = GetCurrentTime(type);
+                var oldHighScore = this.highScoreData[key][type][time];
+                if (newHighScore <= oldHighScore) return;
 
-            var day            = DateTime.UtcNow.Date;
-            var dailyHighScore = this.highScoreData[key].DailyHighScores.GetOrDefault(day);
-            if (newHighScore > dailyHighScore)
-            {
-                this.highScoreData[key].DailyHighScores[day] = newHighScore;
-                this.signalBus.Fire(new NewDailyHighScoreSignal(dailyHighScore, newHighScore));
-            }
-
-            var week            = day.GetFirstDayOfWeek();
-            var weeklyHighScore = this.highScoreData[key].WeeklyHighScores.GetOrDefault(week);
-            if (newHighScore > weeklyHighScore)
-            {
-                this.highScoreData[key].WeeklyHighScores[week] = newHighScore;
-                this.signalBus.Fire(new NewWeeklyHighScoreSignal(weeklyHighScore, newHighScore));
-            }
-
-            var month            = day.GetFirstDayOfMonth();
-            var monthlyHighScore = this.highScoreData[key].MonthlyHighScores.GetOrDefault(month);
-            if (newHighScore > monthlyHighScore)
-            {
-                this.highScoreData[key].MonthlyHighScores[month] = newHighScore;
-                this.signalBus.Fire(new NewMonthlyHighScoreSignal(monthlyHighScore, newHighScore));
-            }
-
-            var year            = day.GetFirstDayOfYear();
-            var yearlyHighScore = this.highScoreData[key].YearlyHighScores.GetOrDefault(year);
-            if (newHighScore > yearlyHighScore)
-            {
-                this.highScoreData[key].YearlyHighScores[year] = newHighScore;
-                this.signalBus.Fire(new NewYearlyHighScoreSignal(yearlyHighScore, newHighScore));
-            }
+                this.highScoreData[key][type][time] = newHighScore;
+                this.signalBus.Fire(new NewHighScoreSignal(type, oldHighScore, newHighScore));
+            });
         }
 
-        public int GetAllTimeHighScore(string key)
+        public int GetHighScore(string key, HighScoreType type)
         {
-            return this.highScoreData[key].AllTimeHighScore;
+            return this.highScoreData[key][type][GetCurrentTime(type)];
         }
 
-        public int GetDailyHighScore(string key)
+        private static DateTime GetCurrentTime(HighScoreType type) => type switch
         {
-            return this.highScoreData[key].DailyHighScores.GetOrDefault(DateTime.UtcNow.Date);
-        }
-
-        public int GetWeeklyHighScore(string key)
-        {
-            return this.highScoreData[key].WeeklyHighScores.GetOrDefault(DateTime.UtcNow.GetFirstDayOfWeek());
-        }
-
-        public int GetMonthlyHighScore(string key)
-        {
-            return this.highScoreData[key].MonthlyHighScores.GetOrDefault(DateTime.UtcNow.GetFirstDayOfMonth());
-        }
-
-        public int GetYearlyHighScore(string key)
-        {
-            return this.highScoreData[key].YearlyHighScores.GetOrDefault(DateTime.UtcNow.GetFirstDayOfYear());
-        }
+            HighScoreType.Daily   => DateTime.UtcNow.Date,
+            HighScoreType.Weekly  => DateTime.UtcNow.GetFirstDayOfWeek(),
+            HighScoreType.Monthly => DateTime.UtcNow.GetFirstDayOfMonth(),
+            HighScoreType.Yearly  => DateTime.UtcNow.GetFirstDayOfYear(),
+            HighScoreType.AllTime => DateTime.MinValue,
+            _                     => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+        };
 
         #region Default
 
         public void SubmitScore(int newHighScore) => this.SubmitScore(DEFAULT_KEY, newHighScore);
 
-        public int GetAllTimeHighScore() => this.GetAllTimeHighScore(DEFAULT_KEY);
-
-        public int GetDailyHighScore() => this.GetDailyHighScore(DEFAULT_KEY);
-
-        public int GetWeeklyHighScore() => this.GetWeeklyHighScore(DEFAULT_KEY);
-
-        public int GetMonthlyHighScore() => this.GetMonthlyHighScore(DEFAULT_KEY);
-
-        public int GetYearlyHighScore() => this.GetYearlyHighScore(DEFAULT_KEY);
+        public int GetHighScore(HighScoreType type) => this.GetHighScore(DEFAULT_KEY, type);
 
         #endregion
     }

@@ -1,12 +1,16 @@
 ﻿namespace TheOneStudio.UITemplate.HighScore.Signals
 {
-    public abstract class NewHighScoreSignal
-    {
-        public int OldHighScore { get; }
-        public int NewHighScore { get; }
+    using TheOneStudio.UITemplate.HighScore.Models;
 
-        protected NewHighScoreSignal(int oldHighScore, int newHighScore)
+    public sealed class NewHighScoreSignal
+    {
+        public HighScoreType Type         { get; }
+        public int           OldHighScore { get; }
+        public int           NewHighScore { get; }
+
+        public NewHighScoreSignal(HighScoreType type, int oldHighScore, int newHighScore)
         {
+            this.Type         = type;
             this.OldHighScore = oldHighScore;
             this.NewHighScore = newHighScore;
         }

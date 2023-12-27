@@ -7,7 +7,7 @@
 
     public abstract class BaseSignalCountCondition<TSignal> : BaseCondition
     {
-        [JsonProperty] private int Count { get; }
+        [JsonProperty] private int Count { get; set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

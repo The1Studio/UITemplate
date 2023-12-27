@@ -21,8 +21,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         public Transform buttonParent;
 
         private List<BottomBarNavigatorTabButtonView> Buttons;
-        private int                                   CurrentActiveIndex { get; set; } = -1;
-        private bool                                  IsShowingBar = true;
+
+        private int  CurrentActiveIndex { get; set; } = -1;
+        private bool IsShowingBar              = true;
+        private bool IsFirstTimeOpenDefaultTab = true;
 
         [Inject]
         public void Constructor(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper)
@@ -88,11 +90,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         private void OnClickBottomBarButton(int index)
         {
-            Debug.Log($"On Click: {index}");
             if (this.CurrentActiveIndex == index) return;
             this.CurrentActiveIndex = index;
 
-            this.OnCLickButton(index);
+            //Update bar view
             var bottomBarNavigatorTabButtonView = this.Buttons[index];
             bottomBarNavigatorTabButtonView.SetActive(true);
             foreach (var otherBottomBarNavigatorTabButtonView in this.Buttons)
@@ -100,6 +101,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
                 if (otherBottomBarNavigatorTabButtonView == bottomBarNavigatorTabButtonView) continue;
 
                 otherBottomBarNavigatorTabButtonView.SetActive(false);
+            }
+
+            //Do change tab or open screen
+            if (!this.IsFirstTimeOpenDefaultTab)
+            {
+                this.OnCLickButton(index);
+            }
+            else
+            {
+                this.IsFirstTimeOpenDefaultTab = false;
             }
         }
 

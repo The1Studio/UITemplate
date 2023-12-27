@@ -75,7 +75,7 @@ namespace TheOneStudio.UITemplate.Quests
                 this.txtTitle.text = status is QuestStatus.NotCompleted
                     ? this.unlockedTitle
                     : this.completedTitle;
-                this.txtContent.text = signal.QuestController.Record.Description;
+                this.txtContent.text = signal.QuestController.Record.Name;
                 this.tween = DOTween.Sequence()
                     .Append(this.popup.DOMove(this.stopPosition, 1f).SetEase(Ease.OutBack))
                     .AppendInterval(3f)

@@ -83,8 +83,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowFirstBanner()
         {
-            if(!this.thirdPartiesConfig.AdSettings.ShowFirstBanner) return;
+            switch (this.thirdPartiesConfig.AdSettings.BannerLoadStrategy)
+            {
+                case BannerLoadStrategy.Instantiate:
+                    this.ShowBannerAd();
+                    break;
+                case BannerLoadStrategy.AfterLoading:
+                    this.signalBus.Subscribe<FinishLoadingNewSceneSignal>(this.OnLoadNewScene);
+                    break;
+                case BannerLoadStrategy.Manually:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void OnLoadNewScene()
+        {
             this.ShowBannerAd();
+            this.signalBus.Unsubscribe<FinishLoadingNewSceneSignal>(this.OnLoadNewScene);
         }
 
         public virtual async void ShowBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
@@ -112,23 +129,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #region Collapsible Banner
 
-        public virtual void ShowCollapsibleBannerAd()
+        public virtual async void ShowCollapsibleBannerAd()
         {
+            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             this.collapsibleBannerAd.ShowCollapsibleBannerAd();
         }
 
-        public virtual void HideCollapsibleBannerAd()
-        {
-            this.collapsibleBannerAd.HideCollapsibleBannerAd();
-        }
+        public virtual void HideCollapsibleBannerAd() { this.collapsibleBannerAd.HideCollapsibleBannerAd(); }
 
-        public virtual void DestroyCollapsibleBanner()
-        {
-            this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
-        }
+        public virtual void DestroyCollapsibleBanner() { this.collapsibleBannerAd.DestroyCollapsibleBannerAd(); }
 
         #endregion
-        
+
         public void Initialize()
         {
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
@@ -333,6 +345,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     InternalShowInterstitial();
                     this.backFillAdsService.ShowInterstitialAd(place);
                 }
+
                 return true;
             }
 
@@ -349,6 +362,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 InternalShowInterstitial();
                 this.adServices.ShowInterstitialAd(place);
             }
+
             return true;
 
             async UniTaskVoid ShowDelayInter(Action action)

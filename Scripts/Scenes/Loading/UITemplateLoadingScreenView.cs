@@ -117,6 +117,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         public override UniTask BindData()
         {
+            this.adService.ShowFirstBanner();
             this.SignalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAOAClosedHandler);
             this.SignalBus.Subscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
 
@@ -159,12 +160,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
 
             Resources.UnloadUnusedAssets().ToUniTask().Forget();
-            this.ShowBannerAd();
+            this.OnAfterLoading();
         }
 
-        protected virtual void ShowBannerAd()
+        protected virtual void OnAfterLoading()
         {
-            this.adService.ShowFirstBanner();
         }
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }

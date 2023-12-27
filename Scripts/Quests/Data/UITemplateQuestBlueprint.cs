@@ -55,16 +55,18 @@ namespace TheOneStudio.UITemplate.Quests.Data
     [CsvHeaderKey(nameof(Id))]
     public sealed class QuestRecord
     {
-        public string       Id          { get; private set; }
-        public string       Name        { get; private set; }
-        public string       Description { get; private set; }
-        public string       Image       { get; private set; }
-        public List<string> Tags        { get; private set; }
+        public string          Id          { get; private set; }
+        public string          Name        { get; private set; }
+        public string          Description { get; private set; }
+        public string          Image       { get; private set; }
+        public HashSet<string> Tags        { get; private set; }
 
         public List<IReward>    Rewards            { get; private set; }
         public List<ICondition> StartConditions    { get; private set; }
         public List<ICondition> ShowConditions     { get; private set; }
         public List<ICondition> CompleteConditions { get; private set; }
         public List<ICondition> ResetConditions    { get; private set; }
+
+        public bool HasTag(string tag) => this.Tags.Contains(tag);
     }
 }

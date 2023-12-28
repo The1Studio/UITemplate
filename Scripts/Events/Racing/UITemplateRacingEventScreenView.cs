@@ -50,7 +50,7 @@
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.View.closeButton.onClick.AddListener(this.CloseView);
+            this.View.closeButton.onClick.AddListener(this.OnClickClose);
             this.autoCooldownTimer.Create().CountDown(this.uiTemplateEventRacingDataController.RemainSecond,
                 _ => { this.View.countDownText.text = TimeSpan.FromSeconds(this.uiTemplateEventRacingDataController.RemainSecond).ToShortTimeString(); });
             foreach (var uiTemplateRacingRowView in this.View.playerSliders)
@@ -60,6 +60,8 @@
 
             this.InitPlayerRowView();
         }
+
+        protected virtual void OnClickClose() { this.CloseView(); }
 
         private void InitPlayerRowView()
         {

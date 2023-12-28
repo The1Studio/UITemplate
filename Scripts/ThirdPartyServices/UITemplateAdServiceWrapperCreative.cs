@@ -26,7 +26,7 @@
 
         public override void HideBannerAd() { }
 
-        public override bool ShowInterstitialAd(string place, bool force = false, Action<bool> onInterstitialFinished = null)
+        public override bool ShowInterstitialAd(string place, Action<bool> onInterstitialFinished, bool force = false)
         {
             onInterstitialFinished?.Invoke(true);
 

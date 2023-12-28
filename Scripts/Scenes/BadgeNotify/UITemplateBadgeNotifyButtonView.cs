@@ -46,7 +46,7 @@
             }
             else
             {
-                this.badgeButton.onClick.AddListener(() => this.uitemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, false, _ => this.screenManager.OpenScreen<T>()));
+                this.badgeButton.onClick.AddListener(() => this.uitemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, _ => this.screenManager.OpenScreen<T>()));
             }
 
             this.uiTemplateBadgeNotifySystem.RegisterBadge(this, parentScreenPresenter, typeof(T));
@@ -60,7 +60,7 @@
             }
             else
             {
-                this.badgeButton.onClick.AddListener(() => this.uitemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, false, _ => onClick.Invoke()));
+                this.badgeButton.onClick.AddListener(() => this.uitemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, _ => onClick.Invoke()));
             }
             this.uiTemplateBadgeNotifySystem.RegisterBadge(this, parentScreenPresenter, condition);
         }

@@ -16,6 +16,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.ObjectPool;
+    using ServiceImplementation.Configs;
+    using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -117,7 +119,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         public override UniTask BindData()
         {
-            this.adService.ShowFirstBanner();
+            this.ShowFirstBannerAd();
             this.SignalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAOAClosedHandler);
             this.SignalBus.Subscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
 
@@ -163,9 +165,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.OnAfterLoading();
         }
 
-        protected virtual void OnAfterLoading()
+        protected virtual void ShowFirstBannerAd()
         {
+            switch (this.adService.BannerLoadStrategy)
+            {
+                case BannerLoadStrategy.Instantiate:
+                    this.adService.ShowBannerAd();
+                    break;
+                case BannerLoadStrategy.AfterLoading:
+                    this.SignalBus.Subscribe<FinishLoadingNewSceneSignal>(this.OnFinishedLoadNewScene);
+                    break;
+                case BannerLoadStrategy.Manually:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
+
+        private void OnFinishedLoadNewScene()
+        {
+            this.adService.ShowBannerAd();
+            this.SignalBus.Unsubscribe<FinishLoadingNewSceneSignal>(this.OnFinishedLoadNewScene);
+        }
+
+        protected virtual void OnAfterLoading() { }
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 

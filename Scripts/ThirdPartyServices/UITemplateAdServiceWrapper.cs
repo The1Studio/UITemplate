@@ -81,28 +81,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #region banner
 
-        public virtual void ShowFirstBanner()
-        {
-            switch (this.thirdPartiesConfig.AdSettings.BannerLoadStrategy)
-            {
-                case BannerLoadStrategy.Instantiate:
-                    this.ShowBannerAd();
-                    break;
-                case BannerLoadStrategy.AfterLoading:
-                    this.signalBus.Subscribe<FinishLoadingNewSceneSignal>(this.OnLoadNewScene);
-                    break;
-                case BannerLoadStrategy.Manually:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void OnLoadNewScene()
-        {
-            this.ShowBannerAd();
-            this.signalBus.Unsubscribe<FinishLoadingNewSceneSignal>(this.OnLoadNewScene);
-        }
+        public BannerLoadStrategy BannerLoadStrategy => this.thirdPartiesConfig.AdSettings.BannerLoadStrategy;
 
         public virtual async void ShowBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
         {

@@ -168,15 +168,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected virtual void ShowFirstBannerAd(BannerLoadStrategy strategy)
         {
             if (strategy != this.adService.BannerLoadStrategy) return;
-            this.OnShowBannerAd();
-        }
-
-        protected virtual void OnShowBannerAd() { this.adService.ShowBannerAd(); }
-
-        private void OnFinishedLoadNewScene()
-        {
             this.adService.ShowBannerAd();
-            this.SignalBus.Unsubscribe<FinishLoadingNewSceneSignal>(this.OnFinishedLoadNewScene);
         }
 
         protected virtual void OnAfterLoading() { }

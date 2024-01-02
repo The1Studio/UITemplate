@@ -94,7 +94,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             if (this.isShowBannerAd)
             {
-                if(this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow)
+                if(this.thirdPartiesConfig.AdSettings.EnableCollapsibleAds)
                 {
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd();
                 }
@@ -108,7 +108,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual void HideBannerAd()
         {
             this.isShowBannerAd = false;
-            if (this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow)
+            if (this.thirdPartiesConfig.AdSettings.EnableCollapsibleAds)
             {
                 this.collapsibleBannerAd.HideCollapsibleBannerAd();
             }
@@ -454,7 +454,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 mrecAdService.HideAllMREC();
             }
 
-            if (this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow)
+            if (this.thirdPartiesConfig.AdSettings.EnableCollapsibleAds)
             {
                 this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
             }

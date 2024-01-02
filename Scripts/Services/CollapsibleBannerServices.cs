@@ -29,7 +29,7 @@
 
         private void OnScreenShow()
         {
-            if (!this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow) return;
+            if (!this.thirdPartiesConfig.AdSettings.EnableCollapsibleAds) return;
             this.adServiceWrapper.ShowBannerAd();
         }
     }

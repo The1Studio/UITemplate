@@ -442,6 +442,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
                 if (adViewPosition == AdViewPosition.BottomCenter)
                 {
+                    if(this.isShowBannerAd) return;
                     this.ShowBannerAd();
                 }
             }

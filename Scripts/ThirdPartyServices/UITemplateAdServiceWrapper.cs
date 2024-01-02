@@ -458,7 +458,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
             }
-            this.adServices.DestroyBannerAd();
+            else
+            {
+                this.adServices.DestroyBannerAd();
+            }
         }
 
         public bool IsRemovedAds => this.adServices.IsRemoveAds();

@@ -119,7 +119,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         public override UniTask BindData()
         {
-            this.ShowFirstBannerAd();
+            this.ShowFirstBannerAd(BannerLoadStrategy.Instantiate);
             this.SignalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAOAClosedHandler);
             this.SignalBus.Subscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
 
@@ -162,25 +162,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
 
             Resources.UnloadUnusedAssets().ToUniTask().Forget();
-            this.OnAfterLoading();
+            this.ShowFirstBannerAd(BannerLoadStrategy.AfterLoading);
         }
 
-        protected virtual void ShowFirstBannerAd()
+        protected virtual void ShowFirstBannerAd(BannerLoadStrategy strategy)
         {
-            switch (this.adService.BannerLoadStrategy)
-            {
-                case BannerLoadStrategy.Instantiate:
-                    this.adService.ShowBannerAd();
-                    break;
-                case BannerLoadStrategy.AfterLoading:
-                    this.SignalBus.Subscribe<FinishLoadingNewSceneSignal>(this.OnFinishedLoadNewScene);
-                    break;
-                case BannerLoadStrategy.Manually:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            if (strategy != this.adService.BannerLoadStrategy) return;
+            this.OnShowBannerAd();
         }
+
+        protected virtual void OnShowBannerAd() { this.adService.ShowBannerAd(); }
 
         private void OnFinishedLoadNewScene()
         {

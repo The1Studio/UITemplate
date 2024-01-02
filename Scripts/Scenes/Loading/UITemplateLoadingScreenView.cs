@@ -163,6 +163,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             Resources.UnloadUnusedAssets().ToUniTask().Forget();
             this.ShowFirstBannerAd(BannerLoadStrategy.AfterLoading);
+            this.OnAfterLoading();
         }
 
         protected virtual void ShowFirstBannerAd(BannerLoadStrategy strategy)

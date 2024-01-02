@@ -94,29 +94,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
             if (this.isShowBannerAd)
             {
-                this.adServices.ShowBannerAd(bannerAdsPosition, width, height);
+                if(this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow)
+                {
+                    this.collapsibleBannerAd.ShowCollapsibleBannerAd();
+                }
+                else
+                {
+                    this.adServices.ShowBannerAd(bannerAdsPosition, width, height);
+                }
             }
         }
 
         public virtual void HideBannerAd()
         {
             this.isShowBannerAd = false;
-            this.adServices.HideBannedAd();
+            if (this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow)
+            {
+                this.collapsibleBannerAd.HideCollapsibleBannerAd();
+            }
+            else
+            {
+                this.adServices.HideBannedAd();
+            }
+            
         }
-
-        #endregion
-
-        #region Collapsible Banner
-
-        public virtual async void ShowCollapsibleBannerAd()
-        {
-            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
-            this.collapsibleBannerAd.ShowCollapsibleBannerAd();
-        }
-
-        public virtual void HideCollapsibleBannerAd() { this.collapsibleBannerAd.HideCollapsibleBannerAd(); }
-
-        public virtual void DestroyCollapsibleBanner() { this.collapsibleBannerAd.DestroyCollapsibleBannerAd(); }
 
         #endregion
 
@@ -453,7 +454,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 mrecAdService.HideAllMREC();
             }
 
-            this.adServices.DestroyBannerAd();
+            if (this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow)
+            {
+                this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
+            }
+            else
+            {
+                this.adServices.DestroyBannerAd();
+            }
         }
 
         public bool IsRemovedAds => this.adServices.IsRemoveAds();

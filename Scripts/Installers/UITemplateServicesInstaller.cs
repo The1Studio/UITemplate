@@ -53,9 +53,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<ToastController>().FromComponentInNewPrefab(this.toastController).AsCached().NonLazy();
             
             // Collapsible Banner auto refresh on screen change
-#if THEONE_COLLAPSIBLE_BANNER
-            this.Container.BindInterfacesAndSelfTo<CollapsibleBannerServices>().AsCached().NonLazy();
-#endif
+// #if THEONE_COLLAPSIBLE_BANNER
+            // this.Container.BindInterfacesAndSelfTo<CollapsibleBannerServices>().AsCached().NonLazy();
+// #endif
         }
     }
 }

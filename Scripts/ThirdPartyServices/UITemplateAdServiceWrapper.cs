@@ -296,7 +296,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                    || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
         }
 
-        public virtual bool ShowInterstitialAd(string place, bool force = false, Action<bool> onShowInterstitialFinished = null)
+        public virtual bool ShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)
         {
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log(

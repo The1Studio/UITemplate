@@ -43,6 +43,12 @@
 
         public void BindData()
         {
+            if (this.Model.Quests.Count == 0)
+            {
+                this.gameObject.SetActive(false);
+                return;
+            }
+            this.gameObject.SetActive(true);
             this.Model.Quests.ForEach(quest =>
             {
                 var itemView = this.objectPoolManager.Spawn(this.itemViewPrefab, this.itemViewContainer);

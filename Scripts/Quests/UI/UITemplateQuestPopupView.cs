@@ -54,10 +54,9 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.View.TabButtons.ForEach(tabButton => tabButton.SetActive(tabButton.Tab == this.Tab));
 
             var (chestQuests, normalQuests) = this.questManager.GetAllControllers()
-                .Where(quest => quest.Record.Tags.Any(tag => tag.Contains(this.Tab)))
-                .Split(quest => quest.Record.Tags.Any(tag => tag.Contains("Chest")));
+                .Where(quest => quest.Record.HasTag(this.Tab))
+                .Split(quest => quest.Record.HasTag("Chest"));
 
-            this.View.ListView.Dispose();
             this.View.ListView.Model = new(normalQuests);
             this.View.ListView.BindData();
 
@@ -68,7 +67,6 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         public override void Dispose()
         {
-            this.View.ListView.Dispose();
             this.View.ChestView.Dispose();
         }
 

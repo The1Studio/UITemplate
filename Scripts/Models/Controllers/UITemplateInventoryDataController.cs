@@ -127,7 +127,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData);
         }
-
+        
+        public void PayCurrency(Dictionary<string, int> currency, int time = 1)
+        {
+            foreach (var (currencyKey, currencyValue) in currency)
+            {
+                this.AddCurrency(-currencyValue * time, currencyKey).Forget();
+            }
+        }
+        
         public async UniTask AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null)
         {
             if (startAnimationRect != null)
@@ -302,6 +310,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void Initialize()
         {
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
+        }
+        
+        public bool IsAffordCurrency(Dictionary<string, int> currency, int time = 1)
+        {
+            foreach (var (currencyKey, currencyValue) in currency)
+            {
+                if (this.GetCurrencyValue(currencyKey) < currencyValue * time)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.Quests
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
+    using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Data;
@@ -20,16 +21,20 @@ namespace TheOneStudio.UITemplate.Quests
         [SerializeField] private Button    btn;
         [SerializeField] private Transform popup;
         [SerializeField] private Transform destination;
-        [SerializeField] private TMP_Text  txtTitle;
-        [SerializeField] private TMP_Text  txtContent;
 
-        [SerializeField] private string unlockedTitle  = "New Quest";
-        [SerializeField] private string completedTitle = "Quest Completed";
+        [SerializeField] private TMP_Text txtName;
+        [SerializeField] private Slider   slider;
+        [SerializeField] private Image    imgReward;
+        [SerializeField] private TMP_Text txtReward;
+
+        [SerializeField] private GameObject[] normalObjects;
+        [SerializeField] private GameObject[] completedObjects;
 
         private Vector3       startPosition;
         private Vector3       stopPosition;
         private SignalBus     signalBus;
         private ScreenManager screenManager;
+        private IGameAssets   gameAssets;
 
         private void Awake()
         {
@@ -38,10 +43,11 @@ namespace TheOneStudio.UITemplate.Quests
         }
 
         [Inject]
-        public void Construct(SignalBus signalBus, ScreenManager screenManager)
+        public void Construct(SignalBus signalBus, ScreenManager screenManager, IGameAssets gameAssets)
         {
             this.signalBus     = signalBus;
             this.screenManager = screenManager;
+            this.gameAssets    = gameAssets;
         }
 
         void IInitializable.Initialize()
@@ -56,7 +62,7 @@ namespace TheOneStudio.UITemplate.Quests
 
         private void OnQuestStatusChanged(QuestStatusChangedSignal signal)
         {
-            if (signal.QuestController.Record.Tags.Any(tag => tag.Contains("Chest"))) return;
+            if (signal.QuestController.Record.HasTag("Chest")) return;
             var status = signal.QuestController.Progress.Status;
             if (status is not QuestStatus.NotCompleted and not QuestStatus.NotCollected) return;
 
@@ -73,16 +79,37 @@ namespace TheOneStudio.UITemplate.Quests
 
             void Action()
             {
-                this.txtTitle.text = status is QuestStatus.NotCompleted
-                    ? this.unlockedTitle
-                    : this.completedTitle;
-                this.txtContent.text = signal.QuestController.Record.Description;
+                var reward = signal.QuestController.Record.Rewards.Single();
+
+                this.txtName.text = signal.QuestController.Record.Name;
+                this.slider.value = 0;
+
+                this.imgReward.sprite = this.gameAssets.LoadAssetAsync<Sprite>(reward.Image).WaitForCompletion();
+                this.txtReward.text   = reward.Value.ToString();
+
+                this.normalObjects.ForEach(obj => obj.SetActive(true));
+                this.completedObjects.ForEach(obj => obj.SetActive(false));
+
+                if (status is QuestStatus.NotCollected)
+                {
+                    DOTween.Sequence()
+                        .AppendInterval(1)
+                        .Append(this.slider.DOValue(1, .5f))
+                        .AppendCallback(() =>
+                        {
+                            this.normalObjects.ForEach(obj => obj.SetActive(false));
+                            this.completedObjects.ForEach(obj => obj.SetActive(true));
+                        })
+                        .Append(this.popup.DOPunchScale(Vector3.one / 3, .75f, 0, 0))
+                        .SetUpdate(true);
+                }
+
                 this.tween = DOTween.Sequence()
-                    .Append(this.popup.DOMove(this.stopPosition, 1f).SetEase(Ease.OutBack))
-                    .AppendInterval(3f)
-                    .Append(this.popup.DOMove(this.startPosition, 1f).SetEase(Ease.InBack))
-                    .SetUpdate(true)
-                    .OnComplete(() => this.actionQueue.DequeueOrDefault()?.Invoke());
+                    .Append(this.popup.DOMove(this.stopPosition, 1).SetEase(Ease.OutBack))
+                    .AppendInterval(3)
+                    .Append(this.popup.DOMove(this.startPosition, 1).SetEase(Ease.InBack))
+                    .OnComplete(() => this.actionQueue.DequeueOrDefault()?.Invoke())
+                    .SetUpdate(true);
             }
         }
     }

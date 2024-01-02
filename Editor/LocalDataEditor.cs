@@ -16,6 +16,8 @@ namespace UITemplate.Editor
     public class LocalDataEditor : OdinEditorWindow
     {
         private const string LocalDataPrefix = BaseHandleUserDataServices.UserDataPrefix;
+        
+        private static readonly JsonSerializerSettings JsonSetting =  BaseHandleUserDataServices.JsonSetting;
 
         [OdinSerialize, HideLabel]
         [ListDrawerSettings(Expanded = true, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]
@@ -58,7 +60,7 @@ namespace UITemplate.Editor
             foreach (var data in this.localData)
             {
                 var key  = $"{LocalDataPrefix}{data.GetType().Name}";
-                var json = JsonConvert.SerializeObject(data, Formatting.Indented);
+                var json = JsonConvert.SerializeObject(data, JsonSetting);
                 PlayerPrefs.SetString(key, json);
             }
 
@@ -93,7 +95,7 @@ namespace UITemplate.Editor
                 if (!PlayerPrefs.HasKey(key)) continue;
                 var json = PlayerPrefs.GetString(key);
 
-                if (JsonConvert.DeserializeObject(json, type) is ILocalData data)
+                if (JsonConvert.DeserializeObject(json, type, JsonSetting) is ILocalData data)
                     result.Add(data);
             }
 

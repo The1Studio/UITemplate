@@ -5,7 +5,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using Zenject;
 
-    public class CollapsibleBannerRefreshOnScreenChange : IInitializable
+    public class CollapsibleBannerServices : IInitializable
     {
         #region Inject
 
@@ -15,7 +15,7 @@
 
         #endregion
 
-        public CollapsibleBannerRefreshOnScreenChange(SignalBus signalBus, UITemplateAdServiceWrapper adServiceWrapper, ThirdPartiesConfig thirdPartiesConfig)
+        public CollapsibleBannerServices(SignalBus signalBus, UITemplateAdServiceWrapper adServiceWrapper, ThirdPartiesConfig thirdPartiesConfig)
         {
             this.signalBus          = signalBus;
             this.adServiceWrapper   = adServiceWrapper;
@@ -24,15 +24,13 @@
 
         public void Initialize()
         {
-#if ADMOB
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
-#endif
         }
 
         private void OnScreenShow()
         {
-            if (!this.thirdPartiesConfig.AdSettings.AdMob.CollapsibleRefreshOnScreenShow) return;
-            this.adServiceWrapper.ShowCollapsibleBannerAd();
+            if (!this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow) return;
+            this.adServiceWrapper.ShowBannerAd();
         }
     }
 }

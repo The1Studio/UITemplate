@@ -27,12 +27,6 @@
 
         public override void HideBannerAd() { }
 
-        public override void ShowCollapsibleBannerAd() { }
-
-        public override void HideCollapsibleBannerAd() { }
-
-        public override void DestroyCollapsibleBanner() { }
-
         public override bool ShowInterstitialAd(string place, Action<bool> onInterstitialFinished, bool force = false)
         {
             onInterstitialFinished?.Invoke(true);

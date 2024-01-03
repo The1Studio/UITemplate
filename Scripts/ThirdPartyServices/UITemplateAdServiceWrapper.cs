@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
+    using ServiceImplementation.AdsServices.EasyMobile;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
@@ -256,12 +257,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.signalBus.Fire(new AppOpenEligibleSignal(""));
             }
 
-            if (this.aoaAdServices.Any(aoaService => aoaService.IsAOAReady()))
+            foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
             {
-                this.signalBus.Fire(new AppOpenCalledSignal(""));
-                this.aoaAdServices.First(aoaService => aoaService.IsAOAReady()).ShowAOAAds();
-                this.IsCheckedShowFirstOpen = true;
-                this.IsOpenedAOAFirstOpen   = true;
+                if ((this.adServicesConfig.UseAoaAdmob && aoa is AdMobWrapper) || (!this.adServicesConfig.UseAoaAdmob && aoa is not AdMobWrapper))
+                {
+                    this.signalBus.Fire(new AppOpenCalledSignal(""));
+                    aoa.ShowAOAAds();
+                    this.IsCheckedShowFirstOpen = true;
+                    this.IsOpenedAOAFirstOpen   = true;
+                    return;
+                }
             }
         }
 

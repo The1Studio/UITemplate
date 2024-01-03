@@ -85,7 +85,7 @@
             var rewardSprite = this.GameAssets.ForceLoadAsset<Sprite>($"{this.model.DailyRewardRecord.RewardImage}");
             var rewardValue  = string.Empty;
             if (this.model.DailyRewardRecord.Reward.Count == 1)
-                rewardValue = this.model.DailyRewardRecord.Reward.Values.First() == 1
+                rewardValue = this.model.DailyRewardRecord.Reward.Values.First() == -1
                     ? rewardValue
                     : this.model.DailyRewardRecord.Reward.Values.First().ToString();
             this.View.imgReward.sprite = rewardSprite;

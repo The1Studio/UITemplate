@@ -114,7 +114,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.IsShowBannerAd = false;
             if (this.thirdPartiesConfig.AdSettings.EnableCollapsibleBanner)
             {
-                this.collapsibleBannerAd.HideCollapsibleBannerAd();
+                // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
+                this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
             }
             else
             {

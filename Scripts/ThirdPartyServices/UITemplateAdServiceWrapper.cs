@@ -489,6 +489,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnScreenShow(ScreenShowSignal signal)
         {
+            // Work around to dont show banner 2 time in loading screen (we already show by the banner strategy in loading screen)
             if (!this.IsCheckFirstScreenShow)
             {
                 this.IsCheckFirstScreenShow = true;

@@ -26,6 +26,10 @@
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(() => this.SetLockInput(false));
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(() => this.SetLockInput(true));
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(() => this.SetLockInput(true));
+            
+            this.signalBus.Subscribe<RewardedAdCalledSignal>(() => this.SetLockInput(false));
+            this.signalBus.Subscribe<RewardedAdShowFailedSignal>(() => this.SetLockInput(true));
+            this.signalBus.Subscribe<RewardedAdClosedSignal>(() => this.SetLockInput(true));
         }
 
         private void SetLockInput(bool value)

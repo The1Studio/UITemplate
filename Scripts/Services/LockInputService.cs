@@ -9,17 +9,20 @@
     {
         #region Inject
 
-        private readonly SignalBus signalBus;
+        private readonly SignalBus   signalBus;
+        private readonly EventSystem eventSystem;
 
-        public LockInputService(SignalBus signalBus) { this.signalBus = signalBus; }
+        public LockInputService(SignalBus signalBus, EventSystem eventSystem)
+        {
+            this.signalBus   = signalBus;
+            this.eventSystem = eventSystem;
+        }
 
         #endregion
 
-        private EventSystem eventSystem;
 
         public void Initialize()
         {
-            this.eventSystem = EventSystem.current;
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(() => this.SetLockInput(false));
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(() => this.SetLockInput(true));
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(() => this.SetLockInput(true));

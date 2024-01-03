@@ -49,8 +49,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool IsShowBannerAd { get; set; }
-        public  bool IsShowMrecAd   { get; private set; }
+        private bool IsShowBannerAd         { get; set; }
+        private bool IsShowMrecAdOnBottom   { get; set; }
+        private bool IsCheckFirstScreenShow { get; set; }
 
         //AOA
         private DateTime StartLoadingAOATime;
@@ -91,7 +92,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            await UniTask.WaitUntil(() => !this.IsShowMrecAd);
+            await UniTask.WaitUntil(() => !this.IsShowMrecAdOnBottom);
             this.IsShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
 
@@ -421,12 +422,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
-                this.IsShowMrecAd = true;
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
 
                 if (adViewPosition == AdViewPosition.BottomCenter)
                 {
+                    this.IsShowMrecAdOnBottom = true;
                     this.HideBannerAd();
                 }
             }
@@ -445,6 +446,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
                 if (adViewPosition == AdViewPosition.BottomCenter)
                 {
+                    this.IsShowMrecAdOnBottom = false;
                     if (this.IsShowBannerAd) return;
                     this.ShowBannerAd();
                 }
@@ -486,6 +488,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnScreenShow(ScreenShowSignal signal)
         {
+            if (!this.IsCheckFirstScreenShow)
+            {
+                this.IsCheckFirstScreenShow = true;
+                return;
+            }
+
             if (this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType()))
             {
                 return;
@@ -496,7 +504,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnScreenClose(ScreenCloseSignal signal)
         {
-            if (!this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType())) return;
+            if (!this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType()))
+            {
+                if (!this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow) return;
+                this.ShowBannerAd();
+                return;
+            }
+
             this.HideAllMREC();
         }
 

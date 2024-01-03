@@ -37,6 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             StoreRatingServiceInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<LockInputService>().AsCached().NonLazy();
 
             //Feature
 #if THEONE_DAILY_REWARD

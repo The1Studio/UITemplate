@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.Quests.UI
 {
+    using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.Quests.Data;
     using UnityEngine;
     using UnityEngine.UI;
@@ -68,7 +69,7 @@
 
         private void OnClickClaim()
         {
-            this.Model.Quest.CollectReward(this.transform as RectTransform);
+            this.Model.Quest.CollectReward(this.transform as RectTransform).Forget();
             this.SetStatus();
         }
     }

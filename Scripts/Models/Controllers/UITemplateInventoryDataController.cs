@@ -260,11 +260,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public void AddGenericReward(string rewardKey, int rewardValue, RectTransform startPosCurrency = null)
+        public async UniTask AddGenericReward(string rewardKey, int rewardValue, RectTransform startPosCurrency = null)
         {
             if (this.uiTemplateCurrencyBlueprint.TryGetValue(rewardKey, out _))
             {
-                this.AddCurrency(rewardValue, rewardKey, startPosCurrency).Forget();
+                await this.AddCurrency(rewardValue, rewardKey, startPosCurrency);
             }
             else if (this.uiTemplateItemBlueprint.TryGetValue(rewardKey, out _))
             {
@@ -276,12 +276,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public void AddGenericReward(Dictionary<string, int> reward, RectTransform startPosCurrency = null)
+        public async UniTask AddGenericReward(Dictionary<string, int> reward, RectTransform startPosCurrency = null)
         {
+            List<UniTask> rewardAnimationTasks = new();
             foreach (var (rewardKey, rewardValue) in reward)
             {
-                this.AddGenericReward(rewardKey, rewardValue, startPosCurrency);
+                rewardAnimationTasks.Add(this.AddGenericReward(rewardKey, rewardValue, startPosCurrency));
             }
+            
+            await UniTask.WhenAll(rewardAnimationTasks);
         }
 
         public bool IsAlreadyContainedItem(Dictionary<string, int> reward)

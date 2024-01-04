@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Data;
@@ -38,12 +39,14 @@
         public QuestRecord         Record   { get; internal set; }   
         public UITemplateQuestProgress.Quest Progress { get; internal set; }
 
-        public void CollectReward(RectTransform rewardFlyingStartingPos)
+        public async UniTask CollectReward(RectTransform rewardFlyingStartingPos)
         {
             if (this.Progress.Status is not QuestStatus.NotCollected) return;
-            this.Record.Rewards.ForEach(reward => this.uiTemplateInventoryDataController.AddGenericReward (reward.Id, reward.Value, rewardFlyingStartingPos));
+            List<UniTask> rewardAnimationTasks = new();
+            this.Record.Rewards.ForEach(reward => rewardAnimationTasks.Add(this.uiTemplateInventoryDataController.AddGenericReward(reward.Id, reward.Value, rewardFlyingStartingPos)));
             this.RemoveProgressHandlers(this.Progress.CompleteProgress);
             this.Progress.Status |= QuestStatus.Collected;
+            await UniTask.WhenAll(rewardAnimationTasks);
         }
 
         public IEnumerable<ICondition.IProgress.IHandler> GetCompleteProgressHandlers()

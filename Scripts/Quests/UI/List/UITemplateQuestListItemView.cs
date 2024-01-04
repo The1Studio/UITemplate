@@ -50,12 +50,20 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.gameAssets = gameAssets;
         }
 
-        public UITemplateQuestListItemModel Model { get; set; }
+        private UITemplateQuestListItemModel Model { get; set; }
 
         public override void BindData(UITemplateQuestListItemModel model)
         {
             this.Model = model;
 
+            this.InitView();
+
+            this.View.BtnGo.onClick.AddListener(this.OnClickGo);
+            this.View.BtnClaim.onClick.AddListener(this.OnClickClaim);
+        }
+        
+        private void InitView()
+        {
             // Left
             var record = this.Model.Quest.Record;
             var reward = record.Rewards.Single();
@@ -66,6 +74,11 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
             // Right
             var status = this.Model.Quest.Progress.Status;
+            this.SetItemStatus(status);
+        }
+        
+        private void SetItemStatus(QuestStatus status)
+        {
             if (status.HasFlag(QuestStatus.Completed))
             {
                 this.View.TxtProgress.text  = "Completed";
@@ -81,9 +94,6 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.View.NormalObjects.ForEach(obj => obj.SetActive(status is QuestStatus.NotCompleted));
             this.View.CompletedObjects.ForEach(obj => obj.SetActive(status is QuestStatus.NotCollected));
             this.View.CollectedObjects.ForEach(obj => obj.SetActive(status.HasFlag(QuestStatus.Collected)));
-
-            this.View.BtnGo.onClick.AddListener(this.OnClickGo);
-            this.View.BtnClaim.onClick.AddListener(this.OnClickClaim);
         }
 
         private void OnClickGo()
@@ -91,9 +101,11 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.Model.Parent.CloseViewAsync().Forget();
         }
 
-        private void OnClickClaim()
+        private async void OnClickClaim()
         {
-            this.Model.Quest.CollectReward(this.View.ImgReward.rectTransform);
+            var newStatus = this.Model.Quest.Progress.Status | QuestStatus.Collected;
+            this.SetItemStatus(newStatus);
+            await this.Model.Quest.CollectReward(this.View.ImgReward.rectTransform);
             this.Model.Parent.Refresh();
         }
 

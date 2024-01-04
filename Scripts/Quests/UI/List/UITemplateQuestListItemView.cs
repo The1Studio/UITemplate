@@ -93,7 +93,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         private void OnClickClaim()
         {
-            this.Model.Quest.CollectReward();
+            this.Model.Quest.CollectReward(this.View.ImgReward.rectTransform);
             this.Model.Parent.Refresh();
         }
 

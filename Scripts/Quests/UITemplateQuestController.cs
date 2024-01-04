@@ -1,13 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.Quests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Data;
-    using TheOneStudio.UITemplate.Quests.Rewards;
     using TheOneStudio.UITemplate.Quests.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine;
     using Zenject;
 
     public class UITemplateQuestController
@@ -16,32 +16,32 @@
 
         private readonly IInstantiator                                                   instantiator;
         private readonly SignalBus                                                       signalBus;
+        private readonly UITemplateInventoryDataController                               uiTemplateInventoryDataController;
         private readonly QuestStatusChangedSignal                                        changedSignal;
-        private readonly IReadOnlyDictionary<Type, IReward.IHandler>                     rewardHandlers;
         private readonly Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler> progressHandlers;
 
         public UITemplateQuestController(
             IInstantiator                 instantiator,
             SignalBus                     signalBus,
-            IEnumerable<IReward.IHandler> rewardHandlers
+            UITemplateInventoryDataController uiTemplateInventoryDataController
         )
         {
-            this.instantiator     = instantiator;
-            this.signalBus        = signalBus;
-            this.changedSignal    = new QuestStatusChangedSignal(this);
-            this.rewardHandlers   = rewardHandlers.ToDictionary(controller => controller.RewardType);
-            this.progressHandlers = new Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler>();
+            this.instantiator                      = instantiator;
+            this.signalBus                         = signalBus;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.changedSignal                     = new QuestStatusChangedSignal(this);
+            this.progressHandlers                  = new Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler>();
         }
 
         #endregion
 
-        public QuestRecord         Record   { get; internal set; }
+        public QuestRecord         Record   { get; internal set; }   
         public UITemplateQuestProgress.Quest Progress { get; internal set; }
 
-        public void CollectReward()
+        public void CollectReward(RectTransform rewardFlyingStartingPos)
         {
             if (this.Progress.Status is not QuestStatus.NotCollected) return;
-            this.Record.Rewards.ForEach(reward => this.rewardHandlers[reward.GetType()].Handle(reward));
+            this.Record.Rewards.ForEach(reward => this.uiTemplateInventoryDataController.AddGenericReward (reward.Id, reward.Value, rewardFlyingStartingPos));
             this.RemoveProgressHandlers(this.Progress.CompleteProgress);
             this.Progress.Status |= QuestStatus.Collected;
         }

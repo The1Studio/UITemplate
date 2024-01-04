@@ -39,7 +39,7 @@
 
         private void Initialize()
         {
-            this.signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrency);
+            this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
             this.UpdateData(this.uiTemplateInventoryDataController.GetCurrencyValue(this.currencyId));
             if (this.currencyValueText != null)
             {
@@ -63,10 +63,10 @@
             {
                 throw new Exception($"Please inject for GameObject: {this.gameObject.name} - {this.gameObject.transform.parent}");
             }
-            this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrency);
+            this.signalBus.Unsubscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
         }
 
-        private void UpdateCurrency(UpdateCurrencySignal obj)
+        private void OnUpdateCurrency(OnUpdateCurrencySignal obj)
         {
             if (!this.currencyId.Equals(obj.Id)) return;
             

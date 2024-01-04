@@ -9,11 +9,6 @@
     {
         public override void InstallBindings()
         {
-            this.Container.Bind<IReward.IHandler>()
-                .To(convention => convention.AllNonAbstractClasses().DerivingFrom<IReward.IHandler>())
-                .AsSingle()
-                .WhenInjectedInto<UITemplateQuestController>();
-
             this.Container.BindInterfacesAndSelfTo<UITemplateQuestManager>().AsSingle();
 
             if (Object.FindObjectOfType<UITemplateQuestNotificationView>() is { } notificationView)

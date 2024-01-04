@@ -36,7 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                     .FirstOrDefault()?
                     .TargetFlyingAnimation
                     .position;
-            if (endPosition is null) return;
+            if (endPosition == null || startPointRect == null) return;
 
             var totalCount  = Random.Range(minAmount, maxAmount);
             var finalPrefab = string.IsNullOrEmpty(prefabName) ? PrefabName : prefabName;

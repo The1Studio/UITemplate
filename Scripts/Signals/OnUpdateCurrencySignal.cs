@@ -1,12 +1,12 @@
 namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
-    public class UpdateCurrencySignal
+    public class OnUpdateCurrencySignal
     {
         public string Id;
         public int    Amount;
         public int    FinalValue;
 
-        public UpdateCurrencySignal(string id, int amount, int finalValue)
+        public OnUpdateCurrencySignal(string id, int amount, int finalValue)
         {
             this.Id         = id;
             this.Amount     = amount;

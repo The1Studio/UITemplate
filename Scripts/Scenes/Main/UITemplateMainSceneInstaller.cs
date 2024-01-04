@@ -16,7 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
 
         private void DeclareSignals()
         {
-            this.Container.DeclareSignal<UpdateCurrencySignal>();
+            this.Container.DeclareSignal<OnUpdateCurrencySignal>();
         }
     }
 }

@@ -32,10 +32,10 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
                 protected override void Initialize()
                 {
-                    this.signalBus.Subscribe<UpdateCurrencySignal>(this.OnUpdateCurrency);
+                    this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
                 }
 
-                private void OnUpdateCurrency(UpdateCurrencySignal @params)
+                private void OnUpdateCurrency(OnUpdateCurrencySignal @params)
                 {
                     if (@params.Id != this.Condition.CurrencyId) return;
                     this.Progress.Count += @params.Amount;
@@ -43,7 +43,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
                 protected override void Dispose()
                 {
-                    this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.OnUpdateCurrency);
+                    this.signalBus.Unsubscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
                 }
             }
         }

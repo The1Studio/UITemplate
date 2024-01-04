@@ -68,7 +68,7 @@
 
         private void OnClickClaim()
         {
-            this.Model.Quest.CollectReward();
+            this.Model.Quest.CollectReward(this.transform as RectTransform);
             this.SetStatus();
         }
     }

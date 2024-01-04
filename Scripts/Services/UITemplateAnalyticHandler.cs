@@ -73,7 +73,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
-            this.signalBus.Subscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
+            this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Subscribe<ScreenShowSignal>(this.ScreenShowHandler);
 
             //Interstitial ads
@@ -262,7 +262,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             });
         }
 
-        private void UpdateCurrencyHandler(UpdateCurrencySignal obj)
+        private void UpdateCurrencyHandler(OnUpdateCurrencySignal obj)
         {
             this.DoAnalyticWithFactories(eventFactory =>
             {
@@ -296,7 +296,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Unsubscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Unsubscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
-            this.signalBus.Unsubscribe<UpdateCurrencySignal>(this.UpdateCurrencyHandler);
+            this.signalBus.Unsubscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Unsubscribe<ScreenShowSignal>(this.ScreenShowHandler);
             
             this.signalBus.Unsubscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);

@@ -38,6 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
 
+            // not lock in editor because interstitial fake ads can not close
 #if !UNITY_EDITOR
             this.Container.BindInterfacesAndSelfTo<LockInputService>().AsCached().NonLazy();
 #endif

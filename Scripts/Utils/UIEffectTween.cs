@@ -14,31 +14,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
         [ShowIf(nameof(HasUIEffectComponent))] [SerializeField]
         private bool effectFactorShift;
 
-        [ShowIf(nameof(effectFactorShift))] [SerializeField]
+        [ShowIf(nameof(effectFactorShift))] [SerializeField] [BoxGroup("Effect Factor")]
         private Option effectFactorOption = new Option(0f, 1f);
 
         [ShowIf(nameof(HasUIEffectComponent))] [SerializeField]
         private bool blurFactorShift;
 
-        [ShowIf(nameof(blurFactorShift))] [SerializeField]
+        [ShowIf(nameof(blurFactorShift))] [SerializeField] [BoxGroup ("Blur Factor")]
         private Option blurFactorOption = new Option(0f, 1f);
 
         [ShowIf(nameof(HasUIHsvModifierComponent))] [SerializeField]
         private bool hueShift;
 
-        [ShowIf(nameof(hueShift))] [SerializeField]
+        [ShowIf(nameof(hueShift))] [SerializeField] [BoxGroup ("Hue")]
         private Option hueOption = new Option(-0.5f, 0.5f);
 
         [ShowIf(nameof(HasUIHsvModifierComponent))] [SerializeField]
         private bool saturationShift;
 
-        [ShowIf(nameof(saturationShift))] [SerializeField]
+        [ShowIf(nameof(saturationShift))] [SerializeField] [BoxGroup ("Saturation")]
         private Option saturationOption = new Option(-0.5f, 0.5f);
 
         [ShowIf(nameof(HasUIHsvModifierComponent))] [SerializeField]
         private bool valueShift;
 
-        [ShowIf(nameof(valueShift))] [SerializeField]
+        [ShowIf(nameof(valueShift))] [SerializeField] [BoxGroup ("Value")]
         private Option valueOption = new Option(-0.5f, 0.5f);
 
         #endregion

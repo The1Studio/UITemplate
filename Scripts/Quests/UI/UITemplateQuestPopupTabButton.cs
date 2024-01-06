@@ -2,6 +2,7 @@
 {
     using GameFoundation.Scripts.Utilities.Extension;
     using UnityEngine;
+    using UnityEngine.Events;
     using UnityEngine.UI;
 
     [RequireComponent(typeof(Button))]
@@ -12,16 +13,9 @@
         [SerializeField] private GameObject[] activeObjects;
         [SerializeField] private GameObject[] inactiveObjects;
 
-        public UITemplateQuestPopupPresenter Parent { get; set; }
-
-        private void Awake()
+        public void AddOnLick(UnityAction action)
         {
-            this.GetComponent<Button>().onClick.AddListener(this.OnClick);
-        }
-
-        private void OnClick()
-        {
-            this.Parent.Tab = this.Tab;
+            this.GetComponent<Button>().onClick.AddListener(action);
         }
 
         public void SetActive(bool active)

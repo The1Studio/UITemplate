@@ -24,34 +24,28 @@
             this.DailyRewardController = dailyRewardController;
         }
 
-        public virtual async void BindDataItem(UITemplateDailyRewardItemModel model, UITemplateDailyRewardItemView view, UITemplateDailyRewardItemPresenter presenter)
+        public virtual async void BindDataItem(UITemplateDailyRewardItemModel model, UITemplateDailyRewardItemView view)
         {
             var rewardSprite = this.GameAssets.ForceLoadAsset<Sprite>($"{model.DailyRewardRecord.RewardImage}");
             var rewardValue  = string.Empty;
-            if (model.DailyRewardRecord.Reward.Count == 1 && model.DailyRewardRecord.Reward.Values.First() != -1)
-            {
-                rewardValue = $"{model.DailyRewardRecord.Reward.Values.First()}";
-            }
-
-            view.imgReward.sprite     = rewardSprite;
-            view.txtValue.text        = rewardValue;
-            view.txtDayLabel.text     = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1 ? TodayLabel : $"{PrefixLabel}{model.DailyRewardRecord.Day}";
-            if (view.imgBackground != null) view.imgBackground.sprite = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1 ? view.sprBgCurrentDay : view.sprBgNormal;
-
+            if (model.DailyRewardRecord.Reward.Count == 1)
+                rewardValue = model.DailyRewardRecord.Reward.Values.First() == -1
+                    ? rewardValue
+                    : model.DailyRewardRecord.Reward.Values.First().ToString();
+            view.imgReward.sprite = rewardSprite;
+            view.txtValue.text    = rewardValue;
+            view.txtDayLabel.text = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1
+                ? TodayLabel
+                : $"{PrefixLabel}{model.DailyRewardRecord.Day}";
+            view.imgBackground.sprite = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1
+                ? view.sprBgCurrentDay
+                : view.sprBgNormal;
+            view.objLockReward.SetActive(model.RewardStatus == RewardStatus.Locked);
             view.objClaimed.SetActive(model.RewardStatus == RewardStatus.Claimed);
-            view.txtValue.gameObject.SetActive(model.DailyRewardRecord.ShowValue);
 
             view.UpdateIconRectTransform(model.DailyRewardRecord.Position, model.DailyRewardRecord.Size);
 
-            view.OnClickClaimButton = () => model.OnClick?.Invoke(presenter);
-
-            if (view.objClaimByAds != null)
-            {
-                view.objClaimByAds.SetActive(model.RewardStatus == RewardStatus.Locked && model.IsGetWithAds);
-            }
-
-            view.objReward.gameObject.SetActive(!(model.RewardStatus == RewardStatus.Locked && !model.DailyRewardRecord.SpoilReward));
-            view.objLockReward.SetActive(model.RewardStatus == RewardStatus.Locked && !model.DailyRewardRecord.SpoilReward);
+            view.OnClickClaimButton = () => model.OnClick?.Invoke(model.DailyRewardRecord.Day);
 
             //Only play if the items were not claimed
             if (!view.objClaimed.activeSelf)
@@ -64,8 +58,6 @@
             }
         }
 
-        public virtual void DisposeItem(UITemplateDailyRewardItemPresenter presenter) { }
-
-        public virtual void OnClaimReward(UITemplateDailyRewardItemPresenter presenter) { }
+        public virtual void DisposeItem(UITemplateDailyRewardItemView view) { }
     }
 }

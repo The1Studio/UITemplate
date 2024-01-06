@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     public class UITemplateDailyRewardService : IInitializable
     {
         private const string FirstOpenAppKey = "FirstOpenApp";
+        private const string NotificationId  = "daily_reward";
 
         #region inject
 
@@ -26,7 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly INotificationService            notificationServices;
         private readonly GameQueueActionContext          gameQueueActionContext;
         private readonly UITemplateFeatureConfig         uiTemplateFeatureConfig;
-        private readonly GameFeaturesSetting             gameFeaturesSetting;
+        private readonly GameEventsSetting               gameEventsSetting;
 
         #endregion
 
@@ -34,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public UITemplateDailyRewardService(SignalBus signalBus, ScreenManager screenManager, UITemplateDailyRewardController uiTemplateDailyRewardController,
             INotificationService notificationServices, GameQueueActionContext gameQueueActionContext, UITemplateFeatureConfig uiTemplateFeatureConfig,
-            GameFeaturesSetting gameFeaturesSetting)
+            GameEventsSetting gameEventsSetting)
         {
             this.signalBus                       = signalBus;
             this.screenManager                   = screenManager;
@@ -42,7 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.notificationServices            = notificationServices;
             this.gameQueueActionContext          = gameQueueActionContext;
             this.uiTemplateFeatureConfig         = uiTemplateFeatureConfig;
-            this.gameFeaturesSetting             = gameFeaturesSetting;
+            this.gameEventsSetting               = gameEventsSetting;
         }
 
         public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
@@ -65,22 +66,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             if (!this.canShowReward && !force)
                 return;
 
-            if (!this.gameFeaturesSetting.DailyRewardConfig.showOnFirstOpen && this.IsFirstOpenGame())
+            if (this.IsFirstOpenGame())
             {
                 onClaimReward?.Invoke();
                 this.canShowReward = false;
+                this.notificationServices.SetupCustomNotification(NotificationId);
                 return;
             }
 
             if (!this.uiTemplateDailyRewardController.CanClaimReward && !force)
                 return;
 
-            this.notificationServices.SetupCustomNotification(this.gameFeaturesSetting.DailyRewardConfig.notificationId);
             this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()
             {
                 OnClaimFinish       = onClaimReward,
-                IsGetNextDayWithAds = this.gameFeaturesSetting.DailyRewardConfig.getNextDayWithAds,
-                IsAutoCloseAfterClaim = this.gameFeaturesSetting.DailyRewardConfig.isAutoCloseAfterClaim,
+                IsGetNextDayWithAds = this.gameEventsSetting.DailyRewardConfig.isGetNextDayWithAds
             });
         }
 
@@ -96,9 +96,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private bool IsScreenCanShowDailyReward(IScreenPresenter screenPresenter)
         {
-            if (this.gameFeaturesSetting.DailyRewardConfig.isCustomScreenTrigger)
+            if (this.gameEventsSetting.DailyRewardConfig.isCustomScreenTrigger)
             {
-                return this.gameFeaturesSetting.DailyRewardConfig.screenTriggerIds.Contains(screenPresenter.ScreenId);
+                return this.gameEventsSetting.DailyRewardConfig.screenTriggerIds.Contains(screenPresenter.ScreenId);
             }
 
             return screenPresenter is UITemplateHomeSimpleScreenPresenter or UITemplateHomeTapToPlayScreenPresenter;

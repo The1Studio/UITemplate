@@ -37,6 +37,11 @@
         [OnValueChanged("OnChangeBadgeNotify")]
         public bool enableBadgeNotify;
 
+        [SerializeField] [ShowIf(nameof(enableDailyReward))] [BoxGroup("Daily Reward")]
+        private DailyRewardConfig dailyRewardConfig;
+
+        public DailyRewardConfig DailyRewardConfig => this.dailyRewardConfig;
+
 #if UNITY_EDITOR
         private void OnChangeRacingEvent()
         {

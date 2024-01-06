@@ -39,22 +39,30 @@ namespace TheOneStudio.UITemplate.Quests.UI
         {
             base.OnViewReady();
             this.View.ListView.Parent = this;
-            this.View.TabButtons.ForEach(tabButton => tabButton.Parent = this);
+            this.View.TabButtons.ForEach(tabButton => tabButton.AddOnLick(() => this.SetTag(tabButton.Tab)));
             this.View.BtnClose.onClick.AddListener(() => this.CloseViewAsync().Forget());
         }
 
         public override UniTask BindData()
         {
-            this.Tab = this.View.TabButtons[0].Tab;
+            this.SetTag(this.View.TabButtons[0].Tab);
             return UniTask.CompletedTask;
+        }
+
+        private string currentTag;
+
+        public void SetTag(string tag)
+        {
+            this.currentTag = tag;
+            this.Refresh();
         }
 
         public void Refresh()
         {
-            this.View.TabButtons.ForEach(tabButton => tabButton.SetActive(tabButton.Tab == this.Tab));
+            this.View.TabButtons.ForEach(tabButton => tabButton.SetActive(tabButton.Tab == this.currentTag));
 
             var (chestQuests, normalQuests) = this.questManager.GetAllControllers()
-                .Where(quest => quest.Record.HasTag(this.Tab))
+                .Where(quest => quest.Record.HasTag(this.currentTag))
                 .Split(quest => quest.Record.HasTag("Chest"));
 
             this.View.ListView.Model = new(normalQuests);
@@ -69,17 +77,5 @@ namespace TheOneStudio.UITemplate.Quests.UI
         {
             this.View.ChestView.Dispose();
         }
-
-        public string Tab
-        {
-            get => this.tab;
-            set
-            {
-                this.tab = value;
-                this.Refresh();
-            }
-        }
-
-        private string tab;
     }
 }

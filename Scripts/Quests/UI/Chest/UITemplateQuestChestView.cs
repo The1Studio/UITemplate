@@ -55,8 +55,15 @@
                 itemView.Model = new(quest);
                 itemView.BindData();
             });
-            this.sld.value = (float)this.Model.Quests.Count(quest => quest.Progress.Status.HasFlag(QuestStatus.Completed))
-                / this.Model.Quests.Count;
+            if (this.Model.Quests.All(quest => quest.Progress.Status.HasFlag(QuestStatus.Completed)))
+            {
+                this.sld.value = 1;
+            }
+            else
+            {
+                var progressHandler = this.Model.Quests.Last().GetCompleteProgressHandlers().Last();
+                this.sld.value = progressHandler.CurrentProgress / progressHandler.MaxProgress;
+            }
         }
 
         public void Dispose()

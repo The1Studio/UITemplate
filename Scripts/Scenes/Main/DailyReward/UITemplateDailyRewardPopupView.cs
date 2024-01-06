@@ -27,6 +27,7 @@
     public class UITemplateDailyRewardPopupModel
     {
         public Action OnClaimFinish;
+        public bool   IsGetNextDayWithAds;
     }
 
     [PopupInfo(nameof(UITemplateDailyRewardPopupView), false)]
@@ -47,12 +48,12 @@
         private CancellationTokenSource              closeViewCts;
 
         public UITemplateDailyRewardPopupPresenter(
-            SignalBus                       signalBus,
-            ILogService                     logger,
-            DiContainer                     diContainer,
+            SignalBus signalBus,
+            ILogService logger,
+            DiContainer diContainer,
             UITemplateDailyRewardController uiTemplateDailyRewardController,
-            UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint,
-            UITemplateLevelDataController   levelDataController
+            UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
+            UITemplateLevelDataController levelDataController
         ) : base(signalBus, logger)
         {
             this.diContainer                     = diContainer;
@@ -78,7 +79,8 @@
                 .Select(uiTemplateDailyRewardRecord =>
                     new UITemplateDailyRewardItemModel(
                         uiTemplateDailyRewardRecord,
-                        this.uiTemplateDailyRewardController.GetDateRewardStatus(uiTemplateDailyRewardRecord.Day)
+                        this.uiTemplateDailyRewardController.GetDateRewardStatus(uiTemplateDailyRewardRecord.Day),
+                        this.OnItemClick
                     )
                 ).ToList();
 
@@ -89,11 +91,9 @@
             this.View.btnClose.gameObject.SetActive(!hasRewardCanClaim);
             return UniTask.CompletedTask;
         }
+        private void OnItemClick(int day) { this.logService.Log($"OnItemClick {day}"); }
 
-        private void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels)
-        {
-            this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget();
-        }
+        private void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels) { this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget(); }
 
         private void ClaimReward()
         {
@@ -109,7 +109,7 @@
             }
 
             this.uiTemplateDailyRewardController.ClaimAllAvailableReward(claimAbleItemRectTransforms);
-            this.View.dailyRewardAdapter.Refresh();
+            this.RefreshAdapter();
             this.logService.Log($"Do Animation Claim Reward");
             this.popupModel.OnClaimFinish?.Invoke();
 
@@ -121,13 +121,22 @@
                 }
             }
 
-            this.View.dailyRewardAdapter.Refresh();
+            this.RefreshAdapter();
+
+            this.AutoClosePopup();
+        }
+
+        private void AutoClosePopup()
+        {
+            if (this.Model.IsGetNextDayWithAds) return;
 
             UniTask.Delay(
                 TimeSpan.FromSeconds(1.5f),
                 cancellationToken: (this.closeViewCts = new()).Token
             ).ContinueWith(this.CloseViewAsync).Forget();
         }
+
+        private void RefreshAdapter() { this.View.dailyRewardAdapter.Refresh(); }
 
         public override void Dispose()
         {

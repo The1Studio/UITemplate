@@ -10,19 +10,22 @@
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
 
     public class UITemplateDailyRewardItemModel
     {
+        public Action<int>                 OnClick           { get; set; }
         public RewardStatus                RewardStatus      { get; set; }
         public UITemplateDailyRewardRecord DailyRewardRecord { get; set; }
 
-        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord, RewardStatus rewardStatus)
+        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord, RewardStatus rewardStatus, Action<int> click)
         {
             this.DailyRewardRecord = dailyRewardRecord;
             this.RewardStatus      = rewardStatus;
+            this.OnClick           = click;
         }
     }
 
@@ -35,8 +38,19 @@
         public TextMeshProUGUI txtValue;
         public TextMeshProUGUI txtDayLabel;
         public GameObject      objClaimedCheckIcon;
-        public Sprite sprBgNormal;
-        public Sprite sprBgCurrentDay;
+        public Sprite          sprBgNormal;
+        public Sprite          sprBgCurrentDay;
+        public Button          btnClaim;
+
+        public Action OnClickClaimButton { get; set; }
+
+        private void Awake()
+        {
+            if (this.btnClaim != null)
+            {
+                this.btnClaim.onClick.AddListener(() => { this.OnClickClaimButton?.Invoke(); });
+            }
+        }
 
         public void UpdateIconRectTransform(Vector2? position, Vector2? size)
         {
@@ -58,58 +72,18 @@
     {
         #region inject
 
-        private readonly ILogService                     logService;
-        private readonly UITemplateDailyRewardController dailyRewardController;
+        private readonly ILogService                         logService;
+        private readonly UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper;
 
         #endregion
 
-        private const string TodayLabel  = "TODAY";
-        private const string PrefixLabel = "DAY ";
-
-        private UITemplateDailyRewardItemModel model;
-
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService, UITemplateDailyRewardController dailyRewardController) : base(gameAssets)
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService,
+            UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper) : base(gameAssets)
         {
-            this.logService            = logService;
-            this.dailyRewardController = dailyRewardController;
+            this.logService                = logService;
+            this.dailyRewardItemViewHelper = dailyRewardItemViewHelper;
         }
 
-        public override void BindData(UITemplateDailyRewardItemModel param)
-        {
-            this.model = param;
-            this.InitView();
-        }
-
-        private async void InitView()
-        {
-            var rewardSprite = this.GameAssets.ForceLoadAsset<Sprite>($"{this.model.DailyRewardRecord.RewardImage}");
-            var rewardValue  = string.Empty;
-            if (this.model.DailyRewardRecord.Reward.Count == 1)
-                rewardValue = this.model.DailyRewardRecord.Reward.Values.First() == -1
-                    ? rewardValue
-                    : this.model.DailyRewardRecord.Reward.Values.First().ToString();
-            this.View.imgReward.sprite = rewardSprite;
-            this.View.txtValue.text    = rewardValue;
-            this.View.txtDayLabel.text = this.model.DailyRewardRecord.Day == this.dailyRewardController.GetCurrentDayIndex() + 1
-                ? TodayLabel
-                : $"{PrefixLabel}{this.model.DailyRewardRecord.Day}";
-            this.View.imgBackground.sprite = this.model.DailyRewardRecord.Day == this.dailyRewardController.GetCurrentDayIndex() + 1
-                ? this.View.sprBgCurrentDay
-                : this.View.sprBgNormal;
-            this.View.objLockReward.SetActive(this.model.RewardStatus == RewardStatus.Locked);
-            this.View.objClaimed.SetActive(this.model.RewardStatus == RewardStatus.Claimed);
-
-            this.View.UpdateIconRectTransform(this.model.DailyRewardRecord.Position, this.model.DailyRewardRecord.Size);
-
-            //Only play if the items were not claimed
-            if (!this.View.objClaimed.activeSelf)
-            {
-                //Animation
-                var duration = 1f;
-                this.View.objClaimedCheckIcon.transform.localScale = Vector3.zero;
-                this.View.objClaimedCheckIcon.transform.DOScale(Vector3.one, duration).SetEase(Ease.OutBounce);
-                await UniTask.Delay(TimeSpan.FromSeconds(duration));
-            }
-        }
+        public override void BindData(UITemplateDailyRewardItemModel param) { this.dailyRewardItemViewHelper.BindDataItem(param, this.View); }
     }
 }

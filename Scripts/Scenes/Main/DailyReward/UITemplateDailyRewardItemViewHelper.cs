@@ -39,6 +39,7 @@
             view.imgBackground.sprite = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1 ? view.sprBgCurrentDay : view.sprBgNormal;
 
             view.objClaimed.SetActive(model.RewardStatus == RewardStatus.Claimed);
+            view.txtValue.gameObject.SetActive(model.DailyRewardRecord.ShowValue);
 
             view.UpdateIconRectTransform(model.DailyRewardRecord.Position, model.DailyRewardRecord.Size);
 

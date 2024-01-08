@@ -18,5 +18,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public Vector2?                Position    { get; set; }
         public Vector2?                Size        { get; set; }
         public bool                    SpoilReward { get; set; }
+        public bool                    ShowValue   { get; set; }
     }
 }

@@ -32,7 +32,7 @@
         public bool   IsGetNextDayWithAds;
     }
 
-    [PopupInfo(nameof(UITemplateDailyRewardPopupView), false)]
+    [PopupInfo(nameof(UITemplateDailyRewardPopupView), false, isOverlay: true)]
     public class UITemplateDailyRewardPopupPresenter : UITemplateBasePopupPresenter<UITemplateDailyRewardPopupView, UITemplateDailyRewardPopupModel>
     {
         #region inject

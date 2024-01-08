@@ -16,7 +16,7 @@
 
         private UITemplateBadgeNotifySystem uiTemplateBadgeNotifySystem;
         private IScreenManager              screenManager;
-        private UITemplateAdServiceWrapper  uitemplateAdServiceWrapper;
+        private UITemplateAdServiceWrapper  uiTemplateAdServiceWrapper;
 
         #endregion
 
@@ -30,7 +30,7 @@
 
             this.uiTemplateBadgeNotifySystem = uiTemplateBadgeNotifySystem;
             this.screenManager               = screenManager;
-            this.uitemplateAdServiceWrapper  = uiTemplateAdServiceWrapper;
+            this.uiTemplateAdServiceWrapper  = uiTemplateAdServiceWrapper;
         }
 
         public void BindData()
@@ -46,7 +46,7 @@
             }
             else
             {
-                this.badgeButton.onClick.AddListener(() => this.uitemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, _ => this.screenManager.OpenScreen<TPresenter>()));
+                this.badgeButton.onClick.AddListener(() => this.uiTemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, _ => this.screenManager.OpenScreen<TPresenter>()));
             }
 
             this.uiTemplateBadgeNotifySystem.RegisterBadge(this, parentScreenPresenter, typeof(TPresenter));
@@ -60,7 +60,7 @@
             }
             else
             {
-                this.badgeButton.onClick.AddListener(() => this.uitemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, _ => onClick.Invoke()));
+                this.badgeButton.onClick.AddListener(() => this.uiTemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, _ => onClick.Invoke()));
             }
             this.uiTemplateBadgeNotifySystem.RegisterBadge(this, parentScreenPresenter, condition);
         }

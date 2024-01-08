@@ -23,6 +23,7 @@
         [SerializeField] private Button     badgeButton;
         [SerializeField] private GameObject badge;
 
+        #if THEONE_BADGE_NOTIFY
         [Inject]
         private void Construct(UITemplateBadgeNotifySystem uiTemplateBadgeNotifySystem, IScreenManager screenManager, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper)
         {
@@ -32,6 +33,7 @@
             this.screenManager               = screenManager;
             this.uiTemplateAdServiceWrapper  = uiTemplateAdServiceWrapper;
         }
+        #endif
 
         public void BindData()
         {

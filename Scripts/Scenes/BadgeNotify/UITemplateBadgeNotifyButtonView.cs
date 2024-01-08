@@ -35,23 +35,23 @@
 
         public void BindData()
         {
-            this.badge.SetActive(this.uiTemplateBadgeNotifySystem.GetBadgeStatus(this));
+            this.SetActive(this.uiTemplateBadgeNotifySystem.GetBadgeStatus(this));
         }
 
-        public void Register<T>(IScreenPresenter parentScreenPresenter, string interPlacement = null) where T : IScreenPresenter
+        public void Register<TPresenter>(IScreenPresenter parentScreenPresenter, string interPlacement = null) where TPresenter : IScreenPresenter
         {
             if (interPlacement.IsNullOrEmpty())
             {
-                this.badgeButton.onClick.AddListener(() => this.screenManager.OpenScreen<T>());
+                this.badgeButton.onClick.AddListener(() => this.screenManager.OpenScreen<TPresenter>());
             }
             else
             {
-                this.badgeButton.onClick.AddListener(() => this.uitemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, _ => this.screenManager.OpenScreen<T>()));
+                this.badgeButton.onClick.AddListener(() => this.uitemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, _ => this.screenManager.OpenScreen<TPresenter>()));
             }
 
-            this.uiTemplateBadgeNotifySystem.RegisterBadge(this, parentScreenPresenter, typeof(T));
+            this.uiTemplateBadgeNotifySystem.RegisterBadge(this, parentScreenPresenter, typeof(TPresenter));
         }
-
+        
         public void Register(IScreenPresenter parentScreenPresenter, UnityAction onClick, Func<bool> condition, string interPlacement = null)
         {
             if (interPlacement.IsNullOrEmpty())

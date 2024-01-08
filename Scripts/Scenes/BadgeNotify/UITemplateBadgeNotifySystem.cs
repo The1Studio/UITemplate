@@ -14,13 +14,23 @@
 
         public void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreen, Type nextScreenType)
         {
-            var badgeSet = this.screenTypeToBadgeButtons.GetOrAdd(parentScreen.GetType(), () => new HashSet<UITemplateBadgeNotifyButtonView>());
-            badgeSet.Add(badgeNotifyButtonView);
+            this.RegisParentScreen(badgeNotifyButtonView, parentScreen);
+
             this.badgeButtonToNextScreenType.Add(badgeNotifyButtonView, nextScreenType);
         }
-
-        public void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreenPresenter, Func<bool> condition)
+        
+        private void RegisParentScreen(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreen)
         {
+            if (parentScreen == null) return;
+            
+            var badgeSet = this.screenTypeToBadgeButtons.GetOrAdd(parentScreen.GetType(), () => new HashSet<UITemplateBadgeNotifyButtonView>());
+            badgeSet.Add(badgeNotifyButtonView);
+        }
+
+        public void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreen, Func<bool> condition)
+        {
+            this.RegisParentScreen(badgeNotifyButtonView, parentScreen);
+
             this.badgeButtonToConditionFunc.Add(badgeNotifyButtonView, condition);
         }
 

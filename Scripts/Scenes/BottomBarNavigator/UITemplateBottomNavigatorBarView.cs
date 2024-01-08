@@ -9,7 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
     using UnityEngine;
     using Zenject;
 
-    public class UITemplateBottomNavigatorBarView : MonoBehaviour
+    public abstract class UITemplateBottomNavigatorBarView : MonoBehaviour
     {
         #region inject
 
@@ -20,7 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         public Transform buttonParent;
 
-        private List<BottomBarNavigatorTabButtonView> Buttons;
+        protected List<BottomBarNavigatorTabButtonView> Buttons;
 
         private int  CurrentActiveIndex { get; set; } = -1;
         private bool IsShowingBar              = true;
@@ -31,11 +31,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         {
             this.signalBus                  = signalBus;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
-
-            this.Init();
         }
 
-        private void Init()
+        protected virtual void Init()
         {
             this.signalBus.Subscribe<OnRemoveAdsSucceedSignal>(this.OnRemoveAdsHandler);
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShowSignalHandler);
@@ -86,6 +84,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             }
 
             this.OnClickBottomBarButton(this.DefaultActiveIndex);
+            
+            this.Init();
         }
 
         private void OnClickBottomBarButton(int index)
@@ -114,7 +114,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             }
         }
 
-        protected virtual void OnCLickButton(int index) { }
+        protected abstract void OnCLickButton(int index);
 
         protected virtual int DefaultActiveIndex => 0;
         protected virtual int HasBannerHeight    => 350;

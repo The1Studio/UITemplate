@@ -33,7 +33,7 @@
             this.uitemplateAdServiceWrapper  = uiTemplateAdServiceWrapper;
         }
 
-        private void OnEnable()
+        public void BindData()
         {
             this.badge.SetActive(this.uiTemplateBadgeNotifySystem.GetBadgeStatus(this));
         }

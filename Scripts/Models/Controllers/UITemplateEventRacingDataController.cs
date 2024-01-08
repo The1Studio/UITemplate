@@ -30,7 +30,7 @@
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly SignalBus                         signalBus;
         private readonly IRemoteConfig                     remoteConfig;
-        private readonly GameEventsSetting                 gameEventsSetting;
+        private readonly GameFeaturesSetting                 gameFeaturesSetting;
 
         #endregion
 
@@ -54,18 +54,18 @@
 
         public UITemplateEventRacingDataController(UITemplateEventRacingData uiTemplateEventRacingData,
             IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
-            SignalBus signalBus, IRemoteConfig remoteConfig, GameEventsSetting gameEventsSetting)
+            SignalBus signalBus, IRemoteConfig remoteConfig, GameFeaturesSetting gameFeaturesSetting)
         {
             this.uiTemplateEventRacingData         = uiTemplateEventRacingData;
             this.gameAssets                        = gameAssets;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.signalBus                         = signalBus;
             this.remoteConfig                      = remoteConfig;
-            this.gameEventsSetting                 = gameEventsSetting;
+            this.gameFeaturesSetting                 = gameFeaturesSetting;
         }
 
         public int      YourOldShowScore => this.uiTemplateEventRacingData.YourOldShowScore;
-        public int      YourNewScore     => this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameEventsSetting.RacingConfig.RacingCurrency);
+        public int      YourNewScore     => this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameFeaturesSetting.RacingConfig.RacingCurrency);
         public int      YourIndex        => this.uiTemplateEventRacingData.yourIndex;
         public long     RemainSecond     => (long)(this.uiTemplateEventRacingData.endDate - DateTime.Now).TotalSeconds;
         public DateTime StartDate        => this.uiTemplateEventRacingData.startDate;
@@ -76,26 +76,26 @@
             {
                 if (this.uiTemplateEventRacingData.endDate == DateTime.MinValue)
                 {
-                    this.uiTemplateEventRacingData.endDate = this.uiTemplateEventRacingData.startDate.AddDays(this.gameEventsSetting.RacingConfig.RacingDay - Random.Range(0, 1.5f));
+                    this.uiTemplateEventRacingData.endDate = this.uiTemplateEventRacingData.startDate.AddDays(this.gameFeaturesSetting.RacingConfig.RacingDay - Random.Range(0, 1.5f));
                 }
 
                 return this.uiTemplateEventRacingData.endDate;
             }
         }
 
-        public float RacingMaxProgression => this.gameEventsSetting.racingConfig.RacingMaxProgressionPercent;
+        public float RacingMaxProgression => this.gameFeaturesSetting.racingConfig.RacingMaxProgressionPercent;
 
         public void UpdateUserOldShowScore()
         {
             this.uiTemplateEventRacingData.YourOldShowScore =
-                this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameEventsSetting.RacingConfig.RacingCurrency);
+                this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameFeaturesSetting.RacingConfig.RacingCurrency);
         }
 
         public void Initialize() { this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.OnFetchSucceedHandler); }
 
         private void OnFetchSucceedHandler(RemoteConfigFetchedSucceededSignal obj)
         {
-            this.RacingScoreMax = this.remoteConfig.GetRemoteConfigIntValue(RacingEventMaxScoreKey, this.gameEventsSetting.racingConfig.RacingScoreMax);
+            this.RacingScoreMax = this.remoteConfig.GetRemoteConfigIntValue(RacingEventMaxScoreKey, this.gameFeaturesSetting.racingConfig.RacingScoreMax);
         }
 
         public void AddPlayScore(int addedScore)
@@ -118,15 +118,15 @@
                     Score = 0,
                     CountryCode =
                         isYou ? RegionHelper.GetCountryCodeByDeviceLang() : this.CountryFlags.RandomCountryCode(),
-                    IconAddressable = this.gameEventsSetting.RacingConfig.IconAddressableSet.PickRandom(),
+                    IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.PickRandom(),
                 });
 
             if (racingPlayerData.IconAddressable.IsNullOrEmpty())
             {
-                racingPlayerData.IconAddressable = this.gameEventsSetting.RacingConfig.IconAddressableSet.PickRandom();
+                racingPlayerData.IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.PickRandom();
             }
 
-            if (isYou) racingPlayerData.Score = this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameEventsSetting.RacingConfig.RacingCurrency);
+            if (isYou) racingPlayerData.Score = this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameFeaturesSetting.RacingConfig.RacingCurrency);
 
             return racingPlayerData;
         }

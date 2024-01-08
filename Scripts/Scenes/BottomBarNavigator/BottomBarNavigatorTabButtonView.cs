@@ -12,13 +12,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         public Image    TabIcon;
 
         private bool isActive = false;
-        
+
         public void Init()
         {
             this.SetActive(false);
             this.TabName.transform.localScale = Vector3.zero;
         }
-        
+
         public void SetActive(bool isActive)
         {
             if (isActive == this.isActive) return;
@@ -35,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             else
             {
                 this.TabIcon.rectTransform.DOAnchorPosY(-100, duration).SetEase(Ease.InBack);
-                this.TabIcon.transform.DOScale(1f, duration).SetEase(Ease.InBack);   
+                this.TabIcon.transform.DOScale(1f, duration).SetEase(Ease.InBack);
                 this.TabName.transform.DOScale(0, duration).SetEase(Ease.InBack);
             }
         }

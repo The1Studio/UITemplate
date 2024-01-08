@@ -8,6 +8,7 @@ namespace UITemplate.Editor.TheOneWindowTools
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using UnityEditor;
     using UnityEngine;
+    using UnityEngine.Serialization;
 
     public class TheOneWindow : OdinEditorWindow
     {
@@ -23,15 +24,15 @@ namespace UITemplate.Editor.TheOneWindowTools
         [InlineEditor] [TabGroup("Remote Config")]
         public RemoteConfigSetting remoteConfigSetting;
         
-        [InlineEditor] [TabGroup("Game Events")]
-        public GameEventsSetting GameEventsSetting;
+        [InlineEditor] [TabGroup("Game Features")]
+        public GameFeaturesSetting gameFeaturesSetting;
 
         private void OnEnable()
         {
             this.AnalyticConfig      = Resources.Load<AnalyticConfig>($"GameConfigs/{nameof(this.AnalyticConfig)}");
             this.ThirdPartiesConfig  = Resources.Load<ThirdPartiesConfig>($"GameConfigs/{nameof(this.ThirdPartiesConfig)}");
             this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);
-            this.GameEventsSetting   = Resources.Load<GameEventsSetting>(GameEventsSetting.ResourcePath);
+            this.gameFeaturesSetting   = Resources.Load<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath);
 
             if (this.remoteConfigSetting == null)
             {
@@ -39,10 +40,10 @@ namespace UITemplate.Editor.TheOneWindowTools
                 this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>($"GameConfigs/{nameof(RemoteConfigSetting)}");
             }
             
-            if (this.GameEventsSetting == null)
+            if (this.gameFeaturesSetting == null)
             {
-                AssetDatabase.CreateAsset(CreateInstance<GameEventsSetting>(), $"Assets/Resources/{GameEventsSetting.ResourcePath}.asset");
-                this.GameEventsSetting = Resources.Load<GameEventsSetting>($"GameConfigs/{nameof(this.GameEventsSetting)}");
+                AssetDatabase.CreateAsset(CreateInstance<GameFeaturesSetting>(), $"Assets/Resources/{GameFeaturesSetting.ResourcePath}.asset");
+                this.gameFeaturesSetting = Resources.Load<GameFeaturesSetting>($"GameConfigs/{nameof(this.gameFeaturesSetting)}");
             }
 
             this.ThirdPartiesConfig.AdSettings.AdMob.OnDataChange = (admobSetting) =>

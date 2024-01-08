@@ -9,10 +9,12 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -39,6 +41,8 @@
         private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
         private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
         private readonly UITemplateLevelDataController   levelDataController;
+        private readonly UITemplateAdServiceWrapper      uiTemplateAdServiceWrapper;
+        private readonly GameEventsSetting               gameEventsSetting;
 
         #endregion
 
@@ -53,13 +57,17 @@
             DiContainer diContainer,
             UITemplateDailyRewardController uiTemplateDailyRewardController,
             UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
-            UITemplateLevelDataController levelDataController
+            UITemplateLevelDataController levelDataController,
+            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+            GameEventsSetting gameEventsSetting
         ) : base(signalBus, logger)
         {
             this.diContainer                     = diContainer;
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
             this.uiTemplateDailyRewardBlueprint  = uiTemplateDailyRewardBlueprint;
             this.levelDataController             = levelDataController;
+            this.uiTemplateAdServiceWrapper      = uiTemplateAdServiceWrapper;
+            this.gameEventsSetting               = gameEventsSetting;
         }
 
         protected override void OnViewReady()
@@ -84,6 +92,7 @@
                     )
                 ).ToList();
 
+            this.SetUpItemCanGetWithAds();
             this.InitListDailyReward(this.listRewardModel);
 
             var hasRewardCanClaim = this.uiTemplateDailyRewardController.CanClaimReward;
@@ -91,7 +100,42 @@
             this.View.btnClose.gameObject.SetActive(!hasRewardCanClaim);
             return UniTask.CompletedTask;
         }
-        private void OnItemClick(int day) { this.logService.Log($"OnItemClick {day}"); }
+
+        private void OnItemClick(UITemplateDailyRewardItemPresenter presenter)
+        {
+            var model = presenter.Model;
+            if (model.RewardStatus == RewardStatus.Locked && model.IsGetWithAds)
+            {
+                this.ClaimAdsReward(model);
+            }
+            else if (model.RewardStatus == RewardStatus.Unlocked)
+            {
+                this.ClaimReward();
+            }
+        }
+
+        private void ClaimAdsReward(UITemplateDailyRewardItemModel model)
+        {
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(this.gameEventsSetting.DailyRewardConfig.dailyRewardAdPlacementId, () =>
+            {
+                this.uiTemplateDailyRewardController.UnlockDailyReward(model.DailyRewardRecord.Day);
+                this.listRewardModel[model.DailyRewardRecord.Day - 1].RewardStatus = RewardStatus.Unlocked;
+
+                this.ClaimReward();
+            });
+        }
+
+        private void SetUpItemCanGetWithAds()
+        {
+            foreach (var model in this.listRewardModel)
+            {
+                if (model.RewardStatus == RewardStatus.Locked)
+                {
+                    model.IsGetWithAds = true;
+                    break;
+                }
+            }
+        }
 
         private void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels) { this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget(); }
 
@@ -99,28 +143,31 @@
         {
             this.View.btnClaim.gameObject.SetActive(false);
             this.View.btnClose.gameObject.SetActive(true);
-            var claimAbleItemRectTransforms = new Dictionary<int, RectTransform>();
+            var dayToView = new Dictionary<int, RectTransform>();
             for (var i = 0; i < this.listRewardModel.Count; i++)
             {
                 if (this.listRewardModel[i].RewardStatus == RewardStatus.Unlocked)
                 {
-                    claimAbleItemRectTransforms.Add(i, this.View.dailyRewardAdapter.GetPresenterAtIndex(i).View.transform as RectTransform);
+                    dayToView.Add(this.listRewardModel[i].DailyRewardRecord.Day, this.View.dailyRewardAdapter.GetPresenterAtIndex(i).View.transform as RectTransform);
                 }
             }
 
-            this.uiTemplateDailyRewardController.ClaimAllAvailableReward(claimAbleItemRectTransforms);
+            this.uiTemplateDailyRewardController.ClaimAllAvailableReward(dayToView);
             this.RefreshAdapter();
             this.logService.Log($"Do Animation Claim Reward");
             this.popupModel.OnClaimFinish?.Invoke();
 
-            foreach (var uiTemplateDailyRewardItemModel in this.listRewardModel)
+            for (var i = 0; i < this.listRewardModel.Count; i++)
             {
-                if (uiTemplateDailyRewardItemModel.RewardStatus == RewardStatus.Unlocked)
+                if (this.listRewardModel[i].RewardStatus == RewardStatus.Unlocked)
                 {
-                    uiTemplateDailyRewardItemModel.RewardStatus = RewardStatus.Claimed;
+                    var presenter = this.View.dailyRewardAdapter.GetPresenterAtIndex(i);
+                    presenter.ClaimReward();
+                    this.listRewardModel[i].RewardStatus = RewardStatus.Claimed;
                 }
             }
 
+            this.SetUpItemCanGetWithAds();
             this.RefreshAdapter();
 
             this.AutoClosePopup();

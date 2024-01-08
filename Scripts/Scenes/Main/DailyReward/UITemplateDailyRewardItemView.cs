@@ -1,27 +1,22 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward
 {
     using System;
-    using System.Linq;
-    using Cysharp.Threading.Tasks;
-    using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
-    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
 
     public class UITemplateDailyRewardItemModel
     {
-        public Action<int>                 OnClick           { get; set; }
-        public RewardStatus                RewardStatus      { get; set; }
-        public UITemplateDailyRewardRecord DailyRewardRecord { get; set; }
+        public Action<UITemplateDailyRewardItemPresenter> OnClick           { get; set; }
+        public RewardStatus                               RewardStatus      { get; set; }
+        public UITemplateDailyRewardRecord                DailyRewardRecord { get; set; }
+        public bool                                       IsGetWithAds      { get; set; }
 
-        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord, RewardStatus rewardStatus, Action<int> click)
+        public UITemplateDailyRewardItemModel(UITemplateDailyRewardRecord dailyRewardRecord, RewardStatus rewardStatus, Action<UITemplateDailyRewardItemPresenter> click)
         {
             this.DailyRewardRecord = dailyRewardRecord;
             this.RewardStatus      = rewardStatus;
@@ -31,16 +26,21 @@
 
     public class UITemplateDailyRewardItemView : TViewMono
     {
+        public Button          btnClaim;
         public Image           imgBackground;
-        public Image           imgReward;
-        public GameObject      objLockReward;
-        public GameObject      objClaimed;
-        public TextMeshProUGUI txtValue;
-        public TextMeshProUGUI txtDayLabel;
-        public GameObject      objClaimedCheckIcon;
         public Sprite          sprBgNormal;
         public Sprite          sprBgCurrentDay;
-        public Button          btnClaim;
+        public TextMeshProUGUI txtDayLabel;
+
+        [Header("Reward")] public Image           imgReward;
+        public                    TextMeshProUGUI txtValue;
+
+        [Header("Lock")] public GameObject objLockReward;
+
+        [Header("Claimed")] public GameObject objClaimed;
+        public                     GameObject objClaimedCheckIcon;
+
+        [Header("Ads")] public GameObject objClaimByAds;
 
         public Action OnClickClaimButton { get; set; }
 
@@ -70,20 +70,27 @@
 
     public class UITemplateDailyRewardItemPresenter : BaseUIItemPresenter<UITemplateDailyRewardItemView, UITemplateDailyRewardItemModel>
     {
+        public UITemplateDailyRewardItemModel Model { get; set; }
+
         #region inject
 
-        private readonly ILogService                         logService;
         private readonly UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper;
 
         #endregion
 
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, ILogService logService,
-            UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper) : base(gameAssets)
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper) : base(gameAssets)
         {
-            this.logService                = logService;
             this.dailyRewardItemViewHelper = dailyRewardItemViewHelper;
         }
 
-        public override void BindData(UITemplateDailyRewardItemModel param) { this.dailyRewardItemViewHelper.BindDataItem(param, this.View); }
+        public override void BindData(UITemplateDailyRewardItemModel param)
+        {
+            this.Model = param;
+            this.dailyRewardItemViewHelper.BindDataItem(param, this.View, this);
+        }
+
+        public override void Dispose() { this.dailyRewardItemViewHelper.DisposeItem(this.View); }
+
+        public void ClaimReward() { this.dailyRewardItemViewHelper.OnClaimReward(); }
     }
 }

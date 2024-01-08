@@ -17,7 +17,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     public class UITemplateDailyRewardService : IInitializable
     {
         private const string FirstOpenAppKey = "FirstOpenApp";
-        private const string NotificationId  = "daily_reward";
 
         #region inject
 
@@ -66,21 +65,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             if (!this.canShowReward && !force)
                 return;
 
-            if (this.IsFirstOpenGame())
+            if (!this.gameEventsSetting.DailyRewardConfig.showOnFirstOpen && this.IsFirstOpenGame())
             {
                 onClaimReward?.Invoke();
                 this.canShowReward = false;
-                this.notificationServices.SetupCustomNotification(NotificationId);
                 return;
             }
 
             if (!this.uiTemplateDailyRewardController.CanClaimReward && !force)
                 return;
 
+            this.notificationServices.SetupCustomNotification(this.gameEventsSetting.DailyRewardConfig.notificationId);
             this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()
             {
                 OnClaimFinish       = onClaimReward,
-                IsGetNextDayWithAds = this.gameEventsSetting.DailyRewardConfig.isGetNextDayWithAds
+                IsGetNextDayWithAds = this.gameEventsSetting.DailyRewardConfig.getNextDayWithAds
             });
         }
 

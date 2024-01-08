@@ -50,7 +50,7 @@
                 view.objClaimByAds.SetActive(model.RewardStatus == RewardStatus.Locked && model.IsGetWithAds);
             }
 
-            view.objLockReward.SetActive(model.RewardStatus == RewardStatus.Locked && !model.IsGetWithAds && !model.DailyRewardRecord.SpoilReward);
+            view.objLockReward.SetActive(model.RewardStatus == RewardStatus.Locked && !model.DailyRewardRecord.SpoilReward);
 
             //Only play if the items were not claimed
             if (!view.objClaimed.activeSelf)
@@ -63,8 +63,8 @@
             }
         }
 
-        public virtual void DisposeItem(UITemplateDailyRewardItemView view) { }
+        public virtual void DisposeItem(UITemplateDailyRewardItemPresenter presenter) { }
 
-        public virtual void OnClaimReward() { }
+        public virtual void OnClaimReward(UITemplateDailyRewardItemPresenter presenter) { }
     }
 }

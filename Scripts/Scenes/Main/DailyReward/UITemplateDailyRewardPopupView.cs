@@ -84,13 +84,13 @@
             this.popupModel = param;
 
             this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values
-                .Select(uiTemplateDailyRewardRecord =>
-                    new UITemplateDailyRewardItemModel(
-                        uiTemplateDailyRewardRecord,
-                        this.uiTemplateDailyRewardController.GetDateRewardStatus(uiTemplateDailyRewardRecord.Day),
-                        this.OnItemClick
-                    )
-                ).ToList();
+                                       .Select(uiTemplateDailyRewardRecord =>
+                                           new UITemplateDailyRewardItemModel(
+                                               uiTemplateDailyRewardRecord,
+                                               this.uiTemplateDailyRewardController.GetDateRewardStatus(uiTemplateDailyRewardRecord.Day),
+                                               this.OnItemClick
+                                           )
+                                       ).ToList();
 
             this.SetUpItemCanGetWithAds();
             this.InitListDailyReward(this.listRewardModel);
@@ -153,22 +153,25 @@
             }
 
             this.uiTemplateDailyRewardController.ClaimAllAvailableReward(dayToView);
-            this.RefreshAdapter();
             this.logService.Log($"Do Animation Claim Reward");
             this.popupModel.OnClaimFinish?.Invoke();
+
+            var claimedPresenter = new List<UITemplateDailyRewardItemPresenter>();
 
             for (var i = 0; i < this.listRewardModel.Count; i++)
             {
                 if (this.listRewardModel[i].RewardStatus == RewardStatus.Unlocked)
                 {
-                    var presenter = this.View.dailyRewardAdapter.GetPresenterAtIndex(i);
-                    presenter.ClaimReward();
+                    claimedPresenter.Add(this.View.dailyRewardAdapter.GetPresenterAtIndex(i));
                     this.listRewardModel[i].RewardStatus = RewardStatus.Claimed;
                 }
             }
 
             this.SetUpItemCanGetWithAds();
             this.RefreshAdapter();
+
+            // call claim reward after refresh adapter for animation
+            claimedPresenter.ForEach(presenter => presenter.ClaimReward());
 
             this.AutoClosePopup();
         }

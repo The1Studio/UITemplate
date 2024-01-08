@@ -89,8 +89,8 @@
             this.dailyRewardItemViewHelper.BindDataItem(param, this.View, this);
         }
 
-        public override void Dispose() { this.dailyRewardItemViewHelper.DisposeItem(this.View); }
+        public override void Dispose() { this.dailyRewardItemViewHelper.DisposeItem(this); }
 
-        public void ClaimReward() { this.dailyRewardItemViewHelper.OnClaimReward(); }
+        public void ClaimReward() { this.dailyRewardItemViewHelper.OnClaimReward(this); }
     }
 }

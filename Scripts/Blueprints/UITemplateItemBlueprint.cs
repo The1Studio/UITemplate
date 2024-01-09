@@ -13,11 +13,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     [CsvHeaderKey("Id")]
     public class UITemplateItemRecord
     {
-        public string                        Id            { get; [Preserve] private set; }
-        public string                        Name          { get; [Preserve] private set; }
-        public string                        Description   { get; [Preserve] private set; }
-        public string                        ImageAddress  { get; [Preserve] private set; }
-        public string                        Category      { get; [Preserve] private set; }
-        public bool                          IsDefaultItem { get; [Preserve] private set; }
+        public string Id            { get; set; }
+        public string Name          { get; set; }
+        public string Description   { get; set; }
+        public string ImageAddress  { get; set; }
+        public string Category      { get; set; }
+        public bool   IsDefaultItem { get; set; }
+        public string AnimationName { get; set; }
+        
     }
 }

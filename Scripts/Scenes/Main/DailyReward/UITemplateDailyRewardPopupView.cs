@@ -42,7 +42,7 @@
         private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
         private readonly UITemplateLevelDataController   levelDataController;
         private readonly UITemplateAdServiceWrapper      uiTemplateAdServiceWrapper;
-        private readonly GameEventsSetting               gameEventsSetting;
+        private readonly GameFeaturesSetting             gameFeaturesSetting;
 
         #endregion
 
@@ -59,7 +59,7 @@
             UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
             UITemplateLevelDataController levelDataController,
             UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            GameEventsSetting gameEventsSetting
+            GameFeaturesSetting gameFeaturesSetting
         ) : base(signalBus, logger)
         {
             this.diContainer                     = diContainer;
@@ -67,7 +67,7 @@
             this.uiTemplateDailyRewardBlueprint  = uiTemplateDailyRewardBlueprint;
             this.levelDataController             = levelDataController;
             this.uiTemplateAdServiceWrapper      = uiTemplateAdServiceWrapper;
-            this.gameEventsSetting               = gameEventsSetting;
+            this.gameFeaturesSetting             = gameFeaturesSetting;
         }
 
         protected override void OnViewReady()
@@ -84,13 +84,13 @@
             this.popupModel = param;
 
             this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values
-                                       .Select(uiTemplateDailyRewardRecord =>
-                                           new UITemplateDailyRewardItemModel(
-                                               uiTemplateDailyRewardRecord,
-                                               this.uiTemplateDailyRewardController.GetDateRewardStatus(uiTemplateDailyRewardRecord.Day),
-                                               this.OnItemClick
-                                           )
-                                       ).ToList();
+                .Select(uiTemplateDailyRewardRecord =>
+                    new UITemplateDailyRewardItemModel(
+                        uiTemplateDailyRewardRecord,
+                        this.uiTemplateDailyRewardController.GetDateRewardStatus(uiTemplateDailyRewardRecord.Day),
+                        this.OnItemClick
+                    )
+                ).ToList();
 
             this.SetUpItemCanGetWithAds();
             this.InitListDailyReward(this.listRewardModel);
@@ -116,7 +116,7 @@
 
         private void ClaimAdsReward(UITemplateDailyRewardItemModel model)
         {
-            this.uiTemplateAdServiceWrapper.ShowRewardedAd(this.gameEventsSetting.DailyRewardConfig.dailyRewardAdPlacementId, () =>
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(this.gameFeaturesSetting.DailyRewardConfig.dailyRewardAdPlacementId, () =>
             {
                 this.uiTemplateDailyRewardController.UnlockDailyReward(model.DailyRewardRecord.Day);
                 this.listRewardModel[model.DailyRewardRecord.Day - 1].RewardStatus = RewardStatus.Unlocked;

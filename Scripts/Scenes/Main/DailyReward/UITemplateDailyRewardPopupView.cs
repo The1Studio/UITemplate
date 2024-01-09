@@ -29,6 +29,7 @@
     public class UITemplateDailyRewardPopupModel
     {
         public Action OnClaimFinish;
+        public bool   IsAutoCloseAfterClaim;
         public bool   IsGetNextDayWithAds;
     }
 
@@ -172,12 +173,13 @@
 
             // call claim reward after refresh adapter for animation
             claimedPresenter.ForEach(presenter => presenter.ClaimReward());
-
+            this.OnClaimReward();
             this.AutoClosePopup();
         }
-
+        protected virtual void OnClaimReward(){}
         private void AutoClosePopup()
         {
+            if(!this.Model.IsAutoCloseAfterClaim) return;
             if (this.Model.IsGetNextDayWithAds) return;
 
             UniTask.Delay(

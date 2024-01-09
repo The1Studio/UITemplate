@@ -79,7 +79,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()
             {
                 OnClaimFinish       = onClaimReward,
-                IsGetNextDayWithAds = this.gameFeaturesSetting.DailyRewardConfig.getNextDayWithAds
+                IsGetNextDayWithAds = this.gameFeaturesSetting.DailyRewardConfig.getNextDayWithAds,
+                IsAutoCloseAfterClaim = this.gameFeaturesSetting.DailyRewardConfig.isAutoCloseAfterClaim,
             });
         }
 

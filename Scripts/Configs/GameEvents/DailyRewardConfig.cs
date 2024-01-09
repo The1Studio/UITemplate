@@ -12,6 +12,7 @@
         [ShowIf(nameof(isCustomScreenTrigger))]
         public List<string> screenTriggerIds;
 
+        public bool isAutoCloseAfterClaim;
         public bool getNextDayWithAds;
         public bool showOnFirstOpen;
 

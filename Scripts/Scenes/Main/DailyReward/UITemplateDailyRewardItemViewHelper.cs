@@ -36,7 +36,7 @@
             view.imgReward.sprite     = rewardSprite;
             view.txtValue.text        = rewardValue;
             view.txtDayLabel.text     = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1 ? TodayLabel : $"{PrefixLabel}{model.DailyRewardRecord.Day}";
-            view.imgBackground.sprite = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1 ? view.sprBgCurrentDay : view.sprBgNormal;
+            if (view.imgBackground != null) view.imgBackground.sprite = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1 ? view.sprBgCurrentDay : view.sprBgNormal;
 
             view.objClaimed.SetActive(model.RewardStatus == RewardStatus.Claimed);
             view.txtValue.gameObject.SetActive(model.DailyRewardRecord.ShowValue);

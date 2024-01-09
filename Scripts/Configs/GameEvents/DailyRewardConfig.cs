@@ -15,7 +15,9 @@
         public bool getNextDayWithAds;
         public bool showOnFirstOpen;
 
-        [FoldoutGroup("Custom Id")] public string dailyRewardAdPlacementId = "DailyReward";
-        [FoldoutGroup("Custom Id")] public string notificationId           = "daily_reward";
+        [FoldoutGroup("Custom Id")] [ShowIf(nameof(getNextDayWithAds))]
+        public string dailyRewardAdPlacementId = "DailyReward";
+
+        [FoldoutGroup("Custom Id")] public string notificationId = "daily_reward";
     }
 }

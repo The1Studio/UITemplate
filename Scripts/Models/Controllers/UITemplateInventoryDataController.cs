@@ -141,8 +141,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             if (startAnimationRect != null)
             {
                 var flyingObject =  this.uiTemplateCurrencyBlueprint.GetDataById(id).FlyingObject;
-                var currencyView = this.screenManager.RootUICanvas.GetComponentsInChildren<UITemplateCurrencyView>().First(viewTarget => viewTarget.CurrencyKey.Equals(id));
-                await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(startAnimationRect,prefabName:flyingObject, target:currencyView.gameObject.transform as RectTransform);
+                var currencyView = this.screenManager.RootUICanvas.GetComponentsInChildren<UITemplateCurrencyView>().FirstOrDefault(viewTarget => viewTarget.CurrencyKey.Equals(id));
+                if (currencyView != null)
+                {
+                    await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(startAnimationRect, prefabName: flyingObject, target: currencyView.gameObject.transform as RectTransform);
+                }
             }
 
             var lastValue = this.GetCurrencyValue(id);

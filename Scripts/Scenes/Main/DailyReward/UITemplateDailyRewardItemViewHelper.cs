@@ -50,6 +50,7 @@
                 view.objClaimByAds.SetActive(model.RewardStatus == RewardStatus.Locked && model.IsGetWithAds);
             }
 
+            view.objReward.gameObject.SetActive(!(model.RewardStatus == RewardStatus.Locked && !model.DailyRewardRecord.SpoilReward));
             view.objLockReward.SetActive(model.RewardStatus == RewardStatus.Locked && !model.DailyRewardRecord.SpoilReward);
 
             //Only play if the items were not claimed

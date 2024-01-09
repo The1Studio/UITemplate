@@ -32,7 +32,8 @@
         public Sprite          sprBgCurrentDay;
         public TextMeshProUGUI txtDayLabel;
 
-        [Header("Reward")] public Image           imgReward;
+        [Header("Reward")] public GameObject      objReward;
+        public                    Image           imgReward;
         public                    TextMeshProUGUI txtValue;
 
         [Header("Lock")] public GameObject objLockReward;

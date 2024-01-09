@@ -667,7 +667,6 @@ MonoBehaviour:
   sprBgNormal: {fileID: 0}
   sprBgCurrentDay: {fileID: 0}
   txtDayLabel: {fileID: 3779784900321886889}
-  objReward: {fileID: 7379592661539277286}
   imgReward: {fileID: 7348697387105034150}
   txtValue: {fileID: 8216424852765404343}
   objLockReward: {fileID: 7187748748547519074}

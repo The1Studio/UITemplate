@@ -13,17 +13,21 @@
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
+    using UnityEngine.Serialization;
     using UnityEngine.UI;
     using Zenject;
 
     public class UITemplateDailyRewardPopupView : BaseView
     {
-        public UITemplateDailyRewardAdapter dailyRewardAdapter;
-        public Button                       btnClaim;
-        public Button                       btnClose;
+        [FormerlySerializedAs("dailyRewardItemAdapter")] [FormerlySerializedAs("dailyRewardAdapter")]
+        public UITemplateDailyRewardPackAdapter dailyRewardPackAdapter;
+
+        public Button btnClaim;
+        public Button btnClose;
     }
 
     public class UITemplateDailyRewardPopupModel
@@ -48,7 +52,7 @@
 
         private int                                  userLoginDay;
         private UITemplateDailyRewardPopupModel      popupModel;
-        private List<UITemplateDailyRewardItemModel> listRewardModel;
+        private List<UITemplateDailyRewardPackModel> listRewardModel;
         private CancellationTokenSource              closeViewCts;
 
         public UITemplateDailyRewardPopupPresenter(
@@ -85,7 +89,7 @@
 
             this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values
                 .Select(uiTemplateDailyRewardRecord =>
-                    new UITemplateDailyRewardItemModel(
+                    new UITemplateDailyRewardPackModel(
                         uiTemplateDailyRewardRecord,
                         this.uiTemplateDailyRewardController.GetDateRewardStatus(uiTemplateDailyRewardRecord.Day),
                         this.OnItemClick
@@ -101,7 +105,7 @@
             return UniTask.CompletedTask;
         }
 
-        private void OnItemClick(UITemplateDailyRewardItemPresenter presenter)
+        private void OnItemClick(UITemplateDailyRewardPackPresenter presenter)
         {
             var model = presenter.Model;
             if (model.RewardStatus == RewardStatus.Locked && model.IsGetWithAds)
@@ -114,7 +118,7 @@
             }
         }
 
-        private void ClaimAdsReward(UITemplateDailyRewardItemModel model)
+        private void ClaimAdsReward(UITemplateDailyRewardPackModel model)
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(this.gameFeaturesSetting.DailyRewardConfig.dailyRewardAdPlacementId, () =>
             {
@@ -137,7 +141,7 @@
             }
         }
 
-        private void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels) { this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget(); }
+        private void InitListDailyReward(List<UITemplateDailyRewardPackModel> dailyRewardModels) { this.View.dailyRewardPackAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget(); }
 
         private void ClaimReward()
         {
@@ -148,7 +152,7 @@
             {
                 if (this.listRewardModel[i].RewardStatus == RewardStatus.Unlocked)
                 {
-                    dayToView.Add(this.listRewardModel[i].DailyRewardRecord.Day, this.View.dailyRewardAdapter.GetPresenterAtIndex(i).View.transform as RectTransform);
+                    dayToView.Add(this.listRewardModel[i].DailyRewardRecord.Day, this.View.dailyRewardPackAdapter.GetPresenterAtIndex(i).View.transform as RectTransform);
                 }
             }
 
@@ -156,13 +160,13 @@
             this.logService.Log($"Do Animation Claim Reward");
             this.popupModel.OnClaimFinish?.Invoke();
 
-            var claimedPresenter = new List<UITemplateDailyRewardItemPresenter>();
+            var claimedPresenter = new List<UITemplateDailyRewardPackPresenter>();
 
             for (var i = 0; i < this.listRewardModel.Count; i++)
             {
                 if (this.listRewardModel[i].RewardStatus == RewardStatus.Unlocked)
                 {
-                    claimedPresenter.Add(this.View.dailyRewardAdapter.GetPresenterAtIndex(i));
+                    claimedPresenter.Add(this.View.dailyRewardPackAdapter.GetPresenterAtIndex(i));
                     this.listRewardModel[i].RewardStatus = RewardStatus.Claimed;
                 }
             }
@@ -186,7 +190,7 @@
             ).ContinueWith(this.CloseViewAsync).Forget();
         }
 
-        private void RefreshAdapter() { this.View.dailyRewardAdapter.Refresh(); }
+        private void RefreshAdapter() { this.View.dailyRewardPackAdapter.Refresh(); }
 
         public override void Dispose()
         {

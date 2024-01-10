@@ -102,9 +102,9 @@
         public void CheckAllBadgeNotifyStatus()
         {
             var currentScreenPresenter = this.screenManager.CurrentActiveScreen.Value;
-            if (this.screenTypeToBadgeButtons.TryGetValue(currentScreenPresenter.GetType(), out var presenter))
+            if (this.screenTypeToBadgeButtons.TryGetValue(currentScreenPresenter.GetType(), out var badgeNotifyButtonViews))
             {
-                presenter.ForEach(this.SetActiveBadge);
+                badgeNotifyButtonViews.ForEach(this.SetActiveBadge);
             }
         }
 

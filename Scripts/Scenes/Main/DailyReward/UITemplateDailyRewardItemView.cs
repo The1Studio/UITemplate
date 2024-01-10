@@ -93,9 +93,10 @@
             this.View.txtDayLabel.text = this.model.DailyRewardRecord.Day == this.dailyRewardController.GetCurrentDayIndex() + 1
                 ? TodayLabel
                 : $"{PrefixLabel}{this.model.DailyRewardRecord.Day}";
-            this.View.imgBackground.sprite = this.model.DailyRewardRecord.Day == this.dailyRewardController.GetCurrentDayIndex() + 1
-                ? this.View.sprBgCurrentDay
-                : this.View.sprBgNormal;
+            if(this.View.imgBackground != null)
+                this.View.imgBackground.sprite = this.model.DailyRewardRecord.Day == this.dailyRewardController.GetCurrentDayIndex() + 1
+                    ? this.View.sprBgCurrentDay
+                    : this.View.sprBgNormal;
             this.View.objLockReward.SetActive(this.model.RewardStatus == RewardStatus.Locked);
             this.View.objClaimed.SetActive(this.model.RewardStatus == RewardStatus.Claimed);
 

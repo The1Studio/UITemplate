@@ -26,6 +26,7 @@
         private Dictionary<Type, HashSet<UITemplateBadgeNotifyButtonView>> screenTypeToBadgeButtons    = new();
         private Dictionary<UITemplateBadgeNotifyButtonView, Type>          badgeButtonToNextScreenType = new();
         private Dictionary<UITemplateBadgeNotifyButtonView, Func<bool>>    badgeButtonToConditionFunc  = new();
+        private IScreenPresenter                                           currentPresenter;
 
         public UITemplateBadgeNotifySystem(IScreenManager screenManager, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, SignalBus signalBus)
         {
@@ -99,20 +100,22 @@
 
         #endregion
 
-        public void CheckAllBadgeNotifyStatus()
+        public void CheckAllBadgeNotifyStatus(bool force = false)
         {
             var currentScreenPresenter = this.screenManager.CurrentActiveScreen.Value;
-            if (this.screenTypeToBadgeButtons.TryGetValue(currentScreenPresenter.GetType(), out var badgeNotifyButtonViews))
-            {
-                badgeNotifyButtonViews.ForEach(this.SetActiveBadge);
-            }
+            if (!force && currentScreenPresenter.Equals(this.currentPresenter)) return;
+            if (!this.screenTypeToBadgeButtons.TryGetValue(currentScreenPresenter.GetType(), out var badgeNotifyButtonViews)) return;
+            this.currentPresenter = currentScreenPresenter;
+            badgeNotifyButtonViews.ForEach(this.SetActiveBadge);
         }
+
+        private void CheckAllBadgeNotifyStatusWhenScreenStatusChange() => this.CheckAllBadgeNotifyStatus(true);
 
         public void Initialize()
         {
-            this.signalBus.Subscribe<ScreenShowSignal>(this.CheckAllBadgeNotifyStatus);
-            this.signalBus.Subscribe<ScreenCloseSignal>(this.CheckAllBadgeNotifyStatus);
-            this.signalBus.Subscribe<PopupHiddenSignal>(this.CheckAllBadgeNotifyStatus);
+            this.signalBus.Subscribe<ScreenShowSignal>(this.CheckAllBadgeNotifyStatusWhenScreenStatusChange);
+            this.signalBus.Subscribe<ScreenCloseSignal>(this.CheckAllBadgeNotifyStatusWhenScreenStatusChange);
+            this.signalBus.Subscribe<PopupHiddenSignal>(this.CheckAllBadgeNotifyStatusWhenScreenStatusChange);
         }
     }
 }

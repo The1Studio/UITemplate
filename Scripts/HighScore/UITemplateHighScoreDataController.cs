@@ -8,8 +8,14 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using Zenject;
 
+    /// <summary>
+    ///     Control local high score data
+    /// </summary>
     public class UITemplateHighScoreDataController : IUITemplateControllerData
     {
+        /// <summary>
+        ///     Default Key if you don't have multiple GameModes, Characters, ...
+        /// </summary>
         public const string DEFAULT_KEY = "DEFAULT";
 
         #region Constructor
@@ -25,6 +31,16 @@
 
         #endregion
 
+        /// <summary>
+        ///     Submit score. If a new high score reached, fire <see cref="NewHighScoreSignal"/>.
+        /// </summary>
+        /// <param name="key">
+        ///     Use this to separate GameModes, Characters, ...
+        ///     If you don't have any, use <see cref="DEFAULT_KEY"/> or <see cref="SubmitScore(int)"/>.
+        /// </param>
+        /// <param name="newHighScore">
+        ///     Possible new high score
+        /// </param>
         public void SubmitScore(string key, int newHighScore)
         {
             Enum.GetValues(typeof(HighScoreType)).Cast<HighScoreType>().ForEach(type =>
@@ -34,10 +50,21 @@
                 if (newHighScore <= oldHighScore) return;
 
                 this.highScoreData[key][type][time] = newHighScore;
-                this.signalBus.Fire(new NewHighScoreSignal(type, oldHighScore, newHighScore));
+                this.signalBus.Fire(new NewHighScoreSignal(key, type, oldHighScore, newHighScore));
             });
         }
 
+        /// <summary>
+        ///     Get high score
+        /// </summary>
+        /// <param name="key">
+        ///     Use this to separate GameModes, Characters, ...
+        ///     If you don't have any, use <see cref="DEFAULT_KEY"/> or <see cref="GetHighScore(HighScoreType)"/>.
+        /// </param>
+        /// <param name="type">
+        ///     <see cref="HighScoreType"/>
+        /// </param>
+        /// <returns>High score</returns>
         public int GetHighScore(string key, HighScoreType type)
         {
             return this.highScoreData[key][type][GetCurrentTime(type)];
@@ -55,8 +82,21 @@
 
         #region Default
 
+        /// <summary>
+        ///     Submit score. If a new high score reached, fire <see cref="NewHighScoreSignal" />.
+        /// </summary>
+        /// <param name="newHighScore">
+        ///     Possible new high score
+        /// </param>
         public void SubmitScore(int newHighScore) => this.SubmitScore(DEFAULT_KEY, newHighScore);
 
+        /// <summary>
+        ///     Get high score
+        /// </summary>
+        /// <param name="type">
+        ///     <see cref="HighScoreType"/>
+        /// </param>
+        /// <returns>High score</returns>
         public int GetHighScore(HighScoreType type) => this.GetHighScore(DEFAULT_KEY, type);
 
         #endregion

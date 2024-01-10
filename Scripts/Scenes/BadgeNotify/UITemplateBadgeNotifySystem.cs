@@ -100,16 +100,16 @@
 
         #endregion
 
-        public void CheckAllBadgeNotifyStatus(bool force = false)
+        public void CheckAllBadgeNotifyStatus(bool force = true)
         {
             var currentScreenPresenter = this.screenManager.CurrentActiveScreen.Value;
             if (!force && currentScreenPresenter.Equals(this.currentPresenter)) return;
-            if (!this.screenTypeToBadgeButtons.TryGetValue(currentScreenPresenter.GetType(), out var badgeNotifyButtonViews)) return;
             this.currentPresenter = currentScreenPresenter;
+            if (!this.screenTypeToBadgeButtons.TryGetValue(currentScreenPresenter.GetType(), out var badgeNotifyButtonViews)) return;
             badgeNotifyButtonViews.ForEach(this.SetActiveBadge);
         }
 
-        private void CheckAllBadgeNotifyStatusWhenScreenStatusChange() => this.CheckAllBadgeNotifyStatus(true);
+        private void CheckAllBadgeNotifyStatusWhenScreenStatusChange() => this.CheckAllBadgeNotifyStatus(false);
 
         public void Initialize()
         {

@@ -111,8 +111,8 @@
         public void Initialize()
         {
             this.signalBus.Subscribe<ScreenShowSignal>(this.CheckAllBadgeNotifyStatus);
-            this.signalBus.Subscribe<ScreenHideSignal>(this.CheckAllBadgeNotifyStatus);
             this.signalBus.Subscribe<ScreenCloseSignal>(this.CheckAllBadgeNotifyStatus);
+            this.signalBus.Subscribe<PopupHiddenSignal>(this.CheckAllBadgeNotifyStatus);
         }
     }
 }

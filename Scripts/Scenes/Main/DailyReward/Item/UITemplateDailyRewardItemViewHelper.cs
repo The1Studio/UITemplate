@@ -1,16 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item
 {
     using GameFoundation.Scripts.AssetLibrary;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine;
 
     // Rebind this class to your own item view
     public class UITemplateDailyRewardItemViewHelper
     {
-        private const string TodayLabel  = "TODAY";
-        private const string PrefixLabel = "DAY ";
-
         protected readonly IGameAssets                     GameAssets;
         protected readonly UITemplateDailyRewardController DailyRewardController;
 
@@ -20,18 +17,20 @@
             this.DailyRewardController = dailyRewardController;
         }
 
-        public virtual async void BindDataItem(RewardRecord model, UITemplateDailyRewardItemView view, UITemplateDailyRewardItemPresenter presenter)
+        public virtual async void BindDataItem(UITemplateDailyRewardItemModel model, UITemplateDailyRewardItemView view, UITemplateDailyRewardItemPresenter presenter)
         {
-            var rewardSprite = this.GameAssets.ForceLoadAsset<Sprite>($"{model.RewardImage}");
-            view.imgReward.sprite = rewardSprite;
-            view.txtValue.text    = $"{model.RewardValue}";
+            view.ImgReward.gameObject.SetActive(!string.IsNullOrEmpty(model.RewardRecord.RewardImage));
+            if (!string.IsNullOrEmpty(model.RewardRecord.RewardImage))
+            {
+                var rewardSprite = this.GameAssets.ForceLoadAsset<Sprite>($"{model.RewardRecord.RewardImage}");
+                view.ImgReward.sprite = rewardSprite;
+            }
 
-            view.txtValue.gameObject.SetActive(model.ShowValue);
-
-            view.UpdateIconRectTransform(model.Position, model.Size);
-
-            view.objReward.gameObject.SetActive(!model.SpoilReward);
-            view.objLockReward.SetActive(!model.SpoilReward);
+            view.TxtValue.text = $"{model.RewardRecord.RewardValue}";
+            view.TxtValue.gameObject.SetActive(model.RewardRecord.ShowValue);
+            view.UpdateIconRectTransform(model.RewardRecord.Position, model.RewardRecord.Size);
+            view.ObjReward.gameObject.SetActive(model.RewardRecord.SpoilReward);
+            view.ObjLock.gameObject.SetActive(!model.RewardRecord.SpoilReward && model.RewardStatus == RewardStatus.Locked);
         }
 
         public virtual void DisposeItem(UITemplateDailyRewardItemPresenter presenter) { }

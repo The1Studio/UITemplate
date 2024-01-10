@@ -33,7 +33,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         [BoxGroup("View")] [SerializeField] private UITemplateDailyRewardItemAdapter dailyRewardItemAdapter;
         [BoxGroup("View")] [SerializeField] private Button                           btnClaim;
         [BoxGroup("View")] [SerializeField] private TextMeshProUGUI                  txtDayLabel;
-        [BoxGroup("View")] [SerializeField] private GameObject                       objLockReward;
         [BoxGroup("View")] [SerializeField] private GameObject                       objClaimed;
         [BoxGroup("View")] [SerializeField] private GameObject                       objClaimedCheckIcon;
         [BoxGroup("View")] [SerializeField] private GameObject                       objClaimByAds;
@@ -44,7 +43,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         public UITemplateDailyRewardItemAdapter DailyRewardItemAdapter => this.dailyRewardItemAdapter;
         public Button                           BtnClaim               => this.btnClaim;
         public TextMeshProUGUI                  TxtDayLabel            => this.txtDayLabel;
-        public GameObject                       ObjLockReward          => this.objLockReward;
         public GameObject                       ObjClaimed             => this.objClaimed;
         public GameObject                       ObjClaimedCheckIcon    => this.objClaimedCheckIcon;
         public GameObject                       ObjClaimByAds          => this.objClaimByAds;
@@ -85,8 +83,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         {
             this.Model = param;
 
-            _ = this.View.DailyRewardItemAdapter.InitItemAdapter(param.DailyRewardRecord.Reward.Values.ToList(), this.diContainer);
             this.dailyRewardPackViewHelper.BindDataItem(param, this.View, this);
+            var models = param.DailyRewardRecord.Reward.Values
+                .Select(item => new UITemplateDailyRewardItemModel
+                {
+                    DailyRewardRecord = this.Model.DailyRewardRecord,
+                    RewardRecord = item,
+                    RewardStatus = this.Model.RewardStatus,
+                    IsGetWithAds = this.Model.IsGetWithAds
+                })
+                .ToList();
+            _ = this.View.DailyRewardItemAdapter.InitItemAdapter(models, this.diContainer);
         }
 
         public override void Dispose()

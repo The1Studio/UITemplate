@@ -6,10 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
     using GameFoundation.Scripts.AssetLibrary;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item;
     using UnityEngine;
 
-    // Rebind this class to your own item view
+    // Rebind this class to your own pack view
     public class UITemplateDailyRewardPackViewHelper
     {
         private const string TodayLabel  = "TODAY";
@@ -29,6 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
             view.TxtDayLabel.text = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1 ? TodayLabel : $"{PrefixLabel}{model.DailyRewardRecord.Day}";
             if (view.ImgBackground != null) view.ImgBackground.sprite = model.DailyRewardRecord.Day == this.DailyRewardController.GetCurrentDayIndex() + 1 ? view.SprBgCurrentDay : view.SprBgNormal;
 
+            view.ObjClaimedCheckIcon.SetActive(model.RewardStatus == RewardStatus.Claimed);
             view.ObjClaimed.SetActive(model.RewardStatus == RewardStatus.Claimed);
             view.OnClickClaimButton = () => model.OnClick?.Invoke(presenter);
 
@@ -36,9 +36,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
             {
                 view.ObjClaimByAds.SetActive(model.RewardStatus == RewardStatus.Locked && model.IsGetWithAds);
             }
-
-            view.DailyRewardItemAdapter.gameObject.SetActive(model.RewardStatus != RewardStatus.Locked);
-            view.ObjLockReward.SetActive(model.RewardStatus == RewardStatus.Locked);
 
             //Only play if the items were not claimed
             if (!view.ObjClaimed.activeSelf)

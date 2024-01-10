@@ -3,6 +3,7 @@
 #if UNITY_EDITOR
     using ServiceImplementation.Configs.Editor;
 #endif
+    using System;
     using Sirenix.OdinInspector;
     using UnityEngine;
 
@@ -28,6 +29,11 @@
         [OnValueChanged("OnChangeDailyReward")]
         public bool enableDailyReward;
         
+        [SerializeField] [ShowIf(nameof(enableDailyReward))] [BoxGroup("Daily Reward")]
+        private DailyRewardConfig dailyRewardConfig;
+
+        public DailyRewardConfig DailyRewardConfig => this.dailyRewardConfig;
+
         [OnValueChanged("OnChangeBadgeNotify")]
         public bool enableBadgeNotify;
 

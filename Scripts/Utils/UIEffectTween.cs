@@ -49,14 +49,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
         private bool HasUIEffectComponent()      => this.GetComponent<UIEffect>() != null;
         private bool HasUIHsvModifierComponent() => this.GetComponent<UIHsvModifier>() != null;
 
-        private void OnValidate()
+        private void Awake()
         {
             this.uiEffect      = this.GetComponent<UIEffect>();
             this.uiHsvModifier = this.GetComponent<UIHsvModifier>();
-        }
-
-        private void Awake()
-        {
+            
             if (this.uiEffect != null)
             {
                 if (this.uiEffect.effectMode != EffectMode.None && this.effectFactorShift)

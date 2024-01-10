@@ -83,14 +83,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return firstLockedDayIndex == -1 ? this.uiTemplateDailyRewardData.RewardStatus.Count - 1 : firstLockedDayIndex - 1;
         }
 
+        public void UnlockDailyReward(int day) => this.uiTemplateDailyRewardData.RewardStatus[day - 1] = RewardStatus.Unlocked;
+
         /// <param name="day"> start from 1</param>
         /// <returns></returns>
         public RewardStatus GetDateRewardStatus(int day) => this.uiTemplateDailyRewardData.RewardStatus[day - 1];
 
-        public async void ClaimAllAvailableReward(Dictionary<int, RectTransform> dailyIndexToRectTransform)
+        public async void ClaimAllAvailableReward(Dictionary<int, RectTransform> dayToView)
         {
-            var rewardsList = new List<Dictionary<string, int>>();
-
             var playAnimTask = UniTask.CompletedTask;
 
             for (var i = 0; i < this.uiTemplateDailyRewardData.RewardStatus.Count; i++)
@@ -99,22 +99,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 {
                     this.uiTemplateDailyRewardData.RewardStatus[i] = RewardStatus.Claimed;
 
-                    var reward = this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1).Reward;
+                    var reward = this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1);
 
-                    rewardsList.Add(reward);
+                    foreach (var item in reward.Reward)
+                    {
+                        this.uiTemplateInventoryDataController.AddGenericReward(item.Key, item.Value, dayToView[reward.Day]).Forget();
+                    }
                 }
             }
 
-            var sumReward = rewardsList.SelectMany(d => d).GroupBy(kvp => kvp.Key, (key, kvps) => new { Key = key, Value = kvps.Sum(kvp => kvp.Value) }).ToDictionary(x => x.Key, x => x.Value);
-
             await UniTask.WhenAny(playAnimTask);
-
-            var rewardIndex = 0;
-            foreach (var reward in sumReward)
-            {
-                this.uiTemplateInventoryDataController.AddGenericReward(reward.Key, reward.Value, dailyIndexToRectTransform[rewardIndex]);
-                rewardIndex += 1;
-            }
         }
 
         private void InitRewardStatus(DateTime currentTime)

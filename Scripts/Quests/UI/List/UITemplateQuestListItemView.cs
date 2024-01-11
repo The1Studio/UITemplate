@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
+    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Data;
     using TMPro;
@@ -12,13 +13,15 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
     public class UITemplateQuestListItemModel
     {
-        public UITemplateQuestPopupPresenter Parent { get; }
-        public UITemplateQuestController     Quest  { get; }
+        public UITemplateQuestPopupPresenter Parent        { get; }
+        public UITemplateQuestController     Quest         { get; }
+        public string                        ClaimSoundKey { get; }
 
-        public UITemplateQuestListItemModel(UITemplateQuestPopupPresenter parent, UITemplateQuestController quest)
+        public UITemplateQuestListItemModel(UITemplateQuestPopupPresenter parent, UITemplateQuestController quest, string claimSoundKey)
         {
-            this.Parent = parent;
-            this.Quest  = quest;
+            this.Parent        = parent;
+            this.Quest         = quest;
+            this.ClaimSoundKey = claimSoundKey;
         }
     }
 
@@ -43,11 +46,13 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
     public class UITemplateQuestListItemPresenter : BaseUIItemPresenter<UITemplateQuestListItemView, UITemplateQuestListItemModel>
     {
-        private readonly IGameAssets gameAssets;
+        private readonly IGameAssets   gameAssets;
+        private readonly IAudioService audioService;
 
-        public UITemplateQuestListItemPresenter(IGameAssets gameAssets) : base(gameAssets)
+        public UITemplateQuestListItemPresenter(IGameAssets gameAssets, IAudioService audioService) : base(gameAssets)
         {
-            this.gameAssets = gameAssets;
+            this.gameAssets   = gameAssets;
+            this.audioService = audioService;
         }
 
         private UITemplateQuestListItemModel Model { get; set; }
@@ -103,6 +108,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         private async void OnClickClaim()
         {
+            if(!string.IsNullOrEmpty(this.Model.ClaimSoundKey)) this.audioService.PlaySound(this.Model.ClaimSoundKey);
             var newStatus = this.Model.Quest.Progress.Status | QuestStatus.Collected;
             this.SetItemStatus(newStatus);
             await this.Model.Quest.CollectReward(this.View.ImgReward.rectTransform);

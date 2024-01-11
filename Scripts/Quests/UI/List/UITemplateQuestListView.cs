@@ -21,6 +21,7 @@
 
     public class UITemplateQuestListView : MonoBehaviour
     {
+        [SerializeField] private string claimSoundKey;
         [SerializeField] private UITemplateQuestListItemAdapter listItemAdapter;
 
         private void Awake()
@@ -46,7 +47,7 @@
                 .Where(quest => quest.Progress.Status.HasFlag(QuestStatus.Shown))
                 .OrderByDescending(quest => quest.Progress.Status is QuestStatus.NotCollected)
                 .ThenByDescending(quest => quest.Progress.Status is QuestStatus.NotCompleted)
-                .Select(quest => new UITemplateQuestListItemModel(this.Parent, quest))
+                .Select(quest => new UITemplateQuestListItemModel(this.Parent, quest, this.claimSoundKey))
                 .ToList();
             this.listItemAdapter.InitItemAdapter(models, this.diContainer).Forget();
         }

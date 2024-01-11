@@ -5,6 +5,10 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.Extension;
+    using TheOneStudio.UITemplate.Quests.Data;
+    #if THEONE_BADGE_NOTIFY
+    using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
+    #endif
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
@@ -25,12 +29,22 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         private readonly UITemplateQuestManager questManager;
 
+        #if THEONE_BADGE_NOTIFY
+        private readonly UITemplateBadgeNotifySystem badgeNotifySystem;
+        #endif
+
         public UITemplateQuestPopupPresenter(
             SignalBus              signalBus,
             UITemplateQuestManager questManager
+            #if THEONE_BADGE_NOTIFY
+            ,UITemplateBadgeNotifySystem badgeNotifySystem
+            #endif
         ) : base(signalBus)
         {
             this.questManager = questManager;
+            #if THEONE_BADGE_NOTIFY
+            this.badgeNotifySystem = badgeNotifySystem;
+            #endif
         }
 
         #endregion
@@ -39,13 +53,20 @@ namespace TheOneStudio.UITemplate.Quests.UI
         {
             base.OnViewReady();
             this.View.ListView.Parent = this;
-            this.View.TabButtons.ForEach(tabButton => tabButton.AddOnLick(() => this.SetTag(tabButton.Tab)));
+            this.View.TabButtons.ForEach(tabButton =>
+            {
+                tabButton.AddOnLick(() => this.SetTag(tabButton.Tab));
+                #if THEONE_BADGE_NOTIFY
+                this.badgeNotifySystem.RegisterButton(tabButton.GetComponent<UITemplateBadgeNotifyButtonView>(), this, null, () => this.CheckBadgeNotifyOnTabButton(tabButton));
+                #endif
+            });
             this.View.BtnClose.onClick.AddListener(() => this.CloseViewAsync().Forget());
         }
 
         public override UniTask BindData()
         {
             this.SetTag(this.View.TabButtons[0].Tab);
+
             return UniTask.CompletedTask;
         }
 
@@ -56,6 +77,16 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.currentTag = tag;
             this.Refresh();
         }
+
+        #if THEONE_BADGE_NOTIFY
+        private bool CheckBadgeNotifyOnTabButton(UITemplateQuestPopupTabButton tabButton)
+        {
+            var quests = this.questManager.GetAllControllers()
+                .Where(quest => quest.Record.HasTag(tabButton.Tab));
+
+            return quests.Any(quest => quest.Progress.Status == QuestStatus.NotCollected);
+        }
+        #endif
 
         public void Refresh()
         {
@@ -71,6 +102,10 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.View.ChestView.Dispose();
             this.View.ChestView.Model = new(chestQuests);
             this.View.ChestView.BindData();
+
+            #if THEONE_BADGE_NOTIFY
+            this.badgeNotifySystem.CheckAllBadgeNotifyStatus();
+            #endif
         }
 
         public override void Dispose()

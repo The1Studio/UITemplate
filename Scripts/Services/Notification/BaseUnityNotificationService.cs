@@ -140,19 +140,16 @@
 
         public virtual void CancelNotification() { }
 
-        private void ScheduleNotification(UITemplateNotificationRecord notificationData, TimeSpan delayTime, NotificationContent notificationContent = null)
+        private void ScheduleNotification(UITemplateNotificationRecord notificationData, TimeSpan delayTime, NotificationContent notificationContent)
         {
             var fireTime = DateTime.Now.Add(delayTime);
             var highHour = notificationData.HourRangeShow[1];
             var lowHour  = notificationData.HourRangeShow[0];
 
-            this.Logger.Log($"onelog: Notification Schedule: {notificationData.Title} - {notificationData.Body} - {fireTime}");
+            this.Logger.Log($"onelog: Notification Schedule: {notificationContent.Title} - {notificationContent.Body} - {fireTime}");
             if (fireTime.Hour >= highHour || fireTime.Hour <= lowHour) return;
 
-            var title = notificationContent != null ? notificationContent.Title : notificationData.Title;
-            var body  = notificationContent != null ? notificationContent.Body : notificationData.Body;
-
-            this.SendNotification(title, body, fireTime, delayTime);
+            this.SendNotification(notificationContent.Title, notificationContent.Body, fireTime, delayTime);
         }
 
         public virtual void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime) { }
@@ -201,12 +198,15 @@
             return new NotificationContent(title, body);
         }
 
-        public void SetupCustomNotification(string notificationId, TimeSpan? delayTime = null)
+        public async void SetupCustomNotification(string notificationId, TimeSpan? delayTime = null)
         {
-            if (!this.UITemplateNotificationBlueprint.TryGetValue(notificationId, out var notificationData)) return;
+            if (!this.UITemplateNotificationBlueprint.TryGetValue(notificationId, out var notification)) return;
+            if (!this.UITemplateNotificationDataBlueprint.TryGetValue(notificationId, out var notificationData)) return;
+            var title = await this.NotificationMappingHelper.GetFormatString(notificationData.Title);
+            var body  = await this.NotificationMappingHelper.GetFormatString(notificationData.Body);
 
-            delayTime ??= new TimeSpan(notificationData.TimeToShow[0], notificationData.TimeToShow[1], notificationData.TimeToShow[2]);
-            this.ScheduleNotification(notificationData, delayTime.Value);
+            delayTime ??= new TimeSpan(notification.TimeToShow[0], notification.TimeToShow[1], notification.TimeToShow[2]);
+            this.ScheduleNotification(notification, delayTime.Value, new NotificationContent(title, body));
         }
 
         #endregion

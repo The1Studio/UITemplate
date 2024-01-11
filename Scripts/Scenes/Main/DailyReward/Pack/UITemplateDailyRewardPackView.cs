@@ -30,16 +30,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
     public class UITemplateDailyRewardPackView : TViewMono
     {
-        [BoxGroup("View"),            SerializeField] private UITemplateDailyRewardItemAdapter dailyRewardItemAdapter;
-        [BoxGroup("View"),            SerializeField] private Button                           btnClaim;
-        [BoxGroup("View"),            SerializeField] private TextMeshProUGUI                  txtDayLabel;
-        [BoxGroup("View"),            SerializeField] private GameObject                       objClaimed;
-        [BoxGroup("View"),            SerializeField] private GameObject                       objClaimedCheckIcon;
-        [BoxGroup("View"),            SerializeField] private GameObject                       objClaimByAds;
-        [BoxGroup("View/Background"), SerializeField] private Image                            imgBackground;
-        [BoxGroup("View/Background"), SerializeField] private Sprite                           sprBgNormal;
-        [BoxGroup("View/Background"), SerializeField] private Sprite                           sprBgCurrentDay;
-        [BoxGroup("View/PackImage"),  SerializeField] private Image                            packImg;
+        [BoxGroup("View"), SerializeField] private UITemplateDailyRewardItemAdapter dailyRewardItemAdapter;
+        [BoxGroup("View"), SerializeField] private Button                           btnClaim;
+        [BoxGroup("View"), SerializeField] private TextMeshProUGUI                  txtDayLabel;
+        [BoxGroup("View"), SerializeField] private GameObject                       objClaimed;
+        [BoxGroup("View"), SerializeField] private GameObject                       objClaimedCheckIcon;
+        [BoxGroup("View"), SerializeField] private GameObject                       objClaimByAds;
+
+        [BoxGroup("View/Background"), SerializeField]
+        private Image imgBackground;
+
+        [BoxGroup("View/Background"), SerializeField]
+        private Sprite sprBgNormal;
+
+        [BoxGroup("View/Background"), SerializeField]
+        private Sprite sprBgCurrentDay;
+
+        [BoxGroup("View/PackImage"), SerializeField]
+        private Image packImg;
 
         public UITemplateDailyRewardItemAdapter DailyRewardItemAdapter => this.dailyRewardItemAdapter;
         public Button                           BtnClaim               => this.btnClaim;
@@ -86,7 +94,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
             this.Model = param;
 
             this.dailyRewardPackViewHelper.BindDataItem(param, this.View, this);
-            
+
             if (!string.IsNullOrEmpty(this.Model.DailyRewardRecord.PackImage)) return;
             var models = param.DailyRewardRecord.Reward.Values
                 .Select(item => new UITemplateDailyRewardItemModel

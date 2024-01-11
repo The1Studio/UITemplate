@@ -117,6 +117,14 @@
             }
         }
 
+        private void ClaimItemInPackReward(UITemplateDailyRewardPackPresenter presenter)
+        {
+            foreach (var itemPresenter in presenter.View.DailyRewardItemAdapter.GetPresenters())
+            {
+                itemPresenter.ClaimReward();
+            }
+        }
+
         private void ClaimAdsReward(UITemplateDailyRewardPackModel model)
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(this.gameFeaturesSetting.DailyRewardConfig.dailyRewardAdPlacementId, () =>
@@ -184,6 +192,12 @@
                 {
                     dayToView.Add(this.listRewardModel[i].DailyRewardRecord.Day, this.View.dailyRewardPackAdapter.GetPresenterAtIndex(i).View.transform as RectTransform);
                 }
+            }
+
+            foreach (var packPresenter in this.View.dailyRewardPackAdapter.GetPresenters()
+                         .Where(packPresenter => packPresenter.Model.RewardStatus == RewardStatus.Unlocked))
+            {
+                this.ClaimItemInPackReward(packPresenter);
             }
 
             this.uiTemplateDailyRewardController.ClaimAllAvailableReward(dayToView);

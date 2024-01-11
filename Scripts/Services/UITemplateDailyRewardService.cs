@@ -78,8 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.notificationServices.SetupCustomNotification(this.gameFeaturesSetting.DailyRewardConfig.notificationId);
             this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()
             {
-                OnClaimFinish       = onClaimReward,
-                IsGetNextDayWithAds = this.gameFeaturesSetting.DailyRewardConfig.getNextDayWithAds
+                OnClaimFinish                 = onClaimReward,
             });
         }
 

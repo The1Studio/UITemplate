@@ -11,8 +11,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 
     public class UITemplateDailyRewardRecord
     {
-        public int                                            Day    { get; set; }
-        public BlueprintByRow<string, UITemplateRewardRecord> Reward { get; set; }
+        public int                                            Day       { get; set; }
+        public string                                         PackImage { get; set; }
+        public BlueprintByRow<string, UITemplateRewardRecord> Reward    { get; set; }
     }
 
     [CsvHeaderKey("RewardId")]

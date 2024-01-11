@@ -29,8 +29,8 @@
             view.TxtValue.text = $"{model.RewardRecord.RewardValue}";
             view.TxtValue.gameObject.SetActive(model.RewardRecord.ShowValue);
             view.UpdateIconRectTransform(model.RewardRecord.Position, model.RewardRecord.Size);
-            view.ObjReward.gameObject.SetActive(model.RewardRecord.SpoilReward);
-            view.ObjLock.gameObject.SetActive(!model.RewardRecord.SpoilReward && model.RewardStatus == RewardStatus.Locked);
+            view.ObjReward.SetActive(model.RewardStatus != RewardStatus.Locked || model.RewardRecord.SpoilReward);
+            view.ObjLock.SetActive(!view.ObjReward.activeSelf);
         }
 
         public virtual void DisposeItem(UITemplateDailyRewardItemPresenter presenter) { }

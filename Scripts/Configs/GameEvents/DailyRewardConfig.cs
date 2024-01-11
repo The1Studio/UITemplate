@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using ServiceImplementation.Configs.CustomTypes;
     using Sirenix.OdinInspector;
 
     [Serializable]
@@ -12,12 +13,27 @@
         [ShowIf(nameof(isCustomScreenTrigger))]
         public List<string> screenTriggerIds;
 
-        public bool getNextDayWithAds;
-        public bool showOnFirstOpen;
+        public PreReceiveDailyRewardStrategy preReceiveDailyRewardStrategy = PreReceiveDailyRewardStrategy.None;
+        public bool                          showOnFirstOpen;
 
-        [FoldoutGroup("Custom Id")] [ShowIf(nameof(getNextDayWithAds))]
-        public string dailyRewardAdPlacementId = "DailyReward";
+        private bool isCustomPreReceive => this.preReceiveDailyRewardStrategy == PreReceiveDailyRewardStrategy.Custom;
+        
+        [ShowIf(nameof(isCustomPreReceive))] public IntToBooleanSerializable preReceiveConfig;
+
+        [FoldoutGroup("Custom Id")] public string dailyRewardAdPlacementId = "DailyReward";
 
         [FoldoutGroup("Custom Id")] public string notificationId = "daily_reward";
+    }
+
+    [Serializable]
+    public class IntToBooleanSerializable : SerializableDictionary<int, bool>
+    {
+    }
+
+    public enum PreReceiveDailyRewardStrategy
+    {
+        None,
+        NextDay,
+        Custom
     }
 }

@@ -33,7 +33,6 @@
     public class UITemplateDailyRewardPopupModel
     {
         public Action OnClaimFinish;
-        public bool   IsGetNextDayWithAds;
     }
 
     [PopupInfo(nameof(UITemplateDailyRewardPopupView), false, isOverlay: true)]
@@ -96,7 +95,7 @@
                     )
                 ).ToList();
 
-            this.SetUpItemCanGetWithAds();
+            this.SetUpItemCanPreReceiveWithAds();
             this.InitListDailyReward(this.listRewardModel);
 
             var hasRewardCanClaim = this.uiTemplateDailyRewardController.CanClaimReward;
@@ -129,14 +128,45 @@
             });
         }
 
-        private void SetUpItemCanGetWithAds()
+        private void SetUpItemCanPreReceiveWithAds()
         {
-            foreach (var model in this.listRewardModel)
+            switch (this.gameFeaturesSetting.DailyRewardConfig.preReceiveDailyRewardStrategy)
             {
-                if (model.RewardStatus == RewardStatus.Locked)
-                {
-                    model.IsGetWithAds = true;
+                case PreReceiveDailyRewardStrategy.None:
                     break;
+                case PreReceiveDailyRewardStrategy.NextDay:
+                    NextDayPreReceiveReward();
+                    break;
+                case PreReceiveDailyRewardStrategy.Custom:
+                    CustomPreReceiveReward();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return;
+
+            void NextDayPreReceiveReward()
+            {
+                foreach (var model in this.listRewardModel)
+                {
+                    if (model.RewardStatus == RewardStatus.Locked)
+                    {
+                        model.IsGetWithAds = true;
+                        break;
+                    }
+                }
+            }
+
+            void CustomPreReceiveReward()
+            {
+                var preReceiveConfig = this.gameFeaturesSetting.DailyRewardConfig.preReceiveConfig;
+                foreach (var model in listRewardModel)
+                {
+                    if (model.RewardStatus == RewardStatus.Locked && preReceiveConfig.TryGetValue(model.DailyRewardRecord.Day, out var canReceive))
+                    {
+                        model.IsGetWithAds = canReceive;
+                    }
                 }
             }
         }
@@ -171,7 +201,7 @@
                 }
             }
 
-            this.SetUpItemCanGetWithAds();
+            this.SetUpItemCanPreReceiveWithAds();
             this.RefreshAdapter();
 
             // call claim reward after refresh adapter for animation
@@ -182,7 +212,7 @@
 
         private void AutoClosePopup()
         {
-            if (this.Model.IsGetNextDayWithAds) return;
+            if (this.gameFeaturesSetting.DailyRewardConfig.preReceiveDailyRewardStrategy != PreReceiveDailyRewardStrategy.None) return;
 
             UniTask.Delay(
                 TimeSpan.FromSeconds(1.5f),

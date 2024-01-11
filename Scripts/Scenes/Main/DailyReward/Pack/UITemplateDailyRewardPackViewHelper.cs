@@ -46,6 +46,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
                 view.ObjClaimedCheckIcon.transform.DOScale(Vector3.one, duration).SetEase(Ease.OutBounce);
                 await UniTask.Delay(TimeSpan.FromSeconds(duration));
             }
+
+            if (view.PackImg != null)
+            {
+                view.PackImg.sprite = this.GameAssets.ForceLoadAsset<Sprite>(model.DailyRewardRecord.PackImage);
+            }
         }
 
         public virtual void DisposeItem(UITemplateDailyRewardPackPresenter presenter) { }

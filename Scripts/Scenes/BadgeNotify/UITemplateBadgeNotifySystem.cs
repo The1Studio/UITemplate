@@ -35,24 +35,27 @@
             this.signalBus                  = signalBus;
         }
 
-        public void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreen, Type nextScreenType)
+        public void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView,IScreenPresenter parentScreenPresenter, Type nextScreenType)
         {
-            this.RegisParentScreen(badgeNotifyButtonView, parentScreen);
-
+            this.RegisParentScreen(badgeNotifyButtonView,parentScreenPresenter.GetType());
+            this.RegisParentScreen(badgeNotifyButtonView, nextScreenType,false);
             this.badgeButtonToNextScreenType.Add(badgeNotifyButtonView, nextScreenType);
         }
 
-        private void RegisParentScreen(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreen)
+        private void RegisParentScreen(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, Type parentScreenType,bool canAddButton = true)
         {
-            if (parentScreen == null) return;
+            if (parentScreenType == null) return;
 
-            var badgeSet = this.screenTypeToBadgeButtons.GetOrAdd(parentScreen.GetType(), () => new HashSet<UITemplateBadgeNotifyButtonView>());
-            badgeSet.Add(badgeNotifyButtonView);
+            var badgeSet = this.screenTypeToBadgeButtons.GetOrAdd(parentScreenType, () => new HashSet<UITemplateBadgeNotifyButtonView>());
+            if (canAddButton)
+            {
+                badgeSet.Add(badgeNotifyButtonView);
+            }
         }
 
         public void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreen, Func<bool> condition)
         {
-            this.RegisParentScreen(badgeNotifyButtonView, parentScreen);
+            this.RegisParentScreen(badgeNotifyButtonView, parentScreen.GetType());
 
             this.badgeButtonToConditionFunc.Add(badgeNotifyButtonView, condition);
         }
@@ -80,7 +83,7 @@
                 badgeButtonView.badgeButton.onClick.AddListener(() => this.uiTemplateAdServiceWrapper.ShowInterstitialAd(interPlacement, _ => this.screenManager.OpenScreen<TPresenter>()));
             }
 
-            this.RegisterBadge(badgeButtonView, parentScreenPresenter, typeof(TPresenter));
+            this.RegisterBadge(badgeButtonView,parentScreenPresenter, typeof(TPresenter));
         }
 
         public void RegisterButton(UITemplateBadgeNotifyButtonView badgeButtonView, IScreenPresenter parentScreenPresenter, UnityAction onClick, Func<bool> condition, string interPlacement = null)
@@ -105,6 +108,7 @@
             var currentScreenPresenter = this.screenManager.CurrentActiveScreen.Value;
             if (!force && currentScreenPresenter.Equals(this.currentPresenter)) return;
             this.currentPresenter = currentScreenPresenter;
+            this.badgeButtonToNextScreenType.ForEach(e=>this.SetActiveBadge(e.Key));
             if (!this.screenTypeToBadgeButtons.TryGetValue(currentScreenPresenter.GetType(), out var badgeNotifyButtonViews)) return;
             badgeNotifyButtonViews.ForEach(this.SetActiveBadge);
         }

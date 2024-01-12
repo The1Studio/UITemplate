@@ -1,9 +1,13 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using DG.Tweening;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
@@ -15,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         private SignalBus                  signalBus;
         private UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
+        private IScreenManager             screenManager;
 
         #endregion
 
@@ -26,11 +31,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         private bool IsShowingBar              = true;
         private bool IsFirstTimeOpenDefaultTab = true;
 
+        private           Dictionary<Type, int> allcurrentScreen = new Dictionary<Type, int>();
+        protected virtual Dictionary<Type, int> AllcurrentScreen => this.allcurrentScreen;
+
         [Inject]
-        public void Constructor(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper)
+        public void Constructor(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, IScreenManager screenManager)
         {
             this.signalBus                  = signalBus;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
+            this.screenManager              = screenManager;
         }
 
         protected virtual void Init()
@@ -42,7 +51,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         private void OnScreenCloseSignalHandler(ScreenCloseSignal obj) { this.OnChangeFocusScreen(); }
 
-        private void OnScreenShowSignalHandler(ScreenShowSignal obj) { this.OnChangeFocusScreen(); }
+        private void OnScreenShowSignalHandler(ScreenShowSignal obj)
+        {
+            if (this.AllcurrentScreen.TryGetValue(this.screenManager.CurrentActiveScreen.Value.GetType(), out var currentScreen))
+            {
+                this.CurrentActiveIndex = currentScreen;
+            }
+
+            this.OnChangeFocusScreen();
+            if (this.AllcurrentScreen.ContainsKey(this.screenManager.CurrentActiveScreen.Value.GetType()))
+            {
+                this.OnClickBottomBarButton(this.CurrentActiveIndex);
+            }
+        }
 
         private void OnChangeFocusScreen()
         {
@@ -54,6 +75,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
                 this.IsShowingBar = true;
                 rectTransform.DOKill();
                 rectTransform.DOSizeDelta(Vector2.up * this.Height, animationDuration).SetEase(Ease.OutBack).SetUpdate(true);
+
                 return;
             }
 
@@ -84,13 +106,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             }
 
             this.OnClickBottomBarButton(this.DefaultActiveIndex);
-            
+
             this.Init();
         }
 
         protected void OnClickBottomBarButton(int index)
         {
-            if (this.CurrentActiveIndex == index) return;
             this.CurrentActiveIndex = index;
 
             //Update bar view
@@ -122,6 +143,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         protected virtual int HiddenHeight       => -100;
 
         protected virtual bool IsShouldShowBar() => true;
-        private           int  Height            => this.uiTemplateAdServiceWrapper.IsRemovedAds ? this.NoBannerHeight : this.HasBannerHeight;
+
+        private int Height => this.uiTemplateAdServiceWrapper.IsRemovedAds ? this.NoBannerHeight : this.HasBannerHeight;
     }
 }

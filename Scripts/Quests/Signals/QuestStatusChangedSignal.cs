@@ -4,7 +4,7 @@ namespace TheOneStudio.UITemplate.Quests.Signals
     {
         public UITemplateQuestController QuestController { get; }
 
-        public QuestStatusChangedSignal(UITemplateQuestController questController)
+        internal QuestStatusChangedSignal(UITemplateQuestController questController)
         {
             this.QuestController = questController;
         }

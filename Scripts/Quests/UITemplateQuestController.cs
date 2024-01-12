@@ -17,36 +17,34 @@
 
         private readonly IInstantiator                                                   instantiator;
         private readonly SignalBus                                                       signalBus;
-        private readonly UITemplateInventoryDataController                               uiTemplateInventoryDataController;
+        private readonly UITemplateInventoryDataController                               inventoryDataController;
         private readonly QuestStatusChangedSignal                                        changedSignal;
         private readonly Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler> progressHandlers;
 
         public UITemplateQuestController(
-            IInstantiator                 instantiator,
-            SignalBus                     signalBus,
-            UITemplateInventoryDataController uiTemplateInventoryDataController
+            IInstantiator                     instantiator,
+            SignalBus                         signalBus,
+            UITemplateInventoryDataController inventoryDataController
         )
         {
-            this.instantiator                      = instantiator;
-            this.signalBus                         = signalBus;
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.changedSignal                     = new QuestStatusChangedSignal(this);
-            this.progressHandlers                  = new Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler>();
+            this.instantiator            = instantiator;
+            this.signalBus               = signalBus;
+            this.inventoryDataController = inventoryDataController;
+            this.changedSignal           = new QuestStatusChangedSignal(this);
+            this.progressHandlers        = new Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler>();
         }
 
         #endregion
 
-        public QuestRecord         Record   { get; internal set; }   
+        public QuestRecord                   Record   { get; internal set; }
         public UITemplateQuestProgress.Quest Progress { get; internal set; }
 
-        public async UniTask CollectReward(RectTransform rewardFlyingStartingPos)
+        public async UniTask CollectReward(RectTransform startAnimRectTransform = null)
         {
             if (this.Progress.Status is not QuestStatus.NotCollected) return;
-            List<UniTask> rewardAnimationTasks = new();
-            this.Record.Rewards.ForEach(reward => rewardAnimationTasks.Add(this.uiTemplateInventoryDataController.AddGenericReward(reward.Id, reward.Value, rewardFlyingStartingPos)));
             this.RemoveProgressHandlers(this.Progress.CompleteProgress);
             this.Progress.Status |= QuestStatus.Collected;
-            await UniTask.WhenAll(rewardAnimationTasks);
+            await this.Record.Rewards.Select(reward => this.inventoryDataController.AddGenericReward(reward.Id, reward.Value, startAnimRectTransform));
         }
 
         public IEnumerable<ICondition.IProgress.IHandler> GetCompleteProgressHandlers()

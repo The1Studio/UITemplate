@@ -146,7 +146,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 this.signalBus.Fire(new OnNotEnoughCurrencySignal(id));
                 return false;
             }
-            this.SetCurrencyWithCap(resultValue, id);
             
             if (startAnimationRect != null)
             {
@@ -158,6 +157,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 }
             }
             
+            this.SetCurrencyWithCap(resultValue, id);
+
             this.signalBus.Fire(new OnUpdateCurrencySignal(id, addingValue, lastValue + addingValue));
             return true;
         }

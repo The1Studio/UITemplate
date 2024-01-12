@@ -136,8 +136,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
         
-        public async UniTask AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null)
+        public async UniTask<bool> AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null)
         {
+            var lastValue = this.GetCurrencyValue(id);
+            
+            if (lastValue + addingValue < 0)
+            {
+                this.signalBus.Fire(new OnNotEnoughCurrencySignal(id));
+                return false;
+            }
+            this.SetCurrencyWithCap(lastValue + addingValue, id);
+            
             if (startAnimationRect != null)
             {
                 var flyingObject =  this.uiTemplateCurrencyBlueprint.GetDataById(id).FlyingObject;
@@ -147,25 +156,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                     await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(startAnimationRect, prefabName: flyingObject, target: currencyView.gameObject.transform as RectTransform);
                 }
             }
-
-            var lastValue = this.GetCurrencyValue(id);
-            this.SetCurrencyWithCap(lastValue + addingValue, id);
-
+            
             this.signalBus.Fire(new OnUpdateCurrencySignal(id, addingValue, lastValue + addingValue));
+            return true;
         }
 
-        public bool UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID)
+        public void UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID)
         {
-            if (finalValue < 0)
-            {
-                this.signalBus.Fire(new OnNotEnoughCurrencySignal(id));
-                return false;
-            }
             var lastValue = this.GetCurrencyValue(id);
 
             this.SetCurrencyWithCap(finalValue, id);
             this.signalBus.Fire(new OnUpdateCurrencySignal(id, finalValue - lastValue, finalValue));
-            return true;
         }
 
         private void SetCurrencyWithCap(int value, string id)

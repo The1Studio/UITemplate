@@ -154,12 +154,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Fire(new OnUpdateCurrencySignal(id, addingValue, lastValue + addingValue));
         }
 
-        public void UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID)
+        public bool UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID)
         {
+            if (finalValue < 0)
+            {
+                this.signalBus.Fire(new OnNotEnoughCurrencySignal(id));
+                return false;
+            }
             var lastValue = this.GetCurrencyValue(id);
 
             this.SetCurrencyWithCap(finalValue, id);
             this.signalBus.Fire(new OnUpdateCurrencySignal(id, finalValue - lastValue, finalValue));
+            return true;
         }
 
         private void SetCurrencyWithCap(int value, string id)

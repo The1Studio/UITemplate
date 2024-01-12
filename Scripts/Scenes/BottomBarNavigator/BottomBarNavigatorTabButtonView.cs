@@ -28,15 +28,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
             if (isActive)
             {
-                this.TabIcon.rectTransform.DOAnchorPosY(-30, duration).SetEase(Ease.OutBounce).OnUpdate(true);
-                this.TabIcon.transform.DOScale(1.3f, duration).SetEase(Ease.OutBounce).OnUpdate(true);
-                this.TabName.transform.DOScale(1, duration).SetEase(Ease.OutBack).OnUpdate(true);
+                this.TabIcon.rectTransform.DOAnchorPosY(-30, duration).SetEase(Ease.OutBounce).SetUpdate(true);
+                this.TabIcon.transform.DOScale(1.3f, duration).SetEase(Ease.OutBounce).SetUpdate(true);
+                this.TabName.transform.DOScale(1, duration).SetEase(Ease.OutBack).SetUpdate(true);
             }
             else
             {
-                this.TabIcon.rectTransform.DOAnchorPosY(-100, duration).SetEase(Ease.InBack).OnUpdate(true);
-                this.TabIcon.transform.DOScale(1f, duration).SetEase(Ease.InBack).OnUpdate(true);
-                this.TabName.transform.DOScale(0, duration).SetEase(Ease.InBack).OnUpdate(true);
+                this.TabIcon.rectTransform.DOAnchorPosY(-100, duration).SetEase(Ease.InBack).SetUpdate(true);
+                this.TabIcon.transform.DOScale(1f, duration).SetEase(Ease.InBack).SetUpdate(true);
+                this.TabName.transform.DOScale(0, duration).SetEase(Ease.InBack).SetUpdate(true);
             }
         }
     }

@@ -27,6 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<FTUETriggerSignal>();
 
             //Signal
+            this.Container.DeclareSignal<OnNotEnoughCurrencySignal>();
             this.Container.DeclareSignal<OnUpdateCurrencySignal>();
             this.Container.DeclareSignal<LevelStartedSignal>();
             this.Container.DeclareSignal<LevelEndedSignal>();

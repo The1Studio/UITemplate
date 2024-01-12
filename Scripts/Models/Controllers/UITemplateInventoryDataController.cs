@@ -128,7 +128,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData);
         }
         
-        public void PayCurrency(Dictionary<string, int> currency, int time = 1)
+        public void AddCurrency(Dictionary<string, int> currency, int time = 1)
         {
             foreach (var (currencyKey, currencyValue) in currency)
             {
@@ -136,8 +136,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
         
-        public async UniTask AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null)
+        public async UniTask<bool> AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null)
         {
+            var lastValue = this.GetCurrencyValue(id);
+            
+            var resultValue = lastValue + addingValue;
+            if (resultValue < 0)
+            {
+                this.signalBus.Fire(new OnNotEnoughCurrencySignal(id));
+                return false;
+            }
+            
             if (startAnimationRect != null)
             {
                 var flyingObject =  this.uiTemplateCurrencyBlueprint.GetDataById(id).FlyingObject;
@@ -147,11 +156,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                     await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(startAnimationRect, prefabName: flyingObject, target: currencyView.gameObject.transform as RectTransform);
                 }
             }
-
-            var lastValue = this.GetCurrencyValue(id);
-            this.SetCurrencyWithCap(lastValue + addingValue, id);
+            
+            this.SetCurrencyWithCap(resultValue, id);
 
             this.signalBus.Fire(new OnUpdateCurrencySignal(id, addingValue, lastValue + addingValue));
+            return true;
         }
 
         public void UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID)

@@ -38,7 +38,7 @@
         public void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreenPresenter, Func<bool> condition, Type nextScreenType)
         {
             this.RegisterBadge(badgeNotifyButtonView, parentScreenPresenter, condition);
-            this.RegisParentScreen(badgeNotifyButtonView, nextScreenType, false);
+            this.RegisParentScreen(badgeNotifyButtonView, nextScreenType);
             this.badgeButtonToNextScreenType.Add(badgeNotifyButtonView, nextScreenType);
         }
         private void RegisterBadge(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, IScreenPresenter parentScreen, Func<bool> condition)
@@ -48,7 +48,7 @@
         }
 
 
-        private void RegisParentScreen(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, Type parentScreenType, bool canAddButton = true)
+        private void RegisParentScreen(UITemplateBadgeNotifyButtonView badgeNotifyButtonView, Type parentScreenType)
         {
             if (parentScreenType == null) return;
             var badgeSet = this.screenTypeToBadgeButtons.GetOrAdd(parentScreenType, () => new HashSet<UITemplateBadgeNotifyButtonView>());

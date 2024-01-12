@@ -88,7 +88,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             this.Init();
         }
 
-        private void OnClickBottomBarButton(int index)
+        protected void OnClickBottomBarButton(int index)
         {
             if (this.CurrentActiveIndex == index) return;
             this.CurrentActiveIndex = index;

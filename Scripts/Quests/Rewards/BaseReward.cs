@@ -1,6 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.Quests.Rewards
 {
-    using System;
     using Newtonsoft.Json;
 
     public abstract class BaseReward : IReward

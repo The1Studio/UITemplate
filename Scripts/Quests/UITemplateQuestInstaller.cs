@@ -1,6 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.Quests
 {
-    using TheOneStudio.UITemplate.Quests.Rewards;
     using TheOneStudio.UITemplate.Quests.Signals;
     using UnityEngine;
     using Zenject;

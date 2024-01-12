@@ -8,13 +8,13 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
         protected abstract ICondition.IProgress SetupProgress();
 
-        protected abstract class BaseProgress : ICondition.IProgress
+        public abstract class BaseProgress : ICondition.IProgress
         {
             Type ICondition.IProgress.HandlerType => this.HandlerType;
 
             protected abstract Type HandlerType { get; }
 
-            protected abstract class BaseHandler<TCondition, TProgress> : ICondition.IProgress.IHandler
+            public abstract class BaseHandler<TCondition, TProgress> : ICondition.IProgress.IHandler
                 where TCondition : ICondition
                 where TProgress : ICondition.IProgress
             {

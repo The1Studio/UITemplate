@@ -128,7 +128,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData);
         }
         
-        public void PayCurrency(Dictionary<string, int> currency, int time = 1)
+        public void AddCurrency(Dictionary<string, int> currency, int time = 1)
         {
             foreach (var (currencyKey, currencyValue) in currency)
             {

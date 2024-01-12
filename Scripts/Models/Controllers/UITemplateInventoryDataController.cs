@@ -140,12 +140,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             var lastValue = this.GetCurrencyValue(id);
             
-            if (lastValue + addingValue < 0)
+            var resultValue = lastValue + addingValue;
+            if (resultValue < 0)
             {
                 this.signalBus.Fire(new OnNotEnoughCurrencySignal(id));
                 return false;
             }
-            this.SetCurrencyWithCap(lastValue + addingValue, id);
+            this.SetCurrencyWithCap(resultValue, id);
             
             if (startAnimationRect != null)
             {

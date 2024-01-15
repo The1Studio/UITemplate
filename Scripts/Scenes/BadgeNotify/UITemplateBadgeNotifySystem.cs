@@ -19,12 +19,12 @@
 
         #endregion
 
-        private Dictionary<Type, HashSet<string>>                    screenTypeToBadgeTemp    = new();
-        private Dictionary<string, Func<bool>>                       badgeToConditionFuncTemp = new();
-        private Dictionary<Type, HashSet<UITemplateBadgeNotifyView>> screenTypeToBadges       = new();
-        private Dictionary<UITemplateBadgeNotifyView, Type>          badgeToNextScreenType    = new();
-        private Dictionary<UITemplateBadgeNotifyView, Func<bool>>    badgeToConditionFunc     = new();
-        private IScreenPresenter                                     currentPresenter;
+        private readonly Dictionary<Type, HashSet<string>>                    screenTypeToBadgeTemp    = new();
+        private readonly Dictionary<string, Func<bool>>                       badgeToConditionFuncTemp = new();
+        private readonly Dictionary<Type, HashSet<UITemplateBadgeNotifyView>> screenTypeToBadges       = new();
+        private readonly Dictionary<UITemplateBadgeNotifyView, Type>          badgeToNextScreenType    = new();
+        private readonly Dictionary<UITemplateBadgeNotifyView, Func<bool>>    badgeToConditionFunc     = new();
+        private          IScreenPresenter                                     currentPresenter;
 
         public UITemplateBadgeNotifySystem(IScreenManager screenManager, SignalBus signalBus)
         {
@@ -34,38 +34,32 @@
 
         private void RegisterBadgeNextScreenType(UITemplateBadgeNotifyView badgeNotifyView, IScreenPresenter parentScreenPresenter, Type nextScreenType)
         {
-            this.RegisParentScreen(badgeNotifyView, parentScreenPresenter.GetType(), null);
+            this.RegisParentScreen(badgeNotifyView, parentScreenPresenter.GetType());
             this.badgeToNextScreenType.Add(badgeNotifyView, nextScreenType);
         }
 
         private void RegisterBadgeCondition(UITemplateBadgeNotifyView badgeNotifyView, IScreenPresenter parentScreen, Func<bool> condition, string badgeId = null)
         {
-            this.RegisParentScreen(badgeNotifyView, parentScreen.GetType(), badgeId);
+            this.RegisParentScreen(badgeNotifyView, parentScreen.GetType());
             this.badgeToConditionFunc.Add(badgeNotifyView, condition);
             if (this.badgeToConditionFuncTemp.ContainsKey(badgeNotifyView.badgeId)) this.badgeToConditionFuncTemp.Remove(badgeNotifyView.badgeId);
         }
 
         private void RegisterBadgeConditionTemp(Type parentScreen, Func<bool> condition, string badgeId)
         {
-            this.RegisParentScreen(null, parentScreen, badgeId);
+            this.RegisterParentScreenTemp(parentScreen, badgeId);
             this.badgeToConditionFuncTemp.Add(badgeId, condition);
         }
 
-        private void RegisParentScreen(UITemplateBadgeNotifyView badgeNotifyView, Type parentScreenType, string badgeId)
+        private void RegisParentScreen(UITemplateBadgeNotifyView badgeNotifyView, Type parentScreenType)
         {
             if (parentScreenType == null) return;
-            if (badgeNotifyView == null)
-            {
-                this.RegisParentScreenTemp(parentScreenType, badgeId);
-
-                return;
-            }
             var badgeSet = this.screenTypeToBadges.GetOrAdd(parentScreenType, () => new HashSet<UITemplateBadgeNotifyView>());
             badgeSet.Add(badgeNotifyView);
             if (this.screenTypeToBadgeTemp.ContainsKey(parentScreenType)) this.screenTypeToBadgeTemp.Remove(parentScreenType);
         }
 
-        private void RegisParentScreenTemp(Type parentScreenType, string badgeId)
+        private void RegisterParentScreenTemp(Type parentScreenType, string badgeId)
         {
             if (parentScreenType == null) return;
             var badgeTempSet = this.screenTypeToBadgeTemp.GetOrAdd(parentScreenType, () => new HashSet<string>());

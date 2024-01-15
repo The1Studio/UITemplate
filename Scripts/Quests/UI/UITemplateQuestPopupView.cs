@@ -37,7 +37,8 @@ namespace TheOneStudio.UITemplate.Quests.UI
             SignalBus              signalBus,
             UITemplateQuestManager questManager
             #if THEONE_BADGE_NOTIFY
-            ,UITemplateBadgeNotifySystem badgeNotifySystem
+            ,
+            UITemplateBadgeNotifySystem badgeNotifySystem
             #endif
         ) : base(signalBus)
         {
@@ -57,7 +58,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
             {
                 tabButton.AddOnLick(() => this.SetTag(tabButton.Tab));
                 #if THEONE_BADGE_NOTIFY
-                this.badgeNotifySystem.RegisterBadge(tabButton.GetComponent<UITemplateBadgeNotifyView>(), this, () => this.CheckBadgeNotifyOnTabButton(tabButton),null);
+                this.badgeNotifySystem.RegisterBadge(tabButton.GetComponent<UITemplateBadgeNotifyView>(), this, () => this.CheckBadgeNotifyOnTabButton(tabButton), null);
                 #endif
             });
             this.View.BtnClose.onClick.AddListener(() => this.CloseViewAsync().Forget());

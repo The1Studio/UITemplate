@@ -72,15 +72,14 @@
             badgeTempSet.Add(badgeId);
         }
 
-        private bool GetBadgeStatus(UITemplateBadgeNotifyView badgeNotifyView, string badgeId = null)
+        private bool GetBadgeStatus(UITemplateBadgeNotifyView badgeNotifyView)
         {
-            if (badgeNotifyView == null) return this.GetBadgeStatusTemp(badgeId);
             if (this.badgeToConditionFunc.TryGetValue(badgeNotifyView, out var conditionFunc))
             {
                 return conditionFunc.Invoke();
             }
 
-            return this.screenTypeToBadges.ContainsKey(this.badgeToNextScreenType[badgeNotifyView]) ? this.screenTypeToBadges[this.badgeToNextScreenType[badgeNotifyView]].Any(badgeView => this.GetBadgeStatus(badgeView, null)) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatusTemp);
+            return this.screenTypeToBadges.ContainsKey(this.badgeToNextScreenType[badgeNotifyView]) ? this.screenTypeToBadges[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatus) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatusTemp);
         }
 
         private bool GetBadgeStatusTemp(string badgeId)

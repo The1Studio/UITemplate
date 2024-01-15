@@ -80,7 +80,7 @@
                 return conditionFunc.Invoke();
             }
 
-            return this.screenTypeToBadges.ContainsKey(this.badgeToNextScreenType[badgeNotifyView]) ? this.screenTypeToBadges[this.badgeToNextScreenType[badgeNotifyView]].Any(badgeView => this.GetBadgeStatus(badgeView)) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(badgeId => this.GetBadgeStatus(null, badgeId));
+            return this.screenTypeToBadges.TryGetValue(this.badgeToNextScreenType[badgeNotifyView], out var badgeOnScreen) ? badgeOnScreen.Any(badgeView => this.GetBadgeStatus(badgeView)) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(id => this.GetBadgeStatus(null, id));
         }
 
         #region BadgeNotifyFunction

@@ -79,12 +79,8 @@
             {
                 return conditionFunc.Invoke();
             }
-            if (this.screenTypeToBadges.ContainsKey(this.badgeToNextScreenType[badgeNotifyView]))
-            {
-                return this.screenTypeToBadges[this.badgeToNextScreenType[badgeNotifyView]].Any(badgeView => this.GetBadgeStatus(badgeView, null));
-            }
 
-            return this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatusTemp);
+            return this.screenTypeToBadges.ContainsKey(this.badgeToNextScreenType[badgeNotifyView]) ? this.screenTypeToBadges[this.badgeToNextScreenType[badgeNotifyView]].Any(badgeView => this.GetBadgeStatus(badgeView, null)) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatusTemp);
         }
 
         private bool GetBadgeStatusTemp(string badgeId)

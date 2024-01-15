@@ -1,6 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
-    using System.Collections.Generic;
     using BlueprintFlow.BlueprintReader;
     using UnityEngine;
 
@@ -12,12 +11,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 
     public class UITemplateDailyRewardRecord
     {
-        public int                     Day         { get; set; }
-        public Dictionary<string, int> Reward      { get; set; }
-        public string                  RewardImage { get; set; }
-        public Vector2?                Position    { get; set; }
-        public Vector2?                Size        { get; set; }
-        public bool                    SpoilReward { get; set; }
-        public bool                    ShowValue   { get; set; }
+        public int                                            Day       { get; set; }
+        public string                                         PackImage { get; set; }
+        public BlueprintByRow<string, UITemplateRewardRecord> Reward    { get; set; }
+    }
+
+    [CsvHeaderKey("RewardId")]
+    public class UITemplateRewardRecord
+    {
+        public string   RewardId    { get; set; }
+        public int      RewardValue { get; set; }
+        public string   RewardImage { get; set; }
+        public Vector2? Position    { get; set; }
+        public Vector2? Size        { get; set; }
+        public bool     SpoilReward { get; set; }
+        public bool     ShowValue   { get; set; }
     }
 }

@@ -13,24 +13,26 @@
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
+    using UnityEngine.Serialization;
     using UnityEngine.UI;
     using Zenject;
 
     public class UITemplateDailyRewardPopupView : BaseView
     {
-        public UITemplateDailyRewardAdapter dailyRewardAdapter;
-        public Button                       btnClaim;
-        public Button                       btnClose;
+        [FormerlySerializedAs("dailyRewardItemAdapter")] [FormerlySerializedAs("dailyRewardAdapter")]
+        public UITemplateDailyRewardPackAdapter dailyRewardPackAdapter;
+
+        public Button btnClaim;
+        public Button btnClose;
     }
 
     public class UITemplateDailyRewardPopupModel
     {
         public Action OnClaimFinish;
-        public bool   IsAutoCloseAfterClaim;
-        public bool   IsGetNextDayWithAds;
     }
 
     [PopupInfo(nameof(UITemplateDailyRewardPopupView), false, isOverlay: true)]
@@ -49,7 +51,7 @@
 
         private int                                  userLoginDay;
         private UITemplateDailyRewardPopupModel      popupModel;
-        private List<UITemplateDailyRewardItemModel> listRewardModel;
+        private List<UITemplateDailyRewardPackModel> listRewardModel;
         private CancellationTokenSource              closeViewCts;
 
         public UITemplateDailyRewardPopupPresenter(
@@ -86,14 +88,14 @@
 
             this.listRewardModel = this.uiTemplateDailyRewardBlueprint.Values
                 .Select(uiTemplateDailyRewardRecord =>
-                    new UITemplateDailyRewardItemModel(
+                    new UITemplateDailyRewardPackModel(
                         uiTemplateDailyRewardRecord,
                         this.uiTemplateDailyRewardController.GetDateRewardStatus(uiTemplateDailyRewardRecord.Day),
                         this.OnItemClick
                     )
                 ).ToList();
 
-            this.SetUpItemCanGetWithAds();
+            this.SetUpItemCanPreReceiveWithAds();
             this.InitListDailyReward(this.listRewardModel);
 
             var hasRewardCanClaim = this.uiTemplateDailyRewardController.CanClaimReward;
@@ -102,7 +104,7 @@
             return UniTask.CompletedTask;
         }
 
-        private void OnItemClick(UITemplateDailyRewardItemPresenter presenter)
+        private void OnItemClick(UITemplateDailyRewardPackPresenter presenter)
         {
             var model = presenter.Model;
             if (model.RewardStatus == RewardStatus.Locked && model.IsGetWithAds)
@@ -115,7 +117,15 @@
             }
         }
 
-        private void ClaimAdsReward(UITemplateDailyRewardItemModel model)
+        private void ClaimItemInPackReward(UITemplateDailyRewardPackPresenter presenter)
+        {
+            foreach (var itemPresenter in presenter.View.DailyRewardItemAdapter.GetPresenters())
+            {
+                itemPresenter.ClaimReward();
+            }
+        }
+
+        private void ClaimAdsReward(UITemplateDailyRewardPackModel model)
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(this.gameFeaturesSetting.DailyRewardConfig.dailyRewardAdPlacementId, () =>
             {
@@ -126,19 +136,50 @@
             });
         }
 
-        private void SetUpItemCanGetWithAds()
+        private void SetUpItemCanPreReceiveWithAds()
         {
-            foreach (var model in this.listRewardModel)
+            switch (this.gameFeaturesSetting.DailyRewardConfig.preReceiveDailyRewardStrategy)
             {
-                if (model.RewardStatus == RewardStatus.Locked)
-                {
-                    model.IsGetWithAds = true;
+                case PreReceiveDailyRewardStrategy.None:
                     break;
+                case PreReceiveDailyRewardStrategy.NextDay:
+                    NextDayPreReceiveReward();
+                    break;
+                case PreReceiveDailyRewardStrategy.Custom:
+                    CustomPreReceiveReward();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return;
+
+            void NextDayPreReceiveReward()
+            {
+                foreach (var model in this.listRewardModel)
+                {
+                    if (model.RewardStatus == RewardStatus.Locked)
+                    {
+                        model.IsGetWithAds = true;
+                        break;
+                    }
+                }
+            }
+
+            void CustomPreReceiveReward()
+            {
+                var preReceiveConfig = this.gameFeaturesSetting.DailyRewardConfig.preReceiveConfig;
+                foreach (var model in listRewardModel)
+                {
+                    if (model.RewardStatus == RewardStatus.Locked && preReceiveConfig.TryGetValue(model.DailyRewardRecord.Day, out var canReceive))
+                    {
+                        model.IsGetWithAds = canReceive;
+                    }
                 }
             }
         }
 
-        private void InitListDailyReward(List<UITemplateDailyRewardItemModel> dailyRewardModels) { this.View.dailyRewardAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget(); }
+        private void InitListDailyReward(List<UITemplateDailyRewardPackModel> dailyRewardModels) { this.View.dailyRewardPackAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget(); }
 
         private void ClaimReward()
         {
@@ -149,38 +190,43 @@
             {
                 if (this.listRewardModel[i].RewardStatus == RewardStatus.Unlocked)
                 {
-                    dayToView.Add(this.listRewardModel[i].DailyRewardRecord.Day, this.View.dailyRewardAdapter.GetPresenterAtIndex(i).View.transform as RectTransform);
+                    dayToView.Add(this.listRewardModel[i].DailyRewardRecord.Day, this.View.dailyRewardPackAdapter.GetPresenterAtIndex(i).View.transform as RectTransform);
                 }
+            }
+
+            foreach (var packPresenter in this.View.dailyRewardPackAdapter.GetPresenters()
+                         .Where(packPresenter => packPresenter.Model.RewardStatus == RewardStatus.Unlocked))
+            {
+                this.ClaimItemInPackReward(packPresenter);
             }
 
             this.uiTemplateDailyRewardController.ClaimAllAvailableReward(dayToView);
             this.logService.Log($"Do Animation Claim Reward");
             this.popupModel.OnClaimFinish?.Invoke();
 
-            var claimedPresenter = new List<UITemplateDailyRewardItemPresenter>();
+            var claimedPresenter = new List<UITemplateDailyRewardPackPresenter>();
 
             for (var i = 0; i < this.listRewardModel.Count; i++)
             {
                 if (this.listRewardModel[i].RewardStatus == RewardStatus.Unlocked)
                 {
-                    claimedPresenter.Add(this.View.dailyRewardAdapter.GetPresenterAtIndex(i));
+                    claimedPresenter.Add(this.View.dailyRewardPackAdapter.GetPresenterAtIndex(i));
                     this.listRewardModel[i].RewardStatus = RewardStatus.Claimed;
                 }
             }
 
-            this.SetUpItemCanGetWithAds();
+            this.SetUpItemCanPreReceiveWithAds();
             this.RefreshAdapter();
 
             // call claim reward after refresh adapter for animation
             claimedPresenter.ForEach(presenter => presenter.ClaimReward());
-            this.OnClaimReward();
+
             this.AutoClosePopup();
         }
-        protected virtual void OnClaimReward(){}
+
         private void AutoClosePopup()
         {
-            if(!this.Model.IsAutoCloseAfterClaim) return;
-            if (this.Model.IsGetNextDayWithAds) return;
+            if (this.gameFeaturesSetting.DailyRewardConfig.preReceiveDailyRewardStrategy != PreReceiveDailyRewardStrategy.None) return;
 
             UniTask.Delay(
                 TimeSpan.FromSeconds(1.5f),
@@ -188,7 +234,7 @@
             ).ContinueWith(this.CloseViewAsync).Forget();
         }
 
-        private void RefreshAdapter() { this.View.dailyRewardAdapter.Refresh(); }
+        private void RefreshAdapter() { this.View.dailyRewardPackAdapter.Refresh(); }
 
         public override void Dispose()
         {

@@ -5,6 +5,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.AppTracking;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
@@ -25,9 +27,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Helper
             this.Container.Bind<UITemplateAnimationHelper>().AsCached();
             this.Container.Bind<UITemplateCollectionItemViewHelper>().AsCached();
-            this.Container.Bind<UITemplateDailyRewardItemViewHelper>().AsCached();
             this.Container.Bind<BreakAdsViewHelper>().AsCached();
 
+            UITemplateDailyRewardInstaller.Install(this.Container);
             UITemplateDeclareSignalInstaller.Install(this.Container);
             UITemplateServicesInstaller.Install(this.Container, this.toastCanvas);
             UITemplateHighScoreInstaller.Install(this.Container);

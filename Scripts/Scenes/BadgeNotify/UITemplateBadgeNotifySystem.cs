@@ -72,19 +72,15 @@
             badgeTempSet.Add(badgeId);
         }
 
-        private bool GetBadgeStatus(UITemplateBadgeNotifyView badgeNotifyView)
+        private bool GetBadgeStatus(UITemplateBadgeNotifyView badgeNotifyView, string badgeId = null)
         {
+            if (badgeNotifyView == null && badgeId != null) return this.badgeToConditionFuncTemp[badgeId].Invoke();
             if (this.badgeToConditionFunc.TryGetValue(badgeNotifyView, out var conditionFunc))
             {
                 return conditionFunc.Invoke();
             }
 
-            return this.screenTypeToBadges.ContainsKey(this.badgeToNextScreenType[badgeNotifyView]) ? this.screenTypeToBadges[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatus) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatusTemp);
-        }
-
-        private bool GetBadgeStatusTemp(string badgeId)
-        {
-            return this.badgeToConditionFuncTemp[badgeId].Invoke();
+            return this.screenTypeToBadges.ContainsKey(this.badgeToNextScreenType[badgeNotifyView]) ? this.screenTypeToBadges[this.badgeToNextScreenType[badgeNotifyView]].Any(badgeView => this.GetBadgeStatus(badgeView)) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(badgeId => this.GetBadgeStatus(null, badgeId));
         }
 
         #region BadgeNotifyFunction

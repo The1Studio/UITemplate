@@ -95,7 +95,7 @@
             this.RegisterBadgeConditionTemp(parentScreenType, condition, badgeId);
         }
 
-        private void SetActiveBadge(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatus(badgeView)); }
+        public void RefreshBadgeStatus(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatus(badgeView)); }
 
         #endregion
 
@@ -106,10 +106,10 @@
             if (!force && currentScreenPresenter.Equals(this.currentPresenter)) return;
             this.currentPresenter = currentScreenPresenter;
             var badgeToNextScreen = this.badgeToNextScreenType.FirstOrDefault(badge => badge.Value == this.currentPresenter.GetType()).Key;
-            if (badgeToNextScreen != null) this.SetActiveBadge(badgeToNextScreen);
+            if (badgeToNextScreen != null) this.RefreshBadgeStatus(badgeToNextScreen);
 
             if (!this.screenTypeToBadges.TryGetValue(currentScreenPresenter.GetType(), out var badgeNotifyButtonViews)) return;
-            badgeNotifyButtonViews.ForEach(this.SetActiveBadge);
+            badgeNotifyButtonViews.ForEach(this.RefreshBadgeStatus);
         }
 
         private void CheckAllBadgeNotifyStatusWhenScreenStatusChange() => this.CheckAllBadgeNotifyStatus(false);

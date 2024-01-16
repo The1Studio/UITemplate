@@ -98,7 +98,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.IsShowBannerAd)
             {
-                if (this.thirdPartiesConfig.AdSettings.EnableCollapsibleBanner)
+                if (this.adServicesConfig.EnableCollapsibleBanner)
                 {
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd();
                 }
@@ -112,7 +112,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual void HideBannerAd()
         {
             this.IsShowBannerAd = false;
-            if (this.thirdPartiesConfig.AdSettings.EnableCollapsibleBanner)
+            if (this.adServicesConfig.EnableCollapsibleBanner)
             {
                 // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
                 this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
@@ -461,7 +461,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 mrecAdService.HideAllMREC();
             }
 
-            if (this.thirdPartiesConfig.AdSettings.EnableCollapsibleBanner)
+            if (this.adServicesConfig.EnableCollapsibleBanner)
             {
                 this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
             }

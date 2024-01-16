@@ -38,11 +38,17 @@
             this.badgeToNextScreenType.Add(badgeNotifyView, nextScreenType);
         }
 
-        private void RegisterBadgeCondition(UITemplateBadgeNotifyView badgeNotifyView, IScreenPresenter parentScreen, Func<bool> condition, string badgeId = null)
+        private void RegisterBadgeCondition(UITemplateBadgeNotifyView badgeNotifyView, IScreenPresenter parentScreen, Func<bool> condition, bool forceUpdateCondition = true)
         {
             this.RegisParentScreen(badgeNotifyView, parentScreen.GetType());
+            if (this.badgeToConditionFuncTemp.TryGetValue(badgeNotifyView.badgeId, out var currentCondition))
+            {
+                this.badgeToConditionFunc.Add(badgeNotifyView, forceUpdateCondition ? condition : currentCondition);
+                this.badgeToConditionFuncTemp.Remove(badgeNotifyView.badgeId);
+
+                return;
+            }
             this.badgeToConditionFunc.Add(badgeNotifyView, condition);
-            if (this.badgeToConditionFuncTemp.ContainsKey(badgeNotifyView.badgeId)) this.badgeToConditionFuncTemp.Remove(badgeNotifyView.badgeId);
         }
 
         private void RegisterBadgeConditionTemp(Type parentScreen, Func<bool> condition, string badgeId)
@@ -87,10 +93,15 @@
 
         public void RegisterBadge(UITemplateBadgeNotifyView badgeView, IScreenPresenter parentScreenPresenter, Func<bool> condition, string badgeId = null)
         {
-            this.RegisterBadgeCondition(badgeView, parentScreenPresenter, condition, badgeId);
+            this.RegisterBadgeCondition(badgeView, parentScreenPresenter, condition);
         }
 
-        public void RegisterBadge(Type parentScreenType, Func<bool> condition, string badgeId = null)
+        public void ReRegisterBadge(UITemplateBadgeNotifyView badgeView, IScreenPresenter parentScreenPresenter)
+        {
+            this.RegisterBadgeCondition(badgeView, parentScreenPresenter, null, false);
+        }
+
+        public void RegisterBadgeTemp(Type parentScreenType, Func<bool> condition, string badgeId = null)
         {
             this.RegisterBadgeConditionTemp(parentScreenType, condition, badgeId);
         }

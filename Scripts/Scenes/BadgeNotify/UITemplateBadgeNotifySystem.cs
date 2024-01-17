@@ -19,6 +19,7 @@
 
         #endregion
 
+        private readonly Dictionary<string, Func<bool>>                       badgeToAdapterBadgeItem  = new();
         private readonly Dictionary<Type, HashSet<string>>                    screenTypeToBadgeTemp    = new();
         private readonly Dictionary<string, Func<bool>>                       badgeToConditionFuncTemp = new();
         private readonly Dictionary<Type, HashSet<UITemplateBadgeNotifyView>> screenTypeToBadges       = new();
@@ -51,6 +52,11 @@
             this.badgeToConditionFuncTemp.Add(badgeId, condition);
         }
 
+        private void RegisterBadgeAdapterCondition(Func<bool> condition, string badgeId)
+        {
+            this.badgeToAdapterBadgeItem.TryAdd(badgeId, condition);
+        }
+
         private void RegisParentScreen(UITemplateBadgeNotifyView badgeNotifyView, Type parentScreenType)
         {
             if (parentScreenType == null) return;
@@ -66,15 +72,24 @@
             badgeTempSet.Add(badgeId);
         }
 
-        private bool GetBadgeStatus(UITemplateBadgeNotifyView badgeNotifyView, string badgeId = null)
+        private bool GetBadgeStatusFromBadgeView(UITemplateBadgeNotifyView badgeNotifyView)
         {
-            if (badgeNotifyView == null && badgeId != null) return this.badgeToConditionFuncTemp[badgeId].Invoke();
             if (this.badgeToConditionFunc.TryGetValue(badgeNotifyView, out var conditionFunc))
             {
                 return conditionFunc.Invoke();
             }
 
-            return this.screenTypeToBadges.TryGetValue(this.badgeToNextScreenType[badgeNotifyView], out var badgeOnScreen) ? badgeOnScreen.Any(badgeView => this.GetBadgeStatus(badgeView)) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(id => this.GetBadgeStatus(null, id));
+            return this.screenTypeToBadges.TryGetValue(this.badgeToNextScreenType[badgeNotifyView], out var badgeViews) ? badgeViews.Any(this.GetBadgeStatusFromBadgeView) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatusFromBadgeId);
+        }
+
+        private bool GetBadgeStatusFromBadgeId(string badgeId)
+        {
+            if (this.badgeToConditionFuncTemp.TryGetValue(badgeId, out var conditionFuncTemp))
+            {
+                return conditionFuncTemp.Invoke();
+            }
+
+            return this.badgeToAdapterBadgeItem[badgeId].Invoke();
         }
 
         #region BadgeNotifyFunction
@@ -95,7 +110,14 @@
             this.RegisterBadgeConditionTemp(parentScreenType, condition, badgeId);
         }
 
-        public void RefreshBadgeStatus(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatus(badgeView)); }
+        public void RegisterBadgeAdapter(Func<bool> condition, string badgeId)
+        {
+            this.RegisterBadgeAdapterCondition(condition, badgeId);
+        }
+
+        public void RefreshBadgeStatus(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatusFromBadgeView(badgeView)); }
+
+        public void RefreshBadgeStatusForAdapter(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatusFromBadgeId(badgeView.badgeId)); }
 
         #endregion
 

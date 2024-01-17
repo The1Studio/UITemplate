@@ -79,7 +79,7 @@
                 return conditionFunc.Invoke();
             }
 
-            return this.screenTypeToBadges.TryGetValue(this.badgeToNextScreenType[badgeNotifyView], out var badgeView) ? badgeView.Any(this.GetBadgeStatusFromBadgeView) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatusFromBadgeId);
+            return this.screenTypeToBadges.TryGetValue(this.badgeToNextScreenType[badgeNotifyView], out var badgeViews) ? badgeViews.Any(this.GetBadgeStatusFromBadgeView) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatusFromBadgeId);
         }
 
         private bool GetBadgeStatusFromBadgeId(string badgeId)

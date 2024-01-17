@@ -72,25 +72,24 @@
             badgeTempSet.Add(badgeId);
         }
 
-        private bool GetBadgeStatus(UITemplateBadgeNotifyView badgeNotifyView, string badgeId = null)
+        private bool GetBadgeStatusFromBadgeView(UITemplateBadgeNotifyView badgeNotifyView)
         {
-            if (badgeNotifyView == null && badgeId != null)
-            {
-                if (this.badgeToConditionFuncTemp.TryGetValue(badgeId, value: out var value))
-                {
-                    return value.Invoke();
-                }
-                if (this.badgeToAdapterBadgeItem.TryGetValue(badgeId, out var badgeAdapterCondition))
-                {
-                    return badgeAdapterCondition.Invoke();
-                }
-            }
             if (this.badgeToConditionFunc.TryGetValue(badgeNotifyView, out var conditionFunc))
             {
                 return conditionFunc.Invoke();
             }
 
-            return this.screenTypeToBadgeTemp.TryGetValue(this.badgeToNextScreenType[badgeNotifyView], out var badgeTemp) ? badgeTemp.Any(id => this.GetBadgeStatus(null, id)) : this.screenTypeToBadges[this.badgeToNextScreenType[badgeNotifyView]].Any(badgeView => this.GetBadgeStatus(badgeView));
+            return this.screenTypeToBadges.TryGetValue(this.badgeToNextScreenType[badgeNotifyView], out var badgeView) ? badgeView.Any(this.GetBadgeStatusFromBadgeView) : this.screenTypeToBadgeTemp[this.badgeToNextScreenType[badgeNotifyView]].Any(this.GetBadgeStatusFromBadgeId);
+        }
+
+        private bool GetBadgeStatusFromBadgeId(string badgeId)
+        {
+            if (this.badgeToConditionFuncTemp.TryGetValue(badgeId, out var conditionFuncTemp))
+            {
+                return conditionFuncTemp.Invoke();
+            }
+
+            return this.badgeToAdapterBadgeItem[badgeId].Invoke();
         }
 
         #region BadgeNotifyFunction
@@ -116,9 +115,9 @@
             this.RegisterBadgeAdapterCondition(condition, badgeId);
         }
 
-        public void RefreshBadgeStatus(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatus(badgeView)); }
+        public void RefreshBadgeStatus(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatusFromBadgeView(badgeView)); }
 
-        public void RefreshBadgeStatusForAdapter(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatus(null, badgeView.badgeId)); }
+        public void RefreshBadgeStatusForAdapter(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatusFromBadgeId(badgeView.badgeId)); }
 
         #endregion
 

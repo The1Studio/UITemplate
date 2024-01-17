@@ -43,7 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
             var launchFlowOperation = this.reviewManager.LaunchReviewFlow(this.playReviewInfo);
             await launchFlowOperation;
             this.playReviewInfo = null;
-            if (launchFlowOperation.Error == ReviewErrorCode.NoError) return;
+            if (launchFlowOperation.Error != ReviewErrorCode.NoError) return;
             this.DirectlyOpen();
         }
 

@@ -461,14 +461,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 mrecAdService.HideAllMREC();
             }
 
-            if (this.adServicesConfig.EnableCollapsibleBanner)
-            {
-                this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
-            }
-            else
-            {
-                this.adServices.DestroyBannerAd();
-            }
+            this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
+            this.adServices.DestroyBannerAd();
         }
 
         public bool IsRemovedAds => this.adServices.IsRemoveAds();

@@ -426,11 +426,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
 
-                if (adViewPosition == AdViewPosition.BottomCenter)
-                {
-                    this.IsShowMrecAdOnBottom = true;
-                    this.HideBannerAd();
-                }
+                this.IsShowMrecAdOnBottom = true;
+                this.HideBannerAd();
             }
         }
 
@@ -445,12 +442,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     mrecAdService.HideMREC(adViewPosition);
                 }
 
-                if (adViewPosition == AdViewPosition.BottomCenter)
-                {
-                    this.IsShowMrecAdOnBottom = false;
-                    if (this.IsShowBannerAd) return;
-                    this.ShowBannerAd();
-                }
+                this.IsShowMrecAdOnBottom = false;
+                if (this.IsShowBannerAd) return;
+                this.ShowBannerAd();
             }
         }
 

@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using BlueprintFlow.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -25,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateCurrencyBlueprint         uiTemplateCurrencyBlueprint;
         private readonly UITemplateShopBlueprint             uiTemplateShopBlueprint;
         private readonly UITemplateItemBlueprint             uiTemplateItemBlueprint;
+        private readonly IAudioService                       audioService;
 
         #endregion
 
@@ -34,7 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateFlyingAnimationController uiTemplateFlyingAnimationController,
             UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus,
-            UITemplateItemBlueprint uiTemplateItemBlueprint, IScreenManager screenManager)
+            UITemplateItemBlueprint uiTemplateItemBlueprint, IScreenManager screenManager,IAudioService audioService)
         {
             this.uiTemplateInventoryData             = uiTemplateInventoryData;
             this.uiTemplateFlyingAnimationController = uiTemplateFlyingAnimationController;
@@ -43,6 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus                           = signalBus;
             this.uiTemplateItemBlueprint             = uiTemplateItemBlueprint;
             this.screenManager                       = screenManager;
+            this.audioService                        = audioService;
         }
 
         public List<UITemplateItemData> GetDefaultItemByCategory(string category)
@@ -136,7 +139,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
         
-        public async UniTask<bool> AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null)
+        public async UniTask<bool> AddCurrency(int addingValue, string id = DefaultSoftCurrencyID, RectTransform startAnimationRect = null, string claimSoundKey = null)
         {
             var lastValue = this.GetCurrencyValue(id);
             
@@ -153,6 +156,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 var currencyView = this.screenManager.RootUICanvas.GetComponentsInChildren<UITemplateCurrencyView>().FirstOrDefault(viewTarget => viewTarget.CurrencyKey.Equals(id));
                 if (currencyView != null)
                 {
+                    if (!string.IsNullOrEmpty(claimSoundKey)) this.audioService.PlaySound(claimSoundKey);
                     await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(startAnimationRect, prefabName: flyingObject, target: currencyView.gameObject.transform as RectTransform);
                 }
             }
@@ -223,7 +227,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             {
                 this.uiTemplateInventoryData.IDToItemData.Remove(notExistKey);
             }
-            
+             
             foreach (var itemRecord in this.uiTemplateItemBlueprint.Values)
             {
                 // Add item to inventory
@@ -272,11 +276,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public async UniTask AddGenericReward(string rewardKey, int rewardValue, RectTransform startPosCurrency = null)
+        public async UniTask AddGenericReward(string rewardKey, int rewardValue, RectTransform startPosCurrency = null, string claimSoundKey = null)
         {
             if (this.uiTemplateCurrencyBlueprint.TryGetValue(rewardKey, out _))
             {
-                await this.AddCurrency(rewardValue, rewardKey, startPosCurrency);
+                await this.AddCurrency(rewardValue, rewardKey, startPosCurrency,claimSoundKey);
             }
             else if (this.uiTemplateItemBlueprint.TryGetValue(rewardKey, out _))
             {

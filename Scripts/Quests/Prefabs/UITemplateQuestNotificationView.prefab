@@ -53,7 +53,6 @@ MonoBehaviour:
   btn: {fileID: 1452510259590336452}
   popup: {fileID: 6596779024602606304}
   destination: {fileID: 3549648414023070145}
-  notificationQuestSoundKey: sfx_complete_quest
   txtName: {fileID: 1147734767755182453}
   slider: {fileID: 4121459638908256849}
   imgReward: {fileID: 5538997873279912547}

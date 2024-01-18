@@ -28,6 +28,7 @@
 
         public Button btnClaim;
         public Button btnClose;
+        public string claimSoundKey;
     }
 
     public class UITemplateDailyRewardPopupModel
@@ -200,7 +201,7 @@
                 this.ClaimItemInPackReward(packPresenter);
             }
 
-            this.uiTemplateDailyRewardController.ClaimAllAvailableReward(dayToView);
+            this.uiTemplateDailyRewardController.ClaimAllAvailableReward(dayToView, this.View.claimSoundKey);
             this.logService.Log($"Do Animation Claim Reward");
             this.popupModel.OnClaimFinish?.Invoke();
 

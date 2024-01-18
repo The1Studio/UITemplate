@@ -89,7 +89,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <returns></returns>
         public RewardStatus GetDateRewardStatus(int day) => this.uiTemplateDailyRewardData.RewardStatus[day - 1];
 
-        public async void ClaimAllAvailableReward(Dictionary<int, RectTransform> dayToView)
+        public async void ClaimAllAvailableReward(Dictionary<int, RectTransform> dayToView,  string claimSoundKey = null)
         {
             var playAnimTask = UniTask.CompletedTask;
 
@@ -103,7 +103,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                     foreach (var (key, item) in reward.Reward)
                     {
-                        this.uiTemplateInventoryDataController.AddGenericReward(item.RewardId, item.RewardValue, dayToView[reward.Day]).Forget();
+                        this.uiTemplateInventoryDataController.AddGenericReward(item.RewardId, item.RewardValue, dayToView[reward.Day],claimSoundKey).Forget();
                     }
                 }
             }

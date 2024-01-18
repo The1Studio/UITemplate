@@ -7,12 +7,14 @@ namespace TheOneStudio.UITemplate.Quests
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.Quests.UI;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Serialization;
     using UnityEngine.UI;
     using Zenject;
 
@@ -21,6 +23,7 @@ namespace TheOneStudio.UITemplate.Quests
         [SerializeField] private Button    btn;
         [SerializeField] private Transform popup;
         [SerializeField] private Transform destination;
+        [SerializeField] private string    notificationQuestSoundKey;
 
         [SerializeField] private TMP_Text txtName;
         [SerializeField] private Slider   slider;
@@ -35,6 +38,7 @@ namespace TheOneStudio.UITemplate.Quests
         private SignalBus     signalBus;
         private ScreenManager screenManager;
         private IGameAssets   gameAssets;
+        private IAudioService audioService;
 
         private void Awake()
         {
@@ -43,11 +47,12 @@ namespace TheOneStudio.UITemplate.Quests
         }
 
         [Inject]
-        public void Construct(SignalBus signalBus, ScreenManager screenManager, IGameAssets gameAssets)
+        public void Construct(SignalBus signalBus, ScreenManager screenManager, IGameAssets gameAssets, IAudioService audioService)
         {
             this.signalBus     = signalBus;
             this.screenManager = screenManager;
             this.gameAssets    = gameAssets;
+            this.audioService  = audioService;
         }
 
         void IInitializable.Initialize()
@@ -64,6 +69,7 @@ namespace TheOneStudio.UITemplate.Quests
         {
             if (signal.QuestController.Record.HasTag("Chest")) return;
             var status = signal.QuestController.Progress.Status;
+
             if (status is not QuestStatus.NotCompleted and not QuestStatus.NotCollected) return;
 
             if (this.tween.IsActive())
@@ -92,6 +98,7 @@ namespace TheOneStudio.UITemplate.Quests
 
                 if (status is QuestStatus.NotCollected)
                 {
+                    if (!string.IsNullOrEmpty(this.notificationQuestSoundKey)) this.audioService.PlaySound(this.notificationQuestSoundKey);
                     DOTween.Sequence()
                         .AppendInterval(1)
                         .Append(this.slider.DOValue(1, .5f))

@@ -171,6 +171,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void ShownAdInDifferentProcessHandler() { this.IsResumedFromAdsOrIAP = true; }
 
         private bool IsFiredFirstOpenEligibleSignal = false;
+
         private void CheckShowFirstOpen()
         {
             if (!this.IsFiredFirstOpenEligibleSignal)
@@ -268,7 +269,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #region InterstitialAd
 
-        public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place); }
+        public virtual bool IsInterstitialAdReady(string place) { return this.adServices.IsInterstitialAdReady(place) || this.backFillAdsService.IsInterstitialAdReady(place); }
 
         private int FirstInterstitialAdsDelayTime =>
             this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
@@ -280,32 +281,40 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                    || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
         }
 
-        public virtual bool ShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)
+        public bool CanShowInterstitialAd(string place, bool force = false)
         {
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log(
                 $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {isInterstitialAdEnable} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
             if (this.adServices.IsRemoveAds() || !isInterstitialAdEnable || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
             {
-                onShowInterstitialFinished?.Invoke(false);
                 return false;
             }
 
             this.logService.Log(
                 $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
-            if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval
-                 || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
+            if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval ||
+                 (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
+                return false;
+            }
+
+            return true;
+        }
+
+        public virtual bool ShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)
+        {
+            if (!this.CanShowInterstitialAd(place, force))
+            {
                 onShowInterstitialFinished?.Invoke(false);
                 return false;
             }
 
             this.signalBus.Fire(new InterstitialAdEligibleSignal(place));
 
-            this.logService.Log(
-                $"onelog: ShowInterstitialAd3 {place} force {force} check1 {this.adServices.IsInterstitialAdReady(place)} check2 {this.backFillAdsService.IsInterstitialAdReady(place)}");
+            this.logService.Log($"onelog: ShowInterstitialAd3 {place} check1 {this.adServices.IsInterstitialAdReady(place)} check2 {this.backFillAdsService.IsInterstitialAdReady(place)}");
             if (!this.adServices.IsInterstitialAdReady(place))
             {
                 if (!this.backFillAdsService.IsInterstitialAdReady(place))
@@ -358,7 +367,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             void InternalShowInterstitial()
             {
-                this.logService.Log($"onelog: ShowInterstitialAd4 {place} force {force}");
+                this.logService.Log($"onelog: ShowInterstitialAd4 {place}");
                 this.totalNoAdsPlayingTime = 0;
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();

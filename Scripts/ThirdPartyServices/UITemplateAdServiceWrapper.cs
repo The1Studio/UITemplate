@@ -452,10 +452,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnRemoveAdsComplete()
         {
-            foreach (var mrecAdService in this.mrecAdServices)
-            {
-                mrecAdService.HideAllMREC();
-            }
+            this.HideAllMREC();
 
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
             this.adServices.DestroyBannerAd();
@@ -540,9 +537,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void HideAllMREC()
         {
-            foreach (AdViewPosition position in Enum.GetValues(typeof(AdViewPosition)))
+            foreach (var mrecAdService in this.mrecAdServices)
             {
-                this.HideMREC(position);
+                mrecAdService.HideAllMREC();
             }
         }
 

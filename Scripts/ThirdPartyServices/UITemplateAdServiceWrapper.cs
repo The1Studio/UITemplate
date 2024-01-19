@@ -80,49 +80,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus                 = signalBus;
         }
 
-        #region banner
-
-        public BannerLoadStrategy BannerLoadStrategy => this.thirdPartiesConfig.AdSettings.BannerLoadStrategy;
-
-        public virtual async void ShowBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
-        {
-            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd)
-            {
-                return;
-            }
-
-            this.IsShowBannerAd = true;
-            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
-
-            if (this.IsShowBannerAd)
-            {
-                if (this.adServicesConfig.EnableCollapsibleBanner)
-                {
-                    this.collapsibleBannerAd.ShowCollapsibleBannerAd();
-                }
-                else
-                {
-                    this.adServices.ShowBannerAd(bannerAdsPosition, width, height);
-                }
-            }
-        }
-
-        public virtual void HideBannerAd()
-        {
-            this.IsShowBannerAd = false;
-            if (this.adServicesConfig.EnableCollapsibleBanner)
-            {
-                // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
-                this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
-            }
-            else
-            {
-                this.adServices.HideBannedAd();
-            }
-        }
-
-        #endregion
-
         public void Initialize()
         {
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.OnInterstitialAdClosedHandler);
@@ -152,7 +109,77 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
             this.signalBus.Subscribe<MRecAdDisplayedSignal>(this.OnMRECDisplayed);
             this.signalBus.Subscribe<MRecAdDismissedSignal>(this.OnMRECDismissed);
+
+            //Collapsible
+            this.signalBus.Subscribe<CollapsibleBannerAdLoadFailedSignal>(this.OnCollapsibleBannerLoadFailed);
+            this.signalBus.Subscribe<CollapsibleBannerAdLoadedSignal>(this.OnCollapsibleBannerLoaded);
         }
+
+
+        #region banner
+
+        public BannerLoadStrategy BannerLoadStrategy => this.thirdPartiesConfig.AdSettings.BannerLoadStrategy;
+
+        public virtual async void ShowBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
+        {
+            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd)
+            {
+                return;
+            }
+
+            this.IsShowBannerAd = true;
+            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
+
+            if (this.IsShowBannerAd)
+            {
+                if (this.adServicesConfig.EnableCollapsibleBanner)
+                {
+                    this.InternalShowCollapsibleBannerAd();
+                }
+                else
+                {
+                    this.InternalShowMediationBannerAd(bannerAdsPosition, width, height);
+                }
+            }
+        }
+
+        private void InternalShowMediationBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
+        {
+            this.adServices.ShowBannerAd(bannerAdsPosition, width, height);
+        }
+
+        private void InternalShowCollapsibleBannerAd() { this.collapsibleBannerAd.ShowCollapsibleBannerAd(); }
+
+        public virtual void HideBannerAd()
+        {
+            this.IsShowBannerAd = false;
+            if (this.adServicesConfig.EnableCollapsibleBanner)
+            {
+                this.InternalHideCollapsibleBannerAd();
+            }
+            else
+            {
+                this.InternalHideMediationBannerAd();
+            }
+        }
+
+        private void InternalHideMediationBannerAd() { this.adServices.HideBannedAd(); }
+
+        private void InternalHideCollapsibleBannerAd()
+        {
+            // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
+            this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
+        }
+
+        private void OnCollapsibleBannerLoaded() { this.InternalHideMediationBannerAd(); }
+
+        private void OnCollapsibleBannerLoadFailed()
+        {
+            this.InternalHideCollapsibleBannerAd();
+            this.InternalShowMediationBannerAd();
+        }
+
+        #endregion
 
         private void OnInterstitialAdDisplayedHandler()
         {

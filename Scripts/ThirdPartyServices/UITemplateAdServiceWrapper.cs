@@ -152,6 +152,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
             this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenClose);
             this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
+            this.signalBus.Subscribe<MRecAdDisplayedSignal>(this.OnMRECDisplay);
         }
 
         private void OnInterstitialAdDisplayedHandler()
@@ -434,12 +435,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
-
-                if (adViewPosition == AdViewPosition.BottomCenter)
-                {
-                    this.IsShowMrecAdOnBottom = true;
-                    this.HideBannerAd();
-                }
             }
         }
 
@@ -522,6 +517,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         private void OnMRECLoaded() { this.CheckCurrentScreenCanShowMREC(); }
+
+        private void OnMRECDisplay() { this.HideBannerAd(); }
 
         private void AddScreenCanShowMREC(Type screenType)
         {

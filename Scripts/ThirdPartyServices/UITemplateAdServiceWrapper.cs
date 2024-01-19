@@ -50,7 +50,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         //Banner
         private bool IsShowBannerAd         { get; set; }
-        private bool IsShowMrecAdOnBottom   { get; set; }
         private bool IsCheckFirstScreenShow { get; set; }
 
         //AOA
@@ -92,7 +91,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            await UniTask.WaitUntil(() => !this.IsShowMrecAdOnBottom);
             this.IsShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
 
@@ -152,7 +150,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
             this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenClose);
             this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
-            this.signalBus.Subscribe<MRecAdDisplayedSignal>(this.OnMRECDisplay);
+            this.signalBus.Subscribe<MRecAdDisplayedSignal>(this.OnMRECDisplayed);
+            this.signalBus.Subscribe<MRecAdDismissedSignal>(this.OnMRECDismissed);
         }
 
         private void OnInterstitialAdDisplayedHandler()
@@ -448,13 +447,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     mrecAdService.HideMREC(adViewPosition);
                 }
-
-                if (adViewPosition == AdViewPosition.BottomCenter)
-                {
-                    this.IsShowMrecAdOnBottom = false;
-                    if (this.IsShowBannerAd) return;
-                    this.ShowBannerAd();
-                }
             }
         }
 
@@ -518,7 +510,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnMRECLoaded() { this.CheckCurrentScreenCanShowMREC(); }
 
-        private void OnMRECDisplay() { this.HideBannerAd(); }
+        private void OnMRECDisplayed() { this.HideBannerAd(); }
+
+        private void OnMRECDismissed() { this.ShowBannerAd(); }
 
         private void AddScreenCanShowMREC(Type screenType)
         {

@@ -16,6 +16,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
     public class UITemplateFlyingAnimationController
     {
+        private float FlyPunchTime              = 0.5f;
+        private float DelayFlyTargetTimePerItem = 0.08f;
+        private int   FlyPunchVibrator          = 2;
+        private float FlyElasticPositionScale   = 0.5f;
+
+        #region Inject
+
         private readonly ScreenManager screenManager;
         private readonly IGameAssets   gameAssets;
         private const    string        PrefabName = "UITemplateFlyingAnimationItem";
@@ -26,16 +33,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.gameAssets    = gameAssets;
         }
 
-        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "")
-            where T : UITemplateFlyingAnimationView
+        #endregion
+
+        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "",
+            float flyPunchPositionFactor = 0.3f)
+        where T : UITemplateFlyingAnimationView
         {
             var endPosition = target != null
                 ? target.position
                 : this.screenManager.RootUICanvas
-                    .GetComponentsInChildren<T>()
-                    .FirstOrDefault()?
-                    .TargetFlyingAnimation
-                    .position;
+                      .GetComponentsInChildren<T>()
+                      .FirstOrDefault()?
+                      .TargetFlyingAnimation
+                      .position;
             if (endPosition == null || startPointRect == null) return;
 
             var totalCount  = Random.Range(minAmount, maxAmount);
@@ -52,24 +62,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 item.transform.localScale = Vector3.one;
                 item.transform.position   = startPoint;
 
-                item.transform.DOPunchPosition(item.transform.position * 0.3f, 0.5f, 2, 0.5f).SetUpdate(true);
+                item.transform.DOPunchPosition(item.transform.position * flyPunchPositionFactor, this.FlyPunchTime, this.FlyPunchVibrator, this.FlyElasticPositionScale).SetUpdate(true);
                 listItem.Add(item);
             }
 
             Object.Destroy(box2D.gameObject);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(0.25f),DelayType.UnscaledDeltaTime);
-            const float FLYING_TIME = 0.08f;
-            this.DoFlyingItems(listItem, FLYING_TIME, endPosition.Value, timeAnim).Forget();
+            await UniTask.Delay(TimeSpan.FromSeconds(this.FlyPunchTime / 2), DelayType.UnscaledDeltaTime);
+            this.DoFlyingItems(listItem, this.DelayFlyTargetTimePerItem, endPosition.Value, timeAnim).Forget();
 
-            await UniTask.Delay(TimeSpan.FromSeconds(FLYING_TIME + timeAnim),DelayType.UnscaledDeltaTime);
+            await UniTask.Delay(TimeSpan.FromSeconds(this.DelayFlyTargetTimePerItem + timeAnim), DelayType.UnscaledDeltaTime);
         }
 
-        private async UniTask DoFlyingItems(List<GameObject> listItem, float flyingTime, Vector3 endUiPos, float timeAnim)
+        private async UniTask DoFlyingItems(List<GameObject> listItem, float delayFlyingTime, Vector3 endUiPos, float timeAnim)
         {
             foreach (var item in listItem)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(flyingTime),DelayType.UnscaledDeltaTime);
+                await UniTask.Delay(TimeSpan.FromSeconds(delayFlyingTime), DelayType.UnscaledDeltaTime);
 
                 item.transform.DOMove(endUiPos, timeAnim)
                     .SetEase(Ease.InBack)

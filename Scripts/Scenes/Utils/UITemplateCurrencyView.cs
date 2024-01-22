@@ -16,10 +16,12 @@
         private UITemplateInventoryDataController uiTemplateInventoryDataController;
 
         #endregion
-        
+
         [SerializeField] public TMP_Text currencyValueText;
 
         [SerializeField] public string currencyId;
+
+        [SerializeField] private float animDuration = 1.5f;
 
         public GameObject CurrencyIcon;
 
@@ -32,7 +34,7 @@
         {
             this.signalBus                         = signalBus;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            
+
             this.Initialize();
             this.ResetState();
         }
@@ -46,7 +48,7 @@
                 this.defaultColor = this.currencyValueText.color;
             }
         }
-        
+
         private void ResetState()
         {
             this.CurrencyIcon.transform.localScale = Vector3.one;
@@ -56,33 +58,33 @@
 
         private void UpdateData(int newValue) { this.currencyValueText.text = newValue.ToString(); }
 
-
         private void OnDestroy()
         {
             if (this.signalBus == null)
             {
                 throw new Exception($"Please inject for GameObject: {this.gameObject.name} - {this.gameObject.transform.parent}");
             }
+
             this.signalBus.Unsubscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
         }
 
         private void OnUpdateCurrency(OnUpdateCurrencySignal obj)
         {
             if (!this.currencyId.Equals(obj.Id)) return;
-            
-            var duration   = 1.5f;
+
             var yoyoTime   = 4;
             var scaleValue = 1.2f;
-            this.CurrencyIcon.transform.DOScale(Vector3.one * scaleValue, duration / yoyoTime).SetLoops(yoyoTime, LoopType.Yoyo).SetUpdate(isIndependentUpdate:true);
+            this.CurrencyIcon.transform.DOScale(Vector3.one * scaleValue, this.animDuration / yoyoTime).SetLoops(yoyoTime, LoopType.Yoyo).SetUpdate(isIndependentUpdate: true);
             this.updateCurrencyTween?.Kill();
             this.currencyValueText.color = obj.Amount >= 0 ? Color.green : Color.red;
 
-            this.updateCurrencyTween = DOTween.To(() => obj.FinalValue - obj.Amount, this.UpdateData, obj.FinalValue, duration).OnComplete(() =>
+            this.updateCurrencyTween = DOTween.To(() => obj.FinalValue - obj.Amount, this.UpdateData, obj.FinalValue, this.animDuration).OnComplete(() =>
             {
                 this.UpdateData(obj.FinalValue);
                 this.ResetState();
-            }).SetUpdate(isIndependentUpdate:true);
+            }).SetUpdate(isIndependentUpdate: true);
         }
+
         public override string CurrencyKey => this.currencyId;
     }
 }

@@ -15,8 +15,9 @@
         private const string DailyRewardSymbol = "THEONE_DAILY_REWARD";
         private const string BadgeNotifySymbol = "THEONE_BADGE_NOTIFY";
 
-
         public static string ResourcePath = $"GameConfigs/{nameof(GameFeaturesSetting)}";
+
+        #region Racing Event
 
         [OnValueChanged("OnChangeRacingEvent")]
         public bool enableRacingEvent;
@@ -25,33 +26,34 @@
         public GameEventRacingConfig racingConfig;
 
         public GameEventRacingConfig RacingConfig => this.racingConfig;
-        
+
+        #endregion
+
+        #region Daily Reward
+
         [OnValueChanged("OnChangeDailyReward")]
         public bool enableDailyReward;
-        
+
         [SerializeField] [ShowIf(nameof(enableDailyReward))] [BoxGroup("Daily Reward")]
         private DailyRewardConfig dailyRewardConfig;
 
         public DailyRewardConfig DailyRewardConfig => this.dailyRewardConfig;
 
+        #endregion
+
+        #region Badge Notify
+
         [OnValueChanged("OnChangeBadgeNotify")]
         public bool enableBadgeNotify;
 
+        #endregion
+
 #if UNITY_EDITOR
-        private void OnChangeRacingEvent()
-        {
-            DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent);
-        }
-        
-        private void OnChangeDailyReward()
-        {
-            DefineSymbolEditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward);
-        }
-        
-        private void OnChangeBadgeNotify()
-        {
-            DefineSymbolEditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify);
-        }
+        private void OnChangeRacingEvent() { DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
+
+        private void OnChangeDailyReward() { DefineSymbolEditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward); }
+
+        private void OnChangeBadgeNotify() { DefineSymbolEditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify); }
 #endif
     }
 }

@@ -132,6 +132,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.IsShowBannerAd)
             {
+                this.HideBannerAd();
                 if (this.adServicesConfig.EnableCollapsibleBanner)
                 {
                     this.InternalShowCollapsibleBannerAd();
@@ -153,14 +154,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual void HideBannerAd()
         {
             this.IsShowBannerAd = false;
-            if (this.adServicesConfig.EnableCollapsibleBanner)
-            {
-                this.InternalHideCollapsibleBannerAd();
-            }
-            else
-            {
-                this.InternalHideMediationBannerAd();
-            }
+            this.InternalHideCollapsibleBannerAd();
+            this.InternalHideMediationBannerAd();
         }
 
         private void InternalHideMediationBannerAd() { this.adServices.HideBannedAd(); }

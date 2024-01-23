@@ -8,49 +8,55 @@ namespace UITemplate.Editor.TheOneWindowTools
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using UnityEditor;
     using UnityEngine;
-    using UnityEngine.Serialization;
 
     public class TheOneWindow : OdinEditorWindow
     {
-        [MenuItem("TheOne/Configuration And Tools")]
-        private static void OpenWindow() { GetWindow<TheOneWindow>().Show(); }
-
-        [TabGroup("Analytics Config")] [InlineEditor]
+        [TabGroup("Analytics Config")]
+        [InlineEditor]
         public AnalyticConfig AnalyticConfig;
 
-        [TabGroup("Ads Config")] [InlineEditor]
+        [TabGroup("Ads Config")]
+        [InlineEditor]
         public ThirdPartiesConfig ThirdPartiesConfig;
 
-        [InlineEditor] [TabGroup("Remote Config")]
+        [InlineEditor]
+        [TabGroup("Remote Config")]
         public RemoteConfigSetting remoteConfigSetting;
-        
-        [InlineEditor] [TabGroup("Game Features")]
+
+        [InlineEditor]
+        [TabGroup("Game Features")]
         public GameFeaturesSetting gameFeaturesSetting;
 
         private void OnEnable()
         {
-            this.AnalyticConfig      = Resources.Load<AnalyticConfig>($"GameConfigs/{nameof(this.AnalyticConfig)}");
-            this.ThirdPartiesConfig  = Resources.Load<ThirdPartiesConfig>($"GameConfigs/{nameof(this.ThirdPartiesConfig)}");
-            this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);
-            this.gameFeaturesSetting   = Resources.Load<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath);
+            this.AnalyticConfig      = ForceCreateAssetsIfNull<AnalyticConfig>("GameConfigs");
+            this.ThirdPartiesConfig  = ForceCreateAssetsIfNull<ThirdPartiesConfig>("GameConfigs");
+            this.remoteConfigSetting = ForceCreateAssetsIfNull<RemoteConfigSetting>("GameConfigs");
+            this.gameFeaturesSetting = ForceCreateAssetsIfNull<GameFeaturesSetting>("GameConfigs");
 
-            if (this.remoteConfigSetting == null)
-            {
-                AssetDatabase.CreateAsset(CreateInstance<RemoteConfigSetting>(), $"Assets/Resources/{RemoteConfigSetting.ResourcePath}.asset");
-                this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>($"GameConfigs/{nameof(RemoteConfigSetting)}");
-            }
-            
-            if (this.gameFeaturesSetting == null)
-            {
-                AssetDatabase.CreateAsset(CreateInstance<GameFeaturesSetting>(), $"Assets/Resources/{GameFeaturesSetting.ResourcePath}.asset");
-                this.gameFeaturesSetting = Resources.Load<GameFeaturesSetting>($"GameConfigs/{nameof(this.gameFeaturesSetting)}");
-            }
-
-            this.ThirdPartiesConfig.AdSettings.AdMob.OnDataChange = (admobSetting) =>
+            this.ThirdPartiesConfig.AdSettings.AdMob.OnDataChange = admobSetting =>
             {
                 EditorUtility.SetDirty(admobSetting);
                 AssetDatabase.SaveAssets();
             };
+            return;
+
+            T ForceCreateAssetsIfNull<T>(string configFolder, string assetName = null)
+                where T : ScriptableObject
+            {
+                assetName ??= typeof(T).Name;
+                if (Resources.Load<T>($"{configFolder}/{assetName}") is { } result)
+                {
+                    return result;
+                }
+
+                if (!AssetDatabase.IsValidFolder("Assets/Resources")) AssetDatabase.CreateFolder("Assets", "Resources");
+                if (!AssetDatabase.IsValidFolder($"Assets/Resources/{configFolder}")) AssetDatabase.CreateFolder("Assets/Resources", configFolder);
+
+                AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<T>(), $"Assets/Resources/{configFolder}/{assetName}.asset");
+
+                return Resources.Load<T>($"{configFolder}/{assetName}");
+            }
         }
 
         protected override void OnGUI()
@@ -62,6 +68,32 @@ namespace UITemplate.Editor.TheOneWindowTools
             {
                 EditorUtility.SetDirty(this.ThirdPartiesConfig);
                 AssetDatabase.SaveAssets();
+            }
+        }
+
+        [MenuItem("TheOne/Configuration And Tools")]
+        private static void OpenWindow()
+        {
+            EditorWindow.GetWindow<TheOneWindow>().Show();
+        }
+
+        [InitializeOnLoadMethod]
+        private static void OnReloadDomain()
+        {
+            OpenWindowIfNull<AnalyticConfig>("GameConfigs");
+            OpenWindowIfNull<ThirdPartiesConfig>("GameConfigs");
+            OpenWindowIfNull<RemoteConfigSetting>("GameConfigs");
+            OpenWindowIfNull<GameFeaturesSetting>("GameConfigs");
+
+            return;
+
+            void OpenWindowIfNull<T>(string configFolder, string assetName = null)
+                where T : ScriptableObject
+            {
+                assetName ??= typeof(T).Name;
+                if (Resources.Load<T>($"{configFolder}/{assetName}") != null) return;
+                Debug.LogError($"Cannot find {assetName}. Open TheOneWindow to create one.");
+                TheOneWindow.OpenWindow();
             }
         }
     }

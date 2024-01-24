@@ -1,11 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.HighScore
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.HighScore.Models;
     using TheOneStudio.UITemplate.HighScore.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine;
     using Zenject;
 
     /// <summary>
@@ -53,7 +55,7 @@
                 this.signalBus.Fire(new NewHighScoreSignal(key, type, oldHighScore, newHighScore));
             });
         }
-
+        
         /// <summary>
         ///     Get high score
         /// </summary>
@@ -70,6 +72,18 @@
             return this.highScoreData[key][type][GetCurrentTime(type)];
         }
 
+        public void SetLastHighScore(string key, int newHighScore)
+        {
+            Enum.GetValues(typeof(HighScoreType)).Cast<HighScoreType>().ForEach(type =>
+            {
+                this.highScoreData[key].AddAllHighScore(type,DateTime.UtcNow,newHighScore);
+            });
+            
+        }
+        public Dictionary<DateTime,int> GetAllHighScore(string key, HighScoreType type)
+        {
+            return this.highScoreData[key].GetAllHighScore(type).topUserHighScores;
+        }
         private static DateTime GetCurrentTime(HighScoreType type) => type switch
         {
             HighScoreType.Daily   => DateTime.UtcNow.Date,
@@ -79,7 +93,6 @@
             HighScoreType.AllTime => DateTime.MinValue,
             _                     => throw new ArgumentOutOfRangeException(nameof(type), type, null),
         };
-
         #region Default
 
         /// <summary>

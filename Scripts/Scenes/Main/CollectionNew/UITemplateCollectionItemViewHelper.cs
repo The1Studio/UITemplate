@@ -38,7 +38,7 @@
             view.OnBuyDailyReward = () => param.OnBuyItem?.Invoke(param);
             view.OnBuyLuckySpin   = () => param.OnBuyItem?.Invoke(param);
             view.OnBuyStartPack   = () => param.OnBuyItem?.Invoke(param);
-            this.SetButtonStatusAndBorderStatus(param, view);
+            //this.SetButtonStatusAndBorderStatus(param, view);
         }
 
         protected virtual void SetButtonStatusAndBorderStatus(ItemCollectionItemModel param, ItemCollectionItemView view)

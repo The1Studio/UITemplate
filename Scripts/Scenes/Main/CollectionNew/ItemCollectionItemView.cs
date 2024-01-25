@@ -24,6 +24,7 @@
         public Action<ItemCollectionItemModel> OnSelectItem { get; set; }
         public Action<ItemCollectionItemModel> OnBuyItem    { get; set; }
         public Action<ItemCollectionItemModel> OnUseItem    { get; set; }
+        public Action<ItemCollectionItemModel,ItemCollectionItemView> OnBindData    { get; set; }
     }
 
     public class ItemCollectionItemView : TViewMono
@@ -33,18 +34,42 @@
         public TextMeshProUGUI txtPrice;
         public Button          btnBuyCoin, btnBuyAds, btnBuyIap, btnDailyReward, btnLuckySpin, btnSelect, btnUse, btnStartPack;
 
-        public Action OnBuyCoin, OnBuyAds, OnBuyIap, OnSelect, OnUse, OnBuyDailyReward, OnBuyLuckySpin, OnBuyStartPack;
+        public Action       OnBuyCoin, OnBuyAds, OnBuyIap, OnSelect, OnUse, OnBuyDailyReward, OnBuyLuckySpin, OnBuyStartPack;
 
         private void Awake()
         {
-            this.btnBuyCoin.onClick.AddListener(() => { this.OnBuyCoin?.Invoke(); });
-            this.btnBuyAds.onClick.AddListener(() => { this.OnBuyAds?.Invoke(); });
-            this.btnBuyIap.onClick.AddListener(() => { this.OnBuyIap?.Invoke(); });
-            this.btnSelect.onClick.AddListener(() => { this.OnSelect?.Invoke(); });
-            this.btnUse.onClick.AddListener(() => { this.OnUse?.Invoke(); });
-            this.btnDailyReward.onClick.AddListener(() => { this.OnBuyDailyReward?.Invoke(); });
-            this.btnLuckySpin.onClick.AddListener(() => { this.OnBuyLuckySpin?.Invoke(); });
-            this.btnStartPack.onClick.AddListener(() => { this.OnBuyStartPack?.Invoke(); });
+            this.btnBuyCoin.onClick.AddListener(() =>
+            {
+                this.OnBuyCoin?.Invoke();
+            });
+            this.btnBuyAds.onClick.AddListener(() =>
+            {
+                this.OnBuyAds?.Invoke();
+            });
+            this.btnBuyIap.onClick.AddListener(() =>
+            {
+                this.OnBuyIap?.Invoke();
+            });
+            this.btnSelect.onClick.AddListener(() =>
+            {
+                this.OnSelect?.Invoke();
+            });
+            this.btnUse.onClick.AddListener(() =>
+            {
+                this.OnUse?.Invoke();
+            });
+            this.btnDailyReward.onClick.AddListener(() =>
+            {
+                this.OnBuyDailyReward?.Invoke();
+            });
+            this.btnLuckySpin.onClick.AddListener(() =>
+            {
+                this.OnBuyLuckySpin?.Invoke();
+            });
+            this.btnStartPack.onClick.AddListener(() =>
+            {
+                this.OnBuyStartPack?.Invoke();
+            });
         }
     }
 
@@ -52,15 +77,17 @@
     {
         private readonly UITemplateCollectionItemViewHelper uiTemplateCollectionItemViewHelper;
 
-        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateCollectionItemViewHelper uiTemplateCollectionItemViewHelper) : base(gameAssets)
+        public ItemCollectionItemPresenter(IGameAssets gameAssets,
+                                           UITemplateInventoryDataController uiTemplateInventoryDataController,
+                                           UITemplateCollectionItemViewHelper uiTemplateCollectionItemViewHelper) : base(gameAssets)
         {
             this.uiTemplateCollectionItemViewHelper = uiTemplateCollectionItemViewHelper;
         }
 
         public override async void BindData(ItemCollectionItemModel param)
         {
-            this.uiTemplateCollectionItemViewHelper.BindDataItem(param, this.View);
+            this.uiTemplateCollectionItemViewHelper.BindDataItem(param, View);
+            param.OnBindData(param, this.View);
         }
 
         public override void Dispose()

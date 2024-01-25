@@ -506,7 +506,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType()))
             {
-                this.HideBannerAd();
+                this.HideBannerAd(); // hot fix TODO: update flow show ads
                 return;
             }
 

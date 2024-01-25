@@ -519,6 +519,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
 #if THEONE_COLLAPSIBLE_BANNER
                 if (!this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow) return;
+                if (this.thirdPartiesConfig.AdSettings.CollapsibleIgnoreRefreshOnScreens.Contains(signal.ScreenPresenter.GetType().Name)) return;
                 this.ShowBannerAd();
 #endif
                 return;

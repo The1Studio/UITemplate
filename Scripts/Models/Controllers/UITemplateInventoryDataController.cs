@@ -171,9 +171,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 }
             }
 
-            this.SetCurrencyWithCap(resultValue, id);
+            var currencyWithCap = this.SetCurrencyWithCap(resultValue, id);
 
-            this.signalBus.Fire(new OnUpdateCurrencySignal(id, addingValue, lastValue + addingValue));
+            this.signalBus.Fire(new OnUpdateCurrencySignal(id, currencyWithCap - lastValue, currencyWithCap));
             return true;
         }
 
@@ -181,14 +181,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             var lastValue = this.GetCurrencyValue(id);
 
-            this.SetCurrencyWithCap(finalValue, id);
-            this.signalBus.Fire(new OnUpdateCurrencySignal(id, finalValue - lastValue, finalValue));
+            var currencyWithCap = this.SetCurrencyWithCap(finalValue, id);
+            this.signalBus.Fire(new OnUpdateCurrencySignal(id, currencyWithCap - lastValue, currencyWithCap));
         }
 
-        private void SetCurrencyWithCap(int value, string id)
+        private int SetCurrencyWithCap(int value, string id)
         {
             var uiTemplateCurrencyData = this.uiTemplateInventoryData.IDToCurrencyData[id];
             uiTemplateCurrencyData.Value = Math.Min(uiTemplateCurrencyData.MaxValue, value);
+            return uiTemplateCurrencyData.Value;
         }
 
         public UITemplateItemData GetFirstItem(string category = null, UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All, IComparer<UITemplateItemData> orderBy = null,

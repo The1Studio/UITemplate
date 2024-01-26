@@ -21,6 +21,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using Zenject;
+    using UniRx;
 
     public class UITemplateAdServiceWrapper : IInitializable, ITickable
     {
@@ -49,8 +50,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool IsShowBannerAd         { get; set; }
-        private bool IsCheckFirstScreenShow { get; set; }
+        private bool     IsShowBannerAd                { get; set; }
+        private bool     IsCheckFirstScreenShow        { get; set; }
+        private DateTime CollapsibleBannerLastShowTime { get; set; } = DateTime.Now;
 
         //AOA
         private DateTime StartLoadingAOATime;
@@ -102,6 +104,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardInterstitialAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnIAPPurchaseFailedSignal>(this.CloseAdInDifferentProcessHandler);
+            this.screenManager.CurrentActiveScreen.Subscribe(this.OnScreenChanged);
 
             //MREC
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
@@ -147,7 +150,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.adServices.ShowBannerAd(bannerAdsPosition, width, height);
         }
 
-        private void InternalShowCollapsibleBannerAd() { this.collapsibleBannerAd.ShowCollapsibleBannerAd(); }
+        private void InternalShowCollapsibleBannerAd()
+        {
+            this.collapsibleBannerAd.ShowCollapsibleBannerAd();
+            this.CollapsibleBannerLastShowTime = DateTime.Now;
+        }
 
         public virtual void HideBannerAd()
         {
@@ -175,6 +182,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (!this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
             this.HideBannerAd();
+        }
+        
+        private void OnScreenChanged(IScreenPresenter screenPresenter)
+        {
+            if (screenPresenter == null) return;
+            
+#if THEONE_COLLAPSIBLE_BANNER
+            if ((DateTime.Now - this.CollapsibleBannerLastShowTime).TotalSeconds < this.adServicesConfig.CollapsibleBannerADInterval) return;
+            if (this.screenCanShowMREC.Contains(screenPresenter.GetType())) return;
+            if (!this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow) return;
+            if (this.thirdPartiesConfig.AdSettings.CollapsibleIgnoreRefreshOnScreens.Contains(screenPresenter.GetType().Name)) return;
+            this.ShowBannerAd();
+#endif
         }
 
         #endregion
@@ -519,15 +539,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnScreenClose(ScreenCloseSignal signal)
         {
-            if (!this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType()))
-            {
-#if THEONE_COLLAPSIBLE_BANNER
-                if (!this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow) return;
-                if (this.thirdPartiesConfig.AdSettings.CollapsibleIgnoreRefreshOnScreens.Contains(signal.ScreenPresenter.GetType().Name)) return;
-                this.ShowBannerAd();
-#endif
-                return;
-            }
+            if (!this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType())) return;
 
             this.HideAllMREC();
         }

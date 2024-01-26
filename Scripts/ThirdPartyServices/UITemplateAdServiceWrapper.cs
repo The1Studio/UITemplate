@@ -108,7 +108,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenClose);
             this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
 
-            this.signalBus.Subscribe<CollapsibleBannerAdLoadedSignal>(this.OnCollapsibleBannerLoaded);
+            this.signalBus.Subscribe<CollapsibleBannerAdLoadedSignal>(this.OnBannerLoaded);
+            this.signalBus.Subscribe<BannerAdLoadedSignal>(this.OnBannerLoaded);
         }
 
         #region banner
@@ -163,7 +164,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
         }
 
-        private void OnCollapsibleBannerLoaded()
+        private void OnBannerLoaded()
         {
             if (this.screenManager == null) return;
             if (this.screenManager.CurrentActiveScreen == null)

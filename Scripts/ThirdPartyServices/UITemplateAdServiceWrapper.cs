@@ -125,7 +125,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.IsShowBannerAd)
             {
-                this.HideBannerAd();
+                // close all banner before show new banner
+                this.InternalHideCollapsibleBannerAd();
+                this.InternalHideMediationBannerAd();
                 if (this.adServicesConfig.EnableCollapsibleBanner)
                 {
                     this.InternalShowCollapsibleBannerAd();
@@ -292,14 +294,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log(
-                $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {isInterstitialAdEnable} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
+                                $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {isInterstitialAdEnable} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
             if (this.adServices.IsRemoveAds() || !isInterstitialAdEnable || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
             {
                 return false;
             }
 
             this.logService.Log(
-                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
+                                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
             if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval ||
                  (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
             {
@@ -439,9 +441,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
+                if (this.IsShowBannerAd) this.HideBannerAd();
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
-                this.HideBannerAd();
             }
         }
 
@@ -493,7 +495,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType()))
             {
-                this.HideBannerAd(); // hot fix TODO: update flow show ads
                 return;
             }
 

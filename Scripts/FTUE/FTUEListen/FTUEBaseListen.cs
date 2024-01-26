@@ -24,7 +24,8 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
 
         protected void FireFtueTriggerSignal(string ftueId)
         {
-            UniTask.WaitUntil(() => !this.ftueController.ThereIsFTUEActive()).ContinueWith(() => this.SignalBus.Fire(new FTUETriggerSignal(ftueId)));
+            this.ftueController.DoDeactiveCurrentFTUEStep();
+            this.SignalBus.Fire(new FTUETriggerSignal(ftueId));
         }
     }
 }

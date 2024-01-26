@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using UniRx;
     using UniRx.Triggers;
@@ -75,7 +76,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
         public void DoDeactiveFTUE(string stepId)
         {
-            if (!stepId.Equals(this.currentActiveStepId)) return;
+            if (stepId.IsNullOrEmpty() || !stepId.Equals(this.currentActiveStepId)) return;
             this.currentActiveStepId = null;
 
             var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
@@ -91,6 +92,12 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
                 Destroy(uITemplateFtueControlElement);
                 this.highLightButtonTransform = null;
             }
+        }
+
+        public void DoDeactiveCurrentFTUEStep()
+        {
+            //this.ftu
+            this.DoDeactiveFTUE(this.currentActiveStepId);
         }
 
         public void DoActiveFTUE(string stepId, HashSet<GameObject> disableObjectSet)

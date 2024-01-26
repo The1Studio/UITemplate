@@ -17,14 +17,15 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
     public class UITemplateFTUEController : MonoBehaviour
     {
+        private const string ROOT_UI_LOCATION = "RootUICanvas";
+
         public Button        btnCompleteStep;
         public GameObject    hand;
         public RectTransform rotateHand, iconHand;
 
         private Transform originPath;
 
-        private       CompositeDisposable disposables      = new();
-        private const string              ROOT_UI_LOCATION = "RootUICanvas";
+        private CompositeDisposable disposables = new();
 
         #region Zenject
 
@@ -133,12 +134,13 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
                             break;
                     }
+                    this.highLightButtonTransform = buttons?.FirstOrDefault(button => button.gameObject.name.Equals(record.HighLightPath.Split("|")[1]))?.transform;
                 }
                 else
                 {
-                    buttons = this.screenManager.CurrentActiveScreen.Value.CurrentTransform.GetComponentsInChildren<Button>().ToList();
+                    buttons                       = this.screenManager.CurrentActiveScreen.Value.CurrentTransform.GetComponentsInChildren<Button>().ToList();
+                    this.highLightButtonTransform = buttons.FirstOrDefault(button => button.gameObject.name.Equals(record.HighLightPath))?.transform;
                 }
-                this.highLightButtonTransform = buttons?.FirstOrDefault(button => button.gameObject.name.Equals(record.HighLightPath))?.transform;
                 if (this.highLightButtonTransform == null)
                 {
                     await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);

@@ -107,14 +107,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
             this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenClose);
             this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
-            this.signalBus.Subscribe<MRecAdDisplayedSignal>(this.OnMRECDisplayed);
-            this.signalBus.Subscribe<MRecAdDismissedSignal>(this.OnMRECDismissed);
 
-            //Collapsible
-            this.signalBus.Subscribe<CollapsibleBannerAdLoadFailedSignal>(this.OnCollapsibleBannerLoadFailed);
-            this.signalBus.Subscribe<CollapsibleBannerAdLoadedSignal>(this.OnCollapsibleBannerLoaded);
+            this.signalBus.Subscribe<CollapsibleBannerAdLoadedSignal>(this.OnBannerLoaded);
+            this.signalBus.Subscribe<BannerAdLoadedSignal>(this.OnBannerLoaded);
         }
-
 
         #region banner
 
@@ -132,7 +128,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.IsShowBannerAd)
             {
-                this.HideBannerAd();
+                // close all banner before show new banner
+                this.InternalHideCollapsibleBannerAd();
+                this.InternalHideMediationBannerAd();
                 if (this.adServicesConfig.EnableCollapsibleBanner)
                 {
                     this.InternalShowCollapsibleBannerAd();
@@ -166,12 +164,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
         }
 
-        private void OnCollapsibleBannerLoaded() { this.InternalHideMediationBannerAd(); }
-
-        private void OnCollapsibleBannerLoadFailed()
+        private void OnBannerLoaded()
         {
-            this.InternalHideCollapsibleBannerAd();
-            this.InternalShowMediationBannerAd();
+            if (this.screenManager == null) return;
+            if (this.screenManager.CurrentActiveScreen == null)
+            {
+                this.HideBannerAd();
+                return;
+            }
+
+            if (!this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+            this.HideBannerAd();
         }
 
         #endregion
@@ -307,14 +310,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log(
-                $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {isInterstitialAdEnable} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
+                                $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {isInterstitialAdEnable} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
             if (this.adServices.IsRemoveAds() || !isInterstitialAdEnable || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
             {
                 return false;
             }
 
             this.logService.Log(
-                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
+                                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
             if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval ||
                  (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
             {
@@ -350,10 +353,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
                 {
                     ShowDelayInter(() =>
-                    {
-                        InternalShowInterstitial();
-                        this.backFillAdsService.ShowInterstitialAd(place);
-                    }).Forget();
+                                   {
+                                       InternalShowInterstitial();
+                                       this.backFillAdsService.ShowInterstitialAd(place);
+                                   }).Forget();
                 }
                 else
                 {
@@ -367,10 +370,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
             {
                 ShowDelayInter(() =>
-                {
-                    InternalShowInterstitial();
-                    this.adServices.ShowInterstitialAd(place);
-                }).Forget();
+                               {
+                                   InternalShowInterstitial();
+                                   this.adServices.ShowInterstitialAd(place);
+                               }).Forget();
             }
             else
             {
@@ -454,6 +457,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
+                if (this.IsShowBannerAd) this.HideBannerAd();
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
             }
@@ -530,10 +534,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnMRECLoaded() { this.CheckCurrentScreenCanShowMREC(); }
 
-        private void OnMRECDisplayed() { this.HideBannerAd(); }
-
-        private void OnMRECDismissed() { this.ShowBannerAd(); }
-
         private void AddScreenCanShowMREC(Type screenType)
         {
             if (this.screenCanShowMREC.Contains(screenType))
@@ -560,6 +560,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void HideAllMREC()
         {
+            if (!this.IsShowBannerAd) this.ShowBannerAd();
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();

@@ -26,25 +26,21 @@
 
         #endregion
 
-        private Dictionary<string, IFtueCondition>      IDToFtueConditions         { get; }
-        private Dictionary<string, HashSet<GameObject>> StepIdToEnableGameObjects  { get; } = new(); //Use to enable the UI follow user's FTUE
+        private Dictionary<string, IFtueCondition>      IDToFtueConditions  { get; }
+        private Dictionary<string, HashSet<GameObject>> StepIdToEnableGameObjects { get; } = new(); //Use to enable the UI follow user's FTUE
         private Dictionary<string, HashSet<GameObject>> StepIdToDisableGameObjects { get; } = new(); //Use to disable the UI follow user's FTUE
 
-        public UITemplateFTUESystem(
-            SignalBus                    signalBus,
+        public UITemplateFTUESystem(SignalBus signalBus,
             UITemplateFTUEDataController uiTemplateFtueDataController,
-            UITemplateFTUEBlueprint      uiTemplateFtueBlueprint,
-            UITemplateFTUEController     uiTemplateFtueController,
-            IScreenManager               screenManager,
-            List<IFtueCondition>         ftueConditions
-        )
+            UITemplateFTUEBlueprint uiTemplateFtueBlueprint, UITemplateFTUEController uiTemplateFtueController, IScreenManager screenManager, List<IFtueCondition> ftueConditions)
         {
             this.signalBus                    = signalBus;
             this.uiTemplateFtueDataController = uiTemplateFtueDataController;
-            this.uiTemplateFtueBlueprint      = uiTemplateFtueBlueprint;
+            this.uiTemplateFtueBlueprint                = uiTemplateFtueBlueprint;
             this.uiTemplateFtueController     = uiTemplateFtueController;
             this.screenManager                = screenManager;
             this.IDToFtueConditions           = ftueConditions.ToDictionary(condition => condition.Id, condition => condition);
+
         }
 
         public void Initialize()
@@ -99,7 +95,6 @@
                 {
                     gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId));
                 }
-
                 return;
             }
 
@@ -119,10 +114,8 @@
             if (this.uiTemplateFtueBlueprint.GetDataById(stepId).RequireTriggerComplete.Any(stepId => !this.uiTemplateFtueDataController.IsFinishedStep(stepId))) return false;
 
             var requireConditions = this.uiTemplateFtueBlueprint.GetDataById(stepId).GetRequireCondition();
-
-            if (requireConditions != null && !requireConditions.All(requireCondition => this.IDToFtueConditions[requireCondition.RequireId].IsPassedCondition(requireCondition.ConditionDetail)))
-                return
-                    false;
+            if (requireConditions!= null && !requireConditions.All(requireCondition => this.IDToFtueConditions[requireCondition.RequireId].IsPassedCondition(requireCondition.ConditionDetail))) return
+                false;
 
             return true;
         }

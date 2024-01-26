@@ -107,6 +107,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
             this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenClose);
             this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
+
+            this.signalBus.Subscribe<CollapsibleBannerAdLoadedSignal>(this.OnCollapsibleBannerLoaded);
         }
 
         #region banner
@@ -159,6 +161,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
+        }
+
+        private void OnCollapsibleBannerLoaded()
+        {
+            if (this.screenManager == null) return;
+            if (this.screenManager.CurrentActiveScreen == null)
+            {
+                this.HideBannerAd();
+                return;
+            }
+
+            if (!this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+            this.HideBannerAd();
         }
 
         #endregion
@@ -337,10 +352,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
                 {
                     ShowDelayInter(() =>
-                    {
-                        InternalShowInterstitial();
-                        this.backFillAdsService.ShowInterstitialAd(place);
-                    }).Forget();
+                                   {
+                                       InternalShowInterstitial();
+                                       this.backFillAdsService.ShowInterstitialAd(place);
+                                   }).Forget();
                 }
                 else
                 {
@@ -354,10 +369,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
             {
                 ShowDelayInter(() =>
-                {
-                    InternalShowInterstitial();
-                    this.adServices.ShowInterstitialAd(place);
-                }).Forget();
+                               {
+                                   InternalShowInterstitial();
+                                   this.adServices.ShowInterstitialAd(place);
+                               }).Forget();
             }
             else
             {

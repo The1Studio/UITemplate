@@ -3,10 +3,11 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using UniRx;
     using UniRx.Triggers;
@@ -16,6 +17,8 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
     public class UITemplateFTUEController : MonoBehaviour
     {
+        private const string ROOT_UI_LOCATION = "RootUICanvas";
+
         public Button        btnCompleteStep;
         public GameObject    hand;
         public RectTransform rotateHand, iconHand;
@@ -76,6 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.currentActiveStepId = null;
 
             var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
+
             if (string.IsNullOrEmpty(record.HighLightPath)) return;
 
             this.gameObject.SetActive(false);
@@ -114,8 +118,29 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
             while (this.highLightButtonTransform == null)
             {
-                var buttons = record.ScreenLocation.IsNullOrEmpty()?this.screenManager.RootUICanvas.transform.GetComponentsInChildren<Button>(): this.screenManager.CurrentActiveScreen.Value.CurrentTransform.GetComponentsInChildren<Button>();
-                this.highLightButtonTransform = buttons.FirstOrDefault(button => button.gameObject.name.Equals(record.HighLightPath))?.transform;
+                List<Button> buttons = new();
+                if (record.HighLightPath.Split("|").Length != 1)
+                {
+                    var screenLocation = record.HighLightPath.Split("|")[0];
+                    switch (screenLocation)
+                    {
+                        case ROOT_UI_LOCATION:
+                            buttons = this.screenManager.RootUICanvas.transform.GetComponentsInChildren<Button>().ToList();
+
+                            break;
+                        default:
+                            var presenterType                  = ReflectionUtils.GetAllDerivedTypes<IScreenPresenter>().FirstOrDefault(presenter => presenter.Name == screenLocation);
+                            if (presenterType != null) buttons = (this.GetCurrentContainer().Resolve(presenterType) as IScreenPresenter)?.CurrentTransform.GetComponentsInChildren<Button>().ToList();
+
+                            break;
+                    }
+                    this.highLightButtonTransform = buttons?.FirstOrDefault(button => button.gameObject.name.Equals(record.HighLightPath.Split("|")[1]))?.transform;
+                }
+                else
+                {
+                    buttons                       = this.screenManager.CurrentActiveScreen.Value.CurrentTransform.GetComponentsInChildren<Button>().ToList();
+                    this.highLightButtonTransform = buttons.FirstOrDefault(button => button.gameObject.name.Equals(record.HighLightPath))?.transform;
+                }
                 if (this.highLightButtonTransform == null)
                 {
                     await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
@@ -124,7 +149,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
             this.btnCompleteStep.onClick.RemoveAllListeners();
 
-            this.disposables = new CompositeDisposable();
+            this.disposables = new();
             this.highLightButtonTransform.gameObject.AddComponent<UITemplateFTUEControlElement>();
             var highlightButton = this.highLightButtonTransform.GetComponent<Button>();
 
@@ -132,12 +157,18 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
             if (!record.ButtonCanClick)
             {
-                this.btnCompleteStep.onClick.AddListener(() => { this.signalBus.Fire(new FTUEButtonClickSignal(highlightButton.name, stepId)); });
+                this.btnCompleteStep.onClick.AddListener(() =>
+                {
+                    this.signalBus.Fire(new FTUEButtonClickSignal(highlightButton.name, stepId));
+                });
             }
 
             if (highlightButton != null && record.ButtonCanClick)
             {
-                this.disposables.Add(highlightButton.OnPointerClickAsObservable().Subscribe(data => { this.signalBus.Fire(new FTUEButtonClickSignal(highlightButton.name, stepId)); }));
+                this.disposables.Add(highlightButton.OnPointerClickAsObservable().Subscribe(data =>
+                {
+                    this.signalBus.Fire(new FTUEButtonClickSignal(highlightButton.name, stepId));
+                }));
             }
 
             this.ConfigHandPosition(this.highLightButtonTransform.gameObject, record);
@@ -156,15 +187,15 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
             var angle = record.HandAnchor switch
             {
-                "Top" => -180,
-                "TopRight" => -225,
-                "TopLeft" => -135,
-                "Left" => -90,
-                "Right" => -270,
-                "BottomLeft" => -45,
-                "Bottom" => 0,
+                "Top"         => -180,
+                "TopRight"    => -225,
+                "TopLeft"     => -135,
+                "Left"        => -90,
+                "Right"       => -270,
+                "BottomLeft"  => -45,
+                "Bottom"      => 0,
                 "BottomRight" => -315,
-                _ => 0f
+                _             => 0f
             };
 
             this.rotateHand.localEulerAngles = new Vector3(0, 0, angle);

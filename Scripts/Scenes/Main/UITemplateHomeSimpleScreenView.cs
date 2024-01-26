@@ -14,6 +14,7 @@
         public Button                      LevelButton;
         public Button                      ShopButton;
         public UITemplateSettingButtonView SettingButtonView;
+        public UITemplateCurrencyView      CurrencyView;
     }
 
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
@@ -31,6 +32,7 @@
             base.OnViewReady();
             await this.OpenViewAsync();
             this.diContainer.Inject(this.View.SettingButtonView);
+            this.diContainer.Inject(this.View.CurrencyView);
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
             this.View.LevelButton?.onClick.AddListener(this.OnClickLevel);
             this.View.ShopButton?.onClick.AddListener(this.OnClickShop);

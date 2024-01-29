@@ -23,7 +23,7 @@
         {
         }
 
-        public override void ShowBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50) { }
+        public override void ShowBannerAd(int width = 320, int height = 50) { }
 
         public override void HideBannerAd() { }
 

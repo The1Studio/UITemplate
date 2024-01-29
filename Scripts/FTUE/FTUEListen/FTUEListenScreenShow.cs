@@ -6,7 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
 
     public class FTUEListenScreenShow : FTUEBaseListen
     {
-        public FTUEListenScreenShow(SignalBus signalBus, UITemplateFTUEBlueprint ftueBlueprint) : base(signalBus, ftueBlueprint) { }
+        public FTUEListenScreenShow(SignalBus signalBus, UITemplateFTUEBlueprint ftueBlueprint, UITemplateFTUEController ftueController) : base(signalBus, ftueBlueprint,ftueController) { }
         protected override void InitInternal() { this.SignalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
 
         private void OnScreenShow(ScreenShowSignal obj)

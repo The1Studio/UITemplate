@@ -1,20 +1,21 @@
+using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
+using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+using GameFoundation.Scripts.Utilities.Extension;
+using TheOneStudio.UITemplate.UITemplate.Blueprints;
+using TheOneStudio.UITemplate.UITemplate.Extension;
+using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
+using UniRx;
+using UniRx.Triggers;
+using UnityEngine;
+using UnityEngine.UI;
+using Zenject;
+
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
-    using GameFoundation.Scripts.Utilities.Extension;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
-    using UniRx;
-    using UniRx.Triggers;
-    using UnityEngine;
-    using UnityEngine.UI;
-    using Zenject;
-
     public class UITemplateFTUEController : MonoBehaviour
     {
         private const string ROOT_UI_LOCATION = "RootUICanvas";

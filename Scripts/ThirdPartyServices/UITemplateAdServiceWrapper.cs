@@ -166,6 +166,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.IsShowBannerAd = false;
             this.InternalHideCollapsibleBannerAd();
             this.InternalHideMediationBannerAd();
+            this.logService.Log("onelog: HideBannerAd");
         }
 
         private void InternalHideMediationBannerAd() { this.adServices.HideBannedAd(); }
@@ -179,10 +180,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void OnBannerLoaded()
         {
             if (this.screenManager == null) return;
-            if (!this.IsCurrentScreenCanShowMREC())
+            if (this.screenManager.CurrentActiveScreen?.Value == null)
             {
                 this.HideBannerAd();
+                return;
             }
+
+            if (!this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+            this.HideBannerAd();
         }
 
         private void OnScreenChanged(IScreenPresenter screenPresenter)
@@ -559,10 +564,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void CheckCurrentScreenCanShowMREC()
         {
             if (this.screenManager == null) return;
-            if (!this.IsCurrentScreenCanShowMREC())
+            if (this.screenManager.CurrentActiveScreen?.Value == null)
             {
                 this.HideAllMREC();
+                return;
             }
+
+            if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
+            this.HideAllMREC();
         }
 
         private void HideAllMREC()

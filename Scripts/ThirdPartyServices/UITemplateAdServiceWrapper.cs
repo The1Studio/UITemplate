@@ -121,9 +121,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual async void ShowBannerAd(int width = 320, int height = 50)
         {
-            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd ||
-                (DateTime.Now - this.LastBannerShowTime).TotalSeconds < this.adServicesConfig.BannerADInterval)
+            var isPassInterval = (DateTime.Now - this.LastBannerShowTime).TotalSeconds < this.adServicesConfig.BannerADInterval;
+            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd || isPassInterval)
             {
+                this.logService.Log($"onelog: ShowBannerAd Check Fail: {this.adServices.IsRemoveAds()} {this.adServicesConfig.EnableBannerAd} {isPassInterval}");
                 return;
             }
 
@@ -149,7 +150,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
             else
             {
-                this.logService.Log($"onelog: ShowBannerAd Fail {this.IsShowBannerAd} {this.IsCurrentScreenCanShowMREC()}");
+                this.logService.Log("onelog: ShowBannerAd Fail");
             }
         }
 

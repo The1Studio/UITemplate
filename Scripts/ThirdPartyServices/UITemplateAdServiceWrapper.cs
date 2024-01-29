@@ -50,9 +50,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool     IsShowBannerAd                { get; set; }
-        private bool     IsCheckFirstScreenShow        { get; set; }
-        private DateTime CollapsibleBannerLastShowTime { get; set; } = DateTime.Now;
+        private bool     IsShowBannerAd         { get; set; }
+        private bool     IsCheckFirstScreenShow { get; set; }
+        private DateTime LastBannerShowTime     { get; set; } = DateTime.MinValue;
 
         //AOA
         private DateTime StartLoadingAOATime;
@@ -121,7 +121,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual async void ShowBannerAd(int width = 320, int height = 50)
         {
-            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd)
+            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd ||
+                (DateTime.Now - this.LastBannerShowTime).TotalSeconds < this.adServicesConfig.BannerADInterval)
             {
                 return;
             }
@@ -129,7 +130,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.IsShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
 
-            if (this.IsShowBannerAd)
+            if (this.IsShowBannerAd && !this.IsCurrentScreenCanShowMREC())
             {
                 // close all banner before show new banner
                 this.InternalHideCollapsibleBannerAd();
@@ -137,6 +138,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 if (this.adServicesConfig.EnableCollapsibleBanner)
                 {
                     this.InternalShowCollapsibleBannerAd();
+                    this.LastBannerShowTime = DateTime.Now;
                 }
                 else
                 {
@@ -144,7 +146,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 }
             }
         }
-
+        
         private void InternalShowMediationBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
         {
             this.adServices.ShowBannerAd(bannerAdsPosition, width, height);
@@ -153,7 +155,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void InternalShowCollapsibleBannerAd()
         {
             this.collapsibleBannerAd.ShowCollapsibleBannerAd();
-            this.CollapsibleBannerLastShowTime = DateTime.Now;
         }
 
         public virtual void HideBannerAd()
@@ -174,14 +175,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void OnBannerLoaded()
         {
             if (this.screenManager == null) return;
-            if (this.screenManager.CurrentActiveScreen?.Value == null)
+            if (!this.IsCurrentScreenCanShowMREC())
             {
                 this.HideBannerAd();
-                return;
             }
-
-            if (!this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
-            this.HideBannerAd();
         }
         
         private void OnScreenChanged(IScreenPresenter screenPresenter)
@@ -189,8 +186,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (screenPresenter == null) return;
             
 #if THEONE_COLLAPSIBLE_BANNER
-            if ((DateTime.Now - this.CollapsibleBannerLastShowTime).TotalSeconds < this.adServicesConfig.CollapsibleBannerADInterval) return;
-            if (this.screenCanShowMREC.Contains(screenPresenter.GetType())) return;
             if (!this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow) return;
             if (this.thirdPartiesConfig.AdSettings.CollapsibleIgnoreRefreshOnScreens.Contains(screenPresenter.GetType().Name)) return;
             this.ShowBannerAd();
@@ -560,14 +555,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void CheckCurrentScreenCanShowMREC()
         {
             if (this.screenManager == null) return;
-            if (this.screenManager.CurrentActiveScreen?.Value == null)
+            if (!this.IsCurrentScreenCanShowMREC())
             {
                 this.HideAllMREC();
-                return;
             }
-
-            if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
-            this.HideAllMREC();
         }
 
         private void HideAllMREC()
@@ -578,6 +569,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 mrecAdService.HideAllMREC();
             }
         }
+        
+        private bool IsCurrentScreenCanShowMREC() => this.screenManager.CurrentActiveScreen?.Value != null && this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType());
 
         #endregion
 

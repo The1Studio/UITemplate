@@ -121,10 +121,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual async void ShowBannerAd(int width = 320, int height = 50)
         {
-            var isPassInterval = (DateTime.Now - this.LastBannerShowTime).TotalSeconds < this.adServicesConfig.BannerADInterval;
-            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd || isPassInterval)
+            var isNotPassInterval = (DateTime.Now - this.LastBannerShowTime).TotalSeconds < this.adServicesConfig.BannerADInterval;
+            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd || isNotPassInterval)
             {
-                this.logService.Log($"onelog: ShowBannerAd Check Fail: {this.adServices.IsRemoveAds()} {this.adServicesConfig.EnableBannerAd} {isPassInterval}");
+                this.logService.Log($"onelog: ShowBannerAd Check Fail: {this.adServices.IsRemoveAds()} {this.adServicesConfig.EnableBannerAd} {isNotPassInterval}");
                 return;
             }
 

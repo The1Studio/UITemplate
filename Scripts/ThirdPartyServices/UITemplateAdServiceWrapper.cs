@@ -583,7 +583,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        private bool IsCurrentScreenCanShowMREC() => this.screenManager.CurrentActiveScreen?.Value != null && this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType());
+        private bool IsCurrentScreenCanShowMREC() => this.screenManager?.CurrentActiveScreen?.Value != null && this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType());
 
         #endregion
 

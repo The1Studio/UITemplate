@@ -94,12 +94,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             }
         }
 
-        public void DoDeactiveCurrentFTUEStep()
-        {
-            //this.ftu
-            this.DoDeactiveFTUE(this.currentActiveStepId);
-        }
-
         public void DoActiveFTUE(string stepId, HashSet<GameObject> disableObjectSet)
         {
             this.currentActiveStepId = stepId;

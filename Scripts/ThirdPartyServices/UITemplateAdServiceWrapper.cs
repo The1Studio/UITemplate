@@ -119,19 +119,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public BannerLoadStrategy BannerLoadStrategy => this.thirdPartiesConfig.AdSettings.BannerLoadStrategy;
 
-        public virtual async void ShowBannerAd(int width = 320, int height = 50)
+        public virtual async void ShowBannerAd(int width = 320, int height = 50, bool force = false)
         {
-            var isNotPassInterval = (DateTime.Now - this.LastBannerShowTime).TotalSeconds < this.adServicesConfig.BannerADInterval;
-            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd || isNotPassInterval)
-            {
-                this.logService.Log($"onelog: ShowBannerAd Check Fail: {this.adServices.IsRemoveAds()} {this.adServicesConfig.EnableBannerAd} {isNotPassInterval}");
-                return;
-            }
+            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableBannerAd) return;
 
             this.IsShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
 
-            if (this.IsShowBannerAd && !this.IsCurrentScreenCanShowMREC())
+            var isPassInterval = (DateTime.Now - this.LastBannerShowTime).TotalSeconds >= this.adServicesConfig.BannerADInterval;
+            if (this.IsShowBannerAd && !this.IsCurrentScreenCanShowMREC() && (force || isPassInterval))
             {
                 // close all banner before show new banner
                 this.InternalHideCollapsibleBannerAd();
@@ -150,7 +146,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
             else
             {
-                this.logService.Log("onelog: ShowBannerAd Fail");
+                this.logService.Log($"onelog: ShowBannerAd Fail isShowBannerAd {this.IsShowBannerAd} isCurrentScreenCanShowMREC {this.IsCurrentScreenCanShowMREC()} isPassInterval {isPassInterval}");
             }
         }
 
@@ -179,15 +175,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnBannerLoaded()
         {
-            if (this.screenManager == null) return;
-            if (this.screenManager.CurrentActiveScreen?.Value == null)
+            if (this.IsCurrentScreenCanShowMREC())
             {
                 this.HideBannerAd();
-                return;
             }
-
-            if (!this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
-            this.HideBannerAd();
         }
 
         private void OnScreenChanged(IScreenPresenter screenPresenter)
@@ -548,7 +539,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.HideAllMREC();
         }
 
-        private void OnMRECLoaded() { this.CheckCurrentScreenCanShowMREC(); }
+        private void OnMRECLoaded()
+        {
+            if (!this.IsCurrentScreenCanShowMREC())
+            {
+                this.HideAllMREC();
+            }
+        }
 
         private void AddScreenCanShowMREC(Type screenType)
         {
@@ -561,22 +558,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.screenCanShowMREC.Add(screenType);
         }
 
-        private void CheckCurrentScreenCanShowMREC()
-        {
-            if (this.screenManager == null) return;
-            if (this.screenManager.CurrentActiveScreen?.Value == null)
-            {
-                this.HideAllMREC();
-                return;
-            }
-
-            if (this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType())) return;
-            this.HideAllMREC();
-        }
-
         private void HideAllMREC()
         {
-            if (!this.IsShowBannerAd) this.ShowBannerAd();
+            if (!this.IsShowBannerAd) this.ShowBannerAd(force: true);
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();

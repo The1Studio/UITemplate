@@ -138,12 +138,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 if (this.adServicesConfig.EnableCollapsibleBanner)
                 {
                     this.InternalShowCollapsibleBannerAd();
-                    this.LastBannerShowTime = DateTime.Now;
                 }
                 else
                 {
                     this.InternalShowMediationBannerAd(this.thirdPartiesConfig.AdSettings.BannerPosition, width, height);
                 }
+                this.LastBannerShowTime = DateTime.Now;
             }
         }
         

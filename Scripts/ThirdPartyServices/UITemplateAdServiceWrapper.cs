@@ -167,7 +167,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void OnBannerLoaded()
         {
             if (this.screenManager == null) return;
-            if (this.screenManager.CurrentActiveScreen == null)
+            if (this.screenManager.CurrentActiveScreen?.Value == null)
             {
                 this.HideBannerAd();
                 return;
@@ -548,7 +548,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void CheckCurrentScreenCanShowMREC()
         {
             if (this.screenManager == null) return;
-            if (this.screenManager.CurrentActiveScreen == null)
+            if (this.screenManager.CurrentActiveScreen?.Value == null)
             {
                 this.HideAllMREC();
                 return;

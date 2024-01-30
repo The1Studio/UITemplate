@@ -8,6 +8,7 @@
     {
         public override void InstallBindings()
         {
+#if THEONE_QUEST_SYSTEM
             this.Container.BindInterfacesAndSelfTo<UITemplateQuestManager>().AsSingle();
 
             if (Object.FindObjectOfType<UITemplateQuestNotificationView>() is { } notificationView)
@@ -18,6 +19,7 @@
             }
 
             this.Container.DeclareSignal<QuestStatusChangedSignal>();
+#endif
         }
     }
 }

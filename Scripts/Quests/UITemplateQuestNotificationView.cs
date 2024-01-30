@@ -12,6 +12,8 @@ namespace TheOneStudio.UITemplate.Quests
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.Quests.UI;
+    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
     using UnityEngine.Serialization;
@@ -23,7 +25,6 @@ namespace TheOneStudio.UITemplate.Quests
         [SerializeField] private Button    btn;
         [SerializeField] private Transform popup;
         [SerializeField] private Transform destination;
-        [SerializeField] private string    notificationQuestSoundKey;
 
         [SerializeField] private TMP_Text txtName;
         [SerializeField] private Slider   slider;
@@ -33,12 +34,14 @@ namespace TheOneStudio.UITemplate.Quests
         [SerializeField] private GameObject[] normalObjects;
         [SerializeField] private GameObject[] completedObjects;
 
-        private Vector3       startPosition;
-        private Vector3       stopPosition;
-        private SignalBus     signalBus;
-        private ScreenManager screenManager;
-        private IGameAssets   gameAssets;
-        private IAudioService audioService;
+        private Vector3                             startPosition;
+        private Vector3                             stopPosition;
+        private SignalBus                           signalBus;
+        private ScreenManager                       screenManager;
+        private IGameAssets                         gameAssets;
+        private IAudioService                       audioService;
+        private GameFeaturesSetting                 gameFeaturesSetting;
+        private UITemplateGameSessionDataController gameSessionDataController;
 
         private void Awake()
         {
@@ -47,12 +50,14 @@ namespace TheOneStudio.UITemplate.Quests
         }
 
         [Inject]
-        public void Construct(SignalBus signalBus, ScreenManager screenManager, IGameAssets gameAssets, IAudioService audioService)
+        public void Construct(SignalBus signalBus, ScreenManager screenManager, IGameAssets gameAssets, IAudioService audioService, GameFeaturesSetting gameFeaturesSetting,UITemplateGameSessionDataController sessionDataController)
         {
-            this.signalBus     = signalBus;
-            this.screenManager = screenManager;
-            this.gameAssets    = gameAssets;
-            this.audioService  = audioService;
+            this.signalBus                 = signalBus;
+            this.screenManager             = screenManager;
+            this.gameAssets                = gameAssets;
+            this.audioService              = audioService;
+            this.gameFeaturesSetting       = gameFeaturesSetting;
+            this.gameSessionDataController = sessionDataController;
         }
 
         void IInitializable.Initialize()
@@ -67,6 +72,7 @@ namespace TheOneStudio.UITemplate.Quests
 
         private void OnQuestStatusChanged(QuestStatusChangedSignal signal)
         {
+            if (this.gameFeaturesSetting.QuestSystemConfig.showNotificationOnFirstOpen && this.gameSessionDataController.OpenTime == 1) return;
             if (signal.QuestController.Record.HasTag("Chest")) return;
             var status = signal.QuestController.Progress.Status;
 
@@ -98,7 +104,7 @@ namespace TheOneStudio.UITemplate.Quests
 
                 if (status is QuestStatus.NotCollected)
                 {
-                    if (!string.IsNullOrEmpty(this.notificationQuestSoundKey)) this.audioService.PlaySound(this.notificationQuestSoundKey);
+                    if (!string.IsNullOrEmpty(this.gameFeaturesSetting.QuestSystemConfig.questNotificationSoundKey)) this.audioService.PlaySound(this.gameFeaturesSetting.QuestSystemConfig.questNotificationSoundKey);
                     DOTween.Sequence()
                         .AppendInterval(1)
                         .Append(this.slider.DOValue(1, .5f))

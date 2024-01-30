@@ -14,6 +14,7 @@
         private const string RacingEventSymbol = "THEONE_RACING_EVENT";
         private const string DailyRewardSymbol = "THEONE_DAILY_REWARD";
         private const string BadgeNotifySymbol = "THEONE_BADGE_NOTIFY";
+        private const string QuestSystemSymbol = "THEONE_QUEST_SYSTEM";
 
         public static string ResourcePath = $"GameConfigs/{nameof(GameFeaturesSetting)}";
 
@@ -48,12 +49,26 @@
 
         #endregion
 
+        #region Quest
+        
+        [OnValueChanged("OnChangeQuestSystem")]
+        public bool enableQuestSystem;
+        
+        [SerializeField] [ShowIf(nameof(enableQuestSystem))] [BoxGroup("Quest System")]
+        private QuestSystemConfig questSystemConfig;
+        
+        public QuestSystemConfig QuestSystemConfig => this.questSystemConfig;
+   
+        #endregion
+
 #if UNITY_EDITOR
         private void OnChangeRacingEvent() { DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
 
         private void OnChangeDailyReward() { DefineSymbolEditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward); }
 
         private void OnChangeBadgeNotify() { DefineSymbolEditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify); }
+        
+        private void OnChangeQuestSystem() { DefineSymbolEditorUtils.SetDefineSymbol(QuestSystemSymbol, this.enableQuestSystem); }
 #endif
     }
 }

@@ -6,7 +6,7 @@
     [Serializable]
     public class QuestSystemConfig
     {
-        public bool showNotificationOnFirstOpen;
+        public int showNotificationAfterSession;
 
         public bool   enableQuestClaimSound;
         

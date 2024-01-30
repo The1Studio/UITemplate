@@ -72,7 +72,7 @@ namespace TheOneStudio.UITemplate.Quests
 
         private void OnQuestStatusChanged(QuestStatusChangedSignal signal)
         {
-            if (this.gameFeaturesSetting.QuestSystemConfig.showNotificationOnFirstOpen && this.gameSessionDataController.OpenTime == 1) return;
+            if (this.gameSessionDataController.OpenTime < this.gameFeaturesSetting.QuestSystemConfig.showNotificationAfterSession) return;
             if (signal.QuestController.Record.HasTag("Chest")) return;
             var status = signal.QuestController.Progress.Status;
 

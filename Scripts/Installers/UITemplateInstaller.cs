@@ -2,7 +2,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.HighScore;
-    using TheOneStudio.UITemplate.Quests;
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
@@ -56,7 +55,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if THEONE_BADGE_NOTIFY
             this.Container.BindInterfacesAndSelfTo<UITemplateBadgeNotifySystem>().AsCached().NonLazy();
 #endif
-            
         }
     }
 }

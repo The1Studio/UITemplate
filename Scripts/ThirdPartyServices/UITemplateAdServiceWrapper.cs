@@ -197,6 +197,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void OnCollapsibleBannerLoadFailed()
         {
             // if collapsible banner load fail, we will show mediation banner
+            if (!this.adServicesConfig.EnableCollapsibleBannerFallback) return;
             this.PreviousCollapsibleBannerAdLoadedFail = true;
             this.ShowBannerAd();
         }

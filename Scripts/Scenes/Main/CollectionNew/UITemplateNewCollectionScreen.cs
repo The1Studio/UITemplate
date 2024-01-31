@@ -42,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         protected readonly List<TopButtonItemModel> topButtonItemModels = new();
 
         private int         currentSelectedCategoryIndex;
-        private IDisposable randomTimerDispose;
+        protected IDisposable randomTimerDispose;
 
         public UITemplateNewCollectionScreenPresenter(SignalBus signalBus,
                                                       EventSystem eventSystem,
@@ -201,12 +201,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             //Bind Data Collection
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
             var tempModel       = this.itemCollectionItemModels.Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory)).ToList();
-
             await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel, this.diContainer);
+            this.UpdateGachaBtn();
             this.View.topButtonBarAdapter.Refresh();
-            var hasOwnAllItem = tempModel.All(x => this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id));
-            this.View.btnUnlockRandom.gameObject.SetActive(!hasOwnAllItem);
         }
+
+        protected virtual void UpdateGachaBtn()
+        {
+            var hasOwnAllItem = this.itemCollectionItemModels.Where(x =>x.ItemData.CurrentStatus != UITemplateItemData.Status.Owned && x.ItemData.ShopBlueprintRecord.UnlockType==UITemplateItemData.UnlockType.SoftCurrency).Count()==0;
+            this.View.btnUnlockRandom.interactable = !hasOwnAllItem;
+        }
+            
 
         protected virtual void OnBindData(ItemCollectionItemModel obj, ItemCollectionItemView view) { }
 
@@ -308,7 +313,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
         private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly   EventSystem                       eventSystem;
+        protected readonly EventSystem                       eventSystem;
         private readonly   IIapServices                      iapServices;
         private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
@@ -363,7 +368,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             });
         }
 
-        private void BuyItemCompleted(ItemCollectionItemModel obj)
+        protected void BuyItemCompleted(ItemCollectionItemModel obj)
         {
             obj.ItemData.RemainingAdsProgress--;
 
@@ -372,8 +377,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 return;
             }
 
-            this.uiTemplateInventoryDataController.SetOwnedItemData(obj.ItemData, true);
-            this.OnUseItem(obj);
+            this.uiTemplateInventoryDataController.SetOwnedItemData(obj.ItemData, false);
         }
 
         #endregion

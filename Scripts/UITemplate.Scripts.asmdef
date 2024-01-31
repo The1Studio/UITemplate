@@ -61,6 +61,12 @@
     ],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.coffee.ui-effect",
+            "expression": "",
+            "define": "UI_EFFECT"
+        }
+    ],
     "noEngineReferences": false
 }

@@ -129,9 +129,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
 
             if (this.IsCurrentScreenCanShowMREC() || !this.adServicesConfig.EnableBannerAd) return;
-#if THEONE_COLLAPSIBLE_BANNER
-            if(!this.adServicesConfig.EnableCollapsibleBanner) return;
-#endif
             if (this.IsShowBannerAd)
             {
                 // close all banner before show new banner

@@ -38,6 +38,12 @@
             this.RegisParentScreen(badgeNotifyView, parentScreenPresenter.GetType());
             this.badgeToNextScreenType.Add(badgeNotifyView, nextScreenType);
         }
+        
+        private void RegisterBadgeNextScreenType(UITemplateBadgeNotifyView badgeNotifyView, Type parentScreenPresenter, Type nextScreenType)
+        {
+            this.RegisParentScreen(badgeNotifyView, parentScreenPresenter);
+            this.badgeToNextScreenType.Add(badgeNotifyView, nextScreenType);
+        }
 
         private void RegisterBadgeCondition(UITemplateBadgeNotifyView badgeNotifyView, IScreenPresenter parentScreen, Func<bool> condition, string badgeId = null)
         {
@@ -95,6 +101,12 @@
         #region BadgeNotifyFunction
 
         public void RegisterBadge<TPresenter>(UITemplateBadgeNotifyView badgeView, IScreenPresenter parentScreenPresenter)
+            where TPresenter : IScreenPresenter
+        {
+            this.RegisterBadgeNextScreenType(badgeView, parentScreenPresenter, typeof(TPresenter));
+        }
+        
+        public void RegisterBadge<TPresenter>(UITemplateBadgeNotifyView badgeView, Type parentScreenPresenter)
             where TPresenter : IScreenPresenter
         {
             this.RegisterBadgeNextScreenType(badgeView, parentScreenPresenter, typeof(TPresenter));

@@ -307,7 +307,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private async void ShowInterstitialAdWhenPauseGame()
         {
-            await UniTask.Delay(200);
             this.ShowInterstitialAd("PauseGame", null);
         }
 

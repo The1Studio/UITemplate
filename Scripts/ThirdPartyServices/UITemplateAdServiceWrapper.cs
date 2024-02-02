@@ -301,8 +301,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (!this.IsRemovedAds)
             {
-                this.ShowInterstitialAd("PauseGame", null);
+                this.ShowInterstitialAdWhenPauseGame();
             }
+        }
+
+        private async void ShowInterstitialAdWhenPauseGame()
+        {
+            await UniTask.Delay(200);
+            this.ShowInterstitialAd("PauseGame", null);
         }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)

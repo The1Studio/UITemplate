@@ -132,7 +132,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             UniTask.WhenAll(
                 this.CreateObjectPool(AudioService.AudioSourceKey, 3),
                 this.Preload(),
+                #if ADMOB || APPLOVIN
                 this.WaitForAoa(),
+                #endif
                 UniTask.WhenAll(
                     this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)

@@ -36,8 +36,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         [SerializeField] private Slider          LoadingSlider;
         [SerializeField] private TextMeshProUGUI loadingProgressTxt;
 
-        private Tween tween;
-        private float trueProgress;
+        private            Tween  tween;
+        private            float  trueProgress;
+        protected string loadingText = "Loading {0}";
 
         private void Start() { this.LoadingSlider.value = 0f; }
 
@@ -51,7 +52,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 setter: value =>
                 {
                     this.LoadingSlider.value     = value;
-                    this.loadingProgressTxt.text = $"{(int)(value * 100)}%";
+                    if (this.loadingProgressTxt != null)
+                        this.loadingProgressTxt.text = string.Format(this.loadingText, value * 100); 
                 },
                 endValue: this.trueProgress = progress,
                 duration: 0.5f

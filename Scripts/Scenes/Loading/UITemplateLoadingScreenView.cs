@@ -22,6 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
     using UnityEngine.ResourceManagement.ResourceProviders;
@@ -32,7 +33,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
     public class UITemplateLoadingScreenView : BaseView
     {
-        [SerializeField] private Slider LoadingSlider;
+        [SerializeField] private Slider          LoadingSlider;
+        [SerializeField] private TextMeshProUGUI loadingProgressTxt;
 
         private Tween tween;
         private float trueProgress;
@@ -46,7 +48,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.tween.Kill();
             this.tween = DOTween.To(
                 getter: () => this.LoadingSlider.value,
-                setter: value => this.LoadingSlider.value = value,
+                setter: value =>
+                {
+                    this.LoadingSlider.value     = value;
+                    this.loadingProgressTxt.text = $"{(int)(value * 100)}%";
+                },
                 endValue: this.trueProgress = progress,
                 duration: 0.5f
             );

@@ -63,6 +63,7 @@
 
         #region Home Screen
 
+        [FoldoutGroup("Misc Settings")]
         public bool enableInitHomeScreenManually = true;
 
         #endregion

@@ -4,6 +4,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
     using Zenject;
@@ -19,42 +20,48 @@
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
     public class UITemplateHomeSimpleScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager) :
+        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, GameFeaturesSetting gameFeaturesSetting) :
             base(signalBus)
         {
-            this.diContainer                       = diContainer;
-            this.ScreenManager                     = screenManager;
+            this.diContainer         = diContainer;
+            this.ScreenManager       = screenManager;
+            this.gameFeaturesSetting = gameFeaturesSetting;
         }
 
-        protected override async void OnViewReady()
+        protected override void OnViewReady()
         {
             base.OnViewReady();
-            await this.OpenViewAsync();
+            if (this.gameFeaturesSetting.enableInitHomeScreenManually)
+            {
+                this.OpenViewAsync().Forget();
+            }
             this.diContainer.Inject(this.View.SettingButtonView);
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
-            this.View.LevelButton?.onClick.AddListener(this.OnClickLevel);
-            this.View.ShopButton?.onClick.AddListener(this.OnClickShop);
+
+            if (this.View.LevelButton != null)
+            {
+                this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
+            }
+
+            if (this.View.ShopButton != null)
+            {
+                this.View.ShopButton.onClick.AddListener(this.OnClickShop);
+            }
         }
 
-        protected virtual void OnClickLevel()
-        {
-        }
+        protected virtual void OnClickLevel() { }
 
         protected virtual void OnClickShop() { }
 
-        protected virtual void OnClickPlay()
-        {
-        }
+        protected virtual void OnClickPlay() { }
 
-        public override UniTask BindData()
-        {
-            return UniTask.CompletedTask;
-        }
+        public override UniTask BindData() { return UniTask.CompletedTask; }
 
         #region inject
 
-        protected readonly DiContainer                       diContainer;
-        protected readonly IScreenManager                    ScreenManager;
+        protected readonly DiContainer         diContainer;
+        protected readonly IScreenManager      ScreenManager;
+        private readonly   GameFeaturesSetting gameFeaturesSetting;
 
         #endregion
     }

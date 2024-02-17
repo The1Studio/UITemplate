@@ -39,8 +39,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.Bind<RemoteConfigSetting>().FromInstance(remoteConfigSetting).AsSingle();
             
             //Game event config
-            var gameEventSetting = Resources.Load<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath);
-            this.Container.Bind<GameFeaturesSetting>().FromInstance(gameEventSetting).AsSingle();
+            var gameFeaturesSetting = Resources.Load<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath);
+            this.Container.Bind<GameFeaturesSetting>().FromInstance(gameFeaturesSetting).AsSingle();
 
             this.Container.BindInterfacesAndSelfToAllTypeDriveFrom<BaseAnalyticEventFactory>();
             var listFactory = this.Container.ResolveAll<IAnalyticEventFactory>();

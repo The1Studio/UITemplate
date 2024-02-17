@@ -61,6 +61,12 @@
    
         #endregion
 
+        #region Home Screen
+
+        public bool enableInitHomeScreenManually = true;
+
+        #endregion
+
 #if UNITY_EDITOR
         private void OnChangeRacingEvent() { DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
 

@@ -19,7 +19,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
 
         #endregion
 
-
         protected StateMachine(
             List<IState> listState,
             ILogService logService,
@@ -63,11 +62,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
             }
 
             this.CurrentState = nextState;
-            nextState.Enter();
             this.signalBus.Fire(new OnStateEnterSignal(this.CurrentState));
             this.LogService.Log($"Enter {nextState.GetType().Name} State!!!");
+            nextState.Enter();
         }
-
 
         public void Tick()
         {

@@ -53,7 +53,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 {
                     this.LoadingSlider.value     = value;
                     if (this.loadingProgressTxt != null)
-                        this.loadingProgressTxt.text = string.Format(this.loadingText, value * 100); 
+                        this.loadingProgressTxt.text = string.Format(this.loadingText, (int)(value * 100)); 
                 },
                 endValue: this.trueProgress = progress,
                 duration: 0.5f

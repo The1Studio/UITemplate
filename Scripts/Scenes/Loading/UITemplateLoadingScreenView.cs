@@ -35,10 +35,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     {
         [SerializeField] private Slider          LoadingSlider;
         [SerializeField] private TextMeshProUGUI loadingProgressTxt;
+        internal string loadingText = "Loading {0}";
 
         private            Tween  tween;
         private            float  trueProgress;
-        protected string loadingText = "Loading {0}";
 
         private void Start() { this.LoadingSlider.value = 0f; }
 
@@ -100,9 +100,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         #endregion
 
-        protected virtual string NextSceneName => "1.MainScene";
-
-        private bool IsClosedFirstOpen { get; set; }
+        protected virtual string NextSceneName               => "1.MainScene";
+        
+        /// <summary>
+        /// Please fill loading text with format "Text {0}" where {0} is the value position."
+        /// </summary>
+        /// <param name="text"></param>
+        protected void   SetLoadingText(string text) => this.View.loadingText = text;
+        
+        private           bool   IsClosedFirstOpen           { get; set; }
 
         private float _loadingProgress;
         private int   loadingSteps;
@@ -125,6 +131,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.OpenViewAsync().Forget();
         }
 
+        
         public override UniTask BindData()
         {
             this.ShowFirstBannerAd(BannerLoadStrategy.Instantiate);

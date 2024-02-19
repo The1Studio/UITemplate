@@ -35,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     {
         [SerializeField] private Slider          LoadingSlider;
         [SerializeField] private TextMeshProUGUI loadingProgressTxt;
-        internal string loadingText = "Loading {0}";
+        internal string loadingText = "Loading {0}%";
 
         private            Tween  tween;
         private            float  trueProgress;

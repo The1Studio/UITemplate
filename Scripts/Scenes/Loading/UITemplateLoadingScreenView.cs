@@ -132,12 +132,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             UniTask.WhenAll(
                 this.CreateObjectPool(AudioService.AudioSourceKey, 3),
                 this.Preload(),
-                this.WaitForAoa(),
                 UniTask.WhenAll(
                     this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
                 ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
-            ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene);
+            ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.WaitForAoa).ContinueWith(this.LoadNextScene);
 
             return UniTask.CompletedTask;
         }

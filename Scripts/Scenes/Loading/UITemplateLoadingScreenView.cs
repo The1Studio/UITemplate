@@ -22,6 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
     using UnityEngine.ResourceManagement.ResourceProviders;
@@ -32,7 +33,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
     public class UITemplateLoadingScreenView : BaseView
     {
-        [SerializeField] private Slider LoadingSlider;
+        [SerializeField] private Slider          LoadingSlider;
+        [SerializeField] private TextMeshProUGUI loadingProgressTxt;
+        internal string loadingText;
 
         private Tween tween;
         private float trueProgress;
@@ -46,7 +49,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.tween.Kill();
             this.tween = DOTween.To(
                 getter: () => this.LoadingSlider.value,
-                setter: value => this.LoadingSlider.value = value,
+                setter: value =>
+                {
+                    this.LoadingSlider.value     = value;
+                    if (this.loadingProgressTxt != null)
+                        this.loadingProgressTxt.text = string.Format(this.loadingText, (int)(value * 100)); 
+                },
                 endValue: this.trueProgress = progress,
                 duration: 0.5f
             );
@@ -93,8 +101,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         #endregion
 
         protected virtual string NextSceneName => "1.MainScene";
-
-        private bool IsClosedFirstOpen { get; set; }
+        
+        /// <summary>
+        /// Please fill loading text with format "Text {0}" where {0} is the value position."
+        /// </summary>
+        /// <param name="text"></param>
+        protected virtual string GetLoadingText() => "Loading {0}%";
+        
+        private           bool   IsClosedFirstOpen           { get; set; }
 
         private float _loadingProgress;
         private int   loadingSteps;
@@ -114,6 +128,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected override void OnViewReady()
         {
             base.OnViewReady();
+            this.View.loadingText = this.GetLoadingText();
             this.OpenViewAsync().Forget();
         }
 

@@ -89,7 +89,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             }
         };
 
-        public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new();
+        public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
+        {
+            CustomEventKeys = new Dictionary<string, string>()
+            {
+                { nameof(AppOpenFullScreenContentOpened), "aoa_show_success" },
+                { nameof(BannerShown), "banner_show_success" },
+                { nameof(AdInterShow), "inter_show_success" },
+                { nameof(AdsRewardShow), "rewarded_show_success" },
+            }
+        };
     }
 }
 #endif

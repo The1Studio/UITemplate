@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using Core.AnalyticServices.Signal;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
@@ -107,12 +108,52 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<AppOpenEligibleSignal>(this.AppOpenEligibleHandler);
             this.signalBus.Subscribe<AppOpenCalledSignal>(this.AppOpenCalledHandler);
             this.signalBus.Subscribe<AppOpenClickedSignal>(this.AppOpenClickedHandler);
+            
+            //Ad revenue
+            this.signalBus.Subscribe<AdRevenueSignal>(this.AddRevenueHandler);
 
 
             this.signalBus.Subscribe<PopupShowedSignal>(this.PopupShowedHandler);
 
             this.TotalDaysPlayedChange();
         }
+        
+        private void AddRevenueHandler(AdRevenueSignal obj)
+        {
+            #if WIDO
+            var paramDic = new Dictionary<string, object>()
+            {
+                { "ad_platform", obj.AdsRevenueEvent.AdNetwork },
+                { "placement", obj.AdsRevenueEvent.Placement },
+            };
+            
+            switch (obj.AdsRevenueEvent.AdFormat)
+            {
+                case "Banner":
+                    this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
+                    {
+                        EventName       = "banner_show_success",
+                        EventProperties = paramDic
+                    }));
+                    break;
+                case "CollapsibleBanner":
+                    this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
+                    {
+                        EventName       = "banner_show_success",
+                        EventProperties = paramDic
+                    }));
+                    break;
+                case "MREC":
+                    this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
+                    {
+                        EventName = "mrec_show_success",
+                        EventProperties = paramDic
+                    }));
+                    break;
+            }
+            #endif
+        }
+        
         private void AppOpenClickedHandler(AppOpenClickedSignal obj)
         {
             this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.AppOpenClicked()));

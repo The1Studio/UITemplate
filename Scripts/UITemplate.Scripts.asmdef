@@ -42,7 +42,8 @@
         "Lofelt.NiceVibrations",
         "Unity.Advertisement.IosSupport",
         "3rd.Configs.Editor",
-        "UIEffect"
+        "UIEffect",
+        "PlayFab"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

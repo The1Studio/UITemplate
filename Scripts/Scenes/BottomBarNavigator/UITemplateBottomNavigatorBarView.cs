@@ -47,7 +47,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             this.signalBus.Subscribe<OnRemoveAdsSucceedSignal>(this.OnRemoveAdsHandler);
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShowSignalHandler);
             this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenCloseSignalHandler);
+            this.RegisterScreens();
         }
+        
+        /// <summary>
+        /// Example:
+        /// this.AllcurrentScreen.Add(typeof(LeaderboardScreenPresenter), 0);
+        /// this.AllcurrentScreen.Add(typeof(CollectionScreenPresenter), 1);
+        /// this.AllcurrentScreen.Add(typeof(HomeScreenPresenter), 2);
+        /// this.AllcurrentScreen.Add(typeof(GachaScreenPresenter), 3);
+        /// this.AllcurrentScreen.Add(typeof(ShopPackScreenPresenter), 4);
+        /// </summary>
+        protected abstract void RegisterScreens();
 
         private void OnScreenCloseSignalHandler(ScreenCloseSignal obj) { this.OnChangeFocusScreen(); }
 

@@ -36,6 +36,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public void UnlockFeature(UITemplateItemData.UnlockType feature) => this.uiTemplateUserLevelData.UnlockedFeature |= feature;
 
+        public int LastUnlockRewardLevel
+        {
+            get => this.uiTemplateUserLevelData.LastUnlockRewardLevel;
+            set => this.uiTemplateUserLevelData.LastUnlockRewardLevel = value;
+        }
+
         public List<LevelData> GetAllLevels()
         {
             return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList();

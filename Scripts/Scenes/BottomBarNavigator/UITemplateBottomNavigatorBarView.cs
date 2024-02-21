@@ -148,12 +148,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         protected abstract void OnCLickButton(int index);
 
-        protected virtual int DefaultActiveIndex => 0;
-        protected virtual int HasBannerHeight    => 350;
-        protected virtual int NoBannerHeight     => 250;
-        protected virtual int HiddenHeight       => -100;
+        protected abstract int DefaultActiveIndex { get; }
+        protected virtual  int HasBannerHeight    => 350;
+        protected virtual  int NoBannerHeight     => 250;
+        protected virtual  int HiddenHeight       => -100;
 
-        protected virtual bool IsShouldShowBar() => true;
+        /// <summary> example
+        /// return this.screenManager.CurrentActiveScreen.Value
+        /// is CampaignScreenPresenter
+        ///    or UpgradeScreenPresenter
+        ///    or HomeSimpleScreenPresenter
+        ///    or CollectionScreenPresenter
+        ///    or ShopPackScreenPresenter;
+        /// </summary>
+        /// <returns></returns>
+        protected abstract bool IsShouldShowBar();
 
         private int Height => this.uiTemplateAdServiceWrapper.IsRemovedAds ? this.NoBannerHeight : this.HasBannerHeight;
     }

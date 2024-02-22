@@ -151,7 +151,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         protected abstract int DefaultActiveIndex { get; }
         protected virtual  int HasBannerHeight    => 350;
         protected virtual  int NoBannerHeight     => 250;
-        protected virtual  int HiddenHeight       => -100;
+        protected virtual  int HiddenHeight       => -200;
 
         /// <summary> example
         /// return this.screenManager.CurrentActiveScreen.Value

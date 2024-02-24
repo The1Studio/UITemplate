@@ -353,5 +353,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             return true;
         }
+        
+        public bool IsAffordCurrency(string currencyName, int amount)
+        {
+            return this.GetCurrencyValue(currencyName) >= amount;
+        }
     }
 }

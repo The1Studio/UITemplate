@@ -7,9 +7,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
     public class BottomBarNavigatorTabButtonView : MonoBehaviour
     {
-        public Button   Button;
-        public TMP_Text TabName;
-        public Image    TabIcon;
+        public GameObject lockObj;
+        public Button     Button;
+        public TMP_Text   TabName;
+        public Image      TabIcon;
+        public Material   grayScaleMat;
 
         private bool isActive = false;
 
@@ -38,6 +40,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
                 this.TabIcon.transform.DOScale(1f, duration).SetEase(Ease.InBack).SetUpdate(true);
                 this.TabName.transform.DOScale(0, duration).SetEase(Ease.InBack).SetUpdate(true);
             }
+        }
+
+        public virtual void ActivateLockButton(bool isActivate)
+        {
+            if (this.lockObj == null) return;
+            this.lockObj.SetActive(isActivate);
+            if(this.grayScaleMat == null) return;
+            this.TabIcon.material = isActivate ? this.grayScaleMat : null;
         }
     }
 }

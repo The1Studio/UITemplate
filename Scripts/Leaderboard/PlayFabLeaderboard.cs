@@ -101,7 +101,8 @@ namespace TheOneStudio.HyperCasual
 
         public bool IsLeaderboardFetched(string key = DEFAULT_KEY)
         {
-            return this.keyToTypeToLeaderboard.ContainsKey(key);
+            return this.keyToTypeToPlayerEntry.TryGetValue(key, out var typeToPlayerEntry)
+                && typeToPlayerEntry.Count == SupportedTypes.Length;
         }
 
         public async UniTask FetchLeaderboardAsync(string key = DEFAULT_KEY)

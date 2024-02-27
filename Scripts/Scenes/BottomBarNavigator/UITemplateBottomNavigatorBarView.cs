@@ -86,7 +86,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
                 this.IsShowingBar = true;
                 rectTransform.DOKill();
                 rectTransform.DOSizeDelta(Vector2.up * this.Height, animationDuration).SetEase(Ease.OutBack).SetUpdate(true);
-
+                this.OnDoShowBar();
                 return;
             }
 
@@ -94,6 +94,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             this.IsShowingBar = false;
             rectTransform.DOKill();
             rectTransform.DOSizeDelta(Vector2.up * this.HiddenHeight, animationDuration).SetEase(Ease.InBack).SetUpdate(true);
+        }
+
+        protected virtual void OnDoShowBar()
+        {
+            
         }
 
         protected virtual void OnRemoveAdsHandler()

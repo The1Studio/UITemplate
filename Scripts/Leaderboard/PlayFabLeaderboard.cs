@@ -32,8 +32,10 @@ namespace TheOneStudio.HyperCasual
         private LoginResult     loginResult;
         private UserAccountInfo accountInfo;
 
-        public string PlayerId    => this.loginResult.PlayFabId;
-        public string DisplayName => this.accountInfo.TitleInfo?.DisplayName;
+        public bool   IsLoggedIn  => this.loginResult is { };
+        public string PlayerId    => this.loginResult?.PlayFabId;
+        public string DisplayName => this.accountInfo?.TitleInfo?.DisplayName;
+        public string Avatar      => this.accountInfo?.TitleInfo?.AvatarUrl;
 
         public async UniTask LoginAsync()
         {
@@ -64,6 +66,37 @@ namespace TheOneStudio.HyperCasual
                 new() { DisplayName = name }
             );
             await this.FetchAccountInfoAsync();
+        }
+
+        public async UniTask ChangeAvatarAsync(string url)
+        {
+            await InvokeAsync<UpdateAvatarUrlRequest, EmptyResponse>(
+                PlayFabClientAPI.UpdateAvatarUrl,
+                new() { ImageUrl = url }
+            );
+            await this.FetchAccountInfoAsync();
+        }
+
+        public async UniTask UpdateUserDataAsync(Dictionary<string, string> data, List<string> keysToRemove = null, UserDataPermission? permission = null)
+        {
+            await InvokeAsync<UpdateUserDataRequest, UpdateUserDataResult>(
+                PlayFabClientAPI.UpdateUserData,
+                new()
+                {
+                    Data         = data,
+                    KeysToRemove = keysToRemove,
+                    Permission   = permission,
+                }
+            );
+        }
+
+        public async UniTask<Dictionary<string, UserDataRecord>> GetUserDataAsync(List<string> keys)
+        {
+            var result = await InvokeAsync<GetUserDataRequest, GetUserDataResult>(
+                PlayFabClientAPI.GetUserData,
+                new() { Keys = keys }
+            );
+            return result.Data;
         }
 
         public async UniTask FetchLeaderboardAsync(string key = DEFAULT_KEY)

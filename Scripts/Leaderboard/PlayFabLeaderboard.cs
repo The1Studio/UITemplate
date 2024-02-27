@@ -99,6 +99,11 @@ namespace TheOneStudio.HyperCasual
             return result.Data;
         }
 
+        public bool IsLeaderboardFetched(string key = DEFAULT_KEY)
+        {
+            return this.keyToTypeToLeaderboard.ContainsKey(key);
+        }
+
         public async UniTask FetchLeaderboardAsync(string key = DEFAULT_KEY)
         {
             await SupportedTypes.Select(async type =>
@@ -109,6 +114,7 @@ namespace TheOneStudio.HyperCasual
 
         public PlayerLeaderboardEntry GetPlayerEntry(string key, HighScoreType type)
         {
+            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
             if (!this.keyToTypeToPlayerEntry.TryGetValue(key, out var typeToPlayerEntry)
                 || !typeToPlayerEntry.TryGetValue(type, out var playerEntry)
             ) throw new InvalidOperationException("Please login & fetch leaderboard first");
@@ -117,6 +123,7 @@ namespace TheOneStudio.HyperCasual
 
         public IEnumerable<PlayerLeaderboardEntry> GetLeaderboard(string key, HighScoreType type)
         {
+            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
             if (!this.keyToTypeToLeaderboard.TryGetValue(key, out var typeToLeaderboard)
                 || !typeToLeaderboard.TryGetValue(type, out var leaderboard)
             ) throw new InvalidOperationException("Please login & fetch leaderboard first");

@@ -58,10 +58,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
         {
             this.uiTemplateRewardDataController.AddRepeatedReward(iapPackId, rewardIdToData);
 
-            this.AdRewards(rewardIdToData, sourceGameObject);
+            this.AddRewards(rewardIdToData, sourceGameObject);
         }
 
-        public void AdRewards(Dictionary<string, UITemplateRewardItemData> rewardIdToData, GameObject sourceGameObject)
+        public void AddRewards(Dictionary<string, UITemplateRewardItemData> rewardIdToData, GameObject sourceGameObject)
         {
             foreach (var rewardData in rewardIdToData)
             {
@@ -77,7 +77,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
             }
             else
             {
-                this.uiTemplateInventoryDataController.AddGenericReward(rewardId, rewardValue);
+                this.uiTemplateInventoryDataController.AddGenericReward(rewardId, rewardValue, startPos);
             }
         }
     }

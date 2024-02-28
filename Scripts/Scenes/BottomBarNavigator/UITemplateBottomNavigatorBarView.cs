@@ -154,7 +154,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         protected abstract void OnCLickButton(int index);
 
         protected abstract int DefaultActiveIndex { get; }
-        protected virtual  int HasBannerHeight    => 350;
+        protected virtual  int HasBannerHeight    => 380;
         protected virtual  int NoBannerHeight     => 250;
         protected virtual  int HiddenHeight       => -200;
 

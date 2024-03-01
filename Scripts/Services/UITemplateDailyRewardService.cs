@@ -96,7 +96,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             if (this.gameFeaturesSetting.DailyRewardConfig.isCustomScreenTrigger)
             {
-                return this.gameFeaturesSetting.DailyRewardConfig.screenTriggerIds.Contains(screenPresenter.ScreenId);
+                return this.gameFeaturesSetting.DailyRewardConfig.screenTriggerIds.
+                            Contains(screenPresenter.GetType().Name);
             }
 
             return screenPresenter is UITemplateHomeSimpleScreenPresenter or UITemplateHomeTapToPlayScreenPresenter;

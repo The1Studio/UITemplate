@@ -146,7 +146,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1027349159864725214
 RectTransform:
   m_ObjectHideFlags: 0
@@ -706,7 +706,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5630704634097706915
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1085,8 +1085,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Check in to get more gift
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 67face98a7e34d0448fd2466c9d1891e, type: 2}
-  m_sharedMaterial: {fileID: -7022958726954408464, guid: 67face98a7e34d0448fd2466c9d1891e,
+  m_fontAsset: {fileID: 11400000, guid: 8704c68cbb616854d992962ab961f80d, type: 2}
+  m_sharedMaterial: {fileID: 8083611226467827394, guid: 8704c68cbb616854d992962ab961f80d,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1697,7 +1697,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3373849900647427846
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1715,7 +1715,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1647}
+  m_AnchoredPosition: {x: 0, y: -2246}
   m_SizeDelta: {x: 280, y: 325}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6652029653051000280
@@ -1895,8 +1895,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Day 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 67face98a7e34d0448fd2466c9d1891e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 4c32e801bb7773141bd3f1dc61fe3a64, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8704c68cbb616854d992962ab961f80d, type: 2}
+  m_sharedMaterial: {fileID: 8083611226467827394, guid: 8704c68cbb616854d992962ab961f80d,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2771,7 +2772,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4686919327261214219
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3099,8 +3100,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: CLAIM
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 67face98a7e34d0448fd2466c9d1891e, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 4c32e801bb7773141bd3f1dc61fe3a64, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8704c68cbb616854d992962ab961f80d, type: 2}
+  m_sharedMaterial: {fileID: 8083611226467827394, guid: 8704c68cbb616854d992962ab961f80d,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3320,7 +3322,7 @@ MonoBehaviour:
   imgBackground: {fileID: 0}
   sprBgNormal: {fileID: 0}
   sprBgCurrentDay: {fileID: 0}
-  packImg: {fileID: 3935005768348075126}
+  packImg: {fileID: 0}
 --- !u!1 &7865811960541033545
 GameObject:
   m_ObjectHideFlags: 0
@@ -3464,8 +3466,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Daily Reward
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 67face98a7e34d0448fd2466c9d1891e, type: 2}
-  m_sharedMaterial: {fileID: -7022958726954408464, guid: 67face98a7e34d0448fd2466c9d1891e,
+  m_fontAsset: {fileID: 11400000, guid: 8704c68cbb616854d992962ab961f80d, type: 2}
+  m_sharedMaterial: {fileID: 8083611226467827394, guid: 8704c68cbb616854d992962ab961f80d,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3827,3 +3829,4 @@ MonoBehaviour:
   dailyRewardPackAdapter: {fileID: 1767838058605596384}
   btnClaim: {fileID: 4601837121764724328}
   btnClose: {fileID: 4991168337056027094}
+  claimSoundKey: 

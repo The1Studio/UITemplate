@@ -4,10 +4,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
     using System.Collections.Generic;
     using System.Linq;
     using DG.Tweening;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
+    using GameFoundation.Scripts.Utilities;
+    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
+    using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
@@ -20,6 +22,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         private SignalBus                  signalBus;
         private UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
         private IScreenManager             screenManager;
+        private IVibrationService          vibrationService;
+        private GameFeaturesSetting        gameFeaturesSetting;
+        private IAudioService              audioService;
 
         #endregion
 
@@ -35,11 +40,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         protected virtual Dictionary<Type, int> AllcurrentScreen => this.allcurrentScreen;
 
         [Inject]
-        public void Constructor(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, IScreenManager screenManager)
+        public void Constructor(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, IScreenManager screenManager, IVibrationService vibrationService, GameFeaturesSetting gameFeaturesSetting, IAudioService audioService)
         {
             this.signalBus                  = signalBus;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
             this.screenManager              = screenManager;
+            this.vibrationService           = vibrationService;
+            this.gameFeaturesSetting        = gameFeaturesSetting;
+            this.audioService              = audioService;
         }
 
         protected virtual void Init()
@@ -118,7 +126,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
                 var bottomBarNavigatorTabButtonView = this.Buttons[index];
                 bottomBarNavigatorTabButtonView.Init();
                 var index1 = index;
-                bottomBarNavigatorTabButtonView.Button.onClick.AddListener(() => this.OnClickBottomBarButton(index1));
+                bottomBarNavigatorTabButtonView.Button.onClick.AddListener(() =>
+                {
+                    this.OnClickBottomBarButton(index1);
+                    this.vibrationService.PlayPresetType(this.gameFeaturesSetting.vibrationPresetType);
+                    if (!this.gameFeaturesSetting.clickButtonSound.IsNullOrEmpty())
+                    {
+                        this.audioService.PlaySound(this.gameFeaturesSetting.clickButtonSound);
+                    }
+                });
             }
 
             this.OnClickBottomBarButton(this.DefaultActiveIndex);

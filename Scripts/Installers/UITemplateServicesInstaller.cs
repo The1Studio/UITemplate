@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using GameFoundation.Scripts.Utilities.Extension;
+    using TheOneStudio.UITemplate.UITemplate.Helpers;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
@@ -10,7 +11,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using TheOneStudio.UITemplate.UITemplate.Services.Vibration;
     using TheOneStudio.UITemplate.UITemplate.Utils;
-    using UnityEngine;
     using Zenject;
 
     public class UITemplateServicesInstaller : Installer<ToastController, UITemplateServicesInstaller>
@@ -51,6 +51,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             
             // Toast
             this.Container.Bind<ToastController>().FromComponentInNewPrefab(this.toastController).AsCached().NonLazy();
+            
+            //Button experience helper
+            this.Container.BindInterfacesAndSelfTo<UITemplateButtonExperienceHelper>().AsSingle().NonLazy();
         }
     }
 }

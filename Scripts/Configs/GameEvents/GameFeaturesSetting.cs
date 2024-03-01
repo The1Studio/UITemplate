@@ -1,11 +1,11 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
 {
+    using Sirenix.OdinInspector;
+    using TheOneStudio.UITemplate.UITemplate.Services.Vibration;
+    using UnityEngine;
 #if UNITY_EDITOR
     using ServiceImplementation.Configs.Editor;
 #endif
-    using System;
-    using Sirenix.OdinInspector;
-    using UnityEngine;
 
     [CreateAssetMenu(fileName = nameof(GameFeaturesSetting),
         menuName = "TheOne/ScriptableObjects/SpawnGameFeatruesSettingConfig", order = 1)]
@@ -50,21 +50,32 @@
         #endregion
 
         #region Quest
-        
+
         [OnValueChanged("OnChangeQuestSystem")]
         public bool enableQuestSystem;
-        
+
         [SerializeField] [ShowIf(nameof(enableQuestSystem))] [BoxGroup("Quest System")]
         private QuestSystemConfig questSystemConfig;
-        
+
         public QuestSystemConfig QuestSystemConfig => this.questSystemConfig;
-   
+
         #endregion
 
-        #region Home Screen
+        #region Misc
 
-        [FoldoutGroup("Misc Settings")]
-        public bool enableInitHomeScreenManually = true;
+        [FoldoutGroup("Misc Settings")] public bool enableInitHomeScreenManually = true;
+
+        #endregion
+
+        #region Button Experience
+
+        [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")]
+        public VibrationPresetType vibrationPresetType = VibrationPresetType.SoftImpact;
+
+        [FoldoutGroup("Button Experience")] [Tooltip("Set to empty to disable")]
+        public string clickButtonSound = "click_button";
+
+        [FoldoutGroup("Button Experience")] public bool enableScaleAnimationOnCLicked = true;
 
         #endregion
 
@@ -74,7 +85,7 @@
         private void OnChangeDailyReward() { DefineSymbolEditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward); }
 
         private void OnChangeBadgeNotify() { DefineSymbolEditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify); }
-        
+
         private void OnChangeQuestSystem() { DefineSymbolEditorUtils.SetDefineSymbol(QuestSystemSymbol, this.enableQuestSystem); }
 #endif
     }

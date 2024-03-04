@@ -38,7 +38,7 @@
         {
             if (!this.openedScreenList.Add(obj.ScreenPresenter)) return;
             
-            var newButtons = obj.ScreenPresenter.CurrentTransform.GetComponentsInChildren<Button>();
+            var newButtons = obj.ScreenPresenter.CurrentTransform.GetComponentsInChildren<Button>(true);
             foreach (var newButton in newButtons)
             {
                 newButton.onClick.AddListener(() =>

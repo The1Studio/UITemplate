@@ -17,11 +17,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 
         private async UniTask InitReview(bool force = false)
         {
+            Debug.LogError("DUCLOG InitReview");
             this.initReviewTaskSource = new CancellationTokenSource();
             this.reviewManager ??= new ReviewManager();
 
             var requestFlowOperation = this.reviewManager.RequestReviewFlow();
             await requestFlowOperation.ToUniTask(cancellationToken: this.initReviewTaskSource.Token);
+            Debug.LogError($"DUCLOG InitReview requestFlowOperation {requestFlowOperation.Error}");
             if (requestFlowOperation.Error != ReviewErrorCode.NoError)
             {
                 if (force) this.DirectlyOpen();
@@ -34,6 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 
         private async UniTask LaunchReview()
         {
+            Debug.LogError($"DUCLOG LaunchReview");
             if (this.playReviewInfo == null)
             {
                 this.initReviewTaskSource?.Dispose();
@@ -42,6 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 
             var launchFlowOperation = this.reviewManager.LaunchReviewFlow(this.playReviewInfo);
             await launchFlowOperation;
+            Debug.LogError($"DUCLOG LaunchReview launchFlowOperation {launchFlowOperation.Error}, {launchFlowOperation.IsSuccessful}, {launchFlowOperation.IsDone}");
             this.playReviewInfo = null;
             if (launchFlowOperation.Error == ReviewErrorCode.NoError) return;
             this.DirectlyOpen();

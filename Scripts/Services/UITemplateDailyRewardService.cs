@@ -20,20 +20,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region inject
 
-        private readonly SignalBus                       signalBus;
-        private readonly ScreenManager                   screenManager;
-        private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
-        private readonly INotificationService            notificationServices;
-        private readonly GameQueueActionContext          gameQueueActionContext;
-        private readonly UITemplateFeatureConfig         uiTemplateFeatureConfig;
-        private readonly GameFeaturesSetting             gameFeaturesSetting;
+        private readonly SignalBus                           signalBus;
+        private readonly ScreenManager                       screenManager;
+        private readonly UITemplateDailyRewardController     uiTemplateDailyRewardController;
+        private readonly INotificationService                notificationServices;
+        private readonly GameQueueActionContext              gameQueueActionContext;
+        private readonly UITemplateFeatureConfig             uiTemplateFeatureConfig;
+        private readonly UITemplateGameSessionDataController sessionDataController;
+        private readonly GameFeaturesSetting                 gameFeaturesSetting;
 
         #endregion
 
         private bool canShowReward = true;
 
         public UITemplateDailyRewardService(SignalBus signalBus, ScreenManager screenManager, UITemplateDailyRewardController uiTemplateDailyRewardController,
-            INotificationService notificationServices, GameQueueActionContext gameQueueActionContext, UITemplateFeatureConfig uiTemplateFeatureConfig,
+            INotificationService notificationServices, GameQueueActionContext gameQueueActionContext, UITemplateFeatureConfig uiTemplateFeatureConfig, UITemplateGameSessionDataController sessionDataController,
             GameFeaturesSetting gameFeaturesSetting)
         {
             this.signalBus                       = signalBus;
@@ -42,6 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.notificationServices            = notificationServices;
             this.gameQueueActionContext          = gameQueueActionContext;
             this.uiTemplateFeatureConfig         = uiTemplateFeatureConfig;
+            this.sessionDataController           = sessionDataController;
             this.gameFeaturesSetting             = gameFeaturesSetting;
         }
 
@@ -49,9 +51,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private bool IsFirstOpenGame()
         {
-            if (PlayerPrefs.GetInt(FirstOpenAppKey) != 0) return false;
-            PlayerPrefs.SetInt(FirstOpenAppKey, 1);
-            return true;
+            return this.sessionDataController.OpenTime == 1;
         }
 
         public UniTask ShowDailyRewardPopupAsync(bool force = false)

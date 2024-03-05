@@ -70,7 +70,7 @@
         #region Button Experience
 
         [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")]
-        public VibrationPresetType vibrationPresetType = VibrationPresetType.SoftImpact;
+        public VibrationPresetType vibrationPresetType = VibrationPresetType.Selection;
 
         [FoldoutGroup("Button Experience")] [Tooltip("Set to empty to disable")]
         public string clickButtonSound = "click_button";

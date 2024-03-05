@@ -133,21 +133,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                     this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
                     {
                         EventName       = "banner_show_success",
-                        EventProperties = paramDic
+                        EventProperties = paramDic,
                     }));
                     break;
                 case "CollapsibleBanner":
                     this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
                     {
                         EventName       = "banner_show_success",
-                        EventProperties = paramDic
+                        EventProperties = paramDic,
                     }));
                     break;
                 case "MREC":
                     this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
                     {
                         EventName = "mrec_show_success",
-                        EventProperties = paramDic
+                        EventProperties = paramDic,
                     }));
                     break;
             }
@@ -298,7 +298,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 if (obj.Level > 50) return;
                 this.Track(new CustomEvent()
                 {
-                    EventName = $"play_level_{obj.Level}"
+                    EventName = $"play_level_{obj.Level}",
                 });
             });
         }
@@ -320,7 +320,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             this.Track(new CustomEvent()
             {
-                EventName = $"Enter{obj.ScreenPresenter.GetType().Name.Replace("Screen", "").Replace("Popup","").Replace("Presenter","")}"
+                EventName = $"Enter{obj.ScreenPresenter.GetType().Name.Replace("Screen", "").Replace("Popup","").Replace("Presenter","")}",
             });
         }
 

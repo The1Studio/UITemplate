@@ -1,8 +1,6 @@
 #if WIDO
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.Wido
 {
-    using System;
-    using System.Collections.Generic;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
@@ -67,7 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
-            IgnoreEvents = new HashSet<Type>()
+            IgnoreEvents = new()
             {
                 typeof(GameStarted),
                 typeof(AdInterClick),
@@ -75,7 +73,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 typeof(AdsRewardFail),
                 typeof(AdsRewardOffer),
             },
-            CustomEventKeys = new Dictionary<string, string>()
+            CustomEventKeys = new()
             {
                 { nameof(BannerShown), "af_banner_shown" },
                 { nameof(LevelComplete), "af_level_achieved" },
@@ -91,12 +89,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
         {
-            CustomEventKeys = new Dictionary<string, string>()
+            CustomEventKeys = new()
             {
                 { nameof(AppOpenFullScreenContentOpened), "aoa_show_success" },
-                { nameof(BannerShown), "banner_show_success" },
-                { nameof(AdInterShow), "inter_show_success" },
-                { nameof(AdsRewardShow), "rewarded_show_success" },
+                { nameof(ShowInterstitialAds), "inter_show_success" },
+                { nameof(RewardedAdsSuccess), "rewarded_show_success" },
             }
         };
     }

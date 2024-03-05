@@ -43,7 +43,7 @@
             {
                 newButton.onClick.AddListener(() =>
                 {
-                    this.vibrationService.PlayPresetType(this.gameFeaturesSetting.vibrationPresetType);
+                    // this.vibrationService.PlayPresetType(this.gameFeaturesSetting.vibrationPresetType);
                     if (!this.gameFeaturesSetting.clickButtonSound.IsNullOrEmpty())
                     {
                         this.soundServices.PlaySound(this.gameFeaturesSetting.clickButtonSound);

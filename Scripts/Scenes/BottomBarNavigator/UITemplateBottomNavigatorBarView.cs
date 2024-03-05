@@ -129,7 +129,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
                 bottomBarNavigatorTabButtonView.Button.onClick.AddListener(() =>
                 {
                     this.OnClickBottomBarButton(index1);
-                    this.vibrationService.PlayPresetType(this.gameFeaturesSetting.vibrationPresetType);
+                    // this.vibrationService.PlayPresetType(this.gameFeaturesSetting.vibrationPresetType);
                     if (!this.gameFeaturesSetting.clickButtonSound.IsNullOrEmpty())
                     {
                         this.audioService.PlaySound(this.gameFeaturesSetting.clickButtonSound);

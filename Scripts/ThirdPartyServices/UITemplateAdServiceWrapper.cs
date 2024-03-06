@@ -132,10 +132,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.IsShowBannerAd)
             {
                 // close all banner before show new banner. But ios will cause error
-#if !UNITY_IOS
-                this.InternalHideCollapsibleBannerAd();
-                this.InternalHideMediationBannerAd();
-#endif
                 if (this.adServicesConfig.EnableCollapsibleBanner && !this.PreviousCollapsibleBannerAdLoadedFail)
                 {
                     var useNewGuid = (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.CollapsibleBannerADInterval;

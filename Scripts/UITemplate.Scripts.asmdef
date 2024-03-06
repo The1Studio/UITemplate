@@ -43,7 +43,9 @@
         "Unity.Advertisement.IosSupport",
         "3rd.Configs.Editor",
         "UIEffect",
-        "PlayFab"
+        "PlayFab",
+        "Falcon.Analytics",
+        "Falcon.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

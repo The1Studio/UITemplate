@@ -1,6 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Creative
 {
-    using System;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using UniRx;
     using UnityEngine;
@@ -9,15 +8,29 @@
 
     public class NewCreativeService : IInitializable
     {
-        private bool EnableTripleTap { get; set; } = true;
+        private bool  EnableTripleTap { get; set; } = true;
+        private float lastTimeCheck;
+        private int   tapCheckCount;
 
-        public void Initialize()
+        public void Initialize() { Observable.EveryUpdate().Where(_ => Input.GetMouseButtonDown(0)).Subscribe(this.OnMouseDown); }
+
+        private void OnMouseDown(long _)
         {
-            var clickStream = Observable.EveryUpdate().Where(_ => Input.GetMouseButtonDown(0));
+            if (Time.unscaledTime - this.lastTimeCheck < 0.4f)
+            {
+                this.tapCheckCount++;
+                if (this.tapCheckCount == 3)
+                {
+                    this.OnTripleClick();
+                    this.tapCheckCount = 0;
+                }
+            }
+            else
+            {
+                this.tapCheckCount = 1;
+            }
 
-            clickStream.Buffer(clickStream.Throttle(TimeSpan.FromMilliseconds(250)))
-                       .Where(xs => xs.Count >= 3)
-                       .Subscribe(xs => this.OnTripleClick());
+            this.lastTimeCheck = Time.unscaledTime;
         }
 
         private void OnTripleClick()

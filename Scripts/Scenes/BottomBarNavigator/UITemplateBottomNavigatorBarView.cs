@@ -58,14 +58,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             this.RegisterScreens();
         }
         
-        /// <summary>
-        /// Example:
-        /// this.AllcurrentScreen.Add(typeof(LeaderboardScreenPresenter), 0);
-        /// this.AllcurrentScreen.Add(typeof(CollectionScreenPresenter), 1);
-        /// this.AllcurrentScreen.Add(typeof(HomeScreenPresenter), 2);
-        /// this.AllcurrentScreen.Add(typeof(GachaScreenPresenter), 3);
-        /// this.AllcurrentScreen.Add(typeof(ShopPackScreenPresenter), 4);
-        /// </summary>
         protected abstract void RegisterScreens();
 
         private void OnScreenCloseSignalHandler(ScreenCloseSignal obj) { this.OnChangeFocusScreen(); }
@@ -136,9 +128,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
                     }
                 });
             }
-
-            this.OnClickBottomBarButton(this.DefaultActiveIndex);
-
             this.Init();
         }
 
@@ -149,22 +138,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             //Update bar view
             var bottomBarNavigatorTabButtonView = this.Buttons[index];
             bottomBarNavigatorTabButtonView.SetActive(true);
-            foreach (var otherBottomBarNavigatorTabButtonView in this.Buttons)
-            {
-                if (otherBottomBarNavigatorTabButtonView == bottomBarNavigatorTabButtonView) continue;
-
-                otherBottomBarNavigatorTabButtonView.SetActive(false);
-            }
 
             //Do change tab or open screen
-            if (!this.IsFirstTimeOpenDefaultTab)
-            {
-                this.OnCLickButton(index);
-            }
-            else
-            {
-                this.IsFirstTimeOpenDefaultTab = false;
-            }
+            this.OnCLickButton(index);
         }
 
         protected abstract void OnCLickButton(int index);
@@ -174,15 +150,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         protected virtual  int NoBannerHeight     => 250;
         protected virtual  int HiddenHeight       => -200;
 
-        /// <summary> example
-        /// return this.screenManager.CurrentActiveScreen.Value
-        /// is CampaignScreenPresenter
-        ///    or UpgradeScreenPresenter
-        ///    or HomeSimpleScreenPresenter
-        ///    or CollectionScreenPresenter
-        ///    or ShopPackScreenPresenter;
-        /// </summary>
-        /// <returns></returns>
         protected abstract bool IsShouldShowBar();
 
         private int Height => this.uiTemplateAdServiceWrapper.IsRemovedAds ? this.NoBannerHeight : this.HasBannerHeight;

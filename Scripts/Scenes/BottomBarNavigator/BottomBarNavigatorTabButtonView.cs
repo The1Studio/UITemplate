@@ -17,12 +17,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         public void Init()
         {
+            return;
             this.SetActive(false);
             this.TabName.transform.localScale = Vector3.zero;
         }
 
         public void SetActive(bool isActive)
         {
+            return;
             if (isActive == this.isActive) return;
 
             this.isActive = isActive;

@@ -103,9 +103,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         protected virtual void OnRemoveAdsHandler()
         {
-            var rectTransform = this.transform as RectTransform;
-            rectTransform.DOKill();
-            rectTransform.DOSizeDelta(Vector2.up * this.NoBannerHeight, 0.3f);
         }
 
         private void Awake()

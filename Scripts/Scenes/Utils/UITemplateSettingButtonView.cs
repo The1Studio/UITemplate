@@ -88,7 +88,7 @@
         {
             this.IsDropped     = false;
             this.BG.localScale = new Vector3(1, 0, 1);
-            foreach (var rectTransform in this.ButtonList) rectTransform.localScale = Vector3.zero;
+            foreach (var rectTransform in this.ButtonList) rectTransform.DOScale(0,0);
         }
 
         private async void OnClick()

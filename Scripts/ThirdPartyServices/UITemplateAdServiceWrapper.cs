@@ -12,7 +12,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
+
+#if ADMOB
     using ServiceImplementation.AdsServices.EasyMobile;
+#endif
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
@@ -259,7 +262,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
             {
+#if ADMOB
                 if ((this.adServicesConfig.UseAoaAdmob && aoa is AdMobWrapper) || (!this.adServicesConfig.UseAoaAdmob && aoa is not AdMobWrapper))
+#endif
                 {
                     this.signalBus.Fire(new AppOpenCalledSignal(""));
                     aoa.ShowAOAAds();

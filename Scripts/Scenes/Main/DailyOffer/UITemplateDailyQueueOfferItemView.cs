@@ -1,10 +1,15 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 {
+    using System;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
+    using UniRx;
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -13,12 +18,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
         [SerializeField] private TMP_Text            buttonText;
         [SerializeField] private TMP_Text            itemText;
         [SerializeField] private Image               itemImage;
+        [SerializeField] private GameObject          adsIconObj;
         [SerializeField] private Button              claimButton;
         [SerializeField] private UITemplateAdsButton adsClaimButton;
 
         public TMP_Text            ButtonText     => this.buttonText;
         public TMP_Text            ItemText       => this.itemText;
         public Image               ItemImage      => this.itemImage;
+        public GameObject          AdsIconObj     => this.adsIconObj;
         public Button              ClaimButton    => this.claimButton;
         public UITemplateAdsButton AdsClaimButton => this.adsClaimButton;
     }
@@ -32,15 +39,111 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 
     public class UITemplateDailyQueueOfferItemPresenter : BaseUIItemPresenter<UITemplateDailyQueueOfferItemView, UITemplateDailyQueueOfferItemModel>
     {
+        #region Inject
+
+        private readonly UITemplateAdServiceWrapper              adServiceWrapper;
+        private readonly UITemplateDailyQueueOfferDataController dailyQueueOfferDataController;
+
+        #endregion
+
+        private RectTransform                       claimRect;
+        private IDisposable                         remainTimeDisposable;
+        private UITemplateDailyQueueOfferItemModel  model;
+        private UITemplateDailyQueueOfferItemRecord dailyQueueOfferItemRecord;
+
+        private const string AdsPlacement = "Daily_Offer";
+
         public UITemplateDailyQueueOfferItemPresenter
         (
-            IGameAssets                        gameAssets,
-            UITemplateDailyQueueOfferBlueprint dailyQueueOfferBlueprint
+            IGameAssets                             gameAssets,
+            UITemplateAdServiceWrapper              adServiceWrapper,
+            UITemplateDailyQueueOfferDataController dailyQueueOfferDataController
         )
             : base(gameAssets)
         {
+            this.adServiceWrapper              = adServiceWrapper;
+            this.dailyQueueOfferDataController = dailyQueueOfferDataController;
         }
 
-        public override void BindData(UITemplateDailyQueueOfferItemModel param) { }
+        public override void OnViewReady()
+        {
+            base.OnViewReady();
+            this.claimRect = this.View.ItemImage.GetComponent<RectTransform>();
+            this.View.AdsClaimButton.OnViewReady(this.adServiceWrapper);
+            this.View.AdsClaimButton.onClick.AddListener(this.OnClickAdsClaim);
+            this.View.ClaimButton.onClick.AddListener(this.OnClickClaim);
+        }
+
+        public override void BindData(UITemplateDailyQueueOfferItemModel param)
+        {
+            this.model                     = param;
+            this.dailyQueueOfferItemRecord = this.dailyQueueOfferDataController.GetCurrentDailyQueueOfferRecord().OfferItems[this.model.OfferId];
+            this.View.AdsIconObj.SetActive(this.dailyQueueOfferItemRecord.IsRewardedAds);
+            this.View.AdsClaimButton.gameObject.SetActive(this.dailyQueueOfferItemRecord.IsRewardedAds);
+            this.View.ClaimButton.gameObject.SetActive(!this.dailyQueueOfferItemRecord.IsRewardedAds);
+
+            this.OnUpdateRewardedOfferItem();
+            this.dailyQueueOfferDataController.OnUpdateOfferItem += this.OnUpdateRewardedOfferItem;
+            this.View.AdsClaimButton.BindData(AdsPlacement);
+
+            if (this.dailyQueueOfferItemRecord.IsRewardedAds) return;
+            Observable.EveryUpdate().Subscribe(_ => this.OnUpdateRemainTimeFreeOffer());
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.dailyQueueOfferDataController.OnUpdateOfferItem -= this.OnUpdateRewardedOfferItem;
+        }
+
+        private void OnUpdateRewardedOfferItem()
+        {
+            if (!this.dailyQueueOfferItemRecord.IsRewardedAds) return;
+            if (!this.dailyQueueOfferDataController.TryGetOfferStatusDuringDay(this.model.OfferId, out var status))
+            {
+                return;
+            }
+
+            this.View.AdsClaimButton.interactable = status == RewardStatus.Unlocked;
+            this.View.AdsIconObj.SetActive(status != RewardStatus.Claimed);
+        }
+
+        private void OnUpdateRemainTimeFreeOffer()
+        {
+            if (!this.dailyQueueOfferDataController.TryGetOfferStatusDuringDay(this.model.OfferId, out var status))
+            {
+                return;
+            }
+
+            var remainTimeToNextDay = this.dailyQueueOfferDataController.GetRemainTimeToNextDay();
+            var remainHours         = remainTimeToNextDay.Hours;
+            var remainMinutes       = remainTimeToNextDay.Minutes;
+            var remainSeconds       = remainTimeToNextDay.Seconds;
+            if (status == RewardStatus.Claimed)
+            {
+                this.View.ClaimButton.interactable = false;
+                var textRemainHours   = remainHours > 0 ? $"{remainHours}h " : "";
+                var textRemainMinutes = $"{remainMinutes}m";
+                var textRemainSeconds = remainHours > 0 ? "" : $"{remainSeconds}s";
+                this.View.ButtonText.text = $"{textRemainHours}{textRemainMinutes}{textRemainSeconds}";
+            }
+            else
+            {
+                this.View.ClaimButton.interactable = true;
+                this.View.ButtonText.text          = "Claim";
+            }
+        }
+
+        protected void OnClickClaim() { this.OnClaimOfferSucceed(); }
+
+        protected void OnClickAdsClaim() { this.adServiceWrapper.ShowRewardedAd(AdsPlacement, this.OnClaimOfferSucceed, this.OnClaimOfferFailed); }
+
+        protected virtual void OnClaimOfferSucceed()
+        {
+            var offerData = this.dailyQueueOfferDataController.GetCurrentDailyQueueOfferRecord().OfferItems[this.model.OfferId];
+            this.dailyQueueOfferDataController.ClaimOfferItem(offerData, this.claimRect);
+        }
+
+        protected virtual void OnClaimOfferFailed() { }
     }
 }

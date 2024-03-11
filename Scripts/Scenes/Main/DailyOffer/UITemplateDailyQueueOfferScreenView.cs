@@ -27,30 +27,48 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
     {
         #region Inject
 
-        private readonly UITemplateDailyQueueOfferDataController offerDataController;
+        private readonly UITemplateDailyQueueOfferDataController dailyOfferDataController;
+        private readonly DiContainer                             diContainer;
 
         #endregion
 
-        private IEnumerable<UITemplateDailyQueueOfferItemModel> listFreeModel;
-        private IEnumerable<UITemplateDailyQueueOfferItemModel> listRewardedAdsModel;
+        private List<UITemplateDailyQueueOfferItemModel> listFreeModel;
+        private List<UITemplateDailyQueueOfferItemModel> listRewardedAdsModel;
 
         public UITemplateDailyQueueOfferScreenPresenter
         (
             SignalBus                               signalBus,
-            UITemplateDailyQueueOfferDataController offerDataController
+            UITemplateDailyQueueOfferDataController dailyOfferDataController,
+            DiContainer                             diContainer
         )
             : base(signalBus)
         {
-            this.offerDataController = offerDataController;
+            this.dailyOfferDataController = dailyOfferDataController;
+            this.diContainer         = diContainer;
+        }
+
+        protected override void OnViewReady()
+        {
+            base.OnViewReady();
+            this.View.CloseButton.onClick.AddListener(this.CloseView);
         }
 
         public override UniTask BindData()
         {
-            this.listFreeModel = this.offerDataController.GetCurrentDailyQueueOfferRecord()
-                .OfferItems.Values.Where(item => !item.IsRewardedAds).Select(item => new UITemplateDailyQueueOfferItemModel(item.OfferId));
-            this.listRewardedAdsModel = this.offerDataController.GetCurrentDailyQueueOfferRecord()
-                .OfferItems.Values.Where(item => item.IsRewardedAds).Select(item => new UITemplateDailyQueueOfferItemModel(item.OfferId));
+            this.listFreeModel = this.dailyOfferDataController.GetCurrentDailyQueueOfferRecord()
+                .OfferItems.Values
+                .Where(item => !item.IsRewardedAds)
+                .Select(item => new UITemplateDailyQueueOfferItemModel(item.OfferId))
+                .ToList();
+            this.listRewardedAdsModel = this.dailyOfferDataController.GetCurrentDailyQueueOfferRecord()
+                .OfferItems.Values
+                .Where(item => item.IsRewardedAds)
+                .Select(item => new UITemplateDailyQueueOfferItemModel(item.OfferId))
+                .ToList();
 
+            this.dailyOfferDataController.CheckOfferStatus();
+            this.View.FreeOfferAdapter.InitItemAdapter(this.listFreeModel, this.diContainer);
+            this.View.RewardedAdsAdapter.InitItemAdapter(this.listRewardedAdsModel, this.diContainer);
             return UniTask.CompletedTask;
         }
     }

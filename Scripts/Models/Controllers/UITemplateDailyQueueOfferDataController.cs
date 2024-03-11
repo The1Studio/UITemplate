@@ -39,6 +39,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.dailyRewardController     = dailyRewardController;
         }
 
+        public event Action OnUpdateOfferItem;
+
         public void CheckOfferStatus()
         {
             var isDifferentDay = this.GetRemainTimeToNextDay().Days > 0;
@@ -46,6 +48,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             {
                 this.InitAllOfferStatus();
             }
+        }
+
+        public bool TryGetOfferStatusDuringDay(string id, out RewardStatus rewardStatus)
+        {
+            if (this.dailyQueueOfferData.OfferToStatusDuringDay.TryGetValue(id, out var status))
+            {
+                rewardStatus = status;
+                return true;
+            }
+
+            rewardStatus = RewardStatus.Locked;
+            return false;
         }
 
         private int GetCurrentDayIndex()
@@ -56,12 +70,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public UITemplateDailyQueueOfferRecord GetCurrentDailyQueueOfferRecord() { return this.dailyQueueOfferBlueprint.GetDataById(this.GetCurrentDayIndex()); }
 
-        private TimeSpan GetRemainTimeToNextDay() { return DateTime.Now - this.dailyQueueOfferData.LastOfferDate; }
+        public TimeSpan GetRemainTimeToNextDay() { return DateTime.Now - this.dailyQueueOfferData.LastOfferDate; }
 
         public DateTime GetFirstTimeOpenedDate => this.dailyRewardController.GetFirstTimeOpenedDate;
 
         private void InitAllOfferStatus()
         {
+            this.dailyQueueOfferData.OfferToStatusDuringDay.Clear();
             foreach (var (_, offerItemRecord) in this.GetCurrentDailyQueueOfferRecord().OfferItems)
             {
                 var offerStatus = offerItemRecord.IsRewardedAds ? RewardStatus.Locked : RewardStatus.Unlocked;
@@ -81,6 +96,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             this.dailyQueueOfferData.OfferToStatusDuringDay[offerItemRecord.OfferId] = RewardStatus.Claimed;
             this.UnlockNextOffer(offerItemRecord.OfferId);
+            this.OnUpdateOfferItem?.Invoke();
             await this.inventoryDataController.AddGenericReward(offerItemRecord.ItemId, offerItemRecord.Value, claimRect, claimSoundKey);
         }
 

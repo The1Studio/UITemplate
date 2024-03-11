@@ -57,7 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 },
                 endValue: this.trueProgress = progress,
                 duration: 0.5f
-            );
+            ).SetUpdate(true);
         }
 
         public UniTask CompleteLoading()

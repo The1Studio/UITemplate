@@ -17,9 +17,12 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Z
 
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
-            IgnoreEvents = new HashSet<Type>()
+            IncludeEvents = new HashSet<string>()
             {
+                "af_first_open",
+                "af_ad_complete"
             },
+            
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(FirstOpenEvent), "af_first_open" },

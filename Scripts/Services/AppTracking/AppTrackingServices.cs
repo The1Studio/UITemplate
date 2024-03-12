@@ -1,17 +1,21 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.AppTracking
 {
     using Cysharp.Threading.Tasks;
+    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using Zenject;
 
     public class AppTrackingServices : IInitializable
     {
-        public bool AutoRequestTracking             { get; set; } = true;
-        public int  DelayRequestTrackingMillisecond { get; set; } = 100;
+        public int DelayRequestTrackingMillisecond { get; set; } = 100;
+
+        private readonly GameFeaturesSetting gameFeaturesSetting;
+
+        public AppTrackingServices(GameFeaturesSetting gameFeaturesSetting) { this.gameFeaturesSetting = gameFeaturesSetting; }
 
         public async void Initialize()
         {
             await UniTask.Delay(this.DelayRequestTrackingMillisecond);
-            if (this.AutoRequestTracking)
+            if (this.gameFeaturesSetting.autoRequestATT)
             {
                 await RequestTracking();
             }
@@ -36,5 +40,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AppTracking
             return true;
         }
     }
-
 }

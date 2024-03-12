@@ -8,7 +8,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.Services.AppTracking;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
@@ -34,13 +33,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             UITemplateServicesInstaller.Install(this.Container, this.toastCanvas);
             UITemplateHighScoreInstaller.Install(this.Container);
             IapInstaller.Install(this.Container);
-            UITemplateLocalDataInstaller.Install(this.Container); // bind after FBInstantInstaller for remote user data
+            UITemplateLocalDataInstaller.Install(this.Container);  // bind after FBInstantInstaller for remote user data
             UITemplateThirdPartyInstaller.Install(this.Container); // bind after UITemplateLocalDataInstaller for local data analytics
-            UITemplateAdsInstaller.Install(this.Container); // this depend on third party service signals
+            UITemplateAdsInstaller.Install(this.Container);        // this depend on third party service signals
             NotificationInstaller.Install(this.Container);
             StoreRatingServiceInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
-            this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
 
             // not lock in editor because interstitial fake ads can not close
 #if !UNITY_EDITOR

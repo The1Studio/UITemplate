@@ -15,6 +15,7 @@
         private const string DailyRewardSymbol = "THEONE_DAILY_REWARD";
         private const string BadgeNotifySymbol = "THEONE_BADGE_NOTIFY";
         private const string QuestSystemSymbol = "THEONE_QUEST_SYSTEM";
+        private const string FireBaseAuthSymbol = "THEONE_FIREBASE_AUTH";
 
         public static string ResourcePath = $"GameConfigs/{nameof(GameFeaturesSetting)}";
 
@@ -80,6 +81,13 @@
 
         #endregion
 
+        #region Firebase
+
+        [OnValueChanged("OnChangeFirebaseAuth")] [BoxGroup("Firebase")]
+        public bool enableFirebaseAuth;
+
+        #endregion
+
 #if UNITY_EDITOR
         private void OnChangeRacingEvent() { DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
 
@@ -88,6 +96,9 @@
         private void OnChangeBadgeNotify() { DefineSymbolEditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify); }
 
         private void OnChangeQuestSystem() { DefineSymbolEditorUtils.SetDefineSymbol(QuestSystemSymbol, this.enableQuestSystem); }
+        
+        private void OnChangeFirebaseAuth() { DefineSymbolEditorUtils.SetDefineSymbol(FireBaseAuthSymbol, this.enableFirebaseAuth); }
+
 #endif
     }
 }

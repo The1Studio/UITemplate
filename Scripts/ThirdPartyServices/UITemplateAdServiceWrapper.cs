@@ -53,7 +53,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool     IsShowBannerAd                        { get; set; }
+        private bool IsShowBannerAd { get; set; }
+        private bool IsShowMRECAd { get; set; }
         private bool     IsCheckFirstScreenShow                { get; set; }
         private DateTime LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
         private bool     PreviousCollapsibleBannerAdLoadedFail { get; set; }
@@ -156,6 +157,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
                 this.PreviousCollapsibleBannerAdLoadedFail = false;
                 this.logService.Log("onelog: ShowBannerAd");
+                this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(true));
             }
         }
 
@@ -169,6 +171,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.IsShowBannerAd = false;
             this.InternalHideCollapsibleBannerAd();
             this.InternalHideMediationBannerAd();
+            this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(false));
             this.logService.Log("onelog: HideBannerAd");
         }
 
@@ -504,6 +507,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 if (this.IsShowBannerAd) this.HideBannerAd();
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
+                this.IsShowMRECAd = true;
             }
         }
 
@@ -589,10 +593,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void HideAllMREC()
         {
+            if (!this.IsShowMRECAd) return;
             if (!this.IsShowBannerAd) this.ShowBannerAd();
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();
+                this.IsShowMRECAd = false;
             }
         }
 

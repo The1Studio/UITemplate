@@ -94,7 +94,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
                 this.IsShowingBar = true;
                 rectTransform.DOKill();
                 rectTransform.DOSizeDelta(Vector2.up * this.Height, animationDuration).SetEase(Ease.OutBack).SetUpdate(true);
-                this.OnDoShowBar();
+                this.OnChangeBarState(true);
                 return;
             }
 
@@ -102,23 +102,34 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             this.IsShowingBar = false;
             rectTransform.DOKill();
             rectTransform.DOSizeDelta(Vector2.up * this.HiddenHeight, animationDuration).SetEase(Ease.InBack).SetUpdate(true);
+            this.OnChangeBarState(false);
         }
 
-        protected virtual void OnDoShowBar()
+        protected virtual void OnChangeBarState(bool isActive)
         {
-            
+            if (!this.gameFeaturesSetting.showBottomBarWithBanner)
+            {
+                if (isActive)
+                {
+                    this.uiTemplateAdServiceWrapper.HideBannerAd();
+                }
+                else
+                {
+                    this.uiTemplateAdServiceWrapper.ShowBannerAd();
+                }
+            }
         }
 
         protected virtual void OnRemoveAdsHandler()
         {
             var rectTransform = this.transform as RectTransform;
             rectTransform.DOKill();
-            rectTransform.DOSizeDelta(Vector2.up * this.NoBannerHeight, 0.3f);
+            rectTransform.DOSizeDelta(Vector2.up * this.Height, 0.3f);
         }
 
         private void Awake()
         {
-            ((RectTransform)this.transform).sizeDelta = Vector2.up * this.Height;
+            this.OnChangeFocusScreen();
             this.Buttons                              = this.buttonParent.GetComponentsInChildren<BottomBarNavigatorTabButtonView>().ToList();
 
             for (var index = 0; index < this.Buttons.Count; index++)
@@ -170,7 +181,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         protected abstract void OnCLickButton(int index);
 
         protected abstract int DefaultActiveIndex { get; }
-        protected virtual  int HasBannerHeight    => 380;
+        protected virtual  int HasBannerHeight    => 480;
         protected virtual  int NoBannerHeight     => 250;
         protected virtual  int HiddenHeight       => -200;
 
@@ -185,6 +196,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         /// <returns></returns>
         protected abstract bool IsShouldShowBar();
 
-        private int Height => this.uiTemplateAdServiceWrapper.IsRemovedAds ? this.NoBannerHeight : this.HasBannerHeight;
+        private int Height => this.uiTemplateAdServiceWrapper.IsRemovedAds || !this.gameFeaturesSetting.showBottomBarWithBanner ? this.NoBannerHeight : this.HasBannerHeight;
     }
 }

@@ -34,6 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<LevelSkippedSignal>();
             this.Container.DeclareSignal<RemoteConfigFetchedSucceededSignal>();
             this.Container.DeclareSignal<OnRemoveAdsSucceedSignal>();
+            this.Container.DeclareSignal<UITemplateOnUpdateBannerStateSignal>();
             
             //State machine
             this.Container.DeclareSignal<OnStateEnterSignal>();

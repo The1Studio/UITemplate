@@ -11,10 +11,10 @@
         menuName = "TheOne/ScriptableObjects/SpawnGameFeatruesSettingConfig", order = 1)]
     public class GameFeaturesSetting : ScriptableObject
     {
-        private const string RacingEventSymbol = "THEONE_RACING_EVENT";
-        private const string DailyRewardSymbol = "THEONE_DAILY_REWARD";
-        private const string BadgeNotifySymbol = "THEONE_BADGE_NOTIFY";
-        private const string QuestSystemSymbol = "THEONE_QUEST_SYSTEM";
+        private const string RacingEventSymbol  = "THEONE_RACING_EVENT";
+        private const string DailyRewardSymbol  = "THEONE_DAILY_REWARD";
+        private const string BadgeNotifySymbol  = "THEONE_BADGE_NOTIFY";
+        private const string QuestSystemSymbol  = "THEONE_QUEST_SYSTEM";
         private const string FireBaseAuthSymbol = "THEONE_FIREBASE_AUTH";
 
         public static string ResourcePath = $"GameConfigs/{nameof(GameFeaturesSetting)}";
@@ -65,6 +65,7 @@
         #region Misc
 
         [FoldoutGroup("Misc Settings")] public bool enableInitHomeScreenManually = true;
+        [FoldoutGroup("Misc Settings")] public bool showBottomBarWithBanner = false;
         [FoldoutGroup("Misc Settings")] [Tooltip("Auto Request App Tracking Transparent for iOS")] public bool autoRequestATT = true;
 
         #endregion

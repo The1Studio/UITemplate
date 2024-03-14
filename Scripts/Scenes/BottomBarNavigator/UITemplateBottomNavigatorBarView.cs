@@ -178,6 +178,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             }
         }
 
+        // switch (index)
+        // {
+        //     case 0:
+        //         this.screenManager.OpenScreen<LeaderboardScreenPresenter>().Forget();
+        //         break;
+        //     case 1:
+        //         this.screenManager.OpenScreen<CollectionScreenPresenter>().Forget();
+        //         break;
+        //     case 2:
+        //         this.screenManager.OpenScreen<HomeScreenPresenter>().Forget();
+        //         break;
+        //     case 3:
+        //         this.screenManager.OpenScreen<GachaScreenPresenter>().Forget();
+        //         break;
+        //     case 4:
+        //         this.screenManager.OpenScreen<ShopPackScreenPresenter>().ContinueWith(presenter => presenter.SmoothScrollTo(InsufficientType.None));
+        //         break;
+        // }
         protected abstract void OnCLickButton(int index);
 
         protected abstract int DefaultActiveIndex { get; }

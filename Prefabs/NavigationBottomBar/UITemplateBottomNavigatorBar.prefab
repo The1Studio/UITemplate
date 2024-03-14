@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7090477225622299709}
-  - component: {fileID: 6320599635837068050}
   m_Layer: 5
   m_Name: UITemplateBottomNavigatorBar
   m_TagString: Untagged
@@ -38,19 +37,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6320599635837068050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 701227724370186686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a29b313d7fa74720867d9418cee3a39f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttonParent: {fileID: 3595205129297165085}
 --- !u!1 &3549569479730610272
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,6 +292,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: BottomNavigatorBarButton_4
       objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -7284623045120318206, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -430,6 +433,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: BottomNavigatorBarButton_1
       objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -7284623045120318206, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
     - target: {fileID: 4234246499324999015, guid: 784886ac716ac76498e50f6834453ce8,
         type: 3}
       propertyPath: m_Enabled
@@ -559,6 +579,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: BottomNavigatorBarButton_5
       objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -7284623045120318206, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
     - target: {fileID: 6181460103443462777, guid: 784886ac716ac76498e50f6834453ce8,
         type: 3}
       propertyPath: m_Sprite
@@ -689,6 +726,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: BottomNavigatorBarButton_2
       objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -7284623045120318206, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -813,6 +867,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: BottomNavigatorBarButton_3
       objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
+    - target: {fileID: 4182730718068171870, guid: 784886ac716ac76498e50f6834453ce8,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -7284623045120318206, guid: 133d6bb0b4a866d4286a863153ba7206,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

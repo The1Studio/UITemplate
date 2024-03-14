@@ -64,6 +64,7 @@
         #region Misc
 
         [FoldoutGroup("Misc Settings")] public bool enableInitHomeScreenManually = true;
+        [FoldoutGroup("Misc Settings")] [Tooltip("Auto Request App Tracking Transparent for iOS")] public bool autoRequestATT = true;
 
         #endregion
 

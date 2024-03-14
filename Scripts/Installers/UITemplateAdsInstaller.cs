@@ -15,7 +15,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public override void InstallBindings()
         {
+#if !THEONE_PLAYABLE_ADS
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
+#endif
 #if CREATIVE
             this.Container.Bind<UITemplateAdServiceWrapper>().To<UITemplateAdServiceWrapperCreative>().AsCached();
 #else

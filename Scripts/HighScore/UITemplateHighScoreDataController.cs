@@ -7,7 +7,6 @@
     using TheOneStudio.UITemplate.HighScore.Models;
     using TheOneStudio.UITemplate.HighScore.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using UnityEngine;
     using Zenject;
 
     /// <summary>
@@ -45,17 +44,21 @@
         /// </param>
         public void SubmitScore(string key, int newHighScore)
         {
-            Enum.GetValues(typeof(HighScoreType)).Cast<HighScoreType>().ForEach(type =>
-            {
-                var time         = GetCurrentTime(type);
-                var oldHighScore = this.highScoreData[key][type][time];
-                if (newHighScore <= oldHighScore) return;
-
-                this.highScoreData[key][type][time] = newHighScore;
-                this.signalBus.Fire(new NewHighScoreSignal(key, type, oldHighScore, newHighScore));
-            });
+            Enum.GetValues(typeof(HighScoreType))
+                .Cast<HighScoreType>()
+                .ForEach(type => this.SubmitScore(key, type, newHighScore));
         }
-        
+
+        public void SubmitScore(string key, HighScoreType type, int newHighScore)
+        {
+            var time         = GetCurrentTime(type);
+            var oldHighScore = this.highScoreData[key][type][time];
+            if (newHighScore <= oldHighScore) return;
+
+            this.highScoreData[key][type][time] = newHighScore;
+            this.signalBus.Fire(new NewHighScoreSignal(key, type, oldHighScore, newHighScore));
+        }
+
         /// <summary>
         ///     Get high score
         /// </summary>
@@ -76,14 +79,15 @@
         {
             Enum.GetValues(typeof(HighScoreType)).Cast<HighScoreType>().ForEach(type =>
             {
-                this.highScoreData[key].AddAllHighScore(type,DateTime.UtcNow,newHighScore);
+                this.highScoreData[key].AddAllHighScore(type, DateTime.UtcNow, newHighScore);
             });
-            
         }
-        public Dictionary<DateTime,int> GetAllHighScore(string key, HighScoreType type)
+
+        public Dictionary<DateTime, int> GetAllHighScore(string key, HighScoreType type)
         {
             return this.highScoreData[key].GetAllHighScore(type).topUserHighScores;
         }
+
         private static DateTime GetCurrentTime(HighScoreType type) => type switch
         {
             HighScoreType.Daily   => DateTime.UtcNow.Date,
@@ -93,6 +97,7 @@
             HighScoreType.AllTime => DateTime.MinValue,
             _                     => throw new ArgumentOutOfRangeException(nameof(type), type, null),
         };
+
         #region Default
 
         /// <summary>

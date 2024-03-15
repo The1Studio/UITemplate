@@ -190,6 +190,10 @@ namespace TheOneStudio.HyperCasual
             );
             var playerEntry = result.Leaderboard.FirstOrDefault(entry => entry.PlayFabId == this.PlayerId);
             this.keyToTypeToPlayerEntry.GetOrAdd(key)[type] = playerEntry;
+            if (playerEntry is { })
+            {
+                this.highScoreDataController.SubmitScore(key, type, playerEntry.StatValue);
+            }
         }
 
         private async UniTask FetchLeaderboardAsync(string key, HighScoreType type)

@@ -19,20 +19,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
         [SerializeField] private TMP_Text            itemText;
         [SerializeField] private Image               itemImage;
         [SerializeField] private GameObject          adsIconObj;
+        [SerializeField] private GameObject          disableClaimObj;
         [SerializeField] private Button              claimButton;
         [SerializeField] private UITemplateAdsButton adsClaimButton;
 
-        public TMP_Text            ButtonText     => this.buttonText;
-        public TMP_Text            ItemText       => this.itemText;
-        public Image               ItemImage      => this.itemImage;
-        public GameObject          AdsIconObj     => this.adsIconObj;
-        public Button              ClaimButton    => this.claimButton;
-        public UITemplateAdsButton AdsClaimButton => this.adsClaimButton;
+        public TMP_Text            ButtonText      => this.buttonText;
+        public TMP_Text            ItemText        => this.itemText;
+        public Image               ItemImage       => this.itemImage;
+        public GameObject          AdsIconObj      => this.adsIconObj;
+        public GameObject          DisableClaimObj => this.disableClaimObj;
+        public Button              ClaimButton     => this.claimButton;
+        public UITemplateAdsButton AdsClaimButton  => this.adsClaimButton;
+
+        public Action ClickClaim;
+        public Action ClickAdsClaim;
+
+        private void Awake()
+        {
+            this.claimButton.onClick.AddListener(() => this.ClickClaim?.Invoke());
+            this.adsClaimButton.onClick.AddListener(() => this.ClickAdsClaim?.Invoke());
+        }
     }
 
     public class UITemplateDailyQueueOfferItemModel
     {
-        public string OfferId { get; private set; }
+        public string OfferId { get; }
 
         public UITemplateDailyQueueOfferItemModel(string offerId) { this.OfferId = offerId; }
     }
@@ -70,26 +81,37 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
             base.OnViewReady();
             this.claimRect = this.View.ItemImage.GetComponent<RectTransform>();
             this.View.AdsClaimButton.OnViewReady(this.adServiceWrapper);
-            this.View.AdsClaimButton.onClick.AddListener(this.OnClickAdsClaim);
-            this.View.ClaimButton.onClick.AddListener(this.OnClickClaim);
         }
 
         public override void BindData(UITemplateDailyQueueOfferItemModel param)
         {
+            this.View.ClickClaim    = this.OnClickClaim;
+            this.View.ClickAdsClaim = this.OnClickAdsClaim;
+
             this.model                     = param;
             this.dailyQueueOfferItemRecord = this.dailyQueueOfferDataController.GetCurrentDailyQueueOfferRecord().OfferItems[this.model.OfferId];
-            this.View.AdsIconObj.SetActive(this.dailyQueueOfferItemRecord.IsRewardedAds);
-            this.View.AdsClaimButton.gameObject.SetActive(this.dailyQueueOfferItemRecord.IsRewardedAds);
-            this.View.ClaimButton.gameObject.SetActive(!this.dailyQueueOfferItemRecord.IsRewardedAds);
+            this.BindDataToClaimButton();
+            this.BindDataToAdsClaimButton();
+        }
 
-            this.OnUpdateRewardedOfferItem();
-            this.dailyQueueOfferDataController.OnUpdateOfferItem += this.OnUpdateRewardedOfferItem;
-            this.View.AdsClaimButton.BindData(AdsPlacement);
+        private void BindDataToClaimButton()
+        {
+            this.View.ClaimButton.gameObject.SetActive(!this.dailyQueueOfferItemRecord.IsRewardedAds);
 
             if (this.dailyQueueOfferItemRecord.IsRewardedAds) return;
             if (this.remainTimeDisposable != null) return;
 
             this.remainTimeDisposable = Observable.EveryUpdate().Subscribe(_ => this.OnUpdateRemainTimeFreeOffer());
+        }
+
+        private void BindDataToAdsClaimButton()
+        {
+            this.View.AdsIconObj.SetActive(this.dailyQueueOfferItemRecord.IsRewardedAds);
+            this.View.AdsClaimButton.gameObject.SetActive(this.dailyQueueOfferItemRecord.IsRewardedAds);
+
+            this.OnUpdateRewardedOfferItem();
+            this.dailyQueueOfferDataController.OnUpdateOfferItem += this.OnUpdateRewardedOfferItem;
+            this.View.AdsClaimButton.BindData(AdsPlacement);
         }
 
         public override void Dispose()
@@ -111,8 +133,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
                 return;
             }
 
-            this.View.AdsClaimButton.interactable = status == RewardStatus.Unlocked;
-            this.View.AdsIconObj.SetActive(status != RewardStatus.Claimed);
+            this.View.AdsClaimButton.gameObject.SetActive(status == RewardStatus.Unlocked);
+            this.View.DisableClaimObj.SetActive(status           != RewardStatus.Unlocked);
+            this.View.AdsIconObj.SetActive(status                != RewardStatus.Claimed);
         }
 
         private void OnUpdateRemainTimeFreeOffer()
@@ -122,6 +145,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
                 return;
             }
 
+            this.View.ClaimButton.gameObject.SetActive(status     == RewardStatus.Unlocked);
+            this.View.DisableClaimObj.gameObject.SetActive(status == RewardStatus.Claimed);
             var remainTimeToNextDay = this.dailyQueueOfferDataController.GetRemainTimeToNextDay();
             var remainHours         = remainTimeToNextDay.Hours;
             var remainMinutes       = remainTimeToNextDay.Minutes;

@@ -1,6 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 {
-    using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
@@ -23,7 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
     }
 
     [PopupInfo(nameof(UITemplateDailyQueueOfferScreenView), true, false, true)]
-    public class UITemplateDailyQueueOfferScreenPresenter : UITemplateBasePopupPresenter<UITemplateDailyQueueOfferScreenView>
+    public class UITemplateDailyQueueOfferPopupPresenter : UITemplateBasePopupPresenter<UITemplateDailyQueueOfferScreenView>
     {
         #region Inject
 
@@ -32,10 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 
         #endregion
 
-        private List<UITemplateDailyQueueOfferItemModel> listFreeModel;
-        private List<UITemplateDailyQueueOfferItemModel> listRewardedAdsModel;
-
-        public UITemplateDailyQueueOfferScreenPresenter
+        public UITemplateDailyQueueOfferPopupPresenter
         (
             SignalBus                               signalBus,
             UITemplateDailyQueueOfferDataController dailyOfferDataController,
@@ -44,7 +40,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
             : base(signalBus)
         {
             this.dailyOfferDataController = dailyOfferDataController;
-            this.diContainer         = diContainer;
+            this.diContainer              = diContainer;
         }
 
         protected override void OnViewReady()
@@ -55,21 +51,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 
         public override UniTask BindData()
         {
-            this.listFreeModel = this.dailyOfferDataController.GetCurrentDailyQueueOfferRecord()
+            this.dailyOfferDataController.CheckOfferStatus();
+
+            this.InitAdapter(this.View.FreeOfferAdapter,   false).Forget();
+            this.InitAdapter(this.View.RewardedAdsAdapter, true).Forget();
+            return UniTask.CompletedTask;
+        }
+
+        private UniTask InitAdapter(UITemplateDailyQueueOfferAdapter adapter, bool isRewardedAds)
+        {
+            var listModel = this.dailyOfferDataController.GetCurrentDailyQueueOfferRecord()
                 .OfferItems.Values
-                .Where(item => !item.IsRewardedAds)
-                .Select(item => new UITemplateDailyQueueOfferItemModel(item.OfferId))
-                .ToList();
-            this.listRewardedAdsModel = this.dailyOfferDataController.GetCurrentDailyQueueOfferRecord()
-                .OfferItems.Values
-                .Where(item => item.IsRewardedAds)
+                .Where(item => item.IsRewardedAds == isRewardedAds)
                 .Select(item => new UITemplateDailyQueueOfferItemModel(item.OfferId))
                 .ToList();
 
-            this.dailyOfferDataController.CheckOfferStatus();
-            this.View.FreeOfferAdapter.InitItemAdapter(this.listFreeModel, this.diContainer);
-            this.View.RewardedAdsAdapter.InitItemAdapter(this.listRewardedAdsModel, this.diContainer);
-            return UniTask.CompletedTask;
+            return adapter.InitItemAdapter(listModel, this.diContainer);
         }
     }
 }

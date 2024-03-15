@@ -87,13 +87,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
             this.View.AdsClaimButton.BindData(AdsPlacement);
 
             if (this.dailyQueueOfferItemRecord.IsRewardedAds) return;
-            Observable.EveryUpdate().Subscribe(_ => this.OnUpdateRemainTimeFreeOffer());
+            if (this.remainTimeDisposable != null) return;
+
+            this.remainTimeDisposable = Observable.EveryUpdate().Subscribe(_ => this.OnUpdateRemainTimeFreeOffer());
         }
 
         public override void Dispose()
         {
             base.Dispose();
             this.dailyQueueOfferDataController.OnUpdateOfferItem -= this.OnUpdateRewardedOfferItem;
+
+            if (this.remainTimeDisposable == null) return;
+
+            this.remainTimeDisposable?.Dispose();
+            this.remainTimeDisposable = null;
         }
 
         private void OnUpdateRewardedOfferItem()

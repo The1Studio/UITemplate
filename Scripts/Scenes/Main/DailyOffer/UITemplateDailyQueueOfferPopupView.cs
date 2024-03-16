@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 {
+    using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
@@ -10,19 +11,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
     using UnityEngine.UI;
     using Zenject;
 
-    public class UITemplateDailyQueueOfferScreenView : BaseView
+    public class UITemplateDailyQueueOfferPopupView : BaseView
     {
+        [SerializeField] private UITemplateCurrencyView            currencyView;
         [SerializeField] private Button                            closeButton;
         [SerializeField] private UITemplateDailyQueueOfferItemView freeOfferItemView;
         [SerializeField] private UITemplateDailyQueueOfferAdapter  rewardedAdsAdapter;
 
+        public UITemplateCurrencyView            CurrencyView       => this.currencyView;
         public Button                            CloseButton        => this.closeButton;
         public UITemplateDailyQueueOfferItemView FreeOfferItemView  => this.freeOfferItemView;
         public UITemplateDailyQueueOfferAdapter  RewardedAdsAdapter => this.rewardedAdsAdapter;
     }
 
-    [PopupInfo(nameof(UITemplateDailyQueueOfferScreenView), true, false, true)]
-    public class UITemplateDailyQueueOfferPopupPresenter : UITemplateBasePopupPresenter<UITemplateDailyQueueOfferScreenView>
+    [PopupInfo(nameof(UITemplateDailyQueueOfferPopupView), true, false, true)]
+    public class UITemplateDailyQueueOfferPopupPresenter : UITemplateBasePopupPresenter<UITemplateDailyQueueOfferPopupView>
     {
         #region Inject
 
@@ -31,7 +34,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 
         #endregion
 
-        private UITemplateDailyQueueOfferItemPresenter freeOfferItemPresenter;
+        private UITemplateDailyQueueOfferItemPresenter   freeOfferItemPresenter;
+        private List<UITemplateDailyQueueOfferItemModel> listModel;
 
         public UITemplateDailyQueueOfferPopupPresenter
         (
@@ -48,6 +52,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
         protected override void OnViewReady()
         {
             base.OnViewReady();
+            this.diContainer.Inject(this.View.CurrencyView);
             this.View.CloseButton.onClick.AddListener(this.CloseView);
         }
 
@@ -56,15 +61,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
             this.dailyOfferDataController.CheckOfferStatus();
 
             this.InitFreeOfferItem();
-            this.InitRewardAdapter().Forget();
+            this.InitOrRefreshRewardAdapter().Forget();
             return UniTask.CompletedTask;
         }
 
         public override void Dispose()
         {
             base.Dispose();
+            this.View.RewardedAdsAdapter.GetPresenters().ForEach(presenter => presenter.Dispose());
             if (this.freeOfferItemPresenter == null) return;
-
+            
             this.freeOfferItemPresenter.Dispose();
             this.freeOfferItemPresenter = null;
         }
@@ -87,18 +93,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
                 this.freeOfferItemPresenter.OnViewReady();
             }
 
-            this.freeOfferItemPresenter.BindData(new UITemplateDailyQueueOfferItemModel(record.ImageId));
+            this.freeOfferItemPresenter.BindData(new UITemplateDailyQueueOfferItemModel(record.OfferId));
         }
 
-        private UniTask InitRewardAdapter()
+        private UniTask InitOrRefreshRewardAdapter()
         {
-            var listModel = this.dailyOfferDataController.GetCurrentDailyQueueOfferRecord()
+            this.listModel ??= this.dailyOfferDataController.GetCurrentDailyQueueOfferRecord()
                 .OfferItems.Values
                 .Where(item => item.IsRewardedAds)
                 .Select(item => new UITemplateDailyQueueOfferItemModel(item.OfferId))
                 .ToList();
-
-            return this.View.RewardedAdsAdapter.InitItemAdapter(listModel, this.diContainer);
+            return this.View.RewardedAdsAdapter.InitItemAdapter(this.listModel, this.diContainer);
         }
     }
 }

@@ -90,15 +90,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 
             this.model                     = param;
             this.dailyQueueOfferItemRecord = this.dailyQueueOfferDataController.GetCurrentDailyQueueOfferRecord().OfferItems[this.model.OfferId];
+            this.View.ItemText.text        = $"x{this.dailyQueueOfferItemRecord.Value}";
+            this.View.ItemImage.sprite     = this.GameAssets.ForceLoadAsset<Sprite>(this.dailyQueueOfferItemRecord.ImageId);
+            this.OnUpdateOfferItemByStatus();
             this.BindDataToClaimButton();
             this.BindDataToAdsClaimButton();
         }
 
         private void BindDataToClaimButton()
         {
-            this.View.ClaimButton.gameObject.SetActive(!this.dailyQueueOfferItemRecord.IsRewardedAds);
-
-            if (this.dailyQueueOfferItemRecord.IsRewardedAds) return;
             if (this.remainTimeDisposable != null) return;
 
             this.remainTimeDisposable = Observable.EveryUpdate().Subscribe(_ => this.OnUpdateRemainTimeFreeOffer());
@@ -106,18 +106,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 
         private void BindDataToAdsClaimButton()
         {
-            this.View.AdsIconObj.SetActive(this.dailyQueueOfferItemRecord.IsRewardedAds);
-            this.View.AdsClaimButton.gameObject.SetActive(this.dailyQueueOfferItemRecord.IsRewardedAds);
-
-            this.OnUpdateRewardedOfferItem();
-            this.dailyQueueOfferDataController.OnUpdateOfferItem += this.OnUpdateRewardedOfferItem;
+            this.dailyQueueOfferDataController.OnUpdateOfferItem += this.OnUpdateOfferItemByStatus;
             this.View.AdsClaimButton.BindData(AdsPlacement);
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            this.dailyQueueOfferDataController.OnUpdateOfferItem -= this.OnUpdateRewardedOfferItem;
+            this.dailyQueueOfferDataController.OnUpdateOfferItem -= this.OnUpdateOfferItemByStatus;
 
             if (this.remainTimeDisposable == null) return;
 
@@ -125,17 +121,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
             this.remainTimeDisposable = null;
         }
 
-        private void OnUpdateRewardedOfferItem()
+        private void OnUpdateOfferItemByStatus()
         {
-            if (!this.dailyQueueOfferItemRecord.IsRewardedAds) return;
             if (!this.dailyQueueOfferDataController.TryGetOfferStatusDuringDay(this.model.OfferId, out var status))
             {
                 return;
             }
 
-            this.View.AdsClaimButton.gameObject.SetActive(status == RewardStatus.Unlocked);
-            this.View.DisableClaimObj.SetActive(status           != RewardStatus.Unlocked);
-            this.View.AdsIconObj.SetActive(status                != RewardStatus.Claimed);
+            var isRewardedAds = this.dailyQueueOfferItemRecord.IsRewardedAds;
+            this.View.ClaimButton.gameObject.SetActive(status == RewardStatus.Unlocked && !isRewardedAds);
+            this.View.AdsClaimButton.gameObject.SetActive(status == RewardStatus.Unlocked && isRewardedAds);
+            this.View.AdsIconObj.SetActive(status != RewardStatus.Claimed && isRewardedAds);
+            this.View.DisableClaimObj.SetActive(status != RewardStatus.Unlocked);
         }
 
         private void OnUpdateRemainTimeFreeOffer()
@@ -145,15 +142,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
                 return;
             }
 
-            this.View.ClaimButton.gameObject.SetActive(status     == RewardStatus.Unlocked);
-            this.View.DisableClaimObj.gameObject.SetActive(status == RewardStatus.Claimed);
             var remainTimeToNextDay = this.dailyQueueOfferDataController.GetRemainTimeToNextDay();
             var remainHours         = remainTimeToNextDay.Hours;
             var remainMinutes       = remainTimeToNextDay.Minutes;
             var remainSeconds       = remainTimeToNextDay.Seconds;
             if (status == RewardStatus.Claimed)
             {
-                this.View.ClaimButton.interactable = false;
                 var textRemainHours   = remainHours > 0 ? $"{remainHours}h " : "";
                 var textRemainMinutes = $"{remainMinutes}m";
                 var textRemainSeconds = remainHours > 0 ? "" : $"{remainSeconds}s";
@@ -161,8 +155,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
             }
             else
             {
-                this.View.ClaimButton.interactable = true;
-                this.View.ButtonText.text          = "Claim";
+                this.View.ButtonText.text = "Claim";
             }
         }
 

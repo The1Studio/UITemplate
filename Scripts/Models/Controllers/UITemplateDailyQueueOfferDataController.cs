@@ -23,12 +23,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public UITemplateDailyQueueOfferDataController
         (
-            IInternetService                    internetService,
-            UITemplateDailyQueueOfferData       dailyQueueOfferData,
-            UITemplateDailyQueueOfferBlueprint  dailyQueueOfferBlueprint,
-            UITemplateInventoryDataController   inventoryDataController,
+            IInternetService internetService,
+            UITemplateDailyQueueOfferData dailyQueueOfferData,
+            UITemplateDailyQueueOfferBlueprint dailyQueueOfferBlueprint,
+            UITemplateInventoryDataController inventoryDataController,
             UITemplateFlyingAnimationController flyingAnimationController,
-            UITemplateDailyRewardController     dailyRewardController
+            UITemplateDailyRewardController dailyRewardController
         )
         {
             this.internetService           = internetService;
@@ -43,8 +43,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public void CheckOfferStatus()
         {
-            var isDifferentDay = this.GetRemainTimeToNextDay().Days > 0;
-            if (isDifferentDay)
+            var isFirstTimeOpen = this.dailyQueueOfferData.OfferToStatusDuringDay.Count == 0;
+            var isDifferentDay  = this.GetRemainTimeToNextDay().Days > 0;
+            if (isDifferentDay || isFirstTimeOpen)
             {
                 this.InitAllOfferStatus();
             }
@@ -68,9 +69,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return (DateTime.Now - firstTimeOpenedDate).Days;
         }
 
-        public UITemplateDailyQueueOfferRecord GetCurrentDailyQueueOfferRecord() { return this.dailyQueueOfferBlueprint.GetDataById(this.GetCurrentDayIndex()); }
+        public UITemplateDailyQueueOfferRecord GetCurrentDailyQueueOfferRecord()
+        {
+            var dayIndex = this.GetCurrentDayIndex();
+            return this.dailyQueueOfferBlueprint.GetDataById(dayIndex == 0 ? 1 : dayIndex);
+        }
 
-        public TimeSpan GetRemainTimeToNextDay() { return DateTime.Now - this.dailyQueueOfferData.LastOfferDate; }
+        public TimeSpan GetRemainTimeToNextDay() { return this.dailyQueueOfferData.LastOfferDate + TimeSpan.FromDays(1) - DateTime.Now; }
 
         public DateTime GetFirstTimeOpenedDate => this.dailyRewardController.GetFirstTimeOpenedDate;
 
@@ -95,16 +100,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 return;
 
             this.dailyQueueOfferData.OfferToStatusDuringDay[offerItemRecord.OfferId] = RewardStatus.Claimed;
-            this.UnlockNextOffer(offerItemRecord.OfferId);
+            this.UnlockNextOffer();
             this.OnUpdateOfferItem?.Invoke();
             await this.inventoryDataController.AddGenericReward(offerItemRecord.ItemId, offerItemRecord.Value, claimRect, claimSoundKey);
         }
 
-        private void UnlockNextOffer(string currentOfferId)
+        private void UnlockNextOffer()
         {
-            if (!this.GetCurrentDailyQueueOfferRecord().OfferItems[currentOfferId].IsRewardedAds)
-                return;
-
             var nextOfferId = this.dailyQueueOfferData.OfferToStatusDuringDay
                 .FirstOrDefault(keyPair => keyPair.Value == RewardStatus.Locked).Key;
             if (string.IsNullOrEmpty(nextOfferId))

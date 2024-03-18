@@ -16,8 +16,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateDailyQueueOfferData       dailyQueueOfferData;
         private readonly UITemplateDailyQueueOfferBlueprint  dailyQueueOfferBlueprint;
         private readonly UITemplateInventoryDataController   inventoryDataController;
-        private readonly UITemplateFlyingAnimationController flyingAnimationController;
-        private readonly UITemplateDailyRewardController     dailyRewardController;
 
         #endregion
 
@@ -26,17 +24,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             IInternetService internetService,
             UITemplateDailyQueueOfferData dailyQueueOfferData,
             UITemplateDailyQueueOfferBlueprint dailyQueueOfferBlueprint,
-            UITemplateInventoryDataController inventoryDataController,
-            UITemplateFlyingAnimationController flyingAnimationController,
-            UITemplateDailyRewardController dailyRewardController
+            UITemplateInventoryDataController inventoryDataController
         )
         {
             this.internetService           = internetService;
             this.dailyQueueOfferData       = dailyQueueOfferData;
             this.dailyQueueOfferBlueprint  = dailyQueueOfferBlueprint;
             this.inventoryDataController   = inventoryDataController;
-            this.flyingAnimationController = flyingAnimationController;
-            this.dailyRewardController     = dailyRewardController;
         }
 
         public event Action OnUpdateOfferItem;
@@ -65,7 +59,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         private int GetCurrentDayIndex()
         {
-            var firstTimeOpenedDate = this.dailyRewardController.GetFirstTimeOpenedDate;
+            var firstTimeOpenedDate = this.dailyQueueOfferData.FirstTimeOpen;
             return (DateTime.Now - firstTimeOpenedDate).Days;
         }
 
@@ -77,7 +71,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public TimeSpan GetRemainTimeToNextDay() { return this.dailyQueueOfferData.LastOfferDate + TimeSpan.FromDays(1) - DateTime.Now; }
 
-        public DateTime GetFirstTimeOpenedDate => this.dailyRewardController.GetFirstTimeOpenedDate;
+        public DateTime GetFirstTimeOpenedDate => this.dailyQueueOfferData.FirstTimeOpen;
 
         private void InitAllOfferStatus()
         {

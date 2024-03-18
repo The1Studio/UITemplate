@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     {
         [OdinSerialize] public DateTime                         LastOfferDate          { get; set; } = DateTime.MinValue;
         [OdinSerialize] public Dictionary<string, RewardStatus> OfferToStatusDuringDay { get; set; } = new();
+        [OdinSerialize] public DateTime                         FirstTimeOpen          { get; set; } = DateTime.Now;
 
         public void Init() { }
 

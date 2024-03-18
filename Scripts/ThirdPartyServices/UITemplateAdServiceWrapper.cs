@@ -132,7 +132,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.IsShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
 
+            this.logService.Log($"onelog: ShowBannerAd IsCurrentScreenCanShowMREC {this.IsCurrentScreenCanShowMREC()} this.adServicesConfig.EnableBannerAd {this.adServicesConfig.EnableBannerAd}");
             if (this.IsCurrentScreenCanShowMREC() || !this.adServicesConfig.EnableBannerAd) return;
+            this.logService.Log($"onelog: ShowBannerAd IsShowBannerAd {this.IsShowBannerAd}");
             if (this.IsShowBannerAd)
             {
                 if (this.adServicesConfig.EnableCollapsibleBanner && !this.PreviousCollapsibleBannerAdLoadedFail)
@@ -144,14 +146,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     }
 
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd(useNewGuid, this.thirdPartiesConfig.AdSettings.BannerPosition);
+                    this.logService.Log($"onelog: ShowCollapsibleBannerAd useNewGuid: {useNewGuid}");
                 }
                 else
                 {
                     this.InternalShowMediationBannerAd(this.thirdPartiesConfig.AdSettings.BannerPosition, width, height);
+                    this.logService.Log("onelog: InternalShowMediationBannerAd");
                 }
 
                 this.PreviousCollapsibleBannerAdLoadedFail = false;
-                this.logService.Log("onelog: ShowBannerAd");
                 this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(true));
             }
         }

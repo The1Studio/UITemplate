@@ -40,6 +40,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Z
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(AdsRevenueEvent), "ad_revenue_report" }
+            },
+            UntrackUserProperties = new HashSet<string>()
+            {
+                "install_age",
+                "last_placement",
+                "total_earned",
+                "total_spent"
             }
         };
     }

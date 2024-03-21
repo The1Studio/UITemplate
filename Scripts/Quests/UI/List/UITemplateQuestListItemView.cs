@@ -14,13 +14,13 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
     public class UITemplateQuestListItemModel
     {
-        public UITemplateQuestPopupPresenter Parent        { get; }
-        public UITemplateQuestController     Quest         { get; }
+        public UITemplateQuestPopupPresenter Parent { get; }
+        public UITemplateQuestController     Quest  { get; }
 
         public UITemplateQuestListItemModel(UITemplateQuestPopupPresenter parent, UITemplateQuestController quest)
         {
-            this.Parent        = parent;
-            this.Quest         = quest;
+            this.Parent = parent;
+            this.Quest  = quest;
         }
     }
 
@@ -67,7 +67,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.View.BtnGo.onClick.AddListener(this.OnClickGo);
             this.View.BtnClaim.onClick.AddListener(this.OnClickClaim);
         }
-        
+
         private void InitView()
         {
             // Left
@@ -82,7 +82,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
             var status = this.Model.Quest.Progress.Status;
             this.SetItemStatus(status);
         }
-        
+
         private void SetItemStatus(QuestStatus status)
         {
             if (status.HasFlag(QuestStatus.Completed))
@@ -107,13 +107,17 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.Model.Parent.CloseViewAsync().Forget();
         }
 
-        private async void OnClickClaim()
+        private void OnClickClaim()
         {
-            if(!string.IsNullOrEmpty(this.gameFeaturesSetting.QuestSystemConfig.questClaimSoundKey)) this.audioService.PlaySound(this.gameFeaturesSetting.QuestSystemConfig.questClaimSoundKey);
+            if (!string.IsNullOrEmpty(this.gameFeaturesSetting.QuestSystemConfig.questClaimSoundKey))
+            {
+                this.audioService.PlaySound(this.gameFeaturesSetting.QuestSystemConfig.questClaimSoundKey);
+            }
             var newStatus = this.Model.Quest.Progress.Status | QuestStatus.Collected;
             this.SetItemStatus(newStatus);
-            await this.Model.Quest.CollectReward(this.View.ImgReward.rectTransform);
-            this.Model.Parent.Refresh();
+            this.Model.Quest.CollectReward(this.View.ImgReward.rectTransform)
+                .ContinueWith(() => this.Model.Parent.Refresh())
+                .Forget();
         }
 
         public override void Dispose()

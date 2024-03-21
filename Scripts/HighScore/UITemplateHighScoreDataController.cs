@@ -19,6 +19,8 @@
         /// </summary>
         public const string DEFAULT_KEY = "DEFAULT";
 
+        private const int MAX_HIGH_SCORES = 3;
+
         #region Constructor
 
         private readonly UITemplateHighScoreData highScoreData;
@@ -33,7 +35,7 @@
         #endregion
 
         /// <summary>
-        ///     Submit score. If a new high score reached, fire <see cref="NewHighScoreSignal"/>.
+        ///     Submit score for all types. If a new high score reached, fire <see cref="NewHighScoreSignal"/>.
         /// </summary>
         /// <param name="key">
         ///     Use this to separate GameModes, Characters, ...
@@ -49,14 +51,34 @@
                 .ForEach(type => this.SubmitScore(key, type, newHighScore));
         }
 
+        /// <summary>
+        ///     Submit score. If a new high score reached, fire <see cref="NewHighScoreSignal"/>.
+        /// </summary>
+        /// <param name="key">
+        ///     Use this to separate GameModes, Characters, ...
+        ///     If you don't have any, use <see cref="DEFAULT_KEY"/> or <see cref="SubmitScore(int)"/>.
+        /// </param>
+        /// <param name="type">
+        ///     <see cref="HighScoreType"/>
+        /// </param>
+        /// <param name="newHighScore">
+        ///     Possible new high score
+        /// </param>
         public void SubmitScore(string key, HighScoreType type, int newHighScore)
         {
-            var time         = GetCurrentTime(type);
-            var oldHighScore = this.highScoreData[key][type][time];
-            if (newHighScore <= oldHighScore) return;
-
-            this.highScoreData[key][type][time] = newHighScore;
-            this.signalBus.Fire(new NewHighScoreSignal(key, type, oldHighScore, newHighScore));
+            var time       = GetCurrentTime(type);
+            var highScores = this.highScoreData[key][type][time];
+            var index      = 0;
+            while (index < highScores.Count && highScores[index] > newHighScore) ++index;
+            highScores.Insert(index, newHighScore);
+            if (highScores.Count > MAX_HIGH_SCORES)
+            {
+                highScores.RemoveAt(highScores.Count - 1);
+            }
+            if (index == 0)
+            {
+                this.signalBus.Fire(new NewHighScoreSignal(key, type, highScores.Skip(1).FirstOrDefault(), newHighScore));
+            }
         }
 
         /// <summary>
@@ -69,24 +91,68 @@
         /// <param name="type">
         ///     <see cref="HighScoreType"/>
         /// </param>
-        /// <returns>High score</returns>
+        /// <returns>Highest score</returns>
         public int GetHighScore(string key, HighScoreType type)
+        {
+            return this.GetAllHighScores(key, type).FirstOrDefault();
+        }
+
+        /// <summary>
+        ///     Get all high scores
+        /// </summary>
+        /// <param name="key">
+        ///     Use this to separate GameModes, Characters, ...
+        ///     If you don't have any, use <see cref="DEFAULT_KEY"/> or <see cref="GetHighScore(HighScoreType)"/>.
+        /// </param>
+        /// <param name="type">
+        ///     <see cref="HighScoreType"/>
+        /// </param>
+        /// <returns>All high scores order from highest to lowest</returns>
+        public IEnumerable<int> GetAllHighScores(string key, HighScoreType type)
         {
             return this.highScoreData[key][type][GetCurrentTime(type)];
         }
 
-        public void SetLastHighScore(string key, int newHighScore)
-        {
-            Enum.GetValues(typeof(HighScoreType)).Cast<HighScoreType>().ForEach(type =>
-            {
-                this.highScoreData[key].AddAllHighScore(type, DateTime.UtcNow, newHighScore);
-            });
-        }
+        #region Default
 
-        public Dictionary<DateTime, int> GetAllHighScore(string key, HighScoreType type)
-        {
-            return this.highScoreData[key].GetAllHighScore(type).topUserHighScores;
-        }
+        /// <summary>
+        ///     Submit score for all types. If a new high score reached, fire <see cref="NewHighScoreSignal"/>.
+        /// </summary>
+        /// <param name="newHighScore">
+        ///     Possible new high score
+        /// </param>
+        public void SubmitScore(int newHighScore) => this.SubmitScore(DEFAULT_KEY, newHighScore);
+
+        /// <summary>
+        ///     Submit score. If a new high score reached, fire <see cref="NewHighScoreSignal"/>.
+        /// </summary>
+        /// <param name="type">
+        ///     <see cref="HighScoreType"/>
+        /// </param>
+        /// <param name="newHighScore">
+        ///     Possible new high score
+        /// </param>
+        public void SubmitScore(HighScoreType type, int newHighScore) => this.SubmitScore(DEFAULT_KEY, type, newHighScore);
+
+        /// <summary>
+        ///     Get high score
+        /// </summary>
+        /// <param name="type">
+        ///     <see cref="HighScoreType"/>
+        /// </param>
+        /// <returns>Highest score</returns>
+        public int GetHighScore(HighScoreType type) => this.GetHighScore(DEFAULT_KEY, type);
+
+        /// <summary>
+        ///     Get all high scores
+        /// </summary>
+        /// <param name="type">
+        ///     <see cref="HighScoreType"/>
+        /// </param>
+        /// <returns>All high scores order from highest to lowest</returns>
+        public IEnumerable<int> GetAllHighScores(HighScoreType type) => this.GetAllHighScores(DEFAULT_KEY, type);
+
+        #endregion
 
         private static DateTime GetCurrentTime(HighScoreType type) => type switch
         {
@@ -97,26 +163,5 @@
             HighScoreType.AllTime => DateTime.MinValue,
             _                     => throw new ArgumentOutOfRangeException(nameof(type), type, null),
         };
-
-        #region Default
-
-        /// <summary>
-        ///     Submit score. If a new high score reached, fire <see cref="NewHighScoreSignal" />.
-        /// </summary>
-        /// <param name="newHighScore">
-        ///     Possible new high score
-        /// </param>
-        public void SubmitScore(int newHighScore) => this.SubmitScore(DEFAULT_KEY, newHighScore);
-
-        /// <summary>
-        ///     Get high score
-        /// </summary>
-        /// <param name="type">
-        ///     <see cref="HighScoreType"/>
-        /// </param>
-        /// <returns>High score</returns>
-        public int GetHighScore(HighScoreType type) => this.GetHighScore(DEFAULT_KEY, type);
-
-        #endregion
     }
 }

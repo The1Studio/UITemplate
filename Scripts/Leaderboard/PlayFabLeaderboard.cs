@@ -192,7 +192,11 @@ namespace TheOneStudio.HyperCasual
             this.keyToTypeToPlayerEntry.GetOrAdd(key)[type] = playerEntry;
             if (playerEntry is { })
             {
-                this.highScoreDataController.SubmitScore(key, type, playerEntry.StatValue);
+                var highScore = this.highScoreDataController.GetHighScore(key, type);
+                if (playerEntry.StatValue > highScore)
+                {
+                    this.highScoreDataController.SubmitScore(key, type, playerEntry.StatValue);
+                }
             }
         }
 

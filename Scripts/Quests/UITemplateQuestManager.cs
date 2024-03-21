@@ -8,14 +8,14 @@ namespace TheOneStudio.UITemplate.Quests
 
     public class UITemplateQuestManager : IInitializable, ITickable
     {
-        private readonly IInstantiator  instantiator;
+        private readonly IInstantiator            instantiator;
         private readonly UITemplateQuestBlueprint questBlueprint;
         private readonly UITemplateQuestProgress  questProgress;
 
         private readonly Dictionary<string, UITemplateQuestController> controllers = new Dictionary<string, UITemplateQuestController>();
 
         public UITemplateQuestManager(
-            IInstantiator  instantiator,
+            IInstantiator            instantiator,
             UITemplateQuestBlueprint questBlueprint,
             UITemplateQuestProgress  questProgress
         )

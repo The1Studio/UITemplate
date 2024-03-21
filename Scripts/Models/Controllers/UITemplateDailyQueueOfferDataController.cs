@@ -38,7 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void CheckOfferStatus()
         {
             var isFirstTimeOpen = this.dailyQueueOfferData.OfferToStatusDuringDay.Count == 0;
-            var isDifferentDay  = this.GetRemainTimeToNextDay().Days > 0;
+            var isDifferentDay  = this.GetRemainTimeToNextDay().Days < 0;
             if (isDifferentDay || isFirstTimeOpen)
             {
                 this.InitAllOfferStatus();

@@ -14,7 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
         #region inject
 
         protected readonly ILogService              LogService;
-        private readonly   SignalBus                signalBus;
+        protected readonly SignalBus                signalBus;
         protected readonly Dictionary<Type, IState> TypeToState;
 
         #endregion

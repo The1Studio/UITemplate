@@ -32,22 +32,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         protected List<BottomBarNavigatorTabButtonView> Buttons;
 
-        private int  CurrentActiveIndex { get; set; } = -1;
-        private bool IsShowingBar              = true;
-        private bool IsFirstTimeOpenDefaultTab = true;
+        protected int  CurrentActiveIndex { get; set; } = -1;
+        private   bool IsShowingBar              = true;
+        private   bool IsFirstTimeOpenDefaultTab = true;
 
         private           Dictionary<Type, int> allcurrentScreen = new Dictionary<Type, int>();
         protected virtual Dictionary<Type, int> AllcurrentScreen => this.allcurrentScreen;
 
         [Inject]
-        public void Constructor(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, IScreenManager screenManager, IVibrationService vibrationService, GameFeaturesSetting gameFeaturesSetting, IAudioService audioService)
+        public void Constructor(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, IScreenManager screenManager, IVibrationService vibrationService,
+            GameFeaturesSetting gameFeaturesSetting, IAudioService audioService)
         {
             this.signalBus                  = signalBus;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
             this.screenManager              = screenManager;
             this.vibrationService           = vibrationService;
             this.gameFeaturesSetting        = gameFeaturesSetting;
-            this.audioService              = audioService;
+            this.audioService               = audioService;
         }
 
         protected virtual void Init()
@@ -57,7 +58,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenCloseSignalHandler);
             this.RegisterScreens();
         }
-        
+
         /// <summary>
         /// Example:
         /// this.AllcurrentScreen.Add(typeof(LeaderboardScreenPresenter), 0);
@@ -130,7 +131,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         private void Awake()
         {
             this.OnChangeFocusScreen();
-            this.Buttons                              = this.buttonParent.GetComponentsInChildren<BottomBarNavigatorTabButtonView>().ToList();
+            this.Buttons = this.buttonParent.GetComponentsInChildren<BottomBarNavigatorTabButtonView>().ToList();
 
             for (var index = 0; index < this.Buttons.Count; index++)
             {

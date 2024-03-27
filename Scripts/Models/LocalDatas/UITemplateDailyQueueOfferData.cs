@@ -1,3 +1,4 @@
+#if THEONE_DAILY_QUEUE_REWARD
 namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
 {
     using System;
@@ -17,3 +18,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
         public Type ControllerType => typeof(UITemplateDailyQueueOfferDataController);
     }
 }
+#endif

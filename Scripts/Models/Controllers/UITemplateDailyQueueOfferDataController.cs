@@ -1,3 +1,4 @@
+#if THEONE_DAILY_QUEUE_REWARD
 namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
     using System;
@@ -110,3 +111,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
     }
 }
+#endif

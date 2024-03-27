@@ -1,3 +1,4 @@
+#if THEONE_DAILY_QUEUE_REWARD
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 {
     using GameFoundation.Scripts.UIModule.Adapter;
@@ -6,3 +7,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
     {
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if THEONE_DAILY_QUEUE_REWARD
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 {
     using System.Collections.Generic;
@@ -107,3 +108,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
         }
     }
 }
+#endif

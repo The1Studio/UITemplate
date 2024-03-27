@@ -1,3 +1,4 @@
+#if THEONE_DAILY_QUEUE_REWARD
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 {
     using System;
@@ -172,3 +173,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
         protected virtual void OnClaimOfferFailed() { }
     }
 }
+#endif

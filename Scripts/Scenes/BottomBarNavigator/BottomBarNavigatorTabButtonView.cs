@@ -13,7 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         public Image      TabIcon;
         public Material   grayScaleMat;
 
-        private bool isActive = false;
+        protected bool IsActive = false;
 
         public void Init()
         {
@@ -23,12 +23,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         public void SetActive(bool isActive)
         {
-            if (isActive == this.isActive) return;
+            if (isActive == this.IsActive) return;
 
-            this.isActive = isActive;
-            var duration = 0.3f;
+            this.IsActive = isActive;
+            this.SetAnimation();
+        }
 
-            if (isActive)
+        protected virtual void SetAnimation()
+        {
+            const float duration = 0.3f;
+
+            if (this.IsActive)
             {
                 this.TabIcon.rectTransform.DOAnchorPosY(-30, duration).SetEase(Ease.OutBounce).SetUpdate(true);
                 this.TabIcon.transform.DOScale(1.3f, duration).SetEase(Ease.OutBounce).SetUpdate(true);
@@ -46,7 +51,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         {
             if (this.lockObj == null) return;
             this.lockObj.SetActive(isActivate);
-            if(this.grayScaleMat == null) return;
+            if (this.grayScaleMat == null) return;
             this.TabIcon.material = isActivate ? this.grayScaleMat : null;
         }
     }

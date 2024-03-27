@@ -1,3 +1,4 @@
+#if THEONE_DAILY_QUEUE_REWARD
 namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
@@ -24,3 +25,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public bool   IsRewardedAds { get; set; }
     }
 }
+#endif

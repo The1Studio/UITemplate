@@ -62,18 +62,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void ShowDailyRewardPopup(Action onClaimReward, bool force)
         {
-            if (!this.canShowReward && !force)
-                return;
-
-            if (!this.gameFeaturesSetting.DailyRewardConfig.showOnFirstOpen && this.IsFirstOpenGame())
+            if (!force)
             {
-                onClaimReward?.Invoke();
-                this.canShowReward = false;
-                return;
-            }
+                if (!this.canShowReward)
+                    return;
 
-            if (!this.uiTemplateDailyRewardController.CanClaimReward && !force)
-                return;
+                if (!this.gameFeaturesSetting.DailyRewardConfig.showOnFirstOpen && this.IsFirstOpenGame())
+                {
+                    onClaimReward?.Invoke();
+                    this.canShowReward = false;
+                    return;
+                }
+
+                if (!this.uiTemplateDailyRewardController.CanClaimReward)
+                    return;
+            }
 
             this.notificationServices.SetupCustomNotification(this.gameFeaturesSetting.DailyRewardConfig.notificationId);
             this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()

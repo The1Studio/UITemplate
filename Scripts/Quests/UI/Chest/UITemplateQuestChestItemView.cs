@@ -1,9 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.Quests.UI
 {
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.AssetLibrary;
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Data;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
+    using Zenject;
 
     public class UITemplateQuestChestItemModel
     {
@@ -17,14 +21,19 @@
 
     public class UITemplateQuestChestItemView : MonoBehaviour
     {
-        [SerializeField] private GameObject objNotCompleted;
-        [SerializeField] private GameObject objNotCollected;
-        [SerializeField] private GameObject objFinished;
-        [SerializeField] private Button     btnClaim;
+        [SerializeField] private Button     btn;
+        [SerializeField] private Image      img;
+        [SerializeField] private TMP_Text   txt;
+        [SerializeField] private Animator   animShake;
+        [SerializeField] private GameObject tick;
+
+        [Inject] private readonly IGameAssets gameAssets;
 
         private void Awake()
         {
-            this.btnClaim.onClick.AddListener(this.OnClickClaim);
+            ZenjectUtils.GetCurrentContainer().Inject(this);
+
+            this.btn.onClick.AddListener(this.OnClick);
         }
 
         public UITemplateQuestChestItemModel Model { get; set; }
@@ -32,6 +41,10 @@
         public void BindData()
         {
             this.SetStatus();
+
+            var reward = this.Model.Quest.Record.Rewards[0];
+            this.img.sprite = this.gameAssets.LoadAssetAsync<Sprite>(reward.Image).WaitForCompletion();
+            this.txt.text   = reward.Value.ToString();
 
             var localPosition = this.transform.localPosition;
             localPosition.z              = 0f;
@@ -45,29 +58,29 @@
             {
                 case QuestStatus.NotCompleted:
                 {
-                    this.objNotCompleted.SetActive(true);
-                    this.objNotCollected.SetActive(false);
-                    this.objFinished.SetActive(false);
+                    this.btn.interactable  = false;
+                    this.animShake.enabled = false;
+                    this.tick.SetActive(false);
                     break;
                 }
                 case QuestStatus.NotCollected:
                 {
-                    this.objNotCompleted.SetActive(false);
-                    this.objNotCollected.SetActive(true);
-                    this.objFinished.SetActive(false);
+                    this.btn.interactable  = true;
+                    this.animShake.enabled = true;
+                    this.tick.SetActive(false);
                     break;
                 }
                 case QuestStatus.All:
                 {
-                    this.objNotCompleted.SetActive(false);
-                    this.objNotCollected.SetActive(false);
-                    this.objFinished.SetActive(true);
+                    this.btn.interactable  = false;
+                    this.animShake.enabled = false;
+                    this.tick.SetActive(true);
                     break;
                 }
             }
         }
 
-        private void OnClickClaim()
+        private void OnClick()
         {
             this.Model.Quest.CollectReward(this.transform as RectTransform).Forget();
             this.SetStatus();

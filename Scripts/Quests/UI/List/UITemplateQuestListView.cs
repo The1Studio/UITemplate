@@ -44,6 +44,7 @@
         {
             var models = this.Model.Quests
                 .Where(quest => quest.Progress.Status.HasFlag(QuestStatus.Shown))
+                .Where(quest => !(quest.Progress.Status.HasFlag(QuestStatus.Collected) && quest.Record.HideOnComplete))
                 .OrderByDescending(quest => quest.Progress.Status is QuestStatus.NotCollected)
                 .ThenByDescending(quest => quest.Progress.Status is QuestStatus.NotCompleted)
                 .Select(quest => new UITemplateQuestListItemModel(this.Parent, quest))

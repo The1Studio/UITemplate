@@ -81,6 +81,8 @@ namespace TheOneStudio.UITemplate.Quests.Data
         public List<ICondition> CompleteConditions { get; private set; }
         public List<ICondition> ResetConditions    { get; private set; }
 
+        public bool HideOnComplete { get; private set; }
+
         public bool HasTag(string tag) => this.Tags.Contains(tag);
     }
 }

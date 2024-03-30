@@ -1,4 +1,4 @@
-﻿#if NOTIFICATION && UNITY_IOS
+﻿#if THEONE_NOTIFICATION && UNITY_IOS
 
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {

@@ -13,8 +13,17 @@
         menuName = "TheOne/ScriptableObjects/SpawnGameFeatruesSettingConfig", order = 1)]
     public class GameFeaturesSetting : ScriptableObject
     {
+        #region essential
+
+        private const string DailyRewardSymbol  = "THEONE_DAILY_REWARD";
+        private const string NoInternetSymbol   = "THEONE_NO_INTERNET";
+        private const string RateUsSymbol       = "THEONE_RATE_US";
+        private const string NotificationSymbol = "THEONE_NOTIFICATION";
+
+        #endregion
+        
+
         private const string RacingEventSymbol      = "THEONE_RACING_EVENT";
-        private const string DailyRewardSymbol      = "THEONE_DAILY_REWARD";
         private const string BadgeNotifySymbol      = "THEONE_BADGE_NOTIFY";
         private const string QuestSystemSymbol      = "THEONE_QUEST_SYSTEM";
         private const string FireBaseAuthSymbol     = "THEONE_FIREBASE_AUTH";
@@ -36,7 +45,7 @@
 
         #region Daily Reward
 
-        [OnValueChanged("OnChangeDailyReward")]
+        [OnValueChanged("OnChangeDailyReward")] [FoldoutGroup("Essential", expanded:true)]
         public bool enableDailyReward;
 
         [SerializeField] [ShowIf(nameof(enableDailyReward))] [BoxGroup("Daily Reward")]
@@ -44,6 +53,22 @@
 
         public DailyRewardConfig DailyRewardConfig => this.dailyRewardConfig;
 
+        #endregion
+
+        #region No Internet 
+            
+        [OnValueChanged("OnChangeNoInternet")] [FoldoutGroup("Essential", expanded:true)]
+        public bool enableNoInternet;
+        #endregion
+        
+        #region Rate Us
+        [OnValueChanged("OnChangeRateUs")] [FoldoutGroup("Essential", expanded:true)]
+        public bool enableRateUs;
+        #endregion
+        
+        #region Notification
+        [OnValueChanged("OnChangeNotification")] [FoldoutGroup("Essential", expanded:true)]
+        public bool enableNotification;
         #endregion
 
         #region Badge Notify
@@ -68,8 +93,10 @@
         #region Misc
 
         [FoldoutGroup("Misc Settings")] public bool enableInitHomeScreenManually = true;
-        [FoldoutGroup("Misc Settings")] public bool showBottomBarWithBanner = false;
-        [FoldoutGroup("Misc Settings")] [Tooltip("Auto Request App Tracking Transparent for iOS")] public bool autoRequestATT = true;
+        [FoldoutGroup("Misc Settings")] public bool showBottomBarWithBanner      = false;
+
+        [FoldoutGroup("Misc Settings")] [Tooltip("Auto Request App Tracking Transparent for iOS")]
+        public bool autoRequestATT = true;
 
         #endregion
 
@@ -100,9 +127,15 @@
         #endregion
 
 #if UNITY_EDITOR
-        private void OnChangeRacingEvent() { DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
-
         private void OnChangeDailyReward() { DefineSymbolEditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward); }
+        
+        private void OnChangeNoInternet() { DefineSymbolEditorUtils.SetDefineSymbol(NoInternetSymbol, this.enableNoInternet); }
+
+        private void OnChangeNotification() { DefineSymbolEditorUtils.SetDefineSymbol(NotificationSymbol, this.enableNotification); }
+
+        private void OnChangeRateUs() { DefineSymbolEditorUtils.SetDefineSymbol(RateUsSymbol, this.enableRateUs); }
+
+        private void OnChangeRacingEvent() { DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
 
         private void OnChangeBadgeNotify() { DefineSymbolEditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify); }
 

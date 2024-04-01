@@ -17,7 +17,7 @@
 
         private const string DailyRewardSymbol  = "THEONE_DAILY_REWARD";
         private const string NoInternetSymbol   = "THEONE_NO_INTERNET";
-        private const string RateUsSymbol       = "THEONE_RATE_US";
+        private const string RateUsSymbol       = "THEONE_STORE_RATING";
         private const string NotificationSymbol = "THEONE_NOTIFICATION";
 
         #endregion

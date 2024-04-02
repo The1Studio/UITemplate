@@ -65,6 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     IsResumedFromAdsOrIAP;
         private bool     IsCheckedShowFirstOpen { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen   { get; private set; }
+        private float    ApplicationPauseTime   { get; set; }
 
         public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
             UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
@@ -130,7 +131,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.adServices.IsRemoveAds()) return;
 
             this.IsShowBannerAd = true;
-            await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
+            await (UniTask.WaitUntil(() => this.adServices.IsAdsInitialized()), UniTask.WaitUntil(() => Time.unscaledTime - this.ApplicationPauseTime > 0.5f));
 
             this.logService.Log($"onelog: ShowBannerAd IsCurrentScreenCanShowMREC {this.IsCurrentScreenCanShowMREC()} this.adServicesConfig.EnableBannerAd {this.adServicesConfig.EnableBannerAd}");
             if (this.IsCurrentScreenCanShowMREC() || !this.adServicesConfig.EnableBannerAd) return;
@@ -285,6 +286,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnApplicationPauseHandler(ApplicationPauseSignal obj)
         {
+            this.ApplicationPauseTime = Time.unscaledTime;
             if (obj.PauseStatus)
             {
                 this.StartBackgroundTime = DateTime.Now;

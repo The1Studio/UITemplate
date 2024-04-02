@@ -59,11 +59,21 @@
             
         [OnValueChanged("OnChangeNoInternet")] [FoldoutGroup("Essential", expanded:true)]
         public bool enableNoInternet;
+        
+        [SerializeField] [ShowIf(nameof(enableNoInternet))] [BoxGroup("No Internet")]
+        private NoInternetConfig noInternetConfig;
+        
+        public NoInternetConfig NoInternetConfig => this.noInternetConfig;
         #endregion
         
         #region Rate Us
         [OnValueChanged("OnChangeRateUs")] [FoldoutGroup("Essential", expanded:true)]
         public bool enableRateUs;
+        
+        [SerializeField] [ShowIf(nameof(enableRateUs))] [BoxGroup("Rate Us")]
+        private RateUsConfig rateUsConfig;
+        
+        public RateUsConfig RateUsConfig => this.rateUsConfig;
         #endregion
         
         #region Notification

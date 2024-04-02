@@ -23,7 +23,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
         private void Awake() { this.button.onClick.AddListener(this.OnClick); }
 
-        private void OnClick() { DOTween.To(() => this.slider.value, x => this.OnValueChanged(this.slider.value = x), this.slider.value > 0.5f ? 0 : 1, this.duration); }
+        private void OnClick()
+        {
+            this.button.interactable = false;
+            DOTween.To(() => this.slider.value, x => this.OnValueChanged(this.slider.value = x), this.slider.value > 0.5f ? 0 : 1, this.duration).OnComplete(() => this.button.interactable = true);
+        }
 
         private void OnValueChanged(float arg0)
         {

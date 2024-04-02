@@ -252,11 +252,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public double LoadingTimeToShowAOA => this.thirdPartiesConfig.AdSettings.AOAThreshHold;
 
-        private async void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true, int frameDelay = 0)
+        private async void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true, int? frameDelay = null)
         {
             if (!this.adServicesConfig.EnableAOAAd) return;
 
-            await UniTask.DelayFrame(frameDelay);
+            if (frameDelay.HasValue)
+            {
+                await UniTask.DelayFrame(frameDelay.Value);
+            }
 
             if (isFireEligibleSignal)
             {

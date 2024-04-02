@@ -53,8 +53,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool IsShowBannerAd { get; set; }
-        private bool IsShowMRECAd { get; set; }
+        private bool     IsShowBannerAd                        { get; set; }
+        private bool     IsShowMRECAd                          { get; set; }
         private bool     IsCheckFirstScreenShow                { get; set; }
         private DateTime LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
         private bool     PreviousCollapsibleBannerAdLoadedFail { get; set; }
@@ -252,9 +252,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public double LoadingTimeToShowAOA => this.thirdPartiesConfig.AdSettings.AOAThreshHold;
 
-        private void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true)
+        private async void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true, int frameDelay = 0)
         {
             if (!this.adServicesConfig.EnableAOAAd) return;
+
+            await UniTask.DelayFrame(frameDelay);
 
             if (isFireEligibleSignal)
             {
@@ -263,17 +265,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
             {
-                
                 if ((this.adServicesConfig.UseAoaAdmob
 #if ADMOB
-                     && aoa is AdMobWrapper
+                  && aoa is AdMobWrapper
 #endif
-                     ) || (!this.adServicesConfig.UseAoaAdmob
+                    ) || (!this.adServicesConfig.UseAoaAdmob
 #if ADMOB
-
-                           && aoa is not AdMobWrapper
+                       && aoa is not AdMobWrapper
 #endif
-                         ))
+                    ))
                 {
                     this.signalBus.Fire(new AppOpenCalledSignal(""));
                     aoa.ShowAOAAds();
@@ -309,7 +309,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (!this.IsRemovedAds)
             {
-                this.ShowAOAAdsIfAvailable();
+                this.ShowAOAAdsIfAvailable(frameDelay: 2);
             }
         }
 

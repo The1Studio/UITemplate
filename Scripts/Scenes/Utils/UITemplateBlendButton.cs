@@ -18,11 +18,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         [SerializeField] private Sprite BgOnSprite;
         [SerializeField] private Sprite BgOffSprite;
 
-        public Button Button => this.button;
+        [SerializeField] private float  duration = 0.5f;
+        public                   Button Button => this.button;
 
         private void Awake() { this.button.onClick.AddListener(this.OnClick); }
 
-        private void OnClick() { DOTween.To(() => this.slider.value, x => this.OnValueChanged(this.slider.value = x), this.slider.value > 0.5f ? 0 : 1, 0.5f); }
+        private void OnClick() { DOTween.To(() => this.slider.value, x => this.OnValueChanged(this.slider.value = x), this.slider.value > 0.5f ? 0 : 1, this.duration); }
 
         private void OnValueChanged(float arg0)
         {
@@ -39,10 +40,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             var color = this.handle.color;
             this.handle.color  = new Color(color.r, color.g, color.b, 1);
             this.handle.sprite = isOn ? this.OnSprite : this.OffSprite;
-            
+
             this.slideBackgroundImage.color  = new Color(color.r, color.g, color.b, 1);
             this.slideBackgroundImage.sprite = isOn ? this.BgOnSprite : this.BgOffSprite;
-            
+
             this.slider.value = isOn ? 1 : 0;
         }
     }

@@ -52,6 +52,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateDailyRewardService>().AsCached().NonLazy();
 #endif
 
+#if THEONE_NO_INTERNET
+            this.Container.BindInterfacesAndSelfTo<UITemplateNoInternetService>().AsCached().NonLazy();
+#endif
+
+#if THEONE_RATE_US
+            this.Container.BindInterfacesAndSelfTo<UITemplateRateUsService>().AsCached().NonLazy();
+#endif
+
 #if THEONE_BADGE_NOTIFY
             this.Container.BindInterfacesAndSelfTo<UITemplateBadgeNotifySystem>().AsCached().NonLazy();
 #endif

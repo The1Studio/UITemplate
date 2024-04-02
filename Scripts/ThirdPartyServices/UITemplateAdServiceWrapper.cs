@@ -256,11 +256,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (!this.adServicesConfig.EnableAOAAd) return;
 
-            if (frameDelay.HasValue)
-            {
-                await UniTask.DelayFrame(frameDelay.Value);
-            }
-
             if (isFireEligibleSignal)
             {
                 this.signalBus.Fire(new AppOpenEligibleSignal(""));
@@ -278,12 +273,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 #endif
                     ))
                 {
-                    this.signalBus.Fire(new AppOpenCalledSignal(""));
-                    aoa.ShowAOAAds();
+                    DelayShowAoa(aoa).Forget();
+
                     this.IsCheckedShowFirstOpen = true;
                     this.IsOpenedAOAFirstOpen   = true;
                     return;
                 }
+            }
+
+            return;
+
+            async UniTask DelayShowAoa(IAOAAdService aoa)
+            {
+                if (frameDelay.HasValue)
+                {
+                    await UniTask.DelayFrame(frameDelay.Value);
+                }
+
+                this.signalBus.Fire(new AppOpenCalledSignal(""));
+                aoa.ShowAOAAds();
             }
         }
 

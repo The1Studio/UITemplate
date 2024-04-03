@@ -104,6 +104,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             //Todo check with pack ID
             return this.uiTemplateShopPackBlueprint.Values.Where(x => x.RewardIdToRewardDatas.Count > 1).Any(shopPackRecord => this.uiTemplateIAPOwnerPackControllerData.IsOwnerPack(shopPackRecord.Id));
         }
+
+        public ProductData GetProductData(string productId) { return this.iapServices.GetProductData(productId); }
+
+        public string GetPriceById(string productId, string defaultPrice) { return this.iapServices.GetPriceById(productId, defaultPrice); }
+
         public void Initialize()
         {
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnBlueprintLoaded);

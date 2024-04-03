@@ -28,7 +28,7 @@
             this.signalBus.Subscribe<OnRemoveAdsSucceedSignal>(this.OnRemoveAdsHandler);
             this.signalBus.Subscribe<UITemplateOnUpdateBannerStateSignal>(this.OnUpdateBannerStateSignal);
             this.btnRemoveAds.onClick.AddListener(this.OpenRemoveAdsPopup);
-        } 
+        }
         private void OnUpdateBannerStateSignal(UITemplateOnUpdateBannerStateSignal obj)
         {
             this.removeAdsObj.SetActive(obj.IsActive);
@@ -38,7 +38,8 @@
 
         private void OnEnable()
         {
-#if THEONE_IAP
+
+#if THEONE_IAP && !CREATIVE
             this.removeAdsObj.SetActive(!this.adServiceWrapper.IsRemovedAds);
 #else
             this.removeAdsObj.SetActive(false);

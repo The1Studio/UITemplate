@@ -60,8 +60,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
         {
             var productData = this.iapServices.GetProductData(obj.ProductId);
 
-            DWHLog.Instance.InAppLog(obj.ProductId, productData.CurrencyCode, productData.Price.ToString(), obj.PurchasedProduct.transactionID, "",
+#if THEONE_IAP
+            DWHLog.Instance.InAppLog(obj.ProductId, productData.CurrencyCode, productData.Price, obj.PurchasedProduct.transactionID, "",
                 this.screenManager.CurrentActiveScreen.Value.ToString());
+#endif
         }
     }
 }

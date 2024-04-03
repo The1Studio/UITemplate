@@ -10,7 +10,7 @@
     {
     }
 
-    [PopupInfo(nameof(BreakAdsPopupView))]
+    [PopupInfo(nameof(BreakAdsPopupView), isOverlay: true)]
     public class BreakAdsPopupPresenter : BasePopupPresenter<BreakAdsPopupView>
     {
         private readonly BreakAdsViewHelper breakAdsViewHelper;

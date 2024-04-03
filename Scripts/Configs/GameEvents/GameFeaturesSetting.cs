@@ -22,7 +22,7 @@
 
         #endregion
         
-
+        private const string IAPSymbol              = "THEONE_IAP";
         private const string RacingEventSymbol      = "THEONE_RACING_EVENT";
         private const string BadgeNotifySymbol      = "THEONE_BADGE_NOTIFY";
         private const string QuestSystemSymbol      = "THEONE_QUEST_SYSTEM";
@@ -64,6 +64,18 @@
         private NoInternetConfig noInternetConfig;
         
         public NoInternetConfig NoInternetConfig => this.noInternetConfig;
+        #endregion
+
+        #region IAP
+
+        [OnValueChanged("OnChangeIAP")] [FoldoutGroup("Essential", expanded:true)]
+        public bool enableIAP;
+        
+        [SerializeField] [ShowIf(nameof(enableIAP))] [BoxGroup("IAP")]
+        private IAPConfig iapConfig;
+        
+        public IAPConfig IAPConfig => this.iapConfig;
+
         #endregion
         
         #region Rate Us
@@ -144,6 +156,8 @@
         private void OnChangeNotification() { DefineSymbolEditorUtils.SetDefineSymbol(NotificationSymbol, this.enableNotification); }
 
         private void OnChangeRateUs() { DefineSymbolEditorUtils.SetDefineSymbol(RateUsSymbol, this.enableRateUs); }
+        
+        private void OnChangeIAP() { DefineSymbolEditorUtils.SetDefineSymbol(IAPSymbol, this.enableIAP); }
 
         private void OnChangeRacingEvent() { DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
 

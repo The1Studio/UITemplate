@@ -25,13 +25,19 @@
         private readonly GameFeaturesSetting        gameFeaturesSetting;
         private readonly UITemplateAdServiceWrapper adServiceWrapper;
 
-        public UITemplateRemoveAdPopupPresenter(SignalBus signalBus, UITemplateIapServices uiTemplateIapServices, GameFeaturesSetting gameFeaturesSetting, UITemplateAdServiceWrapper adServiceWrapper)
-            : base(signalBus)
+        public UITemplateRemoveAdPopupPresenter(
+            SignalBus                  signalBus,
+            UITemplateIapServices      uiTemplateIapServices,
+            GameFeaturesSetting        gameFeaturesSetting,
+            UITemplateAdServiceWrapper adServiceWrapper
+        ) : base(signalBus)
         {
             this.uiTemplateIapServices = uiTemplateIapServices;
             this.gameFeaturesSetting   = gameFeaturesSetting;
             this.adServiceWrapper      = adServiceWrapper;
         }
+
+        private string ProductId => this.gameFeaturesSetting.IAPConfig.removeAdsProductId;
 
         protected override void OnViewReady()
         {
@@ -43,18 +49,19 @@
         private void OnRemoveAdsClicked()
         {
             this.uiTemplateIapServices.BuyProduct(
-                this.View.btnRemoveAds.gameObject,
-                this.gameFeaturesSetting.IAPConfig.removeAdsProductId,
-                (string msg) =>
+                this.View.btnRemoveAds.gameObject, this.ProductId,
+                _ =>
                 {
                     this.adServiceWrapper.RemoveAds();
                     this.CloseView();
-                },
-                (string msg) => { });
+                }
+            );
         }
 
         public override UniTask BindData()
         {
+            this.View.priceText.text = this.uiTemplateIapServices.GetPriceById(this.ProductId, "0.99$");
+
             return UniTask.CompletedTask;
         }
     }

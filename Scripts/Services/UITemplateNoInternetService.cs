@@ -1,5 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
+    using System;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
@@ -7,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
+    using UnityEngine;
     using Zenject;
 
     public class UITemplateNoInternetService : IInitializable
@@ -17,10 +20,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly UITemplateGameSessionDataController uiTemplateGameSessionDataController;
 
         public UITemplateNoInternetService(
-            SignalBus signalBus,
-            GameFeaturesSetting gameFeaturesSetting,
-            IScreenManager screenManager,
-            UITemplateGameSessionDataController uiTemplateGameSessionDataController)
+            SignalBus                           signalBus,
+            GameFeaturesSetting                 gameFeaturesSetting,
+            IScreenManager                      screenManager,
+            UITemplateGameSessionDataController uiTemplateGameSessionDataController
+        )
         {
             this.signalBus                           = signalBus;
             this.gameFeaturesSetting                 = gameFeaturesSetting;
@@ -28,25 +32,60 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.uiTemplateGameSessionDataController = uiTemplateGameSessionDataController;
         }
 
-        public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
+        private bool IsAbleToCheck  => this.IsSessionValid && this.IsTimeValid && this.isScreenValid;
+        private bool IsSessionValid => this.uiTemplateGameSessionDataController.OpenTime >= this.gameFeaturesSetting.NoInternetConfig.SessionToShow;
+        private bool IsTimeValid    => this.gameFeaturesSetting.NoInternetConfig.DelayToCheck < Time.realtimeSinceStartup;
+        private bool isScreenValid;
 
-        private async void OnScreenShow(ScreenShowSignal obj)
+        private int    continuousNoInternetChecked = 0;
+        private float  CheckInterval      => this.gameFeaturesSetting.NoInternetConfig.CheckInterval;
+
+        public void Initialize()
         {
-            if (this.IsScreenCanShowDailyReward(obj.ScreenPresenter))
-            {
-                await this.screenManager.OpenScreen<UITemplateConnectErrorPresenter>();
-            }
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+            this.CheckInternetInterval().Forget();
         }
 
-        private bool IsScreenCanShowDailyReward(IScreenPresenter screenPresenter)
+        #region Check Internet
+
+        private async UniTaskVoid CheckInternetInterval()
         {
-            if (this.uiTemplateGameSessionDataController.OpenTime < this.gameFeaturesSetting.NoInternetConfig.SessionToShow) return false;
-            if (this.gameFeaturesSetting.DailyRewardConfig.isCustomScreenTrigger)
+            if (this.IsAbleToCheck)
             {
-                return this.gameFeaturesSetting.NoInternetConfig.screenTriggerIds.Contains(screenPresenter.GetType().Name);
+                if (this.CheckInternet())
+                {
+                    this.continuousNoInternetChecked = 0;
+                }
+                else
+                {
+                    this.continuousNoInternetChecked++;
+                }
+
+                if (this.continuousNoInternetChecked >= this.gameFeaturesSetting.NoInternetConfig.ContinuesFailToShow)
+                {
+                    this.continuousNoInternetChecked = 0;
+                    this.screenManager.OpenScreen<UITemplateConnectErrorPresenter>().Forget();
+                }
             }
 
-            return screenPresenter is UITemplateHomeSimpleScreenPresenter or UITemplateHomeTapToPlayScreenPresenter;
+            await UniTask.Delay(TimeSpan.FromSeconds(this.CheckInterval), true);
+            _ = this.CheckInternetInterval();
+        }
+
+        private bool CheckInternet() { return Application.internetReachability != NetworkReachability.NotReachable; }
+
+        #endregion
+
+        private void OnScreenShow(ScreenShowSignal obj)
+        {
+            if (this.gameFeaturesSetting.NoInternetConfig.isCustomScreenTrigger)
+            {
+                this.isScreenValid = this.gameFeaturesSetting.NoInternetConfig.screenTriggerIds.Contains(obj.ScreenPresenter.GetType().Name);
+            }
+            else
+            {
+                this.isScreenValid = obj.ScreenPresenter.GetType().Name != "UITemplateConnectErrorPresenter";
+            }
         }
     }
 }

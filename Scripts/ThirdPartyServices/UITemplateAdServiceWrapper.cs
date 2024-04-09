@@ -177,8 +177,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void InternalHideCollapsibleBannerAd()
         {
-            // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
-            this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
+            this.collapsibleBannerAd.HideCollapsibleBannerAd();
+            // this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
         }
 
         private void OnBannerLoaded()

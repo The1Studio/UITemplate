@@ -42,8 +42,7 @@
         "3rd.Configs.Editor",
         "UIEffect",
         "PlayFab",
-        "Falcon.Analytics",
-        "Falcon.Core"
+        "Falcon.Module"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

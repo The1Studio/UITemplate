@@ -50,17 +50,26 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
             DWHLog.Instance.ActionLog($"ShowScreen_{currentScreen.GetType().Name}");
         }
 
-        private void OnUpdateCurrency(OnUpdateCurrencySignal obj) { DWHLog.Instance.ResourceLog(obj.Amount > 0 ? FlowType.Source : FlowType.Sink, "currency", obj.Id, obj.Id, Math.Abs(obj.Amount)); }
+        private void OnUpdateCurrency(OnUpdateCurrencySignal obj)
+        {
+            DWHLog.Instance.ResourceLog(obj.Amount > 0 ? FlowType.Source : FlowType.Sink, "currency", obj.Id, obj.Id, Math.Abs(obj.Amount));
+        }
 
-        private void OnShowRewardedAd(RewardedAdCalledSignal obj) { DWHLog.Instance.AdsLog(AdType.Reward, this.screenManager.CurrentActiveScreen.Value.GetType().Name); }
+        private void OnShowRewardedAd(RewardedAdCalledSignal obj)
+        {
+            DWHLog.Instance.AdsLog(AdType.Reward, this.screenManager.CurrentActiveScreen.Value.GetType().Name);
+        }
 
-        private void OnShowInterstitialAd(InterstitialAdCalledSignal obj) { DWHLog.Instance.AdsLog(AdType.Interstitial, this.screenManager.CurrentActiveScreen.Value.GetType().Name); }
+        private void OnShowInterstitialAd(InterstitialAdCalledSignal obj)
+        {
+            DWHLog.Instance.AdsLog(AdType.Interstitial, this.screenManager.CurrentActiveScreen.Value.GetType().Name);
+        }
 
         private void OnPurchaseComplete(OnIAPPurchaseSuccessSignal obj)
         {
             var productData = this.iapServices.GetProductData(obj.ProductId);
 
-            DWHLog.Instance.InAppLog(obj.ProductId, productData.CurrencyCode, productData.Price.ToString(), obj.PurchasedProduct.transactionID, "",
+            DWHLog.Instance.InAppLog(obj.ProductId, productData.CurrencyCode, productData.Price, obj.PurchasedProduct.transactionID, "",
                 this.screenManager.CurrentActiveScreen.Value.ToString());
         }
     }

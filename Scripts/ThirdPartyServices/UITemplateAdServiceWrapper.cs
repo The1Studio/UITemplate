@@ -351,7 +351,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
         }
 
-        public bool CanShowInterstitialAd(string place, bool force = false)
+        private bool CanShowInterstitialAd(string place, bool force = false)
         {
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log(
@@ -361,9 +361,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return false;
             }
 
+            var interstitialAdInterval = this.adServicesConfig.InterstitialAdInterval;
+            if (this.thirdPartiesConfig.AdSettings.CustomInterstitialCappingTime.TryGetValue(place, out var cappingTime) && cappingTime.GetCappingTime > -1)
+            {
+                interstitialAdInterval = cappingTime.GetCappingTime;
+            }
+            
             this.logService.Log(
-                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
-            if ((this.totalNoAdsPlayingTime < this.adServicesConfig.InterstitialAdInterval ||
+                $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < interstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
+            if ((this.totalNoAdsPlayingTime < interstitialAdInterval ||
                  (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");

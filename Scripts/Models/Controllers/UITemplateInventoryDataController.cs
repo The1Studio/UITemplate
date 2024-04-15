@@ -131,12 +131,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData);
         }
 
-        public void PayCurrency(Dictionary<string, int> currency, int time = 1)
+        public void PayCurrency(Dictionary<string, int> currency, int times = 1)
         {
             foreach (var (currencyKey, currencyValue) in currency)
             {
-                this.AddCurrency(-currencyValue * time, currencyKey).Forget();
+                this.PayCurrency(currencyValue, currencyKey, times);
             }
+        }
+
+        public void PayCurrency(int value, string currencyId = "Coin", int times = 1)
+        {
+            this.AddCurrency(-value * times, currencyId).Forget();
         }
 
         /// <summary>

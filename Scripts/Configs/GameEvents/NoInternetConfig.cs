@@ -12,9 +12,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
         public List<string> screenTriggerIds;
 
         public int   SessionToShow       = 2;
-        public int   ContinuesFailToShow = 5;
-        public float DelayToCheck        = 60f;
-        public float CheckInterval       = 2f;
-
+        public int   ContinuesFailToShow = 3;
+        public float DelayToCheck        = 30f;
+        public float CheckInterval       = 1f;
     }
 }

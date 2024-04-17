@@ -144,12 +144,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     {
                         this.LastCollapsibleBannerChangeGuid = DateTime.Now;
                     }
-
+                    
+                    this.InternalHideMediationBannerAd();
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd(useNewGuid, this.thirdPartiesConfig.AdSettings.BannerPosition);
                     this.logService.Log($"onelog: ShowCollapsibleBannerAd useNewGuid: {useNewGuid}");
                 }
                 else
                 {
+                    this.InternalHideCollapsibleBannerAd();
                     this.InternalShowMediationBannerAd(this.thirdPartiesConfig.AdSettings.BannerPosition, width, height);
                     this.logService.Log("onelog: InternalShowMediationBannerAd");
                 }

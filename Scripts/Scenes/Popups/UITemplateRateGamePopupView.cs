@@ -7,38 +7,36 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
 
-    public class UITemplateRateGameScreenView : BaseView
+    public class UITemplateRateGamePopupView : BaseView
     {
-        public TMP_Text     TileText;
         public List<Button> StarButtons;
         public List<Image>  StarImages;
         public Button       YesButton;
         public Button       LaterButton;
-        public GameObject   Panel;
     }
 
-    [PopupInfo(nameof(UITemplateRateGameScreenView))]
-    public class UITemplateRateGameScreenPresenter : UITemplateBasePopupPresenter<UITemplateRateGameScreenView>
+    [PopupInfo(nameof(UITemplateRateGamePopupView))]
+    public class UITemplateRateGamePopupPresenter : UITemplateBasePopupPresenter<UITemplateRateGamePopupView>
     {
-        private readonly string storeUrl = $"https://play.google.com/store/apps/details?id={Application.identifier}";
-        private          int    lastStarCount;
+        private int lastStarCount;
 
-        public UITemplateRateGameScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager
-#if UNITY_IOS
-            , string storeUrl
-#endif
-        ) : base(signalBus)
+        public UITemplateRateGamePopupPresenter(
+            SignalBus                    signalBus,
+            DiContainer                  diContainer,
+            IScreenManager               screenManager,
+            UITemplateStoreRatingHandler storeRatingHandler
+        )
+            : base(signalBus)
         {
-            this.diContainer   = diContainer;
-            this.screenManager = screenManager;
-#if UNITY_IOS
-            this.storeUrl = storeUrl;
-#endif
+            this.diContainer        = diContainer;
+            this.screenManager      = screenManager;
+            this.storeRatingHandler = storeRatingHandler;
         }
 
         public override UniTask BindData()
@@ -49,6 +47,7 @@
                 var star = this.View.StarImages[i];
                 star.transform.localScale = Vector3.zero;
             }
+
             return UniTask.CompletedTask;
         }
         protected override void OnViewReady()
@@ -94,19 +93,22 @@
             star.transform.DOScale(targetScale, duration).SetLoops(1, LoopType.Yoyo).SetEase(easeType);
         }
 
-
         protected virtual void OnClickLater() { this.CloseView(); }
 
         protected virtual void OnClickYes()
         {
-            if (this.lastStarCount == this.View.StarButtons.Count) Application.OpenURL(this.storeUrl);
+            if (this.lastStarCount == this.View.StarButtons.Count) // max rating
+            {
+                this.storeRatingHandler.LaunchStoreRating();
+            }
             this.CloseView();
         }
 
         #region inject
 
-        protected readonly DiContainer    diContainer;
-        protected readonly IScreenManager screenManager;
+        protected readonly DiContainer                  diContainer;
+        protected readonly IScreenManager               screenManager;
+        private readonly   UITemplateStoreRatingHandler storeRatingHandler;
 
         #endregion
     }

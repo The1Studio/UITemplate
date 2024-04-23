@@ -37,22 +37,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private async void OnScreenShow(ScreenShowSignal obj)
         {
-            if (this.IsScreenCanShowRateUs(obj.ScreenPresenter))
-            {
-                await this.screenManager.OpenScreen<UITemplateRateGameScreenPresenter>();
-            }
+            if (!this.IsScreenCanShowRateUs(obj.ScreenPresenter)) return;
+            await this.screenManager.OpenScreen<UITemplateRateGameScreenPresenter>();
         }
 
         private bool IsScreenCanShowRateUs(IScreenPresenter screenPresenter)
         {
+            if (!this.gameFeaturesSetting.RateUsConfig.isUsingCommonLogic) return false;
             if (this.storeRatingHandler.IsRated) return false;
+
             if (this.uiTemplateGameSessionDataController.OpenTime < this.gameFeaturesSetting.RateUsConfig.SessionToShow) return false;
-            if (this.gameFeaturesSetting.DailyRewardConfig.isCustomScreenTrigger)
+            if (this.gameFeaturesSetting.RateUsConfig.isCustomScreenTrigger)
             {
                 return this.gameFeaturesSetting.RateUsConfig.screenTriggerIds.Contains(screenPresenter.GetType().Name);
             }
 
-            return screenPresenter is UITemplateHomeSimpleScreenPresenter or UITemplateHomeTapToPlayScreenPresenter;
+            return true; // Show everywhere
         }
     }
 }

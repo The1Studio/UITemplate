@@ -101,7 +101,6 @@
             if (this.lastStarCount == this.View.StarButtons.Count) // max rating
             {
                 this.storeRatingHandler.LaunchStoreRating();
-                this.storeRatingHandler.SetRating(true);
             }
             this.CloseView();
         }

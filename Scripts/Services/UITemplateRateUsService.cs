@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
+    using UnityEngine;
     using Zenject;
 
     public class UITemplateRateUsService : IInitializable
@@ -33,16 +34,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.storeRatingHandler                  = storeRatingHandler;
         }
 
-        public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+            this.isShownInCurrentSession = false;
+        }
 
         private async void OnScreenShow(ScreenShowSignal obj)
         {
             if (!this.IsScreenCanShowRateUs(obj.ScreenPresenter)) return;
             await this.screenManager.OpenScreen<UITemplateRateGamePopupPresenter>();
+            this.isShownInCurrentSession = true;
         }
 
         private bool IsScreenCanShowRateUs(IScreenPresenter screenPresenter)
         {
+            if (this.isShownInCurrentSession) return false;
+            if (Time.realtimeSinceStartup < this.gameFeaturesSetting.RateUsConfig.DelayInSecondsTillShow) return false;
             if (!this.gameFeaturesSetting.RateUsConfig.isUsingCommonLogic) return false;
             if (this.storeRatingHandler.IsRated) return false;
 
@@ -54,5 +62,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             return true; // Show everywhere
         }
+
+        private bool isShownInCurrentSession = false;
     }
 }

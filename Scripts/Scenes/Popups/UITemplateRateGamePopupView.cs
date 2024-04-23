@@ -13,21 +13,20 @@
     using UnityEngine.UI;
     using Zenject;
 
-    public class UITemplateRateGameScreenView : BaseView
+    public class UITemplateRateGamePopupView : BaseView
     {
-        public TMP_Text     TileText;
         public List<Button> StarButtons;
         public List<Image>  StarImages;
         public Button       YesButton;
         public Button       LaterButton;
     }
 
-    [PopupInfo(nameof(UITemplateRateGameScreenView))]
-    public class UITemplateRateGameScreenPresenter : UITemplateBasePopupPresenter<UITemplateRateGameScreenView>
+    [PopupInfo(nameof(UITemplateRateGamePopupView))]
+    public class UITemplateRateGamePopupPresenter : UITemplateBasePopupPresenter<UITemplateRateGamePopupView>
     {
         private int lastStarCount;
 
-        public UITemplateRateGameScreenPresenter(
+        public UITemplateRateGamePopupPresenter(
             SignalBus                    signalBus,
             DiContainer                  diContainer,
             IScreenManager               screenManager,

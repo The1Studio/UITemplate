@@ -38,7 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private async void OnScreenShow(ScreenShowSignal obj)
         {
             if (!this.IsScreenCanShowRateUs(obj.ScreenPresenter)) return;
-            await this.screenManager.OpenScreen<UITemplateRateGameScreenPresenter>();
+            await this.screenManager.OpenScreen<UITemplateRateGamePopupPresenter>();
         }
 
         private bool IsScreenCanShowRateUs(IScreenPresenter screenPresenter)

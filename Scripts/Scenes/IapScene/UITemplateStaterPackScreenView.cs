@@ -47,7 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         private readonly DiContainer                  diContainer;
         private readonly LoadImageHelper              loadImageHelper;
         private readonly IIapServices            iapServices;
-        private          string                       IapPack = "";
+        private          string                       IapPack = "com.car.climb.draw.bridge.start_pack_1";
 
         public UITemplateStartPackScreenPresenter(SignalBus signalBus, IAdServices adServices, UITemplateShopPackBlueprint uiTemplateShopPackBlueprint, UITemplateIapServices uiTemplateIapServices,
             UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint, DiContainer diContainer,

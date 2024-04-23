@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
+    using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using Zenject;
 
     public class UITemplateRateUsService : IInitializable
@@ -15,31 +16,36 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly GameFeaturesSetting                 gameFeaturesSetting;
         private readonly UITemplateGameSessionDataController uiTemplateGameSessionDataController;
         private readonly IScreenManager                      screenManager;
+        private readonly UITemplateStoreRatingHandler        storeRatingHandler;
 
         public UITemplateRateUsService(
-            SignalBus signalBus,
-            GameFeaturesSetting gameFeaturesSetting,
+            SignalBus                           signalBus,
+            GameFeaturesSetting                 gameFeaturesSetting,
             UITemplateGameSessionDataController uiTemplateGameSessionDataController,
-            IScreenManager screenManager)
+            IScreenManager                      screenManager,
+            UITemplateStoreRatingHandler        storeRatingHandler
+        )
         {
             this.signalBus                           = signalBus;
             this.gameFeaturesSetting                 = gameFeaturesSetting;
             this.uiTemplateGameSessionDataController = uiTemplateGameSessionDataController;
             this.screenManager                       = screenManager;
+            this.storeRatingHandler                  = storeRatingHandler;
         }
 
         public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
 
         private async void OnScreenShow(ScreenShowSignal obj)
         {
-            if (this.IsScreenCanShowDailyReward(obj.ScreenPresenter))
+            if (this.IsScreenCanShowRateUs(obj.ScreenPresenter))
             {
                 await this.screenManager.OpenScreen<UITemplateRateGameScreenPresenter>();
             }
         }
 
-        private bool IsScreenCanShowDailyReward(IScreenPresenter screenPresenter)
+        private bool IsScreenCanShowRateUs(IScreenPresenter screenPresenter)
         {
+            if (this.storeRatingHandler.IsRated) return false;
             if (this.uiTemplateGameSessionDataController.OpenTime < this.gameFeaturesSetting.RateUsConfig.SessionToShow) return false;
             if (this.gameFeaturesSetting.DailyRewardConfig.isCustomScreenTrigger)
             {

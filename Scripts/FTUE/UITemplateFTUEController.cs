@@ -135,6 +135,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
                             break;
                     }
+
                     this.highLightButtonTransform = buttons?.FirstOrDefault(button => button.gameObject.name.Equals(record.HighLightPath.Split("|")[1]))?.transform;
                 }
                 else
@@ -142,6 +143,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
                     buttons                       = this.screenManager.CurrentActiveScreen.Value.CurrentTransform.GetComponentsInChildren<Button>().ToList();
                     this.highLightButtonTransform = buttons.FirstOrDefault(button => button.gameObject.name.Equals(record.HighLightPath))?.transform;
                 }
+
                 if (this.highLightButtonTransform == null)
                 {
                     await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
@@ -177,7 +179,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
         private void ConfigHandPosition(GameObject targetHighlight, UITemplateFTUERecord record)
         {
-            this.hand.transform.SetParent(targetHighlight.transform);
             this.hand.transform.localPosition                 = Vector3.zero;
             this.hand.transform.localScale                    = Vector3.one;
             this.hand.GetComponent<Canvas>().sortingLayerName = "UI";
@@ -201,6 +202,11 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
             this.rotateHand.localEulerAngles = new Vector3(0, 0, angle);
             this.iconHand.localEulerAngles   = record.HandRotation;
+            this.hand.transform.position     = targetHighlight.transform.position;
+            targetHighlight.GetComponent<UITemplateFTUEControlElement>().OnPositionChange = () =>
+            {
+                this.hand.transform.position = targetHighlight.transform.position;
+            };
         }
     }
 }

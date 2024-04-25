@@ -441,7 +441,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             async UniTaskVoid ShowDelayInter(Action action)
             {
                 await this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
+                if (this.thirdPartiesConfig.AdSettings.HideBannerBreakAdsScreen)
+                { 
+                    this.HideBannerAd();
+                }
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f), DelayType.UnscaledDeltaTime);
+                if (this.thirdPartiesConfig.AdSettings.HideBannerBreakAdsScreen)
+                { 
+                    this.ShowBannerAd();
+                }
                 action.Invoke();
             }
 

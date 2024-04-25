@@ -25,7 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using Zenject;
-    using UniRx;
+    using R3;
 
     public class UITemplateAdServiceWrapper : IInitializable, ITickable
     {

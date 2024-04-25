@@ -8,8 +8,9 @@ using GameFoundation.Scripts.Utilities.Extension;
 using TheOneStudio.UITemplate.UITemplate.Blueprints;
 using TheOneStudio.UITemplate.UITemplate.Extension;
 using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
-using UniRx;
-using UniRx.Triggers;
+using R3;
+using R3.Triggers;
+
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;

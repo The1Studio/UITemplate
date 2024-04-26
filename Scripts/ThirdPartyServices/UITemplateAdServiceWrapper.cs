@@ -464,7 +464,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowRewardedAd(string place, Action onComplete, Action onFail = null)
         {
-            if (!this.adServicesConfig.EnableRewardedAd)
+            if (!this.adServicesConfig.EnableRewardedAd || this.adServicesConfig.RewardedAdFreePlacements.Contains(place))
             {
                 onComplete?.Invoke();
                 return;

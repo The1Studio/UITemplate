@@ -135,7 +135,7 @@ namespace TheOneStudio.HyperCasual
 
         public async UniTask SubmitScoreAsync(string key = DEFAULT_KEY)
         {
-            await SupportedTypes.Select(async type =>
+            foreach (var type in SupportedTypes)
             {
                 var statisticName = $"{key}_{type}";
                 var statistics = await InvokeAsync<GetPlayerStatisticsRequest, GetPlayerStatisticsResult>(
@@ -151,7 +151,7 @@ namespace TheOneStudio.HyperCasual
                     PlayFabClientAPI.UpdatePlayerStatistics,
                     new() { Statistics = new() { new() { StatisticName = statisticName, Value = newHighScore, Version = version } } }
                 );
-            });
+            }
             await this.FetchLeaderboardAsync(key);
         }
 

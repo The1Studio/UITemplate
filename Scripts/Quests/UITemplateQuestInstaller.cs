@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.Quests
 {
     using TheOneStudio.UITemplate.Quests.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
     using UnityEngine;
     using Zenject;
 
@@ -19,6 +20,7 @@
             }
 
             this.Container.DeclareSignal<QuestStatusChangedSignal>();
+            this.Container.DeclareSignal<ClaimAllQuestSignal>();
 #endif
         }
     }

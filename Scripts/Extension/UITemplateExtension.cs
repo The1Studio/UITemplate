@@ -3,12 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GameFoundation.Scripts.Interfaces;
-    using GameFoundation.Scripts.Utilities.UserData;
-    using UniRx;
+    using R3;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
     using Random = UnityEngine.Random;
 
     public static class UITemplateExtension

@@ -43,7 +43,8 @@
         "Unity.Advertisement.IosSupport",
         "3rd.Configs.Editor",
         "UIEffect",
-        "PlayFab"
+        "PlayFab",
+        "R3.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -58,7 +59,9 @@
         "Firebase.TaskExtension.dll",
         "Firebase.App.dll",
         "Sirenix.Utilities.dll",
-        "Sirenix.OdinInspector.Attributes.dll"
+        "Sirenix.OdinInspector.Attributes.dll",
+        "R3.dll",
+        "Microsoft.Bcl.TimeProvider.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

@@ -1,7 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Creative
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using UniRx;
+    using R3;
     using UnityEngine;
     using Zenject;
     using Object = UnityEngine.Object;
@@ -14,7 +14,7 @@
 
         public void Initialize() { Observable.EveryUpdate().Where(_ => Input.GetMouseButtonDown(0)).Subscribe(this.OnMouseDown); }
 
-        private void OnMouseDown(long _)
+        private void OnMouseDown(Unit _)
         {
             if (Time.unscaledTime - this.lastTimeCheck < 0.4f)
             {

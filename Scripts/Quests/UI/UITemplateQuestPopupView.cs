@@ -63,7 +63,8 @@ namespace TheOneStudio.UITemplate.Quests.UI
                 this.badgeNotifySystem.RegisterBadge(tabButton.GetComponent<UITemplateBadgeNotifyView>(), this, () => this.CheckBadgeNotifyOnTabButton(tabButton));
                 #endif
             });
-            this.View.BtnClaimAll.onClick.AddListener(() => this.ClaimAll());
+            
+            if(this.View.BtnClaimAll != null) this.View.BtnClaimAll.onClick.AddListener(this.ClaimAll);
             this.View.BtnClose.onClick.AddListener(() => this.CloseViewAsync().Forget());
         }
 

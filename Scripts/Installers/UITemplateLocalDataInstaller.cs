@@ -4,11 +4,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
-    using ModestTree;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.UserData;
     using Zenject;
+    using Zenject.Internal;
 
     public class UITemplateLocalDataInstaller : Installer<UITemplateLocalDataInstaller>
     {

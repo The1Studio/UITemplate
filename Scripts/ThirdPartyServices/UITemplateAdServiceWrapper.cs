@@ -516,6 +516,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
                 this.IsShowMRECAd = true;
+                this.logService.Log($"onelog: ShowMREC {adViewPosition}");
             }
         }
 
@@ -529,6 +530,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     mrecAdService.HideMREC(adViewPosition);
                 }
+                this.logService.Log($"onelog: HideMREC {adViewPosition}");
             }
         }
 

@@ -186,7 +186,7 @@ namespace TheOneStudio.HyperCasual
         {
             var result = await InvokeAsync<GetLeaderboardAroundPlayerRequest, GetLeaderboardAroundPlayerResult>(
                 PlayFabClientAPI.GetLeaderboardAroundPlayer,
-                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 1 }
+                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 1, ProfileConstraints = new(){ShowLocations = true}}
             );
             var playerEntry = result.Leaderboard.FirstOrDefault(entry => entry.PlayFabId == this.PlayerId);
             this.keyToTypeToPlayerEntry.GetOrAdd(key)[type] = playerEntry;
@@ -204,7 +204,7 @@ namespace TheOneStudio.HyperCasual
         {
             var result = await InvokeAsync<GetLeaderboardRequest, GetLeaderboardResult>(
                 PlayFabClientAPI.GetLeaderboard,
-                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 100 }
+                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 100, ProfileConstraints = new(){ShowLocations = true} }
             );
             var leaderboard = result.Leaderboard;
             this.keyToTypeToLeaderboard.GetOrAdd(key)[type] = leaderboard;

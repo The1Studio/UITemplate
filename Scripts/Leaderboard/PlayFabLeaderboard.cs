@@ -115,6 +115,14 @@ namespace TheOneStudio.HyperCasual
             });
         }
 
+        public PlayerLeaderboardEntry GetLeaderboardPlayerEntry(HighScoreType type, string playFabId)
+        {
+            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
+            if (!this.keyToTypeToLeaderboard.TryGetValue(DEFAULT_KEY, out var typeToLeaderboard)
+                || !typeToLeaderboard.TryGetValue(type, out var leaderboard)
+               ) throw new InvalidOperationException("Please login & fetch leaderboard first");
+            return leaderboard.FirstOrDefault(model => model.PlayFabId == playFabId);
+        }
         public PlayerLeaderboardEntry GetPlayerEntry(string key, HighScoreType type)
         {
             if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
@@ -132,7 +140,7 @@ namespace TheOneStudio.HyperCasual
             ) throw new InvalidOperationException("Please login & fetch leaderboard first");
             return leaderboard;
         }
-        public List<CountryCode?> GetCountryCode(HighScoreType type)
+        public List<CountryCode?> GetPlayerCountryCode(HighScoreType type)
         {
             if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
             if (!this.keyToTypeToPlayerEntry.TryGetValue(DEFAULT_KEY, out var typeToPlayerEntry)
@@ -142,6 +150,21 @@ namespace TheOneStudio.HyperCasual
                    .Profile
                    .Locations
                    .Select(model => model.CountryCode)
+                   .Distinct()
+                   .ToList();
+        }
+
+        public List<CountryCode?> GetLeaderboardPlayerCountryCode(HighScoreType type, string playFabId)
+        {
+            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
+            if (!this.keyToTypeToLeaderboard.TryGetValue(DEFAULT_KEY, out var typeToLeaderboard)
+                || !typeToLeaderboard.TryGetValue(type, out var leaderboard)
+            ) throw new InvalidOperationException("Please login & fetch leaderboard first");
+            return leaderboard
+                   .FirstOrDefault(model => model.PlayFabId == playFabId)?
+                   .Profile
+                   .Locations
+                   .Select(location => location.CountryCode)
                    .Distinct()
                    .ToList();
         }
@@ -199,7 +222,7 @@ namespace TheOneStudio.HyperCasual
         {
             var result = await InvokeAsync<GetLeaderboardAroundPlayerRequest, GetLeaderboardAroundPlayerResult>(
                 PlayFabClientAPI.GetLeaderboardAroundPlayer,
-                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 1, ProfileConstraints = new(){ShowLocations = true}}
+                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 1, ProfileConstraints = new(){ShowLocations = true, ShowDisplayName = true}}
             );
             var playerEntry = result.Leaderboard.FirstOrDefault(entry => entry.PlayFabId == this.PlayerId);
             this.keyToTypeToPlayerEntry.GetOrAdd(key)[type] = playerEntry;
@@ -217,7 +240,7 @@ namespace TheOneStudio.HyperCasual
         {
             var result = await InvokeAsync<GetLeaderboardRequest, GetLeaderboardResult>(
                 PlayFabClientAPI.GetLeaderboard,
-                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 100, ProfileConstraints = new(){ShowLocations = true} }
+                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 100, ProfileConstraints = new(){ShowLocations = true, ShowDisplayName = true} }
             );
             var leaderboard = result.Leaderboard;
             this.keyToTypeToLeaderboard.GetOrAdd(key)[type] = leaderboard;

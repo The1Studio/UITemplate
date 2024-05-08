@@ -132,7 +132,19 @@ namespace TheOneStudio.HyperCasual
             ) throw new InvalidOperationException("Please login & fetch leaderboard first");
             return leaderboard;
         }
-
+        public List<CountryCode?> GetCountryCode(HighScoreType type)
+        {
+            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
+            if (!this.keyToTypeToPlayerEntry.TryGetValue(DEFAULT_KEY, out var typeToPlayerEntry)
+                || !typeToPlayerEntry.TryGetValue(type, out var playerEntry)
+            ) throw new InvalidOperationException("Please login & fetch leaderboard first");
+            return playerEntry
+                   .Profile
+                   .Locations
+                   .Select(model => model.CountryCode)
+                   .Distinct()
+                   .ToList();
+        }
         public async UniTask SubmitScoreAsync(string key = DEFAULT_KEY)
         {
             foreach (var type in SupportedTypes)
@@ -161,6 +173,7 @@ namespace TheOneStudio.HyperCasual
 
         public IEnumerable<PlayerLeaderboardEntry> GetLeaderboard(HighScoreType type) => this.GetLeaderboard(DEFAULT_KEY, type);
 
+      
         #endregion
 
         #region Private

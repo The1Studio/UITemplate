@@ -30,7 +30,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Third party service
             AdServiceInstaller.Install(this.Container);
             AnalyticServicesInstaller.Install(this.Container);
-            FirebaseRemoteConfigInstaller.Install(this.Container);
+            RemoteConfigInstaller.Install(this.Container);
             var thirdPartiesConfig = Resources.Load<ThirdPartiesConfig>(ThirdPartiesConfig.ResourcePath);
             this.Container.Bind<ThirdPartiesConfig>().FromInstance(thirdPartiesConfig).AsSingle();
             

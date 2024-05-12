@@ -26,9 +26,9 @@
    <assembly fullname="3rd.ServiceImplementation.Appsflyer" preserve="all"> </assembly>
    <assembly fullname="3rd.FBInstant" preserve="all"> </assembly>
    <assembly fullname="3rd.Configs" preserve="all"> </assembly>
+   <assembly fullname="3rd.RemoteConfig" preserve="all"> </assembly>
    <assembly fullname="FirebaseTracker" preserve="all"> </assembly>
    <assembly fullname="Newtonsoft.Json" preserve="all"> </assembly>
    <assembly fullname="AppsFlyer" preserve="all"> </assembly>
    <assembly fullname="MaxSdk.Scripts" preserve="all"> </assembly>
-   <assembly fullname="FirebaseRemoteConfig" preserve="all"> </assembly>
 </linker>

@@ -91,8 +91,8 @@
         public virtual string DaysPlayedProperty                 => "days_played";
 
         public virtual AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new();
-
         public virtual AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new();
+        public virtual AnalyticsEventCustomizationConfig ByteBrewAnalyticsEventCustomizationConfig { get; set; } = new();
 
         protected virtual string EvenName { get; } = "ad_impression";
 

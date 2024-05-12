@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
+    using ServiceImplementation.ByteBrewAnalyticTracker;
     using ServiceImplementation.Configs;
     using ServiceImplementation.FirebaseAnalyticTracker;
     using ServiceImplementation.FireBaseRemoteConfig;
@@ -51,6 +52,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
 #if APPSFLYER
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
+#endif
+#if BYTEBREW
+                this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.ByteBrewAnalyticsEventCustomizationConfig).WhenInjectedInto<ByteBrewTracker>();
 #endif
             }
         }

@@ -43,7 +43,8 @@
         "UIEffect",
         "PlayFab",
         "R3.Unity",
-        "3rd.RemoteConfig"
+        "3rd.RemoteConfig",
+        "ByteBrewTracker"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

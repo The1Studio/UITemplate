@@ -30,7 +30,6 @@
         "Reporter.Scripts",
         "UltimateJoystick.Scripts",
         "3rd.FBInstant",
-        "FirebaseRemoteConfig",
         "DOTween.Modules",
         "3rd.Configs",
         "Unity.Notifications.Android",
@@ -43,7 +42,9 @@
         "3rd.Configs.Editor",
         "UIEffect",
         "PlayFab",
-        "R3.Unity"
+        "R3.Unity",
+        "3rd.RemoteConfig",
+        "ByteBrewTracker"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

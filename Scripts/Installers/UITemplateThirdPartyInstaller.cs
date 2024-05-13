@@ -4,6 +4,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
+#if BYTEBREW
+        using ServiceImplementation.ByteBrewAnalyticTracker;
+#endif
     using ServiceImplementation.Configs;
     using ServiceImplementation.FirebaseAnalyticTracker;
     using ServiceImplementation.FireBaseRemoteConfig;
@@ -30,7 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Third party service
             AdServiceInstaller.Install(this.Container);
             AnalyticServicesInstaller.Install(this.Container);
-            FirebaseRemoteConfigInstaller.Install(this.Container);
+            RemoteConfigInstaller.Install(this.Container);
             var thirdPartiesConfig = Resources.Load<ThirdPartiesConfig>(ThirdPartiesConfig.ResourcePath);
             this.Container.Bind<ThirdPartiesConfig>().FromInstance(thirdPartiesConfig).AsSingle();
             
@@ -51,6 +54,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.FireBaseAnalyticsEventCustomizationConfig).WhenInjectedInto<FirebaseAnalyticTracker>();
 #if APPSFLYER
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
+#endif
+#if BYTEBREW
+                this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.ByteBrewAnalyticsEventCustomizationConfig).WhenInjectedInto<ByteBrewTracker>();
 #endif
             }
         }

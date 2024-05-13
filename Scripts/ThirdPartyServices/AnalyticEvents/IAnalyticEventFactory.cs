@@ -78,5 +78,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         string                            DaysPlayedProperty                         { get; }
         AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; }
         AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig  { get; set; }
+#if BYTEBREW
+        AnalyticsEventCustomizationConfig ByteBrewAnalyticsEventCustomizationConfig { get; set; }
+#endif
     }
 }

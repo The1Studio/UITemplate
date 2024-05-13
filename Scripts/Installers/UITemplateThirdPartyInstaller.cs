@@ -4,7 +4,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
-    using ServiceImplementation.ByteBrewAnalyticTracker;
+#if BYTEBREW
+        using ServiceImplementation.ByteBrewAnalyticTracker;
+#endif
     using ServiceImplementation.Configs;
     using ServiceImplementation.FirebaseAnalyticTracker;
     using ServiceImplementation.FireBaseRemoteConfig;

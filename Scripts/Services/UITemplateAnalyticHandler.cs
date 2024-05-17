@@ -188,7 +188,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.DoAnalyticWithFactories(eventFactory =>
             {
                 this.Track(eventFactory.InterstitialEligible(obj.Placement));
-                this.Track(new CustomEvent { EventName = $"Interstitial_Eligible_{obj.Placement}" });
+                this.Track(new CustomEvent { EventName = $"Inters_Eligible_{obj.Placement}" });
             });
         }
 
@@ -208,7 +208,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.analyticServices.UserProperties[eventFactory.LastAdsPlacementProperty]     = obj.Placement;
                 this.analyticServices.UserProperties[eventFactory.TotalInterstitialAdsProperty] = obj.Placement;
                 this.Track(eventFactory.InterstitialShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
-                this.Track(new CustomEvent { EventName = $"Interstitial_Displayed_{obj.Placement}" });
+                this.Track(new CustomEvent { EventName = $"Inters_Display_{obj.Placement}" });
             });
         }
 
@@ -233,7 +233,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.DoAnalyticWithFactories(eventFactory =>
             {
                 this.Track(eventFactory.RewardedVideoEligible(obj.Placement));
-                this.Track(new CustomEvent { EventName = $"Rewarded_Eligible_{obj.Placement}" });
+                this.Track(new CustomEvent { EventName = $"Reward_Eligible_{obj.Placement}" });
             });
         }
 
@@ -255,7 +255,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.analyticServices.UserProperties[eventFactory.LastAdsPlacementProperty] = obj.Placement;
                 this.analyticServices.UserProperties[eventFactory.TotalRewardedAdsProperty] = obj.Placement;
                 this.Track(eventFactory.RewardedVideoShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
-                this.Track(new CustomEvent { EventName = $"Rewarded_Displayed_{obj.Placement}" });
+                this.Track(new CustomEvent { EventName = $"Reward_Display_{obj.Placement}" });
             });
         }
 

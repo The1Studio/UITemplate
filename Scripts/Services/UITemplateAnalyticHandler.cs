@@ -92,7 +92,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
             this.signalBus.Subscribe<RewardedAdEligibleSignal>(this.RewardedAdEligibleHandler);
             this.signalBus.Subscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);
-            this.signalBus.Subscribe<RewardedAdLoadClickedSignal>(this.RewardedAdClickedHandler);
+            this.signalBus.Subscribe<RewardedAdClickedSignal>(this.RewardedAdClickedHandler);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.RewardedAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
             this.signalBus.Subscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
@@ -246,7 +246,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void RewardedAdDownloadedHandler(RewardedAdLoadedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoDownloaded(obj.Placement))); }
 
-        private void RewardedAdClickedHandler(RewardedAdLoadClickedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoClick(obj.Placement))); }
+        private void RewardedAdClickedHandler(RewardedAdClickedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoClick(obj.Placement))); }
 
         private void RewardedAdDisplayedHandler(RewardedAdDisplayedSignal obj)
         {
@@ -350,7 +350,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
             this.signalBus.Unsubscribe<RewardedAdEligibleSignal>(this.RewardedAdEligibleHandler);
             this.signalBus.Unsubscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);
-            this.signalBus.Unsubscribe<RewardedAdLoadClickedSignal>(this.RewardedAdClickedHandler);
+            this.signalBus.Unsubscribe<RewardedAdClickedSignal>(this.RewardedAdClickedHandler);
             this.signalBus.Unsubscribe<RewardedAdDisplayedSignal>(this.RewardedAdDisplayedHandler);
             this.signalBus.Unsubscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
             this.signalBus.Unsubscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);

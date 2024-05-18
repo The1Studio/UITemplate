@@ -1,17 +1,19 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Newtonsoft.Json.Linq;
-using UnityEditor;
-using UnityEngine;
-
 namespace UITemplate.Editor
 {
-    [InitializeOnLoad]  
-    public class StartupScript
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using Newtonsoft.Json.Linq;
+    using UnityEditor;
+    using UnityEditor.PackageManager;
+    using UnityEngine;
+
+    [InitializeOnLoad]
+    public class ProjectAutoMigrationScript
     {
         private const string ProguardUserFilePath = "Assets/Plugins/Android/proguard-user.txt";
-        private static readonly string[] RequiredProguardLines = 
+
+        private static readonly string[] RequiredProguardLines =
         {
             "-keep class com.bytebrew.** {*; }",
             "-keep class com.google.unity.ads.**{ *; }"
@@ -20,7 +22,8 @@ namespace UITemplate.Editor
 
         private static readonly string OpenUPMRegistryName = "OpenUPM";
         private static readonly string OpenUPMRegistryUrl  = "https://package.openupm.com";
-        private static readonly string[] RequiredScopes = 
+
+        private static readonly string[] RequiredScopes =
         {
             "com.google",
             "com.cysharp",
@@ -29,6 +32,18 @@ namespace UITemplate.Editor
             "com.github-glitchenzo",
             "com.theone"
         };
+        
+        private static readonly Dictionary<string, string> PackagesToAdd = new()
+        {
+            {"com.unity.adaptiveperformance.samsung.android", "5.0.0"}
+            // add more packages as needed
+        };
+
+        private static readonly List<string> PackagesToRemove = new()
+        {
+            "com.unity.adaptiveperformance.google.android"
+        };
+
 
         [InitializeOnLoadMethod]
         private static void OnProjectLoadedInEditor()
@@ -37,7 +52,7 @@ namespace UITemplate.Editor
             CheckAndUpdatePackageManagerSettings();
         }
 
-        static StartupScript()
+        static ProjectAutoMigrationScript()
         {
             EditorApplication.focusChanged += (focus) =>
             {
@@ -81,6 +96,50 @@ namespace UITemplate.Editor
             var manifestJson = File.ReadAllText(manifestPath);
             var manifest     = JObject.Parse(manifestJson);
 
+            UpdatePackageDependencies(manifest);
+            UpdateScopedRegistries(manifest);
+
+            File.WriteAllText(manifestPath, manifest.ToString());
+        }
+
+        private static void UpdatePackageDependencies(JObject manifest)
+        {
+            var dependencies = manifest["dependencies"] as JObject;
+            if (dependencies == null)
+            {
+                dependencies             = new JObject();
+                manifest["dependencies"] = dependencies;
+            }
+
+            var updated = false;
+            // Add the new packages
+            foreach (var package in PackagesToAdd)
+            {
+                if (!dependencies.ContainsKey(package.Key))
+                {
+                    dependencies[package.Key] = package.Value;
+                    updated                   = true;
+                }
+            }
+
+            // Remove the packages
+            foreach (var package in PackagesToRemove)
+            {
+                if (dependencies.ContainsKey(package))
+                {
+                    dependencies.Remove(package);
+                    updated                   = true;
+                }
+            }
+
+            if (updated)
+            {
+                Client.Resolve();
+            }
+        }
+
+        private static void UpdateScopedRegistries(JObject manifest)
+        {
             var scopedRegistries = manifest["scopedRegistries"] as JArray;
             if (scopedRegistries == null)
             {
@@ -117,26 +176,12 @@ namespace UITemplate.Editor
                     updated = true;
                 }
             }
-
+            
             if (updated)
             {
-                File.WriteAllText(manifestPath, manifest.ToString());
-                Debug.Log("Updated manifest.json with missing OpenUPM scopes.");
+                Client.Resolve();
+                Debug.Log("Updated manifest.json with new packages and missing OpenUPM scopes.");
             }
-        }
-
-        [System.Serializable]
-        private class Manifest
-        {
-            public List<ScopedRegistry> scopedRegistries = new();
-        }
-
-        [System.Serializable]
-        private class ScopedRegistry
-        {
-            public string   name;
-            public string   url;
-            public string[] scopes;
         }
     }
 }

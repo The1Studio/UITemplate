@@ -176,28 +176,28 @@
             EditorWindow.focusedWindow.ShowNotification(new GUIContent("Setup ATT Scene Path successfully"));
         }
         
-        private void OnChangeDailyReward() { DefineSymbolEditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward); }
+        private void OnChangeDailyReward() { EditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward); }
         
-        private void OnChangeNoInternet() { DefineSymbolEditorUtils.SetDefineSymbol(NoInternetSymbol, this.enableNoInternet); }
+        private void OnChangeNoInternet() { EditorUtils.SetDefineSymbol(NoInternetSymbol, this.enableNoInternet); }
 
-        private void OnChangeNotification() { DefineSymbolEditorUtils.SetDefineSymbol(NotificationSymbol, this.enableNotification); }
+        private void OnChangeNotification() { EditorUtils.SetDefineSymbol(NotificationSymbol, this.enableNotification); }
 
-        private void OnChangeRateUs() { DefineSymbolEditorUtils.SetDefineSymbol(RateUsSymbol, this.enableRateUs); }
+        private void OnChangeRateUs() { EditorUtils.SetDefineSymbol(RateUsSymbol, this.enableRateUs); }
         
-        private void OnChangeIAP() { DefineSymbolEditorUtils.SetDefineSymbol(IAPSymbol, this.enableIAP); }
+        private void OnChangeIAP() { EditorUtils.SetDefineSymbol(IAPSymbol, this.enableIAP); }
 
-        private void OnChangeRacingEvent() { DefineSymbolEditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
+        private void OnChangeRacingEvent() { EditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
 
-        private void OnChangeBadgeNotify() { DefineSymbolEditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify); }
+        private void OnChangeBadgeNotify() { EditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify); }
 
-        private void OnChangeQuestSystem() { DefineSymbolEditorUtils.SetDefineSymbol(QuestSystemSymbol, this.enableQuestSystem); }
+        private void OnChangeQuestSystem() { EditorUtils.SetDefineSymbol(QuestSystemSymbol, this.enableQuestSystem); }
 
-        private void OnChangeFirebaseAuth() { DefineSymbolEditorUtils.SetDefineSymbol(FireBaseAuthSymbol, this.enableFirebaseAuth); }
+        private void OnChangeFirebaseAuth() { EditorUtils.SetDefineSymbol(FireBaseAuthSymbol, this.enableFirebaseAuth); }
 
         private async void OnChangeDailyQueueReward()
         {
             const string filePath = "Assets/Resources/BlueprintData/UITemplateDailyQueueOffer.csv";
-            DefineSymbolEditorUtils.SetDefineSymbol(DailyQueueRewardSymbol, this.enableDailyQueueReward);
+            EditorUtils.SetDefineSymbol(DailyQueueRewardSymbol, this.enableDailyQueueReward);
 
             if (!this.enableDailyQueueReward) return;
             if (File.Exists(filePath)) return;

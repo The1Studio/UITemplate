@@ -36,7 +36,8 @@ namespace UITemplate.Editor
         private static readonly Dictionary<string, string> PackagesToAdd = new()
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
-            // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"}
+            // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
+            {"com.google.external-dependency-manager", "1.2.179"}
             // add more packages as needed
         };
 

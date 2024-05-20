@@ -11,7 +11,7 @@ namespace UITemplate.Editor.ProjectMigration
     using UnityEngine.Networking;
 
     [InitializeOnLoad]
-    public class FirebasePackagesUpdater : MonoBehaviour
+    public class FirebasePackagesUpdater
     {
         private const string PackagesDirectory = "Packages/GoogleDependency";
 

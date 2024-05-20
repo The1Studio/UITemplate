@@ -98,13 +98,14 @@ namespace UITemplate.Editor
             var manifestJson = File.ReadAllText(manifestPath);
             var manifest     = JObject.Parse(manifestJson);
 
-            UpdatePackageDependencies(manifest);
-            UpdateScopedRegistries(manifest);
-
-            File.WriteAllText(manifestPath, manifest.ToString());
+            if (UpdatePackageDependencies(manifest) || UpdateScopedRegistries(manifest))
+            {
+                File.WriteAllText(manifestPath, manifest.ToString());
+                Client.Resolve();
+            }
         }
 
-        private static void UpdatePackageDependencies(JObject manifest)
+        private static bool UpdatePackageDependencies(JObject manifest)
         {
             var dependencies = manifest["dependencies"] as JObject;
             if (dependencies == null)
@@ -136,11 +137,13 @@ namespace UITemplate.Editor
 
             if (updated)
             {
-                Client.Resolve();
+                Debug.Log("Updated manifest.json with new packages and removed old packages.");
             }
+
+            return updated;
         }
 
-        private static void UpdateScopedRegistries(JObject manifest)
+        private static bool UpdateScopedRegistries(JObject manifest)
         {
             var scopedRegistries = manifest["scopedRegistries"] as JArray;
             if (scopedRegistries == null)
@@ -181,9 +184,10 @@ namespace UITemplate.Editor
             
             if (updated)
             {
-                Client.Resolve();
                 Debug.Log("Updated manifest.json with new packages and missing OpenUPM scopes.");
             }
+
+            return updated;
         }
     }
 }

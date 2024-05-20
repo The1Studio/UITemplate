@@ -92,7 +92,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
             this.signalBus.Subscribe<RewardedAdEligibleSignal>(this.RewardedAdEligibleHandler);
             this.signalBus.Subscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);
-            this.signalBus.Subscribe<RewardedAdLoadClickedSignal>(this.RewardedAdClickedHandler);
+            this.signalBus.Subscribe<RewardedAdClickedSignal>(this.RewardedAdClickedHandler);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.RewardedAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
             this.signalBus.Subscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
@@ -188,7 +188,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.DoAnalyticWithFactories(eventFactory =>
             {
                 this.Track(eventFactory.InterstitialEligible(obj.Placement));
-                this.Track(new CustomEvent { EventName = $"Interstitial_Eligible_{obj.Placement}" });
+                this.Track(new CustomEvent { EventName = $"Inters_Eligible_{obj.Placement}" });
             });
         }
 
@@ -208,7 +208,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.analyticServices.UserProperties[eventFactory.LastAdsPlacementProperty]     = obj.Placement;
                 this.analyticServices.UserProperties[eventFactory.TotalInterstitialAdsProperty] = obj.Placement;
                 this.Track(eventFactory.InterstitialShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
-                this.Track(new CustomEvent { EventName = $"Interstitial_Displayed_{obj.Placement}" });
+                this.Track(new CustomEvent { EventName = $"Inters_Display_{obj.Placement}" });
             });
         }
 
@@ -233,7 +233,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.DoAnalyticWithFactories(eventFactory =>
             {
                 this.Track(eventFactory.RewardedVideoEligible(obj.Placement));
-                this.Track(new CustomEvent { EventName = $"Rewarded_Eligible_{obj.Placement}" });
+                this.Track(new CustomEvent { EventName = $"Reward_Eligible_{obj.Placement}" });
             });
         }
 
@@ -246,7 +246,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void RewardedAdDownloadedHandler(RewardedAdLoadedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoDownloaded(obj.Placement))); }
 
-        private void RewardedAdClickedHandler(RewardedAdLoadClickedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoClick(obj.Placement))); }
+        private void RewardedAdClickedHandler(RewardedAdClickedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoClick(obj.Placement))); }
 
         private void RewardedAdDisplayedHandler(RewardedAdDisplayedSignal obj)
         {
@@ -255,7 +255,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.analyticServices.UserProperties[eventFactory.LastAdsPlacementProperty] = obj.Placement;
                 this.analyticServices.UserProperties[eventFactory.TotalRewardedAdsProperty] = obj.Placement;
                 this.Track(eventFactory.RewardedVideoShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
-                this.Track(new CustomEvent { EventName = $"Rewarded_Displayed_{obj.Placement}" });
+                this.Track(new CustomEvent { EventName = $"Reward_Display_{obj.Placement}" });
             });
         }
 
@@ -350,7 +350,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<RewardedAdOfferSignal>(this.RewardedAdOfferHandler);
             this.signalBus.Unsubscribe<RewardedAdEligibleSignal>(this.RewardedAdEligibleHandler);
             this.signalBus.Unsubscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);
-            this.signalBus.Unsubscribe<RewardedAdLoadClickedSignal>(this.RewardedAdClickedHandler);
+            this.signalBus.Unsubscribe<RewardedAdClickedSignal>(this.RewardedAdClickedHandler);
             this.signalBus.Unsubscribe<RewardedAdDisplayedSignal>(this.RewardedAdDisplayedHandler);
             this.signalBus.Unsubscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
             this.signalBus.Unsubscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);

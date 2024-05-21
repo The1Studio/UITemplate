@@ -21,9 +21,9 @@
     [PopupInfo(nameof(UITemplateRemoveAdPopupView))]
     public class UITemplateRemoveAdPopupPresenter : UITemplateBasePopupPresenter<UITemplateRemoveAdPopupView>
     {
-        private readonly UITemplateIapServices      uiTemplateIapServices;
-        private readonly GameFeaturesSetting        gameFeaturesSetting;
-        private readonly UITemplateAdServiceWrapper adServiceWrapper;
+        protected readonly UITemplateIapServices      uiTemplateIapServices;
+        protected readonly GameFeaturesSetting        gameFeaturesSetting;
+        protected readonly UITemplateAdServiceWrapper adServiceWrapper;
 
         public UITemplateRemoveAdPopupPresenter(
             SignalBus                  signalBus,
@@ -43,7 +43,7 @@
         {
             base.OnViewReady();
             this.View.btnRemoveAds.onClick.AddListener(this.OnRemoveAdsClicked);
-            this.View.btnClose.onClick.AddListener(this.CloseView);
+            this.View.btnClose.onClick.AddListener(this.OnClickCloseButton);
         }
 
         private void OnRemoveAdsClicked()
@@ -56,6 +56,11 @@
                     this.CloseView();
                 }
             );
+        }
+
+        protected virtual void OnClickCloseButton()
+        {
+            this.CloseView();
         }
 
         public override UniTask BindData()

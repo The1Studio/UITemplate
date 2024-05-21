@@ -15,9 +15,9 @@
 
         #region inject
 
-        private SignalBus                  signalBus;
-        private IScreenManager             screenManager;
-        private UITemplateAdServiceWrapper adServiceWrapper;
+        protected SignalBus                  signalBus;
+        protected IScreenManager             screenManager;
+        protected UITemplateAdServiceWrapper adServiceWrapper;
 
         [Inject]
         private void Init(SignalBus signal, IScreenManager screen, UITemplateAdServiceWrapper adService)
@@ -25,9 +25,9 @@
             this.signalBus        = signal;
             this.screenManager    = screen;
             this.adServiceWrapper = adService;
-            this.signalBus.Subscribe<OnRemoveAdsSucceedSignal>(this.OnRemoveAdsHandler);
+            this.signalBus.Subscribe<OnRemoveAdsSucceedSignal>(this.OnRemoveAdsSucceedHandler);
             this.signalBus.Subscribe<UITemplateOnUpdateBannerStateSignal>(this.OnUpdateBannerStateSignal);
-            this.btnRemoveAds.onClick.AddListener(this.OpenRemoveAdsPopup);
+            this.btnRemoveAds.onClick.AddListener(this.OnClickRemoveAdsButton);
         }
         private void OnUpdateBannerStateSignal(UITemplateOnUpdateBannerStateSignal obj)
         {
@@ -46,11 +46,11 @@
 #endif
         }
 
-        private void OpenRemoveAdsPopup()
+        protected virtual void OnClickRemoveAdsButton()
         {
             this.screenManager.OpenScreen<UITemplateRemoveAdPopupPresenter>().Forget();
         }
 
-        private void OnRemoveAdsHandler() { this.removeAdsObj.SetActive(false); }
+        private void OnRemoveAdsSucceedHandler() { this.removeAdsObj.SetActive(false); }
     }
 }

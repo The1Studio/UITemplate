@@ -6,6 +6,8 @@ namespace TheOneStudio.HyperCasual
 
     public class PlayFabConfig
     {
+        public static PlayFabConfig Default => new();
+
         public List<HighScoreType> UsedHighScoreTypesTypes { get; set; } = new()
         {
             HighScoreType.Daily,

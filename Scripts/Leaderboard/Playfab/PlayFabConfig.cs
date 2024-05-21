@@ -1,3 +1,4 @@
+#if THEONE_PLAYFAB
 namespace TheOneStudio.HyperCasual
 {
     using System.Collections.Generic;
@@ -24,3 +25,4 @@ namespace TheOneStudio.HyperCasual
         };
     }
 }
+#endif

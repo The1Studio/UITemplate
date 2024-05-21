@@ -1,3 +1,4 @@
+#if THEONE_PLAYFAB
 namespace TheOneStudio.HyperCasual
 {
     using System.Linq;
@@ -16,3 +17,4 @@ namespace TheOneStudio.HyperCasual
         }
     }
 }
+#endif

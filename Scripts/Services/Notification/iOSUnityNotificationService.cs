@@ -8,13 +8,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Zenject;
     using System;
     using Cysharp.Threading.Tasks;
+    using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using Unity.Notifications.iOS;
 
     public class IOSUnityNotificationService : BaseUnityNotificationService
     {
         public IOSUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
-            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper, ILogService logger, IAnalyticServices analyticServices) :
-            base(signalBus, uiTemplateNotificationBlueprint, uiTemplateNotificationDataBlueprint, notificationMappingHelper, logger, analyticServices)
+            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper, ILogService logger, IAnalyticServices analyticServices,
+            PermissionService permissionService) :
+            base(signalBus, uiTemplateNotificationBlueprint, uiTemplateNotificationDataBlueprint, notificationMappingHelper, logger, analyticServices, permissionService)
         {
         }
 
@@ -27,16 +29,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             var intent = iOSNotificationCenter.GetLastRespondedNotification();
             if (intent != null)
                 this.TrackEventClick(new NotificationContent(intent.Title, intent.Body));
-        }
-
-        public override async UniTask CheckPermission()
-        {
-            var iOSNotificationSettings = iOSNotificationCenter.GetNotificationSettings();
-            if (iOSNotificationSettings.AuthorizationStatus == AuthorizationStatus.NotDetermined)
-            {
-                using var req = new AuthorizationRequest(AuthorizationOption.Alert | AuthorizationOption.Badge, true);
-                await UniTask.WaitUntil(() => req.IsFinished);
-            }
         }
 
         public override void CancelNotification() { iOSNotificationCenter.RemoveAllScheduledNotifications(); }

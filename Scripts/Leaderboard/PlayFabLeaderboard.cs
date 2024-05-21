@@ -17,25 +17,28 @@ namespace TheOneStudio.HyperCasual
 
         #region Constructor
 
+        private readonly PlayFabConfig                     config;
         private readonly UITemplateHighScoreDataController highScoreDataController;
 
         private readonly Dictionary<string, Dictionary<HighScoreType, PlayerLeaderboardEntry>>       keyToTypeToPlayerEntry = new();
         private readonly Dictionary<string, Dictionary<HighScoreType, List<PlayerLeaderboardEntry>>> keyToTypeToLeaderboard = new();
 
-        public PlayFabLeaderboard(UITemplateHighScoreDataController highScoreDataController)
+        public PlayFabLeaderboard(PlayFabConfig config, UITemplateHighScoreDataController highScoreDataController)
         {
+            this.config                  = config;
             this.highScoreDataController = highScoreDataController;
         }
 
         #endregion
 
-        private LoginResult     loginResult;
-        private UserAccountInfo accountInfo;
+        private LoginResult        loginResult;
+        private PlayerProfileModel profile;
 
         public bool   IsLoggedIn  => this.loginResult is { };
         public string PlayerId    => this.loginResult?.PlayFabId;
-        public string DisplayName => this.accountInfo?.TitleInfo?.DisplayName;
-        public string Avatar      => this.accountInfo?.TitleInfo?.AvatarUrl;
+        public string DisplayName => this.profile?.DisplayName;
+        public string Avatar      => this.profile?.AvatarUrl;
+        public string CountryCode => this.profile?.GetCountryCode();
 
         public async UniTask LoginAsync()
         {
@@ -56,7 +59,7 @@ namespace TheOneStudio.HyperCasual
             );
             #endif
 
-            await this.FetchAccountInfoAsync();
+            await this.FetchProfileAsync();
         }
 
         public async UniTask ChangeDisplayNameAsync(string name)
@@ -65,7 +68,7 @@ namespace TheOneStudio.HyperCasual
                 PlayFabClientAPI.UpdateUserTitleDisplayName,
                 new() { DisplayName = name }
             );
-            await this.FetchAccountInfoAsync();
+            await this.FetchProfileAsync();
         }
 
         public async UniTask ChangeAvatarAsync(string url)
@@ -74,27 +77,31 @@ namespace TheOneStudio.HyperCasual
                 PlayFabClientAPI.UpdateAvatarUrl,
                 new() { ImageUrl = url }
             );
-            await this.FetchAccountInfoAsync();
+            await this.FetchProfileAsync();
         }
 
-        public async UniTask UpdateUserDataAsync(Dictionary<string, string> data, List<string> keysToRemove = null, UserDataPermission? permission = null)
+        public async UniTask UpdateUserDataAsync(Dictionary<string, string> data, UserDataPermission? permission = null, List<string> keysToRemove = null)
         {
             await InvokeAsync<UpdateUserDataRequest, UpdateUserDataResult>(
                 PlayFabClientAPI.UpdateUserData,
                 new()
                 {
                     Data         = data,
-                    KeysToRemove = keysToRemove,
                     Permission   = permission,
+                    KeysToRemove = keysToRemove,
                 }
             );
         }
 
-        public async UniTask<Dictionary<string, UserDataRecord>> GetUserDataAsync(List<string> keys)
+        public async UniTask<Dictionary<string, UserDataRecord>> GetUserDataAsync(List<string> keys, string playFabId = null)
         {
             var result = await InvokeAsync<GetUserDataRequest, GetUserDataResult>(
                 PlayFabClientAPI.GetUserData,
-                new() { Keys = keys }
+                new()
+                {
+                    Keys      = keys,
+                    PlayFabId = playFabId,
+                }
             );
             return result.Data;
         }
@@ -102,30 +109,22 @@ namespace TheOneStudio.HyperCasual
         public bool IsLeaderboardFetched(string key = DEFAULT_KEY)
         {
             return this.keyToTypeToPlayerEntry.TryGetValue(key, out var typeToPlayerEntry)
-                && typeToPlayerEntry.Count == SupportedTypes.Length
+                && typeToPlayerEntry.Count == this.config.UsedHighScoreTypesTypes.Count
                 && this.keyToTypeToLeaderboard.TryGetValue(key, out var typeToLeaderboard)
-                && typeToLeaderboard.Count == SupportedTypes.Length;
+                && typeToLeaderboard.Count == this.config.UsedHighScoreTypesTypes.Count;
         }
 
         public async UniTask FetchLeaderboardAsync(string key = DEFAULT_KEY)
         {
-            await SupportedTypes.Select(async type =>
+            await this.config.UsedHighScoreTypesTypes.Select(async type =>
             {
                 await (this.FetchPlayerEntryAsync(key, type), this.FetchLeaderboardAsync(key, type));
             });
         }
 
-        public PlayerLeaderboardEntry GetLeaderboardPlayerEntry(HighScoreType type, string playFabId)
-        {
-            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
-            if (!this.keyToTypeToLeaderboard.TryGetValue(DEFAULT_KEY, out var typeToLeaderboard)
-                || !typeToLeaderboard.TryGetValue(type, out var leaderboard)
-               ) throw new InvalidOperationException("Please login & fetch leaderboard first");
-            return leaderboard.FirstOrDefault(model => model.PlayFabId == playFabId);
-        }
         public PlayerLeaderboardEntry GetPlayerEntry(string key, HighScoreType type)
         {
-            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
+            this.ThrowIfNotSupported(type);
             if (!this.keyToTypeToPlayerEntry.TryGetValue(key, out var typeToPlayerEntry)
                 || !typeToPlayerEntry.TryGetValue(type, out var playerEntry)
             ) throw new InvalidOperationException("Please login & fetch leaderboard first");
@@ -134,43 +133,16 @@ namespace TheOneStudio.HyperCasual
 
         public IEnumerable<PlayerLeaderboardEntry> GetLeaderboard(string key, HighScoreType type)
         {
-            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
+            this.ThrowIfNotSupported(type);
             if (!this.keyToTypeToLeaderboard.TryGetValue(key, out var typeToLeaderboard)
                 || !typeToLeaderboard.TryGetValue(type, out var leaderboard)
             ) throw new InvalidOperationException("Please login & fetch leaderboard first");
             return leaderboard;
         }
-        public List<CountryCode?> GetPlayerCountryCode(HighScoreType type)
-        {
-            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
-            if (!this.keyToTypeToPlayerEntry.TryGetValue(DEFAULT_KEY, out var typeToPlayerEntry)
-                || !typeToPlayerEntry.TryGetValue(type, out var playerEntry)
-            ) throw new InvalidOperationException("Please login & fetch leaderboard first");
-            return playerEntry
-                   .Profile
-                   .Locations
-                   .Select(model => model.CountryCode)
-                   .Distinct()
-                   .ToList();
-        }
 
-        public List<CountryCode?> GetLeaderboardPlayerCountryCode(HighScoreType type, string playFabId)
-        {
-            if (!SupportedTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported");
-            if (!this.keyToTypeToLeaderboard.TryGetValue(DEFAULT_KEY, out var typeToLeaderboard)
-                || !typeToLeaderboard.TryGetValue(type, out var leaderboard)
-            ) throw new InvalidOperationException("Please login & fetch leaderboard first");
-            return leaderboard
-                   .FirstOrDefault(model => model.PlayFabId == playFabId)?
-                   .Profile
-                   .Locations
-                   .Select(location => location.CountryCode)
-                   .Distinct()
-                   .ToList();
-        }
         public async UniTask SubmitScoreAsync(string key = DEFAULT_KEY)
         {
-            foreach (var type in SupportedTypes)
+            foreach (var type in this.config.UsedHighScoreTypesTypes)
             {
                 var statisticName = $"{key}_{type}";
                 var statistics = await InvokeAsync<GetPlayerStatisticsRequest, GetPlayerStatisticsResult>(
@@ -196,33 +168,33 @@ namespace TheOneStudio.HyperCasual
 
         public IEnumerable<PlayerLeaderboardEntry> GetLeaderboard(HighScoreType type) => this.GetLeaderboard(DEFAULT_KEY, type);
 
-      
         #endregion
 
         #region Private
 
-        private static readonly HighScoreType[] SupportedTypes =
+        private async UniTask FetchProfileAsync()
         {
-            HighScoreType.Daily,
-            HighScoreType.Weekly,
-            HighScoreType.Monthly,
-            HighScoreType.AllTime,
-        };
-
-        private async UniTask FetchAccountInfoAsync()
-        {
-            var result = await InvokeAsync<GetAccountInfoRequest, GetAccountInfoResult>(
-                PlayFabClientAPI.GetAccountInfo,
-                new() { PlayFabId = this.PlayerId }
+            var result = await InvokeAsync<GetPlayerProfileRequest, GetPlayerProfileResult>(
+                PlayFabClientAPI.GetPlayerProfile,
+                new()
+                {
+                    PlayFabId          = this.PlayerId,
+                    ProfileConstraints = this.config.ProfileConstraints,
+                }
             );
-            this.accountInfo = result.AccountInfo;
+            this.profile = result.PlayerProfile;
         }
 
         private async UniTask FetchPlayerEntryAsync(string key, HighScoreType type)
         {
             var result = await InvokeAsync<GetLeaderboardAroundPlayerRequest, GetLeaderboardAroundPlayerResult>(
                 PlayFabClientAPI.GetLeaderboardAroundPlayer,
-                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 1, ProfileConstraints = new(){ShowLocations = true, ShowDisplayName = true}}
+                new()
+                {
+                    StatisticName      = $"{key}_{type}",
+                    MaxResultsCount    = 1,
+                    ProfileConstraints = this.config.ProfileConstraints,
+                }
             );
             var playerEntry = result.Leaderboard.FirstOrDefault(entry => entry.PlayFabId == this.PlayerId);
             this.keyToTypeToPlayerEntry.GetOrAdd(key)[type] = playerEntry;
@@ -240,7 +212,12 @@ namespace TheOneStudio.HyperCasual
         {
             var result = await InvokeAsync<GetLeaderboardRequest, GetLeaderboardResult>(
                 PlayFabClientAPI.GetLeaderboard,
-                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 100, ProfileConstraints = new(){ShowLocations = true, ShowDisplayName = true} }
+                new()
+                {
+                    StatisticName      = $"{key}_{type}",
+                    MaxResultsCount    = 100,
+                    ProfileConstraints = this.config.ProfileConstraints,
+                }
             );
             var leaderboard = result.Leaderboard;
             this.keyToTypeToLeaderboard.GetOrAdd(key)[type] = leaderboard;
@@ -255,6 +232,11 @@ namespace TheOneStudio.HyperCasual
                 error => tcs.TrySetException(new(error.ErrorMessage))
             );
             return await tcs.Task;
+        }
+
+        private void ThrowIfNotSupported(HighScoreType type)
+        {
+            if (!this.config.UsedHighScoreTypesTypes.Contains(type)) throw new NotSupportedException($"{type} high score is not supported. Please change config");
         }
 
         private delegate void PlayFabAction<in TRequest, out TResult>(TRequest request, Action<TResult> resultCallback, Action<PlayFabError> errorCallback, object customData = null, Dictionary<string, string> extraHeaders = null);

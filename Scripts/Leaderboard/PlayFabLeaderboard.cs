@@ -195,7 +195,11 @@ namespace TheOneStudio.HyperCasual
         {
             var result = await InvokeAsync<GetPlayerProfileRequest, GetPlayerProfileResult>(
                 PlayFabClientAPI.GetPlayerProfile,
-                new() { PlayFabId = this.PlayerId }
+                new()
+                {
+                    PlayFabId          = this.PlayerId,
+                    ProfileConstraints = new() { ShowDisplayName = true, ShowLocations = true },
+                }
             );
             this.profileModel = result.PlayerProfile;
         }
@@ -204,7 +208,12 @@ namespace TheOneStudio.HyperCasual
         {
             var result = await InvokeAsync<GetLeaderboardAroundPlayerRequest, GetLeaderboardAroundPlayerResult>(
                 PlayFabClientAPI.GetLeaderboardAroundPlayer,
-                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 1, ProfileConstraints = new() { ShowLocations = true, ShowDisplayName = true } }
+                new()
+                {
+                    StatisticName      = $"{key}_{type}",
+                    MaxResultsCount    = 1,
+                    ProfileConstraints = new() { ShowDisplayName = true, ShowLocations = true },
+                }
             );
             var playerEntry = result.Leaderboard.FirstOrDefault(entry => entry.PlayFabId == this.PlayerId);
             this.keyToTypeToPlayerEntry.GetOrAdd(key)[type] = playerEntry;
@@ -222,7 +231,12 @@ namespace TheOneStudio.HyperCasual
         {
             var result = await InvokeAsync<GetLeaderboardRequest, GetLeaderboardResult>(
                 PlayFabClientAPI.GetLeaderboard,
-                new() { StatisticName = $"{key}_{type}", MaxResultsCount = 100, ProfileConstraints = new() { ShowLocations = true, ShowDisplayName = true } }
+                new()
+                {
+                    StatisticName      = $"{key}_{type}",
+                    MaxResultsCount    = 100,
+                    ProfileConstraints = new() { ShowDisplayName = true, ShowLocations = true },
+                }
             );
             var leaderboard = result.Leaderboard;
             this.keyToTypeToLeaderboard.GetOrAdd(key)[type] = leaderboard;

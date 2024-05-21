@@ -64,6 +64,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private DateTime StartLoadingAOATime;
         private DateTime StartBackgroundTime;
         private bool     IsResumedFromAdsOrIAP;
+        private bool     canShowAOAThisTime = true;
         private bool     IsCheckedShowFirstOpen { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen   { get; private set; }
 
@@ -302,7 +303,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            // if (!this.config.OpenAOAAfterResuming) return;
+            if (!this.canShowAOAThisTime)
+            {
+                this.canShowAOAThisTime = true;
+                return;
+            }
 
             if (this.IsResumedFromAdsOrIAP)
             {
@@ -340,6 +345,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.onInterstitialFinishedAction?.Invoke(isShowSuccess);
             this.onInterstitialFinishedAction = null;
         }
+        
+        public void DontShowAoaThisTime() { this.canShowAOAThisTime = false; }
 
         #region InterstitialAd
 

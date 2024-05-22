@@ -116,7 +116,7 @@
         #region Misc
 
         [FoldoutGroup("Misc Settings")] public bool enableInitHomeScreenManually = true;
-        [FoldoutGroup("Misc Settings")] public bool showBottomBarWithBanner      = false;
+        [FoldoutGroup("Misc Settings")] public bool showBottomBarWithBanner      = false; //When enable this, we will show bottom bar with banner in them same time, that make the bottom bar taller than normal
 
         #endregion
 

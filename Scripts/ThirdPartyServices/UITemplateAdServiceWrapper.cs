@@ -26,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using UnityEngine;
     using Zenject;
     using R3;
+    using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
 
     public class UITemplateAdServiceWrapper : IInitializable, ITickable
     {
@@ -63,7 +64,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         //AOA
         private DateTime StartLoadingAOATime;
         private DateTime StartBackgroundTime;
-        private bool     IsResumedFromAdsOrIAP;
+        private bool     IsResumedFromAnotherServices; // after Ads, IAP, permission, login, etc.
         private bool     IsCheckedShowFirstOpen { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen   { get; private set; }
 
@@ -112,6 +113,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnIAPPurchaseFailedSignal>(this.CloseAdInDifferentProcessHandler);
             this.screenManager.CurrentActiveScreen.Subscribe(this.OnScreenChanged);
+            
+            //Permission
+            this.signalBus.Subscribe<OnRequestPermissionStartSignal>(this.ShownAdInDifferentProcessHandler);
+            this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
 
             //MREC
             this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
@@ -220,15 +225,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.ShownAdInDifferentProcessHandler();
         }
 
-        private void OnStartDoingIAPHandler() { this.IsResumedFromAdsOrIAP = true; }
+        private void OnStartDoingIAPHandler() { this.IsResumedFromAnotherServices = true; }
 
         private async void CloseAdInDifferentProcessHandler()
         {
             await UniTask.Delay(TimeSpan.FromSeconds(1));
-            this.IsResumedFromAdsOrIAP = false;
+            this.IsResumedFromAnotherServices = false;
         }
 
-        private void ShownAdInDifferentProcessHandler() { this.IsResumedFromAdsOrIAP = true; }
+        private void ShownAdInDifferentProcessHandler() { this.IsResumedFromAnotherServices = true; }
 
         private bool IsFiredFirstOpenEligibleSignal = false;
 
@@ -302,9 +307,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            // if (!this.config.OpenAOAAfterResuming) return;
-
-            if (this.IsResumedFromAdsOrIAP)
+            if (this.IsResumedFromAnotherServices)
             {
                 return;
             }
@@ -451,7 +454,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.totalNoAdsPlayingTime = 0;
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
-                this.IsResumedFromAdsOrIAP        = true;
+                this.IsResumedFromAnotherServices        = true;
                 this.onInterstitialFinishedAction = onShowInterstitialFinished;
             }
         }
@@ -483,7 +486,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.signalBus.Fire(new RewardedAdCalledSignal(place));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
-            this.IsResumedFromAdsOrIAP = true;
+            this.IsResumedFromAnotherServices = true;
             this.adServices.ShowRewardedAd(place, OnRewardedAdCompleted, onFail);
             return;
 

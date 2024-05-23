@@ -11,6 +11,7 @@
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using UnityEngine;
     using Zenject;
 
@@ -23,6 +24,7 @@
         protected readonly UITemplateNotificationDataBlueprint UITemplateNotificationDataBlueprint;
         protected readonly ILogService                         Logger;
         protected readonly IAnalyticServices                   AnalyticServices;
+        protected readonly PermissionService                   PermissionService;
         protected readonly NotificationMappingHelper           NotificationMappingHelper;
 
         #endregion
@@ -37,7 +39,7 @@
 
         protected BaseUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper,
-            ILogService logger, IAnalyticServices analyticServices)
+            ILogService logger, IAnalyticServices analyticServices, PermissionService permissionService)
         {
             this.SignalBus                           = signalBus;
             this.UITemplateNotificationBlueprint     = uiTemplateNotificationBlueprint;
@@ -45,6 +47,7 @@
             this.NotificationMappingHelper           = notificationMappingHelper;
             this.Logger                              = logger;
             this.AnalyticServices                    = analyticServices;
+            this.PermissionService                   = permissionService;
 
             this.SignalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintComplete);
         }
@@ -101,7 +104,8 @@
         #region Schedule Notification
 
         public               bool    IsInitialized     { get; set; } = false;
-        public virtual async UniTask CheckPermission() { }
+
+        public async UniTask CheckPermission() { await this.PermissionService.RequestPermission(PermissionRequest.Notification);}
 
         public async void SetUpNotification()
         {

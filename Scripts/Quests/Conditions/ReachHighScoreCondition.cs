@@ -3,8 +3,8 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 {
     using System;
     using Newtonsoft.Json;
-    using TheOne.HighScore;
-    using TheOne.HighScore.Models;
+    using TheOneStudio.HighScore;
+    using TheOneStudio.HighScore.Models;
 
     public sealed class ReachHighScoreCondition : BaseCondition
     {

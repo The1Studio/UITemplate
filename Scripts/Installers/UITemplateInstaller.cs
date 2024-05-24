@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.AppTracking;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
+    using TheOneStudio.UITemplate.UITemplate.Services.DeepLinking;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
@@ -41,6 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             NotificationInstaller.Install(this.Container);
             StoreRatingServiceInstaller.Install(this.Container);
             PermissionServiceInstaller.Install(this.Container);
+            DeepLinkInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
 

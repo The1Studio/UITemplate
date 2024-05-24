@@ -6,7 +6,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
     {
         public override void InstallBindings()
         {
-            this.Container.BindInitializableExecutionOrder<DeepLinkService>(int.MinValue).NonLazy();
+            this.Container.BindInterfacesTo<DeepLinkService>().AsSingle().NonLazy();
+            this.Container.BindExecutionOrder<DeepLinkService>(int.MaxValue);
             this.Container.DeclareSignal<OnDeepLinkActiveSignal>();
         }
     }

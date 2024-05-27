@@ -14,9 +14,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent InterstitialClick(string place);
 
-        IEvent InterstitialDownloaded(string place);
+        IEvent InterstitialDownloaded(string place, long loadingMilis);
         
-        IEvent InterstitialDownloadFailed(string place);
+        IEvent InterstitialDownloadFailed(string place, string message, long loadingMilis);
 
         IEvent InterstitialCalled(string place);
 

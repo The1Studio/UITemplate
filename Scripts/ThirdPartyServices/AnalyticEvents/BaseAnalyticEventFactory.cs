@@ -21,9 +21,9 @@
 
         public virtual IEvent InterstitialClick(string place) => new InterstitialAdClicked(place);
 
-        public virtual IEvent InterstitialDownloaded(string place)     => new InterstitialAdDownloaded(place);
+        public virtual IEvent InterstitialDownloaded(string place, long loadingMilis)     => new InterstitialAdDownloaded(place, loadingMilis);
         
-        public virtual IEvent InterstitialDownloadFailed(string place) => new InterstitialAdLoadFailed(place);
+        public virtual IEvent InterstitialDownloadFailed(string place, string message, long loadingMilis) => new InterstitialAdLoadFailed(place, message, loadingMilis);
 
         public virtual IEvent InterstitialCalled(string place) => new InterstitialAdCalled(place);
 

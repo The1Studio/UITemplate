@@ -24,7 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent InterstitialClick(string place) => new AdInterClick(place);
 
-        public override IEvent InterstitialDownloaded(string place) => new AdInterDownloaded();
+        public override IEvent InterstitialDownloaded(string place, long loadingMilis) => new AdInterDownloaded(place, loadingMilis);
 
         public override IEvent InterstitialCalled(string place) => new AdInterCalled();
 

@@ -38,7 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent RewardedVideoOffer(string place) { return new AdsRewardOffer(place); }
 
-        public override IEvent RewardedVideoDownloaded(string place) { return new AdsRewardedDownloaded(); }
+        public override IEvent RewardedVideoDownloaded(string place, long loadingMilis) { return new AdsRewardedDownloaded(place, loadingMilis); }
 
         public override IEvent RewardedVideoCalled(string place) { return new AdsRewardedCalled(); }
 

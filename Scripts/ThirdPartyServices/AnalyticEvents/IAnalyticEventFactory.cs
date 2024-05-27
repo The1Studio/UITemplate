@@ -14,10 +14,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent InterstitialClick(string place);
 
-        IEvent InterstitialDownloaded(string place);
+        IEvent InterstitialDownloaded(string place, long loadingMilis);
         
-        IEvent InterstitialDownloadFailed(string place);
-
+        IEvent InterstitialDownloadFailed(string place, string message, long loadingMilis);
 
         IEvent InterstitialCalled(string place);
 
@@ -27,17 +26,19 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent RewardedVideoOffer(string place);
 
-        IEvent RewardedVideoDownloaded(string place);
+        IEvent RewardedVideoDownloaded(string place, long loadingMilis);
+        
+        IEvent RewardedVideoDownloadFailed(string place, long loadingMilis);
 
         IEvent RewardedVideoCalled(string place);
 
         IEvent RewardedVideoShow(int level, string place);
+        
+        IEvent RewardedVideoShowFail(string place, string msg);
 
         IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded);
 
         IEvent RewardedVideoClick(string place);
-
-        IEvent RewardedVideoShowFail(string place, string msg);
 
         IEvent AppOpenCalled();
         IEvent AppOpenEligible();

@@ -32,7 +32,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent RewardedVideoOffer(string place) => new AdsRewardOffer(place);
 
-        public override IEvent RewardedVideoDownloaded(string place) => new AdsRewardedDownloaded();
+        public override IEvent RewardedVideoDownloaded(string place, long loadingMilis) => new AdsRewardedDownloaded(place, loadingMilis);
 
         public override IEvent RewardedVideoCalled(string place) => new AdsRewardedCalled();
 

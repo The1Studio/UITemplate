@@ -33,9 +33,11 @@
         //RewardVideo Ads
         public virtual IEvent RewardedVideoEligible(string place) => new RewardedAdEligible(place);
 
-        public virtual IEvent RewardedVideoOffer(string place) => new RewardedAdOffer(place);
-
-        public virtual IEvent RewardedVideoDownloaded(string place) => new RewardedAdLoaded(place);
+        public virtual IEvent RewardedVideoOffer(string place)                         => new RewardedAdOffer(place);
+        
+        public virtual IEvent RewardedVideoDownloaded(string place, long loadingMilis) => new RewardedAdLoaded(place, loadingMilis);
+        
+        public virtual IEvent RewardedVideoDownloadFailed(string place, long loadingMilis) => new RewardedAdLoadFailed(place, loadingMilis);
 
         public virtual IEvent RewardedVideoCalled(string place) => new RewardedAdCalled(place);
 

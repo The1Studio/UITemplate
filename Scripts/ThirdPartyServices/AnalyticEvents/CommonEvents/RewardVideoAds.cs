@@ -5,13 +5,23 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class RewardedAdLoaded : IEvent
     {
         public string placememt;
-        public RewardedAdLoaded(string placememt) { this.placememt = placememt; }
+        public long   loadingMilis;
+        public RewardedAdLoaded(string placememt, long loadingMilis)
+        {
+            this.placememt    = placememt;
+            this.loadingMilis = loadingMilis;
+        }
     }
 
     public class RewardedAdLoadFailed : IEvent
     {
         public string placememt;
-        public RewardedAdLoadFailed(string placememt) { this.placememt = placememt; }
+        public long   loadingMilis;
+        public RewardedAdLoadFailed(string placememt, long loadingMilis)
+        {
+            this.placememt    = placememt;
+            this.loadingMilis = loadingMilis;
+        }
     }
 
     public class RewardedAdLoadClicked : IEvent

@@ -244,7 +244,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void RewardedAdOfferHandler(RewardedAdOfferSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoOffer(obj.Placement))); }
 
-        private void RewardedAdDownloadedHandler(RewardedAdLoadedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoDownloaded(obj.Placement))); }
+        private void RewardedAdDownloadedHandler(RewardedAdLoadedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoDownloaded(obj.Placement, obj.LoadingTime))); }
 
         private void RewardedAdClickedHandler(RewardedAdClickedSignal obj) { this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.RewardedVideoClick(obj.Placement))); }
 

@@ -2,11 +2,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
-    using Core.AdsServices;
     using Core.AdsServices.Signals;
+    using Core.AnalyticServices;
+    using Core.AnalyticServices.CommonEvents;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
@@ -16,9 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.ObjectPool;
-    using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
-    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
@@ -79,6 +77,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected readonly IGameAssets                gameAssets;
         private readonly   ObjectPoolManager          objectPoolManager;
         private readonly   UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
+        
+        [Inject]
+        private   IAnalyticServices          analyticServices;
 
         protected UITemplateLoadingScreenPresenter(
             SignalBus signalBus,
@@ -144,6 +145,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.loadingProgress = 0f;
             this.loadingSteps    = 1;
 
+            var stopWatch = System.Diagnostics.Stopwatch.StartNew();
             UniTask.WhenAll(
                 this.CreateObjectPool(AudioService.AudioSourceKey, 3),
                 this.Preload(),
@@ -155,6 +157,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
                 ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene);
+            stopWatch.Stop();
+            Debug.Log("Game Loading Time: " + stopWatch.ElapsedMilliseconds + "ms");            
+            this.analyticServices.Track(new CustomEvent()
+                {
+                    EventName = "GameLoadingTime",
+                    EventProperties = new Dictionary<string, object>()
+                    {
+                        {"timeMilis", stopWatch.ElapsedMilliseconds}
+                    }
+                });
 
             return UniTask.CompletedTask;
         }
@@ -172,11 +184,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             SceneDirector.CurrentSceneName = this.NextSceneName;
 
+            var stopWatch = System.Diagnostics.Stopwatch.StartNew();
+
             this.SignalBus.Fire<StartLoadingNewSceneSignal>();
             var nextScene = await this.TrackProgress(this.LoadSceneAsync());
             await this.View.CompleteLoading();
             await nextScene.ActivateAsync();
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
+            
+            stopWatch.Stop();
+            Debug.Log("Loading Main Scene Time: " + stopWatch.ElapsedMilliseconds + "ms");
+            this.analyticServices.Track(new CustomEvent()
+            {
+                EventName = "LoadingMainSceneTime",
+                EventProperties = new Dictionary<string, object>()
+                {
+                    {"timeMilis", stopWatch.ElapsedMilliseconds}
+                }
+            });
 
             Resources.UnloadUnusedAssets().ToUniTask().Forget();
             this.ShowFirstBannerAd(BannerLoadStrategy.AfterLoading);

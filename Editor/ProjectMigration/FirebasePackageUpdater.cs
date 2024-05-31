@@ -30,8 +30,6 @@ namespace UITemplate.Editor.ProjectMigration
 
         private static void UpdatePackageToVersion()
         {
-            Debug.Log($"Update {RequirePackages.Count} Firebase packages to version 12.0.0");
-
             UpdateFirebasePackages(RequirePackages, "12.0.0");
         }
 
@@ -45,7 +43,6 @@ namespace UITemplate.Editor.ProjectMigration
             // Check if all the packages of the required version already exist
             if (packages.All(package => existingPackages.Any(p => p.StartsWith(package) && p == package + "-" + version)))
             {
-                Debug.Log("All packages of the required version already exist. No need to update.");
                 return;
             }
             

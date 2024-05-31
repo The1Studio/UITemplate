@@ -4,6 +4,7 @@ namespace UITemplate.Editor
     using System.IO;
     using System.Linq;
     using Newtonsoft.Json.Linq;
+    using UITemplate.Editor.ProjectMigration;
     using UnityEditor;
     using UnityEditor.PackageManager;
     using UnityEngine;
@@ -53,6 +54,8 @@ namespace UITemplate.Editor
         {
             CheckAndUpdateProguardFile();
             CheckAndUpdatePackageManagerSettings();
+            FolderMigration.RemoveUselessFolder();
+            ApplovinMigration.DoMigrate();
         }
 
         static ProjectAutoMigrationScript()
@@ -190,5 +193,6 @@ namespace UITemplate.Editor
 
             return updated;
         }
+
     }
 }

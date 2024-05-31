@@ -44,7 +44,8 @@
         "PlayFab",
         "R3.Unity",
         "3rd.RemoteConfig",
-        "ByteBrewTracker"
+        "ByteBrewTracker",
+        "UnityLogsViewer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

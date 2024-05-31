@@ -83,7 +83,7 @@ MonoBehaviour:
       type: 2}
   size: {x: 32, y: 32}
   maxSize: 20
-  numOfCircleToShow: 2
+  numOfCircleToShow: 3
   Initialized: 0
 --- !u!114 &3382818802863649192
 MonoBehaviour:

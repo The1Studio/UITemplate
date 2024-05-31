@@ -37,7 +37,7 @@ namespace HeurekaGames.AssetHunterPRO
         #region Fields
         [SerializeField] private int ignoredListChosenIndex;
 
-        private readonly static string ProjectPostFix = "." + Application.dataPath; // AssetDatabase.AssetPathToGUID(FileUtil.GetProjectRelativePath(Application.dataPath));
+        private readonly static string ProjectPostFix = "." + Application.dataPath;
 
         private readonly static string PrefsAutoCreateLog = "AH.AutoCreateLog" + ProjectPostFix;
         private readonly static string PrefsAutoOpenLog = "AH.AutoOpenLog" + ProjectPostFix;

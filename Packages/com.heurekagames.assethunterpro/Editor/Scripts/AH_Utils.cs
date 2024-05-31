@@ -185,10 +185,19 @@ namespace HeurekaGames.AssetHunterPRO
             List<Texture> buildTargetAssetDependencies = new List<Texture>();
 
             //Run through icons, splashscreens etc and include them as being used
+#if UNITY_2023_1_OR_NEWER
+            Texture2D[] targetGroupIcons = PlayerSettings.GetIcons(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(targetGroup),IconKind.Any);
+#else
             Texture2D[] targetGroupIcons = PlayerSettings.GetIconsForTargetGroup(targetGroup);
+#endif
             List<Texture2D> additionalTargetGroupIcons = getAdditionalTargetAssets(targetGroup);
 
+#if UNITY_2023_1_OR_NEWER
+            Texture2D[] unknownTargetGroupIcons = PlayerSettings.GetIcons(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.Unknown), IconKind.Any);
+#else
             Texture2D[] unknownTargetGroupIcons = PlayerSettings.GetIconsForTargetGroup(BuildTargetGroup.Unknown);
+#endif
+            
 
             PlayerSettings.SplashScreenLogo[] splashLogos = PlayerSettings.SplashScreen.logos;
 

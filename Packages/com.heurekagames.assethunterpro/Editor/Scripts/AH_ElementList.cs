@@ -1,5 +1,6 @@
 ﻿using HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.AssetTreeView;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -9,6 +10,10 @@ namespace HeurekaGames.AssetHunterPRO
     [System.Serializable]
     public class AH_ElementList
     {
+        public static EventHandler OnListDumpBegin;
+        public static EventHandler OnListDumpEnd;
+        public static EventHandler<string> OnListDumpElementProcessed;
+
         public List<AssetDumpData> elements;
 
         public AH_ElementList(List<AssetDumpData> elements)
@@ -44,12 +49,14 @@ namespace HeurekaGames.AssetHunterPRO
 
             if (path.Length != 0)
             {
+                OnListDumpBegin?.Invoke(null, EventArgs.Empty);
                 List<AssetDumpData> elements = new List<AssetDumpData>();
 
                 foreach (var element in m_TreeView.GetRows())
                     populateDumpListRecursively(m_TreeView.treeModel.Find(element.id), ((AH_MultiColumnHeader)m_TreeView.multiColumnHeader).ShowMode, ref elements);
 
                 content = new AH_ElementList(elements);
+                OnListDumpEnd?.Invoke(null, EventArgs.Empty);
                 return true;
             }
 
@@ -69,6 +76,7 @@ namespace HeurekaGames.AssetHunterPRO
             }
             else if (element.AssetMatchesState(showmode))
             {
+                OnListDumpElementProcessed?.Invoke(null, element.GUID);
                 elements.Add(new AssetDumpData(element.GUID, element.RelativePath, element.FileSize, element.UsedInBuild, element.ScenesReferencingAsset));
             }
         }

@@ -122,9 +122,6 @@ namespace HeurekaGames.AssetHunterPRO
                     string line = "";
                     bool foundName = false;
 
-                    if (path.EndsWith("LightingData.asset") || path.Contains("NavMesh"))
-                        Debug.Log("LOOK HERE");
-
                     if (LoadedObj != null)
                     {
                         try

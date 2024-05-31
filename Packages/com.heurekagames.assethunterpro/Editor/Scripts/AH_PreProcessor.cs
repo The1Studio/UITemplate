@@ -13,9 +13,11 @@ public class AH_PreProcessor : MonoBehaviour
     /// </summary>
     public static void AddDefineSymbols(string symbol, bool addDefine)
     {
-
+#if UNITY_2023_1_OR_NEWER
+        string definesString = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup));
+#else
         string definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-
+#endif
         List<string> allDefines = definesString.Split(';').ToList();
 
         bool updateDefines = false;
@@ -31,8 +33,16 @@ public class AH_PreProcessor : MonoBehaviour
         }
 
         if (updateDefines)
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(
+        {
+#if UNITY_2023_1_OR_NEWER
+                    PlayerSettings.SetScriptingDefineSymbols(
+                UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup),
+                string.Join(";", allDefines.ToArray()));
+#else
+                    PlayerSettings.SetScriptingDefineSymbolsForGroup(
                 EditorUserBuildSettings.selectedBuildTargetGroup,
                 string.Join(";", allDefines.ToArray()));
+#endif
+        }
     }
 }

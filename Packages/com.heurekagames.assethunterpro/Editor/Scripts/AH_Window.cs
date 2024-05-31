@@ -116,7 +116,7 @@ namespace HeurekaGames.AssetHunterPRO
             InitIfNeeded();
             doHeader();
 
-            if (buildInfoManager != null && buildInfoManager.IsProjectClean())// && ((AH_MultiColumnHeader)m_TreeView.multiColumnHeader).ShowMode == AH_MultiColumnHeader.AssetShowMode.Unused)
+            if (buildInfoManager != null && buildInfoManager.IsProjectClean())
             {
                 Heureka_WindowStyler.DrawCenteredImage(m_window, AH_EditorData.Icons.Achievement);
                 return;

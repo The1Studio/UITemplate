@@ -225,7 +225,8 @@ namespace HeurekaGames.AssetHunterPRO
                 {
                     foreach (var entry in item.entries)
                     {
-                        AddBuildDependency("", entry.AssetPath);
+                        //TODO For assetreferencesT which is NOT marked as addressables themselves, do this https://chat.openai.com/share/40dd629a-55de-441a-b340-4bf6358b1a7e
+                         AddBuildDependency("", entry.AssetPath);
                     }
                 }
             }

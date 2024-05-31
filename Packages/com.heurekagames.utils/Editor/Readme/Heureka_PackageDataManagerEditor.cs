@@ -9,8 +9,6 @@ using System;
 
 namespace HeurekaGames.Utils
 {
-    using Editor = UnityEditor.Editor;
-
     [CustomEditor(typeof(Heureka_PackageDataManager))]
     [InitializeOnLoad]
     public class Heureka_PackageDataManagerEditor : Editor

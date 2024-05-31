@@ -450,3 +450,27 @@ MonoBehaviour:
       Patch: 17
     VersionChanges:
     - Minor bugfix
+  - VersionNum:
+      Major: 2
+      Minor: 2
+      Patch: 18
+    VersionChanges:
+    - Removed potentially problematic debug code
+  - VersionNum:
+      Major: 2
+      Minor: 2
+      Patch: 19
+    VersionChanges:
+    - Minor refactor
+  - VersionNum:
+      Major: 2
+      Minor: 2
+      Patch: 20
+    VersionChanges:
+    - Fixed warnings in Unity2023
+  - VersionNum:
+      Major: 2
+      Minor: 2
+      Patch: 21
+    VersionChanges:
+    - Added EventHandlers in AH_ElementList when exporting list

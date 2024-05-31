@@ -46,7 +46,7 @@ namespace UITemplate.Editor.ProjectMigration
                     "OK"
                 );
                 
-                AppLovinEditorCoroutine.StartCoroutine(AppLovinIntegrationManager.Instance.DownloadPlugin(appLovinMax));
+                AppLovinEditorCoroutine.StartCoroutine(AppLovinIntegrationManager.Instance.DownloadPlugin(appLovinMax, false));
                 AppLovinIntegrationManagerWindow.ShowManager();
             }
             #endif

@@ -67,6 +67,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if THEONE_BADGE_NOTIFY
             this.Container.BindInterfacesAndSelfTo<UITemplateBadgeNotifySystem>().AsCached().NonLazy();
 #endif
+
+#if THEONE_LOG_VIEWER
+            this.Container.Bind<Reporter>().FromComponentInNewPrefabResource("LogsViewer").AsCached().NonLazy();
+#endif
         }
     }
 }

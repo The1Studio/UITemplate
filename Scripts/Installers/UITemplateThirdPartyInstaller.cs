@@ -4,7 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
-#if BYTEBREW
+#if BYTEBREW && !UNITY_EDITOR
         using ServiceImplementation.ByteBrewAnalyticTracker;
 #endif
     using ServiceImplementation.Configs;
@@ -55,7 +55,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if APPSFLYER
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.AppsFlyerAnalyticsEventCustomizationConfig).WhenInjectedInto<AppsflyerTracker>();
 #endif
-#if BYTEBREW
+#if BYTEBREW && !UNITY_EDITOR
                 this.Container.Bind<AnalyticsEventCustomizationConfig>().FromInstance(analyticFactory.ByteBrewAnalyticsEventCustomizationConfig).WhenInjectedInto<ByteBrewTracker>();
 #endif
             }

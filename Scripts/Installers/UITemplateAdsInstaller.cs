@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler;
     using Zenject;
 #if APPLOVIN
 #endif
@@ -16,7 +17,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         public override void InstallBindings()
         {
 #if !THEONE_PLAYABLE_ADS
+    #if BRAVESTARS
+            this.Container.BindInterfacesAndSelfTo<BraveStarsAnalyticHandler>().AsCached();
+    #else
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
+    #endif
 #endif
 #if CREATIVE
             this.Container.Bind<UITemplateAdServiceWrapper>().To<UITemplateAdServiceWrapperCreative>().AsCached();

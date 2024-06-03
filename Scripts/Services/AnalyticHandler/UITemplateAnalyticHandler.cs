@@ -202,7 +202,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.DoAnalyticWithFactories(eventFactory => this.Track(eventFactory.InterstitialDownloadFailed(obj.Placement, obj.Message, obj.LoadingMilis)));
         }
 
-        private void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
+        protected virtual void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
         {
             this.DoAnalyticWithFactories(eventFactory =>
             {

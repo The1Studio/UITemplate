@@ -2,7 +2,9 @@ namespace UITemplate.Editor.ProjectMigration
 {
     using System;
     using System.Linq;
+#if APPLOVIN
     using AppLovinMax.Scripts.IntegrationManager.Editor;
+#endif
     using Cysharp.Threading.Tasks;
     using UnityEditor;
     using UnityEngine;
@@ -13,8 +15,8 @@ namespace UITemplate.Editor.ProjectMigration
         public static async void DoMigrate()
         {
 #if APPLOVIN
-            var       url       = $"https://unity.applovin.com/max/1.0/integration_manager_info?plugin_version={MaxSdk.Version}";
-            using var www       = UnityWebRequest.Get(url);
+            var       url = $"https://unity.applovin.com/max/1.0/integration_manager_info?plugin_version={MaxSdk.Version}";
+            using var www = UnityWebRequest.Get(url);
             var       operation = www.SendWebRequest();
 
             await operation;

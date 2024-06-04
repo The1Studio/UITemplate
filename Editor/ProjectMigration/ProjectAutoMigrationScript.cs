@@ -56,6 +56,7 @@ namespace UITemplate.Editor
             CheckAndUpdatePackageManagerSettings();
             FolderMigration.RemoveUselessFolder();
             ApplovinMigration.DoMigrate();
+            ProjectSettingMigration.APICompatibilityLevel();
         }
 
         static ProjectAutoMigrationScript()

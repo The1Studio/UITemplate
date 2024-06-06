@@ -59,8 +59,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 var startPoint = box2D.bounds.RandomPointInBounds();
                 var item       = prefab.Spawn(this.screenManager.RootUICanvas.RootUIOverlayTransform.transform);
-                item.transform.localScale = Vector3.one;
-                item.transform.position   = startPoint;
+                item.transform.localEulerAngles = Vector3.zero;
+                item.transform.localScale       = Vector3.one;
+                item.transform.position         = startPoint;
 
                 item.transform.DOPunchPosition(item.transform.position * flyPunchPositionFactor, this.FlyPunchTime, this.FlyPunchVibrator, this.FlyElasticPositionScale).SetUpdate(true);
                 listItem.Add(item);

@@ -1,39 +1,41 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class ReporterMessageReceiver : MonoBehaviour
+namespace UITemplate.Packages.UnityLogsViewer.Reporter
 {
-    Reporter reporter;
-
-    void Start() { reporter = gameObject.GetComponent<Reporter>(); }
-
-    void OnPreStart()
+    public class ReporterMessageReceiver : MonoBehaviour
     {
-        //To Do : this method is called before initializing reporter, 
-        //we can for example check the resultion of our device ,then change the size of reporter
-        if (reporter == null)
-            reporter = gameObject.GetComponent<Reporter>();
+        Reporter reporter;
 
-        if (Screen.width < 1000)
-            reporter.size = new Vector2(32, 32);
-        else
-            reporter.size = new Vector2(48, 48);
+        void Start() { this.reporter = this.gameObject.GetComponent<Reporter>(); }
 
-        reporter.UserData = "Put user date here like his account to know which user is playing on this device";
-    }
+        void OnPreStart()
+        {
+            //To Do : this method is called before initializing reporter, 
+            //we can for example check the resultion of our device ,then change the size of reporter
+            if (this.reporter == null)
+                this.reporter = this.gameObject.GetComponent<Reporter>();
 
-    void OnHideReporter()
-    {
-        //TO DO : resume your game
-    }
+            if (Screen.width < 1000)
+                this.reporter.size = new Vector2(32, 32);
+            else
+                this.reporter.size = new Vector2(48, 48);
 
-    void OnShowReporter()
-    {
-        //TO DO : pause your game and disable its GUI
-    }
+            this.reporter.UserData = "Put user date here like his account to know which user is playing on this device";
+        }
 
-    void OnLog(Reporter.Log log)
-    {
-        //TO DO : put you custom code 
+        void OnHideReporter()
+        {
+            //TO DO : resume your game
+        }
+
+        void OnShowReporter()
+        {
+            //TO DO : pause your game and disable its GUI
+        }
+
+        void OnLog(Reporter.Log log)
+        {
+            //TO DO : put you custom code 
+        }
     }
 }

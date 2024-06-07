@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+    using Cysharp.Threading.Tasks;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.HighScore;
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
@@ -71,9 +72,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             TheOneDebug();
         }
 
-        private static void TheOneDebug()
+        private static async void TheOneDebug()
         {
 #if THEONE_DEBUG && !PRODUCTION
+            await UniTask.Delay(1000);
             Object.Instantiate(Resources.Load("LogsViewer"));
 #endif
         }

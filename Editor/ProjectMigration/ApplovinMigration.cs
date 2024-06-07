@@ -1,7 +1,6 @@
 namespace UITemplate.Editor.ProjectMigration
 {
     using System;
-    using System.Linq;
 #if APPLOVIN
     using AppLovinMax.Scripts.IntegrationManager.Editor;
 #endif
@@ -61,27 +60,5 @@ namespace UITemplate.Editor.ProjectMigration
             }
 #endif
         }
-
-#if APPLOVIN
-        private static bool NetworksRequireUpgrade(PluginData pluginData)
-        {
-            if (pluginData == null) return false;
-
-            var networks = pluginData.MediatedNetworks;
-            var upgradeRequired = networks.Any(network =>
-                !string.IsNullOrEmpty(network.CurrentVersions?.Unity) && network.CurrentToLatestVersionComparisonResult == MaxSdkUtils.VersionComparisonResult.Lesser);
-
-            if (upgradeRequired)
-            {
-                EditorUtility.DisplayDialog(
-                    "Upgrade AppLovin Adapters",
-                    "One or more of your AppLovin adapters need to be upgraded. Please upgrade to the latest version.",
-                    "OK"
-                );
-            }
-
-            return upgradeRequired;
-        }
-#endif
     }
 }

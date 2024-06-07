@@ -38,7 +38,7 @@ namespace UITemplate.Editor
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
-            {"com.google.external-dependency-manager", "1.2.179"},
+            {"com.google.external-dependency-manager", "1.2.180"},
             {"com.svermeulen.extenject", "https://github.com/svermeulen/Yazef.git?path=UnityProject/Assets/Plugins/Zenject/Source"}
             // add more packages as needed
         };

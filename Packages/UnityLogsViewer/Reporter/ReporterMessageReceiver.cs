@@ -1,6 +1,4 @@
-﻿#if THEONE_DEBUG
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class ReporterMessageReceiver : MonoBehaviour
@@ -39,5 +37,3 @@ public class ReporterMessageReceiver : MonoBehaviour
         //TO DO : put you custom code 
     }
 }
-
-#endif

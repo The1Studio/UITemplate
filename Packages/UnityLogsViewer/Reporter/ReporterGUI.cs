@@ -1,6 +1,4 @@
-﻿#if THEONE_DEBUG
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class ReporterGUI : MonoBehaviour
@@ -11,5 +9,3 @@ public class ReporterGUI : MonoBehaviour
 
     void OnGUI() { reporter.OnGUIDraw(); }
 }
-
-#endif

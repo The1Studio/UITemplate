@@ -13,6 +13,7 @@ namespace UITemplate.Editor.ProjectMigration
             PackageMigration.CheckAndUpdatePackageManagerSettings();
             FolderMigration.RemoveUselessFolder();
             ApplovinMigration.DoMigrate();
+            LevelPlayMigration.DoMigration();
             ProjectSettingMigration.APICompatibilityLevel();
         }
 

@@ -1,5 +1,10 @@
 namespace UITemplate.Editor.ProjectMigration.MigrationModules
 {
+    using System;
+    using Cysharp.Threading.Tasks;
+    using UnityEditor;
+    using UnityEngine;
+    using UnityEngine.Networking;
 #if APPLOVIN
     using AppLovinMax.Scripts.IntegrationManager.Editor;
 #endif

@@ -1,13 +1,8 @@
-namespace UITemplate.Editor.ProjectMigration
+namespace UITemplate.Editor.ProjectMigration.MigrationModules
 {
-    using System;
 #if APPLOVIN
     using AppLovinMax.Scripts.IntegrationManager.Editor;
 #endif
-    using Cysharp.Threading.Tasks;
-    using UnityEditor;
-    using UnityEngine;
-    using UnityEngine.Networking;
 
     public static class ApplovinMigration
     {

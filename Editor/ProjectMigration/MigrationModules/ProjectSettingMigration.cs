@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.ProjectMigration
+namespace UITemplate.Editor.ProjectMigration.MigrationModules
 {
     using UnityEditor;
 

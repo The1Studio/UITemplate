@@ -4,7 +4,11 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
     using System.Collections.Generic;
     using System.IO;
     using System.Xml;
-    
+    using Cysharp.Threading.Tasks;
+    using UnityEditor;
+    using UnityEngine;
+    using UnityEngine.Networking;
+
 #if APPLOVIN
     using AppLovinMax.Scripts.IntegrationManager.Editor;
 #endif

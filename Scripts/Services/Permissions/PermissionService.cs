@@ -84,6 +84,10 @@
                 };
                 Permission.RequestUserPermission(permissionString, permissionCallbacks);
             }
+            else
+            {
+                isGranted = true;
+            }
 
             await UniTask.WaitUntil(() => !isWaitingForPermission);
 #endif

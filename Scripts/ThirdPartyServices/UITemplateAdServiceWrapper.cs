@@ -171,7 +171,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
                     this.InternalHideMediationBannerAd();
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd(useNewGuid, this.thirdPartiesConfig.AdSettings.BannerPosition);
-                    this.logService.Log($"onelog: ShowCollapsibleBannerAd useNewGuid: {useNewGuid}");
+                    this.logService.Log($"onelog: ShowCollapsibleBannerAd refreshing: {this.IsRefreshingCollapsible}, expandOnRefresh: {this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled}, useNewGuid: {useNewGuid}");
                     this.ScheduleRefreshCollapsible();
                 }
                 else
@@ -307,17 +307,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
             {
-                
                 if ((this.adServicesConfig.UseAoaAdmob
-#if ADMOB
-                     && aoa is AdMobWrapper
-#endif
-                     ) || (!this.adServicesConfig.UseAoaAdmob
-#if ADMOB
-
-                           && aoa is not AdMobWrapper
-#endif
-                         ))
+                        #if ADMOB
+                        && aoa is AdMobWrapper
+                        #endif
+                    )
+                    || (!this.adServicesConfig.UseAoaAdmob
+                        #if ADMOB
+                        && aoa is not AdMobWrapper
+                        #endif
+                    ))
                 {
                     this.signalBus.Fire(new AppOpenCalledSignal(""));
                     aoa.ShowAOAAds();
@@ -412,8 +411,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.logService.Log(
                 $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < interstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
-            if ((this.totalNoAdsPlayingTime < interstitialAdInterval ||
-                 (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
+            if ((this.totalNoAdsPlayingTime < interstitialAdInterval || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 

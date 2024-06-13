@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using Core.AdsServices;
     using Core.AdsServices.CollapsibleBanner;
     using Core.AdsServices.Signals;
@@ -12,21 +13,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
-#if ADMOB
-    using ServiceImplementation.AdsServices.EasyMobile;
-#endif
+    using R3;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Loading;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
+    using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using Zenject;
-    using R3;
-    using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
+    #if ADMOB
+    using ServiceImplementation.AdsServices.EasyMobile;
+    #endif
 
     public class UITemplateAdServiceWrapper : IInitializable, ITickable
     {
@@ -55,23 +56,37 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool IsShowBannerAd { get; set; }
-        private bool IsShowMRECAd { get; set; }
-        private bool     IsCheckFirstScreenShow                { get; set; }
-        private DateTime LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
-        private bool     PreviousCollapsibleBannerAdLoadedFail { get; set; }
+        private bool                    IsShowBannerAd                        { get; set; }
+        private bool                    IsShowMRECAd                          { get; set; }
+        private bool                    IsCheckFirstScreenShow                { get; set; }
+        private DateTime                LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
+        private bool                    PreviousCollapsibleBannerAdLoadedFail { get; set; }
+        private bool                    IsRefreshingCollapsible               { get; set; }
+        private CancellationTokenSource RefreshCollapsibleCts                 { get; set; }
 
         //AOA
-        private DateTime StartLoadingAOATime;
-        private DateTime StartBackgroundTime;
-        private bool     IsResumedFromAnotherServices; // after Ads, IAP, permission, login, etc.
-        private bool     IsCheckedShowFirstOpen { get; set; } = false;
-        public  bool     IsOpenedAOAFirstOpen   { get; private set; }
+        private DateTime StartLoadingAOATime          { get; set; }
+        private DateTime StartBackgroundTime          { get; set; }
+        private bool     IsResumedFromAnotherServices { get; set; } // after Ads, IAP, permission, login, etc.
+        private bool     IsCheckedShowFirstOpen       { get; set; } = false;
+        public  bool     IsOpenedAOAFirstOpen         { get; private set; }
 
-        public UITemplateAdServiceWrapper(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
-            UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController,
-            List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService, ToastController toastController, UITemplateLevelDataController levelDataController,
-            ThirdPartiesConfig thirdPartiesConfig, IScreenManager screenManager, ICollapsibleBannerAd collapsibleBannerAd)
+        public UITemplateAdServiceWrapper(
+            ILogService                         logService,
+            AdServicesConfig                    adServicesConfig,
+            SignalBus                           signalBus,
+            IAdServices                         adServices,
+            List<IMRECAdService>                mrecAdServices,
+            UITemplateAdsController             uiTemplateAdsController,
+            UITemplateGameSessionDataController gameSessionDataController,
+            List<IAOAAdService>                 aoaAdServices,
+            IBackFillAdsService                 backFillAdsService,
+            ToastController                     toastController,
+            UITemplateLevelDataController       levelDataController,
+            ThirdPartiesConfig                  thirdPartiesConfig,
+            IScreenManager                      screenManager,
+            ICollapsibleBannerAd                collapsibleBannerAd
+        )
         {
             this.adServices                = adServices;
             this.mrecAdServices            = mrecAdServices;
@@ -113,7 +128,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnIAPPurchaseFailedSignal>(this.CloseAdInDifferentProcessHandler);
             this.screenManager.CurrentActiveScreen.Subscribe(this.OnScreenChanged);
-            
+
             //Permission
             this.signalBus.Subscribe<OnRequestPermissionStartSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
@@ -146,15 +161,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.logService.Log($"onelog: ShowBannerAd EnableCollapsibleBanner {this.adServicesConfig.EnableCollapsibleBanner}, PreviousCollapsibleBannerAdLoadedFail {this.PreviousCollapsibleBannerAdLoadedFail}");
                 if (this.adServicesConfig.EnableCollapsibleBanner && !this.PreviousCollapsibleBannerAdLoadedFail)
                 {
-                    var useNewGuid = (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.CollapsibleBannerADInterval;
+                    var useNewGuid = this.IsRefreshingCollapsible
+                        ? this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled
+                        : (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.CollapsibleBannerADInterval;
                     if (useNewGuid)
                     {
                         this.LastCollapsibleBannerChangeGuid = DateTime.Now;
                     }
-                    
+
                     this.InternalHideMediationBannerAd();
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd(useNewGuid, this.thirdPartiesConfig.AdSettings.BannerPosition);
-                    this.logService.Log($"onelog: ShowCollapsibleBannerAd useNewGuid: {useNewGuid}");
+                    this.logService.Log($"onelog: ShowCollapsibleBannerAd refreshing: {this.IsRefreshingCollapsible}, expandOnRefresh: {this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled}, useNewGuid: {useNewGuid}");
+                    this.IsRefreshingCollapsible = false;
+                    this.ScheduleRefreshCollapsible();
                 }
                 else
                 {
@@ -166,6 +185,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.PreviousCollapsibleBannerAdLoadedFail = false;
                 this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(true));
             }
+        }
+
+        private void ScheduleRefreshCollapsible()
+        {
+            if (this.adServicesConfig.CollapsibleBannerADInterval <= 0) return;
+            this.RefreshCollapsibleCts?.Cancel();
+            this.RefreshCollapsibleCts?.Dispose();
+            UniTask.WaitForSeconds(
+                this.adServicesConfig.CollapsibleBannerADInterval,
+                ignoreTimeScale: true,
+                cancellationToken: (this.RefreshCollapsibleCts = new()).Token
+            ).ContinueWith(() =>
+            {
+                this.IsRefreshingCollapsible = true;
+                this.ShowBannerAd();
+            }).Forget();
         }
 
         private void InternalShowMediationBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
@@ -202,12 +237,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (screenPresenter == null) return;
 
-#if THEONE_COLLAPSIBLE_BANNER
+            #if THEONE_COLLAPSIBLE_BANNER
             if (!this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow) return;
             if (this.thirdPartiesConfig.AdSettings.CollapsibleIgnoreRefreshOnScreens.Contains(screenPresenter.GetType().Name)) return;
             if (this.BannerLoadStrategy == BannerLoadStrategy.AfterLoading && screenPresenter is UITemplateLoadingScreenPresenter) return;
             this.ShowBannerAd();
-#endif
+            #endif
         }
 
         private void OnCollapsibleBannerLoadFailed()
@@ -272,17 +307,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
             {
-                
                 if ((this.adServicesConfig.UseAoaAdmob
-#if ADMOB
-                     && aoa is AdMobWrapper
-#endif
-                     ) || (!this.adServicesConfig.UseAoaAdmob
-#if ADMOB
-
-                           && aoa is not AdMobWrapper
-#endif
-                         ))
+                        #if ADMOB
+                        && aoa is AdMobWrapper
+                        #endif
+                    )
+                    || (!this.adServicesConfig.UseAoaAdmob
+                        #if ADMOB
+                        && aoa is not AdMobWrapper
+                        #endif
+                    ))
                 {
                     this.signalBus.Fire(new AppOpenCalledSignal(""));
                     aoa.ShowAOAAds();
@@ -374,11 +408,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 interstitialAdInterval = cappingTime.GetCappingTime;
             }
-            
+
             this.logService.Log(
                 $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < interstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
-            if ((this.totalNoAdsPlayingTime < interstitialAdInterval ||
-                 (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
+            if ((this.totalNoAdsPlayingTime < interstitialAdInterval || (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)) && !force)
             {
                 this.logService.Warning("InterstitialAd was not passed interval");
 
@@ -455,7 +488,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.totalNoAdsPlayingTime = 0;
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
-                this.IsResumedFromAnotherServices        = true;
+                this.IsResumedFromAnotherServices = true;
                 this.onInterstitialFinishedAction = onShowInterstitialFinished;
             }
         }

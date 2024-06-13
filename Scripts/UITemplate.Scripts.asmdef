@@ -41,7 +41,7 @@
         "Unity.Advertisement.IosSupport",
         "3rd.Configs.Editor",
         "UIEffect",
-        "PlayFab",
+        "TheOneStudio.HighScore",
         "R3.Unity",
         "3rd.RemoteConfig",
         "ByteBrewTracker",
@@ -71,6 +71,11 @@
             "name": "com.coffee.ui-effect",
             "expression": "",
             "define": "UI_EFFECT"
+        },
+        {
+            "name": "com.theone.module.highscore",
+            "expression": "",
+            "define": "THEONE_HIGHSCORE"
         }
     ],
     "noEngineReferences": false

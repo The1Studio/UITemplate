@@ -172,6 +172,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     this.InternalHideMediationBannerAd();
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd(useNewGuid, this.thirdPartiesConfig.AdSettings.BannerPosition);
                     this.logService.Log($"onelog: ShowCollapsibleBannerAd refreshing: {this.IsRefreshingCollapsible}, expandOnRefresh: {this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled}, useNewGuid: {useNewGuid}");
+                    this.IsRefreshingCollapsible = false;
                     this.ScheduleRefreshCollapsible();
                 }
                 else
@@ -199,7 +200,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.IsRefreshingCollapsible = true;
                 this.ShowBannerAd();
-                this.IsRefreshingCollapsible = false;
             }).Forget();
         }
 

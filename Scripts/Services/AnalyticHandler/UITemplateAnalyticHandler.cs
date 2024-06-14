@@ -140,7 +140,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 case "CollapsibleBanner":
                     this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
                     {
-                        EventName       = "banner_show_success",
+                        EventName       = "collap_banner_show_success",
                         EventProperties = paramDic,
                     }));
                     break;

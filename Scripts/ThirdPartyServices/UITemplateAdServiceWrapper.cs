@@ -189,9 +189,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void ScheduleRefreshCollapsible()
         {
-            if (this.adServicesConfig.CollapsibleBannerADInterval <= 0) return;
             this.RefreshCollapsibleCts?.Cancel();
             this.RefreshCollapsibleCts?.Dispose();
+            if (this.adServicesConfig.CollapsibleBannerADInterval <= 0) return;
+            if (!this.adServicesConfig.CollapsibleBannerAutoRefreshEnabled) return;
             UniTask.WaitForSeconds(
                 this.adServicesConfig.CollapsibleBannerADInterval,
                 ignoreTimeScale: true,
@@ -221,6 +222,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void InternalHideCollapsibleBannerAd()
         {
+            this.RefreshCollapsibleCts?.Cancel();
+            this.RefreshCollapsibleCts?.Dispose();
             // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
         }

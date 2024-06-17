@@ -398,7 +398,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
         }
 
-        private bool CanShowInterstitialAd(string place, bool force = false)
+        public bool CanShowInterstitialAd(string place, bool force = false)
         {
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log(
@@ -424,6 +424,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             return true;
+        }
+
+        public bool IsInterstitialAdLoaded(string place)
+        {
+            return this.adServices.IsInterstitialAdReady(place) || this.backFillAdsService.IsInterstitialAdReady(place);
         }
 
         public virtual bool ShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)

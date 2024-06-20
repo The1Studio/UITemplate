@@ -24,7 +24,7 @@
 
         [MenuItem("TheOne/List And Optimize/Mesh List")]
         private static void OpenWindow() { GetWindow<AddressableMeshFinderOdin>().Show(); }
-
+        
         [ButtonGroup("Action")]
         [Button(ButtonSizes.Medium)]
         private void FindAllMeshAndImporter() { this.FindMeshesInAddressables(); }

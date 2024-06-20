@@ -45,5 +45,50 @@ namespace UITemplate.Editor
 
             return allAssetInAddressable;
         }
+        
+        public static Dictionary<TType, HashSet<GameObject>> GetAllAssetInAddressable2<TType>() where TType : Component
+        {
+            var allAssetInAddressable = new Dictionary<TType, HashSet<GameObject>>();
+
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            if (settings)
+            {
+                var totalSteps  = settings.groups.Sum(group => group.entries.Count);
+                var currentStep = 0;
+                foreach (var group in settings.groups)
+                {
+                    foreach (var entry in group.entries)
+                    {
+                        EditorUtility.DisplayProgressBar("Queries all asset", "Processing Addressables", currentStep / (float)totalSteps);
+
+                        var path       = AssetDatabase.GUIDToAssetPath(entry.guid);
+                        var mainObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                        if (mainObject == null) continue;
+
+                        var dependencies = new List<string>(AssetDatabase.GetDependencies(path, true));
+                        
+                        foreach (var depPath in dependencies)
+                        {
+                            var depObject = AssetDatabase.LoadAssetAtPath<GameObject>(depPath);
+                            if (depObject == null) continue;
+                            
+                            var components = depObject.GetComponentsInChildren<TType>();
+                            foreach (var component in components)
+                            {
+                                if (component == null) continue;
+                                allAssetInAddressable.GetOrAdd(component, () => new HashSet<GameObject>()).Add(mainObject);
+                            }
+                        }
+
+                        currentStep++;
+                    }
+                }
+
+                EditorUtility.ClearProgressBar();
+            }
+
+            return allAssetInAddressable;
+        }
+
     }
 }

@@ -24,7 +24,7 @@
 
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("Texture", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> textures = new();
-
+        
         [BoxGroup("Setting", order: -1)]
         [Button(ButtonSizes.Medium), GUIColor(0, 1, 0)]
         private void FindAllTextures() { this.FindTexturesInAssets(); }
@@ -34,7 +34,7 @@
 
         [EnumToggleButtons] [ShowInInspector] [OnValueChanged(nameof(Sort))] [BoxGroup("Setting")]
         private SortingOrder sortingOrder = SortingOrder.Descending;
-
+                
         [BoxGroup("Setting")]
         [Button(ButtonSizes.Medium), GUIColor(0, 1, 0)]
         private void Sort()

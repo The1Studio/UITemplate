@@ -4,8 +4,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System.Collections.Generic;
     using System.Linq;
     using BlueprintFlow.Signals;
-    using Core.AnalyticServices;
-    using Core.AnalyticServices.CommonEvents;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.IAPServices;
     using ServiceImplementation.IAPServices.Signals;
@@ -25,21 +23,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData;
         private readonly UITemplateShopPackBlueprint          uiTemplateShopPackBlueprint;
         private readonly IIapServices                         iapServices;
-        private readonly List<IAnalyticServices>              analyticServicesList;
         private readonly UITemplateRewardHandler              uiTemplateRewardHandler;
 
-        #endregion"
-        
+        #endregion
+
         public UITemplateIapServices(SignalBus signalBus, ILogService logger, UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
             UITemplateShopPackBlueprint uiTemplateShopPackBlueprint,
-            IIapServices iapServices, List<IAnalyticServices> analyticServicesList, UITemplateRewardHandler uiTemplateRewardHandler)
+            IIapServices iapServices, UITemplateRewardHandler uiTemplateRewardHandler)
         {
             this.signalBus                            = signalBus;
             this.logger                               = logger;
             this.uiTemplateIAPOwnerPackControllerData = uiTemplateIAPOwnerPackControllerData;
             this.uiTemplateShopPackBlueprint          = uiTemplateShopPackBlueprint;
             this.iapServices                          = iapServices;
-            this.analyticServicesList                 = analyticServicesList;
             this.uiTemplateRewardHandler              = uiTemplateRewardHandler;
         }
 
@@ -74,17 +70,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             var dataShopPackRecord = this.uiTemplateShopPackBlueprint[productId];
             this.uiTemplateIAPOwnerPackControllerData.AddPack(productId);
-
-            var productData = this.iapServices.GetProductData(productId);
-            foreach (var analyticService in this.analyticServicesList)
-            {
-                analyticService.Track(new IapTransactionDidSucceed()
-                {
-                    OfferSku = productId,
-                    CurrencyCode = productData.CurrencyCode,
-                    Price = decimal.ToDouble(productData.Price),
-                });
-            }
 
             var rewardItemData = dataShopPackRecord.RewardIdToRewardDatas.ToDictionary(keyPairValue => keyPairValue.Key,
                 keyPairValue => new UITemplateRewardItemData(keyPairValue.Value.RewardValue, keyPairValue.Value.Repeat, keyPairValue.Value.AddressableFlyingItem));

@@ -27,9 +27,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
-        public UITemplateIapServices(SignalBus signalBus, ILogService logger, UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
-            UITemplateShopPackBlueprint uiTemplateShopPackBlueprint,
-            IIapServices iapServices, UITemplateRewardHandler uiTemplateRewardHandler)
+        public UITemplateIapServices(
+            SignalBus                            signalBus,
+            ILogService                          logger,
+            UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
+            UITemplateShopPackBlueprint          uiTemplateShopPackBlueprint,
+            IIapServices                         iapServices,
+            UITemplateRewardHandler              uiTemplateRewardHandler
+        )
         {
             this.signalBus                            = signalBus;
             this.logger                               = logger;
@@ -99,6 +104,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnBlueprintLoaded);
             this.signalBus.Subscribe<OnRestorePurchaseCompleteSignal>(this.OnHandleRestorePurchase);
         }
+
         public void Dispose()
         {
             this.signalBus.Unsubscribe<LoadBlueprintDataSucceedSignal>(this.OnBlueprintLoaded);

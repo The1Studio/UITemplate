@@ -119,7 +119,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void AddRevenueHandler(AdRevenueSignal obj)
         {
-#if WIDO
+            #if WIDO
             var paramDic = new Dictionary<string, object>()
             {
                 { "ad_platform", obj.AdsRevenueEvent.AdNetwork },
@@ -131,26 +131,26 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 case "Banner":
                     this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
                     {
-                        EventName       = "banner_show_success",
+                        EventName = "banner_show_success",
                         EventProperties = paramDic,
                     }));
                     break;
                 case "CollapsibleBanner":
                     this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
                     {
-                        EventName       = "collap_banner_show_success",
+                        EventName = "collap_banner_show_success",
                         EventProperties = paramDic,
                     }));
                     break;
                 case "MREC":
                     this.DoAnalyticWithFactories(_ => this.Track(new CustomEvent()
                     {
-                        EventName       = "mrec_show_success",
+                        EventName = "mrec_show_success",
                         EventProperties = paramDic,
                     }));
                     break;
             }
-#endif
+            #endif
         }
 
         private void AppOpenClickedHandler(AppOpenClickedSignal obj)

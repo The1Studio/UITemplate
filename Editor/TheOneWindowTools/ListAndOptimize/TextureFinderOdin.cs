@@ -2,11 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
+    using System.Linq;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
     using UnityEditor;
     using UnityEngine;
+    using UnityEngine.Profiling;
+    using UnityEngine.U2D;
 
     public class TextureFinderOdin : OdinEditorWindow
     {
@@ -22,8 +24,17 @@
             Descending
         }
 
-        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Texture", TitleAlignment = TitleAlignments.Centered)]
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("All", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> textures = new();
+
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Mipmap", TitleAlignment = TitleAlignments.Centered)]
+        private List<TextureInfo> generatedMipMap = new();
+
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("No In Atlas", TitleAlignment = TitleAlignments.Centered)]
+        private List<TextureInfo> notInAtlasTexture = new();
+        
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Not Compressed and Not In Atlas", TitleAlignment = TitleAlignments.Centered)]
+        private List<TextureInfo> notCompressedAndNotInAtlasTexture = new();
 
         [BoxGroup("Setting", order: -1)]
         [Button(ButtonSizes.Medium), GUIColor(0, 1, 0)]
@@ -63,22 +74,86 @@
         private void FindTexturesInAssets()
         {
             this.textures.Clear();
+            this.generatedMipMap.Clear();
+            this.notInAtlasTexture.Clear();
 
-            var findAssets = AssetDatabase.FindAssets("t:Texture");
-            foreach (var texture in findAssets)
+            var textures = AddressableSearcherTool.GetAllAssetInAddressable<Texture>().Keys;
+            var atlases  = AddressableSearcherTool.GetAllAssetInAddressable<SpriteAtlas>().Keys.ToList();
+
+            // var findAssets = AssetDatabase.FindAssets("t:Texture");
+            foreach (var texture in textures)
             {
-                var path     = AssetDatabase.GUIDToAssetPath(texture);
+                var path     = AssetDatabase.GetAssetPath(texture);
                 var importer = AssetImporter.GetAtPath(path) as TextureImporter;
                 if (importer == null) continue;
-                this.textures.Add(new TextureInfo
+                var textureInfo = new TextureInfo
                 {
-                    Texture               = AssetDatabase.LoadAssetAtPath<Texture>(path),
+                    Texture               = texture,
                     TextureImporter       = importer,
-                    FileSize              = new FileInfo(path).Length,
+                    FileSize              = Profiler.GetRuntimeMemorySizeLong(texture) / 1024,
+                    TextureSize           = this.GetTextureSizeAccordingToMaxSize(texture, importer),
                     ReadWriteEnabled      = importer.isReadable,
                     GenerateMipMapEnabled = importer.mipmapEnabled,
-                });
+                };
+
+                this.textures.Add(textureInfo);
+                if (textureInfo.GenerateMipMapEnabled)
+                {
+                    this.generatedMipMap.Add(textureInfo);
+                }
+
+                if (!this.IsTextureInAnyAtlas(texture, atlases))
+                {
+                    this.notInAtlasTexture.Add(textureInfo);
+                }
+                
+                if (textureInfo.CompressionType == TextureImporterCompression.Uncompressed && !this.IsTextureInAnyAtlas(texture, atlases))
+                {
+                    this.notCompressedAndNotInAtlasTexture.Add(textureInfo);
+                }
             }
+        }
+
+        private Vector2 GetTextureSizeAccordingToMaxSize(Texture texture, TextureImporter importer)
+        {
+            if (importer != null)
+            {
+                var maxSize     = importer.maxTextureSize;
+                var aspectRatio = (float)texture.width / texture.height;
+
+                if (texture.width > maxSize || texture.height > maxSize)
+                {
+                    if (texture.width > texture.height)
+                    {
+                        return new Vector2(maxSize, maxSize / aspectRatio);
+                    }
+                    else
+                    {
+                        return new Vector2(maxSize * aspectRatio, maxSize);
+                    }
+                }
+            }
+
+            return new Vector2(texture.width, texture.height);
+        }
+
+        private bool IsTextureInAnyAtlas(Texture texture, List<SpriteAtlas> allAtlases)
+        {
+            foreach (var atlas in allAtlases)
+            {
+                var sprites = new Sprite[atlas.spriteCount];
+                atlas.GetSprites(sprites);
+
+                foreach (var sprite in sprites)
+                {
+                    if (sprite.texture == texture)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 
@@ -99,6 +174,10 @@
         [VerticalGroup("group/right")]
         [ShowInInspector]
         public long FileSize { get; set; }
+
+        [VerticalGroup("group/right")]
+        [ShowInInspector]
+        public Vector2 TextureSize { get; set; }
 
         public TextureImporter TextureImporter { get; set; }
 

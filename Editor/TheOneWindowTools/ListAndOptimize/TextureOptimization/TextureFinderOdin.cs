@@ -24,18 +24,21 @@
             Ascending,
             Descending
         }
-
+        
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Mipmap", TitleAlignment = TitleAlignments.Centered)]
+        private List<TextureInfo> generatedMipMap = new();
+        
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("3D Model Texture", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> modelTextures = new();
 
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("All Texture (Not In Models)", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> allTextures = new();
 
-        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Mipmap", TitleAlignment = TitleAlignments.Centered)]
-        private List<TextureInfo> generatedMipMap = new();
-
-        [ShowInInspector] [TableList(ShowPaging = true)] [Title("No In Atlas", TitleAlignment = TitleAlignments.Centered)]
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Not In Atlas", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> notInAtlasTexture = new();
+        
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Duplicated Atlas Textures", TitleAlignment = TitleAlignments.Centered)]
+        private List<TextureInfo> duplicatedAtlasTexture = new();
 
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("Not Compressed and Not In Atlas", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> notCompressedAndNotInAtlasTexture = new();
@@ -140,10 +143,10 @@
             this.allTextures.Clear();
             this.generatedMipMap.Clear();
             this.notInAtlasTexture.Clear();
+            this.duplicatedAtlasTexture.Clear();
             this.notCompressedAndNotInAtlasTexture.Clear();
 
-            
-            var atlases              = AssetSearcher.GetAllAssetsOfType<SpriteAtlas>();
+            //Model 3D
             var meshRenderers        = AssetSearcher.GetAllAssetInAddressable<MeshRenderer>().Keys.ToList();
             var skinnedMeshRenderers = AssetSearcher.GetAllAssetInAddressable<SkinnedMeshRenderer>().Keys.ToList();
             var modelTextureSet      = new HashSet<Texture>();
@@ -151,10 +154,25 @@
             {
                 modelTextureSet.AddRange(AssetSearcher.GetAllDependencies<Texture>(meshRenderer));
             }
-
             foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
             {
                 modelTextureSet.AddRange(AssetSearcher.GetAllDependencies<Texture>(skinnedMeshRenderer));
+            }
+            
+            //Atlas
+            var atlases              = AssetSearcher.GetAllAssetsOfType<SpriteAtlas>();
+            var atlasTextureSet           = new HashSet<Texture>();
+            var duplicatedAtlasTextureSet = new HashSet<Texture>();
+            foreach (var spriteAtlas in atlases)
+            {
+                var textureInAtlases = AssetSearcher.GetAllDependencies<Texture>(spriteAtlas);
+                foreach (var textureInAtlas in textureInAtlases)
+                {
+                    if (!atlasTextureSet.Add(textureInAtlas))
+                    {
+                        duplicatedAtlasTextureSet.Add(textureInAtlas);
+                    }
+                }
             }
             
             var textureInfos = this.GetTextureInfos();
@@ -173,12 +191,17 @@
                 
                 this.allTextures.Add(textureInfo);
                 
-                if (!this.IsTextureInAnyAtlas(textureInfo.Texture, atlases))
+                if (!atlasTextureSet.Contains(textureInfo.Texture))
                 {
                     this.notInAtlasTexture.Add(textureInfo);
                 }
+                
+                if (duplicatedAtlasTextureSet.Contains(textureInfo.Texture))
+                {
+                    this.duplicatedAtlasTexture.Add(textureInfo);
+                }
 
-                if (textureInfo.CompressionType == TextureImporterCompression.Uncompressed && !this.IsTextureInAnyAtlas(textureInfo.Texture, atlases))
+                if (textureInfo.CompressionType == TextureImporterCompression.Uncompressed && !atlasTextureSet.Contains(textureInfo.Texture))
                 {
                     this.notCompressedAndNotInAtlasTexture.Add(textureInfo);
                 }
@@ -206,29 +229,6 @@
             }
 
             return new Vector2(texture.width, texture.height);
-        }
-
-        private bool IsTextureInAnyAtlas(Texture texture, List<SpriteAtlas> allAtlases)
-        {
-            foreach (var atlas in allAtlases)
-            {
-                var sprites = new Sprite[atlas.spriteCount];
-                atlas.GetSprites(sprites);
-
-                foreach (var sprite in sprites)
-                {
-                    var spriteNameWithoutClone = sprite.name.Replace("(Clone)", "").Trim();
-                    if (spriteNameWithoutClone.Equals(texture.name, StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (Mathf.Approximately(sprite.rect.width, texture.width) && Mathf.Approximately(sprite.rect.height, texture.height))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
         }
     }
 

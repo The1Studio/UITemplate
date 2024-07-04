@@ -19,12 +19,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
     {
         #region inject
 
-        private SignalBus                  signalBus;
-        private UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
-        private IScreenManager             screenManager;
-        private IVibrationService          vibrationService;
-        private GameFeaturesSetting        gameFeaturesSetting;
-        private IAudioService              audioService;
+        protected SignalBus                  signalBus;
+        protected UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
+        protected IScreenManager             screenManager;
+        protected IVibrationService          vibrationService;
+        protected GameFeaturesSetting        gameFeaturesSetting;
+        protected IAudioService              audioService;
 
         #endregion
 

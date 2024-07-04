@@ -1,10 +1,9 @@
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.U2D;
-using UnityEngine.Windows;
-using UnityEngine.WSA;
 
 public static class CreateAtlasFromFolders
 {
@@ -37,7 +36,7 @@ public static class CreateAtlasFromFolders
         {
             enableRotation     = false, // Prevent rotation
             enableTightPacking = false, // Example setting, adjust as needed
-            padding            = 4,     // Example setting, adjust as needed
+            padding            = 4, // Example setting, adjust as needed
         };
 
         atlas.SetPackingSettings(packingSettings);
@@ -55,8 +54,8 @@ public static class CreateAtlasFromFolders
         var pathSegments     = folderPath.Split('/');
         var parentFolderPath = string.Join("/", pathSegments.Take(pathSegments.Length - 1));
 
-        var atlasName = System.IO.Path.GetFileName(folderPath) + "Atlas";
-        var atlasPath = System.IO.Path.Combine(parentFolderPath, atlasName + ".spriteatlas");
+        var atlasName = Path.GetFileName(folderPath) + "Atlas";
+        var atlasPath = Path.Combine(parentFolderPath, atlasName + ".spriteatlas");
         AssetDatabase.CreateAsset(atlas, atlasPath);
         AssetDatabase.SaveAssets();
 

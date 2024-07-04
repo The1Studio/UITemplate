@@ -2,13 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
     using UnityEditor;
     using UnityEngine;
-    using UnityEngine.Profiling;
     using UnityEngine.U2D;
 
     public class TextureFinderOdin : OdinEditorWindow
@@ -24,6 +24,9 @@
             Ascending,
             Descending
         }
+           
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("All Textures", TitleAlignment = TitleAlignments.Centered)]
+        private List<TextureInfo> allTextures = new();
         
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("Mipmap", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> generatedMipMap = new();
@@ -35,7 +38,7 @@
         private List<TextureInfo> modelTextures = new();
 
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("All Texture (Not In Models)", TitleAlignment = TitleAlignments.Centered)]
-        private List<TextureInfo> allTextures = new();
+        private List<TextureInfo> allTexturesNotInModels = new();
 
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("Not In Atlas", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> notInAtlasTexture = new();
@@ -112,26 +115,39 @@
             // Select the textures in Unity Editor
             Selection.objects = this.dontUseAtlasTexture.Select(info => info.Texture).ToArray();
         }
+        
+        [BoxGroup("Actions"), Button(ButtonSizes.Large), GUIColor(0.5f, 0.8f, 0.5f)]
+        private void SelectAllTextures()
+        {
+            // Select the textures in Unity Editor
+            Selection.objects = this.allTextures.Select(info => info.Texture).ToArray();
+        }
+
 
         #endregion
         
         private void GenerateTextureInfoDataAsset()
         {
-            var textureInfoData = CreateInstance<TextureInfoData>();
-            textureInfoData.textureInfos = this.GetTextureInfos(AssetSearcher.GetAllAssetInAddressable<Texture>().Keys.ToList()); // Assuming you want to store allTextures
-            var path          = "Assets/OptimizationData/TextureInfoData.asset";
-            var directoryPath = System.IO.Path.GetDirectoryName(path);
-    
-            if (!System.IO.Directory.Exists(directoryPath))
+            var             path            = "Assets/OptimizationData/TextureInfoData.asset";
+            TextureInfoData textureInfoData = AssetDatabase.LoadAssetAtPath<TextureInfoData>(path);
+
+            if (textureInfoData == null)
             {
-                System.IO.Directory.CreateDirectory(directoryPath);
+                textureInfoData = CreateInstance<TextureInfoData>();
+                if (!Directory.Exists(Path.GetDirectoryName(path)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+                }
+                AssetDatabase.CreateAsset(textureInfoData, path);
             }
-            
-            AssetDatabase.CreateAsset(textureInfoData, path);
+
+            textureInfoData.textureInfos = this.GetTextureInfos(AssetSearcher.GetAllAssetInAddressable<Texture>().Keys.ToList());
+            EditorUtility.SetDirty(textureInfoData);
             AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
             EditorUtility.FocusProjectWindow();
-            Selection.activeObject       = textureInfoData;
-            Debug.Log("TextureInfoData ScriptableObject created at " + path);
+            Selection.activeObject = textureInfoData;
+            Debug.Log("TextureInfoData ScriptableObject " + (textureInfoData ? "updated" : "created") + " at " + path);
         }
         
         private List<TextureInfo> GetTextureInfos(List<Texture> textures)
@@ -139,13 +155,14 @@
             var textureInfos = textures.Select(texture =>
             {
                 var path     = AssetDatabase.GetAssetPath(texture);
+                var fileInfo = new FileInfo(path);
                 var importer = AssetImporter.GetAtPath(path) as TextureImporter;
                 if (importer == null) return null;
                 return new TextureInfo
                 {
                     Texture               = texture,
                     TextureImporter       = importer,
-                    FileSize              = Profiler.GetRuntimeMemorySizeLong(texture) / 1024,
+                    FileSize              = fileInfo.Exists ? fileInfo.Length : 0, // File size in kilobytes
                     TextureSize           = this.GetTextureSizeAccordingToMaxSize(texture, importer),
                     ReadWriteEnabled      = importer.isReadable,
                     GenerateMipMapEnabled = importer.mipmapEnabled,
@@ -166,6 +183,8 @@
             this.dontUseAtlasTexture.Clear();
             this.compressedAndNotCrunchTexture.Clear();
             this.notCompressedAndNotInAtlasTexture.Clear();
+            this.allTextures.Clear();
+            
             var allAddressabletextures                 = AssetSearcher.GetAllAssetInAddressable<Texture>().Keys.ToList();
             var allAddressableTextureSet = allAddressabletextures.ToHashSet();
 
@@ -204,6 +223,7 @@
             var textureInfos = this.GetTextureInfos(allAddressabletextures);
             foreach (var textureInfo in textureInfos)
             {
+                this.allTextures.Add(textureInfo);
                 if (textureInfo.GenerateMipMapEnabled)
                 {
                     this.generatedMipMap.Add(textureInfo);
@@ -220,7 +240,7 @@
                     continue;
                 }
                 
-                this.allTextures.Add(textureInfo);
+                this.allTexturesNotInModels.Add(textureInfo);
                 
                 if (!atlasTextureSet.Contains(textureInfo.Texture))
                 {
@@ -278,8 +298,12 @@
         public string Name => this.Texture.name;
 
         [VerticalGroup("group/right")]
-        [ShowInInspector]
+        [ShowInInspector][LabelText("File Size (Byte)")]
         public long FileSize { get; set; }
+        
+        [VerticalGroup("group/right")]
+        [ShowInInspector][LabelText("TinyPNG Compressed File Size (Byte)")]
+        public long TinyPNGCompressedFileSize { get; set; }
 
         [VerticalGroup("group/right")]
         [ShowInInspector]

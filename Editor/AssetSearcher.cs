@@ -40,6 +40,12 @@ namespace UITemplate.Editor
 
             return allAssetInAddressable;
         }
+        
+        public static List<TType> GetAllDependencies<TType>(Object objectDeped, bool recursive = true) where TType : Object
+        {
+            var path         = AssetDatabase.GetAssetPath(objectDeped);
+            return GetAllDependencies<TType>(path);
+        }
 
         public static List<TType> GetAllDependencies<TType>(string path, bool recursive = true) where TType : Object
         {

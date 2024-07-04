@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
     using UnityEditor;
@@ -12,22 +13,22 @@
 
     public class TextureFinderOdin : OdinEditorWindow
     {
-        public enum SortingBy
+        private enum SortingBy
         {
             FileSize,
             TotalPixel
         }
 
-        public enum SortingOrder
+        private enum SortingOrder
         {
             Ascending,
             Descending
         }
-        
+
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("3D Model Texture", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> modelTextures = new();
 
-        [ShowInInspector] [TableList(ShowPaging = true)] [Title("All", TitleAlignment = TitleAlignments.Centered)]
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("All Texture (Not In Models)", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> allTextures = new();
 
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("Mipmap", TitleAlignment = TitleAlignments.Centered)]
@@ -43,31 +44,24 @@
         [Button(ButtonSizes.Medium), GUIColor(0, 1, 0)]
         private void FindAllTextures() { this.FindTexturesInAssets(); }
 
-        [EnumToggleButtons] [ShowInInspector] [OnValueChanged(nameof(Sort))] [BoxGroup("Setting")]
+        [EnumToggleButtons] [ShowInInspector] [OnValueChanged(nameof(FindTexturesInAssets))] [BoxGroup("Setting")]
         private SortingBy sortingBy = SortingBy.TotalPixel;
 
-        [EnumToggleButtons] [ShowInInspector] [OnValueChanged(nameof(Sort))] [BoxGroup("Setting")]
+        [EnumToggleButtons] [ShowInInspector] [OnValueChanged(nameof(FindTexturesInAssets))] [BoxGroup("Setting")]
         private SortingOrder sortingOrder = SortingOrder.Descending;
 
-        [BoxGroup("Setting")]
-        [Button(ButtonSizes.Medium), GUIColor(0, 1, 0)]
-        private void Sort()
+        private void Sort(List<TextureInfo> textureInfos)
         {
-            this.allTextures.Sort((a, b) =>
+            textureInfos.Sort((a, b) =>
             {
-                switch (this.sortingBy)
+                return this.sortingBy switch
                 {
-                    case SortingBy.FileSize:
-                        return this.sortingOrder == SortingOrder.Ascending
-                            ? a.FileSize.CompareTo(b.FileSize)
-                            : b.FileSize.CompareTo(a.FileSize);
-                    case SortingBy.TotalPixel:
-                        return this.sortingOrder == SortingOrder.Ascending
-                            ? a.Texture.width * a.Texture.height - b.Texture.width * b.Texture.height
-                            : b.Texture.width * b.Texture.height - a.Texture.width * a.Texture.height;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                    SortingBy.FileSize => this.sortingOrder == SortingOrder.Ascending ? a.FileSize.CompareTo(b.FileSize) : b.FileSize.CompareTo(a.FileSize),
+                    SortingBy.TotalPixel => this.sortingOrder == SortingOrder.Ascending
+                        ? a.Texture.width * a.Texture.height - b.Texture.width * b.Texture.height
+                        : b.Texture.width * b.Texture.height - a.Texture.width * a.Texture.height,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
             });
         }
 
@@ -86,6 +80,16 @@
             var atlases              = AssetSearcher.GetAllAssetsOfType<SpriteAtlas>();
             var meshRenderers        = AssetSearcher.GetAllAssetInAddressable<MeshRenderer>().Keys.ToList();
             var skinnedMeshRenderers = AssetSearcher.GetAllAssetInAddressable<SkinnedMeshRenderer>().Keys.ToList();
+            var modelTextureSet      = new HashSet<Texture>();
+            foreach (var meshRenderer in meshRenderers)
+            {
+                modelTextureSet.AddRange(AssetSearcher.GetAllDependencies<Texture>(meshRenderer));
+            }
+
+            foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
+            {
+                modelTextureSet.AddRange(AssetSearcher.GetAllDependencies<Texture>(skinnedMeshRenderer));
+            }
 
             var textureInfos = textures.Select(texture =>
             {
@@ -102,15 +106,16 @@
                     GenerateMipMapEnabled = importer.mipmapEnabled,
                 };
             }).Where(textureInfo => textureInfo != null).ToList();
+            this.Sort(textureInfos);
 
             foreach (var textureInfo in textureInfos)
             {
-                if (this.IsTextureUsedByAnyModel(textureInfo.Texture, meshRenderers, skinnedMeshRenderers))
+                if (modelTextureSet.Contains(textureInfo.Texture))
                 {
                     this.modelTextures.Add(textureInfo);
                     continue;
                 }
-                
+
                 this.allTextures.Add(textureInfo);
                 if (textureInfo.GenerateMipMapEnabled)
                 {
@@ -128,6 +133,7 @@
                 }
             }
         }
+        
         private Vector2 GetTextureSizeAccordingToMaxSize(Texture texture, TextureImporter importer)
         {
             if (importer != null)
@@ -150,7 +156,7 @@
 
             return new Vector2(texture.width, texture.height);
         }
-        
+
         private bool IsTextureInAnyAtlas(Texture texture, List<SpriteAtlas> allAtlases)
         {
             foreach (var atlas in allAtlases)
@@ -169,36 +175,6 @@
                         }
                     }
                 }
-            }
-
-            return false;
-        }
-
-        private bool IsTextureUsedByAnyModel(Texture targetTexture, List<MeshRenderer> meshRenderers, List<SkinnedMeshRenderer> skinnedMeshRenderers)
-        {
-            foreach (var renderer in meshRenderers)
-            {
-                if (this.IsTextureUsedInMaterials(renderer.sharedMaterials, targetTexture))
-                    return true;
-            }
-
-            foreach (var renderer in skinnedMeshRenderers)
-            {
-                if (this.IsTextureUsedInMaterials(renderer.sharedMaterials, targetTexture))
-                    return true;
-            }
-
-            return false;
-        }
-
-        private bool IsTextureUsedInMaterials(Material[] materials, Texture targetTexture)
-        {
-            foreach (var material in materials)
-            {
-                if (material.mainTexture == targetTexture)
-                    return true;
-
-                // Check for other texture properties if necessary
             }
 
             return false;

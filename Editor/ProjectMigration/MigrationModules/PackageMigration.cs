@@ -55,7 +55,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // Add the new packages
             foreach (var package in PackagesToAdd)
             {
-                if (!dependencies.ContainsKey(package.Key) || !dependencies[package.Key].Equals(package.Value))
+                if (!dependencies.ContainsKey(package.Key) || !dependencies[package.Key].ToString().Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;
@@ -77,7 +77,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             foreach (var package in PackagesVersionToUse)
             {
                 
-                if (dependencies.ContainsKey(package.Key) && !dependencies[package.Key].Equals(package.Value))
+                if (dependencies.ContainsKey(package.Key) && !dependencies[package.Key].ToString().Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;

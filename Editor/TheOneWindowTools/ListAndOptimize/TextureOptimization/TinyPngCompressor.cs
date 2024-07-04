@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Cysharp.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -13,77 +12,78 @@ public static class TinyPngCompressor
     private const string ApiUrl = "https://api.tinify.com/shrink";
 
     // Method to start the compression process for a list of textures
-    public static async UniTaskVoid CompressTextures(List<Texture2D> textures)
+    public static async UniTaskVoid CompressTextures(List<string> filePaths)
     {
-        foreach (var texture in textures)
+        var skippedCount = 0;
+        var compressedCount = 0;
+        List<UniTask> compressionTasks = new List<UniTask>();
+
+        foreach (var filePath in filePaths)
         {
-            var imagePath = AssetDatabase.GetAssetPath(texture); // Get the path of the texture
-            if (System.IO.Path.GetExtension(imagePath).ToLower() != ".png")
+            if (!filePath.ToLower().EndsWith(".png"))
             {
-                Debug.Log("Skipping non-PNG file: " + imagePath);
-                continue; // Skip non-PNG files
+                skippedCount++;
+                Debug.Log("Skipping non-PNG file: " + filePath);
+                continue;
             }
 
-            var imageBytes = ImageToByteArray(texture); // Convert texture to byte array
+            compressionTasks.Add(CompressTextureAsync(filePath, () => compressedCount++));
+        }
 
-            var           request       = new UnityWebRequest(ApiUrl, "POST");
-            UploadHandler uploadHandler = new UploadHandlerRaw(imageBytes);
-            uploadHandler.contentType = "application/octet-stream";
-            request.uploadHandler     = uploadHandler;
+        await UniTask.WhenAll(compressionTasks);
 
-            var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes("api:" + ApiKey));
-            request.SetRequestHeader("Authorization", "Basic " + auth);
+        Debug.Log($"Try to Compress: {filePaths.Count}, Compressed textures: {compressedCount}, Skipped textures: {skippedCount}");
+    }
 
-            request.downloadHandler = new DownloadHandlerBuffer();
+    private static async UniTask CompressTextureAsync(string filePath, Action onCompressed)
+    {
+        var imageBytes = ImageToByteArray(filePath);
+        if (imageBytes == null)
+        {
+            Debug.LogError("Failed to read file: " + filePath);
+            return;
+        }
 
-            await request.SendWebRequest();
+        var request = new UnityWebRequest(ApiUrl, "POST");
+        UploadHandler uploadHandler = new UploadHandlerRaw(imageBytes);
+        uploadHandler.contentType = "application/octet-stream";
+        request.uploadHandler = uploadHandler;
 
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                // Extract the URL from the response
-                var jsonResponse = request.downloadHandler.text;
-                var url          = ExtractUrlFromResponse(jsonResponse);
+        var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes("api:" + ApiKey));
+        request.SetRequestHeader("Authorization", "Basic " + auth);
 
-                // Download the compressed image
-                DownloadCompressedImage(url, imagePath);
-            }
-            else
-            {
-                Debug.LogError("Error: " + request.error);
-            }
+        request.downloadHandler = new DownloadHandlerBuffer();
+
+        await request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            onCompressed?.Invoke();
+            var jsonResponse = request.downloadHandler.text;
+            var url = ExtractUrlFromResponse(jsonResponse);
+            var savePath = Path.ChangeExtension(filePath, ".png");
+            await DownloadCompressedImage(url, savePath);
+        }
+        else
+        {
+            Debug.LogError("Error compressing " + filePath + ": " + request.error);
         }
     }
 
-    private static byte[] ImageToByteArray(Texture2D texture)
+    private static byte[] ImageToByteArray(string filePath)
     {
-        if (texture.isReadable)
+        if (File.Exists(filePath))
         {
-            return texture.EncodeToPNG();
+            return File.ReadAllBytes(filePath);
         }
-
-        // Create a temporary readable Texture2D to encode
-        var tmp = RenderTexture.GetTemporary(
-            texture.width,
-            texture.height,
-            0,
-            RenderTextureFormat.Default,
-            RenderTextureReadWrite.Linear);
-
-        Graphics.Blit(texture, tmp);
-        var previous = RenderTexture.active;
-        RenderTexture.active = tmp;
-        var myTexture2D = new Texture2D(texture.width, texture.height);
-        myTexture2D.ReadPixels(new Rect(0, 0, tmp.width, tmp.height), 0, 0);
-        myTexture2D.Apply();
-        RenderTexture.active = previous;
-        RenderTexture.ReleaseTemporary(tmp);
-
-        var png = myTexture2D.EncodeToPNG();
-        UnityEngine.Object.DestroyImmediate(myTexture2D); // Clean up temporary texture
-        return png;
+        else
+        {
+            Debug.LogError("File does not exist: " + filePath);
+            return null;
+        }
     }
 
-    private static async UniTaskVoid DownloadCompressedImage(string url, string savePath)
+    private static async UniTask DownloadCompressedImage(string url, string savePath)
     {
         var request = UnityWebRequest.Get(url);
         await request.SendWebRequest();
@@ -103,8 +103,8 @@ public static class TinyPngCompressor
     private static string ExtractUrlFromResponse(string jsonResponse)
     {
         // Simple JSON parsing to extract the URL. Consider using a JSON library for more complex scenarios.
-        var urlStart = jsonResponse.IndexOf("\"url\":\"") + 7;
-        var urlEnd   = jsonResponse.IndexOf("\"", urlStart);
+        var urlStart = jsonResponse.IndexOf("\"url\":\"", StringComparison.Ordinal) + 7;
+        var urlEnd   = jsonResponse.IndexOf("\"", urlStart, StringComparison.Ordinal);
         var url      = jsonResponse.Substring(urlStart, urlEnd - urlStart);
         return url.Replace("\\/", "/"); // Unescape the URL
     }

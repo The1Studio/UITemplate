@@ -28,6 +28,9 @@
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("Mipmap", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> generatedMipMap = new();
         
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Compressed and Not Crunch Textures", TitleAlignment = TitleAlignments.Centered)]
+        private List<TextureInfo> compressedAndNotCrunchTexture = new();
+        
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("3D Model Texture", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> modelTextures = new();
 
@@ -39,8 +42,11 @@
         
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("Duplicated Atlas Textures", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> duplicatedAtlasTexture = new();
+        
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Dont Use Atlas Textures", TitleAlignment = TitleAlignments.Centered)]
+        private List<TextureInfo> dontUseAtlasTexture = new();
 
-        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Not Compressed and Not In Atlas", TitleAlignment = TitleAlignments.Centered)]
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("Not Compressed and Not In Atlas Textures", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> notCompressedAndNotInAtlasTexture = new();
 
         [BoxGroup("Setting", order: -1)]
@@ -92,13 +98,27 @@
             // Select the textures in Unity Editor
             Selection.objects = this.generatedMipMap.Select(info => info.Texture).ToArray();
         }
+        
+        [BoxGroup("Actions"), Button(ButtonSizes.Large), GUIColor(0.5f, 0.8f, 0.5f)]
+        private void SelectAllCompressedAndNotCrunchedTextures()
+        {
+            // Select the textures in Unity Editor
+            Selection.objects = this.compressedAndNotCrunchTexture.Select(info => info.Texture).ToArray();
+        }
+        
+        [BoxGroup("Actions"), Button(ButtonSizes.Large), GUIColor(0.5f, 0.8f, 0.5f)]
+        private void SelectAllDontUseAtlasTextures()
+        {
+            // Select the textures in Unity Editor
+            Selection.objects = this.dontUseAtlasTexture.Select(info => info.Texture).ToArray();
+        }
 
         #endregion
         
         private void GenerateTextureInfoDataAsset()
         {
             var textureInfoData = CreateInstance<TextureInfoData>();
-            textureInfoData.textureInfos = this.GetTextureInfos(); // Assuming you want to store allTextures
+            textureInfoData.textureInfos = this.GetTextureInfos(AssetSearcher.GetAllAssetInAddressable<Texture>().Keys.ToList()); // Assuming you want to store allTextures
             var path          = "Assets/OptimizationData/TextureInfoData.asset";
             var directoryPath = System.IO.Path.GetDirectoryName(path);
     
@@ -114,9 +134,8 @@
             Debug.Log("TextureInfoData ScriptableObject created at " + path);
         }
         
-        private List<TextureInfo> GetTextureInfos()
+        private List<TextureInfo> GetTextureInfos(List<Texture> textures)
         {
-            var textures             = AssetSearcher.GetAllAssetInAddressable<Texture>().Keys.ToList();
             var textureInfos = textures.Select(texture =>
             {
                 var path     = AssetDatabase.GetAssetPath(texture);
@@ -144,7 +163,11 @@
             this.generatedMipMap.Clear();
             this.notInAtlasTexture.Clear();
             this.duplicatedAtlasTexture.Clear();
+            this.dontUseAtlasTexture.Clear();
+            this.compressedAndNotCrunchTexture.Clear();
             this.notCompressedAndNotInAtlasTexture.Clear();
+            var allAddressabletextures                 = AssetSearcher.GetAllAssetInAddressable<Texture>().Keys.ToList();
+            var allAddressableTextureSet = allAddressabletextures.ToHashSet();
 
             //Model 3D
             var meshRenderers        = AssetSearcher.GetAllAssetInAddressable<MeshRenderer>().Keys.ToList();
@@ -174,13 +197,21 @@
                     }
                 }
             }
+            var dontUseAtlasTextureSet = new HashSet<Texture>(atlasTextureSet);
+            dontUseAtlasTextureSet.RemoveRange(allAddressableTextureSet);
+            this.dontUseAtlasTexture = this.GetTextureInfos(dontUseAtlasTextureSet.ToList());
             
-            var textureInfos = this.GetTextureInfos();
+            var textureInfos = this.GetTextureInfos(allAddressabletextures);
             foreach (var textureInfo in textureInfos)
             {
                 if (textureInfo.GenerateMipMapEnabled)
                 {
                     this.generatedMipMap.Add(textureInfo);
+                }
+                
+                if (textureInfo.TextureImporter.textureCompression != TextureImporterCompression.Uncompressed && !textureInfo.TextureImporter.crunchedCompression)
+                {
+                    this.compressedAndNotCrunchTexture.Add(textureInfo);
                 }
                 
                 if (modelTextureSet.Contains(textureInfo.Texture))

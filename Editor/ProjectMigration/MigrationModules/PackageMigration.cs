@@ -21,21 +21,27 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             "com.github-glitchenzo",
             "com.theone"
         };
-        
+
         private static readonly Dictionary<string, string> PackagesToAdd = new()
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
-            {"com.google.external-dependency-manager", "1.2.180"},
-            {"com.svermeulen.extenject", "https://github.com/svermeulen/Yazef.git?path=UnityProject/Assets/Plugins/Zenject/Source"}
+            { "com.google.external-dependency-manager", "1.2.181" },
+            { "com.svermeulen.extenject", "https://github.com/svermeulen/Yazef.git?path=UnityProject/Assets/Plugins/Zenject/Source" }
             // add more packages as needed
+        };
+
+        private static readonly Dictionary<string, string> PackagesVersionToUse = new()
+        {
+            { "com.google.ads.mobile", "9.1.1" },
+            { "com.unity.purchasing", "4.12.0" },
         };
 
         private static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"
         };
-        
+
         private static bool UpdatePackageDependencies(JObject manifest)
         {
             var dependencies = manifest["dependencies"] as JObject;
@@ -49,7 +55,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // Add the new packages
             foreach (var package in PackagesToAdd)
             {
-                if (!dependencies.ContainsKey(package.Key))
+                if (!dependencies.ContainsKey(package.Key) || !dependencies[package.Key].Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;
@@ -62,6 +68,18 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
                 if (dependencies.ContainsKey(package))
                 {
                     dependencies.Remove(package);
+                    updated = true;
+                }
+            }
+            
+               
+            // Change package version
+            foreach (var package in PackagesVersionToUse)
+            {
+                
+                if (dependencies.ContainsKey(package.Key) || !dependencies[package.Key].Equals(package.Value))
+                {
+                    dependencies[package.Key] = package.Value;
                     updated                   = true;
                 }
             }
@@ -125,7 +143,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
                     updated = true;
                 }
             }
-            
+
             if (updated)
             {
                 Debug.Log("Updated manifest.json with new packages and missing OpenUPM scopes.");

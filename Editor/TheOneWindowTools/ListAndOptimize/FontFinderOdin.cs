@@ -7,6 +7,7 @@
     using Sirenix.OdinInspector.Editor;
     using UnityEditor;
     using UnityEngine;
+    using Object = UnityEngine.Object;
 
     public class FontFinderOdin : OdinEditorWindow
     {
@@ -60,7 +61,7 @@
                         {
                             Font         = font,
                             FontImporter = fontImporter,
-                            GameObjects  = keyValuePair.Value.ToList()
+                            Objects  = keyValuePair.Value.ToList()
                         });
                         break;
                     case FontTextureCase.CustomSet:
@@ -68,7 +69,7 @@
                         {
                             Font         = font,
                             FontImporter = fontImporter,
-                            GameObjects  = keyValuePair.Value.ToList()
+                            Objects  = keyValuePair.Value.ToList()
                         });
                         break;
                     default:
@@ -82,7 +83,7 @@
     {
         public Font                 Font;
         public TrueTypeFontImporter FontImporter;
-        public List<GameObject>     GameObjects;
+        public List<Object>         Objects;
         public string               CustomSet => this.FontImporter.customCharacters;
     }
 }

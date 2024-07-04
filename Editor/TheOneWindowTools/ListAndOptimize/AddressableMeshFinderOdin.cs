@@ -7,6 +7,7 @@
     using Sirenix.OdinInspector.Editor;
     using UnityEditor;
     using UnityEngine;
+    using Object = UnityEngine.Object;
 
     public class AddressableMeshFinderOdin : OdinEditorWindow
     {
@@ -68,7 +69,7 @@
                 var meshInfo = new MeshInfo
                 {
                     Mesh          = mesh,
-                    GameObjects   = keyValuePair.Value.ToList(),
+                    Objects   = keyValuePair.Value.ToList(),
                     ModelImporter = modelImporter // Storing the reference
                 };
 
@@ -97,7 +98,7 @@
     public class MeshInfo
     {
         [InlineProperty] [ShowInInspector] public Mesh                              Mesh                 { get; set; }
-        [InlineProperty] [ShowInInspector] public List<GameObject>                  GameObjects          { get; set; }
+        [InlineProperty] [ShowInInspector] public List<Object>                      Objects              { get; set; }
         [InlineProperty] [ShowInInspector] public ModelImporter                     ModelImporter        { get; set; }
         [InlineProperty] [ShowInInspector] public ModelImporterMeshCompression      MeshCompression      => this.ModelImporter.meshCompression;
         [InlineProperty] [ShowInInspector] public ModelImporterAnimationCompression AnimationCompression => this.ModelImporter.animationCompression;

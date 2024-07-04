@@ -9,9 +9,9 @@ namespace UITemplate.Editor
 
     public static class AssetSearcher
     {
-        public static Dictionary<TType, HashSet<GameObject>> GetAllAssetInAddressable<TType>() where TType : Object
+        public static Dictionary<TType, HashSet<Object>> GetAllAssetInAddressable<TType>() where TType : Object
         {
-            var allAssetInAddressable = new Dictionary<TType, HashSet<GameObject>>();
+            var allAssetInAddressable = new Dictionary<TType, HashSet<Object>>();
 
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             if (settings)
@@ -25,12 +25,17 @@ namespace UITemplate.Editor
                         EditorUtility.DisplayProgressBar("Queries all asset", "Processing Addressables", currentStep / (float)totalSteps);
 
                         var path       = AssetDatabase.GUIDToAssetPath(entry.guid);
-                        var mainObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                        var mainObject = AssetDatabase.LoadAssetAtPath<Object>(path);
                         if (mainObject == null) continue;
+                        
+                        if (mainObject is TType mainObjectTType)
+                        {
+                            allAssetInAddressable.GetOrAdd(mainObjectTType, () => new HashSet<Object>()).Add(mainObject);
+                        }
 
                         foreach (var type in GetAllDependencies<TType>(path))
                         {
-                            allAssetInAddressable.GetOrAdd(type, () => new HashSet<GameObject>()).Add(mainObject);
+                            allAssetInAddressable.GetOrAdd(type, () => new HashSet<Object>()).Add(mainObject);
                         }
                     }
                 }

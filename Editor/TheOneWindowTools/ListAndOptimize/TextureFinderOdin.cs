@@ -23,16 +23,19 @@
             Ascending,
             Descending
         }
+        
+        [ShowInInspector] [TableList(ShowPaging = true)] [Title("3D Model Texture", TitleAlignment = TitleAlignments.Centered)]
+        private List<TextureInfo> modelTextures = new();
 
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("All", TitleAlignment = TitleAlignments.Centered)]
-        private List<TextureInfo> textures = new();
+        private List<TextureInfo> allTextures = new();
 
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("Mipmap", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> generatedMipMap = new();
 
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("No In Atlas", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> notInAtlasTexture = new();
-        
+
         [ShowInInspector] [TableList(ShowPaging = true)] [Title("Not Compressed and Not In Atlas", TitleAlignment = TitleAlignments.Centered)]
         private List<TextureInfo> notCompressedAndNotInAtlasTexture = new();
 
@@ -50,7 +53,7 @@
         [Button(ButtonSizes.Medium), GUIColor(0, 1, 0)]
         private void Sort()
         {
-            this.textures.Sort((a, b) =>
+            this.allTextures.Sort((a, b) =>
             {
                 switch (this.sortingBy)
                 {
@@ -73,20 +76,23 @@
 
         private void FindTexturesInAssets()
         {
-            this.textures.Clear();
+            this.modelTextures.Clear();
+            this.allTextures.Clear();
             this.generatedMipMap.Clear();
             this.notInAtlasTexture.Clear();
+            this.notCompressedAndNotInAtlasTexture.Clear();
 
-            var textures = AddressableSearcherTool.GetAllAssetInAddressable<Texture>().Keys;
-            var atlases  = AddressableSearcherTool.GetAllAssetInAddressable<SpriteAtlas>().Keys.ToList();
+            var textures             = AssetSearcher.GetAllAssetInAddressable<Texture>().Keys.ToList();
+            var atlases              = AssetSearcher.GetAllAssetsOfType<SpriteAtlas>();
+            var meshRenderers        = AssetSearcher.GetAllAssetInAddressable<MeshRenderer>().Keys.ToList();
+            var skinnedMeshRenderers = AssetSearcher.GetAllAssetInAddressable<SkinnedMeshRenderer>().Keys.ToList();
 
-            // var findAssets = AssetDatabase.FindAssets("t:Texture");
-            foreach (var texture in textures)
+            var textureInfos = textures.Select(texture =>
             {
                 var path     = AssetDatabase.GetAssetPath(texture);
                 var importer = AssetImporter.GetAtPath(path) as TextureImporter;
-                if (importer == null) continue;
-                var textureInfo = new TextureInfo
+                if (importer == null) return null;
+                return new TextureInfo
                 {
                     Texture               = texture,
                     TextureImporter       = importer,
@@ -95,25 +101,33 @@
                     ReadWriteEnabled      = importer.isReadable,
                     GenerateMipMapEnabled = importer.mipmapEnabled,
                 };
+            }).Where(textureInfo => textureInfo != null).ToList();
 
-                this.textures.Add(textureInfo);
+            foreach (var textureInfo in textureInfos)
+            {
+                if (this.IsTextureUsedByAnyModel(textureInfo.Texture, meshRenderers, skinnedMeshRenderers))
+                {
+                    this.modelTextures.Add(textureInfo);
+                    continue;
+                }
+                
+                this.allTextures.Add(textureInfo);
                 if (textureInfo.GenerateMipMapEnabled)
                 {
                     this.generatedMipMap.Add(textureInfo);
                 }
 
-                if (!this.IsTextureInAnyAtlas(texture, atlases))
+                if (!this.IsTextureInAnyAtlas(textureInfo.Texture, atlases))
                 {
                     this.notInAtlasTexture.Add(textureInfo);
                 }
-                
-                if (textureInfo.CompressionType == TextureImporterCompression.Uncompressed && !this.IsTextureInAnyAtlas(texture, atlases))
+
+                if (textureInfo.CompressionType == TextureImporterCompression.Uncompressed && !this.IsTextureInAnyAtlas(textureInfo.Texture, atlases))
                 {
                     this.notCompressedAndNotInAtlasTexture.Add(textureInfo);
                 }
             }
         }
-
         private Vector2 GetTextureSizeAccordingToMaxSize(Texture texture, TextureImporter importer)
         {
             if (importer != null)
@@ -136,21 +150,55 @@
 
             return new Vector2(texture.width, texture.height);
         }
-
+        
         private bool IsTextureInAnyAtlas(Texture texture, List<SpriteAtlas> allAtlases)
         {
             foreach (var atlas in allAtlases)
             {
-                var sprites = new Sprite[atlas.spriteCount];
+                Sprite[] sprites = new Sprite[atlas.spriteCount];
                 atlas.GetSprites(sprites);
 
                 foreach (var sprite in sprites)
                 {
-                    if (sprite.texture == texture)
+                    var spriteNameWithoutClone = sprite.name.Replace("(Clone)", "").Trim();
+                    if (spriteNameWithoutClone.Equals(texture.name, StringComparison.OrdinalIgnoreCase))
                     {
-                        return true;
+                        if (Mathf.Approximately(sprite.rect.width, texture.width) && Mathf.Approximately(sprite.rect.height, texture.height))
+                        {
+                            return true;
+                        }
                     }
                 }
+            }
+
+            return false;
+        }
+
+        private bool IsTextureUsedByAnyModel(Texture targetTexture, List<MeshRenderer> meshRenderers, List<SkinnedMeshRenderer> skinnedMeshRenderers)
+        {
+            foreach (var renderer in meshRenderers)
+            {
+                if (this.IsTextureUsedInMaterials(renderer.sharedMaterials, targetTexture))
+                    return true;
+            }
+
+            foreach (var renderer in skinnedMeshRenderers)
+            {
+                if (this.IsTextureUsedInMaterials(renderer.sharedMaterials, targetTexture))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool IsTextureUsedInMaterials(Material[] materials, Texture targetTexture)
+        {
+            foreach (var material in materials)
+            {
+                if (material.mainTexture == targetTexture)
+                    return true;
+
+                // Check for other texture properties if necessary
             }
 
             return false;

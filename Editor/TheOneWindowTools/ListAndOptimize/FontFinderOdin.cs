@@ -42,7 +42,7 @@
             this.compressedFonts.Clear();
             this.noneCompressedFonts.Clear();
 
-            var fonts = AddressableSearcherTool.GetAllAssetInAddressable<Font>();
+            var fonts = AssetSearcher.GetAllAssetInAddressable<Font>();
             foreach (var keyValuePair in fonts)
             {
                 var font         = keyValuePair.Key;

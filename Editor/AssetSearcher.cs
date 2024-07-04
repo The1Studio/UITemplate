@@ -7,7 +7,7 @@ namespace UITemplate.Editor
     using UnityEditor.AddressableAssets;
     using UnityEngine;
 
-    public static class AddressableSearcherTool
+    public static class AssetSearcher
     {
         public static Dictionary<TType, HashSet<GameObject>> GetAllAssetInAddressable<TType>() where TType : Object
         {
@@ -28,13 +28,8 @@ namespace UITemplate.Editor
                         var mainObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                         if (mainObject == null) continue;
 
-                        var dependencies = new List<string>(AssetDatabase.GetDependencies(path, true));
-
-                        var allMeshInAddressable = dependencies.Select(depPath => AssetDatabase.LoadAssetAtPath<TType>(depPath));
-
-                        foreach (var type in allMeshInAddressable)
+                        foreach (var type in GetAllDependencies<TType>(path))
                         {
-                            if (type == null) continue;
                             allAssetInAddressable.GetOrAdd(type, () => new HashSet<GameObject>()).Add(mainObject);
                         }
                     }
@@ -44,6 +39,30 @@ namespace UITemplate.Editor
             }
 
             return allAssetInAddressable;
+        }
+
+        public static List<TType> GetAllDependencies<TType>(string path, bool recursive = true) where TType : Object
+        {
+            var dependencies         = new List<string>(AssetDatabase.GetDependencies(path, recursive));
+            return dependencies.Select(depPath => AssetDatabase.LoadAssetAtPath<TType>(depPath)).Where(depO => depO != null).ToList();
+        }
+        
+        public static List<T> GetAllAssetsOfType<T>() where T : UnityEngine.Object
+        {
+            List<T>  assets = new List<T>();
+            string[] guids  = AssetDatabase.FindAssets("t:" + typeof(T).Name);
+
+            foreach (string guid in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                T      asset     = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                if (asset != null)
+                {
+                    assets.Add(asset);
+                }
+            }
+
+            return assets;
         }
     }
 }

@@ -56,7 +56,7 @@
             this.mediumCompressionMeshInfoList.Clear();
             this.highCompressionMeshInfoList.Clear();
 
-            var allMeshInAddressable = AddressableSearcherTool.GetAllAssetInAddressable<Mesh>();
+            var allMeshInAddressable = AssetSearcher.GetAllAssetInAddressable<Mesh>();
 
             foreach (var keyValuePair in allMeshInAddressable.Where(KeyValuePair => KeyValuePair.Key))
             {

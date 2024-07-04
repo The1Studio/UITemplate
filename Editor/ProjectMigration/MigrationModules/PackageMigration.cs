@@ -77,7 +77,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             foreach (var package in PackagesVersionToUse)
             {
                 
-                if (dependencies.ContainsKey(package.Key) || !dependencies[package.Key].Equals(package.Value))
+                if (dependencies.ContainsKey(package.Key) && !dependencies[package.Key].Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;

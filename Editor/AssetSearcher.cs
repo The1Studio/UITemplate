@@ -40,20 +40,24 @@ namespace UITemplate.Editor
 
             return allAssetInAddressable;
         }
-        
+
         public static List<TType> GetAllDependencies<TType>(Object objectDeped, bool recursive = true) where TType : Object
         {
-            var path         = AssetDatabase.GetAssetPath(objectDeped);
+            var path = AssetDatabase.GetAssetPath(objectDeped);
             return GetAllDependencies<TType>(path);
         }
 
-        public static List<TType> GetAllDependencies<TType>(string path, bool recursive = true) where TType : Object
+        private static List<TType> GetAllDependencies<TType>(string path, bool recursive = true) where TType : Object
         {
-            var dependencies         = new List<string>(AssetDatabase.GetDependencies(path, recursive));
-            return dependencies.Select(depPath => AssetDatabase.LoadAssetAtPath<TType>(depPath)).Where(depO => depO != null).ToList();
+            var dependencies = new List<string>(AssetDatabase.GetDependencies(path, recursive));
+            return dependencies
+                .Where(AssetDatabase.IsOpenForEdit)
+                .Select(AssetDatabase.LoadAssetAtPath<TType>)
+                .Where(depO => depO != null)
+                .ToList();
         }
-        
-        public static List<T> GetAllAssetsOfType<T>() where T : UnityEngine.Object
+
+        public static List<T> GetAllAssetsOfType<T>() where T : Object
         {
             List<T>  assets = new List<T>();
             string[] guids  = AssetDatabase.FindAssets("t:" + typeof(T).Name);

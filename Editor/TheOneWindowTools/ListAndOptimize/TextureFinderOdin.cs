@@ -67,30 +67,53 @@
 
         [MenuItem("TheOne/List And Optimize/Texture List")]
         private static void OpenWindow() { GetWindow<TextureFinderOdin>().Show(); }
-
-        private void FindTexturesInAssets()
+        
+        [BoxGroup("Generate"), Button(ButtonSizes.Large), GUIColor(0.7f, 0.7f, 1)]
+        private void CreateTextureInfoDataAssetButton()
         {
-            this.modelTextures.Clear();
-            this.allTextures.Clear();
-            this.generatedMipMap.Clear();
-            this.notInAtlasTexture.Clear();
-            this.notCompressedAndNotInAtlasTexture.Clear();
+            this.GenerateTextureInfoDataAsset();
+        }
 
+        #region Action
+
+        [BoxGroup("Actions"), Button(ButtonSizes.Large), GUIColor(0.5f, 0.8f, 0.5f)]
+        private void SelectAllModelTextures()
+        {
+            // Select the textures in Unity Editor
+            Selection.objects = this.modelTextures.Select(info => info.Texture).ToArray();
+        }
+        
+        [BoxGroup("Actions"), Button(ButtonSizes.Large), GUIColor(0.5f, 0.8f, 0.5f)]
+        private void SelectAllGeneratedMipMapTextures()
+        {
+            // Select the textures in Unity Editor
+            Selection.objects = this.generatedMipMap.Select(info => info.Texture).ToArray();
+        }
+
+        #endregion
+        
+        private void GenerateTextureInfoDataAsset()
+        {
+            var textureInfoData = CreateInstance<TextureInfoData>();
+            textureInfoData.textureInfos = this.GetTextureInfos(); // Assuming you want to store allTextures
+            var path          = "Assets/OptimizationData/TextureInfoData.asset";
+            var directoryPath = System.IO.Path.GetDirectoryName(path);
+    
+            if (!System.IO.Directory.Exists(directoryPath))
+            {
+                System.IO.Directory.CreateDirectory(directoryPath);
+            }
+            
+            AssetDatabase.CreateAsset(textureInfoData, path);
+            AssetDatabase.SaveAssets();
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject       = textureInfoData;
+            Debug.Log("TextureInfoData ScriptableObject created at " + path);
+        }
+        
+        private List<TextureInfo> GetTextureInfos()
+        {
             var textures             = AssetSearcher.GetAllAssetInAddressable<Texture>().Keys.ToList();
-            var atlases              = AssetSearcher.GetAllAssetsOfType<SpriteAtlas>();
-            var meshRenderers        = AssetSearcher.GetAllAssetInAddressable<MeshRenderer>().Keys.ToList();
-            var skinnedMeshRenderers = AssetSearcher.GetAllAssetInAddressable<SkinnedMeshRenderer>().Keys.ToList();
-            var modelTextureSet      = new HashSet<Texture>();
-            foreach (var meshRenderer in meshRenderers)
-            {
-                modelTextureSet.AddRange(AssetSearcher.GetAllDependencies<Texture>(meshRenderer));
-            }
-
-            foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
-            {
-                modelTextureSet.AddRange(AssetSearcher.GetAllDependencies<Texture>(skinnedMeshRenderer));
-            }
-
             var textureInfos = textures.Select(texture =>
             {
                 var path     = AssetDatabase.GetAssetPath(texture);
@@ -108,6 +131,33 @@
             }).Where(textureInfo => textureInfo != null).ToList();
             this.Sort(textureInfos);
 
+            return textureInfos;
+        }
+
+        private void FindTexturesInAssets()
+        {
+            this.modelTextures.Clear();
+            this.allTextures.Clear();
+            this.generatedMipMap.Clear();
+            this.notInAtlasTexture.Clear();
+            this.notCompressedAndNotInAtlasTexture.Clear();
+
+            
+            var atlases              = AssetSearcher.GetAllAssetsOfType<SpriteAtlas>();
+            var meshRenderers        = AssetSearcher.GetAllAssetInAddressable<MeshRenderer>().Keys.ToList();
+            var skinnedMeshRenderers = AssetSearcher.GetAllAssetInAddressable<SkinnedMeshRenderer>().Keys.ToList();
+            var modelTextureSet      = new HashSet<Texture>();
+            foreach (var meshRenderer in meshRenderers)
+            {
+                modelTextureSet.AddRange(AssetSearcher.GetAllDependencies<Texture>(meshRenderer));
+            }
+
+            foreach (var skinnedMeshRenderer in skinnedMeshRenderers)
+            {
+                modelTextureSet.AddRange(AssetSearcher.GetAllDependencies<Texture>(skinnedMeshRenderer));
+            }
+            
+            var textureInfos = this.GetTextureInfos();
             foreach (var textureInfo in textureInfos)
             {
                 if (modelTextureSet.Contains(textureInfo.Texture))
@@ -161,7 +211,7 @@
         {
             foreach (var atlas in allAtlases)
             {
-                Sprite[] sprites = new Sprite[atlas.spriteCount];
+                var sprites = new Sprite[atlas.spriteCount];
                 atlas.GetSprites(sprites);
 
                 foreach (var sprite in sprites)

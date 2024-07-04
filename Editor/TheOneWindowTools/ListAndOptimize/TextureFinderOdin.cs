@@ -160,18 +160,19 @@
             var textureInfos = this.GetTextureInfos();
             foreach (var textureInfo in textureInfos)
             {
+                if (textureInfo.GenerateMipMapEnabled)
+                {
+                    this.generatedMipMap.Add(textureInfo);
+                }
+                
                 if (modelTextureSet.Contains(textureInfo.Texture))
                 {
                     this.modelTextures.Add(textureInfo);
                     continue;
                 }
-
+                
                 this.allTextures.Add(textureInfo);
-                if (textureInfo.GenerateMipMapEnabled)
-                {
-                    this.generatedMipMap.Add(textureInfo);
-                }
-
+                
                 if (!this.IsTextureInAnyAtlas(textureInfo.Texture, atlases))
                 {
                     this.notInAtlasTexture.Add(textureInfo);

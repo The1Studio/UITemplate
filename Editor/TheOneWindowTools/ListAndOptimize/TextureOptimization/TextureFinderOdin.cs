@@ -69,9 +69,9 @@
                 return this.sortingBy switch
                 {
                     SortingBy.FileSize => this.sortingOrder == SortingOrder.Ascending ? a.FileSize.CompareTo(b.FileSize) : b.FileSize.CompareTo(a.FileSize),
-                    SortingBy.TotalPixel => this.sortingOrder == SortingOrder.Ascending
-                        ? a.Texture.width * a.Texture.height - b.Texture.width * b.Texture.height
-                        : b.Texture.width * b.Texture.height - a.Texture.width * a.Texture.height,
+                    SortingBy.TotalPixel => (int)(this.sortingOrder == SortingOrder.Ascending
+                        ? a.TextureSize.x * a.TextureSize.y - b.TextureSize.x * b.TextureSize.y
+                        : b.TextureSize.x * b.TextureSize.y - a.TextureSize.x * a.TextureSize.y),
                     _ => throw new ArgumentOutOfRangeException()
                 };
             });

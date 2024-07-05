@@ -122,8 +122,7 @@
             // Select the textures in Unity Editor
             Selection.objects = this.allTextures.Select(info => info.Texture).ToArray();
         }
-
-
+        
         #endregion
         
         private void GenerateTextureInfoDataAsset()
@@ -175,9 +174,10 @@
 
         private void FindTexturesInAssets()
         {
-            this.modelTextures.Clear();
             this.allTextures.Clear();
             this.generatedMipMap.Clear();
+            this.modelTextures.Clear();
+            this.allTexturesNotInModels.Clear();
             this.notInAtlasTexture.Clear();
             this.duplicatedAtlasTexture.Clear();
             this.dontUseAtlasTexture.Clear();
@@ -242,7 +242,7 @@
                 
                 this.allTexturesNotInModels.Add(textureInfo);
                 
-                if (!atlasTextureSet.Contains(textureInfo.Texture))
+                if (!atlasTextureSet.Contains(textureInfo.Texture) && textureInfo.TextureImporter.textureType == TextureImporterType.Sprite)
                 {
                     this.notInAtlasTexture.Add(textureInfo);
                 }

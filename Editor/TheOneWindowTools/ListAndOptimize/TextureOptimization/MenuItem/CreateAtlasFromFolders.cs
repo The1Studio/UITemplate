@@ -57,6 +57,7 @@ public static class CreateAtlasFromFolders
         var atlasName = Path.GetFileName(folderPath) + "Atlas";
         var atlasPath = Path.Combine(parentFolderPath, atlasName + ".spriteatlas");
         AssetDatabase.CreateAsset(atlas, atlasPath);
+        AssetDatabase.Refresh();
         AssetDatabase.SaveAssets();
 
         Debug.Log($"Sprite Atlas created: {atlasPath}");

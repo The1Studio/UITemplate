@@ -1,5 +1,6 @@
 namespace UITemplate.Editor.ProjectMigration.MigrationModules
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using UnityEditor;
@@ -7,6 +8,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
 
     public static class FolderMigration
     {
+        [NonSerialized]
         // Define a global list of folders
         private static readonly List<string> Folders = new()
         {

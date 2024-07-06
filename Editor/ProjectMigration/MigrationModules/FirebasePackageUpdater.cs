@@ -1,5 +1,6 @@
 namespace UITemplate.Editor.ProjectMigration.MigrationModules
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -17,6 +18,8 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
 
         private const string BaseUrl = "https://dl.google.com/games/registry/unity/";
 
+
+        [NonSerialized]
         private static readonly List<string> RequirePackages = new()
         {
             "com.google.firebase.analytics",
@@ -30,7 +33,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
 
         private static void UpdatePackageToVersion()
         {
-            UpdateFirebasePackages(RequirePackages, "12.0.0");
+            UpdateFirebasePackages(RequirePackages, "12.1.0");
         }
 
         private static async void UpdateFirebasePackages(List<string> packages, string version)

@@ -1,5 +1,6 @@
 namespace UITemplate.Editor.ProjectMigration.MigrationModules
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -12,6 +13,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
         private static readonly string OpenUPMRegistryName = "OpenUPM";
         private static readonly string OpenUPMRegistryUrl  = "https://package.openupm.com";
 
+        [NonSerialized]
         private static readonly string[] RequiredScopes =
         {
             "com.google",
@@ -22,6 +24,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             "com.theone"
         };
 
+        [NonSerialized]
         private static readonly Dictionary<string, string> PackagesToAdd = new()
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
@@ -31,12 +34,14 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // add more packages as needed
         };
 
+        [NonSerialized]
         private static readonly Dictionary<string, string> PackagesVersionToUse = new()
         {
             { "com.google.ads.mobile", "9.1.1" },
             { "com.unity.purchasing", "4.12.0" },
         };
 
+        [NonSerialized]
         private static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"

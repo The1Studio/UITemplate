@@ -13,12 +13,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     {
         #region Inject
 
-        private readonly IInternetService                    internetService;
-        private readonly UITemplateDailyQueueOfferData       dailyQueueOfferData;
-        private readonly UITemplateDailyQueueOfferBlueprint  dailyQueueOfferBlueprint;
-        private readonly UITemplateInventoryDataController   inventoryDataController;
+        private readonly IInternetService                   internetService;
+        private readonly UITemplateDailyQueueOfferData      dailyQueueOfferData;
+        private readonly UITemplateDailyQueueOfferBlueprint dailyQueueOfferBlueprint;
+        private readonly UITemplateInventoryDataController  inventoryDataController;
 
-        #endregion
+#endregion
 
         public UITemplateDailyQueueOfferDataController
         (
@@ -60,13 +60,26 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         private int GetCurrentDayIndex()
         {
+            var lastOfferDate       = this.dailyQueueOfferData.LastOfferDate;
             var firstTimeOpenedDate = this.dailyQueueOfferData.FirstTimeOpen;
-            return (DateTime.Now - firstTimeOpenedDate).Days;
+            var loginTime           = (int)(lastOfferDate - firstTimeOpenedDate).TotalDays;
+            var lastTimeLoginToNow  = (int)(DateTime.Now  - lastOfferDate).TotalDays;
+            if (lastTimeLoginToNow > 0)
+            {
+                loginTime++;
+            }
+
+            return loginTime;
         }
 
         public UITemplateDailyQueueOfferRecord GetCurrentDailyQueueOfferRecord()
         {
             var dayIndex = this.GetCurrentDayIndex();
+            if (dayIndex > this.dailyQueueOfferBlueprint.Count)
+            {
+                dayIndex %= this.dailyQueueOfferBlueprint.Count;
+            }
+
             return this.dailyQueueOfferBlueprint.GetDataById(dayIndex == 0 ? 1 : dayIndex);
         }
 

@@ -68,6 +68,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             {
                 loginTime++;
             }
+            else
+            {
+                loginTime = 0;
+            }
 
             return loginTime;
         }
@@ -80,7 +84,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 dayIndex %= this.dailyQueueOfferBlueprint.Count;
             }
 
-            return this.dailyQueueOfferBlueprint.GetDataById(dayIndex == 0 ? 1 : dayIndex);
+            return this.dailyQueueOfferBlueprint.GetDataById(dayIndex <= 0 ? 1 : dayIndex);
         }
 
         public TimeSpan GetRemainTimeToNextDay() { return this.dailyQueueOfferData.LastOfferDate + TimeSpan.FromDays(1) - DateTime.Now; }

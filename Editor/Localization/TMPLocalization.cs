@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using TMPro;
+using UITemplate.Editor;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -41,47 +43,80 @@ public class TMPLocalization : OdinEditorWindow
         this.dynamicLocalizedTextInfos.Clear();
         this.stringTable = LocalizationSettings.StringDatabase.GetTableAsync(Instance.StringTableName).Result;
 
-        var settings = AddressableAssetSettingsDefaultObject.Settings;
-        if (settings == null)
-            return;
-
-        foreach (var group in settings.groups)
+        var gameObjects = AssetSearcher.GetAllAssetInAddressable<GameObject>().Keys;
+        foreach (var obj in gameObjects)
         {
-            foreach (var entry in group.entries)
+            var tmpComponents = obj.GetComponentsInChildren<TextMeshProUGUI>(true);
+            foreach (var tmp in tmpComponents)
             {
-                var     assetPath = AssetDatabase.GUIDToAssetPath(entry.guid);
-                var obj       = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                var info = new TMPTextInfo(tmp, obj);
 
-                if (obj)
+                // if (tmp.TryGetComponent<LocalizeStringEvent>(out var component))
+                // {
+                //     info.TextType = this.stringTable.Values.Any(value => value.Key.Equals(tmp.text)) ? TextMeshType.StaticLocalized : TextMeshType.DynamicLocalized;
+                // }
+                info.TextType = gameObjects.Any(objr =>
                 {
-                    var tmpComponents = obj.GetComponentsInChildren<TextMeshProUGUI>(true);
-                    foreach (var tmp in tmpComponents)
+                    if (this.IsTMPReferencedInGameObject(tmp, objr, out var refMono))
                     {
-                        var info = new TMPTextInfo(tmp, obj);
-
-                        if (tmp.TryGetComponent<LocalizeStringEvent>(out var component))
-                        {
-                            info.TextType = this.stringTable.Values.Any(value => value.Key.Equals(tmp.text)) ? TextMeshType.StaticLocalized : TextMeshType.DynamicLocalized;
-                        }
-
-                        switch (info.TextType)
-                        {
-                            case TextMeshType.NoLocalized:
-                                this.noLocalizedTextInfos.Add(info);
-                                break;
-                            case TextMeshType.StaticLocalized:
-                                this.staticLocalizedTextInfos.Add(info);
-                                break;
-                            case TextMeshType.DynamicLocalized:
-                                this.dynamicLocalizedTextInfos.Add(info);
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
+                        info.refMono = refMono;
+                        return true;
+                    }
+                    return false;
+                }) ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
+                
+                switch (info.TextType)
+                {
+                    case TextMeshType.NoLocalized:
+                        this.noLocalizedTextInfos.Add(info);
+                        break;
+                    case TextMeshType.StaticLocalized:
+                        this.staticLocalizedTextInfos.Add(info);
+                        break;
+                    case TextMeshType.DynamicLocalized:
+                        this.dynamicLocalizedTextInfos.Add(info);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+    }
+    
+    private bool IsTMPReferencedInGameObject(TextMeshProUGUI tmp, GameObject obj, out MonoBehaviour refMono)
+    {
+        var monoBehaviours = obj.GetComponentsInChildren<MonoBehaviour>(true);
+        foreach (var monoBehaviour in monoBehaviours)
+        {
+            if (monoBehaviour == null)
+            {
+                Debug.LogWarning($"{obj.name} has null monoBehaviour");
+                continue;
+            }
+            var fields = monoBehaviour.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            foreach (var field in fields)
+            {
+                if (field.FieldType == typeof(TextMeshProUGUI))
+                {
+                    var value = field.GetValue(monoBehaviour) as TextMeshProUGUI;
+                    if (value == tmp)
+                    {
+                        refMono = monoBehaviour;
+                        return true;
+                    }
+                }
+                else if (typeof(IEnumerable<TextMeshProUGUI>).IsAssignableFrom(field.FieldType))
+                {
+                    if (field.GetValue(monoBehaviour) is IEnumerable<TextMeshProUGUI> collection && collection.Contains(tmp))
+                    {
+                        refMono = monoBehaviour;
+                        return true;
                     }
                 }
             }
         }
+        refMono = null;
+        return false;
     }
     
     [HorizontalGroup("Action Group")]
@@ -128,6 +163,8 @@ public class TMPTextInfo
 {
     [ShowInInspector, ReadOnly] private TextMeshProUGUI tmpText;
     [ShowInInspector, ReadOnly] private GameObject      prefab;
+    [ShowIf("IsDynamicLocalized")]
+    [ShowInInspector, ReadOnly] public  MonoBehaviour   refMono;
     [ShowInInspector, ReadOnly] public  string          DisplayText => this.tmpText.text;
 
     [ShowInInspector, ReadOnly] public TextMeshType TextType;

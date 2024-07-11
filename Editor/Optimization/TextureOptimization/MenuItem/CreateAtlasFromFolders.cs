@@ -59,6 +59,8 @@ public static class CreateAtlasFromFolders
             crunchedCompression = true
         };
         importer.SetPlatformSettings(textureImporterPlatformSettings);
+        importer.SaveAndReimport();
+        AssetDatabase.Refresh();
 
         Debug.Log($"Sprite Atlas created: {atlasPath}");
     }

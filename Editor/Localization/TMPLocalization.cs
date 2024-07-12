@@ -55,7 +55,7 @@ public class TMPLocalization : OdinEditorWindow
 
                 if (tmp.TryGetComponent<AutoLocalization>(out var component))
                 {
-                    info.TextType = this.IsTMPReferencedInGameObject(tmp, obj, out _) ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
+                    info.TextType = IsTMPReferencedInGameObject(tmp, obj, out _, out _) ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
                 }
 
                 switch (info.TextType)
@@ -76,14 +76,15 @@ public class TMPLocalization : OdinEditorWindow
         }
     }
 
-    private bool IsTMPReferencedInGameObject(TMP_Text tmp, GameObject obj, out MonoBehaviour refMono)
+    public static bool IsTMPReferencedInGameObject(TMP_Text tmp, GameObject prefab, out MonoBehaviour refMono, out string fieldName)
     {
-        var monoBehaviours = obj.GetComponentsInChildren<MonoBehaviour>(true);
+        fieldName = string.Empty;
+        var monoBehaviours = prefab.GetComponentsInChildren<MonoBehaviour>(true);
         foreach (var monoBehaviour in monoBehaviours)
         {
             if (monoBehaviour == null)
             {
-                Debug.LogWarning($"{obj.name} has null monoBehaviour");
+                Debug.LogWarning($"{prefab.name} has null monoBehaviour");
                 continue;
             }
 
@@ -96,7 +97,8 @@ public class TMPLocalization : OdinEditorWindow
                     var value = field.GetValue(monoBehaviour) as TMP_Text;
                     if (value == tmp)
                     {
-                        refMono = monoBehaviour;
+                        refMono   = monoBehaviour;
+                        fieldName = field.Name;
                         return true;
                     }
                 }
@@ -104,7 +106,8 @@ public class TMPLocalization : OdinEditorWindow
                 {
                     if (field.GetValue(monoBehaviour) is IEnumerable<TMP_Text> collection && collection.Contains(tmp))
                     {
-                        refMono = monoBehaviour;
+                        refMono   = monoBehaviour;
+                        fieldName = field.Name;
                         return true;
                     }
                 }
@@ -155,7 +158,9 @@ public class TMPTextInfo
 
     [ShowIf("IsDynamicLocalized")] [ShowInInspector, ReadOnly]
     public MonoBehaviour refMono;
-
+    [ShowIf("IsDynamicLocalized")] [ShowInInspector, ReadOnly]
+    public string fieldName;
+    
     [ShowInInspector, ReadOnly] public string DisplayText => this.tmpText.text;
 
     [ShowInInspector, ReadOnly] public TextMeshType TextType;
@@ -190,13 +195,16 @@ public class TMPTextInfo
     [ButtonGroup("Action")]
     public void Localized()
     {
+        var isTMPReferencedInGameObject = TMPLocalization.IsTMPReferencedInGameObject(this.tmpText, this.prefab, out var refMn, out var fn);
+        this.refMono   = refMn;
+        this.fieldName = fn;
         this.UpdatePrefab((tmpTextInInstance) =>
         {
             if (!tmpTextInInstance.TryGetComponent<AutoLocalization>(out _))
             {
                 tmpTextInInstance.AddComponent<AutoLocalization>();
             }
-        }, TMPLocalization.Instance.DynamicLocalizedTextInfos);
+        }, isTMPReferencedInGameObject ? TMPLocalization.Instance.DynamicLocalizedTextInfos : TMPLocalization.Instance.StaticLocalizedTextInfos);
     }
 
     [ShowIf("IsDynamicLocalized")]
@@ -205,11 +213,11 @@ public class TMPTextInfo
     [ButtonGroup("Action")]
     public void MakeThisStatic()
     {
-        this.UpdatePrefab((tmpText) =>
+        this.UpdatePrefab((tmpGo) =>
         {
-            var localizeStringEvent = tmpText.GetComponent<LocalizeStringEvent>();
+            var localizeStringEvent = tmpGo.GetComponent<LocalizeStringEvent>();
             localizeStringEvent.SetTable(TMPLocalization.Instance.StringTableName);
-            var textValue = tmpText.GetComponent<TMP_Text>().text;
+            var textValue = this.tmpText.text;
             TMPLocalization.Instance.stringTable.AddEntry(textValue, textValue);
             localizeStringEvent.SetEntry(textValue);
         }, TMPLocalization.Instance.StaticLocalizedTextInfos);

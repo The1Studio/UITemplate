@@ -120,7 +120,8 @@ public class TMPLocalization : OdinEditorWindow
     [GUIColor(1.0f, 0.5f, 0.0f)]
     private void DoAutoLocalized()
     {
-        foreach (var textInfo in this.noLocalizedTextInfos)
+        var localizedTextInfos = this.noLocalizedTextInfos.ToList();
+        foreach (var textInfo in localizedTextInfos)
         {
             if (textInfo.DisplayText.Any(char.IsLetter))
             {

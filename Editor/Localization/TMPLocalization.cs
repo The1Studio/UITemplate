@@ -2,14 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using GameFoundation.Scripts.Utilities.Extension;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
+using TheOneStudio.UITemplate.UITemplate;
 using TMPro;
 using UITemplate.Editor;
 using UnityEditor;
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 using UnityEngine.Localization.Components;
 using UnityEngine.Localization.Settings;
@@ -31,11 +30,11 @@ public class TMPLocalization : OdinEditorWindow
 
     public string      StringTableName = "StringLocalizationAssets";
     public StringTable stringTable;
-    
+
     [HorizontalGroup("Action Group")]
-    [Button("Search TMP in Addressables")]
+    [Button("Search TMP in Addressable")]
     [GUIColor(0.3f, 0.8f, 0.3f)]
-    private void SearchTMPInAddressables()
+    private void SearchTMPInAddressable()
     {
         AssetDatabase.Refresh();
         this.noLocalizedTextInfos.Clear();
@@ -46,25 +45,19 @@ public class TMPLocalization : OdinEditorWindow
         var gameObjects = AssetSearcher.GetAllAssetInAddressable<GameObject>().Keys;
         foreach (var obj in gameObjects)
         {
-            var tmpComponents = obj.GetComponentsInChildren<TextMeshProUGUI>(true);
+            var tmpComponents = obj.GetComponentsInChildren<TMP_Text>(true);
             foreach (var tmp in tmpComponents)
             {
-                var info = new TMPTextInfo(tmp, obj);
-
-                // if (tmp.TryGetComponent<LocalizeStringEvent>(out var component))
-                // {
-                //     info.TextType = this.stringTable.Values.Any(value => value.Key.Equals(tmp.text)) ? TextMeshType.StaticLocalized : TextMeshType.DynamicLocalized;
-                // }
-                info.TextType = gameObjects.Any(objr =>
+                var info = new TMPTextInfo(tmp, obj)
                 {
-                    if (this.IsTMPReferencedInGameObject(tmp, objr, out var refMono))
-                    {
-                        info.refMono = refMono;
-                        return true;
-                    }
-                    return false;
-                }) ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
-                
+                    TextType = TextMeshType.NoLocalized
+                };
+
+                if (tmp.TryGetComponent<AutoLocalization>(out var component))
+                {
+                    info.TextType = this.IsTMPReferencedInGameObject(tmp, obj, out _) ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
+                }
+
                 switch (info.TextType)
                 {
                     case TextMeshType.NoLocalized:
@@ -82,8 +75,8 @@ public class TMPLocalization : OdinEditorWindow
             }
         }
     }
-    
-    private bool IsTMPReferencedInGameObject(TextMeshProUGUI tmp, GameObject obj, out MonoBehaviour refMono)
+
+    private bool IsTMPReferencedInGameObject(TMP_Text tmp, GameObject obj, out MonoBehaviour refMono)
     {
         var monoBehaviours = obj.GetComponentsInChildren<MonoBehaviour>(true);
         foreach (var monoBehaviour in monoBehaviours)
@@ -93,21 +86,23 @@ public class TMPLocalization : OdinEditorWindow
                 Debug.LogWarning($"{obj.name} has null monoBehaviour");
                 continue;
             }
-            var fields = monoBehaviour.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            var fields = monoBehaviour.GetType().GetRecursiveFields();
+
             foreach (var field in fields)
             {
-                if (field.FieldType == typeof(TextMeshProUGUI))
+                if (field.FieldType == typeof(TMP_Text))
                 {
-                    var value = field.GetValue(monoBehaviour) as TextMeshProUGUI;
+                    var value = field.GetValue(monoBehaviour) as TMP_Text;
                     if (value == tmp)
                     {
                         refMono = monoBehaviour;
                         return true;
                     }
                 }
-                else if (typeof(IEnumerable<TextMeshProUGUI>).IsAssignableFrom(field.FieldType))
+                else if (typeof(IEnumerable<TMP_Text>).IsAssignableFrom(field.FieldType))
                 {
-                    if (field.GetValue(monoBehaviour) is IEnumerable<TextMeshProUGUI> collection && collection.Contains(tmp))
+                    if (field.GetValue(monoBehaviour) is IEnumerable<TMP_Text> collection && collection.Contains(tmp))
                     {
                         refMono = monoBehaviour;
                         return true;
@@ -115,26 +110,19 @@ public class TMPLocalization : OdinEditorWindow
                 }
             }
         }
+
         refMono = null;
         return false;
     }
-    
+
     [HorizontalGroup("Action Group")]
     [Button("AutoLocalized")]
     [GUIColor(1.0f, 0.5f, 0.0f)]
     private void DoAutoLocalized()
     {
-        foreach (var textInfo in this.noLocalizedTextInfos.ToList())
+        foreach (var textInfo in this.noLocalizedTextInfos)
         {
             if (textInfo.DisplayText.Any(char.IsLetter))
-            {
-                textInfo.Localized();
-            }
-        }
-        
-        foreach (var textInfo in this.DynamicLocalizedTextInfos.ToList())
-        {
-            if (!textInfo.DisplayText.Any(char.IsLetter))
             {
                 textInfo.Localized();
             }
@@ -161,15 +149,17 @@ public class TMPLocalization : OdinEditorWindow
 [Serializable]
 public class TMPTextInfo
 {
-    [ShowInInspector, ReadOnly] private TextMeshProUGUI tmpText;
-    [ShowInInspector, ReadOnly] private GameObject      prefab;
-    [ShowIf("IsDynamicLocalized")]
-    [ShowInInspector, ReadOnly] public  MonoBehaviour   refMono;
-    [ShowInInspector, ReadOnly] public  string          DisplayText => this.tmpText.text;
+    [ShowInInspector, ReadOnly] private TMP_Text   tmpText;
+    [ShowInInspector, ReadOnly] private GameObject prefab;
+
+    [ShowIf("IsDynamicLocalized")] [ShowInInspector, ReadOnly]
+    public MonoBehaviour refMono;
+
+    [ShowInInspector, ReadOnly] public string DisplayText => this.tmpText.text;
 
     [ShowInInspector, ReadOnly] public TextMeshType TextType;
 
-    public TMPTextInfo(TextMeshProUGUI text, GameObject gameObject)
+    public TMPTextInfo(TMP_Text text, GameObject gameObject)
     {
         this.tmpText = text;
         this.prefab  = gameObject;
@@ -199,16 +189,15 @@ public class TMPTextInfo
     [ButtonGroup("Action")]
     public void Localized()
     {
-        if (this.IsNoLocalized())
+        this.UpdatePrefab((tmpTextInInstance) =>
         {
-            this.AddLocalizationLogic();
-        }
-        else 
-        {
-            this.RemoveLocalizationLogic();
-        }
+            if (!tmpTextInInstance.TryGetComponent<AutoLocalization>(out _))
+            {
+                tmpTextInInstance.AddComponent<AutoLocalization>();
+            }
+        }, TMPLocalization.Instance.DynamicLocalizedTextInfos);
     }
-    
+
     [ShowIf("IsDynamicLocalized")]
     [Button(ButtonSizes.Large)]
     [GUIColor(1.0f, 0.5f, 0.0f)]
@@ -224,61 +213,26 @@ public class TMPTextInfo
             localizeStringEvent.SetEntry(textValue);
         }, TMPLocalization.Instance.StaticLocalizedTextInfos);
     }
-    
+
     [ShowIf("IsStaticLocalized")]
     [Button(ButtonSizes.Large)]
     [GUIColor(1.0f, 0.5f, 0.0f)]
     [ButtonGroup("Action")]
-    public void MakeThisDynamic()
-    {
-        this.UpdatePrefab(_ =>
-        {
-        }, TMPLocalization.Instance.DynamicLocalizedTextInfos);
-    }
+    public void MakeThisDynamic() { this.UpdatePrefab(_ => { }, TMPLocalization.Instance.DynamicLocalizedTextInfos); }
 
-    private bool IsDynamicLocalized()
-    {
-        return this.TextType == TextMeshType.DynamicLocalized;
-    }
-    
-    private bool IsStaticLocalized()
-    {
-        return this.TextType == TextMeshType.StaticLocalized;
-    }
+    private bool IsDynamicLocalized() { return this.TextType == TextMeshType.DynamicLocalized; }
 
-    private string GetLocalizationButtonName()
-    {
-        return this.IsNoLocalized() ? "Add Localization" : "Remove Localization";
-    }
+    private bool IsStaticLocalized() { return this.TextType == TextMeshType.StaticLocalized; }
 
-    private bool IsNoLocalized()
-    {
-        return this.TextType == TextMeshType.NoLocalized;
-    }
+    private string GetLocalizationButtonName() { return this.IsNoLocalized() ? "Add Localization" : "Remove Localization"; }
 
-
-    private void AddLocalizationLogic()
-    {
-        this.UpdatePrefab((tmpTextInInstance) =>
-        {
-            if (!tmpTextInInstance.TryGetComponent<LocalizeStringEvent>(out var staticComponent))
-            {
-                tmpTextInInstance.AddComponent<LocalizeStringEvent>();
-            }
-        }, TMPLocalization.Instance.DynamicLocalizedTextInfos);
-    }
-
-    private void RemoveLocalizationLogic()
-    {
-        this.UpdatePrefab((tmpTextInInstance) => Object.DestroyImmediate(tmpTextInInstance.GetComponent<LocalizeStringEvent>()), TMPLocalization.Instance.NoLocalizedTextInfos);
-    }
-
+    private bool IsNoLocalized() { return this.TextType == TextMeshType.NoLocalized; }
 
     private void UpdatePrefab(Action<GameObject> updatePrefabAction, List<TMPTextInfo> newList)
     {
-        GameObject prefabInstance    = PrefabUtility.InstantiatePrefab(this.prefab) as GameObject;
-        string     pathInPrefab      = GetPathInPrefab(this.tmpText.transform);
-        GameObject tmpTextInInstance = GetGameObjectInPrefabInstance(prefabInstance, pathInPrefab);
+        var prefabInstance    = PrefabUtility.InstantiatePrefab(this.prefab) as GameObject;
+        var pathInPrefab      = GetPathInPrefab(this.tmpText.transform);
+        var tmpTextInInstance = GetGameObjectInPrefabInstance(prefabInstance, pathInPrefab);
 
         updatePrefabAction.Invoke(tmpTextInInstance);
 
@@ -307,7 +261,7 @@ public class TMPTextInfo
         if (t.parent == null)
             return ""; // Or return t.name if you want just the name of the root
 
-        string path = t.name;
+        var path = t.name;
         while (t.parent.parent != null) // We check the parent's parent to stop one level before the root
         {
             t    = t.parent;
@@ -319,7 +273,7 @@ public class TMPTextInfo
 
     public static GameObject GetGameObjectInPrefabInstance(GameObject prefabInstance, string pathInPrefab)
     {
-        Transform foundTransform = prefabInstance.transform.Find(pathInPrefab);
+        var foundTransform = prefabInstance.transform.Find(pathInPrefab);
         return foundTransform ? foundTransform.gameObject : null;
     }
 }

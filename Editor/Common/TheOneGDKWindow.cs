@@ -53,9 +53,9 @@ namespace UITemplate.Editor.TheOneWindowTools
             };
         }
 
-        protected override void OnGUI()
+        protected override void OnImGUI()
         {
-            base.OnGUI();
+            base.OnImGUI();
 
             // If you make changes and want to save them back to the asset (optional)
             if (GUILayout.Button("Save Changes"))

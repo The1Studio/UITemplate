@@ -1,3 +1,4 @@
+#if THEONE_LOCALIZATION
 namespace TheOneStudio.UITemplate.UITemplate
 {
     using UnityEngine;
@@ -8,3 +9,4 @@ namespace TheOneStudio.UITemplate.UITemplate
     {
     }
 }
+#endif

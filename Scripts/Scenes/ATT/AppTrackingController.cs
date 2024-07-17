@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
 {
+    using ServiceImplementation.AdsServices.ConsentInformation;
     using UnityEngine;
     using UnityEngine.SceneManagement;
     using UnityEngine.UI;

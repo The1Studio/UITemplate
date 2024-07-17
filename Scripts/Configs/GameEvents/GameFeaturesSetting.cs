@@ -120,19 +120,6 @@
 
         #endregion
 
-        #region ATT (iOS only)
-
-        [FoldoutGroup("ATT (iOS only)")] [Tooltip("Auto Request App Tracking Transparent for iOS")]
-        public bool autoRequestATT = true;
-
-        [FoldoutGroup("ATT (iOS only)")] [Tooltip("Custom App Tracking Transparent for iOS")]
-        public bool customAtt;
-
-        [FoldoutGroup("ATT (iOS only)/Custom")] [Sirenix.OdinInspector.FilePath(Extensions = "unity")] [ShowIf(nameof(customAtt))]
-        public string attScenePath = "Assets/Scenes/ATTScene.unity";
-
-        #endregion
-        
         #region Button Experience
 
         [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")]
@@ -160,21 +147,6 @@
         #endregion
 
 #if UNITY_EDITOR
-        [FoldoutGroup("ATT (iOS only)/Custom")] [Button] [ShowIf(nameof(customAtt))]
-        private void SetupCustomAtt()
-        {
-            if (string.IsNullOrEmpty(this.attScenePath) || !File.Exists(this.attScenePath))
-            {
-                EditorWindow.focusedWindow.ShowNotification(new GUIContent("ATT Scene Path is not valid!"));
-                return;
-            }
-
-            var scenes = EditorBuildSettings.scenes.ToList();
-            scenes.RemoveAll(x => x.path == this.attScenePath);
-            scenes.Insert(0, new EditorBuildSettingsScene(this.attScenePath, true));
-            EditorBuildSettings.scenes = scenes.ToArray();
-            EditorWindow.focusedWindow.ShowNotification(new GUIContent("Setup ATT Scene Path successfully"));
-        }
         
         private void OnChangeDailyReward() { EditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward); }
         

@@ -7,7 +7,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.Services.AppTracking;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.DeepLinking;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
@@ -42,7 +41,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             PermissionServiceInstaller.Install(this.Container);
             DeepLinkInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
-            this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
 
             // not lock in editor because interstitial fake ads can not close
 #if !UNITY_EDITOR

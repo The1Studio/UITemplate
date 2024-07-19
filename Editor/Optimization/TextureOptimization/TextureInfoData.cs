@@ -2,6 +2,7 @@ namespace UITemplate.Editor.TheOneWindowTools.ListAndOptimize
 {
     using System;
     using System.Collections.Generic;
+    using UITemplate.Editor.Optimization.TextureOptimization;
     using UnityEngine;
 
     [Serializable]

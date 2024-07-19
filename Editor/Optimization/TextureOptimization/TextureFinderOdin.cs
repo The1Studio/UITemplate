@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Editor.TheOneWindowTools.ListAndOptimize
+﻿namespace UITemplate.Editor.Optimization.TextureOptimization
 {
     using System;
     using System.Collections.Generic;
@@ -7,6 +7,7 @@
     using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
+    using UITemplate.Editor.TheOneWindowTools.ListAndOptimize;
     using UnityEditor;
     using UnityEngine;
     using UnityEngine.U2D;

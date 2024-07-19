@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.TheOneWindowTools.ListAndOptimize
+namespace UITemplate.Editor.Optimization
 {
     using System.Collections.Generic;
     using System.Linq;

@@ -5,6 +5,7 @@ namespace UITemplate.Editor
     using GameFoundation.Scripts.Utilities.Extension;
     using UnityEditor;
     using UnityEditor.AddressableAssets;
+    using UnityEditor.AddressableAssets.Settings;
     using UnityEngine;
 
     public static class AssetSearcher
@@ -12,38 +13,34 @@ namespace UITemplate.Editor
         public static Dictionary<TType, HashSet<Object>> GetAllAssetInAddressable<TType>() where TType : Object
         {
             var allAssetInAddressable = new Dictionary<TType, HashSet<Object>>();
+            var settings              = AddressableAssetSettingsDefaultObject.Settings;
+            if (settings == null) return allAssetInAddressable;
 
-            var settings = AddressableAssetSettingsDefaultObject.Settings;
-            if (settings)
+            var totalSteps  = settings.groups.Sum(group => group.entries.Count);
+            var currentStep = 0;
+            foreach (var group in settings.groups)
             {
-                var totalSteps  = settings.groups.Sum(group => group.entries.Count);
-                var currentStep = 0;
-                foreach (var group in settings.groups)
+                foreach (var entry in group.entries)
                 {
-                    foreach (var entry in group.entries)
-                    {
-                        EditorUtility.DisplayProgressBar("Queries all asset", "Processing Addressables", currentStep / (float)totalSteps);
-
-                        var path       = AssetDatabase.GUIDToAssetPath(entry.guid);
-                        var mainObject = AssetDatabase.LoadAssetAtPath<Object>(path);
-                        if (mainObject == null) continue;
-                        
-                        if (mainObject is TType mainObjectTType)
-                        {
-                            allAssetInAddressable.GetOrAdd(mainObjectTType, () => new HashSet<Object>()).Add(mainObject);
-                        }
-
-                        foreach (var type in GetAllDependencies<TType>(path))
-                        {
-                            allAssetInAddressable.GetOrAdd(type, () => new HashSet<Object>()).Add(mainObject);
-                        }
-                    }
+                    EditorUtility.DisplayProgressBar("Queries all asset", "Processing Addressables", currentStep++ / (float)totalSteps);
+                    ProcessEntry<TType>(entry, allAssetInAddressable);
                 }
-
-                EditorUtility.ClearProgressBar();
             }
 
+            EditorUtility.ClearProgressBar();
             return allAssetInAddressable;
+        }
+
+        private static void ProcessEntry<TType>(AddressableAssetEntry entry, Dictionary<TType, HashSet<Object>> allAssetInAddressable) where TType : Object
+        {
+            var path       = AssetDatabase.GUIDToAssetPath(entry.guid);
+            var mainObject = AssetDatabase.LoadAssetAtPath<Object>(path);
+            if (mainObject is TType mainObjectTType)
+            {
+                allAssetInAddressable.GetOrAdd(mainObjectTType, () => new HashSet<Object>()).Add(mainObject);
+            }
+
+            GetAllDependencies<TType>(path).ForEach(type => allAssetInAddressable.GetOrAdd(type, () => new HashSet<Object>()).Add(mainObject));
         }
 
         public static List<TType> GetAllDependencies<TType>(Object objectDeped, bool recursive = true) where TType : Object
@@ -52,14 +49,38 @@ namespace UITemplate.Editor
             return GetAllDependencies<TType>(path, recursive);
         }
 
-        private static List<TType> GetAllDependencies<TType>(string path, bool recursive = true) where TType : Object
+        public static List<TType> GetAllDependencies<TType>(string path, bool recursive = true) where TType : Object
         {
-            var dependencies = new List<string>(AssetDatabase.GetDependencies(path, recursive));
-            return dependencies
+            return AssetDatabase.GetDependencies(path, recursive)
                 .Where(AssetDatabase.IsOpenForEdit)
                 .Select(AssetDatabase.LoadAssetAtPath<TType>)
-                .Where(depO => depO != null)
+                .Where(dep => dep != null)
                 .ToList();
+        }
+
+        public static List<Object> GetAllAssetsInGroup(string groupName)
+        {
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            if (settings == null) return new List<Object>();
+
+            return settings.groups
+                .FirstOrDefault(g => g.Name == groupName)?.entries
+                .Select(e => AssetDatabase.GUIDToAssetPath(e.guid))
+                .Select(AssetDatabase.LoadAssetAtPath<Object>)
+                .Where(asset => asset != null)
+                .ToList() ?? new List<Object>();
+        }
+
+        public static bool IsAssetAddressable(Object obj, out AddressableAssetGroup addressableGroup) { return IsAssetAddressable(AssetDatabase.GetAssetPath(obj), out addressableGroup); }
+
+        public static bool IsAssetAddressable(string assetPath, out AddressableAssetGroup addressableGroup)
+        {
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            addressableGroup = settings?.groups
+                .SelectMany(g => g.entries, (g, e) => new { Group = g, Entry = e })
+                .FirstOrDefault(x => x.Entry.guid == AssetDatabase.AssetPathToGUID(assetPath))?.Group;
+
+            return addressableGroup != null;
         }
 
         public static List<T> GetAllAssetsOfType<T>() where T : Object
@@ -78,6 +99,48 @@ namespace UITemplate.Editor
             }
 
             return assets;
+        }
+
+        public static void MoveAssetToGroup(Object asset, string targetGroupName)
+        {
+            string assetPath = AssetDatabase.GetAssetPath(asset);
+            if (string.IsNullOrEmpty(assetPath))
+            {
+                Debug.LogError("Asset path could not be found.");
+                return;
+            }
+
+            MoveAssetToGroup(assetPath, targetGroupName);
+        }
+
+        public static void MoveAssetToGroup(string assetPath, string targetGroupName)
+        {
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            if (settings == null)
+            {
+                Debug.LogError("Addressable Asset Settings not found.");
+                return;
+            }
+
+            var guid  = AssetDatabase.AssetPathToGUID(assetPath);
+            var entry = settings.FindAssetEntry(guid);
+            if (entry == null)
+            {
+                Debug.LogError($"Asset not found in Addressables for path: {assetPath}");
+                return;
+            }
+
+            var targetGroup = settings.groups.Find(g => g.Name == targetGroupName);
+            if (targetGroup == null)
+            {
+                // Create the group if it doesn't exist
+                targetGroup = settings.CreateGroup(targetGroupName, false, false, false, null);
+            }
+
+            AddressableAssetSettingsDefaultObject.Settings.MoveEntry(entry, targetGroup);
+
+            // Save changes
+            settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
         }
     }
 }

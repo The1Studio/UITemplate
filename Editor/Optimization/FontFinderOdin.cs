@@ -24,19 +24,21 @@
         [Button(ButtonSizes.Medium)]
         private void FindAllFonts() { this.FindFontsInAddressable(); }
 
-        [ButtonGroup("Action")]
-        [Button(ButtonSizes.Medium)]
-        [GUIColor(0.3f, 0.8f, 0.3f)]
-        private void CompressAllFont()
-        {
-            foreach (var noneCompressedFont in this.noneCompressedFonts)
-            {
-                noneCompressedFont.FontImporter.fontTextureCase  = FontTextureCase.CustomSet;
-                noneCompressedFont.FontImporter.fontTextureCase  = FontTextureCase.CustomSet;
-                noneCompressedFont.FontImporter.customCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz +-*/=\\|[]{}.,;\"':!@#$%^&()?";
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(noneCompressedFont.Font), ImportAssetOptions.ForceUpdate);
-            }
-        }
+        // Temporary disable this feature because it's not working as expected
+        
+        // [ButtonGroup("Action")]
+        // [Button(ButtonSizes.Medium)]
+        // [GUIColor(0.3f, 0.8f, 0.3f)]
+        // private void CompressAllFont()
+        // {
+        //     foreach (var noneCompressedFont in this.noneCompressedFonts)
+        //     {
+        //         noneCompressedFont.FontImporter.fontTextureCase  = FontTextureCase.CustomSet;
+        //         noneCompressedFont.FontImporter.fontTextureCase  = FontTextureCase.CustomSet;
+        //         noneCompressedFont.FontImporter.customCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz +-*/=\\|[]{}.,;\"':!@#$%^&()?";
+        //         AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(noneCompressedFont.Font), ImportAssetOptions.ForceUpdate);
+        //     }
+        // }
 
         private void FindFontsInAddressable()
         {

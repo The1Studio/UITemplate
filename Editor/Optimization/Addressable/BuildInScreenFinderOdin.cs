@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.Optimization
+namespace UITemplate.Editor.Optimization.Addressable
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -41,7 +41,7 @@ namespace UITemplate.Editor.Optimization
             (this.activeScenes, this.dependencyAssets, this.buildInSceneAssetsThatNotInRightGroup, this.notBuildInSceneAssetsThatNotInRightGroup) = AnalyzeProject();
         }
 
-        public static (HashSet<SceneAsset>, HashSet<Object>, HashSet<Object>, HashSet<Object>) AnalyzeProject()
+        private static (HashSet<SceneAsset>, HashSet<Object>, HashSet<Object>, HashSet<Object>) AnalyzeProject()
         {
             // Find all active screens in the build
             var activeScenes = FindActiveScreens().ToHashSet();

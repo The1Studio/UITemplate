@@ -41,7 +41,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
         [NonSerialized]
         private static readonly Dictionary<string, string> PackagesVersionToUse = new()
         {
-            { "com.google.ads.mobile", "9.2.0" },
+            { "com.google.ads.mobile", "9.1.1" },
             { "com.unity.purchasing", "4.12.0" },
         };
 

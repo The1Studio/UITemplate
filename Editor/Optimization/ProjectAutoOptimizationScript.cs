@@ -1,5 +1,6 @@
 namespace UITemplate.Editor.Optimization
 {
+    using UITemplate.Editor.Optimization.Addressable;
     using UnityEditor;
     using UnityEngine;
 

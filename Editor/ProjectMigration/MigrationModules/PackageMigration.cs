@@ -3,10 +3,14 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.IO.Compression;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using Newtonsoft.Json.Linq;
+    using UnityEditor;
     using UnityEditor.PackageManager;
     using UnityEngine;
+    using UnityEngine.Networking;
 
     public static class PackageMigration
     {
@@ -155,6 +159,62 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             }
 
             return updated;
+        }
+
+        public static async UniTaskVoid DownloadThenImportPackage(string downloadUrl, string fileName)
+        {
+            var path            = Path.Combine(Application.temporaryCachePath, $"{fileName}.unitypackage"); 
+            var downloadHandler = new DownloadHandlerFile(path);
+            
+            var webRequest = new UnityWebRequest(downloadUrl)
+            {
+                method          = UnityWebRequest.kHttpVerbGET,
+                downloadHandler = downloadHandler
+            };
+
+            await webRequest.SendWebRequest();
+
+#if UNITY_2020_1_OR_NEWER
+            if (webRequest.result != UnityWebRequest.Result.Success)
+#else
+            if (webRequest.isNetworkError || webRequest.isHttpError)
+#endif
+            {
+                Debug.LogError("AutoMigation: Failed to download package: " + webRequest.error);
+            }
+            else
+            {
+                AssetDatabase.ImportPackage(path, false);
+            }
+        }
+        
+        public static async UniTaskVoid DownloadThenUnZip(string downloadUrl, string fileName, string unzipPath)
+        {
+            var path            = Path.Combine(Application.temporaryCachePath, $"{fileName}.zip"); 
+            var downloadHandler = new DownloadHandlerFile(path);
+            
+            var webRequest = new UnityWebRequest(downloadUrl)
+            {
+                method          = UnityWebRequest.kHttpVerbGET,
+                downloadHandler = downloadHandler
+            };
+
+            var operation = webRequest.SendWebRequest();
+            await operation;
+
+            if (webRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("AutoMigation: Failed to download zip file: " + webRequest.error);
+            }
+            else
+            {
+                //unzip file to the specified path
+                await UniTask.SwitchToMainThread();
+                unzipPath = Path.Combine(Application.dataPath, unzipPath);
+                ZipFile.ExtractToDirectory(path, unzipPath);
+            }
+            
+            
         }
     }
 }

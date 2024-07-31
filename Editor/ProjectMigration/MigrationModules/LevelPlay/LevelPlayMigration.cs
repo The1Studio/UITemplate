@@ -1,10 +1,12 @@
 /// <summary>
 /// This namespace contains classes related to the migration of the LevelPlay project.
 /// </summary>
+
 namespace UITemplate.Editor.ProjectMigration.MigrationModules
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Xml;
     using UnityEngine;
 
@@ -21,7 +23,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // { "IronSourceMaioAdapter", "4.1.11.11" },
             // Add other iosPodName and newVersion pairs as needed
         };
-
+        
         /// <summary>
         /// This method is the entry point for the migration of the LevelPlay project.
         /// It changes the version of the iosPods in all AdapterDependencies.xml files according to the predefined dictionary.
@@ -30,8 +32,10 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
         {
 #if IRONSOURCE
             ChangeIosPodVersionInAllFiles();
+            MolocoMigration.UpdateIosPostProcess();
 #endif
         }
+        
 
         /// <summary>
         /// This method changes the version of the iosPods in all AdapterDependencies.xml files according to the predefined dictionary.
@@ -39,32 +43,72 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
         /// </summary>
         private static void ChangeIosPodVersionInAllFiles()
         {
+            var dependencies = GetAllDepedenciesDoc();
+
+            foreach (var (doc, filePath) in dependencies)
+            {
+                var iosPodNodes = doc.SelectNodes("//iosPod");
+
+                var updated = false;
+                if (iosPodNodes != null)
+                {
+                    foreach (XmlNode iosPodNode in iosPodNodes)
+                    {
+                        // Check if the name attribute of the iosPod node is in the dictionary
+                        var ipodName = iosPodNode.Attributes["name"].Value;
+                        if (iosPodNode.Attributes != null && IOSPodVersions.ContainsKey(ipodName) && !iosPodNode.Attributes["version"].Value.Equals(IOSPodVersions[ipodName]))
+                        {
+                            // Change the version attribute to the new version from the dictionary
+                            iosPodNode.Attributes["version"].Value = IOSPodVersions[ipodName];
+                            updated = true;
+                        }
+                    }
+                }
+
+                if (updated)
+                {
+                    doc.Save(filePath);
+                    Debug.Log($"Updated {filePath}");
+                }
+            }
+        }
+
+        private static (XmlDocument, string)[] GetAllDepedenciesDoc()
+        {
             var rootPath      = "Assets/LevelPlay/Editor";
             var searchPattern = "*AdapterDependencies.xml";
 
             var filePaths = Directory.GetFiles(rootPath, searchPattern, SearchOption.AllDirectories);
-
-            foreach (var filePath in filePaths)
+            return filePaths.Select(filePath =>
             {
                 var doc = new XmlDocument();
                 doc.Load(filePath);
+                return (doc, filePath);
+            }).ToArray();
+        }
 
+        public static bool IsIOSHasAdapters(string adapterName)
+        {
+            var depedencies = GetAllDepedenciesDoc();
+
+            foreach (var (doc, filePath) in depedencies)
+            {
                 var iosPodNodes = doc.SelectNodes("//iosPod");
 
                 if (iosPodNodes != null)
+                {
                     foreach (XmlNode iosPodNode in iosPodNodes)
                     {
                         // Check if the name attribute of the iosPod node is in the dictionary
-                        if (iosPodNode.Attributes != null && IOSPodVersions.ContainsKey(iosPodNode.Attributes["name"].Value))
+                        if (iosPodNode.Attributes != null && adapterName.Equals(iosPodNode.Attributes["name"].Value))
                         {
-                            // Change the version attribute to the new version from the dictionary
-                            iosPodNode.Attributes["version"].Value = IOSPodVersions[iosPodNode.Attributes["name"].Value];
+                            return true;
                         }
                     }
-
-                doc.Save(filePath);
-                Debug.Log(filePath);
+                }
             }
+
+            return false;
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     using System.Linq;
     using Sirenix.OdinInspector;
+    using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
     using TheOneStudio.UITemplate.UITemplate.Services.Vibration;
     using UnityEngine;
 #if UNITY_EDITOR
@@ -156,6 +157,12 @@
 
         [OnValueChanged("OnChangeDailyQueueReward")] [BoxGroup("Daily Queue Reward")]
         public bool enableDailyQueueReward;
+
+        #endregion
+
+        #region Cheat Settings
+
+        [BoxGroup("Cheat Settings")] public TheOneCheatActiveType cheatActiveBy = TheOneCheatActiveType.DrawTripleCircle;
 
         #endregion
 

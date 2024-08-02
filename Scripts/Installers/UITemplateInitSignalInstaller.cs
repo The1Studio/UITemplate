@@ -38,7 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.DeclareSignal<OnStateEnterSignal>();
             this.Container.DeclareSignal<OnStateExitSignal>();
 
-            //Creative
+            //Creative, Cheat
             this.Container.DeclareSignal<ChangeLevelCreativeSignal>();
         }
     }

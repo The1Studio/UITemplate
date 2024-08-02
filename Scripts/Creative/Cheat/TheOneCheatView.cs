@@ -3,6 +3,7 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using Sirenix.OdinInspector;
+    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Creative.CheatLevel;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -10,12 +11,6 @@
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
-
-    public enum TheOneCheatActiveType
-    {
-        TripleTap,
-        DrawTripleCircle,
-    }
 
     public class TheOneCheatView : MonoBehaviour
     {
@@ -27,14 +22,12 @@
         [BoxGroup("Level")]    public TMP_InputField        inputLevel;
         [BoxGroup("Level")]    public Button                btnChangeLevel;
 
-        public virtual TheOneCheatActiveType TheOneCheatActiveType { get; set; } = TheOneCheatActiveType.DrawTripleCircle;
-
         private ICheatDetector cheatDetector;
 
         #region Inject
 
         [Inject] private UITemplateInventoryDataController inventoryDataController;
-        [Inject] private DiContainer                       diContainer;
+        [Inject] private GameFeaturesSetting               gameFeaturesSetting;
         [Inject] private UITemplateLevelDataController     levelDataController;
         [Inject] private SignalBus                         signalBus;
 
@@ -47,7 +40,7 @@
             this.btnClose.onClick.AddListener(this.OnCloseView);
             this.btnChangeLevel.onClick.AddListener(this.OnChangeLevelClick);
 
-            this.cheatDetector = this.TheOneCheatActiveType switch
+            this.cheatDetector = this.gameFeaturesSetting.cheatActiveBy switch
             {
                 TheOneCheatActiveType.TripleTap        => new TripleTapCheatDetector(),
                 TheOneCheatActiveType.DrawTripleCircle => new CircleDrawCheatDetector(),

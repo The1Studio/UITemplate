@@ -162,7 +162,7 @@
 
         #region Cheat Settings
 
-        [BoxGroup("Cheat Settings")] public TheOneCheatActiveType cheatActiveBy;
+        [BoxGroup("Cheat Settings")] public TheOneCheatActiveType cheatActiveBy = TheOneCheatActiveType.DrawTripleCircle;
 
         #endregion
 

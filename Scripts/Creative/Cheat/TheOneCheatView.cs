@@ -1,8 +1,10 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
 {
+    using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using Sirenix.OdinInspector;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Creative.CheatLevel;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -17,7 +19,8 @@
         [BoxGroup("Common")]   public GameObject            goContainer;
         [BoxGroup("Common")]   public Button                btnClose;
         [BoxGroup("UI")]       public UITemplateOnOffButton onOffUI;
-        [BoxGroup("Currency")] public TMP_InputField        inputCurrency, inputCurrencyValue;
+        [BoxGroup("Currency")] public TMP_Dropdown          ddCurrency;
+        [BoxGroup("Currency")] public TMP_InputField        inputCurrencyValue;
         [BoxGroup("Currency")] public Button                btnAddCurrency;
         [BoxGroup("Level")]    public TMP_InputField        inputLevel;
         [BoxGroup("Level")]    public Button                btnChangeLevel;
@@ -30,6 +33,7 @@
         [Inject] private GameFeaturesSetting               gameFeaturesSetting;
         [Inject] private UITemplateLevelDataController     levelDataController;
         [Inject] private SignalBus                         signalBus;
+        [Inject] private UITemplateCurrencyBlueprint       currencyBlueprint;
 
         #endregion
 
@@ -60,7 +64,11 @@
 
         private void OnCloseView() { this.goContainer.SetActive(false); }
 
-        private void OnAddCurrencyClick() { this.inventoryDataController.AddCurrency(int.Parse(this.inputCurrencyValue.text), this.inputCurrency.text).Forget(); }
+        private void OnAddCurrencyClick()
+        {
+            var ddCurrencyOption = this.ddCurrency.options[this.ddCurrency.value].text;
+            this.inventoryDataController.AddCurrency(int.Parse(this.inputCurrencyValue.text), ddCurrencyOption).Forget();
+        }
 
         private void OnOnOffUIClick()
         {
@@ -81,6 +89,13 @@
         {
             if (!this.cheatDetector.Check()) return;
             this.goContainer.SetActive(true);
+            this.SetupDropdown();
+        }
+
+        private void SetupDropdown()
+        {
+            this.ddCurrency.ClearOptions();
+            this.ddCurrency.AddOptions(this.currencyBlueprint.Keys.ToList());
         }
     }
 }

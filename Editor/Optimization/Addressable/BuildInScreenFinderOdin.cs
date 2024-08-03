@@ -99,11 +99,12 @@ namespace UITemplate.Editor.Optimization.Addressable
 
         private void MoveWrongAtlasTexture()
         {
+            if (this.notInRightAtlasTexture.Count == 0) return;
             //Create folder Assets/Sprites/BuildInUI
             var assetsSpritesBuildinui = "Assets/Sprites/BuildInUI";
             AssetSearcher.CreateFolderIfNotExist(assetsSpritesBuildinui);
             //Move this.notInRightAtlasTexture to Assets/Sprites/BuildInUI
-            foreach (var texture in AnalyzeAtlases(this.dependencyAssets))
+            foreach (var texture in this.notInRightAtlasTexture)
             {
                 AssetSearcher.MoveToNewFolder(texture, assetsSpritesBuildinui);
             }

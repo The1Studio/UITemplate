@@ -2,10 +2,12 @@ namespace UITemplate.Editor.Optimization.Addressable
 {
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
     using UnityEditor;
     using UnityEngine;
+    using UnityEngine.U2D;
 
     public class BuildInScreenFinderOdin : OdinEditorWindow
     {
@@ -13,12 +15,15 @@ namespace UITemplate.Editor.Optimization.Addressable
         private static string NotBuildinScreenAssetGroupName = "NotBuildInScreenAsset";
 
 
-        [ShowInInspector] [TableList] [Title("Off Compression Meshes", TitleAlignment = TitleAlignments.Centered)]
+        [ShowInInspector] [TableList] [Title("Active Scenes", TitleAlignment = TitleAlignments.Centered)]
         private HashSet<SceneAsset> activeScenes = new();
 
-        [ShowInInspector] [TableList] [Title("Low Compression Meshes", TitleAlignment = TitleAlignments.Centered)]
+        [ShowInInspector] [TableList] [Title("Dependencies asset", TitleAlignment = TitleAlignments.Centered)]
         private HashSet<Object> dependencyAssets = new();
 
+        [ShowInInspector] [TableList] [Title("Not In Right atlas texture", TitleAlignment = TitleAlignments.Centered)]
+        private HashSet<Texture> notInRightAtlasTexture = new();
+        
         [ShowInInspector] [TableList] [Title("Build In Scenes Assets that not in right group", TitleAlignment = TitleAlignments.Centered)]
         private HashSet<Object> buildInSceneAssetsThatNotInRightGroup = new();
 
@@ -34,11 +39,17 @@ namespace UITemplate.Editor.Optimization.Addressable
 
         [ButtonGroup("Optimize Loading Screen"), GUIColor(1, 1, 0)]
         [Button(ButtonSizes.Medium)]
-        private void RegroupBuildInScreenAddressable() { this.ReGroup(); }
+        private void RegroupBuildInScreenAddressable()
+        {
+            this.MoveWrongAtlasTexture();
+            this.ReGroup();
+        }
 
         private void FindActiveScreensAndAddressableReferences()
         {
             (this.activeScenes, this.dependencyAssets, this.buildInSceneAssetsThatNotInRightGroup, this.notBuildInSceneAssetsThatNotInRightGroup) = AnalyzeProject();
+
+            this.notInRightAtlasTexture = AnalyzeAtlases(this.dependencyAssets);
         }
 
         private static (HashSet<SceneAsset>, HashSet<Object>, HashSet<Object>, HashSet<Object>) AnalyzeProject()
@@ -58,6 +69,18 @@ namespace UITemplate.Editor.Optimization.Addressable
             return (activeScenes, dependencyAssets, buildInSceneAssetsThatNotInRightGroup, notBuildInSceneAssetsThatNotInRightGroup);
         }
 
+        private static HashSet<Texture> AnalyzeAtlases(HashSet<Object> dependenciesAsset)
+        {
+            var result = new HashSet<Texture>();
+            var atlases                   = AssetSearcher.GetAllAssetsOfType<SpriteAtlas>();
+            foreach (var textureInAtlases in atlases.Select(spriteAtlas => AssetSearcher.GetAllDependencies<Texture>(spriteAtlas)))
+            {
+                result.AddRange(textureInAtlases.Where(dependenciesAsset.Contains));
+            }
+
+            return result;
+        }
+
         private static IEnumerable<SceneAsset> FindActiveScreens() => EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path));
 
         public static void AutoOptimize()
@@ -72,6 +95,19 @@ namespace UITemplate.Editor.Optimization.Addressable
                 window.buildInSceneAssetsThatNotInRightGroup    = buildInSceneAssetsThatNotInRightGroup;
                 window.notBuildInSceneAssetsThatNotInRightGroup = notBuildInSceneAssetsThatNotInRightGroup;
             }
+        }
+
+        private void MoveWrongAtlasTexture()
+        {
+            //Create folder Assets/Sprites/BuildInUI
+            var assetsSpritesBuildinui = "Assets/Sprites/BuildInUI";
+            AssetSearcher.CreateFolderIfNotExist(assetsSpritesBuildinui);
+            //Move this.notInRightAtlasTexture to Assets/Sprites/BuildInUI
+            foreach (var texture in AnalyzeAtlases(this.dependencyAssets))
+            {
+                AssetSearcher.MoveToNewFolder(texture, assetsSpritesBuildinui);
+            }
+            AssetDatabase.Refresh();
         }
         
         private void ReGroup()

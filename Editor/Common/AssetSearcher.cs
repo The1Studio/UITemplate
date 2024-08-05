@@ -144,10 +144,15 @@ namespace UITemplate.Editor
             // Save changes
             settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
         }
-        public static void CreateFolderIfNotExist(string directoryPath)
+        public static bool CreateFolderIfNotExist(string directoryPath)
         {
             if (!Directory.Exists(directoryPath))
+            {
                 Directory.CreateDirectory(directoryPath);
+                return true;
+            }
+
+            return false;
         }
         
         //Move targetObject to assetsSpritesBuildinui directory

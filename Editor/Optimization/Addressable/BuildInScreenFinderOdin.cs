@@ -6,6 +6,7 @@ namespace UITemplate.Editor.Optimization.Addressable
     using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
+    using UITemplate.Editor.Optimization.TextureOptimization.MenuItems;
     using UnityEditor;
     using UnityEngine;
 
@@ -97,7 +98,7 @@ namespace UITemplate.Editor.Optimization.Addressable
                 {
                     var assetPath = AssetDatabase.GetAssetPath(texture);
                     var fileName  = Path.GetFileName(assetPath);
-                    if (!assetPath.Equals(Path.Combine(GetTextureBuildInPath(scene), fileName)))
+                    if (!assetPath.Equals($"{GetTextureBuildInPath(scene)}/{fileName}"))
                     {
                         result[scene].Add(texture);
                     }
@@ -132,11 +133,15 @@ namespace UITemplate.Editor.Optimization.Addressable
             foreach (var (scene, textures) in this.notInRightAtlasTexture)
             {
                 if (textures.Count == 0) continue;
-                AssetSearcher.CreateFolderIfNotExist(GetTextureBuildInPath(scene));
+                var folderPath = GetTextureBuildInPath(scene);
+                if (AssetSearcher.CreateFolderIfNotExist(folderPath))
+                {
+                    CreateAtlasFromFolders.CreateAtlasForFolder(folderPath, AssetDatabase.LoadAssetAtPath<Object>(folderPath));
+                }
                 AssetDatabase.Refresh();
                 foreach (var texture in textures)
                 {
-                    AssetSearcher.MoveToNewFolder(texture, GetTextureBuildInPath(scene));
+                    AssetSearcher.MoveToNewFolder(texture, folderPath);
                 }
             }
             AssetDatabase.Refresh();

@@ -136,9 +136,10 @@ namespace UITemplate.Editor.Optimization.Addressable
                 var folderPath = GetTextureBuildInPath(scene);
                 if (AssetSearcher.CreateFolderIfNotExist(folderPath))
                 {
+                    AssetDatabase.Refresh();
                     CreateAtlasFromFolders.CreateAtlasForFolder(folderPath, AssetDatabase.LoadAssetAtPath<Object>(folderPath));
+                    AssetDatabase.Refresh();
                 }
-                AssetDatabase.Refresh();
                 foreach (var texture in textures)
                 {
                     AssetSearcher.MoveToNewFolder(texture, folderPath);

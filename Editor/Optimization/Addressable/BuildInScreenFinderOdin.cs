@@ -1,31 +1,26 @@
 namespace UITemplate.Editor.Optimization.Addressable
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
     using UnityEditor;
     using UnityEngine;
-    using UnityEngine.U2D;
 
     public class BuildInScreenFinderOdin : OdinEditorWindow
     {
-        private static string BuildinScreenAssetGroupName    = "BuildInScreenAsset";
         private static string NotBuildinScreenAssetGroupName = "NotBuildInScreenAsset";
 
-
-        [ShowInInspector] [TableList] [Title("Active Scenes", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<SceneAsset> activeScenes = new();
-
         [ShowInInspector] [TableList] [Title("Dependencies asset", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<Object> dependencyAssets = new();
+        private Dictionary<SceneAsset, HashSet<Object>> sceneToDependencyAsset = new();
 
         [ShowInInspector] [TableList] [Title("Not In Right atlas texture", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<Texture> notInRightAtlasTexture = new();
+        private Dictionary<SceneAsset, HashSet<Texture>> notInRightAtlasTexture = new();
         
         [ShowInInspector] [TableList] [Title("Build In Scenes Assets that not in right group", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<Object> buildInSceneAssetsThatNotInRightGroup = new();
+        private Dictionary<SceneAsset, HashSet<Object>> buildInSceneAssetsThatNotInRightGroup = new();
 
         [ShowInInspector] [TableList] [Title("Not Build In Scenes Assets that not in right group", TitleAlignment = TitleAlignments.Centered)]
         private HashSet<Object> notBuildInSceneAssetsThatNotInRightGroup = new();
@@ -45,39 +40,71 @@ namespace UITemplate.Editor.Optimization.Addressable
             this.ReGroup();
         }
 
+        private static string GetSceneAssetGroupName(SceneAsset sceneAsset) => $"BuildInScreenAsset_{sceneAsset.name}";
+
         private void FindActiveScreensAndAddressableReferences()
         {
-            (this.activeScenes, this.dependencyAssets, this.buildInSceneAssetsThatNotInRightGroup, this.notBuildInSceneAssetsThatNotInRightGroup) = AnalyzeProject();
+            (this.sceneToDependencyAsset, this.buildInSceneAssetsThatNotInRightGroup, this.notBuildInSceneAssetsThatNotInRightGroup) = AnalyzeProject();
 
-            this.notInRightAtlasTexture = AnalyzeAtlases(this.dependencyAssets);
+            this.notInRightAtlasTexture = AnalyzeAtlases(this.sceneToDependencyAsset);
         }
 
-        private static (HashSet<SceneAsset>, HashSet<Object>, HashSet<Object>, HashSet<Object>) AnalyzeProject()
+        private static (Dictionary<SceneAsset, HashSet<Object>>, Dictionary<SceneAsset, HashSet<Object>>, HashSet<Object>) AnalyzeProject()
         {
             // Find all active screens in the build
-            var activeScenes = FindActiveScreens().ToHashSet();
+            var activeScenes = FindActiveScreens().ToList();
             // Find all referenced assets in Addressable
-            var dependencyAssets = activeScenes.SelectMany(sceneAsset => AssetSearcher.GetAllDependencies<Object>(sceneAsset)).ToHashSet();
+            var sceneToDependencyAssets = activeScenes.ToDictionary(scene => scene, scene =>
+            {
+                var hashSet = AssetSearcher.GetAllDependencies<Object>(scene).ToHashSet();
+                return hashSet;
+            });
 
-            var buildInSceneAssetsThatNotInRightGroup = dependencyAssets.Where(asset => AssetSearcher.IsAssetAddressable(asset, out var group) && !group.name.Equals(BuildinScreenAssetGroupName))
-                .ToHashSet();
-
-            var allAssetsInGroup = AssetSearcher.GetAllAssetsInGroup(BuildinScreenAssetGroupName);
+            var countedAssets  = new HashSet<Object>();
+            var buildInSceneAssetsThatNotInRightGroup = sceneToDependencyAssets.ToDictionary(kp => kp.Key, kp =>
+            {
+                var hashSet = kp.Value.Where(asset => IsAssetInNotRightBuildInGroup(asset, kp.Key))
+                    .ToHashSet();
+                hashSet.RemoveRange(countedAssets);
+                countedAssets.AddRange(kp.Value);
+                return hashSet;
+            });
+            
+            var allAssetsInGroup = activeScenes.SelectMany(scene => AssetSearcher.GetAllAssetsInGroup(GetSceneAssetGroupName(scene))).ToHashSet();
+            var dependencyAssets = sceneToDependencyAssets.SelectMany(kp => kp.Value).ToHashSet();
             var notBuildInSceneAssetsThatNotInRightGroup = allAssetsInGroup.Where(asset => !dependencyAssets.Contains(asset))
                 .ToHashSet();
             
-            return (activeScenes, dependencyAssets, buildInSceneAssetsThatNotInRightGroup, notBuildInSceneAssetsThatNotInRightGroup);
+            return (sceneToDependencyAssets, buildInSceneAssetsThatNotInRightGroup, notBuildInSceneAssetsThatNotInRightGroup);
         }
 
-        private static HashSet<Texture> AnalyzeAtlases(HashSet<Object> dependenciesAsset)
+        private static bool IsAssetInNotRightBuildInGroup(Object asset, SceneAsset sceneAsset)
         {
-            var result = new HashSet<Texture>();
-            var atlases                   = AssetSearcher.GetAllAssetsOfType<SpriteAtlas>();
-            foreach (var textureInAtlases in atlases.Select(spriteAtlas => AssetSearcher.GetAllDependencies<Texture>(spriteAtlas)))
-            {
-                result.AddRange(textureInAtlases.Where(dependenciesAsset.Contains));
-            }
+            return AssetSearcher.IsAssetAddressable(asset, out var group) && !group.name.Equals(GetSceneAssetGroupName(sceneAsset));
+        }
 
+        private static Dictionary<SceneAsset, HashSet<Texture>> AnalyzeAtlases(Dictionary<SceneAsset, HashSet<Object>> sceneToDependencyAsset)
+        {
+            var result            = new Dictionary<SceneAsset, HashSet<Texture>>();
+
+            var countedTextures = new HashSet<Texture>();
+            foreach (var (scene, assets) in sceneToDependencyAsset)
+            {
+                result.Add(scene, new HashSet<Texture>());
+                var textures = assets.OfType<Texture>().ToHashSet();
+                textures.RemoveRange(countedTextures);
+                foreach (var texture in textures)
+                {
+                    var assetPath = AssetDatabase.GetAssetPath(texture);
+                    var fileName  = Path.GetFileName(assetPath);
+                    if (!assetPath.Equals(Path.Combine(GetTextureBuildInPath(scene), fileName)))
+                    {
+                        result[scene].Add(texture);
+                    }
+                }
+                countedTextures.AddRange(textures);
+            }
+            
             return result;
         }
 
@@ -85,37 +112,48 @@ namespace UITemplate.Editor.Optimization.Addressable
 
         public static void AutoOptimize()
         {
-            var (activeScenes, dependenciesAssets, buildInSceneAssetsThatNotInRightGroup, notBuildInSceneAssetsThatNotInRightGroup) = AnalyzeProject();
+            var (dependenciesAssets, buildInSceneAssetsThatNotInRightGroup, notBuildInSceneAssetsThatNotInRightGroup) = AnalyzeProject();
             if (buildInSceneAssetsThatNotInRightGroup.Count > 0 || notBuildInSceneAssetsThatNotInRightGroup.Count > 0)
             {
                 var window = GetWindow<BuildInScreenFinderOdin>();
-                window.Show();
-                window.activeScenes                             = activeScenes;
-                window.dependencyAssets                         = dependenciesAssets;
+                window.sceneToDependencyAsset                   = dependenciesAssets;
                 window.buildInSceneAssetsThatNotInRightGroup    = buildInSceneAssetsThatNotInRightGroup;
                 window.notBuildInSceneAssetsThatNotInRightGroup = notBuildInSceneAssetsThatNotInRightGroup;
             }
         }
 
+        private static string GetTextureBuildInPath(SceneAsset sceneAsset)
+        {
+            return $"Assets/Sprites/BuildInUI/{sceneAsset.name}";
+        }
+
         private void MoveWrongAtlasTexture()
         {
-            if (this.notInRightAtlasTexture.Count == 0) return;
-            //Create folder Assets/Sprites/BuildInUI
-            var assetsSpritesBuildinui = "Assets/Sprites/BuildInUI";
-            AssetSearcher.CreateFolderIfNotExist(assetsSpritesBuildinui);
-            //Move this.notInRightAtlasTexture to Assets/Sprites/BuildInUI
-            foreach (var texture in this.notInRightAtlasTexture)
+            foreach (var (scene, textures) in this.notInRightAtlasTexture)
             {
-                AssetSearcher.MoveToNewFolder(texture, assetsSpritesBuildinui);
+                if (textures.Count == 0) continue;
+                AssetSearcher.CreateFolderIfNotExist(GetTextureBuildInPath(scene));
+                AssetDatabase.Refresh();
+                foreach (var texture in textures)
+                {
+                    AssetSearcher.MoveToNewFolder(texture, GetTextureBuildInPath(scene));
+                }
             }
             AssetDatabase.Refresh();
         }
         
         private void ReGroup()
         {
+            //if there is no asset in BuilbuildInSceneAssetsThatNotInRightGroupd and notBuildInSceneAssetsThatNotInRightGroup, return
+            if (this.buildInSceneAssetsThatNotInRightGroup.Sum(kpv => kpv.Value.Count) == 0 && this.notBuildInSceneAssetsThatNotInRightGroup.Count == 0)
+            {
+                EditorUtility.DisplayDialog("Optimizing BuildIn Scene Assets!!", "There are no assets to reorganize.", "OK");
+                return;
+            }
+            
             // Information and Confirmation Dialog
             bool userConfirmed = EditorUtility.DisplayDialog("Optimizing BuildIn Scene Assets!!", "This will reorganize assets into the correct Addressable Asset Groups based on their usage. Do you want to proceed?", "Ok");
-            
+
             if (!userConfirmed)
             {
                 return; // Exit if the user does not confirm
@@ -129,12 +167,15 @@ namespace UITemplate.Editor.Optimization.Addressable
 
             var movedAssets = new List<string>();
 
-            foreach (var asset in this.buildInSceneAssetsThatNotInRightGroup)
+            foreach (var (scene, values) in this.buildInSceneAssetsThatNotInRightGroup)
             {
-                AssetSearcher.MoveAssetToGroup(asset, BuildinScreenAssetGroupName);
-                processedAssets++;
-                movedAssets.Add(AssetDatabase.GetAssetPath(asset));
-                EditorUtility.DisplayProgressBar("ReGrouping Assets", $"Processing {AssetDatabase.GetAssetPath(asset)}", processedAssets / (float)totalAssets);
+                foreach (var asset in values)
+                {
+                    AssetSearcher.MoveAssetToGroup(asset, GetSceneAssetGroupName(scene));
+                    processedAssets++;
+                    movedAssets.Add(AssetDatabase.GetAssetPath(asset));
+                    EditorUtility.DisplayProgressBar("ReGrouping Assets", $"Processing {AssetDatabase.GetAssetPath(asset)}", processedAssets / (float)totalAssets);
+                }
             }
 
             foreach (var asset in this.notBuildInSceneAssetsThatNotInRightGroup)

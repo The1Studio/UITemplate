@@ -3,6 +3,7 @@ namespace UITemplate.Editor
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using DG.DemiEditor;
     using GameFoundation.Scripts.Utilities.Extension;
     using UnityEditor;
     using UnityEditor.AddressableAssets;
@@ -154,7 +155,11 @@ namespace UITemplate.Editor
         {
             var assetPath = AssetDatabase.GetAssetPath(targetObject);
             var newPath   = Path.Combine(assetsSpritesBuildinui, Path.GetFileName(assetPath));
-            AssetDatabase.MoveAsset(assetPath, newPath);
+            var moveError = AssetDatabase.MoveAsset(assetPath, newPath);
+            if (!moveError.IsNullOrEmpty())
+            {
+                Debug.LogError(moveError);
+            }
         }
     }
 }

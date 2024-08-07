@@ -9,17 +9,18 @@ namespace UITemplate.Editor.Optimization
     {
         static ProjectAutoOptimizationScript()
         {
+            if (EditorUtility.scriptCompilationFailed || EditorApplication.isCompiling)
+            {
+                Debug.LogWarning("Skipping migration due to compilation errors or isCompiling.");
+                return;
+            }
+            
             if (!SessionState.GetBool("AutoOptimizeRan", false))
             {
-                SessionState.SetBool("AutoOptimizeRan", true);
-                AutoOptimize();
-            }
-        }
+                SessionState.SetBool("AutoOptimizeRan", true);            
+                BuildInScreenFinderOdin.AutoOptimize();
 
-        private static void AutoOptimize()
-        {
-            Debug.Log("Auto optimize");
-            BuildInScreenFinderOdin.AutoOptimize();
+            }
         }
     }
 }

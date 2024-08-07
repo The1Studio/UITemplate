@@ -3,6 +3,7 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
+    using UnityEngine;
     using Zenject;
 
 #if UNITY_ANDROID
@@ -11,88 +12,117 @@
 #if THEONE_NOTIFICATION && UNITY_ANDROID
     using Unity.Notifications.Android;
 #endif
-
 #if THEONE_NOTIFICATION && UNITY_IOS
     using Unity.Notifications.iOS;
 #endif
 
-    public class PermissionService
+    public interface IPermissionService
+    {
+        // Only work for ANDROID devices
+        UniTask<bool> RequestPermission(PermissionRequest permissionRequest);
+        UniTask<bool> RequestPermission(UserAuthorization userAuthorization);
+    }
+    public class PermissionService : IPermissionService
     {
         #region Inject
 
         private readonly ILogService logService;
-        private readonly SignalBus   signalBus;
+        private readonly SignalBus signalBus;
 
         public PermissionService(ILogService logService, SignalBus signalBus)
         {
             this.logService = logService;
-            this.signalBus  = signalBus;
+            this.signalBus = signalBus;
         }
 
         #endregion
 
         public async UniTask<bool> RequestPermission(PermissionRequest permissionRequest)
         {
-            this.signalBus.Fire<OnRequestPermissionStartSignal>();
-            this.logService.Log($"onelog: CheckPermission Start: {permissionRequest}");
-            var isGranted = await InternalRequestPermission(permissionRequest);
-            this.signalBus.Fire(new OnRequestPermissionCompleteSignal() { IsGranted = isGranted });
-            this.logService.Log($"onelog: CheckPermission Complete: {permissionRequest} - isGranted: {isGranted}");
-            return isGranted;
+            return await RequestPermissionInternal(permissionRequest, permissionRequest.ToPermissionString());
         }
 
-        private static async UniTask<bool> InternalRequestPermission(PermissionRequest permissionRequest)
+        public async UniTask<bool> RequestPermission(UserAuthorization userAuthorization)
         {
-            var isWaitingForPermission = false;
-            var isGranted              = false;
-            var permissionString       = permissionRequest.ToPermissionString();
+            return await RequestPermissionInternal(userAuthorization, userAuthorization.ToString());
+        }
 
-            #region Notification
+        private async UniTask<bool> RequestPermissionInternal(object request, string permissionString)
+        {
+            this.signalBus.Fire<OnRequestPermissionStartSignal>();
+            this.logService.Log($"onelog: CheckPermission Start: {request}");
+            bool isGranted;
 
-            if (permissionRequest == PermissionRequest.Notification)
+#if THEONE_NOTIFICATION
+            if (request is PermissionRequest permissionRequest && permissionRequest == PermissionRequest.Notification)
             {
-#if THEONE_NOTIFICATION && UNITY_ANDROID
-                if (PermissionHelper.GetSDKVersionInt() < 28)
-                {
-                    return AndroidNotificationCenter.UserPermissionToPost is not (PermissionStatus.RequestPending or PermissionStatus.NotRequested);
-                }
-#elif THEONE_NOTIFICATION && UNITY_IOS
-                var iOSNotificationSettings = iOSNotificationCenter.GetNotificationSettings();
-                if (iOSNotificationSettings.AuthorizationStatus == AuthorizationStatus.NotDetermined)
-                {
-                    using var req = new AuthorizationRequest(AuthorizationOption.Alert | AuthorizationOption.Badge, true);
-                    await UniTask.WaitUntil(() => req.IsFinished);
-                }
-
-                return iOSNotificationSettings.AuthorizationStatus != AuthorizationStatus.Denied;
-#endif
-            }
-
-            #endregion
-
-#if UNITY_ANDROID
-            if (!Permission.HasUserAuthorizedPermission(permissionString))
-            {
-                isWaitingForPermission = true;
-                var permissionCallbacks = new PermissionCallbacks();
-                permissionCallbacks.PermissionDenied                += _ => { isWaitingForPermission = false; };
-                permissionCallbacks.PermissionDeniedAndDontAskAgain += _ => { isWaitingForPermission = false; };
-                permissionCallbacks.PermissionGranted += _ =>
-                {
-                    isWaitingForPermission = false;
-                    isGranted              = true;
-                };
-                Permission.RequestUserPermission(permissionString, permissionCallbacks);
+                isGranted = await RequestNotificationPermission();
             }
             else
+#endif
             {
-                isGranted = true;
+#if UNITY_ANDROID
+                isGranted = await RequestAndroidPermission(permissionString);
+#else
+                isGranted = await RequestUserAuthorization(permissionString);
+#endif
             }
 
-            await UniTask.WaitUntil(() => !isWaitingForPermission);
-#endif
-
+            this.signalBus.Fire(new OnRequestPermissionCompleteSignal() { IsGranted = isGranted });
+            this.logService.Log($"onelog: CheckPermission Complete: {request} - isGranted: {isGranted}");
             return isGranted;
         }
+
+        private static async UniTask<bool> RequestUserAuthorization(string userAuthorization)
+        {
+            if (System.Enum.TryParse(userAuthorization, out UserAuthorization authorization) && !Application.HasUserAuthorization(authorization))
+            {
+                await Application.RequestUserAuthorization(authorization);
+            }
+            return Application.HasUserAuthorization(authorization);
+        }
+
+#if THEONE_NOTIFICATION && UNITY_ANDROID
+        private static async UniTask<bool> RequestNotificationPermission()
+        {
+            if (PermissionHelper.GetSDKVersionInt() < 28)
+            {
+                return AndroidNotificationCenter.UserPermissionToPost is not (PermissionStatus.RequestPending or PermissionStatus.NotRequested);
+            }
+            return false;
+        }
+#elif THEONE_NOTIFICATION && UNITY_IOS
+        private static async UniTask<bool> RequestNotificationPermission()
+        {
+            var iOSNotificationSettings = iOSNotificationCenter.GetNotificationSettings();
+            if (iOSNotificationSettings.AuthorizationStatus == AuthorizationStatus.NotDetermined)
+            {
+                using var req = new AuthorizationRequest(AuthorizationOption.Alert | AuthorizationOption.Badge, true);
+                await UniTask.WaitUntil(() => req.IsFinished);
+            }
+            return iOSNotificationSettings.AuthorizationStatus != AuthorizationStatus.Denied;
+        }
+#endif
+
+#if UNITY_ANDROID
+        private static async UniTask<bool> RequestAndroidPermission(string permissionString)
+        {
+            if (!Permission.HasUserAuthorizedPermission(permissionString))
+            {
+                var isGranted = false;
+                var permissionCallbacks = new PermissionCallbacks();
+
+                permissionCallbacks.PermissionGranted += _ => isGranted = true;
+                permissionCallbacks.PermissionDenied += _ => isGranted = false;
+                permissionCallbacks.PermissionDeniedAndDontAskAgain += _ => isGranted = false;
+
+                Permission.RequestUserPermission(permissionString, permissionCallbacks);
+
+                await UniTask.WaitUntil(() => isGranted || Permission.HasUserAuthorizedPermission(permissionString));
+                return isGranted || Permission.HasUserAuthorizedPermission(permissionString);
+            }
+            return true;
+        }
+#endif
     }
 }

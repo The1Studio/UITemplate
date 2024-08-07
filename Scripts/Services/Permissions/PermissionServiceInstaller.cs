@@ -7,7 +7,7 @@
     {
         public override void InstallBindings()
         {
-            this.Container.Bind<PermissionService>().AsCached().NonLazy();
+            this.Container.BindInterfacesTo<PermissionService>().AsCached().Lazy();
 
             this.Container.DeclareSignal<OnRequestPermissionStartSignal>();
             this.Container.DeclareSignal<OnRequestPermissionCompleteSignal>();

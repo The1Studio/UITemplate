@@ -7,27 +7,27 @@
 
     public abstract class BaseUnityPermissionService : IPermissionService
     {
-        private readonly ILogService logService;
-        private readonly SignalBus   signalBus;
+        protected readonly ILogService LOGService;
+        protected readonly SignalBus   SignalBus;
 
         protected BaseUnityPermissionService(ILogService logService, SignalBus signalBus)
         {
-            this.logService = logService;
-            this.signalBus  = signalBus;
+            this.LOGService = logService;
+            this.SignalBus  = signalBus;
         }
 
         public virtual async UniTask<bool> RequestPermission(object request)
         {
-            this.signalBus.Fire<OnRequestPermissionStartSignal>();
-            this.logService.Log($"oneLog: CheckPermission Start: {request}");
+            this.SignalBus.Fire<OnRequestPermissionStartSignal>();
+            this.LOGService.Log($"oneLog: CheckPermission Start: {request}");
             bool isGranted;
             if (request is PermissionRequest.Notification)
             {
 #if THEONE_NOTIFICATION
                 isGranted = await this.InternalRequestNotificationPermission();
 #else
+                this.LOGService.Log($"oneLog: You must add THEONE_NOTIFICATION symbol to request notification permission!");
                 isGranted = false;
-                this.logService.Log($"oneLog: You must add THEONE_NOTIFICATION symbol to request notification permission!");
 #endif 
             }
             else
@@ -35,8 +35,8 @@
                 isGranted = await this.InternalRequestPermission(request);
             }
 
-            this.signalBus.Fire(new OnRequestPermissionCompleteSignal { IsGranted = isGranted });
-            this.logService.Log($"onelog: CheckPermission Complete: {request} - isGranted: {isGranted}");
+            this.SignalBus.Fire(new OnRequestPermissionCompleteSignal { IsGranted = isGranted });
+            this.LOGService.Log($"onelog: CheckPermission Complete: {request} - isGranted: {isGranted}");
             return isGranted;
         }
 

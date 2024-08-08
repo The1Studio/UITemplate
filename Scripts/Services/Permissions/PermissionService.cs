@@ -16,13 +16,13 @@
     using Unity.Notifications.iOS;
 #endif
 
-    public interface IPermissionService
-    {
-        // Only work for ANDROID devices
-        UniTask<bool> RequestPermission(PermissionRequest permissionRequest);
-        UniTask<bool> RequestPermission(UserAuthorization userAuthorization);
-    }
-    public class PermissionService : IPermissionService
+    // public interface IPermissionService
+    // {
+    //     // Only work for ANDROID devices
+    //     UniTask<bool> RequestPermission(PermissionRequest permissionRequest);
+    //     UniTask<bool> RequestPermission(UserAuthorization userAuthorization);
+    // }
+    public class PermissionService /*: IPermissionService*/
     {
         #region Inject
 
@@ -54,7 +54,7 @@
             bool isGranted;
 
 #if THEONE_NOTIFICATION
-            if (request is PermissionRequest permissionRequest && permissionRequest == PermissionRequest.Notification)
+            if (request is PermissionRequest and PermissionRequest.Notification)
             {
                 isGranted = await RequestNotificationPermission();
             }

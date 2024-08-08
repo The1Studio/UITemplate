@@ -24,7 +24,7 @@
         protected readonly UITemplateNotificationDataBlueprint UITemplateNotificationDataBlueprint;
         protected readonly ILogService                         Logger;
         protected readonly IAnalyticServices                   AnalyticServices;
-        protected readonly PermissionService                   PermissionService;
+        protected readonly IPermissionService                   PermissionService;
         protected readonly NotificationMappingHelper           NotificationMappingHelper;
 
         #endregion
@@ -39,7 +39,7 @@
 
         protected BaseUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper,
-            ILogService logger, IAnalyticServices analyticServices, PermissionService permissionService)
+            ILogService logger, IAnalyticServices analyticServices, IPermissionService permissionService)
         {
             this.SignalBus                           = signalBus;
             this.UITemplateNotificationBlueprint     = uiTemplateNotificationBlueprint;

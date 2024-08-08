@@ -16,7 +16,7 @@
             this.SignalBus  = signalBus;
         }
 
-        public virtual async UniTask<bool> RequestPermission(object request)
+        public virtual async UniTask<bool> RequestPermission(PermissionRequest request)
         {
             this.SignalBus.Fire<OnRequestPermissionStartSignal>();
             this.LOGService.Log($"oneLog: CheckPermission Start: {request}");
@@ -40,7 +40,7 @@
             return isGranted;
         }
 
-        protected abstract UniTask<bool> InternalRequestPermission(object request);
+        protected abstract UniTask<bool> InternalRequestPermission(PermissionRequest request);
 
         protected abstract UniTask<bool> InternalRequestNotificationPermission();
     }

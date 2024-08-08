@@ -14,9 +14,8 @@
     {
         public IOSPermissionService(ILogService logService, SignalBus signalBus) : base(logService, signalBus) { }
 
-        protected override async UniTask<bool> InternalRequestPermission(object request)
+        protected override async UniTask<bool> InternalRequestPermission(PermissionRequest request)
         {
-            if (request is not UserAuthorization) return false;
             if (Enum.TryParse(request.ToString(), out UserAuthorization authorization) && !Application.HasUserAuthorization(authorization))
             {
                 await Application.RequestUserAuthorization(authorization);

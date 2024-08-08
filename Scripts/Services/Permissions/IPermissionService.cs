@@ -4,6 +4,6 @@
 
     public interface IPermissionService
     {
-        UniTask<bool> RequestPermission(object request);
+        UniTask<bool> RequestPermission(PermissionRequest request);
     }
 }

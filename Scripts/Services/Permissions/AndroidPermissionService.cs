@@ -14,11 +14,10 @@
     {
         public AndroidPermissionService(ILogService logService, SignalBus signalBus) : base(logService, signalBus) { }
 
-        protected override async UniTask<bool> InternalRequestPermission(object request)
+        protected override async UniTask<bool> InternalRequestPermission(PermissionRequest request)
         {
 #if UNITY_ANDROID
-            if (request is not PermissionRequest permissionRequest) return false;
-            var permissionString = permissionRequest.ToPermissionString();
+            var permissionString = request.ToPermissionString();
             if (Permission.HasUserAuthorizedPermission(permissionString)) return true;
             var isGranted = false;
             var permissionCallbacks = new PermissionCallbacks();

@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.Quests.Data
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Rewards;
+    using TheOneStudio.UITemplate.Quests.TargetHandler;
 
     [BlueprintReader("UITemplateQuest")]
     public sealed class UITemplateQuestBlueprint : GenericBlueprintReaderByRow<string, QuestRecord>
@@ -18,8 +19,10 @@ namespace TheOneStudio.UITemplate.Quests.Data
         {
             CsvHelper.RegisterTypeConverter(typeof(IReward), new JsonConverter<IReward>());
             CsvHelper.RegisterTypeConverter(typeof(ICondition), new JsonConverter<ICondition>());
+            CsvHelper.RegisterTypeConverter(typeof(IRedirectTarget), new JsonConverter<IRedirectTarget>());
             CsvHelper.RegisterTypeConverter(typeof(List<IReward>), new ListGenericConverter(';'));
             CsvHelper.RegisterTypeConverter(typeof(List<ICondition>), new ListGenericConverter(';'));
+            CsvHelper.RegisterTypeConverter(typeof(List<IRedirectTarget>), new ListGenericConverter(';'));
             CsvHelper.RegisterTypeConverter(typeof(HashSet<string>), new HashSetConverter());
         }
 
@@ -75,11 +78,12 @@ namespace TheOneStudio.UITemplate.Quests.Data
         public string          Image       { get; private set; }
         public HashSet<string> Tags        { get; private set; }
 
-        public List<IReward>    Rewards            { get; private set; }
-        public List<ICondition> StartConditions    { get; private set; }
-        public List<ICondition> ShowConditions     { get; private set; }
-        public List<ICondition> CompleteConditions { get; private set; }
-        public List<ICondition> ResetConditions    { get; private set; }
+        public List<IReward>         Rewards            { get; private set; }
+        public List<ICondition>      StartConditions    { get; private set; }
+        public List<ICondition>      ShowConditions     { get; private set; }
+        public List<ICondition>      CompleteConditions { get; private set; }
+        public List<ICondition>      ResetConditions    { get; private set; }
+        public List<IRedirectTarget> Target             { get; private set; }
 
         public bool HasTag(string tag) => this.Tags.Contains(tag);
     }

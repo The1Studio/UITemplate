@@ -2,7 +2,7 @@
 
 namespace TheOneStudio.UITemplate.Quests.TargetHandler
 {
-    public interface ITarget
+    public interface IRedirectTarget
     {
         public Type GetTypeHandle { get; set; }
 

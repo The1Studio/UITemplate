@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.Quests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
@@ -7,6 +8,7 @@
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
+    using TheOneStudio.UITemplate.Quests.TargetHandler;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
     using Zenject;
@@ -36,8 +38,9 @@
 
         #endregion
 
-        public QuestRecord                   Record   { get; internal set; }
-        public UITemplateQuestProgress.Quest Progress { get; internal set; }
+        public         QuestRecord                                          Record   { get; internal set; }
+        public         UITemplateQuestProgress.Quest                        Progress { get; internal set; }
+        private static Dictionary<IRedirectTarget, IRedirectTarget.IHandle> handleTargets = new Dictionary<IRedirectTarget, IRedirectTarget.IHandle>();
 
         public async UniTask CollectReward(RectTransform startAnimRectTransform = null)
         {
@@ -55,6 +58,18 @@
         public IEnumerable<ICondition.IProgress.IHandler> GetAllProgressHandlers()
         {
             return this.progressHandlers.Values;
+        }
+
+        public void HandleRedirect()
+        {
+            if (this.Record.Target.Count is 0) return;
+            IRedirectTarget redirectTarget = this.Record.Target.FirstOrDefault();
+            if (!handleTargets.TryGetValue(redirectTarget, out var handle))
+            {
+                var handler = (IRedirectTarget.IHandle)this.instantiator.Instantiate(redirectTarget.GetTypeHandle);
+                handleTargets.Add(redirectTarget, handler);
+            }
+            handleTargets[redirectTarget].Operate();
         }
 
         #region Internal

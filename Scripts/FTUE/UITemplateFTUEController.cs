@@ -3,7 +3,6 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
 using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
 using GameFoundation.Scripts.Utilities.Extension;
 using TheOneStudio.UITemplate.UITemplate.Blueprints;
 using TheOneStudio.UITemplate.UITemplate.Extension;
@@ -43,33 +42,14 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.screenManager           = screenManager;
             this.uiTemplateFtueBlueprint = uiTemplateFtueBlueprint;
             this.signalBus               = signalBus;
-            this.signalBus.Subscribe<StartLoadingNewSceneSignal>(this.OnStartLoadingNewScene);
-            this.signalBus.Subscribe<FinishLoadingNewSceneSignal>(this.OnFinishLoadingNewScene);
         }
-
-        private void OnFinishLoadingNewScene(FinishLoadingNewSceneSignal obj) { this.MoveToCurrentRootUI(this.screenManager.CurrentOverlayRoot); }
-
-        private void OnStartLoadingNewScene(StartLoadingNewSceneSignal obj) { this.MoveToOriginParent(); }
 
         #endregion
 
-        private void Awake()
+        private void MoveToCurrentRootUI()
         {
-            var projectContextTrans = FindObjectOfType<ProjectContext>();
-            this.originPath = projectContextTrans.transform;
-            this.gameObject.SetActive(false);
-        }
-
-        private void MoveToOriginParent()
-        {
-            this.transform.SetParent(this.originPath, false);
-            this.transform.localPosition = Vector3.zero;
-            this.gameObject.SetActive(false);
-        }
-
-        private void MoveToCurrentRootUI(Transform parent)
-        {
-            this.transform.SetParent(parent, false);
+            this.gameObject.SetActive(true);
+            this.transform.SetParent(this.screenManager.CurrentOverlayRoot, false);
             this.transform.SetAsLastSibling();
         }
 
@@ -111,7 +91,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         {
             if (string.IsNullOrEmpty(record.HighLightPath)) return;
 
-            this.gameObject.SetActive(true);
+            this.MoveToCurrentRootUI();
             if (this.highLightButtonTransform != null)
             {
                 Destroy(this.highLightButtonTransform.GetComponent<UITemplateFTUEControlElement>());

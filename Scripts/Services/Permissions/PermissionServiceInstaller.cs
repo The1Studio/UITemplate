@@ -7,8 +7,13 @@
     {
         public override void InstallBindings()
         {
-            this.Container.Bind<PermissionService>().AsCached().NonLazy();
-
+#if UNITY_ANDROID
+            this.Container.Bind<IPermissionService>().To<AndroidPermissionService>().AsSingle();
+#elif UNITY_IOS
+            this.Container.Bind<IPermissionService>().To<IOSPermissionService>().AsSingle();
+#else
+            this.Container.Bind<IPermissionService>().To<DummyPermissionService>().AsSingle();
+#endif
             this.Container.DeclareSignal<OnRequestPermissionStartSignal>();
             this.Container.DeclareSignal<OnRequestPermissionCompleteSignal>();
         }

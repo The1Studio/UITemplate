@@ -1,7 +1,9 @@
 namespace UITemplate.Editor
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using DG.DemiEditor;
     using GameFoundation.Scripts.Utilities.Extension;
     using UnityEditor;
     using UnityEditor.AddressableAssets;
@@ -141,6 +143,28 @@ namespace UITemplate.Editor
 
             // Save changes
             settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
+        }
+        public static bool CreateFolderIfNotExist(string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+                return true;
+            }
+
+            return false;
+        }
+        
+        //Move targetObject to assetsSpritesBuildinui directory
+        public static void MoveToNewFolder(Object targetObject, string assetsSpritesBuildinui)
+        {
+            var assetPath = AssetDatabase.GetAssetPath(targetObject);
+            var newPath   = Path.Combine(assetsSpritesBuildinui, Path.GetFileName(assetPath));
+            var moveError = AssetDatabase.MoveAsset(assetPath, newPath);
+            if (!moveError.IsNullOrEmpty())
+            {
+                Debug.LogError(moveError);
+            }
         }
     }
 }

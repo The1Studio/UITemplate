@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.Quests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
@@ -7,6 +8,7 @@
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
+    using TheOneStudio.UITemplate.Quests.TargetHandler;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
     using Zenject;
@@ -36,8 +38,9 @@
 
         #endregion
 
-        public QuestRecord                   Record   { get; internal set; }
-        public UITemplateQuestProgress.Quest Progress { get; internal set; }
+        public         QuestRecord                                           Record   { get; internal set; }
+        public         UITemplateQuestProgress.Quest                         Progress { get; internal set; }
+        private static Dictionary<IRedirectTarget, IRedirectTarget.IHandler> handleTargets = new Dictionary<IRedirectTarget, IRedirectTarget.IHandler>();
 
         public async UniTask CollectReward(RectTransform startAnimRectTransform = null)
         {
@@ -55,6 +58,15 @@
         public IEnumerable<ICondition.IProgress.IHandler> GetAllProgressHandlers()
         {
             return this.progressHandlers.Values;
+        }
+
+        public async UniTask HandleRedirect()
+        {
+            if (this.Record.Target.Count is 0) return;
+            foreach (var targetHandler in this.Record.Target.Select(this.AddRedirectTargetHandler))
+            {
+                await targetHandler.Handle();
+            }
         }
 
         #region Internal
@@ -118,6 +130,13 @@
         private bool IsSatisfied(IEnumerable<ICondition.IProgress> progresses)
         {
             return progresses.All(progress => this.progressHandlers[progress].IsSatisfied());
+        }
+
+        private IRedirectTarget.IHandler AddRedirectTargetHandler(IRedirectTarget redirectTarget)
+        {
+            var handler = handleTargets.GetOrAdd(redirectTarget, () => (IRedirectTarget.IHandler)this.instantiator.Instantiate(redirectTarget.GetTypeHandle));
+            handler.RedirectTarget = redirectTarget;
+            return handler;
         }
 
         private void AddProgressHandlers(IEnumerable<ICondition> conditions, IEnumerable<ICondition.IProgress> progresses)

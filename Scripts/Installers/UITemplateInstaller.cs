@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using ServiceImplementation.IAPServices;
+    using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
@@ -43,6 +44,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             DeepLinkInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
             this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
+            
+            TheOneCheatInstaller.Install(this.Container);
 
             // not lock in editor because interstitial fake ads can not close
 #if !UNITY_EDITOR

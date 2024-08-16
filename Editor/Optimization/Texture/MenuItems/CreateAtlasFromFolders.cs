@@ -29,7 +29,7 @@ namespace UITemplate.Editor.Optimization.TextureOptimization.MenuItems
             }
         }
 
-        private static void CreateAtlasForFolder(string folderPath, Object selectedObject)
+        public static void CreateAtlasForFolder(string folderPath, Object selectedObject)
         {
             var atlas = new SpriteAtlasAsset();
             atlas.Add(new[] { selectedObject });

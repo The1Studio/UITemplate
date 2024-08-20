@@ -17,8 +17,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
         private static readonly string OpenUPMRegistryName = "OpenUPM";
         private static readonly string OpenUPMRegistryUrl  = "https://package.openupm.com";
 
-        [NonSerialized]
-        private static readonly string[] RequiredScopes =
+        [NonSerialized] private static readonly string[] RequiredScopes =
         {
             "com.google",
             "com.cysharp",
@@ -28,8 +27,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             "com.theone"
         };
 
-        [NonSerialized]
-        private static readonly Dictionary<string, string> PackagesToAdd = new()
+        [NonSerialized] private static readonly Dictionary<string, string> PackagesToAdd = new()
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
@@ -38,15 +36,13 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // add more packages as needed
         };
 
-        [NonSerialized]
-        private static readonly Dictionary<string, string> PackagesVersionToUse = new()
+        [NonSerialized] private static readonly Dictionary<string, string> PackagesVersionToUse = new()
         {
             { "com.google.ads.mobile", "9.2.0" },
             { "com.unity.purchasing", "4.12.0" },
         };
 
-        [NonSerialized]
-        private static readonly List<string> PackagesToRemove = new()
+        [NonSerialized] private static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"
         };
@@ -80,12 +76,10 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
                     updated = true;
                 }
             }
-            
-               
+
             // Change package version
             foreach (var package in PackagesVersionToUse)
             {
-                
                 if (dependencies.ContainsKey(package.Key) && !dependencies[package.Key].ToString().Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
@@ -159,62 +153,6 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             }
 
             return updated;
-        }
-
-        public static async UniTaskVoid DownloadThenImportPackage(string downloadUrl, string fileName)
-        {
-            var path            = Path.Combine(Application.temporaryCachePath, $"{fileName}.unitypackage"); 
-            var downloadHandler = new DownloadHandlerFile(path);
-            
-            var webRequest = new UnityWebRequest(downloadUrl)
-            {
-                method          = UnityWebRequest.kHttpVerbGET,
-                downloadHandler = downloadHandler
-            };
-
-            await webRequest.SendWebRequest();
-
-#if UNITY_2020_1_OR_NEWER
-            if (webRequest.result != UnityWebRequest.Result.Success)
-#else
-            if (webRequest.isNetworkError || webRequest.isHttpError)
-#endif
-            {
-                Debug.LogError("AutoMigation: Failed to download package: " + webRequest.error);
-            }
-            else
-            {
-                AssetDatabase.ImportPackage(path, false);
-            }
-        }
-        
-        public static async UniTaskVoid DownloadThenUnZip(string downloadUrl, string fileName, string unzipPath)
-        {
-            var path            = Path.Combine(Application.temporaryCachePath, $"{fileName}.zip"); 
-            var downloadHandler = new DownloadHandlerFile(path);
-            
-            var webRequest = new UnityWebRequest(downloadUrl)
-            {
-                method          = UnityWebRequest.kHttpVerbGET,
-                downloadHandler = downloadHandler
-            };
-
-            var operation = webRequest.SendWebRequest();
-            await operation;
-
-            if (webRequest.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError("AutoMigation: Failed to download zip file: " + webRequest.error);
-            }
-            else
-            {
-                //unzip file to the specified path
-                await UniTask.SwitchToMainThread();
-                unzipPath = Path.Combine(Application.dataPath, unzipPath);
-                ZipFile.ExtractToDirectory(path, unzipPath);
-            }
-            
-            
         }
     }
 }

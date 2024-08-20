@@ -148,7 +148,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual async void ShowBannerAd(int width = 320, int height = 50)
         {
-            if (this.adServices.IsRemoveAds()) return;
+            if (this.IsRemovedAds) return;
 
             this.IsShowBannerAd = true;
             await UniTask.WaitUntil(() => this.adServices.IsAdsInitialized());
@@ -304,6 +304,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true)
         {
             if (!this.adServicesConfig.EnableAOAAd) return;
+            if (this.IsRemovedAds) return;
 
             if (isFireEligibleSignal)
             {
@@ -352,15 +353,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            if (!this.IsRemovedAds)
-            {
-                this.ShowAOAAdsIfAvailable();
-            }
+            this.ShowAOAAdsIfAvailable();
         }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)
         {
-            if (this.adServices.IsRemoveAds())
+            if (this.IsRemovedAds)
             {
                 this.adServices.DestroyBannerAd();
             }
@@ -403,7 +401,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log(
                 $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {isInterstitialAdEnable} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
-            if (this.adServices.IsRemoveAds() || !isInterstitialAdEnable || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
+            if (this.IsRemovedAds || !isInterstitialAdEnable || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
             {
                 return false;
             }
@@ -551,7 +549,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowMREC<TPresenter>(AdViewPosition adViewPosition) where TPresenter : IScreenPresenter
         {
-            if (this.adServices.IsRemoveAds() || !this.adServicesConfig.EnableMRECAd) return;
+            if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
 
             var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(adViewPosition));
 

@@ -172,7 +172,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                         flyingObject,
                         flyPunchPositionAnimFactor);
                     
-                    lastValue = this.GetCurrencyValue(id); // get last value after animation because it can be changed by other animation
+                    this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, currencyWithCap - lastValue, currencyWithCap));
                 }
             }
 

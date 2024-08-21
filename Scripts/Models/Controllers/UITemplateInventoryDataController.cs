@@ -155,7 +155,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
             
             var currencyWithCap = this.SetCurrencyWithCap(resultValue, id);
-            this.signalBus.Fire(new OnUpdateCurrencySignal(id, currencyWithCap - lastValue, currencyWithCap));
+            var amount = currencyWithCap - lastValue;
+            this.signalBus.Fire(new OnUpdateCurrencySignal(id, amount, currencyWithCap));
 
             if (startAnimationRect != null)
             {
@@ -172,7 +173,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                         flyingObject,
                         flyPunchPositionAnimFactor);
                     
-                    this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, currencyWithCap - lastValue, currencyWithCap));
+                    lastValue = this.GetCurrencyValue(id); // get last value after animation because it can be changed by other animation
+                    this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));
                 }
             }
 

@@ -42,7 +42,12 @@
         "3rd.Configs.Editor",
         "UIEffect",
         "PlayFab",
-        "Falcon.Module"
+        "Falcon.Module",
+        "TheOneStudio.HighScore",
+        "R3.Unity",
+        "3rd.RemoteConfig",
+        "ByteBrewTracker",
+        "UnityLogsViewer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

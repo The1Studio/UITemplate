@@ -47,7 +47,8 @@
         "R3.Unity",
         "3rd.RemoteConfig",
         "ByteBrewTracker",
-        "UnityLogsViewer"
+        "UnityLogsViewer",
+        "FalconSDK"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

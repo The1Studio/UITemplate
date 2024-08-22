@@ -5,8 +5,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
     using Core.AdsServices.Signals;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
-    using global::Falcon;
     using global::Falcon.FalconAnalytics.Scripts.Enum;
+    using global::Falcon.FalconAnalytics.Scripts.Models.Messages.PreDefines;
     using ServiceImplementation.IAPServices;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -38,7 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
 
         private void OnLevelEnded(LevelEndedSignal obj)
         {
-            DWHLog.Instance.LevelLog(obj.Level, obj.Time, 0, "", obj.IsWin ? LevelStatus.Pass : LevelStatus.Fail);
+            new FLevelLog(obj.Level, "", obj.IsWin ? LevelStatus.Pass : LevelStatus.Fail, TimeSpan.FromSeconds(obj.Time)).Send();
         }
         
 
@@ -47,30 +47,33 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
         private void OnScreenShow(ScreenShowSignal obj)
         {
             var currentScreen = this.screenManager.CurrentActiveScreen.Value;
-            DWHLog.Instance.ActionLog($"ShowScreen_{currentScreen.GetType().Name}");
+            new FActionLog($"ShowScreen_{currentScreen.GetType().Name}").Send();
         }
 
         private void OnUpdateCurrency(OnUpdateCurrencySignal obj)
         {
-            DWHLog.Instance.ResourceLog(obj.Amount > 0 ? FlowType.Source : FlowType.Sink, "currency", obj.Id, obj.Id, Math.Abs(obj.Amount));
+            new FResourceLog(obj.Amount > 0 ? FlowType.Source : FlowType.Sink, "currency", obj.Id, obj.Id, Math.Abs(obj.Amount)).Send();
         }
 
         private void OnShowRewardedAd(RewardedAdCalledSignal obj)
         {
-            DWHLog.Instance.AdsLog(AdType.Reward, this.screenManager.CurrentActiveScreen.Value.GetType().Name);
+            new FAdLog(AdType.Reward, this.screenManager.CurrentActiveScreen.Value.GetType().Name).Send();
         }
 
         private void OnShowInterstitialAd(InterstitialAdCalledSignal obj)
         {
-            DWHLog.Instance.AdsLog(AdType.Interstitial, this.screenManager.CurrentActiveScreen.Value.GetType().Name);
+            new FAdLog(AdType.Interstitial, this.screenManager.CurrentActiveScreen.Value.GetType().Name).Send();
         }
 
         private void OnPurchaseComplete(OnIAPPurchaseSuccessSignal obj)
         {
-            var productData = this.iapServices.GetProductData(obj.ProductId);
+            var productData = this.iapServices.GetProductData(obj.Product.Id);
 
-            DWHLog.Instance.InAppLog(obj.ProductId, productData.CurrencyCode, productData.Price, obj.PurchasedProduct.transactionID, "",
-                this.screenManager.CurrentActiveScreen.Value.ToString());
+            throw new NotImplementedException();
+            //Get transaction id and Implement this
+            // var transactionID = "obj.PurchasedProduct.transactionID";
+            // new FInAppLog(obj.Product.Id, productData.Price, productData.CurrencyCode, "", transactionID, 
+            //     this.screenManager.CurrentActiveScreen.Value.ToString()).Send();
         }
     }
 }

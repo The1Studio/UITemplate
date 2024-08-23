@@ -95,7 +95,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
         // Define a global dictionary to store the iosPodName and newVersion pairs
         private static readonly Dictionary<string, string> IOSPodVersions = new()
         {
-            { "AppLovinMediationGoogleAdManagerAdapter", "11.7.0" },
+            { "AppLovinMediationGoogleAdManagerAdapter", "11.6.0" },
             // Add other iosPodName and newVersion pairs as needed
         };
 

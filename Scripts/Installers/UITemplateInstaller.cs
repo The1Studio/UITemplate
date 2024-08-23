@@ -8,7 +8,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.Services.AppTracking;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.DeepLinking;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
@@ -43,7 +42,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             PermissionServiceInstaller.Install(this.Container);
             DeepLinkInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
-            this.Container.BindInterfacesAndSelfTo<AppTrackingServices>().AsCached().NonLazy();
             
             TheOneCheatInstaller.Install(this.Container);
 

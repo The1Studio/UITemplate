@@ -1,20 +1,19 @@
 namespace UITemplate.Editor.ProjectMigration.MigrationModules
 {
     using System.IO;
-    using System.Net;
+    using ServiceImplementation.Configs.Common;
     using UnityEngine;
 
     public static class MolocoMigration
     {
         private const string MolocoIpodName = "IronSourceMolocoAdapter";
 
-
         public static void UpdateIosPostProcess()
         {
             var levelplayEditor = "LevelPlay/Editor";
 
-            var embedPath = Path.Combine(Application.dataPath, levelplayEditor,"EmbedMoloco.cs");
-            var macosxPath = Path.Combine(Application.dataPath, levelplayEditor,"__MACOSX");
+            var embedPath  = Path.Combine(Application.dataPath, levelplayEditor, "EmbedMoloco.cs");
+            var macosxPath = Path.Combine(Application.dataPath, levelplayEditor, "__MACOSX");
 
             if (!LevelPlayMigration.IsIOSHasAdapters(MolocoIpodName))
             {
@@ -22,7 +21,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
                 {
                     File.Delete(embedPath);
                 }
-                
+
                 var macosXEmbedPath = Path.Combine(macosxPath, "._embedMoloco.cs");
                 if (Directory.Exists(macosxPath) && File.Exists(macosXEmbedPath))
                 {
@@ -33,7 +32,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
                     }
                     else
                     {
-                        File.Delete(macosXEmbedPath);   
+                        File.Delete(macosXEmbedPath);
                     }
                 }
             }
@@ -43,8 +42,8 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
                 {
                     return;
                 }
-                
-                PackageMigration.DownloadThenUnZip("https://cdn.builds.the1studio.org/SDK/LevelPlay/EmbedMoloco.cs_.zip", "EmbedMoloco", levelplayEditor).Forget();
+
+                UnityPackageHelper.DownloadThenUnZip("https://cdn.builds.the1studio.org/SDK/LevelPlay/EmbedMoloco.cs_.zip", "EmbedMoloco", levelplayEditor).Forget();
             }
         }
     }

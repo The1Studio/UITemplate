@@ -41,11 +41,14 @@
         "Unity.Advertisement.IosSupport",
         "3rd.Configs.Editor",
         "UIEffect",
+        "PlayFab",
+        "Falcon.Module",
         "TheOneStudio.HighScore",
         "R3.Unity",
         "3rd.RemoteConfig",
         "ByteBrewTracker",
-        "UnityLogsViewer"
+        "UnityLogsViewer",
+        "FalconSDK"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

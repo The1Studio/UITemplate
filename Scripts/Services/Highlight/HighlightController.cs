@@ -63,7 +63,6 @@
             this.transform.SetAsLastSibling();
         }
 
-
         private void Awake()
         {
             var projectContextTrans = FindObjectOfType<ProjectContext>();
@@ -71,9 +70,11 @@
             this.gameObject.SetActive(false);
             this.MoveToCurrentRootUI(this.screenManager.CurrentOverlayRoot);
         }
+
         #endregion
 
         #region Highlight
+
         private List<Transform> highlightObjects = new List<Transform>();
 
         public async UniTaskVoid SetHighlight(string highlightPath, bool clickable = false, Action onButtonDown = null)
@@ -93,13 +94,13 @@
                 });
                 this.highlightObjects.Clear();
             }
-            int maxLoop = 5;
-            int count   = 0;
+            const int maxLoop = 5;
+            var       count   = 0;
             while (this.highlightObjects.Count == 0)
             {
                 count++;
-                List<Transform> tfs      = new List<Transform>();
-                var             objNames = highlightPath.Split('|').ToList();
+                var tfs      = new List<Transform>();
+                var objNames = highlightPath.Split('|').ToList();
                 if (objNames.Count == 0) return;
                 switch (objNames[0])
                 {
@@ -123,12 +124,12 @@
                         }
                         break;
                 }
-                for (int i = 1; i < objNames.Count; i++)
+                for (var i = 1; i < objNames.Count; i++)
                 {
                     var tf = tfs.FirstOrDefault(obj => obj.name == objNames[i]);
                     if (tf != null) this.highlightObjects.Add(tf);
                 }
-                if(count >= maxLoop) break;
+                if (count >= maxLoop) break;
                 if (this.highlightObjects.Count == 0) await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             }
             if (this.highlightObjects.Count == 0)
@@ -193,13 +194,13 @@
             }
 
             if (this.activeHand.Count == 0) return;
-            for (int i = this.activeHand.Count - 1; i >= 0; i--)
+            for (var i = this.activeHand.Count - 1; i >= 0; i--)
             {
                 this.DespawnHand(this.activeHand[i]);
             }
             this.activeHand.Clear();
         }
-        
+
         #endregion
 
         #region HandleHand
@@ -294,25 +295,25 @@
         {
             var hand = this.SpawnHand(handSize, radius, anchor, rotation);
             hand.transform.position = this.highlightObjects[0].position;
-            for (int i = 1; i < this.highlightObjects.Count; i++)
+            for (var i = 1; i < this.highlightObjects.Count; i++)
             {
                 await UniTask.Delay((int)(delay * 1000));
                 var tween = hand.transform.DOMove(this.highlightObjects[i].position, timeMove).SetEase(Ease.Linear);
                 await UniTask.WaitUntil(() => tween.IsComplete());
             }
         }
+
         #endregion
 
         #region ConfigAdapter
 
-        
         private void ConfigAdapter(GameObject highlightGameObject)
         {
             var rectMask = highlightGameObject.GetComponentInParent<Mask>().GetComponent<RectTransform>();
             var osa      = highlightGameObject.GetComponentInParent<IOSA>();
             if (rectMask == null || osa == null) return;
-            RectTransform target = highlightGameObject.GetComponent<RectTransform>();
-            for (int i = 0; i < 1000; i++)
+            var target = highlightGameObject.GetComponent<RectTransform>();
+            for (var i = 0; i < 1000; i++)
             {
                 if (this.IsRectTransformFullyInside(rectMask, target)) break;
                 osa.SetVirtualAbstractNormalizedScrollPosition(osa.GetNormalizedPosition() - 0.01, true, out _, true);
@@ -321,27 +322,25 @@
 
         private bool IsRectTransformFullyInside(RectTransform container, RectTransform target)
         {
-            Rect containerWorldRect = GetWorldRect(container);
-            Rect targetWorldRect    = GetWorldRect(target);
+            var containerWorldRect = GetWorldRect(container);
+            var targetWorldRect    = GetWorldRect(target);
 
             return containerWorldRect.Contains(targetWorldRect.min) && containerWorldRect.Contains(targetWorldRect.max);
         }
 
         private Rect GetWorldRect(RectTransform rectTransform)
         {
-            Vector3[] corners = new Vector3[4];
+            var corners = new Vector3[4];
             rectTransform.GetWorldCorners(corners);
 
-            Vector3 bottomLeft = corners[0];
-            Vector3 topRight   = corners[2];
+            var bottomLeft = corners[0];
+            var topRight   = corners[2];
 
             return new Rect(bottomLeft, topRight - bottomLeft);
         }
-        
 
         #endregion
     }
-    
 
     public enum TypeConfigHand
     {

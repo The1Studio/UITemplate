@@ -113,14 +113,15 @@ namespace UITemplate.Editor.Optimization.Addressable
 
         public static void AutoOptimize()
         {
-            var (dependenciesAssets, buildInSceneAssetsThatNotInRightGroup, notBuildInSceneAssetsThatNotInRightGroup) = AnalyzeProject();
-            if (buildInSceneAssetsThatNotInRightGroup.Count > 0 || notBuildInSceneAssetsThatNotInRightGroup.Count > 0)
-            {
-                var window = GetWindow<BuildInScreenFinderOdin>();
-                window.sceneToDependencyAsset                   = dependenciesAssets;
-                window.buildInSceneAssetsThatNotInRightGroup    = buildInSceneAssetsThatNotInRightGroup;
-                window.notBuildInSceneAssetsThatNotInRightGroup = notBuildInSceneAssetsThatNotInRightGroup;
-            }
+            // TODO: fix this because it makes the editor got 2 white windows
+            // var (dependenciesAssets, buildInSceneAssetsThatNotInRightGroup, notBuildInSceneAssetsThatNotInRightGroup) = AnalyzeProject();
+            // if (buildInSceneAssetsThatNotInRightGroup.Count > 0 || notBuildInSceneAssetsThatNotInRightGroup.Count > 0)
+            // {
+            //     var window = GetWindow<BuildInScreenFinderOdin>();
+            //     window.sceneToDependencyAsset                   = dependenciesAssets;
+            //     window.buildInSceneAssetsThatNotInRightGroup    = buildInSceneAssetsThatNotInRightGroup;
+            //     window.notBuildInSceneAssetsThatNotInRightGroup = notBuildInSceneAssetsThatNotInRightGroup;
+            // }
         }
 
         private static string GetTextureBuildInPath(SceneAsset sceneAsset)

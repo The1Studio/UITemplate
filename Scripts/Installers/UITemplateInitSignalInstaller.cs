@@ -27,6 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             //Signal
             this.Container.DeclareSignal<OnNotEnoughCurrencySignal>();
             this.Container.DeclareSignal<OnUpdateCurrencySignal>();
+            this.Container.DeclareSignal<OnFinishCurrencyAnimationSignal>();
             this.Container.DeclareSignal<LevelStartedSignal>();
             this.Container.DeclareSignal<LevelEndedSignal>();
             this.Container.DeclareSignal<LevelSkippedSignal>();

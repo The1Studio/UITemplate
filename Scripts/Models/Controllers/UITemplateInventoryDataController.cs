@@ -177,6 +177,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                     this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));
                 }
             }
+            else
+            {
+                // if there is no animation, just update the currency
+                this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));
+            }
 
             return true;
         }

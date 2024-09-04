@@ -6,6 +6,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -32,13 +33,16 @@
 
         private readonly List<ItemCollectionItemModel> itemLists = new();
 
-        public UITemplateCollectionScreenPresenter(SignalBus                         signalBus,
-                                                   IScreenManager                    screenManager,
-                                                   DiContainer                       diContainer,
-                                                   UITemplateShopBlueprint           shopBlueprint,
-                                                   UITemplateItemBlueprint           itemBlueprint,
-                                                   UITemplateInventoryDataController uiTemplateInventoryDataController) :
-            base(signalBus)
+        public UITemplateCollectionScreenPresenter(
+            SignalBus                         signalBus,
+            ILogService                       logger,
+            IScreenManager                    screenManager,
+            DiContainer                       diContainer,
+            UITemplateShopBlueprint           shopBlueprint,
+            UITemplateItemBlueprint           itemBlueprint,
+            UITemplateInventoryDataController uiTemplateInventoryDataController
+        ) :
+            base(signalBus, logger)
         {
             this.screenManager                     = screenManager;
             this.diContainer                       = diContainer;
@@ -79,12 +83,12 @@
                 if (!itemRecord.Category.Equals(CatItem)) continue;
                 var model = new ItemCollectionItemModel
                 {
-                    Index              = i,
+                    Index                       = i,
                     UITemplateItemInventoryData = this.uiTemplateInventoryDataController.GetItemData(itemRecord.Id),
-                    Category           = CatItem,
-                    OnBuy              = this.OnBuyItem,
-                    OnSelected         = this.OnSelectedItem,
-                    OnNotEnoughMoney   = this.OnNotEnoughMoney
+                    Category                    = CatItem,
+                    OnBuy                       = this.OnBuyItem,
+                    OnSelected                  = this.OnSelectedItem,
+                    OnNotEnoughMoney            = this.OnNotEnoughMoney
                 };
                 source.Add(model);
             }

@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -26,8 +27,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 
         #endregion
 
-        public UITemPlateWinOp2ScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices, UITemplateInventoryDataController uiTemplateInventoryDataController, DiContainer diContainer) :
-            base(signalBus, uiTemplateAdService, soundServices)
+        public UITemPlateWinOp2ScreenPresenter(
+            SignalBus                         signalBus,
+            ILogService                       logger,
+            UITemplateAdServiceWrapper        uiTemplateAdService,
+            UITemplateSoundServices           soundServices,
+            UITemplateInventoryDataController uiTemplateInventoryDataController,
+            DiContainer                       diContainer
+        ) : base(signalBus, logger, uiTemplateAdService, soundServices)
         {
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.diContainer                       = diContainer;

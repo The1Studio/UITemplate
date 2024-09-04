@@ -45,23 +45,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private IDisposable randomTimerDispose;
 
         public UITemplateNewCollectionScreenPresenter(
-            SignalBus signalBus,
-            EventSystem eventSystem,
-            IIapServices iapServices,
-            ILogService logger,
-            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            IGameAssets gameAssets,
-            ScreenManager screenManager,
-            DiContainer diContainer,
-            UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
-            UITemplateItemBlueprint uiTemplateItemBlueprint,
+            SignalBus                         signalBus,
+            ILogService                       logger,
+            EventSystem                       eventSystem,
+            IIapServices                      iapServices,
+            UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
+            IGameAssets                       gameAssets,
+            IScreenManager                    screenManager,
+            DiContainer                       diContainer,
+            UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint,
+            UITemplateItemBlueprint           uiTemplateItemBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateLevelDataController levelDataController
-        ) : base(signalBus)
+            UITemplateLevelDataController     levelDataController
+        ) : base(signalBus, logger)
         {
             this.eventSystem                       = eventSystem;
             this.iapServices                       = iapServices;
-            this.logger                            = logger;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.gameAssets                        = gameAssets;
             this.ScreenManager                     = screenManager;
@@ -111,8 +110,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
 
                 var collectionModel = this.itemCollectionItemModels
-                    .Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory) &&
-                                !this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id)).ToList();
+                    .Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory) && !this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id)).ToList();
 
                 foreach (var model in this.itemCollectionItemModels) model.IndexItemSelected = -1;
 
@@ -199,7 +197,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void RebindModelData()
         {
-            
         }
 
         protected virtual async void OnButtonCategorySelected(TopButtonItemModel obj)
@@ -319,7 +316,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly   EventSystem                       eventSystem;
         private readonly   IIapServices                      iapServices;
-        private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;
         private readonly   UITemplateLevelDataController     levelDataController;
@@ -339,13 +335,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             // this.uiTemplateLuckySpinServices.OpenLuckySpin();
         }
 
-        protected virtual void BuyWithSoftCurrency(ItemCollectionItemModel obj,Action onFail = null)
+        protected virtual void BuyWithSoftCurrency(ItemCollectionItemModel obj, Action onFail = null)
         {
             var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(obj.ShopBlueprintRecord.CurrencyID);
 
             if (currentCoin < obj.ShopBlueprintRecord.Price)
             {
-                this.logger.Log($"Not Enough {obj.ShopBlueprintRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.ShopBlueprintRecord.Price}");
+                this.Logger.Log($"Not Enough {obj.ShopBlueprintRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.ShopBlueprintRecord.Price}");
                 onFail?.Invoke();
                 return;
             }

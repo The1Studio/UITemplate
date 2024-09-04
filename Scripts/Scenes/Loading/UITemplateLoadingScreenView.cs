@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
     using Core.AdsServices.Signals;
@@ -15,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities;
+    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -27,12 +29,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using UnityEngine.SceneManagement;
     using UnityEngine.UI;
     using Zenject;
+    using Debug = UnityEngine.Debug;
     using Object = UnityEngine.Object;
 
     public class UITemplateLoadingScreenView : BaseView
     {
         [SerializeField] private Slider          LoadingSlider;
         [SerializeField] private TextMeshProUGUI loadingProgressTxt;
+
         internal string loadingText;
 
         private Tween tween;
@@ -49,9 +53,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 getter: () => this.LoadingSlider.value,
                 setter: value =>
                 {
-                    this.LoadingSlider.value     = value;
+                    this.LoadingSlider.value = value;
                     if (this.loadingProgressTxt != null)
-                        this.loadingProgressTxt.text = string.Format(this.loadingText, (int)(value * 100)); 
+                        this.loadingProgressTxt.text = string.Format(this.loadingText, (int)(value * 100));
                 },
                 endValue: this.trueProgress = progress,
                 duration: 0.5f
@@ -77,19 +81,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected readonly IGameAssets                gameAssets;
         private readonly   ObjectPoolManager          objectPoolManager;
         private readonly   UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
-        
-        [Inject]
-        private   IAnalyticServices          analyticServices;
+        private readonly   IAnalyticServices          analyticServices;
 
         protected UITemplateLoadingScreenPresenter(
-            SignalBus signalBus,
+            SignalBus                  signalBus,
+            ILogService                logger,
             UITemplateAdServiceWrapper adService,
-            BlueprintReaderManager blueprintManager,
-            UserDataManager userDataManager,
-            IGameAssets gameAssets,
-            ObjectPoolManager objectPoolManager,
-            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper
-        ) : base(signalBus)
+            BlueprintReaderManager     blueprintManager,
+            UserDataManager            userDataManager,
+            IGameAssets                gameAssets,
+            ObjectPoolManager          objectPoolManager,
+            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+            IAnalyticServices          analyticServices
+        ) : base(signalBus, logger)
         {
             this.adService                  = adService;
             this.blueprintManager           = blueprintManager;
@@ -97,24 +101,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.gameAssets                 = gameAssets;
             this.objectPoolManager          = objectPoolManager;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
+            this.analyticServices           = analyticServices;
         }
 
         #endregion
 
         protected virtual string NextSceneName => "1.MainScene";
-        
+
         /// <summary>
         /// Please fill loading text with format "Text {0}" where {0} is the value position."
         /// </summary>
         /// <param name="text"></param>
         protected virtual string GetLoadingText() => "Loading {0}%";
-        
-        private           bool   IsClosedFirstOpen           { get; set; }
+
+        private bool IsClosedFirstOpen { get; set; }
 
         private float _loadingProgress;
         private int   loadingSteps;
 
-        private float loadingProgress
+        private float LoadingProgress
         {
             get => this._loadingProgress;
             set
@@ -142,10 +147,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.objectPoolContainer = new(nameof(this.objectPoolContainer));
             Object.DontDestroyOnLoad(this.objectPoolContainer);
 
-            this.loadingProgress = 0f;
+            this.LoadingProgress = 0f;
             this.loadingSteps    = 1;
 
-            var stopWatch = System.Diagnostics.Stopwatch.StartNew();
+            var stopWatch = Stopwatch.StartNew();
             UniTask.WhenAll(
                 this.CreateObjectPool(AudioService.AudioSourceKey, 3),
                 this.Preload(),
@@ -156,17 +161,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                     this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
                 ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
-            ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene);
+            ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene).Forget();
             stopWatch.Stop();
-            Debug.Log("Game Loading Time: " + stopWatch.ElapsedMilliseconds + "ms");            
+            Debug.Log("Game Loading Time: " + stopWatch.ElapsedMilliseconds + "ms");
             this.analyticServices.Track(new CustomEvent()
+            {
+                EventName = "GameLoadingTime",
+                EventProperties = new Dictionary<string, object>()
                 {
-                    EventName = "GameLoadingTime",
-                    EventProperties = new Dictionary<string, object>()
-                    {
-                        {"timeMilis", stopWatch.ElapsedMilliseconds}
-                    }
-                });
+                    { "timeMilis", stopWatch.ElapsedMilliseconds },
+                },
+            });
 
             return UniTask.CompletedTask;
         }
@@ -184,14 +189,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             SceneDirector.CurrentSceneName = this.NextSceneName;
 
-            var stopWatch = System.Diagnostics.Stopwatch.StartNew();
+            var stopWatch = Stopwatch.StartNew();
 
             this.SignalBus.Fire<StartLoadingNewSceneSignal>();
             var nextScene = await this.TrackProgress(this.LoadSceneAsync());
             await this.View.CompleteLoading();
             await nextScene.ActivateAsync();
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
-            
+
             stopWatch.Stop();
             Debug.Log("Loading Main Scene Time: " + stopWatch.ElapsedMilliseconds + "ms");
             this.analyticServices.Track(new CustomEvent()
@@ -199,8 +204,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 EventName = "LoadingMainSceneTime",
                 EventProperties = new Dictionary<string, object>()
                 {
-                    {"timeMilis", stopWatch.ElapsedMilliseconds}
-                }
+                    { "timeMilis", stopWatch.ElapsedMilliseconds },
+                },
             });
 
             Resources.UnloadUnusedAssets().ToUniTask().Forget();
@@ -234,8 +239,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             // sometimes AOA delay when shown, we need 0.5s to wait for it
             return this.TrackProgress(UniTask.WaitUntil(() =>
-                (this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && this.IsClosedFirstOpen) ||
-                (!this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA)));
+                (this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && this.IsClosedFirstOpen)
+                || (!this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA))
+            );
         }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
@@ -264,7 +270,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             ++this.loadingSteps;
 
-            return task.ContinueWith(() => ++this.loadingProgress);
+            return task.ContinueWith(() => ++this.LoadingProgress);
         }
 
         protected UniTask<T> TrackProgress<T>(AsyncOperationHandle<T> aoh)
@@ -274,7 +280,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             void UpdateProgress(float progress)
             {
-                this.loadingProgress += progress - localLoadingProgress;
+                this.LoadingProgress += progress - localLoadingProgress;
                 localLoadingProgress =  progress;
             }
 
@@ -296,7 +302,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             void UpdateProgress(T progress)
             {
-                this.loadingProgress += progress.Percent - localLoadingProgress;
+                this.LoadingProgress += progress.Percent - localLoadingProgress;
                 localLoadingProgress =  progress.Percent;
                 if (progress.Percent >= 1f)
                 {

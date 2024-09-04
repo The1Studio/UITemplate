@@ -5,6 +5,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Level;
@@ -22,11 +23,14 @@
     [ScreenInfo(nameof(UITemplateLevelSelectScreenView))]
     public class UITemplateLevelSelectScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLevelSelectScreenView>
     {
-        public UITemplateLevelSelectScreenPresenter(SignalBus signalBus,
-            DiContainer diContainer,
-            IScreenManager screenManager,
+        public UITemplateLevelSelectScreenPresenter(
+            SignalBus                         signalBus,
+            ILogService                       logger,
+            DiContainer                       diContainer,
+            IScreenManager                    screenManager,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateLevelDataController uiTemplateLevelDataController) : base(signalBus)
+            UITemplateLevelDataController     uiTemplateLevelDataController
+        ) : base(signalBus, logger)
         {
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateLevelDataController     = uiTemplateLevelDataController;

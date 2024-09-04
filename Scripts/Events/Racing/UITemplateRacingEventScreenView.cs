@@ -7,9 +7,9 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.Utilities.UIStuff;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.HyperCasual.GamePlay.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
-    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UIModule.Utilities;
     using UnityEngine;
@@ -39,8 +39,13 @@
 
         private List<Tween> tweenList = new();
 
-        public UITemplateRacingEventScreenPresenter(SignalBus signalBus,
-            UITemplateEventRacingDataController uiTemplateEventRacingDataController, IFactory<AutoCooldownTimer> autoCooldownTimer, DiContainer diContainer) : base(signalBus)
+        protected UITemplateRacingEventScreenPresenter(
+            SignalBus                           signalBus,
+            ILogService                         logger,
+            UITemplateEventRacingDataController uiTemplateEventRacingDataController,
+            IFactory<AutoCooldownTimer>         autoCooldownTimer,
+            DiContainer                         diContainer
+        ) : base(signalBus, logger)
         {
             this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController;
             this.autoCooldownTimer                   = autoCooldownTimer;
@@ -94,9 +99,9 @@
                 {
                     this.View.progressSlider.value                                                                   = x;
                     this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].progressSlider.value = x;
-                }, yourNewProgress, 1f).SetUpdate(isIndependentUpdate: true));
+                }, yourNewProgress, 1f).SetUpdate(true));
                 this.tweenList.Add(DOTween.To(() => oldShowScore, x => { this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].scoreText.text = x.ToString(); }, yourNewScore, 1f)
-                                          .SetUpdate(isIndependentUpdate: true));
+                    .SetUpdate(true));
             }
 
             var simulatePlayerScore = this.uiTemplateEventRacingDataController.SimulatePlayerScore();
@@ -110,9 +115,9 @@
                 if (newProgress > oldProgress)
                 {
                     this.tweenList.Add(DOTween.To(() => oldProgress, x => { this.View.playerSliders[playerIndex].progressSlider.value = x; }, Mathf.Clamp(newProgress, 0, racingMaxProgression), 1f)
-                                              .SetUpdate(isIndependentUpdate: true));
+                        .SetUpdate(true));
                     this.tweenList.Add(DOTween.To(() => oldAndNewScore.Item1, x => { this.View.playerSliders[playerIndex].scoreText.text = x.ToString(); }, oldAndNewScore.Item2, 1f)
-                                              .SetUpdate(isIndependentUpdate: true));
+                        .SetUpdate(true));
                 }
             }
 

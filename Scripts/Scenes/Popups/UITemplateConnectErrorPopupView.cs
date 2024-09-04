@@ -4,6 +4,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
@@ -30,7 +31,12 @@
         protected virtual string ReconnectButtonMessage    => "Reconnect";
         protected virtual string ReconnectingButtonMessage => "Reconnecting";
 
-        public UITemplateConnectErrorPresenter(SignalBus signalBus, IScreenManager screenManager, IInternetService internetService) : base(signalBus)
+        public UITemplateConnectErrorPresenter(
+            SignalBus        signalBus,
+            ILogService      logger,
+            IScreenManager   screenManager,
+            IInternetService internetService
+        ) : base(signalBus, logger)
         {
             this.screenManager   = screenManager;
             this.internetService = internetService;
@@ -75,7 +81,7 @@
                 var intervalTime = Time.realtimeSinceStartup - timeSinceLastConnectCheck;
                 if (intervalTime >= 1)
                 {
-                    UniTask.RunOnThreadPool(() => isConnected = this.internetService.IsInternetAvailable);
+                    isConnected               = this.internetService.IsInternetAvailable;
                     timeSinceLastConnectCheck = Time.realtimeSinceStartup;
                 }
 

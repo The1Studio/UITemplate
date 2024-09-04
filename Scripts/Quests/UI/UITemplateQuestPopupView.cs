@@ -5,23 +5,24 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
-#if THEONE_BADGE_NOTIFY
+    #if THEONE_BADGE_NOTIFY
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
-#endif
+    #endif
 
     public class UITemplateQuestPopupView : BaseView
     {
-        [field: SerializeField] public Button                          BtnClose   { get; private set; }
-        [field: SerializeField] public Button                          BtnClaimAll   { get; private set; }
-        [field: SerializeField] public UITemplateQuestListView         ListView   { get; private set; }
-        [field: SerializeField] public UITemplateQuestChestView        ChestView  { get; private set; }
-        [field: SerializeField] public UITemplateQuestPopupTabButton[] TabButtons { get; private set; }
+        [field: SerializeField] public Button                          BtnClose    { get; private set; }
+        [field: SerializeField] public Button                          BtnClaimAll { get; private set; }
+        [field: SerializeField] public UITemplateQuestListView         ListView    { get; private set; }
+        [field: SerializeField] public UITemplateQuestChestView        ChestView   { get; private set; }
+        [field: SerializeField] public UITemplateQuestPopupTabButton[] TabButtons  { get; private set; }
     }
 
     [PopupInfo(nameof(UITemplateQuestPopupView))]
@@ -37,12 +38,12 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         public UITemplateQuestPopupPresenter(
             SignalBus              signalBus,
+            ILogService            logger,
             UITemplateQuestManager questManager
             #if THEONE_BADGE_NOTIFY
-            ,
-            UITemplateBadgeNotifySystem badgeNotifySystem
+            , UITemplateBadgeNotifySystem badgeNotifySystem
             #endif
-        ) : base(signalBus)
+        ) : base(signalBus, logger)
         {
             this.questManager = questManager;
             #if THEONE_BADGE_NOTIFY
@@ -63,8 +64,8 @@ namespace TheOneStudio.UITemplate.Quests.UI
                 this.badgeNotifySystem.RegisterBadge(tabButton.GetComponent<UITemplateBadgeNotifyView>(), this, () => this.CheckBadgeNotifyOnTabButton(tabButton));
                 #endif
             });
-            
-            if(this.View.BtnClaimAll != null) this.View.BtnClaimAll.onClick.AddListener(this.ClaimAll);
+
+            if (this.View.BtnClaimAll != null) this.View.BtnClaimAll.onClick.AddListener(this.ClaimAll);
             this.View.BtnClose.onClick.AddListener(() => this.CloseViewAsync().Forget());
         }
 
@@ -85,7 +86,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         private void ClaimAll()
         {
-           this.SignalBus.Fire<ClaimAllQuestSignal>();
+            this.SignalBus.Fire<ClaimAllQuestSignal>();
         }
 
         #if THEONE_BADGE_NOTIFY

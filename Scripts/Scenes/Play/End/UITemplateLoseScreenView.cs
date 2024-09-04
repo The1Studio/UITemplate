@@ -1,10 +1,10 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play.End
 {
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -33,13 +33,14 @@
         protected readonly UITemplateInventoryDataController inventoryDataController;
 
         public UITemplateLoseScreenPresenter(
-            SignalBus signalBus,
-            DiContainer diContainer,
-            UITemplateAdServiceWrapper adService,
-            UITemplateSoundServices soundServices,
-            IScreenManager screenManager,
+            SignalBus                         signalBus,
+            ILogService                       logger,
+            DiContainer                       diContainer,
+            UITemplateAdServiceWrapper        adService,
+            UITemplateSoundServices           soundServices,
+            IScreenManager                    screenManager,
             UITemplateInventoryDataController inventoryDataController
-        ) : base(signalBus)
+        ) : base(signalBus, logger)
         {
             this.diContainer             = diContainer;
             this.adService               = adService;
@@ -51,22 +52,21 @@
         #endregion
 
         protected virtual string AdPlacement => "replay";
-        
+
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            
+
             if (this.View.SkipButton != null)
             {
                 this.View.SkipButton.OnViewReady(this.adService);
             }
-            
+
             if (this.View.HomeButton != null)
             {
                 this.View.HomeButton.onClick.AddListener(this.OnClickHome);
-
             }
-            
+
             if (this.View.ReplayButton != null)
             {
                 this.View.ReplayButton.onClick.AddListener(this.OnClickReplay);
@@ -77,7 +77,6 @@
                 this.View.SkipButton.onClick.AddListener(this.OnClickSkip);
             }
         }
-
 
         public override UniTask BindData()
         {
@@ -99,7 +98,6 @@
             }
         }
 
-      
         protected virtual void OnClickHome()
         {
             this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();

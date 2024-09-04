@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -48,8 +49,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         private CancellationTokenSource animationCancelTokenSource;
         private List<Tween>             animationTweenList = new();
 
-        public UITemplateLeaderBoardPopupPresenter(SignalBus               signalBus, DiContainer diContainer, UITemplateLevelDataController uiTemplateLevelDataController,
-                                                   UITemplateSoundServices uiTemplateSoundServices) : base(signalBus)
+        public UITemplateLeaderBoardPopupPresenter(
+            SignalBus                     signalBus,
+            ILogService                   logger,
+            DiContainer                   diContainer,
+            UITemplateLevelDataController uiTemplateLevelDataController,
+            UITemplateSoundServices       uiTemplateSoundServices
+        ) : base(signalBus, logger)
         {
             this.diContainer                   = diContainer;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
@@ -94,7 +100,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             TestList[oldIndex].CountryFlag = this.View.CountryFlags.GetLocalDeviceFlagByDeviceLang();
             TestList[oldIndex].Name        = "You";
 
-
             this.uiTemplateSoundServices.PlaySound(SFXLeaderboard);
 
             //Setup view
@@ -111,24 +116,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             //Do animation
             //Do scale up
             this.animationTweenList.Clear();
-            this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one * 1.1f, scaleTime).SetEase(Ease.InOutBack).SetUpdate(isIndependentUpdate:true));
-            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime), cancellationToken: this.animationCancelTokenSource.Token, ignoreTimeScale:true);
+            this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one * 1.1f, scaleTime).SetEase(Ease.InOutBack).SetUpdate(isIndependentUpdate: true));
+            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime), cancellationToken: this.animationCancelTokenSource.Token, ignoreTimeScale: true);
             //Do move to new rank
             cloneView.ShowRankUP();
-            this.animationTweenList.Add(DOTween.To(() => 0, setValue => cloneView.SetRankUp(setValue), oldRank - newRank, scrollDuration).SetUpdate(isIndependentUpdate:true));
+            this.animationTweenList.Add(DOTween.To(() => 0, setValue => cloneView.SetRankUp(setValue), oldRank - newRank, scrollDuration).SetUpdate(isIndependentUpdate: true));
             this.animationTweenList.Add(DOTween.To(() => oldRank, setValue =>
-                                                                  {
-                                                                      cloneView.SetRank(setValue);
-                                                                      this.View.BetterThanText.text = this.GetBetterThanText(setValue);
-                                                                  }, newRank, scrollDuration).SetUpdate(isIndependentUpdate:true));
+            {
+                cloneView.SetRank(setValue);
+                this.View.BetterThanText.text = this.GetBetterThanText(setValue);
+            }, newRank, scrollDuration).SetUpdate(isIndependentUpdate: true));
             this.View.Adapter.SmoothScrollTo(newIndex - indexPadding, scrollDuration);
-            await UniTask.Delay(TimeSpan.FromSeconds(scrollDuration), cancellationToken: this.animationCancelTokenSource.Token, ignoreTimeScale:true);
+            await UniTask.Delay(TimeSpan.FromSeconds(scrollDuration), cancellationToken: this.animationCancelTokenSource.Token, ignoreTimeScale: true);
             //Do scale down
-            this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack).SetUpdate(isIndependentUpdate:true));
-            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime + 2), cancellationToken: this.animationCancelTokenSource.Token, ignoreTimeScale:true);
+            this.animationTweenList.Add(this.yourClone.transform.DOScale(Vector3.one, scaleTime).SetEase(Ease.InOutBack).SetUpdate(isIndependentUpdate: true));
+            await UniTask.Delay(TimeSpan.FromSeconds(scaleTime + 2), cancellationToken: this.animationCancelTokenSource.Token, ignoreTimeScale: true);
             this.CloseView();
         }
-
 
         private string GetBetterThanText(int currentRank) =>
             $"you are better than <color=#2DF2FF><size=120%>{(this.View.LowestRank * 1.5f - currentRank) / (this.View.LowestRank * 1.5f) * 100:F2}%</size ></color > of people";

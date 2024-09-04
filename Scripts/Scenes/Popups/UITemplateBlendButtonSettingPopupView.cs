@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
@@ -18,11 +19,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
     }
 
     [PopupInfo(nameof(UITemplateBlendButtonSettingPopupView), isCloseWhenTapOutside: false)]
-    public class UITemplateBlendButtonSettingPopupPresenter : BasePopupPresenter<Popups.UITemplateBlendButtonSettingPopupView>
+    public class UITemplateBlendButtonSettingPopupPresenter : BasePopupPresenter<UITemplateBlendButtonSettingPopupView>
     {
         private readonly UITemplateSettingDataController uiTemplateSettingDataController;
-        public UITemplateBlendButtonSettingPopupPresenter(SignalBus signalBus, UITemplateSettingDataController uiTemplateSettingDataController)
-            : base(signalBus)
+
+        public UITemplateBlendButtonSettingPopupPresenter(
+            SignalBus                       signalBus,
+            ILogService                     logger,
+            UITemplateSettingDataController uiTemplateSettingDataController
+        ) : base(signalBus, logger)
         {
             this.uiTemplateSettingDataController = uiTemplateSettingDataController;
         }
@@ -32,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
             this.View.BtnMusic.Init(this.uiTemplateSettingDataController.IsMusicOn);
             this.View.BtnSound.Init(this.uiTemplateSettingDataController.IsSoundOn);
             this.View.BtnVibration.Init(this.uiTemplateSettingDataController.IsVibrationOn);
-            
+
             this.View.BtnClose.onClick.AddListener(this.CloseView);
 
             return UniTask.CompletedTask;

@@ -6,9 +6,9 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
-    using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
     using Zenject;
@@ -28,11 +28,11 @@
 
         public UITemplateRateGamePopupPresenter(
             SignalBus                    signalBus,
+            ILogService                  logger,
             DiContainer                  diContainer,
             IScreenManager               screenManager,
             UITemplateStoreRatingHandler storeRatingHandler
-        )
-            : base(signalBus)
+        ) : base(signalBus, logger)
         {
             this.diContainer        = diContainer;
             this.screenManager      = screenManager;
@@ -50,6 +50,7 @@
 
             return UniTask.CompletedTask;
         }
+
         protected override void OnViewReady()
         {
             base.OnViewReady();

@@ -56,13 +56,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool                    IsShowBannerAd                        { get; set; }
-        private bool                    IsShowMRECAd                          { get; set; }
-        private bool                    IsCheckFirstScreenShow                { get; set; }
-        private DateTime                LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
-        private bool                    PreviousCollapsibleBannerAdLoadedFail { get; set; }
-        private bool                    IsRefreshingCollapsible               { get; set; }
-        private CancellationTokenSource RefreshCollapsibleCts                 { get; set; }
+        private bool     IsShowBannerAd                        { get; set; }
+        private bool     IsShowMRECAd                          { get; set; }
+        private bool     IsCheckFirstScreenShow                { get; set; }
+        private DateTime LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
+        private bool     PreviousCollapsibleBannerAdLoadedFail { get; set; }
+        private bool     IsRefreshingCollapsible               { get; set; }
+        private bool     IsBannerShowedYet = false;
+
+        private CancellationTokenSource RefreshCollapsibleCts { get; set; }
 
         //AOA
         private DateTime StartLoadingAOATime          { get; set; }
@@ -144,7 +146,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #region banner
 
-        public BannerLoadStrategy BannerLoadStrategy => this.thirdPartiesConfig.AdSettings.BannerLoadStrategy;
+        public  BannerLoadStrategy BannerLoadStrategy   => this.thirdPartiesConfig.AdSettings.BannerLoadStrategy;
+        private int                FirstBannerDelayTime => this.adServicesConfig.DelayFirstBanner;
 
         public virtual async void ShowBannerAd(int width = 320, int height = 50)
         {
@@ -156,7 +159,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService.Log($"onelog: ShowBannerAd IsCurrentScreenCanShowMREC {this.IsCurrentScreenCanShowMREC()} this.adServicesConfig.EnableBannerAd {this.adServicesConfig.EnableBannerAd}");
             if (this.IsCurrentScreenCanShowMREC() || !this.adServicesConfig.EnableBannerAd) return;
             this.logService.Log($"onelog: ShowBannerAd IsShowBannerAd {this.IsShowBannerAd}");
-            if (this.IsShowBannerAd)
+            if (this.IsShowBannerAd && this.CanShowBanner())
             {
                 this.logService.Log($"onelog: ShowBannerAd EnableCollapsibleBanner {this.adServicesConfig.EnableCollapsibleBanner}, PreviousCollapsibleBannerAdLoadedFail {this.PreviousCollapsibleBannerAdLoadedFail}");
                 if (this.adServicesConfig.EnableCollapsibleBanner && !this.PreviousCollapsibleBannerAdLoadedFail)
@@ -182,6 +185,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     this.logService.Log("onelog: InternalShowMediationBannerAd");
                 }
 
+                this.IsBannerShowedYet                     = true;
                 this.PreviousCollapsibleBannerAdLoadedFail = false;
                 this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(true));
             }
@@ -256,6 +260,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServicesConfig.EnableCollapsibleBannerFallback) return;
             this.PreviousCollapsibleBannerAdLoadedFail = true;
             this.ShowBannerAd();
+        }
+        public bool CanShowBanner()
+        {
+            if (!this.IsBannerShowedYet && this.totalNoAdsPlayingTime < this.FirstBannerDelayTime)
+            {
+                this.logService.Warning("Banner was not passed first delay");
+                return false;
+            }
+
+            return true;
         }
 
         #endregion

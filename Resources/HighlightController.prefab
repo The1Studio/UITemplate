@@ -337,9 +337,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4306575707184862171}
-  - component: {fileID: 3359384724873894575}
+  - component: {fileID: 4828011277009765685}
   m_Layer: 5
-  m_Name: UITemplateFTUEController
+  m_Name: HighlightController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -367,7 +367,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3359384724873894575
+--- !u!114 &4828011277009765685
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -376,13 +376,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5627170117503963792}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7ed7b52f34182649bbaadf5d95bb5f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 55da329674a44e5d95895ffd336254c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   btnCompleteStep: {fileID: 1313410527701234823}
-  hand: {fileID: 6115333615500063507}
-  rotateHand: {fileID: 258908167302151257}
-  iconHand: {fileID: 8064872214165733327}
+  highlightHand: {fileID: 4468304747236005597}
 --- !u!1 &6115333615500063507
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,13 +392,14 @@ GameObject:
   - component: {fileID: 7843550296197853334}
   - component: {fileID: 6525332017074780364}
   - component: {fileID: 2877856253132192614}
+  - component: {fileID: 4468304747236005597}
   m_Layer: 5
   m_Name: HandController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7843550296197853334
 RectTransform:
   m_ObjectHideFlags: 0
@@ -452,6 +451,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!114 &4468304747236005597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6115333615500063507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ba913e0d774232ac3423bf75ada6e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateHand: {fileID: 7843550296197853334}
+  iconHand: {fileID: 8064872214165733327}
 --- !u!1 &8430747868513377579
 GameObject:
   m_ObjectHideFlags: 0

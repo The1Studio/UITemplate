@@ -18,6 +18,8 @@
 
     public class HighlightController : MonoBehaviour
     {
+        // if the first element in path is "RootUICanvas", the highlight object will be searched in the RootUICanvas, otherwise it will be searched in the current screen
+        // Example : "RootUICanvas|HighlightObject" or "ScreenName|HighlightObject" or HighlightObject
         private const string ROOT_UI_LOCATION = "RootUICanvas";
 
         public Button        btnCompleteStep;
@@ -77,23 +79,48 @@
 
         private List<Transform> highlightObjects = new List<Transform>();
 
+        
+
         public async UniTaskVoid SetHighlight(string highlightPath, bool clickable = false, Action onButtonDown = null)
         {
-            if (this.highlightObjects.Count > 0)
+            this.ClearHighlightObject();
+            await this.GetHighlightObject(highlightPath);
+            if (this.highlightObjects.Count == 0)
             {
-                this.highlightObjects.ForEach(obj =>
-                {
-                    try
-                    {
-                        obj.GetComponent<HighlightElement>().Despawn();
-                    }
-                    catch
-                    {
-                        // ignore
-                    }
-                });
-                this.highlightObjects.Clear();
+                this.TurnOffHighlight();
+                return;
             }
+            
+            this.gameObject.SetActive(true);
+            this.btnCompleteStep.onClick.RemoveAllListeners();
+
+            this.disposables = new();
+            this.HandleButtonClick(clickable, onButtonDown);
+            
+            var containHighlightObject = this.highlightObjects[0];
+            foreach (var obj in this.highlightObjects)
+            {
+                if (containHighlightObject.IsChildOf(obj)) containHighlightObject = obj;
+            }
+            this.ConfigAdapter(containHighlightObject.gameObject);
+        }
+
+        public void TurnOffHighlight()
+        {
+            this.gameObject.SetActive(false);
+            this.disposables.Dispose();
+
+            this.ClearHighlightObject();
+
+            if (this.activeHand.Count == 0) return;
+            for (var i = this.activeHand.Count - 1; i >= 0; i--)
+            {
+                this.DespawnHand(this.activeHand[i]);
+            }
+            this.activeHand.Clear();
+        }
+        private async UniTask GetHighlightObject(string highlightPath)
+        {
             const int maxLoop = 5;
             var       count   = 0;
             while (this.highlightObjects.Count == 0)
@@ -132,15 +159,10 @@
                 if (count >= maxLoop) break;
                 if (this.highlightObjects.Count == 0) await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             }
-            if (this.highlightObjects.Count == 0)
-            {
-                this.TurnOffHighlight();
-                return;
-            }
-            this.gameObject.SetActive(true);
-            this.btnCompleteStep.onClick.RemoveAllListeners();
+        }
 
-            this.disposables = new();
+        private void HandleButtonClick(bool clickable, Action onButtonDown)
+        {
             foreach (var highlightObject in this.highlightObjects)
             {
                 if (!this.highlightObjects.Any(tf => highlightObject.IsChildOf(tf) && highlightObject != tf)) highlightObject.gameObject.GetComponent<HighlightElement>().Setup();
@@ -164,19 +186,10 @@
                     this.OnButtonClick();
                     onButtonDown?.Invoke();
                 });
-            var containHighlightObject = this.highlightObjects[0];
-            foreach (var obj in this.highlightObjects)
-            {
-                if (containHighlightObject.IsChildOf(obj)) containHighlightObject = obj;
-            }
-            this.ConfigAdapter(containHighlightObject.gameObject);
         }
 
-        public void TurnOffHighlight()
+        private void ClearHighlightObject()
         {
-            this.gameObject.SetActive(false);
-            this.disposables.Dispose();
-
             if (this.highlightObjects.Count > 0)
             {
                 this.highlightObjects.ForEach(obj =>
@@ -192,13 +205,6 @@
                 });
                 this.highlightObjects.Clear();
             }
-
-            if (this.activeHand.Count == 0) return;
-            for (var i = this.activeHand.Count - 1; i >= 0; i--)
-            {
-                this.DespawnHand(this.activeHand[i]);
-            }
-            this.activeHand.Clear();
         }
 
         #endregion

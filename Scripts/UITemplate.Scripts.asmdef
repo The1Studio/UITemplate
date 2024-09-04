@@ -4,7 +4,7 @@
     "references": [
         "GameFoundation.UIModule",
         "GameFoundation.AssetLibrary",
-        "Zenject-Signals",
+        "GameFoundation.Signals",
         "GameFoundation.Utilities",
         "GameFoundation.BlueprintFlow",
         "Zenject",

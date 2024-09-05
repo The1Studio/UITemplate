@@ -38,7 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent RewardedVideoShow(int level, string place);
 
         IEvent RewardedVideoShowFail(string place, string msg);
-
+        IEvent RewardedLoadFail(string place, string msg);
         IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded);
 
         IEvent RewardedVideoClick(string place);

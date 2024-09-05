@@ -49,6 +49,8 @@
 
         public virtual IEvent RewardedVideoShow(int level, string place) => new RewardedAdDisplayed(place, level);
 
+        public IEvent RewardedLoadFail(string place, string msg) => new CustomEvent();
+
         public virtual IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)
         {
             return isRewarded ? new RewardedAdCompleted(place) : new RewardedSkipped(place);

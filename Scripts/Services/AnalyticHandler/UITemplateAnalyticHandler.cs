@@ -262,17 +262,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void BannerShowHandler(BannerAdLoadedSignal obj)
         {
-            this.Track(this.analyticEventFactory.BannerAdShow(obj.Placement));
+            this.Track(this.analyticEventFactory.BannerAdShow());
         }
 
         private void BannerLoadFailHandler(BannerAdLoadFailedSignal obj)
         {
-            this.Track(this.analyticEventFactory.BannerAdLoadFail(obj.Placement,obj.Message));
+            this.Track(this.analyticEventFactory.BannerAdLoadFail(obj.Message));
         }
 
         private void BannerLoadHandler(BannerAdLoadedSignal obj)
         {
-            this.Track(this.analyticEventFactory.BannerAdLoad(obj.Placement));
+            this.Track(this.analyticEventFactory.BannerAdLoad());
         }
 
         #endregion
@@ -414,6 +414,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Unsubscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Unsubscribe<ScreenShowSignal>(this.ScreenShowHandler);
+
+            this.signalBus.Unsubscribe<BannerAdLoadFailedSignal>(this.BannerLoadFailHandler);
+            this.signalBus.Unsubscribe<BannerAdLoadedSignal>(this.BannerLoadHandler);
+            this.signalBus.Unsubscribe<BannerAdLoadedSignal>(this.BannerShowHandler);
 
             this.signalBus.Unsubscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Unsubscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);

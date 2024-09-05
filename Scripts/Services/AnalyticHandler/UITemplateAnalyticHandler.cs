@@ -72,7 +72,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Subscribe<ScreenShowSignal>(this.ScreenShowHandler);
             //Banner ads
-            this.signalBus.Subscribe<BannerAdPresentedSignal>(this.BannerShowHandler);
+            this.signalBus.Subscribe<BannerAdLoadedSignal>(this.BannerShowHandler);
             this.signalBus.Subscribe<BannerAdLoadedSignal>(this.BannerLoadHandler);
             this.signalBus.Subscribe<BannerAdLoadFailedSignal>(this.BannerLoadFailHandler);
 
@@ -259,7 +259,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region Banner ads Signal Handler
 
-        private void BannerShowHandler(BannerAdPresentedSignal obj)
+        private void BannerShowHandler(BannerAdLoadedSignal obj)
         {
             this.Track(this.analyticEventFactory.BannerAdShow(obj.Placement));
         }

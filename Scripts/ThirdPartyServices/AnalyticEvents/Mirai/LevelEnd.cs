@@ -6,11 +6,11 @@
     {
         public int    level;
         public string status;
-        public int    worldId;
+        public string worldId;
         public long   timePlay;
         public long   timerStamp;
 
-        public LevelEnd(int level, string status, int worldId, long timePlay, long timeStamp)
+        public LevelEnd(int level, string status, string worldId, long timePlay, long timeStamp)
         {
             this.level      = level;
             this.status     = status;

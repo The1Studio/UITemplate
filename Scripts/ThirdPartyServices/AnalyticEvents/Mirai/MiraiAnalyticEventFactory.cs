@@ -59,7 +59,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
             IgnoreEvents = new HashSet<Type>(),
             CustomEventKeys = new Dictionary<string, string>()
             {
-                { nameof(AdsRevenueEvent), "ad_impression" },
+                { nameof(AdsRevenueEvent), "ad_impression_abi" },
                 { "AdsRevenueSourceId", "ad_platform" },
                 { "AdNetwork", "ad_source" },
                 { "AdUnit", "ad_unit_name" },
@@ -84,7 +84,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
             }
         };
 
-        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, gold, "Common", 0); }
+        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, gold, "Common", DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelEnd(level, "lose", "Common", timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
+        public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelEnd(level, "win", "Common", timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
     }
 }
 #endif

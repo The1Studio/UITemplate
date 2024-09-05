@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using Zenject;
     using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents.LevelStart;
 
@@ -89,6 +90,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelEnd(level, "lose", "Common", timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelEnd(level, "win", "Common", timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
+        public override IEvent LevelSkipped(int level, int timeSpent) { return new LevelEnd(level, "skip", "Common", timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
     }
 }
 #endif

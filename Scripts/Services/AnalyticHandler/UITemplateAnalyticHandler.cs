@@ -94,6 +94,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);
             this.signalBus.Subscribe<RewardedAdClickedSignal>(this.RewardedAdClickedHandler);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.RewardedAdDisplayedHandler);
+            this.signalBus.Subscribe<RewardedAdLoadFailedSignal>(this.RewardedAdLoadFailedHandler);
             this.signalBus.Subscribe<RewardedAdShowFailedSignal>(this.RewardedAdFailedHandler);
             this.signalBus.Subscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedAdCompleted);

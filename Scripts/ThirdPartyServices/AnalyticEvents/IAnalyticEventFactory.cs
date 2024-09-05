@@ -4,6 +4,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
     public interface IAnalyticEventFactory
     {
+        IEvent BannerAdShow(string place);
+        IEvent BannerAdLoadFail(string place, string msg);
+        IEvent BannerAdLoad(string place);
         IEvent InterstitialEligible(string place);
 
         IEvent InterstitialShow(int level, string place);

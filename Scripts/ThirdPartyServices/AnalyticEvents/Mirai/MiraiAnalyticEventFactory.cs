@@ -73,11 +73,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
                 { nameof(CommonEvents.LevelStart), "level_start" },
                 { nameof(LevelEnd), "level_end" },
                 { nameof(BannerShown), "ads_Banner_show" },
-                { nameof(AdsBannerFail), "ads_Banner_fail" },
-                { nameof(AdInterShow), "ads_Inter_show" },
-                { nameof(AdInterFail), "ads_Inter_fail" },
-                { nameof(AdsRewardShow), "ads_Reward_show" },
-                { nameof(AdsRewardComplete), "ads_Reward_complete" },
+                { nameof(BannerLoadFail), "ads_Banner_fail" },
+                { nameof(InterstitialAdDisplayed), "ads_Inter_show" },
+                { nameof(InterstitialAdDisplayedFailed), "ads_Inter_fail" },
+                { nameof(RewardedAdDisplayed), "ads_Reward_show" },
+                { nameof(RewardedAdCompleted), "ads_Reward_complete" },
                 { nameof(AdsRewardFail), "ads_Reward_fail" },
                 { nameof(CommonEvents.AppOpenFullScreenContentFailed), "ads_Open_fail" },
                 { nameof(CommonEvents.AppOpenFullScreenContentOpened), "ads_Open_show" },
@@ -87,11 +87,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
 
         public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, gold, "Common", DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
-        public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelEnd(level, "lose", "Common", timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelEnd(level, "win", "Common", timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+        public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelEnd(level, "win", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
-        public override IEvent LevelSkipped(int level, int timeSpent) { return new LevelEnd(level, "skip", "Common", timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+        public override IEvent LevelSkipped(int level, int timeSpent) { return new LevelEnd(level, "skip", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
+        public override IEvent RewardedVideoShowFail(string place, string msg) { return new AdsRewardFail(place, msg); }
     }
 }
 #endif

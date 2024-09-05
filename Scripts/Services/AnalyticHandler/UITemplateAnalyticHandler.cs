@@ -71,6 +71,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Subscribe<ScreenShowSignal>(this.ScreenShowHandler);
+            //Banner ads
+            this.signalBus.Subscribe<BannerAdPresentedSignal>(this.BannerShowHandler);
+            this.signalBus.Subscribe<BannerAdLoadedSignal>(this.BannerLoadHandler);
+            this.signalBus.Subscribe<BannerAdLoadFailedSignal>(this.BannerLoadFailHandler);
 
             //Interstitial ads
             this.signalBus.Subscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
@@ -249,6 +253,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticServices.UserProperties[this.analyticEventFactory.LastAdsPlacementProperty] = obj.Placement;
             this.analyticServices.UserProperties[this.analyticEventFactory.TotalRewardedAdsProperty] = obj.Placement;
             this.Track(this.analyticEventFactory.RewardedInterstitialAdDisplayed(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
+        }
+
+        #endregion
+
+        #region Banner ads Signal Handler
+
+        private void BannerShowHandler(BannerAdPresentedSignal obj)
+        {
+            this.Track(this.analyticEventFactory.BannerAdShow(obj.Placement));
+        }
+
+        private void BannerLoadFailHandler(BannerAdLoadFailedSignal obj)
+        {
+            this.Track(this.analyticEventFactory.BannerAdLoadFail(obj.Placement,obj.Message));
+        }
+
+        private void BannerLoadHandler(BannerAdLoadedSignal obj)
+        {
+            this.Track(this.analyticEventFactory.BannerAdLoad(obj.Placement));
         }
 
         #endregion

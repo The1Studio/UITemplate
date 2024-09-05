@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using Zenject;
+    using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents.LevelStart;
 
     public class MiraiAnalyticEventFactory : BaseAnalyticEventFactory
     {
@@ -82,6 +83,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
                 { "GameLaunched", "open_app" },
             }
         };
+
+        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, gold, "Common", 0); }
     }
 }
 #endif

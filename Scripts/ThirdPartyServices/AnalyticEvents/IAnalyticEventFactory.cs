@@ -51,7 +51,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent LevelLose(int level, int timeSpent, int loseCount);
 
-        IEvent LevelStart(int level, int gold, string mode = default, long? timeStamp = null);
+        IEvent LevelStart(int level, int gold);
 
         IEvent LevelWin(int level, int timeSpent, int winCount);
 

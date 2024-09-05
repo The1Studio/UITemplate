@@ -65,8 +65,6 @@
         //Level
         public virtual IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);
 
-        public virtual IEvent LevelStart(int level, int gold, string mode = default, long? timeStamp = null) => new LevelStart(level, gold, mode, timeStamp);
-
         public virtual IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelWin(level, timeSpent);
 
         public virtual IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);

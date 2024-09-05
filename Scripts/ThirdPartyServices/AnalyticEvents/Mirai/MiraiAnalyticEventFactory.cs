@@ -15,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
         public MiraiAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
         }
-        
+
         public override void ForceUpdateAllProperties() { }
 
         public override string LevelMaxProperty             => "level_max";
@@ -58,7 +58,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
             IgnoreEvents = new HashSet<Type>(),
             CustomEventKeys = new Dictionary<string, string>()
             {
-                { nameof(AdsRevenueEvent), "ad_impression_abi" },
+                { nameof(AdsRevenueEvent), "ad_impression" },
                 { "AdsRevenueSourceId", "ad_platform" },
                 { "AdNetwork", "ad_source" },
                 { "AdUnit", "ad_unit_name" },
@@ -66,7 +66,20 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
                 { "Placement", "placement" },
                 { "Currency", "currency" },
                 { "Revenue", "value" },
-                { nameof(LevelAchieved), "checkpoint" },
+                { "Message", "errormsg"},
+                { "mode", "world_id"},
+                { nameof(CommonEvents.LevelStart), "level_start" },
+                { nameof(LevelEnd), "level_end" },
+                { nameof(BannerShown), "ads_Banner_show" },
+                { nameof(AdsBannerFail), "ads_Banner_fail"},
+                { nameof(AdInterShow), "ads_Inter_show" },
+                { nameof(AdInterFail), "ads_Inter_fail"},
+                { nameof(AdsRewardShow), "ads_Reward_show" },
+                { nameof(AdsRewardComplete), "ads_Reward_complete" },
+                { nameof(AdsRewardFail), "ads_Reward_fail"},
+                { nameof(CommonEvents.AppOpenFullScreenContentFailed), "ads_Open_fail" },
+                { nameof(CommonEvents.AppOpenFullScreenContentOpened), "ads_Open_show"},
+                { "GameLaunched", "open_app"},
             }
         };
     }

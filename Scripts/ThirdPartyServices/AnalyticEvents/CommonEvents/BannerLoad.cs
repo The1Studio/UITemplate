@@ -4,11 +4,6 @@
 
     public class BannerLoad : IEvent
     {
-        public string placement;
 
-        public BannerLoad(string placement)
-        {
-            this.placement = placement;
-        }
     }
 }

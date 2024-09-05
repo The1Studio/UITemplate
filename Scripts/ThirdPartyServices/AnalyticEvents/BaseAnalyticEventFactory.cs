@@ -11,11 +11,11 @@
     public abstract class BaseAnalyticEventFactory : IAnalyticEventFactory
     {
         //Interstitial ads
-        public virtual IEvent BannerAdShow(string place) => new BannerShown();
+        public virtual IEvent BannerAdShow() => new BannerShown();
 
-        public virtual IEvent BannerAdLoadFail(string place, string msg) => new BannerLoadFail(place,msg);
+        public virtual IEvent BannerAdLoadFail(string msg) => new BannerLoadFail(msg);
 
-        public virtual IEvent BannerAdLoad(string place) => new BannerLoad(place);
+        public virtual IEvent BannerAdLoad() => new BannerLoad();
 
         public virtual IEvent InterstitialEligible(string place) => new InterstitialAdEligible(place);
 

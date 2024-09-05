@@ -7,9 +7,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
         public int    level;
         public int    gold;
         public string mode;
-        public float  timeStamp;
+        public long   timeStamp;
 
-        public LevelStart(int level, int gold)
+        public LevelStart(int level, int gold, string mode = "common", long? timeStamp = 0)
         {
             this.level = level;
             this.gold  = gold;

@@ -7,10 +7,10 @@
         public int    level;
         public string status;
         public int    worldId;
-        public float  timePlay;
-        public float  timerStamp;
+        public long   timePlay;
+        public long   timerStamp;
 
-        public LevelEnd(int level,string status, int worldId,float timePlay, float timeStamp)
+        public LevelEnd(int level, string status, int worldId, long timePlay, long timeStamp)
         {
             this.level      = level;
             this.status     = status;

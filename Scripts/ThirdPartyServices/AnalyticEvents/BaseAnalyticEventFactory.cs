@@ -22,7 +22,7 @@
         public virtual IEvent InterstitialClick(string place) => new InterstitialAdClicked(place);
 
         public virtual IEvent InterstitialDownloaded(string place, long loadingMilis)     => new InterstitialAdDownloaded(place, loadingMilis);
-        
+
         public virtual IEvent InterstitialDownloadFailed(string place, string message, long loadingMilis) => new InterstitialAdLoadFailed(place, message, loadingMilis);
 
         public virtual IEvent InterstitialCalled(string place) => new InterstitialAdCalled(place);
@@ -34,9 +34,9 @@
         public virtual IEvent RewardedVideoEligible(string place) => new RewardedAdEligible(place);
 
         public virtual IEvent RewardedVideoOffer(string place)                         => new RewardedAdOffer(place);
-        
+
         public virtual IEvent RewardedVideoDownloaded(string place, long loadingMilis) => new RewardedAdLoaded(place, loadingMilis);
-        
+
         public virtual IEvent RewardedVideoDownloadFailed(string place, long loadingMilis) => new RewardedAdLoadFailed(place, loadingMilis);
 
         public virtual IEvent RewardedVideoCalled(string place) => new RewardedAdCalled(place);
@@ -65,8 +65,10 @@
         //Level
         public virtual IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);
 
+        public virtual IEvent LevelStart(int level, int gold, string mode = default, long? timeStamp = null) => new LevelStart(level, gold, mode, timeStamp);
+
         public virtual IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelWin(level, timeSpent);
-        
+
         public virtual IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
 
         public virtual IEvent FirstWin(int level, int timeSpent) => new FirstWin(level, timeSpent);

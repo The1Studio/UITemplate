@@ -69,7 +69,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
                 { "Currency", "currency" },
                 { "Revenue", "value" },
                 { "Message", "errormsg" },
-                { "mode", "world_id" },
+                { "worldId", "world_id" },
                 { nameof(CommonEvents.LevelStart), "level_start" },
                 { nameof(LevelEnd), "level_end" },
                 { nameof(BannerShown), "ads_Banner_show" },
@@ -85,7 +85,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
             }
         };
 
-        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, gold, "Common", DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, gold, 0, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 

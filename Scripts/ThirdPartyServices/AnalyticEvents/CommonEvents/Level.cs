@@ -4,16 +4,16 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
 
     public class LevelStart : IEvent
     {
-        public int    level;
-        public int    gold;
-        public string mode;
-        public long   timeStamp;
+        public int  level;
+        public int  gold;
+        public int  worldId;
+        public long timeStamp;
 
-        public LevelStart(int level, int gold, string mode = default, long? timeStamp = null)
+        public LevelStart(int level, int gold, int worldId = 0, long? timeStamp = null)
         {
-            this.level     = level;
-            this.gold      = gold;
-            this.mode      = mode;
+            this.level   = level;
+            this.gold    = gold;
+            this.worldId = worldId;
             if (timeStamp != null) this.timeStamp = (long)timeStamp;
         }
     }

@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.Quests
 {
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
     using UnityEngine;

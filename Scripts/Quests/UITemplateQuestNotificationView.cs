@@ -5,10 +5,12 @@ namespace TheOneStudio.UITemplate.Quests
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.Quests.UI;
@@ -16,9 +18,7 @@ namespace TheOneStudio.UITemplate.Quests
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
-    using UnityEngine.Serialization;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateQuestNotificationView : MonoBehaviour, IInitializable
     {
@@ -34,8 +34,6 @@ namespace TheOneStudio.UITemplate.Quests
         [SerializeField] private GameObject[] normalObjects;
         [SerializeField] private GameObject[] completedObjects;
 
-        private Vector3                             startPosition;
-        private Vector3                             stopPosition;
         private SignalBus                           signalBus;
         private ScreenManager                       screenManager;
         private IGameAssets                         gameAssets;
@@ -43,21 +41,21 @@ namespace TheOneStudio.UITemplate.Quests
         private GameFeaturesSetting                 gameFeaturesSetting;
         private UITemplateGameSessionDataController gameSessionDataController;
 
+        private Vector3 startPosition;
+        private Vector3 stopPosition;
+
         private void Awake()
         {
+            var container = this.GetCurrentContainer();
+            this.signalBus                 = container.Resolve<SignalBus>();
+            this.screenManager             = container.Resolve<ScreenManager>();
+            this.gameAssets                = container.Resolve<IGameAssets>();
+            this.audioService              = container.Resolve<IAudioService>();
+            this.gameFeaturesSetting       = container.Resolve<GameFeaturesSetting>();
+            this.gameSessionDataController = container.Resolve<UITemplateGameSessionDataController>();
+
             this.startPosition = this.popup.position;
             this.stopPosition  = this.destination.position;
-        }
-
-        [Inject]
-        public void Construct(SignalBus signalBus, ScreenManager screenManager, IGameAssets gameAssets, IAudioService audioService, GameFeaturesSetting gameFeaturesSetting,UITemplateGameSessionDataController sessionDataController)
-        {
-            this.signalBus                 = signalBus;
-            this.screenManager             = screenManager;
-            this.gameAssets                = gameAssets;
-            this.audioService              = audioService;
-            this.gameFeaturesSetting       = gameFeaturesSetting;
-            this.gameSessionDataController = sessionDataController;
         }
 
         void IInitializable.Initialize()

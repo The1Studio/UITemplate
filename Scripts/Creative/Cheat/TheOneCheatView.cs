@@ -2,8 +2,9 @@
 {
     using System.Linq;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Signals;
     using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
@@ -13,7 +14,6 @@
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class TheOneCheatView : MonoBehaviour
     {
@@ -30,18 +30,25 @@
 
         #region Inject
 
-        [Inject] protected UITemplateInventoryDataController inventoryDataController;
-        [Inject] protected GameFeaturesSetting               gameFeaturesSetting;
-        [Inject] protected UITemplateLevelDataController     levelDataController;
-        [Inject] protected SignalBus                         signalBus;
-        [Inject] protected UITemplateCurrencyBlueprint       currencyBlueprint;
+        protected UITemplateInventoryDataController inventoryDataController;
+        protected GameFeaturesSetting               gameFeaturesSetting;
+        protected UITemplateLevelDataController     levelDataController;
+        protected SignalBus                         signalBus;
+        protected UITemplateCurrencyBlueprint       currencyBlueprint;
 
         #endregion
 
         protected virtual void Awake()
         {
             DontDestroyOnLoad(this.gameObject);
-            this.GetCurrentContainer().Inject(this);
+
+            var container = this.GetCurrentContainer();
+            this.inventoryDataController = container.Resolve<UITemplateInventoryDataController>();
+            this.gameFeaturesSetting     = container.Resolve<GameFeaturesSetting>();
+            this.levelDataController     = container.Resolve<UITemplateLevelDataController>();
+            this.signalBus               = container.Resolve<SignalBus>();
+            this.currencyBlueprint       = container.Resolve<UITemplateCurrencyBlueprint>();
+
             this.onOffUI.Button.onClick.AddListener(this.OnOnOffUIClick);
             this.btnAddCurrency.onClick.AddListener(this.OnAddCurrencyClick);
             this.btnClose.onClick.AddListener(this.OnCloseView);

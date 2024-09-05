@@ -5,8 +5,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.Utilities.ObjectPool;
+    using GameFoundation.Signals;
     using UnityEngine;
-    using Zenject;
 
     public class UITemplateVFXSpawnService
     {

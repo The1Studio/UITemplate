@@ -7,13 +7,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using GameFoundation.Signals;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using Zenject;
 
     public class UITemplateAnalyticHandler : IInitializable, IDisposable
     {

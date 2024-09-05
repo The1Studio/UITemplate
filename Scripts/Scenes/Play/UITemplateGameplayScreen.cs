@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -13,7 +14,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateGameplayScreen : BaseView
     {
@@ -41,7 +41,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         protected readonly UITemplateSoundServices           SoundServices;
         protected readonly UITemplateInventoryDataController inventoryDataController;
         protected readonly UITemplateLevelDataController     levelDataController;
-        protected readonly DiContainer                       diContainer;
 
         public UITemplateGameplayScreenPresenter(
             SignalBus                         signalBus,
@@ -51,8 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             UITemplateAdServiceWrapper        adService,
             UITemplateSoundServices           soundServices,
             UITemplateInventoryDataController inventoryDataController,
-            UITemplateLevelDataController     levelDataController,
-            DiContainer                       diContainer
+            UITemplateLevelDataController     levelDataController
         ) : base(signalBus, logger)
         {
             this.SceneDirector           = sceneDirector;
@@ -61,7 +59,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             this.SoundServices           = soundServices;
             this.inventoryDataController = inventoryDataController;
             this.levelDataController     = levelDataController;
-            this.diContainer             = diContainer;
         }
 
         #endregion
@@ -90,11 +87,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             if (this.View.BtnSkip != null)
             {
                 this.View.BtnSkip.onClick.AddListener(this.OnClickSkip);
-            }
-
-            if (this.View.CurrencyView != null)
-            {
-                this.diContainer.Inject(this.View.CurrencyView);
             }
         }
 

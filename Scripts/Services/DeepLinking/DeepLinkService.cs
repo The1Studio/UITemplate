@@ -1,7 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
 {
+    using GameFoundation.DI;
+    using GameFoundation.Signals;
     using UnityEngine;
-    using Zenject;
 
     public class DeepLinkService : IInitializable
     {
@@ -17,7 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
         {
             // if application installed and opened from deep link
             Application.deepLinkActivated += this.OnDeepLinkActivated;
-            
+
             // if application not installs and opened from deep link
             if (!string.IsNullOrEmpty(Application.absoluteURL))
             {

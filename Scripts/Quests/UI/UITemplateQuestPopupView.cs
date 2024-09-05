@@ -6,12 +6,12 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
     #if THEONE_BADGE_NOTIFY
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
     #endif

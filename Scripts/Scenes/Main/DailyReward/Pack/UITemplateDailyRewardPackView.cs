@@ -14,7 +14,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
     using UnityEngine;
     using UnityEngine.Serialization;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateDailyRewardPackModel
     {
@@ -93,18 +92,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         #region inject
 
         private readonly UITemplateDailyRewardPackViewHelper dailyRewardPackViewHelper;
-        private readonly DiContainer                         diContainer;
 
         #endregion
 
         public UITemplateDailyRewardPackPresenter(
             IGameAssets                         gameAssets,
-            UITemplateDailyRewardPackViewHelper dailyRewardPackViewHelper,
-            DiContainer                         diContainer)
-            : base(gameAssets)
+            UITemplateDailyRewardPackViewHelper dailyRewardPackViewHelper
+        ) : base(gameAssets)
         {
             this.dailyRewardPackViewHelper = dailyRewardPackViewHelper;
-            this.diContainer               = diContainer;
         }
 
         public override void BindData(UITemplateDailyRewardPackModel param)
@@ -123,7 +119,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
                                   IsGetWithAds      = this.Model.IsGetWithAds
                               })
                               .ToList();
-            _ = this.View.DailyRewardItemAdapter.InitItemAdapter(models, this.diContainer);
+            this.View.DailyRewardItemAdapter.InitItemAdapter(models).Forget();
 
             this.CoverPack(models);
         }
@@ -131,13 +127,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         private void CoverPack(IEnumerable<UITemplateDailyRewardItemModel> itemModels)
         {
             if(!this.View.CoverPackWhenAllItemsHidden) return;
-            
+
             if (this.Model.RewardStatus == RewardStatus.Claimed)
             {
                 this.View.CoverImg.gameObject.SetActive(false);
                 return;
             }
-            
+
             var isAllItemHidden = itemModels.All(im => !im.RewardRecord.SpoilReward);
             this.View.CoverImg.gameObject.SetActive(isAllItemHidden);
         }

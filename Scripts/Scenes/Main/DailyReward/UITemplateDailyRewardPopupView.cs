@@ -8,6 +8,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -19,7 +20,6 @@
     using UnityEngine;
     using UnityEngine.Serialization;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateDailyRewardPopupView : BaseView
     {
@@ -41,7 +41,6 @@
     {
         #region inject
 
-        private readonly DiContainer                     diContainer;
         private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
         private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
         private readonly UITemplateLevelDataController   levelDataController;
@@ -58,7 +57,6 @@
         public UITemplateDailyRewardPopupPresenter(
             SignalBus                       signalBus,
             ILogService                     logger,
-            DiContainer                     diContainer,
             UITemplateDailyRewardController uiTemplateDailyRewardController,
             UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint,
             UITemplateLevelDataController   levelDataController,
@@ -67,7 +65,6 @@
             GameFeaturesSetting             gameFeaturesSetting
         ) : base(signalBus, logger)
         {
-            this.diContainer                     = diContainer;
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
             this.uiTemplateDailyRewardBlueprint  = uiTemplateDailyRewardBlueprint;
             this.levelDataController             = levelDataController;
@@ -177,7 +174,7 @@
             }
         }
 
-        private void InitListDailyReward(List<UITemplateDailyRewardPackModel> dailyRewardModels) { this.View.dailyRewardPackAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget(); }
+        private void InitListDailyReward(List<UITemplateDailyRewardPackModel> dailyRewardModels) { this.View.dailyRewardPackAdapter.InitItemAdapter(dailyRewardModels).Forget(); }
 
         private void ClaimReward() { this.ClaimRewardAsync().Forget(); }
 

@@ -1,10 +1,10 @@
 ﻿namespace TheOneStudio.UITemplate.Quests.Conditions
 {
     using System;
+    using GameFoundation.Signals;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
-    using Zenject;
 
     public sealed class CompleteQuestCountCondition : BaseCondition
     {

@@ -7,13 +7,13 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Elements;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateCollectionScreenView : BaseView
     {
@@ -37,7 +37,6 @@
             SignalBus                         signalBus,
             ILogService                       logger,
             IScreenManager                    screenManager,
-            DiContainer                       diContainer,
             UITemplateShopBlueprint           shopBlueprint,
             UITemplateItemBlueprint           itemBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController
@@ -45,7 +44,6 @@
             base(signalBus, logger)
         {
             this.screenManager                     = screenManager;
-            this.diContainer                       = diContainer;
             this.shopBlueprint                     = shopBlueprint;
             this.itemBlueprint                     = itemBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
@@ -112,7 +110,7 @@
 
         private async void SelectTabCategory(string categoryTab)
         {
-            if (categoryTab.Equals(CatItem)) await this.View.ItemCollectionAdapter.InitItemAdapter(this.itemLists, this.diContainer);
+            if (categoryTab.Equals(CatItem)) await this.View.ItemCollectionAdapter.InitItemAdapter(this.itemLists);
 
             // await this.View.CharacterCollectionAdapter.InitItemAdapter(this.characterLists, this.diContainer);
             this.View.ItemCollectionAdapter.gameObject.SetActive(categoryTab.Equals(CatItem));
@@ -149,7 +147,6 @@
         #region Inject
 
         private readonly IScreenManager                    screenManager;
-        private readonly DiContainer                       diContainer;
         private readonly UITemplateShopBlueprint           shopBlueprint;
         private readonly UITemplateItemBlueprint           itemBlueprint;
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;

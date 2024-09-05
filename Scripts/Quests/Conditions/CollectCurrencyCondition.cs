@@ -1,9 +1,9 @@
 namespace TheOneStudio.UITemplate.Quests.Conditions
 {
     using System;
+    using GameFoundation.Signals;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.UITemplate.Signals;
-    using Zenject;
 
     public sealed class CollectCurrencyCondition : BaseCondition
     {

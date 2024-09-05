@@ -4,10 +4,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateLoseOP2Screen : BaseEndGameScreenView
     {

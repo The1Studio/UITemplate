@@ -1,8 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using Zenject;
 
     public class FTUEListenScreenShow : FTUEBaseListen
     {

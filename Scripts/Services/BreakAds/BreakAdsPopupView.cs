@@ -4,7 +4,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
-    using Zenject;
+    using GameFoundation.Signals;
 
     public class BreakAdsPopupView : BaseView
     {

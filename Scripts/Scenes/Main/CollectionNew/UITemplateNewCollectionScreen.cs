@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
@@ -20,7 +21,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateNewCollectionScreen : BaseView
     {
@@ -52,7 +52,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
             IGameAssets                       gameAssets,
             IScreenManager                    screenManager,
-            DiContainer                       diContainer,
             UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint,
             UITemplateItemBlueprint           uiTemplateItemBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
@@ -64,7 +63,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.gameAssets                        = gameAssets;
             this.ScreenManager                     = screenManager;
-            this.diContainer                       = diContainer;
             this.uiTemplateCategoryItemBlueprint   = uiTemplateCategoryItemBlueprint;
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
@@ -79,7 +77,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.btnHome.onClick.AddListener(this.OnClickHomeButton);
             this.View.btnUnlockRandom.onClick.AddListener(this.OnClickUnlockRandomButton);
             this.View.btnAddMoreCoin.onClick.AddListener(this.OnClickAddMoreCoinButton);
-            this.diContainer.Inject(this.View.coinText);
         }
 
         public override async UniTask BindData()
@@ -192,7 +189,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 }
             }
             this.RebindModelData();
-            await this.View.topButtonBarAdapter.InitItemAdapter(this.topButtonItemModels, this.diContainer);
+            await this.View.topButtonBarAdapter.InitItemAdapter(this.topButtonItemModels);
         }
 
         protected virtual void RebindModelData()
@@ -210,7 +207,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
             var tempModel       = this.itemCollectionItemModels.Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory)).ToList();
 
-            await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel, this.diContainer);
+            await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel);
             this.View.topButtonBarAdapter.Refresh();
             var hasOwnAllItem = tempModel.All(x => this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id));
             this.View.btnUnlockRandom.gameObject.SetActive(!hasOwnAllItem);
@@ -310,7 +307,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         #region inject
 
-        private readonly   DiContainer                       diContainer;
         private readonly   UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
         private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;

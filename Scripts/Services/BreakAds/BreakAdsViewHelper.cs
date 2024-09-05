@@ -4,7 +4,7 @@
     using System.Threading;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
-    using Zenject;
+    using GameFoundation.Signals;
 
     // Rebind this class to your own view
     public class BreakAdsViewHelper

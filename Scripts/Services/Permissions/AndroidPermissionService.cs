@@ -2,7 +2,7 @@
 {
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
-    using Zenject;
+    using GameFoundation.Signals;
 #if UNITY_ANDROID
     using UnityEngine.Android;
 #endif

@@ -5,12 +5,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateSuggestPopupView : BaseView
     {

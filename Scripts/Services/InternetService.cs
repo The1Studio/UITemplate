@@ -1,7 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
-    using System.Net;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using Newtonsoft.Json;
@@ -49,13 +48,13 @@
             return day >= 1 ? (int)day : 0;
         }
 
-        public void Initialize() { this.CheckInternetInterval(); }
+        public void Initialize() { this.CheckInternetInterval().Forget(); }
 
-        private async UniTask CheckInternetInterval()
+        private async UniTaskVoid CheckInternetInterval()
         {
             this.CheckInternet();
             await UniTask.Delay(TimeSpan.FromSeconds(2), true);
-            _ = this.CheckInternetInterval();
+            this.CheckInternetInterval().Forget();
         }
 
         private async UniTask<WorldTimeAPIResponse> GetTimeIPAsync()

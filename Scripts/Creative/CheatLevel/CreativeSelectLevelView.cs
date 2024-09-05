@@ -1,11 +1,11 @@
 namespace TheOneStudio.UITemplate.UITemplate.Creative.CheatLevel
 {
-    using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.DI;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class CreativeSelectLevelView : MonoBehaviour
     {

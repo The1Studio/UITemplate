@@ -5,8 +5,8 @@
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
-    using Zenject;
 
     public abstract class BaseAnalyticEventFactory : IAnalyticEventFactory
     {

@@ -18,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.ObjectPool;
+    using GameFoundation.Signals;
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -28,7 +29,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
     using UnityEngine.UI;
-    using Zenject;
     using Debug = UnityEngine.Debug;
     using Object = UnityEngine.Object;
 

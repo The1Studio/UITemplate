@@ -7,11 +7,11 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateRateGamePopupView : BaseView
     {
@@ -29,12 +29,10 @@
         public UITemplateRateGamePopupPresenter(
             SignalBus                    signalBus,
             ILogService                  logger,
-            DiContainer                  diContainer,
             IScreenManager               screenManager,
             UITemplateStoreRatingHandler storeRatingHandler
         ) : base(signalBus, logger)
         {
-            this.diContainer        = diContainer;
             this.screenManager      = screenManager;
             this.storeRatingHandler = storeRatingHandler;
         }
@@ -107,7 +105,6 @@
 
         #region inject
 
-        protected readonly DiContainer                  diContainer;
         protected readonly IScreenManager               screenManager;
         private readonly   UITemplateStoreRatingHandler storeRatingHandler;
 

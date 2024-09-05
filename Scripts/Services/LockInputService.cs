@@ -1,9 +1,9 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services
 {
-    using System;
     using Core.AdsServices.Signals;
+    using GameFoundation.DI;
+    using GameFoundation.Signals;
     using UnityEngine.EventSystems;
-    using Zenject;
 
     public class LockInputService : IInitializable
     {
@@ -26,7 +26,7 @@
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(() => this.SetLockInput(false));
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(() => this.SetLockInput(true));
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(() => this.SetLockInput(true));
-            
+
             this.signalBus.Subscribe<RewardedAdCalledSignal>(() => this.SetLockInput(false));
             this.signalBus.Subscribe<RewardedAdShowFailedSignal>(() => this.SetLockInput(true));
             this.signalBus.Subscribe<RewardedAdClosedSignal>(() => this.SetLockInput(true));

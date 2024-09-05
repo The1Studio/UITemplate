@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -15,7 +16,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
 
@@ -39,7 +39,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
         #region inject
 
-        private readonly DiContainer                   diContainer;
         private readonly UITemplateLevelDataController uiTemplateLevelDataController;
         private readonly UITemplateSoundServices       uiTemplateSoundServices;
 
@@ -52,12 +51,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         public UITemplateLeaderBoardPopupPresenter(
             SignalBus                     signalBus,
             ILogService                   logger,
-            DiContainer                   diContainer,
             UITemplateLevelDataController uiTemplateLevelDataController,
             UITemplateSoundServices       uiTemplateSoundServices
         ) : base(signalBus, logger)
         {
-            this.diContainer                   = diContainer;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
             this.uiTemplateSoundServices       = uiTemplateSoundServices;
         }
@@ -72,11 +69,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
         public override UniTask BindData()
         {
-            _ = this.DoAnimation();
+            this.DoAnimation().Forget();
             return UniTask.CompletedTask;
         }
 
-        private async UniTask DoAnimation()
+        private async UniTaskVoid DoAnimation()
         {
             var indexPadding   = 4;
             var scrollDuration = 3;
@@ -103,7 +100,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
             this.uiTemplateSoundServices.PlaySound(SFXLeaderboard);
 
             //Setup view
-            await this.View.Adapter.InitItemAdapter(TestList, this.diContainer);
+            await this.View.Adapter.InitItemAdapter(TestList);
             this.View.Adapter.ScrollTo(oldIndex - indexPadding);
 
             //Create your clone

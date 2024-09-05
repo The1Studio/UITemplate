@@ -8,13 +8,13 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.Utilities.UIStuff;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.HyperCasual.GamePlay.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TMPro;
     using UIModule.Utilities;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateRacingEventScreenView : BaseView
     {
@@ -32,8 +32,7 @@
         #region inject
 
         protected readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
-        private readonly   IFactory<AutoCooldownTimer>         autoCooldownTimer;
-        private readonly   DiContainer                         diContainer;
+        private readonly   AutoCooldownTimer                   autoCooldownTimer;
 
         #endregion
 
@@ -43,25 +42,19 @@
             SignalBus                           signalBus,
             ILogService                         logger,
             UITemplateEventRacingDataController uiTemplateEventRacingDataController,
-            IFactory<AutoCooldownTimer>         autoCooldownTimer,
-            DiContainer                         diContainer
+            AutoCooldownTimer                   autoCooldownTimer
         ) : base(signalBus, logger)
         {
             this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController;
             this.autoCooldownTimer                   = autoCooldownTimer;
-            this.diContainer                         = diContainer;
         }
 
         protected override void OnViewReady()
         {
             base.OnViewReady();
             this.View.closeButton.onClick.AddListener(this.OnClickClose);
-            this.autoCooldownTimer.Create().CountDown(this.uiTemplateEventRacingDataController.RemainSecond,
+            this.autoCooldownTimer.CountDown(this.uiTemplateEventRacingDataController.RemainSecond,
                 _ => { this.View.countDownText.text = TimeSpan.FromSeconds(this.uiTemplateEventRacingDataController.RemainSecond).ToShortTimeString(); });
-            foreach (var uiTemplateRacingRowView in this.View.playerSliders)
-            {
-                this.diContainer.Inject(uiTemplateRacingRowView);
-            }
 
             this.InitPlayerRowView();
         }

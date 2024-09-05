@@ -3,11 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.Extension;
-    using Zenject;
+    using GameFoundation.Signals;
 
     public class UITemplateBadgeNotifySystem : IInitializable
 

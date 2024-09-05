@@ -2,20 +2,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using Core.AnalyticServices;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateBaseScreenUtils
     {
@@ -25,9 +24,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
         public UITemplateBaseScreenUtils()
         {
-            var diContainer = ZenjectUtils.GetCurrentContainer();
-            this.analyticService = diContainer.Resolve<IAnalyticServices>();
-            this.soundServices   = diContainer.Resolve<UITemplateSoundServices>();
+            var container = this.GetCurrentContainer();
+            this.analyticService = container.Resolve<IAnalyticServices>();
+            this.soundServices   = container.Resolve<UITemplateSoundServices>();
         }
 
         public static UITemplateBaseScreenUtils Instance { get; set; }
@@ -57,7 +56,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         #if CREATIVE
         public void SetupCreativeMode<TView>(BaseScreenPresenter<TView> presenter) where TView : IScreenView
         {
-            var creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
+            var creativeService = this.GetCurrentContainer().Resolve<CreativeService>();
             creativeService.OnTripleTap.AddListener(() => this.CreativeUIHandler(presenter));
         }
 
@@ -66,7 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             // If the view is not marked as HideOnCreative, then do nothing with it
             if (presenter.View.GetType().GetCustomAttribute<CreativeAttribute>() is { HideOnCreative: false }) return;
 
-            var creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
+            var creativeService = this.GetCurrentContainer().Resolve<CreativeService>();
 
             if (creativeService.IsShowUI)
             {
@@ -170,7 +169,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
                 var baseClassFieldInfos = GetAllFieldInfosIncludeBaseClass(type.BaseType);
                 var thisClassFieldInfos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                var fieldInfosSet = new HashSet<FieldInfo>(baseClassFieldInfos, new FieldInfoComparer());
+                var fieldInfosSet       = new HashSet<FieldInfo>(baseClassFieldInfos, new FieldInfoComparer());
                 fieldInfosSet.UnionWith(thisClassFieldInfos);
                 return fieldInfosSet;
             }

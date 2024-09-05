@@ -6,10 +6,12 @@
     using Com.ForbiddenByte.OSA.Core;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Signals;
     using R3;
     using R3.Triggers;
     using UnityEngine;
@@ -79,7 +81,7 @@
 
         private List<Transform> highlightObjects = new List<Transform>();
 
-        
+
 
         public async UniTask SetHighlight(string highlightPath, bool clickable = false, Action onButtonDown = null)
         {
@@ -90,13 +92,13 @@
                 this.TurnOffHighlight();
                 return;
             }
-            
+
             this.gameObject.SetActive(true);
             this.btnCompleteStep.onClick.RemoveAllListeners();
 
             this.disposables = new();
             this.HandleButtonClick(clickable, onButtonDown);
-            
+
             var containHighlightObject = this.highlightObjects[0];
             foreach (var obj in this.highlightObjects)
             {

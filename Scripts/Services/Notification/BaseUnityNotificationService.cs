@@ -10,10 +10,10 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using UnityEngine;
-    using Zenject;
 
     public abstract class BaseUnityNotificationService : INotificationService, IDisposable
     {

@@ -2,8 +2,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using Core.AdsServices.Signals;
     using GameFoundation.Scripts.Utilities;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
-    using Zenject;
 
     public class UITemplateHandleSoundWhenOpenAdsServices
     {

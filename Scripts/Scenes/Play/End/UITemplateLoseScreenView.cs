@@ -5,13 +5,13 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateLoseScreenView : BaseView
     {
@@ -26,7 +26,6 @@
     {
         #region Inject
 
-        protected readonly DiContainer                       diContainer;
         protected readonly UITemplateAdServiceWrapper        adService;
         private readonly   UITemplateSoundServices           soundServices;
         protected readonly IScreenManager                    screenManager;
@@ -35,14 +34,12 @@
         public UITemplateLoseScreenPresenter(
             SignalBus                         signalBus,
             ILogService                       logger,
-            DiContainer                       diContainer,
             UITemplateAdServiceWrapper        adService,
             UITemplateSoundServices           soundServices,
             IScreenManager                    screenManager,
             UITemplateInventoryDataController inventoryDataController
         ) : base(signalBus, logger)
         {
-            this.diContainer             = diContainer;
             this.adService               = adService;
             this.soundServices           = soundServices;
             this.screenManager           = screenManager;

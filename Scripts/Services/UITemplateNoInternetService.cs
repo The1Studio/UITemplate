@@ -2,12 +2,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using UnityEngine;
     using Zenject;
@@ -37,8 +36,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private bool IsTimeValid    => this.gameFeaturesSetting.NoInternetConfig.DelayToCheck < Time.realtimeSinceStartup;
         private bool isScreenValid;
 
-        private int    continuousNoInternetChecked = 0;
-        private float  CheckInterval      => this.gameFeaturesSetting.NoInternetConfig.CheckInterval;
+        private int   continuousNoInternetChecked = 0;
+        private float CheckInterval => this.gameFeaturesSetting.NoInternetConfig.CheckInterval;
 
         public void Initialize()
         {
@@ -69,7 +68,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
 
             await UniTask.Delay(TimeSpan.FromSeconds(this.CheckInterval), true);
-            _ = this.CheckInternetInterval();
+            this.CheckInternetInterval().Forget();
         }
 
         private bool CheckInternet() { return Application.internetReachability != NetworkReachability.NotReachable; }

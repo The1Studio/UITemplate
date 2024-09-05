@@ -2,6 +2,7 @@
     "name": "UITemplate.Scripts",
     "rootNamespace": "TheOneStudio.UITemplate",
     "references": [
+        "GameFoundation.DI",
         "GameFoundation.UIModule",
         "GameFoundation.AssetLibrary",
         "GameFoundation.Signals",

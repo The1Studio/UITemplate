@@ -4,10 +4,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using Zenject;
     using System;
     using Unity.Notifications.Android;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
 
     public class AndroidUnityNotificationService : BaseUnityNotificationService

@@ -5,9 +5,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
-    using Zenject;
 
     public class UITemplateLevelDataController : IUITemplateControllerData
     {
@@ -52,7 +52,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked));
         }
 
-        /// <summary>Have be called when level started</summary> 
+        /// <summary>Have be called when level started</summary>
         public void PlayCurrentLevel()
         {
             this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
@@ -65,7 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void SelectLevel(int level)
         {
             this.uiTemplateUserLevelData.CurrentLevel = level;
-            
+
             this.handleUserDataServices.SaveAll();
         }
 
@@ -77,13 +77,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = time, CurrentIdToValue = null });
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
-            
+
             this.handleUserDataServices.SaveAll();
         }
 
         public int TotalLose => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.LoseCount);
         public int TotalWin => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.WinCount);
-        
+
         /// <summary>
         /// Called when player win current level
         /// </summary>
@@ -95,7 +95,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = time, CurrentIdToValue = null });
             if(GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.uiTemplateUserLevelData.CurrentLevel++;
-            
+
             this.handleUserDataServices.SaveAll();
         }
 
@@ -108,7 +108,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             if(GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
             this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = time });
             this.uiTemplateUserLevelData.CurrentLevel++;
-            
+
             this.handleUserDataServices.SaveAll();
         }
 
@@ -157,7 +157,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             //update last unlock reward level
             var temp = this.GetLastLevelUnlockReward(level);
-        
+
             return (float)(level - temp) / (levelUnlockReward - temp);
         }
 
@@ -192,7 +192,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             return -1;
         }
-        
+
         private int GetLastLevelUnlockReward(int level)
         {
             for (int i = level - 1; i > 0; i--)
@@ -202,6 +202,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             return 0;
         }
-        
+
     }
 }

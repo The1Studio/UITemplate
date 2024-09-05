@@ -8,11 +8,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices.CollapsibleBanner;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using R3;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
@@ -24,7 +26,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
-    using Zenject;
     #if ADMOB
     using ServiceImplementation.AdsServices.EasyMobile;
     #endif

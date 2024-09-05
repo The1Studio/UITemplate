@@ -4,12 +4,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.Utilities.LogService;
-    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateWinOP2Screen : BaseEndGameScreenView
     {
@@ -20,34 +19,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateWinOP2Screen))]
     public class UITemPlateWinOp2ScreenPresenter : BaseEndGameScreenPresenter<UITemplateWinOP2Screen>
     {
-        #region inject
-
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly DiContainer                       diContainer;
-
-        #endregion
-
         public UITemPlateWinOp2ScreenPresenter(
-            SignalBus                         signalBus,
-            ILogService                       logger,
-            UITemplateAdServiceWrapper        uiTemplateAdService,
-            UITemplateSoundServices           soundServices,
-            UITemplateInventoryDataController uiTemplateInventoryDataController,
-            DiContainer                       diContainer
+            SignalBus                  signalBus,
+            ILogService                logger,
+            UITemplateAdServiceWrapper uiTemplateAdService,
+            UITemplateSoundServices    soundServices
         ) : base(signalBus, logger, uiTemplateAdService, soundServices)
         {
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.diContainer                       = diContainer;
         }
 
         protected override void OnViewReady()
         {
             base.OnViewReady();
             this.View.btnX2Reward.onClick.AddListener(this.OnX2Reward);
-            if (this.View.currencyView != null)
-            {
-                this.diContainer.Inject(this.View.currencyView);
-            }
         }
 
         public override UniTask BindData()

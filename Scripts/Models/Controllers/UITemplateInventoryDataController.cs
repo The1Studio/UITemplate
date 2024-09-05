@@ -5,15 +5,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Linq;
     using BlueprintFlow.Signals;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
-    using Zenject;
 
     public class UITemplateInventoryDataController : IUITemplateControllerData, IInitializable
     {
@@ -153,7 +154,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 this.signalBus.Fire(new OnNotEnoughCurrencySignal(id));
                 return false;
             }
-            
+
             var currencyWithCap = this.SetCurrencyWithCap(resultValue, id);
             var amount = currencyWithCap - lastValue;
             this.signalBus.Fire(new OnUpdateCurrencySignal(id, amount, currencyWithCap));
@@ -172,7 +173,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                         currencyView.CurrencyIcon.transform as RectTransform,
                         flyingObject,
                         flyPunchPositionAnimFactor);
-                    
+
                     lastValue = this.GetCurrencyValue(id); // get last value after animation because it can be changed by other animation
                     this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));
                 }
@@ -360,7 +361,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             return true;
         }
-        
+
         public bool IsAffordCurrency(string currencyName, int amount)
         {
             return this.GetCurrencyValue(currencyName) >= amount;

@@ -1,8 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
 {
     using System.Collections.Generic;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
-    using Zenject;
+    using GameFoundation.Signals;
 
     public class UITemplateScreenShowServices : IInitializable
     {

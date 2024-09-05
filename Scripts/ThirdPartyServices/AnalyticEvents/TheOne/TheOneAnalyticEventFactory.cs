@@ -2,7 +2,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.TheOne
 {
     using Core.AnalyticServices;
-    using Zenject;
+    using GameFoundation.Signals;
 
     public class TheOneAnalyticEventFactory : BaseAnalyticEventFactory
     {

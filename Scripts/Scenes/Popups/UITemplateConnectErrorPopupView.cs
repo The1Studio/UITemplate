@@ -5,12 +5,12 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateConnectErrorPopupView : BaseView
     {

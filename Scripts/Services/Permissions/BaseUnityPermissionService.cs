@@ -2,8 +2,8 @@
 {
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
-    using Zenject;
 
     public abstract class BaseUnityPermissionService : IPermissionService
     {
@@ -28,7 +28,7 @@
 #else
                 this.LOGService.Log($"oneLog: You must add THEONE_NOTIFICATION symbol to request notification permission!");
                 isGranted = false;
-#endif 
+#endif
             }
             else
             {

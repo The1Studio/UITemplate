@@ -1,15 +1,16 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Helpers
 {
     using System.Collections.Generic;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using UIModule.Utilities.UIStuff;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateButtonExperienceHelper : IInitializable
     {
@@ -37,7 +38,7 @@
         private void OnScreenShowHandler(ScreenShowSignal obj)
         {
             if (!this.openedScreenList.Add(obj.ScreenPresenter)) return;
-            
+
             var newButtons = obj.ScreenPresenter.CurrentTransform.GetComponentsInChildren<Button>(true);
             foreach (var newButton in newButtons)
             {

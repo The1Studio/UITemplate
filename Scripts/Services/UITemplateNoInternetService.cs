@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Signals;
@@ -9,7 +10,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using UnityEngine;
-    using Zenject;
 
     public class UITemplateNoInternetService : IInitializable
     {

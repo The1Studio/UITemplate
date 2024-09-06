@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
 {
     using GameFoundation.Signals;
@@ -12,3 +13,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
         }
     }
 }
+#endif

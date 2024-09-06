@@ -3,11 +3,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.DI;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using UnityEngine;
-    using Zenject;
 
     public class UITemplateRewardHandler : IInitializable
     {
@@ -43,12 +43,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
             var availableRepeatedReward = rewardList
                 .GroupBy(keyPairValue => keyPairValue.Key)
                 .ToDictionary(group => group.Key, group => group.Sum(keyPairValue => keyPairValue.Value.RewardValue));
-            
+
             foreach (var (rewardId, value) in availableRepeatedReward)
             {
                 this.ReceiveReward(rewardId, value);
             }
-            
+
             rewardList.ForEach(keyPairValue => keyPairValue.Value.LastTimeReceive = DateTime.Now);
 
             return availableRepeatedReward;

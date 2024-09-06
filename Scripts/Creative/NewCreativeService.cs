@@ -1,9 +1,9 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Creative
 {
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using R3;
     using UnityEngine;
-    using Zenject;
     using Object = UnityEngine.Object;
 
     public class NewCreativeService : IInitializable

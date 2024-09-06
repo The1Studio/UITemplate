@@ -16,7 +16,6 @@
     using R3.Triggers;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class HighlightController : MonoBehaviour
     {
@@ -27,17 +26,14 @@
         public Button        btnCompleteStep;
         public HighlightHand highlightHand;
 
-        private Transform originPath;
-
         private CompositeDisposable disposables = new();
 
         #region Zenject
 
-        private ScreenManager screenManager;
-        private SignalBus     signalBus;
+        private IScreenManager screenManager;
+        private SignalBus      signalBus;
 
-        [Inject]
-        public void Init(ScreenManager screenManager, SignalBus signalBus)
+        public void Construct(IScreenManager screenManager, SignalBus signalBus)
         {
             this.screenManager = screenManager;
             this.signalBus     = signalBus;
@@ -56,8 +52,7 @@
 
         private void MoveToOriginParent()
         {
-            this.transform.SetParent(this.originPath, false);
-            this.transform.localPosition = Vector3.zero;
+            this.transform.SetParent(null, false);
             this.gameObject.SetActive(false);
         }
 
@@ -69,10 +64,8 @@
 
         private void Awake()
         {
-            var projectContextTrans = FindObjectOfType<ProjectContext>();
-            this.originPath = projectContextTrans.transform;
+            DontDestroyOnLoad(this);
             this.gameObject.SetActive(false);
-            this.MoveToCurrentRootUI(this.screenManager.CurrentOverlayRoot);
         }
 
         #endregion
@@ -80,8 +73,6 @@
         #region Highlight
 
         private List<Transform> highlightObjects = new List<Transform>();
-
-
 
         public async UniTask SetHighlight(string highlightPath, bool clickable = false, Action onButtonDown = null)
         {
@@ -125,6 +116,7 @@
             }
             this.activeHand.Clear();
         }
+
         private async UniTask GetHighlightObject(string highlightPath)
         {
             const int maxLoop = 100;

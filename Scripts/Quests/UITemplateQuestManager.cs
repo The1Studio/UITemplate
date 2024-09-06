@@ -2,25 +2,25 @@ namespace TheOneStudio.UITemplate.Quests
 {
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Data;
-    using Zenject;
 
     public class UITemplateQuestManager : IInitializable, ITickable
     {
-        private readonly IInstantiator            instantiator;
+        private readonly IDependencyContainer     container;
         private readonly UITemplateQuestBlueprint questBlueprint;
         private readonly UITemplateQuestProgress  questProgress;
 
         private readonly Dictionary<string, UITemplateQuestController> controllers = new Dictionary<string, UITemplateQuestController>();
 
         public UITemplateQuestManager(
-            IInstantiator            instantiator,
+            IDependencyContainer     container,
             UITemplateQuestBlueprint questBlueprint,
             UITemplateQuestProgress  questProgress
         )
         {
-            this.instantiator   = instantiator;
+            this.container      = container;
             this.questBlueprint = questBlueprint;
             this.questProgress  = questProgress;
         }
@@ -60,7 +60,7 @@ namespace TheOneStudio.UITemplate.Quests
         {
             var record     = this.questBlueprint[id];
             var progress   = this.questProgress.Storage.GetOrAdd(record.Id, () => new UITemplateQuestProgress.Quest(record));
-            var controller = this.instantiator.Instantiate<UITemplateQuestController>();
+            var controller = this.container.Instantiate<UITemplateQuestController>();
             controller.Record   = record;
             controller.Progress = progress;
             controller.Initialize();

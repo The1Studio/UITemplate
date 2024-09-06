@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using ServiceImplementation.IAPServices;
@@ -42,7 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             PermissionServiceInstaller.Install(this.Container);
             DeepLinkInstaller.Install(this.Container);
             this.Container.BindInterfacesAndSelfTo<UITemplateIapServices>().AsCached().NonLazy();
-            
+
             TheOneCheatInstaller.Install(this.Container);
 
             // not lock in editor because interstitial fake ads can not close
@@ -73,3 +74,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         }
     }
 }
+#endif

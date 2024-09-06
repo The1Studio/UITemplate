@@ -2,11 +2,11 @@
 {
     using System;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.LogService;
     using Newtonsoft.Json;
     using UnityEngine;
     using UnityEngine.Networking;
-    using Zenject;
 
     public interface IInternetService
     {

@@ -1,4 +1,5 @@
-﻿namespace TheOneStudio.UITemplate.Quests
+﻿#if GDK_ZENJECT
+namespace TheOneStudio.UITemplate.Quests
 {
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.Quests.Signals;
@@ -26,3 +27,4 @@
         }
     }
 }
+#endif

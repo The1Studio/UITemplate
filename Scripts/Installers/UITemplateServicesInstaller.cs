@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using GameFoundation.Scripts.Utilities.Extension;
@@ -45,15 +46,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             this.Container.BindInterfacesAndSelfTo<UITemplateRewardHandler>().AsCached().NonLazy();
 
             // this.Container.BindInterfacesTo<UITemplateAutoOpenStartedPackServices>().AsCached().NonLazy();
-            
+
             // VFX Spawn
             this.Container.Bind<UITemplateVFXSpawnService>().AsCached().NonLazy();
-            
+
             // Toast
             this.Container.Bind<ToastController>().FromComponentInNewPrefab(this.toastController).AsCached().NonLazy();
-            
+
             //Button experience helper
             this.Container.BindInterfacesAndSelfTo<UITemplateButtonExperienceHelper>().AsSingle().NonLazy();
         }
     }
 }
+#endif

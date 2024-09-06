@@ -1,9 +1,9 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
 {
+    using GameFoundation.DI;
     using UnityEngine;
     using UnityEngine.Events;
     using UnityEngine.EventSystems;
-    using Zenject;
 
     public class CreativeService : ITickable
     {

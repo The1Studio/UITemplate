@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using Core.AnalyticServices;
@@ -36,11 +37,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
             RemoteConfigInstaller.Install(this.Container);
             var thirdPartiesConfig = Resources.Load<ThirdPartiesConfig>(ThirdPartiesConfig.ResourcePath);
             this.Container.Bind<ThirdPartiesConfig>().FromInstance(thirdPartiesConfig).AsSingle();
-            
+
             //Remove config
             var remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);
             this.Container.Bind<RemoteConfigSetting>().FromInstance(remoteConfigSetting).AsSingle();
-            
+
             //Game event config
             var gameFeaturesSetting = Resources.Load<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath);
             this.Container.Bind<GameFeaturesSetting>().FromInstance(gameFeaturesSetting).AsSingle();
@@ -62,3 +63,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward
 {
     using System.Linq;
@@ -19,3 +20,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -20,3 +21,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
         }
     }
 }
+#endif

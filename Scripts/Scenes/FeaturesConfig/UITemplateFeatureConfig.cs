@@ -1,7 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
 {
+    using GameFoundation.DI;
     using ServiceImplementation.FireBaseRemoteConfig;
-    using Zenject;
 
     public class UITemplateFeatureConfig : IInitializable
     {
@@ -14,8 +14,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
         private const string IsSuggestionEnableKey  = "IsSuggestionEnable";
         private const string IsBuildingEnableKey    = "IsBuildingEnable";
         private const string IsVFXEnableKey         = "IsVFXEnable";
-        private const string IsSFXEnableKey         = "IsSFXEnable";      
-        
+        private const string IsSFXEnableKey         = "IsSFXEnable";
+
         private readonly IRemoteConfig uiTemplateRemoteConfig;
 
         public UITemplateFeatureConfig(IRemoteConfig uiTemplateRemoteConfig)
@@ -33,7 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
         public bool IsBuildingEnable    { get; set; } = true;
         public bool IsVFXEnable         { get; set; } = true;
         public bool IsSFXEnable         { get; set; } = true;
-        
+
         public void Initialize()
         {
             this.uiTemplateRemoteConfig.GetRemoteConfigBoolValueAsync(IsDailyRewardEnableKey, remoteValue => this.IsDailyRewardEnable = remoteValue, true);

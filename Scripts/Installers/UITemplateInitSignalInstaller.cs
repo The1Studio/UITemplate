@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using GameFoundation.Signals;
@@ -44,3 +45,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         }
     }
 }
+#endif

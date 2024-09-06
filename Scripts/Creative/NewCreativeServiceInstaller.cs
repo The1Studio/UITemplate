@@ -1,4 +1,5 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Creative
+﻿#if GDK_ZENJECT
+namespace TheOneStudio.UITemplate.UITemplate.Creative
 {
     using TheOneStudio.UITemplate.UITemplate.Creative.CheatLevel;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
@@ -17,3 +18,4 @@
         }
     }
 }
+#endif

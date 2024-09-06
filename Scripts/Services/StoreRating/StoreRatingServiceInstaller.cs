@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 {
     using Zenject;
@@ -17,3 +18,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
         }
     }
 }
+#endif

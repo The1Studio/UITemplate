@@ -8,6 +8,7 @@ namespace UITemplate.Editor
     using UnityEditor;
     using UnityEditor.AddressableAssets;
     using UnityEditor.AddressableAssets.Settings;
+    using UnityEditor.AddressableAssets.Settings.GroupSchemas;
     using UnityEngine;
 
     public static class AssetSearcher
@@ -115,7 +116,7 @@ namespace UITemplate.Editor
             MoveAssetToGroup(assetPath, targetGroupName);
         }
 
-        public static void MoveAssetToGroup(string assetPath, string targetGroupName)
+        private static void MoveAssetToGroup(string assetPath, string targetGroupName)
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             if (settings == null)
@@ -137,6 +138,8 @@ namespace UITemplate.Editor
             {
                 // Create the group if it doesn't exist
                 targetGroup = settings.CreateGroup(targetGroupName, false, false, false, null);
+                targetGroup.AddSchema<BundledAssetGroupSchema>();
+                targetGroup.AddSchema<ContentUpdateGroupSchema>();
             }
 
             AddressableAssetSettingsDefaultObject.Settings.MoveEntry(entry, targetGroup);

@@ -47,7 +47,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             {
                 this.signalBus.Fire(new FTUEButtonClickSignal(stepId));
             });
-            ;
             this.highlightController.ConfigHand(TypeConfigHand.AllAppear, record.HandSizeDelta, record.Radius, record.HandAnchor, record.HandRotation);
         }
     }

@@ -102,7 +102,11 @@
             {
                 if (containHighlightObject.IsChildOf(obj)) containHighlightObject = obj;
             }
-            this.ConfigAdapter(containHighlightObject.gameObject);
+            var rectMask = containHighlightObject.GetComponentInParent<Mask>();
+            var osa      = containHighlightObject.GetComponentInParent<IOSA>();
+            if(rectMask is null || osa is null) return;
+            var rectTf = rectMask.GetComponent<RectTransform>();
+            this.ConfigAdapter(containHighlightObject.gameObject, rectTf, osa);
         }
 
         public void TurnOffHighlight()
@@ -168,7 +172,7 @@
                 if (!this.highlightObjects.Any(tf => highlightObject.IsChildOf(tf) && highlightObject != tf)) highlightObject.gameObject.GetComponent<HighlightElement>().Setup();
                 if (clickable)
                 {
-                    var button = highlightObject.GetComponent<Button>();
+                    var button = highlightObject.GetComponentInChildren<Button>();
                     if (button != null)
                     {
                         this.disposables.Add(button.OnPointerDownAsObservable().Subscribe(data =>
@@ -313,15 +317,12 @@
 
         #region ConfigAdapter
 
-        private void ConfigAdapter(GameObject highlightGameObject)
+        private void ConfigAdapter(GameObject highlightGameObject, RectTransform rectTf, IOSA osa)
         {
-            var rectMask = highlightGameObject.GetComponentInParent<Mask>().GetComponent<RectTransform>();
-            var osa      = highlightGameObject.GetComponentInParent<IOSA>();
-            if (rectMask == null || osa == null) return;
             var target = highlightGameObject.GetComponent<RectTransform>();
             for (var i = 0; i < 1000; i++)
             {
-                if (this.IsRectTransformFullyInside(rectMask, target)) break;
+                if (this.IsRectTransformFullyInside(rectTf, target)) break;
                 osa.SetVirtualAbstractNormalizedScrollPosition(osa.GetNormalizedPosition() - 0.01, true, out _, true);
             }
         }

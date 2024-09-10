@@ -4,6 +4,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
     public interface IAnalyticEventFactory
     {
+        IEvent BannerAdShow();
+        IEvent BannerAdLoadFail(string msg);
+        IEvent BannerAdLoad();
         IEvent InterstitialEligible(string place);
 
         IEvent InterstitialShow(int level, string place);
@@ -15,7 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent InterstitialClick(string place);
 
         IEvent InterstitialDownloaded(string place, long loadingMilis);
-        
+
         IEvent InterstitialDownloadFailed(string place, string message, long loadingMilis);
 
         IEvent InterstitialCalled(string place);
@@ -27,15 +30,15 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent RewardedVideoOffer(string place);
 
         IEvent RewardedVideoDownloaded(string place, long loadingMilis);
-        
+
         IEvent RewardedVideoDownloadFailed(string place, long loadingMilis);
 
         IEvent RewardedVideoCalled(string place);
 
         IEvent RewardedVideoShow(int level, string place);
-        
-        IEvent RewardedVideoShowFail(string place, string msg);
 
+        IEvent RewardedVideoShowFail(string place, string msg);
+        IEvent RewardedLoadFail(string place, string msg);
         IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded);
 
         IEvent RewardedVideoClick(string place);

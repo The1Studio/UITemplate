@@ -71,6 +71,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Subscribe<ScreenShowSignal>(this.ScreenShowHandler);
+            //Banner ads
+            this.signalBus.Subscribe<BannerAdLoadedSignal>(this.BannerShowHandler);
+            this.signalBus.Subscribe<BannerAdLoadedSignal>(this.BannerLoadHandler);
+            this.signalBus.Subscribe<BannerAdLoadFailedSignal>(this.BannerLoadFailHandler);
 
             //Interstitial ads
             this.signalBus.Subscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
@@ -90,7 +94,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);
             this.signalBus.Subscribe<RewardedAdClickedSignal>(this.RewardedAdClickedHandler);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.RewardedAdDisplayedHandler);
-            this.signalBus.Subscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
+            this.signalBus.Subscribe<RewardedAdLoadFailedSignal>(this.RewardedAdLoadFailedHandler);
+            this.signalBus.Subscribe<RewardedAdShowFailedSignal>(this.RewardedAdShowFailedHandler);
             this.signalBus.Subscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
             this.signalBus.Subscribe<RewardedAdCompletedSignal>(this.OnRewardedAdCompleted);
             this.signalBus.Subscribe<RewardedSkippedSignal>(this.OnRewardedAdSkipped);
@@ -253,6 +258,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
+        #region Banner ads Signal Handler
+
+        private void BannerShowHandler(BannerAdLoadedSignal obj)
+        {
+            this.Track(this.analyticEventFactory.BannerAdShow());
+        }
+
+        private void BannerLoadFailHandler(BannerAdLoadFailedSignal obj)
+        {
+            this.Track(this.analyticEventFactory.BannerAdLoadFail(obj.Message));
+        }
+
+        private void BannerLoadHandler(BannerAdLoadedSignal obj)
+        {
+            this.Track(this.analyticEventFactory.BannerAdLoad());
+        }
+
+        #endregion
+
         #region Rewarded Ads Signal Handler
 
         private void RewardedAdEligibleHandler(RewardedAdEligibleSignal obj)
@@ -261,9 +285,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Track(new CustomEvent { EventName = $"Reward_Eligible_{obj.Placement}" });
         }
 
-        private void RewardedAdFailedHandler(RewardedAdLoadFailedSignal obj)
+        private void RewardedAdShowFailedHandler(RewardedAdShowFailedSignal obj)
         {
-            this.Track(this.analyticEventFactory.RewardedVideoShowFail(obj.Placement, obj.Message));
+            this.Track(this.analyticEventFactory.RewardedVideoShowFail(obj.Placement, null));
+        }
+
+        private void RewardedAdLoadFailedHandler(RewardedAdLoadFailedSignal obj)
+        {
+            this.Track(this.analyticEventFactory.RewardedLoadFail(obj.Placement, obj.Message));
         }
 
         private void RewardedAdOfferHandler(RewardedAdOfferSignal obj)
@@ -386,6 +415,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Unsubscribe<ScreenShowSignal>(this.ScreenShowHandler);
 
+            this.signalBus.Unsubscribe<BannerAdLoadFailedSignal>(this.BannerLoadFailHandler);
+            this.signalBus.Unsubscribe<BannerAdLoadedSignal>(this.BannerLoadHandler);
+            this.signalBus.Unsubscribe<BannerAdLoadedSignal>(this.BannerShowHandler);
+
             this.signalBus.Unsubscribe<InterstitialAdEligibleSignal>(this.InterstitialAdEligibleHandler);
             this.signalBus.Unsubscribe<InterstitialAdCalledSignal>(this.InterstitialAdCalledHandler);
             this.signalBus.Unsubscribe<InterstitialAdClickedSignal>(this.InterstitialAdClickedHandler);
@@ -399,7 +432,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<RewardedAdCalledSignal>(this.RewardedAdCalledHandler);
             this.signalBus.Unsubscribe<RewardedAdClickedSignal>(this.RewardedAdClickedHandler);
             this.signalBus.Unsubscribe<RewardedAdDisplayedSignal>(this.RewardedAdDisplayedHandler);
-            this.signalBus.Unsubscribe<RewardedAdLoadFailedSignal>(this.RewardedAdFailedHandler);
+            this.signalBus.Unsubscribe<RewardedAdLoadFailedSignal>(this.RewardedAdLoadFailedHandler);
+            this.signalBus.Unsubscribe<RewardedAdShowFailedSignal>(this.RewardedAdShowFailedHandler);
             this.signalBus.Unsubscribe<RewardedAdLoadedSignal>(this.RewardedAdDownloadedHandler);
 
             this.signalBus.Unsubscribe<PopupShowedSignal>(this.PopupShowedHandler);

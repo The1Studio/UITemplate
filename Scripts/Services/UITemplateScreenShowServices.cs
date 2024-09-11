@@ -1,18 +1,19 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
 {
     using System.Collections.Generic;
+    using System.Linq;
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Signals;
 
     public class UITemplateScreenShowServices : IInitializable
     {
-        private readonly List<IUITemplateScreenShow> screenShows;
-        private readonly SignalBus                   signalBus;
+        private readonly IReadOnlyList<IUITemplateScreenShow> screenShows;
+        private readonly SignalBus                            signalBus;
 
-        public UITemplateScreenShowServices(List<IUITemplateScreenShow> screenShows, SignalBus signalBus)
+        public UITemplateScreenShowServices(IEnumerable<IUITemplateScreenShow> screenShows, SignalBus signalBus)
         {
-            this.screenShows = screenShows;
+            this.screenShows = screenShows.ToArray();
             this.signalBus   = signalBus;
         }
 

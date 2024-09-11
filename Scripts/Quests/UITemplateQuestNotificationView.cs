@@ -35,7 +35,7 @@ namespace TheOneStudio.UITemplate.Quests
         [SerializeField] private GameObject[] completedObjects;
 
         private SignalBus                           signalBus;
-        private ScreenManager                       screenManager;
+        private IScreenManager                      screenManager;
         private IGameAssets                         gameAssets;
         private IAudioService                       audioService;
         private GameFeaturesSetting                 gameFeaturesSetting;
@@ -48,7 +48,7 @@ namespace TheOneStudio.UITemplate.Quests
         {
             var container = this.GetCurrentContainer();
             this.signalBus                 = container.Resolve<SignalBus>();
-            this.screenManager             = container.Resolve<ScreenManager>();
+            this.screenManager             = container.Resolve<IScreenManager>();
             this.gameAssets                = container.Resolve<IGameAssets>();
             this.audioService              = container.Resolve<IAudioService>();
             this.gameFeaturesSetting       = container.Resolve<GameFeaturesSetting>();

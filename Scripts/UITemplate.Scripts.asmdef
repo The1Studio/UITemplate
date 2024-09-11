@@ -9,6 +9,7 @@
     "GameFoundation.Utilities",
     "GameFoundation.BlueprintFlow",
     "Zenject",
+    "VContainer",
     "UniTask",
     "Unity.TextMeshPro",
     "Unity.ResourceManager",
@@ -79,6 +80,11 @@
       "name": "com.svermeulen.extenject",
       "expression": "",
       "define": "GDK_ZENJECT"
+    },
+    {
+      "name": "jp.hadashikick.vcontainer",
+      "expression": "",
+      "define": "GDK_VCONTAINER"
     }
   ]
 }

@@ -3,7 +3,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.UIModule.Utilities.GameQueueAction;
     using GameFoundation.Signals;
@@ -20,7 +19,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         #region inject
 
         private readonly SignalBus                           signalBus;
-        private readonly ScreenManager                       screenManager;
         private readonly UITemplateDailyRewardController     uiTemplateDailyRewardController;
         private readonly INotificationService                notificationServices;
         private readonly GameQueueActionContext              gameQueueActionContext;
@@ -34,16 +32,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public UITemplateDailyRewardService(
             SignalBus                           signalBus,
-            ScreenManager                       screenManager,
             UITemplateDailyRewardController     uiTemplateDailyRewardController,
             INotificationService                notificationServices,
             GameQueueActionContext              gameQueueActionContext,
             UITemplateFeatureConfig             uiTemplateFeatureConfig,
             UITemplateGameSessionDataController sessionDataController,
-            GameFeaturesSetting                 gameFeaturesSetting)
+            GameFeaturesSetting                 gameFeaturesSetting
+        )
         {
             this.signalBus                       = signalBus;
-            this.screenManager                   = screenManager;
             this.uiTemplateDailyRewardController = uiTemplateDailyRewardController;
             this.notificationServices            = notificationServices;
             this.gameQueueActionContext          = gameQueueActionContext;

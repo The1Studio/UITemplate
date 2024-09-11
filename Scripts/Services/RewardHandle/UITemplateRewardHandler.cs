@@ -3,38 +3,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GameFoundation.DI;
+    using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using UnityEngine;
 
-    public class UITemplateRewardHandler : IInitializable
+    public class UITemplateRewardHandler
     {
-        #region inject
+        private readonly IReadOnlyDictionary<string, IUITemplateRewardExecutor> rewardIdToRewardExecutor;
+        private readonly UITemplateRewardDataController                         uiTemplateRewardDataController;
+        private readonly UITemplateInventoryDataController                      uiTemplateInventoryDataController;
 
-        private readonly List<IUITemplateRewardExecutor>   listRewardHandle;
-        private readonly UITemplateRewardDataController    uiTemplateRewardDataController;
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-
-        #endregion
-
-        private Dictionary<string, IUITemplateRewardExecutor> rewardIdToRewardExecutor = new();
-
-        public UITemplateRewardHandler(List<IUITemplateRewardExecutor> listRewardHandle, UITemplateRewardDataController uiTemplateRewardDataController,
-            UITemplateInventoryDataController uiTemplateInventoryDataController)
+        public UITemplateRewardHandler(
+            IEnumerable<IUITemplateRewardExecutor> rewardExecutors,
+            UITemplateRewardDataController         uiTemplateRewardDataController,
+            UITemplateInventoryDataController      uiTemplateInventoryDataController
+        )
         {
-            this.listRewardHandle                  = listRewardHandle;
+            this.rewardIdToRewardExecutor          = rewardExecutors.ToDictionary(rewardExecutor => rewardExecutor.RewardId);
             this.uiTemplateRewardDataController    = uiTemplateRewardDataController;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-        }
-
-        public void Initialize()
-        {
-            foreach (var data in this.listRewardHandle)
-            {
-                this.rewardIdToRewardExecutor.Add(data.RewardId, data);
-            }
         }
 
         public Dictionary<string, int> ClaimRepeatedReward()
@@ -77,7 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
             }
             else
             {
-                this.uiTemplateInventoryDataController.AddGenericReward(rewardId, rewardValue, startPos);
+                this.uiTemplateInventoryDataController.AddGenericReward(rewardId, rewardValue, startPos).Forget();
             }
         }
     }

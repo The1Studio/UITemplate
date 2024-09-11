@@ -36,7 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         #region Inject
 
         protected readonly SceneDirector                     SceneDirector;
-        protected readonly ScreenManager                     ScreenManager;
+        protected readonly IScreenManager                    ScreenManager;
         protected readonly UITemplateAdServiceWrapper        adService;
         protected readonly UITemplateSoundServices           SoundServices;
         protected readonly UITemplateInventoryDataController inventoryDataController;
@@ -46,7 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             SignalBus                         signalBus,
             ILogService                       logger,
             SceneDirector                     sceneDirector,
-            ScreenManager                     screenManager,
+            IScreenManager                    screenManager,
             UITemplateAdServiceWrapper        adService,
             UITemplateSoundServices           soundServices,
             UITemplateInventoryDataController inventoryDataController,

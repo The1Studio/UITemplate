@@ -2,16 +2,16 @@
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Apero
 {
     using Core.AnalyticServices;
-    using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
+    using ServiceImplementation.IAPServices.Signals;
     using Zenject;
 
     public class AperoAnalyticEventFactory : BaseAnalyticEventFactory
     {
         public AperoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
-            signalBus.Subscribe<IapTransactionDidSucceed>(this.OnTransactionSucceedHandler);
+            signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnIAPPurchaseSuccessHandler);
             signalBus.Subscribe<AdRevenueSignal>(this.OnAdRevenueHandler);
         }
 
@@ -20,22 +20,24 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
             IgnoreEvents = new(),
             CustomEventKeys = new()
             {
-                { nameof(RevEvent), "Rev" },
-                { nameof(PurchaseEvent), "Purchase" },
+                { nameof(Rev), "Rev" },
+                { nameof(Purchase), "Purchase" },
             },
         };
 
-        private void OnTransactionSucceedHandler(IapTransactionDidSucceed signal)
+        public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
         {
-            this.analyticServices.Track(new PurchaseEvent
+            IgnoreEvents = new(),
+            CustomEventKeys = new()
             {
-                TransactionData = signal,
-            });
-        }
+                { nameof(Rev), "Rev" },
+                { nameof(Purchase), "Purchase" },
+            },
+        };
 
-        public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; }
+        private void OnIAPPurchaseSuccessHandler(OnIAPPurchaseSuccessSignal signal) { this.analyticServices.Track(new Purchase(signal.Product)); }
 
-        private void OnAdRevenueHandler(AdRevenueSignal signal) { this.analyticServices.Track(new RevEvent()); }
+        private void OnAdRevenueHandler(AdRevenueSignal signal) { this.analyticServices.Track(new Rev()); }
     }
 }
 #endif

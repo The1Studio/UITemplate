@@ -87,8 +87,6 @@
 
         public virtual IEvent TutorialCompletion(bool success, string tutorialId) => new TutorialCompletion(success, tutorialId);
 
-        public virtual IEvent BuildingUnlock(bool success) => new BuildingUnlock(success);
-
         public virtual void ForceUpdateAllProperties() { }
 
         public virtual string LevelMaxProperty                   => "level_max";

@@ -2,7 +2,7 @@
 {
     using Core.AnalyticServices.Data;
 
-    public class RevEvent : IEvent
+    public class Rev : IEvent
     {
         
     }

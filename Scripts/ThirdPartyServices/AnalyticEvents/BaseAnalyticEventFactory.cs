@@ -120,7 +120,7 @@
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = this.EvenName,
-                EventProperties = new Dictionary<string, object>()
+                EventProperties = new()
                 {
                     { "ad_platform", obj.AdsRevenueEvent.AdsRevenueSourceId },
                     { "ad_source", obj.AdsRevenueEvent.AdNetwork },

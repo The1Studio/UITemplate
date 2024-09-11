@@ -8,14 +8,16 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using Zenject;
+    using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents.LevelStart;
 
     public class MiraiAnalyticEventFactory : BaseAnalyticEventFactory
     {
         public MiraiAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
         }
-        
+
         public override void ForceUpdateAllProperties() { }
 
         public override string LevelMaxProperty             => "level_max";
@@ -66,9 +68,32 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
                 { "Placement", "placement" },
                 { "Currency", "currency" },
                 { "Revenue", "value" },
-                { nameof(LevelAchieved), "checkpoint" },
+                { "Message", "errormsg" },
+                { "worldId", "world_id" },
+                { nameof(CommonEvents.LevelStart), "level_start" },
+                { nameof(LevelEnd), "level_end" },
+                { nameof(BannerShown), "ads_Banner_show" },
+                { nameof(BannerLoadFail), "ads_Banner_fail" },
+                { nameof(InterstitialAdDisplayed), "ads_Inter_show" },
+                { nameof(InterstitialAdDisplayedFailed), "ads_Inter_fail" },
+                { nameof(RewardedAdDisplayed), "ads_Reward_show" },
+                { nameof(RewardedAdCompleted), "ads_Reward_complete" },
+                { nameof(AdsRewardFail), "ads_Reward_fail" },
+                { nameof(CommonEvents.AppOpenFullScreenContentFailed), "ads_Open_fail" },
+                { nameof(CommonEvents.AppOpenFullScreenContentOpened), "ads_Open_show" },
+                { "GameLaunched", "open_app" },
             }
         };
+
+        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, gold, 0, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
+        public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelEnd(level, "win", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
+        public override IEvent LevelSkipped(int level, int timeSpent) { return new LevelEnd(level, "skip", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
+        public override IEvent RewardedVideoShowFail(string place, string msg) { return new AdsRewardFail(place, msg); }
     }
 }
 #endif

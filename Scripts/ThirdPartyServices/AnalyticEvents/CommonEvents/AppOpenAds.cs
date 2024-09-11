@@ -29,7 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class AppOpenFullScreenContentOpened : IEvent
     {
     }
-    
+
     public class AppOpenClicked : IEvent
     {
     }

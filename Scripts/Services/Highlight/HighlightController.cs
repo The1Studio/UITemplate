@@ -125,7 +125,7 @@
         }
         private async UniTask GetHighlightObject(string highlightPath)
         {
-            const int maxLoop = 5;
+            const int maxLoop = 100;
             var       count   = 0;
             while (this.highlightObjects.Count == 0)
             {
@@ -160,7 +160,11 @@
                     var tf = tfs.FirstOrDefault(obj => obj.name == objNames[i]);
                     if (tf != null) this.highlightObjects.Add(tf);
                 }
-                if (count >= maxLoop) break;
+                if (count >= maxLoop)
+                {
+                    Debug.LogError("Highlight object not found");
+                    break;
+                }
                 if (this.highlightObjects.Count == 0) await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             }
         }
@@ -175,7 +179,7 @@
                     var button = highlightObject.GetComponentInChildren<Button>();
                     if (button != null)
                     {
-                        this.disposables.Add(button.OnPointerDownAsObservable().Subscribe(data =>
+                        this.disposables.Add(button.OnPointerClickAsObservable().Subscribe(data =>
                         {
                             this.OnButtonClick();
                             onButtonDown?.Invoke();

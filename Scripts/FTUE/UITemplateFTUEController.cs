@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using System.Collections.Generic;
+    using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
@@ -42,12 +43,16 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             {
                 disableObject.SetActive(true);
             }
+            this.SetHighlight(stepId).Forget();
+        }
+
+        private async UniTask SetHighlight(string stepId)
+        {
             var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
-            this.highlightController.SetHighlight(record.HighLightPath, record.ButtonCanClick, onButtonDown: () =>
+            await this.highlightController.SetHighlight(record.HighLightPath, record.ButtonCanClick, onButtonDown: () =>
             {
                 this.signalBus.Fire(new FTUEButtonClickSignal(stepId));
             });
-            ;
             this.highlightController.ConfigHand(TypeConfigHand.AllAppear, record.HandSizeDelta, record.Radius, record.HandAnchor, record.HandRotation);
         }
     }

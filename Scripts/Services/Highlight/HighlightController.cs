@@ -81,7 +81,7 @@
 
         
 
-        public async UniTaskVoid SetHighlight(string highlightPath, bool clickable = false, Action onButtonDown = null)
+        public async UniTask SetHighlight(string highlightPath, bool clickable = false, Action onButtonDown = null)
         {
             this.ClearHighlightObject();
             await this.GetHighlightObject(highlightPath);
@@ -253,7 +253,7 @@
                 "BottomRight" => -315,
                 _             => 0f
             };
-            hand.rotateHand.localEulerAngles = new Vector3(0, 0, angle);
+            hand.rotateHand.localEulerAngles = new(0, 0, angle);
             hand.iconHand.localEulerAngles   = Vector3.zero;
             return hand;
         }

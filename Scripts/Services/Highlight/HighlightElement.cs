@@ -14,7 +14,7 @@
         private Canvas                  canvas;
         private GraphicRaycaster        graphicRaycaster;
         public  Action                  OnPositionChange;
-        private CancellationTokenSource cancellationTokenSource;
+        private bool                    isActive;
 
         public void Setup()
         {
@@ -28,34 +28,20 @@
 
             this.canvas.sortingLayerName = CanvasSortingLayerName;
             this.graphicRaycaster        = this.gameObject.AddComponent<GraphicRaycaster>();
-            if(this.cancellationTokenSource != null)
-            {
-                this.cancellationTokenSource.Cancel();
-                this.cancellationTokenSource.Dispose();
-            }
-            this.cancellationTokenSource = new CancellationTokenSource();
-            this.FollowObject().Forget();
+            this.isActive                = true;
         }
 
-        private async UniTask FollowObject()
+        private void Update()
         {
-            while (true)
-            {
-                try
-                {
-                    this.OnPositionChange?.Invoke();
-                    await UniTask.Yield(PlayerLoopTiming.LastUpdate, this.cancellationTokenSource.Token);
-                }
-                catch (OperationCanceledException)
-                {
-                    break;
-                }
-            }
+            if (!this.isActive) return;
+            this.OnPositionChange?.Invoke();
         }
+
+
         public void Despawn()
         {
-            this.cancellationTokenSource.Cancel();
-            this.cancellationTokenSource.Dispose();
+            this.isActive      = false;
+            this.OnPositionChange = null;
             Destroy(this.graphicRaycaster);
             Destroy(this.canvas);
         }
@@ -64,6 +50,5 @@
         {
             return SortingLayer.layers.Any(layer => layer.name.Equals(layerName));
         }
-
     }
 }

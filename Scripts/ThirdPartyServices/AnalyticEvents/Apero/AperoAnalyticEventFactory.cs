@@ -64,6 +64,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
                 },
             });
         }
+
+        private void TrackAdRequestEvent()
+        {
+            
+        }
     }
 }
 #endif

@@ -40,57 +40,27 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
         private void OnIAPPurchaseSuccessHandler(OnIAPPurchaseSuccessSignal signal) { this.analyticServices.Track(new Purchase(signal.Product)); }
 
-        private void OnAdRevenueHandler(AdRevenueSignal signal)
-        {
-            this.analyticServices.Track(new Rev()); 
-            this.analyticServices.Track(new CustomEvent
-            {
-                EventName = "track_ad_impression",
-                EventProperties = new()
-                {
-                    { "ad_platform", signal.AdsRevenueEvent.AdsRevenueSourceId },
-                    { "ad_source", signal.AdsRevenueEvent.AdNetwork },
-                    { "ad_unit_id", signal.AdsRevenueEvent.AdUnit },
-                    { "ad_format", signal.AdsRevenueEvent.AdFormat },
-                    { "placement", signal.AdsRevenueEvent.Placement },
-                    { "currency", signal.AdsRevenueEvent.Currency },
-                    { "value", signal.AdsRevenueEvent.Revenue },
-                },
-            });
-        }
+        private void OnAdRevenueHandler(AdRevenueSignal signal) { this.TrackAdEvent("track_ad_impression", signal.NetworkPlacement, signal.AdsRevenueEvent); }
 
-        private void OnAdRevenueClickedHandler(AdRevenueClickedSignal signal)
-        {
-            this.analyticServices.Track(new CustomEvent
-            {
-                EventName = "track_ad_click",
-                EventProperties = new()
-                {
-                    { "ad_platform", signal.AdsRevenueEvent.AdsRevenueSourceId },
-                    { "ad_source", signal.AdsRevenueEvent.AdNetwork },
-                    { "ad_unit_id", signal.AdsRevenueEvent.AdUnit },
-                    { "ad_format", signal.AdsRevenueEvent.AdFormat },
-                    { "placement", signal.AdsRevenueEvent.Placement },
-                    { "currency", signal.AdsRevenueEvent.Currency },
-                    { "value", signal.AdsRevenueEvent.Revenue },
-                },
-            });
-        }
+        private void OnAdRevenueClickedHandler(AdRevenueClickedSignal signal) { this.TrackAdEvent("track_ad_click", signal.NetworkPlacement, signal.AdsRevenueEvent); }
 
-        private void OnAdRevenueLoadedHandler(AdRevenueLoadedSignal signal)
+        private void OnAdRevenueLoadedHandler(AdRevenueLoadedSignal signal) { this.TrackAdEvent("track_ad_matched_request", signal.NetworkPlacement, signal.AdsRevenueEvent); }
+
+        private void TrackAdEvent(string eventName, string placement, AdsRevenueEvent adsRevenueEvent)
         {
             this.analyticServices.Track(new CustomEvent
             {
-                EventName = "track_ad_matched_request",
+                EventName = eventName,
                 EventProperties = new()
                 {
-                    { "ad_platform", signal.AdsRevenueEvent.AdsRevenueSourceId },
-                    { "ad_source", signal.AdsRevenueEvent.AdNetwork },
-                    { "ad_unit_id", signal.AdsRevenueEvent.AdUnit },
-                    { "ad_format", signal.AdsRevenueEvent.AdFormat },
-                    { "placement", signal.AdsRevenueEvent.Placement },
-                    { "currency", signal.AdsRevenueEvent.Currency },
-                    { "value", signal.AdsRevenueEvent.Revenue },
+                    { "ad_platform", adsRevenueEvent.AdsRevenueSourceId },
+                    { "ad_unit_id", adsRevenueEvent.AdUnit },
+                    { "ad_source", adsRevenueEvent.AdNetwork },
+                    { "ad_source_unit_id", placement },
+                    { "ad_format", adsRevenueEvent.AdFormat },
+                    { "placement", adsRevenueEvent.Placement },
+                    { "currency", adsRevenueEvent.Currency },
+                    { "value", adsRevenueEvent.Revenue },
                 },
             });
         }

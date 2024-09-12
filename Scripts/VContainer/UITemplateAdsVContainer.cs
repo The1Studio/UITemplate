@@ -2,8 +2,10 @@
 #nullable enable
 namespace TheOneStudio.UITemplate
 {
+    using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler;
     using VContainer;
 
     public static class UITemplateAdsVContainer

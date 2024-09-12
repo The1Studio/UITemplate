@@ -5,7 +5,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     using System.Collections.Generic;
     using Core.AnalyticServices;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using Zenject;
+    using GameFoundation.Signals;
+
     public class CrazylabAnalyticEventFactory : BaseAnalyticEventFactory
     {
         public CrazylabAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)

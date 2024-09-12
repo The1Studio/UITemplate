@@ -11,7 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using Zenject;
+    using GameFoundation.Signals;
 
     public class AdOneAnalyticEventFactory : BaseAnalyticEventFactory
     {

@@ -5,7 +5,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
     using Cysharp.Threading.Tasks;
     using Google.Play.Review;
     using UnityEngine;
-    using Zenject;
 
     public class AndroidStoreRatingService : IStoreRatingService
     {

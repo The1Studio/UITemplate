@@ -8,8 +8,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
-    using Zenject;
 
     public class BraveStarsAnalyticEventFactory : BaseAnalyticEventFactory
     {

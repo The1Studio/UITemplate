@@ -7,7 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Z
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using Zenject;
+    using GameFoundation.Signals;
 
     public class ZitgaAnalyticEventFactory : BaseAnalyticEventFactory
     {
@@ -22,7 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Z
                 "af_first_open",
                 "af_ad_complete"
             },
-            
+
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(FirstOpenEvent), "af_first_open" },

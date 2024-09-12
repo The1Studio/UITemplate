@@ -5,7 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using Zenject;
+    using GameFoundation.Signals;
     using System;
     using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;

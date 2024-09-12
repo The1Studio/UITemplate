@@ -9,7 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
-    using Zenject;
+    using GameFoundation.Signals;
 
     public class RocketAnalyticEventFactory : BaseAnalyticEventFactory
     {

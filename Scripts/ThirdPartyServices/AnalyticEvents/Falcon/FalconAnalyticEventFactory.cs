@@ -74,23 +74,22 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 typeof(AdsRewardedDownloaded),
                 typeof(AdsRewardClick),
                 typeof(LevelComplete),
+                
             },
             CustomEventKeys = new Dictionary<string, string>()
             {
-                { nameof(BannerShown), "af_banner_shown" },
-                { nameof(GameTutorialCompletion), "af_tutorial_completion" },
-                { nameof(LevelAchieved), "af_level_achieved" },
-                { nameof(AdsIntersEligible), "af_inters_ad_eligible" },
-                { nameof(AdInterCalled), "af_inters_show " },
-                { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdsRewardEligible), "af_rewarded_ad_eligible" },
-                { nameof(AdsRewardedCalled), "af_rewarded_api_called" },
-                { nameof(AdsRewardShow), "af_rewarded_show" },
-                { nameof(AdsRewardComplete), "af_rewarded_displayed" },
-                { nameof(CommonEvents.LevelStart), "af_level_start" },
-                { nameof(CommonEvents.LevelWin), "af_level_achieved" },
-                { nameof(CommonEvents.LevelLose), "af_level_fail" },
                 { nameof(CommonEvents.TutorialCompletion), "af_tutorial_completion" },
+                { "success", "af_success" },
+                { "tutorialId", "af_tutorial_id" },
+                { nameof(LevelEnd), "af_level_achieved" },
+                { "level", "af_level" },
+                
+                // TODO: add af_achievement_unlocked archivement unlock event
+                
+                { nameof(InterstitialAdCalled), "af_inters_show" },
+                { nameof(InterstitialAdDisplayed), "af_inters_displayed" },
+                { nameof(RewardedAdCalled), "af_rewarded_show" },
+                { nameof(RewardedAdDisplayed), "af_rewarded_displayed" },
             }
         };
 
@@ -109,7 +108,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 { "Revenue", "value" },
                 { nameof(LevelEnd), "level_complete" },
                 { "timePlay", "timeplayed" },
-                { "LevelStart", "level_start" },
+                { nameof(CommonEvents.LevelStart), "level_start" },
                 { "gold", "current_gold" },
                 
                 { nameof(RewardedAdLoaded), "ads_reward_load" },

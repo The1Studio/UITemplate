@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.AdOne;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using Zenject;
     using AdInterCalled = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdInterCalled;
     using AdInterClick = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdInterClick;
@@ -35,8 +36,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
         private readonly IIapServices  iapServices;
         private readonly ScreenManager screenManager;
 
-        public FalconAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IIapServices iapServices,
-                                          ScreenManager screenManager) : base(signalBus, analyticServices)
+        public FalconAnalyticEventFactory(SignalBus signalBus,
+                                          IAnalyticServices analyticServices,
+                                          IIapServices iapServices,
+                                          ScreenManager screenManager)
+            : base(signalBus, analyticServices)
         {
             this.iapServices   = iapServices;
             this.screenManager = screenManager;
@@ -46,7 +50,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
             signalBus.Subscribe<RewardedAdCalledSignal>(this.OnShowRewardedAd);
             signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
             signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
-            signalBus.Subscribe<LevelStartedSignal>(this.OnLevelStarted);
             signalBus.Subscribe<LevelEndedSignal>(this.OnLevelEnded);
         }
 
@@ -104,27 +107,53 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 { "Placement", "placement" },
                 { "Currency", "currency" },
                 { "Revenue", "value" },
-                { nameof(LevelAchieved), "checkpoint" },
-                { nameof(ABI.LevelStart), "level_start" },
-                { nameof(LevelComplete), "level_complete" },
-                { nameof(LevelFail), "level_fail" },
-                { nameof(AdInterLoad), "ad_inter_load_success" },
-                { nameof(AdInterFail), "ad_inter_load_fail" },
-                { nameof(AdInterShow), "ad_inter_show" },
-                { nameof(AdInterClick), "ad_inter_click" },
-                { nameof(AdsRewardedLoaded), "ads_reward_load" },
-                { nameof(AdsRewardClick), "ads_reward_click" },
-                { nameof(AdsRewardShow), "ads_reward_show_success" },
-                { nameof(AdsRewardFail), "ads_reward_show_fail" },
-                { nameof(AdsRewardComplete), "ads_reward_complete" },
+                { nameof(LevelEnd), "level_complete" },
+                { "timePlay", "timeplayed" },
+                { "LevelStart", "level_start" },
+                { "gold", "current_gold" },
+                
+                { nameof(RewardedAdLoaded), "ads_reward_load" },
+                { nameof(RewardedAdLoadClicked), "ads_reward_click" },
+                { nameof(RewardedAdDisplayed), "ads_reward_show_success" },
+                { nameof(RewardedAdShowFail), "ads_reward_show_fail" },
+                { nameof(RewardedAdCompleted), "ads_reward_complete" },
+                { nameof(InterstitialAdLoadFailed), "ad_inter_load_fail" },
+                { nameof(InterstitialAdDownloaded), "ad_inter_load_success" },
+                { nameof(InterstitialAdDisplayed), "ad_inter_show" },
+                { nameof(InterstitialAdClicked), "ad_inter_click" },
             }
         };
 
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount)
+        {
+            this.analyticServices.Track(new CustomEvent()
+            {
+                EventName = "level_fail",
+                EventProperties = new Dictionary<string, object>()
+                {
+                    { "level", level },
+                    { "time_spent", timeSpent },
+                    { "failcount", loseCount },
+                    { "timestamp", DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+                }
+            });
+            return new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        }
+
+        public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelEnd(level, "win", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
+        public override IEvent LevelSkipped(int level, int timeSpent) { return new LevelEnd(level, "skip", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+
         #region Falcon SDK log
 
-        private void OnLevelEnded(LevelEndedSignal obj) { new FLevelLog(obj.Level, "", obj.IsWin ? LevelStatus.Pass : LevelStatus.Fail, TimeSpan.FromSeconds(obj.Time)).Send(); }
-
-        private void OnLevelStarted(LevelStartedSignal obj) { }
+        private void OnLevelEnded(LevelEndedSignal obj)
+        {
+            this.analyticServices.Track(new CustomEvent()
+            {
+                EventName = $"checkpoint_{obj.Level}"
+            });
+            new FLevelLog(obj.Level, "", obj.IsWin ? LevelStatus.Pass : LevelStatus.Fail, TimeSpan.FromSeconds(obj.Time)).Send();
+        }
 
         private void OnScreenShow(ScreenShowSignal obj)
         {

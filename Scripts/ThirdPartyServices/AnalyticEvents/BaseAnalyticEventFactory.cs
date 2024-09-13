@@ -99,6 +99,7 @@
         public virtual string TotalVirtualCurrencySpentProperty  => "total_spent";
         public virtual string TotalVirtualCurrencyEarnedProperty => "total_earned";
         public virtual string DaysPlayedProperty                 => "days_played";
+        public virtual string RetentionDayProperty               => "retention";
 
         public virtual AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new();
         public virtual AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new();

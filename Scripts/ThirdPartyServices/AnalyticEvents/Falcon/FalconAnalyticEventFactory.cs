@@ -48,11 +48,12 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
 
         public override void ForceUpdateAllProperties() { }
 
-        public override string LevelMaxProperty             => "level_max";
+        public override string LevelMaxProperty             => "level";
         public override string LastLevelProperty            => "last_level";
         public override string LastAdsPlacementProperty     => "last_placement";
         public override string TotalInterstitialAdsProperty => "total_interstitial_ads";
         public override string TotalRewardedAdsProperty     => "total_rewarded_ads";
+        public override string RetentionDayProperty         => "retent_type";
 
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {

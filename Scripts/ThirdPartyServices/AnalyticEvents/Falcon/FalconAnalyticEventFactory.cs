@@ -87,6 +87,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 { nameof(CommonEvents.LevelStart), "af_level_start" },
                 { nameof(CommonEvents.LevelWin), "af_level_achieved" },
                 { nameof(CommonEvents.LevelLose), "af_level_fail" },
+                { nameof(CommonEvents.TutorialCompletion), "af_tutorial_completion" },
             }
         };
 
@@ -104,6 +105,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 { "Currency", "currency" },
                 { "Revenue", "value" },
                 { nameof(LevelAchieved), "checkpoint" },
+                { nameof(ABI.LevelStart), "level_start" },
+                { nameof(LevelComplete), "level_complete" },
+                { nameof(LevelFail), "level_fail" },
                 { nameof(AdInterLoad), "ad_inter_load_success" },
                 { nameof(AdInterFail), "ad_inter_load_fail" },
                 { nameof(AdInterShow), "ad_inter_show" },

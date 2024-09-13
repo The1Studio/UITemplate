@@ -62,10 +62,10 @@ namespace TheOneStudio.UITemplate
             #if THEONE_BADGE_NOTIFY
             builder.Register<UITemplateBadgeNotifySystem>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             #endif
-            builder.RegisterComponentInNewPrefab(_ => Object.Instantiate(Resources.Load<Reporter>("LogsViewer")), Lifetime.Singleton);
+            builder.RegisterComponentInNewPrefab(_ => Resources.Load<Reporter>("LogsViewer"), Lifetime.Singleton);
 
             #if THEONE_DEBUG && !PRODUCTION
-            builder.Register<Reporter>(_ => Object.Instantiate(Resources.Load<Reporter>("LogsViewer")), Lifetime.Singleton);
+            builder.RegisterComponentInNewPrefab(_ => Resources.Load<Reporter>("LogsViewer"), Lifetime.Singleton);
             #endif
         }
     }

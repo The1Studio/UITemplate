@@ -3,11 +3,19 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
 {
     using System;
     using System.Collections.Generic;
+    using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using global::Falcon.FalconAnalytics.Scripts.Enum;
+    using global::Falcon.FalconAnalytics.Scripts.Models.Messages.PreDefines;
+    using ServiceImplementation.IAPServices;
+    using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.AdOne;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using Zenject;
     using AdInterCalled = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdInterCalled;
@@ -24,7 +32,23 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
 
     public class FalconAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        public FalconAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
+        private readonly IIapServices  iapServices;
+        private readonly ScreenManager screenManager;
+
+        public FalconAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IIapServices iapServices,
+                                          ScreenManager screenManager) : base(signalBus, analyticServices)
+        {
+            this.iapServices   = iapServices;
+            this.screenManager = screenManager;
+
+            signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnPurchaseComplete);
+            signalBus.Subscribe<InterstitialAdCalledSignal>(this.OnShowInterstitialAd);
+            signalBus.Subscribe<RewardedAdCalledSignal>(this.OnShowRewardedAd);
+            signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
+            signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+            signalBus.Subscribe<LevelStartedSignal>(this.OnLevelStarted);
+            signalBus.Subscribe<LevelEndedSignal>(this.OnLevelEnded);
+        }
 
         public override void ForceUpdateAllProperties() { }
 
@@ -91,6 +115,37 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 { nameof(AdsRewardComplete), "ads_reward_complete" },
             }
         };
+
+        #region Falcon SDK log
+
+        private void OnLevelEnded(LevelEndedSignal obj) { new FLevelLog(obj.Level, "", obj.IsWin ? LevelStatus.Pass : LevelStatus.Fail, TimeSpan.FromSeconds(obj.Time)).Send(); }
+
+        private void OnLevelStarted(LevelStartedSignal obj) { }
+
+        private void OnScreenShow(ScreenShowSignal obj)
+        {
+            var currentScreen = this.screenManager.CurrentActiveScreen.Value;
+            new FActionLog($"ShowScreen_{currentScreen.GetType().Name}").Send();
+        }
+
+        private void OnUpdateCurrency(OnUpdateCurrencySignal obj) { new FResourceLog(obj.Amount > 0 ? FlowType.Source : FlowType.Sink, "currency", obj.Id, obj.Id, Math.Abs(obj.Amount)).Send(); }
+
+        private void OnShowRewardedAd(RewardedAdCalledSignal obj) { new FAdLog(AdType.Reward, this.screenManager.CurrentActiveScreen.Value.GetType().Name).Send(); }
+
+        private void OnShowInterstitialAd(InterstitialAdCalledSignal obj) { new FAdLog(AdType.Interstitial, this.screenManager.CurrentActiveScreen.Value.GetType().Name).Send(); }
+
+        private void OnPurchaseComplete(OnIAPPurchaseSuccessSignal obj)
+        {
+            var productData = this.iapServices.GetProductData(obj.Product.Id);
+
+            throw new NotImplementedException();
+            //Get transaction id and Implement this
+            // var transactionID = "obj.PurchasedProduct.transactionID";
+            // new FInAppLog(obj.Product.Id, productData.Price, productData.CurrencyCode, "", transactionID, 
+            //     this.screenManager.CurrentActiveScreen.Value.ToString()).Send();
+        }
+
+        #endregion
     }
 }
 #endif

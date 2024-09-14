@@ -26,6 +26,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
 
     public class FalconAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        #region Inject
+
         private readonly IIapServices    iapServices;
         private readonly ScreenManager   screenManager;
         private readonly FalconLocalData falconLocalData;
@@ -41,16 +43,18 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
             this.screenManager   = screenManager;
             this.falconLocalData = falconLocalData;
 
-            signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnPurchaseComplete);
-            signalBus.Subscribe<InterstitialAdCalledSignal>(this.OnShowInterstitialAd);
-            signalBus.Subscribe<RewardedAdCalledSignal>(this.OnShowRewardedAd);
-            signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
-            signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
             signalBus.Subscribe<LevelEndedSignal>(this.OnLevelEnded);
             signalBus.Subscribe<LevelSkippedSignal>(this.OnLevelSkipped);
+            signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnPurchaseComplete);
+
+            signalBus.Subscribe<InterstitialAdCalledSignal>(this.OnShowInterstitialAd);
+            signalBus.Subscribe<RewardedAdCalledSignal>(this.OnShowRewardedAd);
+
+            signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
+            signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
         }
 
-        public override void ForceUpdateAllProperties() { }
+        #endregion
 
         public override string LevelMaxProperty             => "level";
         public override string LastLevelProperty            => "last_level";
@@ -189,21 +193,35 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
             new FActionLog($"ShowScreen_{currentScreen.GetType().Name}").Send();
         }
 
-        private void OnUpdateCurrency(OnUpdateCurrencySignal obj) { new FResourceLog(obj.Amount > 0 ? FlowType.Source : FlowType.Sink, "currency", obj.Id, obj.Id, Math.Abs(obj.Amount)).Send(); }
+        private void OnUpdateCurrency(OnUpdateCurrencySignal obj)
+            => new FResourceLog(obj.Amount > 0 ? FlowType.Source : FlowType.Sink,
+                "in_game",
+                LimitStringLog(obj.Id, 20),
+                LimitStringLog(obj.Id),
+                Math.Abs(obj.Amount),
+                this.MaxPassLevel).Send();
 
-        private void OnShowRewardedAd(RewardedAdCalledSignal obj) { new FAdLog(AdType.Reward, this.screenManager.CurrentActiveScreen.Value.GetType().Name).Send(); }
+        private void OnShowRewardedAd(RewardedAdCalledSignal obj) { new FAdLog(AdType.Reward, this.CurrentScreen, this.MaxPassLevel).Send(); }
 
-        private void OnShowInterstitialAd(InterstitialAdCalledSignal obj) { new FAdLog(AdType.Interstitial, this.screenManager.CurrentActiveScreen.Value.GetType().Name).Send(); }
+        private void OnShowInterstitialAd(InterstitialAdCalledSignal obj) { new FAdLog(AdType.Interstitial, this.CurrentScreen, this.MaxPassLevel).Send(); }
 
         private void OnPurchaseComplete(OnIAPPurchaseSuccessSignal obj)
         {
-            var productData = this.iapServices.GetProductData(obj.Product.Id);
-
+            //TODO: Implement transaction ID
+            var productData   = this.iapServices.GetProductData(obj.Product.Id);
+            var transactionID = "obj.PurchasedProduct.transactionID";
+            var where         = this.CurrentScreen;
+            new FInAppLog(obj.Product.Id, productData.Price, productData.CurrencyCode, where, transactionID, this.screenManager.CurrentActiveScreen.Value.ToString()).Send();
             throw new NotImplementedException();
-            //Get transaction id and Implement this
-            // var transactionID = "obj.PurchasedProduct.transactionID";
-            // new FInAppLog(obj.Product.Id, productData.Price, productData.CurrencyCode, "", transactionID, 
-            //     this.screenManager.CurrentActiveScreen.Value.ToString()).Send();
+        }
+
+        private string CurrentScreen => LimitStringLog(this.screenManager.CurrentActiveScreen.Value.GetType().Name);
+        private int    MaxPassLevel  => this.falconLocalData.PassedLevels.Count;
+
+        private static string LimitStringLog(string value, int length = 50)
+        {
+            var result = value.Length > length ? value[..length] : value;
+            return string.IsNullOrEmpty(result) ? "unknown" : result;
         }
 
         #endregion

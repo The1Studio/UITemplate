@@ -14,13 +14,15 @@ namespace TheOneStudio.UITemplate
     using ServiceImplementation.RemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using UnityEngine;
     using VContainer;
     #if APPSFLYER
     using ServiceImplementation.AppsflyerAnalyticTracker;
     #endif
     #if BYTEBREW && !UNITY_EDITOR
     using ServiceImplementation.ByteBrewAnalyticTracker;
+    #endif
+    #if ADJUST
+    using ServiceImplementation.AdjustAnalyticTracker;
     #endif
 
     public static class UITemplateThirdPartyVContainer
@@ -44,6 +46,9 @@ namespace TheOneStudio.UITemplate
             #endif
             #if BYTEBREW && !UNITY_EDITOR
             builder.Register<ByteBrewTracker>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(container => container.Resolve<IAnalyticEventFactory>().ByteBrewAnalyticsEventCustomizationConfig);
+            #endif
+            #if ADJUST
+            builder.Register<AdjustTracker>(Lifetime.Singleton).AsImplementedInterfaces();
             #endif
         }
     }

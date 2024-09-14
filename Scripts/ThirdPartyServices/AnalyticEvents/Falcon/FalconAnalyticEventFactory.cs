@@ -26,17 +26,20 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
 
     public class FalconAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        private readonly IIapServices  iapServices;
-        private readonly ScreenManager screenManager;
+        private readonly IIapServices    iapServices;
+        private readonly ScreenManager   screenManager;
+        private readonly FalconLocalData falconLocalData;
 
         public FalconAnalyticEventFactory(SignalBus signalBus,
                                           IAnalyticServices analyticServices,
                                           IIapServices iapServices,
-                                          ScreenManager screenManager)
+                                          ScreenManager screenManager,
+                                          FalconLocalData falconLocalData)
             : base(signalBus, analyticServices)
         {
-            this.iapServices   = iapServices;
-            this.screenManager = screenManager;
+            this.iapServices     = iapServices;
+            this.screenManager   = screenManager;
+            this.falconLocalData = falconLocalData;
 
             signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnPurchaseComplete);
             signalBus.Subscribe<InterstitialAdCalledSignal>(this.OnShowInterstitialAd);
@@ -44,6 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
             signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
             signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
             signalBus.Subscribe<LevelEndedSignal>(this.OnLevelEnded);
+            signalBus.Subscribe<LevelSkippedSignal>(this.OnLevelSkipped);
         }
 
         public override void ForceUpdateAllProperties() { }
@@ -68,7 +72,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 typeof(AdsRewardedDownloaded),
                 typeof(AdsRewardClick),
                 typeof(LevelComplete),
-                
             },
             CustomEventKeys = new Dictionary<string, string>()
             {
@@ -77,9 +80,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 { "tutorialId", "af_tutorial_id" },
                 { nameof(LevelEnd), "af_level_achieved" },
                 { "level", "af_level" },
-                
+
                 // TODO: add af_achievement_unlocked archivement unlock event
-                
+
                 { nameof(InterstitialAdCalled), "af_inters_show" },
                 { nameof(InterstitialAdDisplayed), "af_inters_displayed" },
                 { nameof(RewardedAdCalled), "af_rewarded_show" },
@@ -104,7 +107,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 { "timePlay", "timeplayed" },
                 { nameof(CommonEvents.LevelStart), "level_start" },
                 { "gold", "current_gold" },
-                
+
                 { nameof(RewardedAdLoaded), "ads_reward_load" },
                 { nameof(RewardedAdLoadClicked), "ads_reward_click" },
                 { nameof(RewardedAdDisplayed), "ads_reward_show_success" },
@@ -145,7 +148,39 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
             {
                 EventName = $"checkpoint_{obj.Level}"
             });
-            new FLevelLog(obj.Level, "", obj.IsWin ? LevelStatus.Pass : LevelStatus.Fail, TimeSpan.FromSeconds(obj.Time)).Send();
+
+            LevelStatus levelStatus;
+            if (obj.IsWin)
+            {
+                var levelNotPassBefore = this.falconLocalData.PassedLevels.Add(obj.Level);
+                levelStatus = levelNotPassBefore ? LevelStatus.Pass : LevelStatus.ReplayPass;
+                if (levelNotPassBefore)
+                {
+                    this.LogCheckpoint(obj.Level);
+                }
+            }
+            else
+            {
+                levelStatus = this.falconLocalData.PassedLevels.Contains(obj.Level) ? LevelStatus.ReplayFail : LevelStatus.Fail;
+            }
+
+            new FLevelLog(obj.Level, "normal", levelStatus, TimeSpan.FromSeconds(obj.Time)).Send();
+        }
+
+        private void OnLevelSkipped(LevelSkippedSignal obj)
+        {
+            if (this.falconLocalData.PassedLevels.Add(obj.Level)) this.LogCheckpoint(obj.Level);
+
+            new FLevelLog(obj.Level, "normal", LevelStatus.Skip, TimeSpan.FromSeconds(obj.Time)).Send();
+        }
+
+        private void LogCheckpoint(int level)
+        {
+            if (level > 20) return;
+            this.analyticServices.Track(new CustomEvent()
+            {
+                EventName = $"checkpoint_{level}"
+            });
         }
 
         private void OnScreenShow(ScreenShowSignal obj)

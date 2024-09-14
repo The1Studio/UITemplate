@@ -1,8 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -34,21 +32,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         public UITemplateAnalyticHandler(
             SignalBus                           signalBus,
             IAnalyticServices                   analyticServices,
-            IEnumerable<IAnalyticEventFactory>  analyticEventFactories,
+            IAnalyticEventFactory               analyticEventFactory,
             UITemplateLevelDataController       uiTemplateLevelDataController,
             UITemplateInventoryDataController   uITemplateInventoryDataController,
             UITemplateDailyRewardController     uiTemplateDailyRewardController,
             UITemplateGameSessionDataController uITemplateGameSessionDataController
         )
         {
-            this.signalBus        = signalBus;
-            this.analyticServices = analyticServices;
-            this.analyticEventFactory = analyticEventFactories.ToArray() switch
-            {
-                { Length: 0 }   => throw new("Error: No analytic event factory found. Please add one of them (WIDO,ROCKET,ADONE,ABI...) into (Project Setting/Script Define Symbols)."),
-                { Length: > 1 } => throw new("Error: More than one analytic event factory found. Please remove one of them (Project Setting/Script Define Symbols)."),
-                { } a           => a[0],
-            };
+            this.signalBus                           = signalBus;
+            this.analyticServices                    = analyticServices;
+            this.analyticEventFactory                = analyticEventFactory;
             this.uiTemplateLevelDataController       = uiTemplateLevelDataController;
             this.uITemplateInventoryDataController   = uITemplateInventoryDataController;
             this.uiTemplateDailyRewardController     = uiTemplateDailyRewardController;
@@ -141,21 +134,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 case "Banner":
                     this.Track(new CustomEvent()
                     {
-                        EventName       = "banner_show_success",
+                        EventName = "banner_show_success",
                         EventProperties = paramDic,
                     });
                     break;
                 case "CollapsibleBanner":
                     this.Track(new CustomEvent()
                     {
-                        EventName       = "collap_banner_show_success",
+                        EventName = "collap_banner_show_success",
                         EventProperties = paramDic,
                     });
                     break;
                 case "MREC":
                     this.Track(new CustomEvent()
                     {
-                        EventName       = "mrec_show_success",
+                        EventName = "mrec_show_success",
                         EventProperties = paramDic,
                     });
                     break;

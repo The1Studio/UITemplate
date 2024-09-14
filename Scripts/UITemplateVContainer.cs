@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.Notification;
     using TheOneStudio.Permission;
     using TheOneStudio.StoreRating;
+    using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
@@ -39,7 +40,7 @@ namespace TheOneStudio.UITemplate
 
             builder.Register<UITemplateIapServices>(Lifetime.Singleton).AsInterfacesAndSelf();
 
-            // TheOneCheatInstaller.Install(this.Container);
+            builder.RegisterCheatView(rootTransform);
 
             // not lock in editor because interstitial fake ads can not close
             #if !UNITY_EDITOR

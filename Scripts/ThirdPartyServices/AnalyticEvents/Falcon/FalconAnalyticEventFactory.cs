@@ -84,13 +84,12 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                 { "tutorialId", "af_tutorial_id" },
                 { nameof(LevelEnd), "af_level_achieved" },
                 { "level", "af_level" },
-
-                // TODO: add af_achievement_unlocked archivement unlock event
-
                 { nameof(InterstitialAdCalled), "af_inters_show" },
                 { nameof(InterstitialAdDisplayed), "af_inters_displayed" },
                 { nameof(RewardedAdCalled), "af_rewarded_show" },
                 { nameof(RewardedAdDisplayed), "af_rewarded_displayed" },
+
+                // TODO: add af_achievement_unlocked archivement unlock event
             }
         };
 

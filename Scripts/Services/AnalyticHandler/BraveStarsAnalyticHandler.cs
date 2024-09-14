@@ -14,14 +14,16 @@
 
         private readonly UITemplateAdsController uiTemplateAdsController;
 
-        public BraveStarsAnalyticHandler(SignalBus                         signalBus,
-                                         IAnalyticServices                 analyticServices,
-                                         List<IAnalyticEventFactory>       analyticEventFactories,
-                                         UITemplateLevelDataController     uiTemplateLevelDataController,
-                                         UITemplateInventoryDataController uITemplateInventoryDataController,
-                                         UITemplateDailyRewardController   uiTemplateDailyRewardController,
-                                         UITemplateAdsController           uiTemplateAdsController,
-                                         UITemplateGameSessionDataController uITemplateGameSessionDataController) : base(signalBus, analyticServices, analyticEventFactories, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController)
+        public BraveStarsAnalyticHandler(
+            SignalBus                           signalBus,
+            IAnalyticServices                   analyticServices,
+            IEnumerable<IAnalyticEventFactory>  analyticEventFactories,
+            UITemplateLevelDataController       uiTemplateLevelDataController,
+            UITemplateInventoryDataController   uITemplateInventoryDataController,
+            UITemplateDailyRewardController     uiTemplateDailyRewardController,
+            UITemplateAdsController             uiTemplateAdsController,
+            UITemplateGameSessionDataController uITemplateGameSessionDataController
+        ) : base(signalBus, analyticServices, analyticEventFactories, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController)
         {
             this.uiTemplateAdsController = uiTemplateAdsController;
         }

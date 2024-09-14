@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -31,22 +32,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         #endregion
 
         public UITemplateAnalyticHandler(
-            SignalBus                         signalBus,
-            IAnalyticServices                 analyticServices,
-            List<IAnalyticEventFactory>       analyticEventFactories,
-            UITemplateLevelDataController     uiTemplateLevelDataController,
-            UITemplateInventoryDataController uITemplateInventoryDataController,
-            UITemplateDailyRewardController   uiTemplateDailyRewardController,
+            SignalBus                           signalBus,
+            IAnalyticServices                   analyticServices,
+            IEnumerable<IAnalyticEventFactory>  analyticEventFactories,
+            UITemplateLevelDataController       uiTemplateLevelDataController,
+            UITemplateInventoryDataController   uITemplateInventoryDataController,
+            UITemplateDailyRewardController     uiTemplateDailyRewardController,
             UITemplateGameSessionDataController uITemplateGameSessionDataController
         )
         {
             this.signalBus        = signalBus;
             this.analyticServices = analyticServices;
-            this.analyticEventFactory = analyticEventFactories switch
+            this.analyticEventFactory = analyticEventFactories.ToArray() switch
             {
-                { Count: 0 }   => throw new("Error: No analytic event factory found. Please add one of them (WIDO,ROCKET,ADONE,ABI...) into (Project Setting/Script Define Symbols)."),
-                { Count: > 1 } => throw new("Error: More than one analytic event factory found. Please remove one of them (Project Setting/Script Define Symbols)."),
-                _              => analyticEventFactories[0],
+                { Length: 0 }   => throw new("Error: No analytic event factory found. Please add one of them (WIDO,ROCKET,ADONE,ABI...) into (Project Setting/Script Define Symbols)."),
+                { Length: > 1 } => throw new("Error: More than one analytic event factory found. Please remove one of them (Project Setting/Script Define Symbols)."),
+                { } a           => a[0],
             };
             this.uiTemplateLevelDataController       = uiTemplateLevelDataController;
             this.uITemplateInventoryDataController   = uITemplateInventoryDataController;

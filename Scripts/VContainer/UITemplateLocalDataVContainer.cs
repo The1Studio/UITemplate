@@ -13,7 +13,7 @@ namespace TheOneStudio.UITemplate
         public static void RegisterUITemplateLocalData(this IContainerBuilder builder)
         {
             typeof(ILocalData).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton));
-            typeof(IUITemplateControllerData).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton).AsSelf().AsImplementedInterfaces());
+            typeof(IUITemplateControllerData).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton));
             builder.Register<UserDataManager>(Lifetime.Singleton);
         }
     }

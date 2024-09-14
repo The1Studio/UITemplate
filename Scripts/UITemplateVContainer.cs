@@ -2,6 +2,7 @@
 #nullable enable
 namespace TheOneStudio.UITemplate
 {
+    using GameFoundation.DI;
     using TheOneStudio.DeepLinking;
     using TheOneStudio.Notification;
     using TheOneStudio.Permission;
@@ -12,11 +13,10 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine;
     using VContainer;
-    using VContainer.Unity;
 
     public static class UITemplateVContainer
     {
-        public static void RegisterUITemplate(this IContainerBuilder builder, ToastController toastControllerPrefab)
+        public static void RegisterUITemplate(this IContainerBuilder builder, Transform rootTransform, ToastController toastControllerPrefab)
         {
             Application.targetFrameRate = 60;
 
@@ -28,7 +28,7 @@ namespace TheOneStudio.UITemplate
             builder.RegisterUITemplateThirdPartyServices();
 
             builder.RegisterUITemplateLocalData();
-            builder.RegisterUITemplateServices(toastControllerPrefab);
+            builder.RegisterUITemplateServices(rootTransform, toastControllerPrefab);
             builder.RegisterUITemplateDailyReward();
             builder.RegisterNotificationService();
             builder.RegisterStoreRatingService();
@@ -37,7 +37,7 @@ namespace TheOneStudio.UITemplate
 
             builder.DeclareUITemplateSignals();
 
-            builder.Register<UITemplateIapServices>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<UITemplateIapServices>(Lifetime.Singleton).AsInterfacesAndSelf();
 
             // TheOneCheatInstaller.Install(this.Container);
 
@@ -62,10 +62,9 @@ namespace TheOneStudio.UITemplate
             #if THEONE_BADGE_NOTIFY
             builder.Register<UITemplateBadgeNotifySystem>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             #endif
-            builder.RegisterComponentInNewPrefab(_ => Resources.Load<Reporter>("LogsViewer"), Lifetime.Singleton);
 
             #if THEONE_DEBUG && !PRODUCTION
-            builder.RegisterComponentInNewPrefab(_ => Resources.Load<Reporter>("LogsViewer"), Lifetime.Singleton);
+            builder.RegisterComponentInNewPrefabResource<Reporter>("LogsViewer", Lifetime.Singleton).UnderTransform(rootTransform);
             #endif
         }
     }

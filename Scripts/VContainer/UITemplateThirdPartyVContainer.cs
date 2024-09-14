@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate
 {
     using System.Linq;
     using Core.AnalyticServices;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.Configs;
@@ -31,9 +32,9 @@ namespace TheOneStudio.UITemplate
             builder.RegisterAnalyticService();
             builder.RegisterRemoteConfig();
 
-            builder.RegisterInstance(Resources.Load<ThirdPartiesConfig>(ThirdPartiesConfig.ResourcePath));
-            builder.RegisterInstance(Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath));
-            builder.RegisterInstance(Resources.Load<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath));
+            builder.RegisterResource<ThirdPartiesConfig>(ThirdPartiesConfig.ResourcePath, Lifetime.Singleton);
+            builder.RegisterResource<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath, Lifetime.Singleton);
+            builder.RegisterResource<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath, Lifetime.Singleton);
 
             builder.Register(typeof(IAnalyticEventFactory).GetDerivedTypes().Single(), Lifetime.Singleton).AsImplementedInterfaces();
 

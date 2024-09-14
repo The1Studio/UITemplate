@@ -2,6 +2,7 @@
 #nullable enable
 namespace TheOneStudio.UITemplate
 {
+    using GameFoundation.DI;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -14,20 +15,20 @@ namespace TheOneStudio.UITemplate
         {
             #if !THEONE_PLAYABLE_ADS
             #if BRAVESTARS
-            builder.Register<BraveStarsAnalyticHandler>(Lifetime.Singleton);
+            builder.Register<BraveStarsAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #else
-            builder.Register<UITemplateAnalyticHandler>(Lifetime.Singleton);
+            builder.Register<UITemplateAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
             #endif
 
             #if CREATIVE
             builder.Register<UITemplateAdServiceWrapper, UITemplateAdServiceWrapperCreative>(Lifetime.Singleton);
             #else
-            builder.Register<UITemplateAdServiceWrapper>(Lifetime.Singleton);
+            builder.Register<UITemplateAdServiceWrapper>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 
             #if CREATIVE
-            builder.Register<CreativeService>(Lifetime.Singleton);
+            builder.Register<CreativeService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
         }
     }

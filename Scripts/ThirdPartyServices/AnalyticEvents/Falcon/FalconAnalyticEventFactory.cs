@@ -148,11 +148,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
 
         private void OnLevelEnded(LevelEndedSignal obj)
         {
-            this.analyticServices.Track(new CustomEvent()
-            {
-                EventName = $"checkpoint_{obj.Level}"
-            });
-
             LevelStatus levelStatus;
             if (obj.IsWin)
             {

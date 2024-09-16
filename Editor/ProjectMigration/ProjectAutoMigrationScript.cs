@@ -19,7 +19,7 @@ namespace UITemplate.Editor.ProjectMigration
             ProguardMigration.CheckAndUpdateProguardFile();
             PackageMigration.CheckAndUpdatePackageManagerSettings();
             FolderMigration.RemoveUselessFolder();
-            // ApplovinMigration.DoMigrate();
+            ApplovinMigration.DoMigrate();
             LevelPlayMigration.DoMigration();
             ProjectSettingMigration.APICompatibilityLevel();
         }

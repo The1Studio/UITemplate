@@ -117,7 +117,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             rectTransform.DOSizeDelta(Vector2.up * this.Height, 0.3f);
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             var container = this.GetCurrentContainer();
             this.signalBus                  = container.Resolve<SignalBus>();

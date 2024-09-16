@@ -22,7 +22,7 @@
 
         protected bool IsPlayer;
 
-        public void Awake()
+        protected virtual void Awake()
         {
             var container = this.GetCurrentContainer();
             this.uiTemplateEventRacingDataController = container.Resolve<UITemplateEventRacingDataController>();

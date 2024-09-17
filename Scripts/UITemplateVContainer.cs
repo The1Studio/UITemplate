@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.Permission;
     using TheOneStudio.StoreRating;
     using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
@@ -44,24 +45,24 @@ namespace TheOneStudio.UITemplate
 
             // not lock in editor because interstitial fake ads can not close
             #if !UNITY_EDITOR
-            builder.Register<LockInputService>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<LockInputService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 
             //Feature
             #if THEONE_DAILY_REWARD
-            builder.Register<UITemplateDailyRewardService>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<UITemplateDailyRewardService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 
             #if THEONE_NO_INTERNET
-            builder.Register<UITemplateNoInternetService>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<UITemplateNoInternetService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 
             #if THEONE_RATE_US
-            builder.Register<UITemplateRateUsService>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<UITemplateRateUsService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 
             #if THEONE_BADGE_NOTIFY
-            builder.Register<UITemplateBadgeNotifySystem>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<UITemplateBadgeNotifySystem>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 
             #if THEONE_DEBUG && !PRODUCTION

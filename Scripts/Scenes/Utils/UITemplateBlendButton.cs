@@ -7,14 +7,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
     public class UITemplateBlendButton : MonoBehaviour
     {
+        public Sprite OnSprite;
+        public Sprite OffSprite;
+        
         [SerializeField] private Image  handle;
         [SerializeField] private Button button;
         [SerializeField] private Slider slider;
         [SerializeField] private Image  slideBackgroundImage;
-
-        [SerializeField] private Sprite OnSprite;
-        [SerializeField] private Sprite OffSprite;
-
         [SerializeField] private Sprite BgOnSprite;
         [SerializeField] private Sprite BgOffSprite;
 
@@ -42,6 +41,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
             this.slideBackgroundImage.color  = new(color.r, color.g, color.b, Mathf.Abs(arg0 - 0.5f) + 0.5f);
             this.slideBackgroundImage.sprite = arg0 > 0.5f ? this.BgOnSprite : this.BgOffSprite;
+            this.ChangeColorText(arg0);
         }
 
         public void Init(bool isOn)
@@ -54,6 +54,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             this.slideBackgroundImage.sprite = isOn ? this.BgOnSprite : this.BgOffSprite;
 
             this.slider.value = isOn ? 1 : 0;
+            this.InitColorText(isOn);
         }
+
+        protected virtual void ChangeColorText(float handleValue) {}
+        
+        protected virtual void InitColorText(bool isOn) {}
     }
 }

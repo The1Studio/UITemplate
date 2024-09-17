@@ -2,7 +2,9 @@
 #nullable enable
 namespace TheOneStudio.UITemplate
 {
+    using System.Linq;
     using GameFoundation.DI;
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.DeepLinking;
     using TheOneStudio.Notification;
     using TheOneStudio.Permission;
@@ -24,7 +26,7 @@ namespace TheOneStudio.UITemplate
 
             builder.Register<UITemplateAnimationHelper>(Lifetime.Singleton);
             builder.Register<UITemplateCollectionItemViewHelper>(Lifetime.Singleton);
-            builder.Register<BreakAdsViewHelper>(Lifetime.Singleton);
+            builder.Register(typeof(BreakAdsViewHelper).GetDerivedTypes().Last(), Lifetime.Singleton);
 
             builder.RegisterUITemplateAdsService();
             builder.RegisterUITemplateThirdPartyServices();

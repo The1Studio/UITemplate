@@ -15,7 +15,6 @@
 
         protected readonly SignalBus SignalBus;
 
-
         public BreakAdsViewHelper(SignalBus signalBus) { this.SignalBus = signalBus; }
 
         public virtual void OnViewReady(BreakAdsPopupView view, BreakAdsPopupPresenter breakAdsPopupPresenter)
@@ -38,7 +37,7 @@
             {
                 this.Cts?.Cancel();
                 this.Cts = new CancellationTokenSource();
-                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: this.Cts.Token);
+                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: this.Cts.Token, ignoreTimeScale: true);
                 this.BreakAdsPopupPresenter.CloseView();
             }
             catch (Exception e)

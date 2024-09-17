@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate
 {
     using System.Linq;
     using Core.AnalyticServices;
+    using Core.AnalyticServices.Data;
     using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
@@ -48,7 +49,7 @@ namespace TheOneStudio.UITemplate
             builder.Register<ByteBrewTracker>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(container => container.Resolve<IAnalyticEventFactory>().ByteBrewAnalyticsEventCustomizationConfig);
             #endif
             #if ADJUST
-            builder.Register<AdjustTracker>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<AdjustTracker>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(container => container.ResolveOrDefault<AnalyticsEventCustomizationConfig>(new()));
             #endif
         }
     }

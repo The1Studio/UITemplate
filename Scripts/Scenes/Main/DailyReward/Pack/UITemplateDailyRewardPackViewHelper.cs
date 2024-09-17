@@ -55,6 +55,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
         public virtual void DisposeItem(UITemplateDailyRewardPackPresenter presenter) { }
 
+        public virtual UniTask PlayPackPrevClaimAnimation(UITemplateDailyRewardPackPresenter presenter) { return UniTask.CompletedTask; }
+        public virtual UniTask PlayPackPostClaimAnimation(UITemplateDailyRewardPackPresenter presenter) { return UniTask.CompletedTask; }
+
         public virtual void OnClaimReward(UITemplateDailyRewardPackPresenter presenter) { }
     }
 }

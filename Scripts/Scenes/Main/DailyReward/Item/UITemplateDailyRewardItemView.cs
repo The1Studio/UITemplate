@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item
 {
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using Sirenix.OdinInspector;
@@ -55,10 +56,7 @@
 
         #endregion
 
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper) : base(gameAssets)
-        {
-            this.dailyRewardItemViewHelper = dailyRewardItemViewHelper;
-        }
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper) : base(gameAssets) { this.dailyRewardItemViewHelper = dailyRewardItemViewHelper; }
 
         public override void BindData(UITemplateDailyRewardItemModel param)
         {
@@ -68,6 +66,7 @@
 
         public override void Dispose() { this.dailyRewardItemViewHelper.DisposeItem(this); }
 
-        public void ClaimReward() { this.dailyRewardItemViewHelper.OnClaimReward(this); }
+        public async UniTask PlayPreClaimAnimation()  { await this.dailyRewardItemViewHelper.PlayItemPrevClaimAnimation(this); }
+        public async UniTask PlayPostClaimAnimation() { await this.dailyRewardItemViewHelper.PlayItemPostClaimAnimation(this); }
     }
 }

@@ -1,7 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using Sirenix.OdinInspector;
@@ -49,23 +51,34 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         [BoxGroup("View/PackImage"), SerializeField]
         private Image packImg;
 
-        public UITemplateDailyRewardItemAdapter DailyRewardItemAdapter => this.dailyRewardItemAdapter;
-        public Button                           BtnClaim               => this.btnClaim;
-        public TextMeshProUGUI                  TxtDayLabel            => this.txtDayLabel;
-        public GameObject                       ObjClaimed             => this.objClaimed;
-        public GameObject                       ObjClaimedCheckIcon    => this.objClaimedCheckIcon;
-        public GameObject                       ObjClaimByAds          => this.objClaimByAds;
-        public Image                            ImgBackground          => this.imgBackground;
-        public Sprite                           SprBgNormal            => this.sprBgNormal;
-        public Sprite                           SprBgCurrentDay        => this.sprBgCurrentDay;
-        public Image                            PackImg                => this.packImg;
-        public Action                           OnClickClaimButton     { get; set; }
+        [BoxGroup("Feature/CoverPack")]
+        [SerializeField]
+        private bool coverPackWhenAllItemsHidden;
+
+        [SerializeField] private GameObject packCoverImg;
+
+        public UITemplateDailyRewardItemAdapter DailyRewardItemAdapter      => this.dailyRewardItemAdapter;
+        public Button                           BtnClaim                    => this.btnClaim;
+        public TextMeshProUGUI                  TxtDayLabel                 => this.txtDayLabel;
+        public GameObject                       ObjClaimed                  => this.objClaimed;
+        public GameObject                       ObjClaimedCheckIcon         => this.objClaimedCheckIcon;
+        public GameObject                       ObjClaimByAds               => this.objClaimByAds;
+        public Image                            ImgBackground               => this.imgBackground;
+        public Sprite                           SprBgNormal                 => this.sprBgNormal;
+        public Sprite                           SprBgCurrentDay             => this.sprBgCurrentDay;
+        public Image                            PackImg                     => this.packImg;
+        public bool                             CoverPackWhenAllItemsHidden => this.coverPackWhenAllItemsHidden;
+        public GameObject                       PackCoverImg                => this.packCoverImg;
+        public Action                           OnClickClaimButton          { get; set; }
 
         private void Awake()
         {
             if (this.btnClaim != null)
             {
-                this.btnClaim.onClick.AddListener(() => { this.OnClickClaimButton?.Invoke(); });
+                this.btnClaim.onClick.AddListener(() =>
+                {
+                    this.OnClickClaimButton?.Invoke();
+                });
             }
         }
     }
@@ -81,9 +94,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
         #endregion
 
-        public UITemplateDailyRewardPackPresenter(IGameAssets gameAssets,
+        public UITemplateDailyRewardPackPresenter(
+            IGameAssets                         gameAssets,
             UITemplateDailyRewardPackViewHelper dailyRewardPackViewHelper,
-            DiContainer diContainer) : base(gameAssets)
+            DiContainer                         diContainer)
+            : base(gameAssets)
         {
             this.dailyRewardPackViewHelper = dailyRewardPackViewHelper;
             this.diContainer               = diContainer;
@@ -97,15 +112,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
             if (!string.IsNullOrEmpty(this.Model.DailyRewardRecord.PackImage)) return;
             var models = param.DailyRewardRecord.Reward.Values
-                .Select(item => new UITemplateDailyRewardItemModel
-                {
-                    DailyRewardRecord = this.Model.DailyRewardRecord,
-                    RewardRecord      = item,
-                    RewardStatus      = this.Model.RewardStatus,
-                    IsGetWithAds      = this.Model.IsGetWithAds
-                })
-                .ToList();
+                              .Select(item => new UITemplateDailyRewardItemModel
+                              {
+                                  DailyRewardRecord = this.Model.DailyRewardRecord,
+                                  RewardRecord      = item,
+                                  RewardStatus      = this.Model.RewardStatus,
+                                  IsGetWithAds      = this.Model.IsGetWithAds
+                              })
+                              .ToList();
             _ = this.View.DailyRewardItemAdapter.InitItemAdapter(models, this.diContainer);
+
+            this.CoverPack(models);
+        }
+
+        private void CoverPack(IEnumerable<UITemplateDailyRewardItemModel> itemModels)
+        {
+            if (!this.View.CoverPackWhenAllItemsHidden) return;
+
+            var isAllItemHidden = itemModels.All(im => !im.RewardRecord.SpoilReward);
+            this.View.PackCoverImg.SetActive(isAllItemHidden);
         }
 
         public override void Dispose()
@@ -113,6 +138,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
             base.Dispose();
             this.dailyRewardPackViewHelper.DisposeItem(this);
         }
+        
+        public async UniTask PlayPreClaimAnimation() { await this.dailyRewardPackViewHelper.PlayPackPrevClaimAnimation(this); }
+        
+        public async UniTask PlayPostClaimAnimation() { await this.dailyRewardPackViewHelper.PlayPackPostClaimAnimation(this); }
 
         public void ClaimReward() { this.dailyRewardPackViewHelper.OnClaimReward(this); }
     }

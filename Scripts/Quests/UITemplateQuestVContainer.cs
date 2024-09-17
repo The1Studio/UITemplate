@@ -2,10 +2,10 @@
 #nullable enable
 namespace TheOneStudio.UITemplate.Quests
 {
+    using GameFoundation.DI;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
-    using UnityEngine;
     using VContainer;
 
     public static class UITemplateQuestVContainer
@@ -13,12 +13,7 @@ namespace TheOneStudio.UITemplate.Quests
         public static void RegisterQuestManager(this IContainerBuilder builder)
         {
             #if THEONE_QUEST_SYSTEM
-            builder.Register<UITemplateQuestManager>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
-
-            if (Object.FindObjectOfType<UITemplateQuestNotificationView>() is { } notificationView)
-            {
-                builder.RegisterInstance(notificationView).AsSelf().AsImplementedInterfaces();
-            }
+            builder.Register<UITemplateQuestManager>(Lifetime.Singleton).AsInterfacesAndSelf();
 
             builder.DeclareSignal<QuestStatusChangedSignal>();
             builder.DeclareSignal<ClaimAllQuestSignal>();

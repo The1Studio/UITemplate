@@ -1,6 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
-    using System;
     using DG.Tweening;
     using GameFoundation.DI;
     using GameFoundation.Signals;
@@ -61,12 +60,7 @@
 
         private void OnDestroy()
         {
-            if (this.signalBus == null)
-            {
-                throw new Exception($"Please inject for GameObject: {this.gameObject.name} - {this.gameObject.transform.parent}");
-            }
-
-            this.signalBus.Unsubscribe<OnFinishCurrencyAnimationSignal>(this.OnUpdateCurrency);
+            this.signalBus?.Unsubscribe<OnFinishCurrencyAnimationSignal>(this.OnUpdateCurrency);
         }
 
         private void OnUpdateCurrency(OnFinishCurrencyAnimationSignal obj)

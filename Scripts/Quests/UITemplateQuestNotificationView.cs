@@ -20,7 +20,7 @@ namespace TheOneStudio.UITemplate.Quests
     using UnityEngine;
     using UnityEngine.UI;
 
-    public class UITemplateQuestNotificationView : MonoBehaviour, IInitializable
+    public class UITemplateQuestNotificationView : MonoBehaviour
     {
         [SerializeField] private Button    btn;
         [SerializeField] private Transform popup;
@@ -58,10 +58,10 @@ namespace TheOneStudio.UITemplate.Quests
             this.stopPosition  = this.destination.position;
         }
 
-        void IInitializable.Initialize()
+        private void Start()
         {
-            this.signalBus.Subscribe<QuestStatusChangedSignal>(this.OnQuestStatusChanged);
             this.btn.onClick.AddListener(() => this.screenManager.OpenScreen<UITemplateQuestPopupPresenter>().Forget());
+            this.signalBus.Subscribe<QuestStatusChangedSignal>(this.OnQuestStatusChanged);
         }
 
         private readonly Queue<Action> actionQueue = new Queue<Action>();

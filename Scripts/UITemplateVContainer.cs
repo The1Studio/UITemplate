@@ -26,7 +26,7 @@ namespace TheOneStudio.UITemplate
 
             builder.Register<UITemplateAnimationHelper>(Lifetime.Singleton);
             builder.Register<UITemplateCollectionItemViewHelper>(Lifetime.Singleton);
-            builder.Register(typeof(BreakAdsViewHelper).GetDerivedTypes().Last(), Lifetime.Singleton);
+            builder.Register(typeof(BreakAdsViewHelper).GetDerivedTypes().OrderBy(type => type == typeof(BreakAdsViewHelper)).First(), Lifetime.Singleton).As<BreakAdsViewHelper>();
 
             builder.RegisterUITemplateAdsService();
             builder.RegisterUITemplateThirdPartyServices();

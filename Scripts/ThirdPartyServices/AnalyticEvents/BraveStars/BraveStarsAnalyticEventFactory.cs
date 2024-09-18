@@ -15,14 +15,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
         public BraveStarsAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
         }
-        
-        public override void ForceUpdateAllProperties() { }
 
-        public override string LevelMaxProperty             => "level_max";
-        public override string LastLevelProperty            => "last_level";
-        public override string LastAdsPlacementProperty     => "last_placement";
-        public override string TotalInterstitialAdsProperty => "total_interstitial_ads";
-        public override string TotalRewardedAdsProperty     => "total_rewarded_ads";
+        public override IEvent LevelWin(int level, int timeSpent, int winCount) => new CustomEvent { EventName = $"win_level_{level}" };
+
+        public override IEvent LevelStart(int level, int gold) => new CustomEvent { EventName = $"start_level_{level}" };
 
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
@@ -42,7 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
             {
                 { nameof(BannerShown), "af_banner_shown" },
                 { nameof(GameTutorialCompletion), "af_tutorial_completion" },
-                { nameof(LevelAchieved), "af_level_achieved" },
+                { nameof(AchievedLevel), "af_achieved_level" },
                 { nameof(AdsIntersEligible), "af_inters_ad_eligible" },
                 { nameof(AdInterCalled), "af_inters_api_called" },
                 { nameof(AdInterShow), "af_inters_displayed" },

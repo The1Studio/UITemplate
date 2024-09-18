@@ -65,8 +65,5 @@
         }
 
         public override void Dispose() { this.dailyRewardItemViewHelper.DisposeItem(this); }
-
-        public async UniTask PlayPreClaimAnimation()  { await this.dailyRewardItemViewHelper.PlayItemPrevClaimAnimation(this); }
-        public async UniTask PlayPostClaimAnimation() { await this.dailyRewardItemViewHelper.PlayItemPostClaimAnimation(this); }
     }
 }

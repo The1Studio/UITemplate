@@ -42,12 +42,13 @@
     {
         #region inject
 
-        private readonly DiContainer                     diContainer;
-        private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
-        private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
-        private readonly UITemplateLevelDataController   levelDataController;
-        private readonly UITemplateAdServiceWrapper      uiTemplateAdServiceWrapper;
-        private readonly GameFeaturesSetting             gameFeaturesSetting;
+        private readonly DiContainer                          diContainer;
+        private readonly UITemplateDailyRewardController      uiTemplateDailyRewardController;
+        private readonly UITemplateDailyRewardBlueprint       uiTemplateDailyRewardBlueprint;
+        private readonly UITemplateLevelDataController        levelDataController;
+        private readonly UITemplateAdServiceWrapper           uiTemplateAdServiceWrapper;
+        private readonly UITemplateDailyRewardAnimationHelper dailyRewardAnimationHelper;
+        private readonly GameFeaturesSetting                  gameFeaturesSetting;
 
         #endregion
 
@@ -57,14 +58,15 @@
         private CancellationTokenSource              closeViewCts;
 
         public UITemplateDailyRewardPopupPresenter(
-            SignalBus                       signalBus,
-            ILogService                     logger,
-            DiContainer                     diContainer,
-            UITemplateDailyRewardController uiTemplateDailyRewardController,
-            UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint,
-            UITemplateLevelDataController   levelDataController,
-            UITemplateAdServiceWrapper      uiTemplateAdServiceWrapper,
-            GameFeaturesSetting             gameFeaturesSetting
+            SignalBus                            signalBus,
+            ILogService                          logger,
+            DiContainer                          diContainer,
+            UITemplateDailyRewardController      uiTemplateDailyRewardController,
+            UITemplateDailyRewardBlueprint       uiTemplateDailyRewardBlueprint,
+            UITemplateLevelDataController        levelDataController,
+            UITemplateAdServiceWrapper           uiTemplateAdServiceWrapper,
+            UITemplateDailyRewardAnimationHelper dailyRewardAnimationHelper,
+            GameFeaturesSetting                  gameFeaturesSetting
         ) : base(signalBus, logger)
         {
             this.diContainer                     = diContainer;
@@ -72,6 +74,7 @@
             this.uiTemplateDailyRewardBlueprint  = uiTemplateDailyRewardBlueprint;
             this.levelDataController             = levelDataController;
             this.uiTemplateAdServiceWrapper      = uiTemplateAdServiceWrapper;
+            this.dailyRewardAnimationHelper      = dailyRewardAnimationHelper;
             this.gameFeaturesSetting             = gameFeaturesSetting;
         }
 
@@ -178,14 +181,14 @@
 
         private void InitListDailyReward(List<UITemplateDailyRewardPackModel> dailyRewardModels) { this.View.dailyRewardPackAdapter.InitItemAdapter(dailyRewardModels, this.diContainer).Forget(); }
 
-        private void ClaimReward()
-        {
-            this.ClaimRewardAsync().Forget();
-        }
-        
+        private void ClaimReward() { this.ClaimRewardAsync().Forget(); }
+
         private async UniTask ClaimRewardAsync()
         {
-            await this.PlayPreClaimRewardAnimation();
+            this.View.btnClaim.gameObject.SetActive(false);
+            this.View.btnClose.gameObject.SetActive(true);
+
+            await this.dailyRewardAnimationHelper.PlayPreClaimRewardAnimation(this);
 
             var dayToView = new Dictionary<int, RectTransform>();
             for (var i = 0; i < this.listRewardModel.Count; i++)
@@ -210,7 +213,7 @@
                 }
             }
 
-            await this.PlayPostClaimRewardAnimation();
+            await this.dailyRewardAnimationHelper.PlayPostClaimRewardAnimation(this);
 
             this.SetUpItemCanPreReceiveWithAds();
             this.RefreshAdapter();
@@ -221,69 +224,12 @@
             this.AutoClosePopup();
         }
 
-        private async UniTask PlayPreClaimRewardAnimation()
-        {
-            this.View.btnClaim.gameObject.SetActive(false);
-            this.View.btnClose.gameObject.SetActive(true);
-
-            var tasks = new List<UniTask>();
-            foreach (var packPresenter in this.View.dailyRewardPackAdapter.GetPresenters()
-                                              .Where(packPresenter => packPresenter.Model.RewardStatus == RewardStatus.Unlocked))
-            {
-                tasks.Add(PlayPreClaimPackAnimation(packPresenter));
-            }
-
-            await UniTask.WhenAll(tasks);
-
-            return;
-
-            async UniTask PlayPreClaimPackAnimation(UITemplateDailyRewardPackPresenter presenter)
-            {
-                await presenter.PlayPreClaimAnimation();
-                var animTasks = new List<UniTask>();
-                foreach (var itemPresenter in presenter.View.DailyRewardItemAdapter.GetPresenters())
-                {
-                    animTasks.Add(itemPresenter.PlayPreClaimAnimation());
-                }
-
-                await UniTask.WhenAll(animTasks);
-            }
-        }
-
-        private async UniTask PlayPostClaimRewardAnimation()
-        {
-            var tasks = new List<UniTask>();
-            foreach (var packPresenter in this.View.dailyRewardPackAdapter.GetPresenters()
-                                              .Where(packPresenter => packPresenter.Model.RewardStatus == RewardStatus.Claimed))
-            {
-                tasks.Add(PlayPostClaimPackAnimation(packPresenter));
-            }
-
-            await UniTask.WhenAll(tasks);
-
-            return;
-
-            async UniTask PlayPostClaimPackAnimation(UITemplateDailyRewardPackPresenter presenter)
-            {
-                await presenter.PlayPostClaimAnimation();
-                var animTasks = new List<UniTask>();
-                foreach (var itemPresenter in presenter.View.DailyRewardItemAdapter.GetPresenters())
-                {
-                    animTasks.Add(itemPresenter.PlayPostClaimAnimation());
-                }
-
-                await UniTask.WhenAll(animTasks);
-            }
-        }
-
         private void AutoClosePopup()
         {
             if (this.gameFeaturesSetting.DailyRewardConfig.preReceiveDailyRewardStrategy != PreReceiveDailyRewardStrategy.None) return;
 
-            UniTask.Delay(
-                       TimeSpan.FromSeconds(1.5f),
-                       cancellationToken: (this.closeViewCts = new()).Token
-                   )
+            UniTask.Delay(TimeSpan.FromSeconds(1.5f),
+                          cancellationToken: (this.closeViewCts = new()).Token)
                    .ContinueWith(this.CloseViewAsync)
                    .Forget();
         }

@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Serialization;
     using UnityEngine.UI;
     using Zenject;
 
@@ -55,7 +56,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         [SerializeField]
         private bool coverPackWhenAllItemsHidden;
 
-        [SerializeField] private GameObject packCoverImg;
+        [BoxGroup("Feature/CoverPack")]
+        [SerializeField]
+        private Image coverImg;
 
         public UITemplateDailyRewardItemAdapter DailyRewardItemAdapter      => this.dailyRewardItemAdapter;
         public Button                           BtnClaim                    => this.btnClaim;
@@ -68,7 +71,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         public Sprite                           SprBgCurrentDay             => this.sprBgCurrentDay;
         public Image                            PackImg                     => this.packImg;
         public bool                             CoverPackWhenAllItemsHidden => this.coverPackWhenAllItemsHidden;
-        public GameObject                       PackCoverImg                => this.packCoverImg;
+        public Image                            CoverImg                    => this.coverImg;
         public Action                           OnClickClaimButton          { get; set; }
 
         private void Awake()
@@ -127,10 +130,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
         private void CoverPack(IEnumerable<UITemplateDailyRewardItemModel> itemModels)
         {
-            if (!this.View.CoverPackWhenAllItemsHidden) return;
-
+            if(!this.View.CoverPackWhenAllItemsHidden) return;
+            
+            if (this.Model.RewardStatus == RewardStatus.Claimed)
+            {
+                this.View.CoverImg.gameObject.SetActive(false);
+                return;
+            }
+            
             var isAllItemHidden = itemModels.All(im => !im.RewardRecord.SpoilReward);
-            this.View.PackCoverImg.SetActive(isAllItemHidden);
+            this.View.CoverImg.gameObject.SetActive(isAllItemHidden);
         }
 
         public override void Dispose()
@@ -138,10 +147,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
             base.Dispose();
             this.dailyRewardPackViewHelper.DisposeItem(this);
         }
-        
-        public async UniTask PlayPreClaimAnimation() { await this.dailyRewardPackViewHelper.PlayPackPrevClaimAnimation(this); }
-        
-        public async UniTask PlayPostClaimAnimation() { await this.dailyRewardPackViewHelper.PlayPackPostClaimAnimation(this); }
 
         public void ClaimReward() { this.dailyRewardPackViewHelper.OnClaimReward(this); }
     }

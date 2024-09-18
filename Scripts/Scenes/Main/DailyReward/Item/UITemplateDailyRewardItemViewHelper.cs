@@ -35,15 +35,5 @@
         }
 
         public virtual void DisposeItem(UITemplateDailyRewardItemPresenter presenter) { }
-
-        public virtual UniTask PlayItemPrevClaimAnimation(UITemplateDailyRewardItemPresenter presenter)
-        {
-            return UniTask.CompletedTask;
-        }
-
-        public virtual UniTask PlayItemPostClaimAnimation(UITemplateDailyRewardItemPresenter presenter)
-        {
-            return UniTask.CompletedTask;
-        }
     }
 }

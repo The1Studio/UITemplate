@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
     using Core.AnalyticServices.Signal;
     using ServiceImplementation.IAPServices.Signals;
     using Zenject;
+    using AdInfo = Core.AdsServices.AdInfo;
 
     public class AperoAnalyticEventFactory : BaseAnalyticEventFactory
     {
@@ -15,18 +16,19 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
         {
             signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnIAPPurchaseSuccessHandler);
             signalBus.Subscribe<AdRevenueSignal>(this.OnAdRevenueHandler);
-            
-            signalBus.Subscribe<BannerAdLoadedSignal>(signal => this.TrackAdEvent("track_ad_matched_request", signal.AdsRevenueEvent));
-            signalBus.Subscribe<BannerAdClickedSignal>(signal => this.TrackAdEvent("track_ad_click", signal.AdsRevenueEvent));
-            
-            signalBus.Subscribe<InterstitialAdLoadedSignal>(signal => this.TrackAdEvent("track_ad_matched_request", signal.AdsRevenueEvent));
-            signalBus.Subscribe<InterstitialAdClickedSignal>(signal => this.TrackAdEvent("track_ad_click", signal.AdsRevenueEvent));
-            
-            signalBus.Subscribe<RewardedAdLoadedSignal>(signal => this.TrackAdEvent("track_ad_matched_request", signal.AdsRevenueEvent));
-            signalBus.Subscribe<RewardedAdClickedSignal>(signal => this.TrackAdEvent("track_ad_click", signal.AdsRevenueEvent));
-            
-            signalBus.Subscribe<AppOpenLoadedSignal>(signal => this.TrackAdEvent("track_ad_matched_request", signal.AdsRevenueEvent));
-            signalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(signal => this.TrackAdEvent("track_ad_click", signal.AdsRevenueEvent));
+            signalBus.Subscribe<AdRequestSignal>(signal => this.TrackAdEvent("track_ad_request", signal.AdInfo));
+
+            signalBus.Subscribe<BannerAdLoadedSignal>(signal => this.TrackAdEvent("track_ad_matched_request", signal.AdInfo));
+            signalBus.Subscribe<BannerAdClickedSignal>(signal => this.TrackAdEvent("track_ad_click", signal.AdInfo));
+
+            signalBus.Subscribe<InterstitialAdLoadedSignal>(signal => this.TrackAdEvent("track_ad_matched_request", signal.AdInfo));
+            signalBus.Subscribe<InterstitialAdClickedSignal>(signal => this.TrackAdEvent("track_ad_click", signal.AdInfo));
+
+            signalBus.Subscribe<RewardedAdLoadedSignal>(signal => this.TrackAdEvent("track_ad_matched_request", signal.AdInfo));
+            signalBus.Subscribe<RewardedAdClickedSignal>(signal => this.TrackAdEvent("track_ad_click", signal.AdInfo));
+
+            signalBus.Subscribe<AppOpenLoadedSignal>(signal => this.TrackAdEvent("track_ad_matched_request", signal.AdInfo));
+            signalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(signal => this.TrackAdEvent("track_ad_click", signal.AdInfo));
         }
 
         public override AnalyticsEventCustomizationConfig ByteBrewAnalyticsEventCustomizationConfig { get; set; } = new()
@@ -51,30 +53,34 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
         private void OnIAPPurchaseSuccessHandler(OnIAPPurchaseSuccessSignal signal) { this.analyticServices.Track(new Purchase(signal.Product)); }
 
-        private void OnAdRevenueHandler(AdRevenueSignal signal) { this.TrackAdEvent("track_ad_impression", signal.AdsRevenueEvent); }
+        private void OnAdRevenueHandler(AdRevenueSignal signal)
+        {
+            this.TrackAdEvent("track_ad_impression",
+                              new(signal.AdsRevenueEvent.AdsRevenueSourceId,
+                                  signal.AdsRevenueEvent.AdUnit,
+                                  signal.AdsRevenueEvent.AdFormat,
+                                  signal.AdsRevenueEvent.AdNetwork,
+                                  signal.AdsRevenueEvent.NetworkPlacement,
+                                  signal.AdsRevenueEvent.Revenue,
+                                  signal.AdsRevenueEvent.Currency));
+        }
 
-        private void TrackAdEvent(string eventName, AdsRevenueEvent adsRevenueEvent)
+        private void TrackAdEvent(string eventName, AdInfo adInfo)
         {
             this.analyticServices.Track(new CustomEvent
             {
                 EventName = eventName,
                 EventProperties = new()
                 {
-                    { "ad_platform", adsRevenueEvent.AdsRevenueSourceId },
-                    { "ad_unit_id", adsRevenueEvent.AdUnit },
-                    { "ad_source", adsRevenueEvent.AdNetwork },
-                    { "ad_source_unit_id", adsRevenueEvent.NetworkPlacement },
-                    { "ad_format", adsRevenueEvent.AdFormat },
-                    { "placement", adsRevenueEvent.Placement },
-                    { "currency", adsRevenueEvent.Currency },
-                    { "value", adsRevenueEvent.Revenue },
+                    { "ad_platform", adInfo.AdPlatform },
+                    { "ad_unit_id", adInfo.AdUnitId },
+                    { "ad_source", adInfo.AdSource },
+                    { "ad_source_unit_id", adInfo.AdSourceUnitId },
+                    { "ad_format", adInfo.AdFormat },
+                    { "currency", adInfo.Currency },
+                    { "value", adInfo.Value },
                 },
             });
-        }
-
-        private void TrackAdRequestEvent()
-        {
-            
         }
     }
 }

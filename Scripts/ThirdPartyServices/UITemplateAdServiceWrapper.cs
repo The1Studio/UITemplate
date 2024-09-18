@@ -514,7 +514,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 onComplete?.Invoke();
                 return;
             }
-
+            
+            var adInfo = new AdInfo(this.adServices.AdPlatform, place, "Rewarded");
             this.signalBus.Fire(new RewardedAdEligibleSignal(place));
 
             if (!this.adServices.IsRewardedAdReady(place))
@@ -526,7 +527,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            this.signalBus.Fire(new RewardedAdCalledSignal(place));
+            this.signalBus.Fire(new RewardedAdCalledSignal(place, adInfo));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAnotherServices = true;
             this.adServices.ShowRewardedAd(place, OnRewardedAdCompleted, onFail);

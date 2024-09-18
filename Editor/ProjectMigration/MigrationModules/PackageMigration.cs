@@ -3,32 +3,32 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.IO.Compression;
     using System.Linq;
-    using Cysharp.Threading.Tasks;
     using Newtonsoft.Json.Linq;
     using ServiceImplementation.Configs.Common;
     using UnityEditor;
     using UnityEditor.PackageManager;
     using UnityEngine;
-    using UnityEngine.Networking;
 
     public static class PackageMigration
     {
-        private static readonly string OpenUPMRegistryName = "OpenUPM";
-        private static readonly string OpenUPMRegistryUrl  = "https://package.openupm.com";
+        private const string OpenUPMRegistryName = "OpenUPM";
+        private const string OpenUPMRegistryUrl  = "https://package.openupm.com";
 
-        [NonSerialized] private static readonly string[] RequiredScopes =
+        [NonSerialized]
+        private static readonly string[] RequiredScopes =
         {
             "com.google",
             "com.cysharp",
             "com.coffee",
             "org.nuget",
             "com.github-glitchenzo",
+            "jp.hadashikick.vcontainer",
             "com.theone"
         };
 
-        [NonSerialized] private static readonly Dictionary<string, string> PackagesToAdd = new()
+        [NonSerialized]
+        private static readonly Dictionary<string, string> PackagesToAdd = new()
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
@@ -40,7 +40,8 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // add more packages as needed
         };
 
-        [NonSerialized] private static readonly Dictionary<string, string> PackagesVersionToUse = new()
+        [NonSerialized]
+        private static readonly Dictionary<string, string> PackagesVersionToUse = new()
         {
             { "com.google.ads.mobile", "9.2.0" },
             { "com.unity.purchasing", "4.12.2" },
@@ -50,7 +51,8 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
         { {("BuildScripts", "BuildScripts"), "https://cdn.builds.the1studio.org/packages/GameVersionRuntime.unitypackage"}
         };
 
-        [NonSerialized] private static readonly List<string> PackagesToRemove = new()
+        [NonSerialized]
+        private static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"
         };

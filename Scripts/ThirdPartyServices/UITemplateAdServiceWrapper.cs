@@ -123,7 +123,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardedAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
-            this.signalBus.Subscribe<RewardedAdShowFailedSignal>(this.CloseAdInDifferentProcessHandler);
+            this.signalBus.Subscribe<RewardedAdDisplayFailedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<RewardInterstitialAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnIAPPurchaseFailedSignal>(this.CloseAdInDifferentProcessHandler);

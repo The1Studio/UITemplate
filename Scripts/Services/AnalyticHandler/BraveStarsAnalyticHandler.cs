@@ -20,7 +20,8 @@
                                          UITemplateLevelDataController     uiTemplateLevelDataController, 
                                          UITemplateInventoryDataController uITemplateInventoryDataController, 
                                          UITemplateDailyRewardController   uiTemplateDailyRewardController,
-                                         UITemplateAdsController           uiTemplateAdsController) : base(signalBus, analyticServices, analyticEventFactories, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController)
+                                         UITemplateAdsController           uiTemplateAdsController,
+                                         UITemplateGameSessionDataController uITemplateGameSessionDataController) : base(signalBus, analyticServices, analyticEventFactories, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController)
         {
             this.uiTemplateAdsController = uiTemplateAdsController;
         }

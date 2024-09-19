@@ -43,22 +43,22 @@
 
         public virtual IEvent RewardedVideoDownloaded(string place, long loadingMilis) => new RewardedAdLoaded(place, loadingMilis);
 
-        public virtual IEvent RewardedVideoDownloadFailed(string place, long loadingMilis) => new RewardedAdLoadFailed(place, loadingMilis);
+        public virtual IEvent RewardedVideoDownloadFailed(string place, long loadingMilis) => new RewardedAdLoadFailed(place, loadingMilis, "");
 
         public virtual IEvent RewardedVideoCalled(string place) => new RewardedAdCalled(place);
 
         public virtual IEvent RewardedVideoShow(int level, string place) => new RewardedAdDisplayed(place, level);
 
-        public IEvent RewardedLoadFail(string place, string msg) => new CustomEvent();
+        public IEvent RewardedLoadFail(string place, string msg) => new RewardedAdLoadFailed(place,0, msg);
 
         public virtual IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)
         {
             return isRewarded ? new RewardedAdCompleted(place) : new RewardedSkipped(place);
         }
 
-        public virtual IEvent RewardedVideoClick(string place) { return new CustomEvent(); }
+        public virtual IEvent RewardedVideoClick(string place) { return new RewardedAdLoadClicked(place); }
 
-        public virtual IEvent RewardedVideoShowFail(string place, string msg) => new CustomEvent();
+        public virtual IEvent RewardedVideoShowFail(string place, string msg) => new RewardedAdShowFail(place);
 
         //App open
         public virtual IEvent AppOpenCalled()                  => new AppOpenCalled();
@@ -99,6 +99,7 @@
         public virtual string TotalVirtualCurrencySpentProperty  => "total_spent";
         public virtual string TotalVirtualCurrencyEarnedProperty => "total_earned";
         public virtual string DaysPlayedProperty                 => "days_played";
+        public virtual string RetentionDayProperty               => "retention";
 
         public virtual AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new();
         public virtual AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new();
@@ -106,7 +107,7 @@
 
         protected virtual string EvenName { get; } = "ad_impression";
 
-        private readonly IAnalyticServices analyticServices;
+        protected readonly IAnalyticServices analyticServices;
 
         protected BaseAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
         {

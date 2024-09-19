@@ -80,6 +80,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         string                            TotalVirtualCurrencySpentProperty          { get; }
         string                            TotalVirtualCurrencyEarnedProperty         { get; }
         string                            DaysPlayedProperty                         { get; }
+        string                            RetentionDayProperty                       { get; }
         AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; }
         AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig  { get; set; }
 #if BYTEBREW

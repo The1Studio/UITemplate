@@ -17,10 +17,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     {
         public string placememt;
         public long   loadingMilis;
-        public RewardedAdLoadFailed(string placememt, long loadingMilis)
+        public string msg;
+
+        public RewardedAdLoadFailed(string placememt, long loadingMilis, string msg)
         {
             this.placememt    = placememt;
             this.loadingMilis = loadingMilis;
+            this.msg          = msg;
         }
     }
 
@@ -69,5 +72,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     {
         public string placememt;
         public RewardedAdOffer(string placememt) { this.placememt = placememt; }
+    }
+    
+    public class RewardedAdShowFail : IEvent
+    {
+        public string placememt;
+        public RewardedAdShowFail(string placememt) { this.placememt = placememt; }
     }
 }

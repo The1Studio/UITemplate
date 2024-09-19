@@ -19,12 +19,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     {
         #region inject
 
-        private readonly SignalBus                         signalBus;
-        private readonly IAnalyticServices                 analyticServices;
-        private readonly IAnalyticEventFactory             analyticEventFactory;
-        private readonly UITemplateLevelDataController     uiTemplateLevelDataController;
-        private readonly UITemplateInventoryDataController uITemplateInventoryDataController;
-        private readonly UITemplateDailyRewardController   uiTemplateDailyRewardController;
+        private readonly SignalBus                           signalBus;
+        private readonly IAnalyticServices                   analyticServices;
+        private readonly IAnalyticEventFactory               analyticEventFactory;
+        private readonly UITemplateLevelDataController       uiTemplateLevelDataController;
+        private readonly UITemplateInventoryDataController   uITemplateInventoryDataController;
+        private readonly UITemplateDailyRewardController     uiTemplateDailyRewardController;
+        private readonly UITemplateGameSessionDataController uITemplateGameSessionDataController;
 
         #endregion
 
@@ -34,7 +35,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             List<IAnalyticEventFactory>       analyticEventFactories,
             UITemplateLevelDataController     uiTemplateLevelDataController,
             UITemplateInventoryDataController uITemplateInventoryDataController,
-            UITemplateDailyRewardController   uiTemplateDailyRewardController
+            UITemplateDailyRewardController   uiTemplateDailyRewardController,
+            UITemplateGameSessionDataController uITemplateGameSessionDataController
         )
         {
             this.signalBus        = signalBus;
@@ -45,9 +47,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 { Count: > 1 } => throw new("Error: More than one analytic event factory found. Please remove one of them (Project Setting/Script Define Symbols)."),
                 _              => analyticEventFactories[0],
             };
-            this.uiTemplateLevelDataController     = uiTemplateLevelDataController;
-            this.uITemplateInventoryDataController = uITemplateInventoryDataController;
-            this.uiTemplateDailyRewardController   = uiTemplateDailyRewardController;
+            this.uiTemplateLevelDataController       = uiTemplateLevelDataController;
+            this.uITemplateInventoryDataController   = uITemplateInventoryDataController;
+            this.uiTemplateDailyRewardController     = uiTemplateDailyRewardController;
+            this.uITemplateGameSessionDataController = uITemplateGameSessionDataController;
         }
 
         public void Track(IEvent trackEvent)
@@ -385,7 +388,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void TotalDaysPlayedChange()
         {
-            this.analyticServices.UserProperties[this.analyticEventFactory.DaysPlayedProperty] = (int)(DateTime.Now.Date - this.uiTemplateDailyRewardController.GetFirstTimeOpenedDate.Date).TotalDays;
+            this.analyticServices.UserProperties[this.analyticEventFactory.RetentionDayProperty] = (int)(DateTime.Now.Date - this.uiTemplateDailyRewardController.GetFirstTimeOpenedDate.Date).TotalDays;
+            this.analyticServices.UserProperties[this.analyticEventFactory.DaysPlayedProperty] = this.uITemplateGameSessionDataController.OpenTime;
         }
 
         private void OnIAPPurchaseSuccess(OnIAPPurchaseSuccessSignal signal)

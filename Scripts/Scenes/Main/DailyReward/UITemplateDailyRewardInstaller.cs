@@ -12,10 +12,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward
         {
             this.Container.Bind<UITemplateDailyRewardItemViewHelper>().AsCached();
             this.Container.Bind<UITemplateDailyRewardPackViewHelper>().AsCached();
-            var concreteDailyRewardAnimationHelperType = ReflectionUtils.GetAllDerivedTypes<UITemplateDailyRewardAnimationHelper>()
-                                   .OrderBy(type => type == typeof(UITemplateDailyRewardAnimationHelper))
+            var concreteDailyRewardAnimationHelperType = ReflectionUtils.GetAllDerivedTypes<DailyRewardAnimationHelper>()
+                                   .OrderBy(type => type == typeof(DailyRewardAnimationHelper))
                                    .First();
-            this.Container.Bind<UITemplateDailyRewardAnimationHelper>().To(concreteDailyRewardAnimationHelperType).AsCached();
+            this.Container.Bind<DailyRewardAnimationHelper>().To(concreteDailyRewardAnimationHelperType).AsCached();
         }
     }
 }

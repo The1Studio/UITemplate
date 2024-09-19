@@ -34,7 +34,6 @@
 
     public class UITemplateDailyRewardPopupModel
     {
-        public Action OnClaimFinish;
     }
 
     [PopupInfo(nameof(UITemplateDailyRewardPopupView), false, isOverlay: true)]
@@ -42,31 +41,30 @@
     {
         #region inject
 
-        private readonly DiContainer                          diContainer;
-        private readonly UITemplateDailyRewardController      uiTemplateDailyRewardController;
-        private readonly UITemplateDailyRewardBlueprint       uiTemplateDailyRewardBlueprint;
-        private readonly UITemplateLevelDataController        levelDataController;
-        private readonly UITemplateAdServiceWrapper           uiTemplateAdServiceWrapper;
-        private readonly UITemplateDailyRewardAnimationHelper dailyRewardAnimationHelper;
-        private readonly GameFeaturesSetting                  gameFeaturesSetting;
+        private readonly DiContainer                     diContainer;
+        private readonly UITemplateDailyRewardController uiTemplateDailyRewardController;
+        private readonly UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint;
+        private readonly UITemplateLevelDataController   levelDataController;
+        private readonly UITemplateAdServiceWrapper      uiTemplateAdServiceWrapper;
+        private readonly DailyRewardAnimationHelper      dailyRewardAnimationHelper;
+        private readonly GameFeaturesSetting             gameFeaturesSetting;
 
         #endregion
 
-        private int                                  userLoginDay;
         private UITemplateDailyRewardPopupModel      popupModel;
         private List<UITemplateDailyRewardPackModel> listRewardModel;
         private CancellationTokenSource              closeViewCts;
 
         public UITemplateDailyRewardPopupPresenter(
-            SignalBus                            signalBus,
-            ILogService                          logger,
-            DiContainer                          diContainer,
-            UITemplateDailyRewardController      uiTemplateDailyRewardController,
-            UITemplateDailyRewardBlueprint       uiTemplateDailyRewardBlueprint,
-            UITemplateLevelDataController        levelDataController,
-            UITemplateAdServiceWrapper           uiTemplateAdServiceWrapper,
-            UITemplateDailyRewardAnimationHelper dailyRewardAnimationHelper,
-            GameFeaturesSetting                  gameFeaturesSetting
+            SignalBus                       signalBus,
+            ILogService                     logger,
+            DiContainer                     diContainer,
+            UITemplateDailyRewardController uiTemplateDailyRewardController,
+            UITemplateDailyRewardBlueprint  uiTemplateDailyRewardBlueprint,
+            UITemplateLevelDataController   levelDataController,
+            UITemplateAdServiceWrapper      uiTemplateAdServiceWrapper,
+            DailyRewardAnimationHelper      dailyRewardAnimationHelper,
+            GameFeaturesSetting             gameFeaturesSetting
         ) : base(signalBus, logger)
         {
             this.diContainer                     = diContainer;
@@ -200,7 +198,6 @@
             }
 
             this.uiTemplateDailyRewardController.ClaimAllAvailableReward(dayToView, this.View.claimSoundKey);
-            this.popupModel.OnClaimFinish?.Invoke();
 
             var claimedPresenter = new List<UITemplateDailyRewardPackPresenter>();
 

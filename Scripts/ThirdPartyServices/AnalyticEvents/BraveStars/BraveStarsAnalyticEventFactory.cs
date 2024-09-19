@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using Zenject;
 
     public class BraveStarsAnalyticEventFactory : BaseAnalyticEventFactory
@@ -25,27 +26,25 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
             IgnoreEvents = new HashSet<Type>()
             {
                 typeof(GameStarted),
-                typeof(AdInterClick),
-                typeof(AdInterFail),
-                typeof(AdInterDownloaded),
-                typeof(AdsRewardFail),
-                typeof(AdsRewardOffer),
-                typeof(AdsRewardedDownloaded),
-                typeof(AdsRewardClick),
-                typeof(LevelComplete),
+                typeof(InterstitialAdClicked),
+                typeof(InterstitialAdDisplayedFailed),
+                typeof(RewardedSkipped),
+                typeof(RewardedAdOffer),
+                typeof(RewardedAdLoaded),
+                typeof(RewardedAdLoadClicked)
             },
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(BannerShown), "af_banner_shown" },
                 { nameof(GameTutorialCompletion), "af_tutorial_completion" },
                 { nameof(AchievedLevel), "af_achieved_level" },
-                { nameof(AdsIntersEligible), "af_inters_ad_eligible" },
-                { nameof(AdInterCalled), "af_inters_api_called" },
-                { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdsRewardEligible), "af_rewarded_ad_eligible" },
-                { nameof(AdsRewardedCalled), "af_rewarded_api_called" },
-                { nameof(AdsRewardShow), "af_rewarded_displayed" },
-                { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
+                { nameof(InterstitialAdEligible), "af_inters_ad_eligible" },
+                { nameof(InterstitialAdDownloaded), "af_inters_api_called" },
+                { nameof(InterstitialAdDisplayed), "af_inters_displayed" },
+                { nameof(RewardedAdEligible), "af_rewarded_ad_eligible" },
+                { nameof(RewardedAdLoaded), "af_rewarded_api_called" },
+                { nameof(RewardedAdDisplayed), "af_rewarded_displayed" },
+                { nameof(RewardedAdCompleted), "af_rewarded_ad_completed" }
             }
         };
 

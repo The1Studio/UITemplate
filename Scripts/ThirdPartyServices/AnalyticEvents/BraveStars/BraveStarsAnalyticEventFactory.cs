@@ -30,7 +30,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
                 typeof(InterstitialAdDisplayedFailed),
                 typeof(RewardedSkipped),
                 typeof(RewardedAdOffer),
-                typeof(RewardedAdLoaded),
                 typeof(RewardedAdLoadClicked)
             },
             CustomEventKeys = new Dictionary<string, string>()

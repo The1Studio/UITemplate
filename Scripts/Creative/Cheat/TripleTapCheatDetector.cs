@@ -16,8 +16,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
             var result = false;
             if (Input.GetMouseButtonDown(0))
             {
-                this.tapCount    = (Time.time - this.lastTapTime < this.tapThreshold) ? this.tapCount + 1 : 1;
-                this.lastTapTime = Time.time;
+                this.tapCount    = (Time.unscaledTime - this.lastTapTime < this.tapThreshold) ? this.tapCount + 1 : 1;
+                this.lastTapTime = Time.unscaledTime;
 
                 if (this.tapCount == 3)
                 {
@@ -26,7 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
                 }
             }
 
-            if (Time.time - this.lastTapTime > this.tapThreshold) this.tapCount = 0;
+            if (Time.unscaledTime - this.lastTapTime > this.tapThreshold) this.tapCount = 0;
             return result;
         }
     }

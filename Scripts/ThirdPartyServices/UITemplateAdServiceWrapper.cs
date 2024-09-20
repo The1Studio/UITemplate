@@ -443,6 +443,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return false;
             }
 
+            this.logService.Log($"onelog: ShowInterstitialAd {place} adService: {adService.GetType().Name}");
+
             if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
             {
                 ShowDelayInter(InternalShowInterstitial).Forget();
@@ -484,7 +486,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 onComplete?.Invoke();
                 return;
             }
-            
+
             var adInfo = new AdInfo(this.adServices.AdPlatform, place, "Rewarded");
             this.signalBus.Fire(new RewardedAdEligibleSignal(place));
 
@@ -495,6 +497,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.toastController.ShowToast("There is no Ads!");
                 return;
             }
+
+            this.logService.Log($"onelog: ShowRewardedAd {place} adService: {adService.GetType().Name}");
 
             this.signalBus.Fire(new RewardedAdCalledSignal(place, adInfo));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();

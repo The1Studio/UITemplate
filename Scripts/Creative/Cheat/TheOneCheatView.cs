@@ -3,6 +3,7 @@
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
@@ -25,20 +26,22 @@
         [BoxGroup("Level")]    public TMP_InputField        inputLevel;
         [BoxGroup("Level")]    public Button                btnChangeLevel;
 
-        private ICheatDetector cheatDetector;
+        protected ICheatDetector cheatDetector;
 
         #region Inject
 
-        [Inject] private UITemplateInventoryDataController inventoryDataController;
-        [Inject] private GameFeaturesSetting               gameFeaturesSetting;
-        [Inject] private UITemplateLevelDataController     levelDataController;
-        [Inject] private SignalBus                         signalBus;
-        [Inject] private UITemplateCurrencyBlueprint       currencyBlueprint;
+        [Inject] protected UITemplateInventoryDataController inventoryDataController;
+        [Inject] protected GameFeaturesSetting               gameFeaturesSetting;
+        [Inject] protected UITemplateLevelDataController     levelDataController;
+        [Inject] protected SignalBus                         signalBus;
+        [Inject] protected UITemplateCurrencyBlueprint       currencyBlueprint;
 
         #endregion
 
         protected virtual void Awake()
         {
+            DontDestroyOnLoad(this.gameObject);
+            this.GetCurrentContainer().Inject(this);
             this.onOffUI.Button.onClick.AddListener(this.OnOnOffUIClick);
             this.btnAddCurrency.onClick.AddListener(this.OnAddCurrencyClick);
             this.btnClose.onClick.AddListener(this.OnCloseView);
@@ -54,7 +57,7 @@
             this.goContainer.SetActive(false);
         }
 
-        private void OnChangeLevelClick()
+        protected void OnChangeLevelClick()
         {
             if (!int.TryParse(this.inputLevel.text, out var level)) return;
 
@@ -62,15 +65,15 @@
             this.signalBus.Fire(new ChangeLevelCreativeSignal(level));
         }
 
-        private void OnCloseView() { this.goContainer.SetActive(false); }
+        protected void OnCloseView() { this.goContainer.SetActive(false); }
 
-        private void OnAddCurrencyClick()
+        protected void OnAddCurrencyClick()
         {
             var ddCurrencyOption = this.ddCurrency.options[this.ddCurrency.value].text;
             this.inventoryDataController.AddCurrency(int.Parse(this.inputCurrencyValue.text), ddCurrencyOption).Forget();
         }
 
-        private void OnOnOffUIClick()
+        protected void OnOnOffUIClick()
         {
             this.onOffUI.SetOnOff(!this.onOffUI.isOn);
             this.SetOnOffUI(this.onOffUI.isOn);
@@ -85,14 +88,14 @@
             canvas.enabled = isOn;
         }
 
-        private void Update()
+        protected void Update()
         {
             if (!this.cheatDetector.Check()) return;
             this.goContainer.SetActive(true);
             this.SetupDropdown();
         }
 
-        private void SetupDropdown()
+        protected void SetupDropdown()
         {
             this.ddCurrency.ClearOptions();
             this.ddCurrency.AddOptions(this.currencyBlueprint.Keys.ToList());

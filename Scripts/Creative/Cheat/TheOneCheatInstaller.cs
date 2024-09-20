@@ -13,7 +13,7 @@
 #if CREATIVE
             this.Container.Resolve<CreativeService>().DisableTripleTap();
 #endif
-            this.Container.InstantiatePrefabResource(nameof(TheOneCheatView));
+            this.Container.BindInterfacesTo<TheOneCheatGenerate>().AsCached().NonLazy();
 #endif
         }
     }

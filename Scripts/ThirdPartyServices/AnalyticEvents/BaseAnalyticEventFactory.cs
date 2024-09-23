@@ -73,13 +73,13 @@
         //Level
         public virtual IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);
 
-        public virtual IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelWin(level, timeSpent);
+        public virtual IEvent LevelWin(int level, double timeSpent, int winCount) => new LevelWin(level, timeSpent);
 
-        public virtual IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
+        public virtual IEvent LevelLose(int level, double timeSpent, int loseCount) => new LevelLose(level, timeSpent);
 
-        public virtual IEvent FirstWin(int level, int timeSpent) => new FirstWin(level, timeSpent);
+        public virtual IEvent FirstWin(int level, double timeSpent) => new FirstWin(level, timeSpent);
 
-        public virtual IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
+        public virtual IEvent LevelSkipped(int level, double timeSpent) => new LevelSkipped(level, timeSpent);
 
         public virtual IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) => new EarnVirtualCurrency(virtualCurrencyName, value, source);
 

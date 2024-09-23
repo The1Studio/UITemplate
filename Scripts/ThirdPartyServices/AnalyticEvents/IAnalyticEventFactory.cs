@@ -52,15 +52,15 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent AppOpenFullScreenContentOpened();
         IEvent AppOpenClicked();
 
-        IEvent LevelLose(int level, int timeSpent, int loseCount);
+        IEvent LevelLose(int level, double timeSpent, int loseCount);
 
         IEvent LevelStart(int level, int gold);
 
-        IEvent LevelWin(int level, int timeSpent, int winCount);
+        IEvent LevelWin(int level, double timeSpent, int winCount);
 
-        IEvent FirstWin(int level, int timeSpent);
+        IEvent FirstWin(int level, double timeSpent);
 
-        IEvent LevelSkipped(int level, int timeSpent);
+        IEvent LevelSkipped(int level, double timeSpent);
 
         IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source);
 

@@ -21,9 +21,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class LevelWin : IEvent
     {
         public int level;
-        public int timeSpent;
+        public double timeSpent;
 
-        public LevelWin(int level, int timeSpent)
+        public LevelWin(int level, double timeSpent)
         {
             this.level     = level;
             this.timeSpent = timeSpent;
@@ -32,10 +32,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
 
     public class LevelLose : IEvent
     {
-        public int level;
-        public int timeSpent;
+        public int    level;
+        public double timeSpent;
 
-        public LevelLose(int level, int timeSpent)
+        public LevelLose(int level, double timeSpent)
         {
             this.level     = level;
             this.timeSpent = timeSpent;
@@ -44,10 +44,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
 
     public class FirstWin : IEvent
     {
-        public int level;
-        public int timeSpent;
+        public int    level;
+        public double timeSpent;
 
-        public FirstWin(int level, int timeSpent)
+        public FirstWin(int level, double timeSpent)
         {
             this.level     = level;
             this.timeSpent = timeSpent;
@@ -56,10 +56,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
 
     public class LevelSkipped : IEvent
     {
-        public int level;
-        public int timeSpent;
+        public int    level;
+        public double timeSpent;
 
-        public LevelSkipped(int level, int timeSpent)
+        public LevelSkipped(int level, double timeSpent)
         {
             this.level     = level;
             this.timeSpent = timeSpent;

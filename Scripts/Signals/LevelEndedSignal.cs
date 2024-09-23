@@ -6,7 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Signals
     {
         public int                     Level;
         public bool                    IsWin;
-        public int                     Time;
+        public double                  Time;
         public Dictionary<string, int> CurrentIdToValue;
     }
 }

@@ -73,7 +73,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player lose current level
         /// </summary>
         /// <param name="time">Play time in seconds</param>
-        public void LoseCurrentLevel(int time = 0)
+        public void LoseCurrentLevel(double time = 0)
         {
             this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = time, CurrentIdToValue = null });
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
@@ -88,7 +88,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player win current level
         /// </summary>
         /// <param name="time">Play time in seconds</param>
-        public void PassCurrentLevel(int time = 0)
+        public void PassCurrentLevel(double time = 0)
         {
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).WinCount++;
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
@@ -103,7 +103,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player skip current level
         /// </summary>
         /// <param name="time">Play time in seconds</param>
-        public void SkipCurrentLevel(int time = 0)
+        public void SkipCurrentLevel(double time = 0)
         {
             if(GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
             this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = time });

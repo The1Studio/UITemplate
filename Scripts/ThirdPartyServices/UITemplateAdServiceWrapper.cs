@@ -66,6 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         //AOA
         private DateTime StartLoadingAOATime          { get; set; }
+        private DateTime StartSessionCollapsibleTime          { get; set; }
         private DateTime StartBackgroundTime          { get; set; }
         private bool     IsResumedFromAnotherServices { get; set; } // after Ads, IAP, permission, login, etc.
         private bool     IsCheckedShowFirstOpen       { get; set; } = false;
@@ -113,7 +114,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<CollapsibleBannerAdLoadFailedSignal>(this.OnCollapsibleBannerLoadFailed);
 
             //AOA
-            this.StartLoadingAOATime = DateTime.Now;
+            this.StartLoadingAOATime         = DateTime.Now;
+            this.StartSessionCollapsibleTime = DateTime.Now;
             //Pause can show AOA
             this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.ShownAdInDifferentProcessHandler);
@@ -159,7 +161,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.IsShowBannerAd)
             {
                 this.logService.Log($"onelog: ShowBannerAd EnableCollapsibleBanner {this.adServicesConfig.EnableCollapsibleBanner}, PreviousCollapsibleBannerAdLoadedFail {this.PreviousCollapsibleBannerAdLoadedFail}");
-                if (this.adServicesConfig.EnableCollapsibleBanner && !this.PreviousCollapsibleBannerAdLoadedFail)
+                var totalStartTime = (DateTime.Now - this.StartSessionCollapsibleTime).TotalSeconds;
+                if (this.adServicesConfig.EnableCollapsibleBanner && !this.PreviousCollapsibleBannerAdLoadedFail && totalStartTime >= this.adServicesConfig.CollapsibleBannerDelayStartSession)
                 {
                     var useNewGuid = this.IsRefreshingCollapsible
                         ? this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled

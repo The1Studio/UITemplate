@@ -326,7 +326,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                         #endif
                     ))
                 {
-                    this.signalBus.Fire(new AppOpenCalledSignal("", null));
+                    this.signalBus.Fire(new AppOpenCalledSignal(""));
                     aoa.ShowAOAAds();
                     this.IsCheckedShowFirstOpen = true;
                     this.IsOpenedAOAFirstOpen   = true;

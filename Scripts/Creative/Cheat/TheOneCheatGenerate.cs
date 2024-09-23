@@ -1,7 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
 {
+    using GameFoundation.DI;
     using GameFoundation.Scripts.AssetLibrary;
-    using Zenject;
 
     public class TheOneCheatGenerate : IInitializable
     {

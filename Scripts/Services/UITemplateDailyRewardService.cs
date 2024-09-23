@@ -1,6 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
-    using System;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -11,7 +10,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
-    using UnityEngine;
     using Zenject;
 
     public class UITemplateDailyRewardService : IInitializable
@@ -33,9 +31,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private bool canShowReward = true;
 
-        public UITemplateDailyRewardService(SignalBus signalBus, ScreenManager screenManager, UITemplateDailyRewardController uiTemplateDailyRewardController,
-            INotificationService notificationServices, GameQueueActionContext gameQueueActionContext, UITemplateFeatureConfig uiTemplateFeatureConfig, UITemplateGameSessionDataController sessionDataController,
-            GameFeaturesSetting gameFeaturesSetting)
+        public UITemplateDailyRewardService(
+            SignalBus                           signalBus,
+            ScreenManager                       screenManager,
+            UITemplateDailyRewardController     uiTemplateDailyRewardController,
+            INotificationService                notificationServices,
+            GameQueueActionContext              gameQueueActionContext,
+            UITemplateFeatureConfig             uiTemplateFeatureConfig,
+            UITemplateGameSessionDataController sessionDataController,
+            GameFeaturesSetting                 gameFeaturesSetting)
         {
             this.signalBus                       = signalBus;
             this.screenManager                   = screenManager;
@@ -49,27 +53,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
 
-        private bool IsFirstOpenGame()
-        {
-            return this.sessionDataController.OpenTime == 1;
-        }
+        private bool IsFirstOpenGame() { return this.sessionDataController.OpenTime == 1; }
 
         public UniTask ShowDailyRewardPopupAsync(bool force = false)
         {
-            this.ShowDailyRewardPopup(this.OnClaimDailyRewardFinish, force);
+            this.ShowDailyRewardPopup(force);
             return UniTask.CompletedTask;
         }
 
-        private void ShowDailyRewardPopup(Action onClaimReward, bool force)
+        private void ShowDailyRewardPopup(bool force)
         {
             if (!force)
             {
                 if (!this.canShowReward)
                     return;
 
-                if (!this.gameFeaturesSetting.DailyRewardConfig.showOnFirstOpen && this.IsFirstOpenGame())
+                if (!this.gameFeaturesSetting.DailyRewardConfig.showOnFirstOpen &&
+                    this.IsFirstOpenGame())
                 {
-                    onClaimReward?.Invoke();
                     this.canShowReward = false;
                     return;
                 }
@@ -79,10 +80,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
 
             this.notificationServices.SetupCustomNotification(this.gameFeaturesSetting.DailyRewardConfig.notificationId);
-            this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel()
-            {
-                OnClaimFinish                 = onClaimReward,
-            });
+            this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel());
         }
 
         private async void OnScreenShow(ScreenShowSignal obj)
@@ -99,13 +97,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             if (this.gameFeaturesSetting.DailyRewardConfig.isCustomScreenTrigger)
             {
-                return this.gameFeaturesSetting.DailyRewardConfig.screenTriggerIds.
-                            Contains(screenPresenter.GetType().Name);
+                return this.gameFeaturesSetting.DailyRewardConfig.screenTriggerIds.Contains(screenPresenter.GetType().Name);
             }
 
             return screenPresenter is UITemplateHomeSimpleScreenPresenter or UITemplateHomeTapToPlayScreenPresenter;
         }
-
-        private void OnClaimDailyRewardFinish() { }
     }
 }

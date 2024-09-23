@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item
 {
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
@@ -17,7 +18,7 @@
             this.DailyRewardController = dailyRewardController;
         }
 
-        public virtual async void BindDataItem(UITemplateDailyRewardItemModel model, UITemplateDailyRewardItemView view, UITemplateDailyRewardItemPresenter presenter)
+        public virtual void BindDataItem(UITemplateDailyRewardItemModel model, UITemplateDailyRewardItemView view, UITemplateDailyRewardItemPresenter presenter)
         {
             view.ImgReward.gameObject.SetActive(!string.IsNullOrEmpty(model.RewardRecord.RewardImage));
             if (!string.IsNullOrEmpty(model.RewardRecord.RewardImage))
@@ -34,7 +35,5 @@
         }
 
         public virtual void DisposeItem(UITemplateDailyRewardItemPresenter presenter) { }
-
-        public virtual void OnClaimReward(UITemplateDailyRewardItemPresenter presenter) { }
     }
 }

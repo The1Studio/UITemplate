@@ -436,6 +436,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.signalBus.Fire(new InterstitialAdEligibleSignal(place));
 
+            this.logService.Log($"onelog: ShowInterstitialAd {place} - {string.Join(", ", this.adServices.Select(adService => $"{adService.GetType().Name}: {adService.IsInterstitialAdReady(place)}"))}");
+
             if (this.adServices.FirstOrDefault(adService => adService.IsInterstitialAdReady(place)) is not { } adService)
             {
                 this.logService.Warning("InterstitialAd was not loaded");
@@ -443,7 +445,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return false;
             }
 
-            this.logService.Log($"onelog: ShowInterstitialAd {place} adService: {adService.GetType().Name}");
+            this.logService.Log($"onelog: ShowInterstitialAd {place} - {adService.GetType().Name}");
 
             if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
             {
@@ -465,7 +467,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             void InternalShowInterstitial()
             {
-                this.logService.Log($"onelog: ShowInterstitialAd4 {place}");
                 this.totalNoAdsPlayingTime = 0;
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
@@ -490,7 +491,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             var adInfo = new AdInfo(this.adServices.AdPlatform, place, "Rewarded");
             this.signalBus.Fire(new RewardedAdEligibleSignal(place));
 
-            if (this.adServices.FirstOrDefault(adService => adService.IsInterstitialAdReady(place)) is not { } adService)
+            this.logService.Log($"onelog: ShowRewardedAd {place} - {string.Join(", ", this.adServices.Select(adService => $"{adService.GetType().Name}: {adService.IsRewardedAdReady(place)}"))}");
+
+            if (this.adServices.FirstOrDefault(adService => adService.IsRewardedAdReady(place)) is not { } adService)
             {
                 this.logService.Warning("Rewarded was not loaded");
                 onFail?.Invoke();
@@ -498,7 +501,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            this.logService.Log($"onelog: ShowRewardedAd {place} adService: {adService.GetType().Name}");
+            this.logService.Log($"onelog: ShowRewardedAd {place} - {adService.GetType().Name}");
 
             this.signalBus.Fire(new RewardedAdCalledSignal(place, adInfo));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();

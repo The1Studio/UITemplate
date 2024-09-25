@@ -29,7 +29,7 @@
 
         private Color defaultColor = Color.white;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             var container = this.GetCurrentContainer();
             this.signalBus                         = container.Resolve<SignalBus>();

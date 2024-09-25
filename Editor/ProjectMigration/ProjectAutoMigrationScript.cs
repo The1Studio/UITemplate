@@ -19,7 +19,8 @@ namespace UITemplate.Editor.ProjectMigration
             ProguardMigration.CheckAndUpdateProguardFile();
             PackageMigration.CheckAndUpdatePackageManagerSettings();
             FolderMigration.RemoveUselessFolder();
-            ApplovinMigration.DoMigrate();
+            // TODO: Temporary disable auto migration for Applovin, Update it later
+            // ApplovinMigration.DoMigrate();
             LevelPlayMigration.DoMigration();
             ProjectSettingMigration.APICompatibilityLevel();
         }

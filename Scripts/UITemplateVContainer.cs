@@ -69,6 +69,7 @@ namespace TheOneStudio.UITemplate
 
             #if THEONE_DEBUG && !PRODUCTION
             builder.RegisterComponentInNewPrefabResource<Reporter>("LogsViewer", Lifetime.Singleton).UnderTransform(rootTransform);
+            builder.AutoResolve<Reporter>();
             #endif
         }
     }

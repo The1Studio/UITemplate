@@ -3,7 +3,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -13,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using TMPro;
@@ -40,7 +40,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     [ScreenInfo(nameof(UITemplateStaterPackScreenView))]
     public class UITemplateStartPackScreenPresenter : UITemplateBaseScreenPresenter<UITemplateStaterPackScreenView, UITemplateStaterPackModel>
     {
-        private readonly IAdServices                  adServices;
+        private readonly UITemplateAdServiceWrapper                  adServices;
         private readonly UITemplateShopPackBlueprint  uiTemplateShopPackBlueprint;
         private readonly UITemplateIapServices        uiTemplateIapServices;
         private readonly UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint;
@@ -49,7 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         private readonly IIapServices            iapServices;
         private          string                       IapPack = "";
 
-        public UITemplateStartPackScreenPresenter(SignalBus signalBus, IAdServices adServices, UITemplateShopPackBlueprint uiTemplateShopPackBlueprint, UITemplateIapServices uiTemplateIapServices,
+        public UITemplateStartPackScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper adServices, UITemplateShopPackBlueprint uiTemplateShopPackBlueprint, UITemplateIapServices uiTemplateIapServices,
             UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint, DiContainer diContainer,
             LoadImageHelper loadImageHelper,
             IIapServices iapServices, ILogService logger) : base(signalBus,
@@ -108,7 +108,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         public override async UniTask BindData(UITemplateStaterPackModel screenModel)
         {
             var starterPacks = this.uiTemplateShopPackBlueprint.GetPack().Where(x => x.RewardIdToRewardDatas.Count > 1).ToList();
-            this.IapPack = starterPacks.First(packRecord => packRecord.RewardIdToRewardDatas.ContainsKey(UITemplateRemoveAdRewardExecutorBase.REWARD_ID) != this.adServices.IsRemoveAds()).Id;
+            this.IapPack = starterPacks.First(packRecord => packRecord.RewardIdToRewardDatas.ContainsKey(UITemplateRemoveAdRewardExecutorBase.REWARD_ID) != this.adServices.IsRemovedAds).Id;
 
             this.View.txtPrice.text = $"Special Offer: Only {this.iapServices.GetPriceById(this.IapPack, this.uiTemplateShopPackBlueprint.GetDataById(this.IapPack).DefaultPrice)}";
 

@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using Core.AdsServices;
     using Core.AdsServices.CollapsibleBanner;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using ServiceImplementation.Configs;
@@ -15,11 +14,22 @@
 
     public class UITemplateAdServiceWrapperCreative : UITemplateAdServiceWrapper
     {
-        public UITemplateAdServiceWrapperCreative(ILogService logService, AdServicesConfig adServicesConfig, SignalBus signalBus, IAdServices adServices, List<IMRECAdService> mrecAdServices,
-            UITemplateAdsController uiTemplateAdsController, UITemplateGameSessionDataController gameSessionDataController, List<IAOAAdService> aoaAdServices, IBackFillAdsService backFillAdsService,
-            ToastController toastController, UITemplateLevelDataController levelDataController, ThirdPartiesConfig thirdPartiesConfig, IScreenManager screenManager, ICollapsibleBannerAd collapsibleBannerAd)
-            : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController,
-                gameSessionDataController, aoaAdServices, backFillAdsService, toastController, levelDataController, thirdPartiesConfig, screenManager, collapsibleBannerAd)
+        public UITemplateAdServiceWrapperCreative(
+            ILogService                         logService,
+            AdServicesConfig                    adServicesConfig,
+            SignalBus                           signalBus,
+            IEnumerable<IAdServices>            adServices,
+            IEnumerable<IMRECAdService>         mrecAdServices,
+            UITemplateAdsController             uiTemplateAdsController,
+            UITemplateGameSessionDataController gameSessionDataController,
+            IEnumerable<IAOAAdService>          aoaAdServices,
+            ToastController                     toastController,
+            UITemplateLevelDataController       levelDataController,
+            ThirdPartiesConfig                  thirdPartiesConfig,
+            IScreenManager                      screenManager,
+            ICollapsibleBannerAd                collapsibleBannerAd
+        ) : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController, gameSessionDataController, aoaAdServices, toastController, levelDataController,
+            thirdPartiesConfig, screenManager, collapsibleBannerAd)
         {
         }
 

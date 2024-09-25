@@ -468,7 +468,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             void InternalShowInterstitial()
             {
                 this.totalNoAdsPlayingTime = 0;
-                this.signalBus.Fire(new InterstitialAdCalledSignal(place));
+                var adInfo = new AdInfo(adService.AdPlatform, place, "Interstitial");
+                this.signalBus.Fire(new InterstitialAdCalledSignal(place, adInfo));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
                 this.IsResumedFromAnotherServices = true;
                 this.onInterstitialFinishedAction = onShowInterstitialFinished;
@@ -488,7 +489,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            var adInfo = new AdInfo(this.adServices.AdPlatform, place, "Rewarded");
             this.signalBus.Fire(new RewardedAdEligibleSignal(place));
 
             this.logService.Log($"onelog: ShowRewardedAd {place} - {string.Join(", ", this.adServices.Select(adService => $"{adService.GetType().Name}: {adService.IsRewardedAdReady(place)}"))}");
@@ -503,6 +503,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.logService.Log($"onelog: ShowRewardedAd {place} - {adService.GetType().Name}");
 
+            var adInfo = new AdInfo(adService.AdPlatform, place, "Rewarded");
             this.signalBus.Fire(new RewardedAdCalledSignal(place, adInfo));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAnotherServices = true;

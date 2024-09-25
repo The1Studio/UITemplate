@@ -26,7 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<RewardedAdCalledSignal>(this.OnRewardAdsCalled);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.OnDisplayRewardedAd);
             this.signalBus.Subscribe<RewardedAdClosedSignal>(this.OnRewardedAdClose);
-            this.signalBus.Subscribe<RewardedAdDisplayFailedSignal>(this.OnRewardedAdShowFail);
+            this.signalBus.Subscribe<RewardedAdShowFailedSignal>(this.OnRewardedAdShowFail);
 
             this.signalBus.Subscribe<RewardInterstitialAdCalledSignal>(this.OnRewardInterAdsCalled);
             this.signalBus.Subscribe<RewardInterstitialAdClosedSignal>(this.OnRewardInterClosed);
@@ -46,7 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<RewardedAdCalledSignal>(this.OnRewardAdsCalled);
             this.signalBus.Unsubscribe<RewardedAdDisplayedSignal>(this.OnDisplayRewardedAd);
             this.signalBus.Unsubscribe<RewardedAdClosedSignal>(this.OnRewardedAdClose);
-            this.signalBus.Unsubscribe<RewardedAdDisplayFailedSignal>(this.OnRewardedAdShowFail);
+            this.signalBus.Unsubscribe<RewardedAdShowFailedSignal>(this.OnRewardedAdShowFail);
 
             this.signalBus.Unsubscribe<RewardInterstitialAdCalledSignal>(this.OnRewardInterAdsCalled);
             this.signalBus.Unsubscribe<RewardInterstitialAdClosedSignal>(this.OnRewardInterClosed);
@@ -61,7 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void OnStartLevel(LevelStartedSignal                                   obj) { this.ResumeSound(); }
         private void OnRewardInterClosed(RewardInterstitialAdClosedSignal              obj) { this.ResumeSound(); }
         private void OnRewardedAdClose(RewardedAdClosedSignal                          obj) { this.ResumeSound(); }
-        private void OnRewardedAdShowFail(RewardedAdDisplayFailedSignal                obj) { this.ResumeSound(); }
+        private void OnRewardedAdShowFail(RewardedAdShowFailedSignal                   obj) { this.ResumeSound(); }
         private void OnAppFullScreenContentClosed(AppOpenFullScreenContentClosedSignal obj) { this.ResumeSound(); }
         private void OnInterstitialAdClosed(InterstitialAdClosedSignal                 obj) { this.ResumeSound(); }
 

@@ -87,8 +87,6 @@
 
         public virtual IEvent TutorialCompletion(bool success, string tutorialId) => new TutorialCompletion(success, tutorialId);
 
-        public virtual IEvent BuildingUnlock(bool success) => new BuildingUnlock(success);
-
         public virtual void ForceUpdateAllProperties() { }
 
         public virtual string LevelMaxProperty                   => "level_max";
@@ -120,7 +118,7 @@
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = this.EvenName,
-                EventProperties = new Dictionary<string, object>()
+                EventProperties = new()
                 {
                     { "ad_platform", obj.AdsRevenueEvent.AdsRevenueSourceId },
                     { "ad_source", obj.AdsRevenueEvent.AdNetwork },

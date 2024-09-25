@@ -68,8 +68,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent TutorialCompletion(bool success, string tutorialId);
 
-        IEvent BuildingUnlock(bool success);
-
         void ForceUpdateAllProperties();
 
         string                            LevelMaxProperty                           { get; }

@@ -569,7 +569,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public void Tick()
         {
-            if(this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus && Time.unscaledDeltaTime < 1) this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
+            if (!this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus || Time.unscaledDeltaTime < 1)
+            {
+                this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
+            }
+            
             if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession)
             {
                 this.CheckShowFirstOpen();

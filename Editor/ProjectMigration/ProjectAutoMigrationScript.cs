@@ -10,6 +10,7 @@ namespace UITemplate.Editor.ProjectMigration
         [InitializeOnLoadMethod]
         private static void OnProjectLoadedInEditor()
         {
+            PackageMigration.CheckAndUpdatePackageManagerSettings();
             if (EditorUtility.scriptCompilationFailed || EditorApplication.isCompiling)
             {
                 Debug.LogWarning("Skipping migration due to compilation errors or isCompiling.");
@@ -17,7 +18,6 @@ namespace UITemplate.Editor.ProjectMigration
             }
             
             ProguardMigration.CheckAndUpdateProguardFile();
-            PackageMigration.CheckAndUpdatePackageManagerSettings();
             FolderMigration.RemoveUselessFolder();
             // TODO: Temporary disable auto migration for Applovin, Update it later
             // ApplovinMigration.DoMigrate();

@@ -29,9 +29,10 @@
             UITemplateLevelDataController       levelDataController,
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
-            ICollapsibleBannerAd                collapsibleBannerAd
+            ICollapsibleBannerAd                collapsibleBannerAd,
+            IEnumerable<AdServiceOrder>         adServiceOrders
         ) : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController, gameSessionDataController, aoaAdServices, toastController, levelDataController,
-            thirdPartiesConfig, screenManager, collapsibleBannerAd)
+            thirdPartiesConfig, screenManager, collapsibleBannerAd, adServiceOrders)
         {
         }
 

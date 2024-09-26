@@ -48,6 +48,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
+        private readonly IAdServices                         bannerAdService;
+        private readonly IReadOnlyCollection<IAdServices>    interstitialAdServices;
+        private readonly IReadOnlyCollection<IAdServices>    rewardedAdServices;
 
         #endregion
 
@@ -86,7 +89,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             UITemplateLevelDataController       levelDataController,
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
-            ICollapsibleBannerAd                collapsibleBannerAd
+            ICollapsibleBannerAd                collapsibleBannerAd,
+            IEnumerable<AdServiceOrder>         adServiceOrders
         )
         {
             this.adServices                = adServices.ToArray();
@@ -102,6 +106,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
+            var adServiceOrdersDict = adServiceOrders.ToDictionary(order => (order.ServiceType, order.AdType), order => order.Order);
+            this.bannerAdService        = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Banner))).First();
+            this.interstitialAdServices = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Interstitial))).ToArray();
+            this.rewardedAdServices     = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Rewarded))).ToArray();
         }
 
         public void Initialize()
@@ -152,9 +160,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.IsShowBannerAd = true;
 
-            var adService = this.adServices.First();
-
-            await UniTask.WaitUntil(() => adService.IsAdsInitialized());
+            await UniTask.WaitUntil(() => this.bannerAdService.IsAdsInitialized());
 
             this.logService.Log($"onelog: ShowBannerAd IsCurrentScreenCanShowMREC {this.IsCurrentScreenCanShowMREC()} this.adServicesConfig.EnableBannerAd {this.adServicesConfig.EnableBannerAd}");
             if (this.IsCurrentScreenCanShowMREC() || !this.adServicesConfig.EnableBannerAd) return;
@@ -210,7 +216,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void InternalShowMediationBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
         {
-            this.adServices.First().ShowBannerAd(bannerAdsPosition, width, height);
+            this.bannerAdService.ShowBannerAd(bannerAdsPosition, width, height);
         }
 
         public virtual void HideBannerAd()
@@ -222,7 +228,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService.Log("onelog: HideBannerAd");
         }
 
-        private void InternalHideMediationBannerAd() { this.adServices.First().HideBannedAd(); }
+        private void InternalHideMediationBannerAd() { this.bannerAdService.HideBannedAd(); }
 
         private void InternalHideCollapsibleBannerAd()
         {
@@ -365,11 +371,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (this.IsRemovedAds)
             {
-                this.adServices.First().DestroyBannerAd();
+                this.bannerAdService.DestroyBannerAd();
             }
             else if (!this.IsShowBannerAd)
             {
-                this.adServices.First().HideBannedAd();
+                this.bannerAdService.HideBannedAd();
             }
         }
 
@@ -441,7 +447,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.logService.Log($"onelog: ShowInterstitialAd {place} - {string.Join(", ", this.adServices.Select(adService => $"{adService.GetType().Name}: {adService.IsInterstitialAdReady(place)}"))}");
 
-            if (this.adServices.FirstOrDefault(adService => adService.IsInterstitialAdReady(place)) is not { } adService)
+            if (this.interstitialAdServices.FirstOrDefault(adService => adService.IsInterstitialAdReady(place)) is not { } adService)
             {
                 this.logService.Warning("InterstitialAd was not loaded");
                 onShowInterstitialFinished?.Invoke(false);
@@ -496,7 +502,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.logService.Log($"onelog: ShowRewardedAd {place} - {string.Join(", ", this.adServices.Select(adService => $"{adService.GetType().Name}: {adService.IsRewardedAdReady(place)}"))}");
 
-            if (this.adServices.FirstOrDefault(adService => adService.IsRewardedAdReady(place)) is not { } adService)
+            if (this.rewardedAdServices.FirstOrDefault(adService => adService.IsRewardedAdReady(place)) is not { } adService)
             {
                 this.logService.Warning("Rewarded was not loaded");
                 onFail?.Invoke();
@@ -565,7 +571,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.HideAllMREC();
 
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
-            this.adServices.First().DestroyBannerAd();
+            this.bannerAdService.DestroyBannerAd();
         }
 
         public bool IsRemovedAds => this.adServices.Any(adService => adService.IsRemoveAds());

@@ -43,7 +43,7 @@ namespace TheOneStudio.UITemplate
 
             builder.Register<UITemplateIapServices>(Lifetime.Singleton).AsInterfacesAndSelf();
 
-            builder.RegisterCheatView(rootTransform);
+            builder.RegisterCheatView();
 
             // not lock in editor because interstitial fake ads can not close
             #if !UNITY_EDITOR

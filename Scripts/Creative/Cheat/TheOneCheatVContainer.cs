@@ -11,14 +11,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
 
     public static class TheOneCheatVContainer
     {
-        public static void RegisterCheatView(this IContainerBuilder builder, Transform rootTransform)
+        public static void RegisterCheatView(this IContainerBuilder builder)
         {
             #if THEONE_CHEAT
             #if CREATIVE
             builder.RegisterBuildCallback(container => container.Resolve<CreativeService>().DisableTripleTap());
             #endif
-            builder.RegisterComponentInNewPrefabResource<TheOneCheatView>(nameof(TheOneCheatView), Lifetime.Singleton).UnderTransform(rootTransform);
-            builder.AutoResolve<TheOneCheatView>();
+            builder.Register<TheOneCheatGenerate>(Lifetime.Singleton).AsImplementedInterfaces();
             #endif
         }
     }

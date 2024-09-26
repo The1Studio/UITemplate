@@ -32,14 +32,15 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
             { "com.google.external-dependency-manager", "1.2.181" },
-            { "com.svermeulen.extenject", "https://github.com/svermeulen/Yazef.git?path=UnityProject/Assets/Plugins/Zenject/Source" }
+            { "com.svermeulen.extenject", "https://github.com/svermeulen/Yazef.git?path=UnityProject/Assets/Plugins/Zenject/Source" },
+            { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" }
             // add more packages as needed
         };
 
         [NonSerialized] private static readonly Dictionary<string, string> PackagesVersionToUse = new()
         {
             { "com.google.ads.mobile", "9.2.0" },
-            { "com.unity.purchasing", "4.12.0" },
+            { "com.unity.purchasing", "4.12.2" },
         };
 
         [NonSerialized] private static readonly List<string> PackagesToRemove = new()

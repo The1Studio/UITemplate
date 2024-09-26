@@ -350,13 +350,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
             
-            var lastNoAdsPlayingTime = this.totalNoAdsPlayingTime;
-            this.totalNoAdsPlayingTime = this.totalNoAdsPlayingTime + Time.unscaledDeltaTime - (float) totalBackgroundSeconds;
-            if (this.totalNoAdsPlayingTime > lastNoAdsPlayingTime)
-            {
-                this.totalNoAdsPlayingTime = lastNoAdsPlayingTime;
-            }
-            
             if (this.IsResumedFromAnotherServices)
             {
                 return;
@@ -576,7 +569,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public void Tick()
         {
-            if (Application.isFocused) this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
+            if(this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus && Time.unscaledDeltaTime < 1) this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
             if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession)
             {
                 this.CheckShowFirstOpen();

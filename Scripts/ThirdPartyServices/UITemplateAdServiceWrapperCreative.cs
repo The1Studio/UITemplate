@@ -27,24 +27,13 @@
             IEnumerable<IAOAAdService>          aoaAdServices,
             ToastController                     toastController,
             UITemplateLevelDataController       levelDataController,
+            UITemplateDailyRewardController dailyRewardController,
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
             IEnumerable<AdServiceOrder>         adServiceOrders
-        ) : base(logService,
-            adServicesConfig,
-            signalBus,
-            adServices,
-            mrecAdServices,
-            uiTemplateAdsController,
-            gameSessionDataController,
-            aoaAdServices,
-            toastController,
-            levelDataController,
-            thirdPartiesConfig,
-            screenManager,
-            collapsibleBannerAd,
-            adServiceOrders)
+        ) : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController, gameSessionDataController, aoaAdServices, toastController, levelDataController, dailyRewardController,
+            thirdPartiesConfig, screenManager, collapsibleBannerAd, adServiceOrders)
         {
         }
 

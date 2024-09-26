@@ -28,7 +28,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using UnityEngine.Scripting;
-    #if ADMOB
+    using Zenject;
+#if ADMOB
     using ServiceImplementation.AdsServices.EasyMobile;
     #endif
 
@@ -43,6 +44,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly IReadOnlyList<IAOAAdService>        aoaAdServices;
         private readonly ToastController                     toastController;
         private readonly UITemplateLevelDataController       levelDataController;
+        private readonly UITemplateDailyRewardController     dailyRewardController;
         private readonly ThirdPartiesConfig                  thirdPartiesConfig;
         private readonly IScreenManager                      screenManager;
         private readonly ICollapsibleBannerAd                collapsibleBannerAd;
@@ -88,6 +90,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             IEnumerable<IAOAAdService>          aoaAdServices,
             ToastController                     toastController,
             UITemplateLevelDataController       levelDataController,
+            UITemplateDailyRewardController dailyRewardController,
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
@@ -101,6 +104,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.aoaAdServices             = aoaAdServices.ToArray();
             this.toastController           = toastController;
             this.levelDataController       = levelDataController;
+            this.dailyRewardController     = dailyRewardController;
             this.thirdPartiesConfig        = thirdPartiesConfig;
             this.screenManager             = screenManager;
             this.collapsibleBannerAd       = collapsibleBannerAd;
@@ -309,7 +313,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true)
         {
             if (!this.adServicesConfig.EnableAOAAd) return;
-            if (this.IsRemovedAds) return;
+            if (this.IsRemovedAds || (DateTime.Now - this.dailyRewardController.GetFirstTimeOpenedDate).TotalDays < this.adServicesConfig.AOASplash) return;
 
             if (isFireEligibleSignal) this.signalBus.Fire(new AppOpenEligibleSignal(""));
 

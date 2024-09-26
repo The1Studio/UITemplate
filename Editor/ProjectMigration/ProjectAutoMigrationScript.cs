@@ -10,19 +10,21 @@ namespace UITemplate.Editor.ProjectMigration
         [InitializeOnLoadMethod]
         private static void OnProjectLoadedInEditor()
         {
+            Debug.Log("onelog: OnProjectLoadedInEditor");
             PackageMigration.CheckAndUpdatePackageManagerSettings();
+            ProguardMigration.CheckAndUpdateProguardFile();
+            ProjectSettingMigration.APICompatibilityLevel();
+            FolderMigration.RemoveUselessFolder();
+            
             if (EditorUtility.scriptCompilationFailed || EditorApplication.isCompiling)
             {
                 Debug.LogWarning("Skipping migration due to compilation errors or isCompiling.");
                 return;
             }
             
-            ProguardMigration.CheckAndUpdateProguardFile();
-            FolderMigration.RemoveUselessFolder();
             // TODO: Temporary disable auto migration for Applovin, Update it later
             // ApplovinMigration.DoMigrate();
             LevelPlayMigration.DoMigration();
-            ProjectSettingMigration.APICompatibilityLevel();
         }
 
         static ProjectAutoMigrationScript()

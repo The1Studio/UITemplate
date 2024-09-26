@@ -10,7 +10,6 @@ namespace UITemplate.Editor.ProjectMigration
         [InitializeOnLoadMethod]
         private static void OnProjectLoadedInEditor()
         {
-            Debug.Log("onelog: OnProjectLoadedInEditor");
             PackageMigration.CheckAndUpdatePackageManagerSettings();
             ProguardMigration.CheckAndUpdateProguardFile();
             ProjectSettingMigration.APICompatibilityLevel();

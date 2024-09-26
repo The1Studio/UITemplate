@@ -576,12 +576,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public void Tick()
         {
-            if (Application.isFocused)
-            {
-                this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
-                Debug.Log("hehe: Tick totalNoAdsPlayingTime: " + this.totalNoAdsPlayingTime);
-            }
-            
+            if (Application.isFocused) this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
             if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession)
             {
                 this.CheckShowFirstOpen();

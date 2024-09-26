@@ -412,9 +412,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             return true;
         }
 
-        public virtual bool ShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)
+        public virtual bool ShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false, bool showAdsBreak = true)
         {
-            if (!this.CanShowInterstitialAd(place, force))
+            if (showAdsBreak && !this.CanShowInterstitialAd(place, force))
             {
                 onShowInterstitialFinished?.Invoke(false);
                 return false;
@@ -433,7 +433,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.logService.Log($"onelog: ShowInterstitialAd {place} - {adService.GetType().Name}");
 
-            if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
+            if (showAdsBreak && this.thirdPartiesConfig.AdSettings.EnableBreakAds)
                 ShowDelayInter(InternalShowInterstitial).Forget();
             else
                 InternalShowInterstitial();

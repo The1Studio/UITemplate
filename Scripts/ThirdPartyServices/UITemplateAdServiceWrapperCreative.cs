@@ -56,7 +56,7 @@
         {
         }
 
-        public override bool ShowInterstitialAd(string place, Action<bool> onInterstitialFinished, bool force = false)
+        public override bool ShowInterstitialAd(string place, Action<bool> onInterstitialFinished, bool force = false, bool showAdsBreak = true)
         {
             onInterstitialFinished?.Invoke(true);
 

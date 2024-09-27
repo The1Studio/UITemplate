@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     {
     }
 
+    [Preserve]
     public class UITemplateCurrencyRecord
     {
         public string Id;

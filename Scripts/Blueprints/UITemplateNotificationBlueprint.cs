@@ -11,6 +11,7 @@
     {
     }
 
+    [Preserve]
     public class UITemplateNotificationRecord
     {
         public string    Id            { get; set; }

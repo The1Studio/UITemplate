@@ -2,19 +2,23 @@
 namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [BlueprintReader("UITemplateDailyQueueOffer", true)]
     [CsvHeaderKey("Day")]
     public class UITemplateDailyQueueOfferBlueprint : GenericBlueprintReaderByRow<int, UITemplateDailyQueueOfferRecord>
     {
     }
 
+    [Preserve]
     public class UITemplateDailyQueueOfferRecord
     {
         public int                                                         Day       { get; set; }
         public BlueprintByRow<string, UITemplateDailyQueueOfferItemRecord> OfferItems { get; set; }
     }
 
+    [Preserve]
     [CsvHeaderKey("OfferId")]
     public class UITemplateDailyQueueOfferItemRecord
     {

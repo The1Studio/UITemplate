@@ -24,6 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         }
     }
 
+    [Preserve]
     public class ShopPackRecord
     {
         public string                                                Id                    { get; set; }
@@ -36,6 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public BlueprintByRow<string, UITemplateRewardBlueprintData> RewardIdToRewardDatas { get; set; }
     }
 
+    [Preserve]
     [Serializable]
     [CsvHeaderKey("RewardId")]
     public class UITemplateRewardBlueprintData

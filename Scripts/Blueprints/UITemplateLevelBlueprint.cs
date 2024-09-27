@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     {
     }
 
+    [Preserve]
     public class UITemplateLevelRecord
     {
         public int    Level       { get; set; }

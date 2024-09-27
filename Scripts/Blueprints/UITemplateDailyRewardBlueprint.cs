@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     {
     }
 
+    [Preserve]
     public class UITemplateDailyRewardRecord
     {
         public int                                            Day       { get; set; }
@@ -18,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public BlueprintByRow<string, UITemplateRewardRecord> Reward    { get; set; }
     }
 
+    [Preserve]
     [CsvHeaderKey("RewardId")]
     public class UITemplateRewardRecord
     {

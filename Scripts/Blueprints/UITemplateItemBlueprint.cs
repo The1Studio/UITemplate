@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     {
     }
 
+    [Preserve]
     [CsvHeaderKey("Id")]
     public class UITemplateItemRecord
     {

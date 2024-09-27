@@ -9,6 +9,7 @@
     {
     }
 
+    [Preserve]
     [CsvHeaderKey("Id")]
     public class UITemplateCategoryItemRecord
     {

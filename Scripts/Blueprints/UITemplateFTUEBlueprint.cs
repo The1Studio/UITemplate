@@ -15,6 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     {
     }
 
+    [Preserve]
     public class UITemplateFTUERecord
     {
         public string       Id                     { get; set; }
@@ -44,6 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     }
 
 
+    [Preserve]
     public class RequireCondition
     {
         public string RequireId       { get; set; }

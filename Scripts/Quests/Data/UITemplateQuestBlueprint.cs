@@ -71,6 +71,7 @@ namespace TheOneStudio.UITemplate.Quests.Data
         }
     }
 
+    [Preserve]
     [CsvHeaderKey(nameof(Id))]
     public sealed class QuestRecord
     {

@@ -10,6 +10,7 @@
     {
     }
 
+    [Preserve]
     public class UITemplateNotificationDataRecord
     {
         public string Id         { get; set; }

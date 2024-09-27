@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     {
     }
 
+    [Preserve]
     public class UITemplateShopRecord
     {
         public string                        Id;

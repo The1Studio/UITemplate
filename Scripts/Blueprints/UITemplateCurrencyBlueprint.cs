@@ -5,18 +5,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 
     [Preserve]
     [BlueprintReader("UITemplateCurrency", true)]
-    [CsvHeaderKey("Id")]
     public class UITemplateCurrencyBlueprint : GenericBlueprintReaderByRow<string, UITemplateCurrencyRecord>
     {
     }
 
     [Preserve]
+    [CsvHeaderKey("Id")]
     public class UITemplateCurrencyRecord
     {
-        public string Id;
-        public string Name;
-        public string IconAddressable;
-        public int    Max;
-        public string FlyingObject;
+        public string Id              { get; [Preserve] private set; }
+        public string Name            { get; [Preserve] private set; }
+        public string IconAddressable { get; [Preserve] private set; }
+        public int    Max             { get; [Preserve] private set; }
+        public string FlyingObject    { get; [Preserve] private set; }
     }
 }

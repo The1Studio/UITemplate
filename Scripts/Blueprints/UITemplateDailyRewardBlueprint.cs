@@ -5,30 +5,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     using UnityEngine.Scripting;
 
     [Preserve]
-    [CsvHeaderKey("Day")]
     [BlueprintReader("UITemplateDailyReward", true)]
     public class UITemplateDailyRewardBlueprint : GenericBlueprintReaderByRow<int, UITemplateDailyRewardRecord>
     {
     }
 
     [Preserve]
+    [CsvHeaderKey("Day")]
     public class UITemplateDailyRewardRecord
     {
-        public int                                            Day       { get; set; }
-        public string                                         PackImage { get; set; }
-        public BlueprintByRow<string, UITemplateRewardRecord> Reward    { get; set; }
+        public int                                            Day       { get; [Preserve] private set; }
+        public string                                         PackImage { get; [Preserve] private set; }
+        public BlueprintByRow<string, UITemplateRewardRecord> Reward    { get; [Preserve] private set; }
     }
 
     [Preserve]
     [CsvHeaderKey("RewardId")]
     public class UITemplateRewardRecord
     {
-        public string   RewardId    { get; set; }
-        public int      RewardValue { get; set; }
-        public string   RewardImage { get; set; }
-        public Vector2? Position    { get; set; }
-        public Vector2? Size        { get; set; }
-        public bool     SpoilReward { get; set; }
-        public bool     ShowValue   { get; set; }
+        public string   RewardId    { get; [Preserve] private set; }
+        public int      RewardValue { get; [Preserve] private set; }
+        public string   RewardImage { get; [Preserve] private set; }
+        public Vector2? Position    { get; [Preserve] private set; }
+        public Vector2? Size        { get; [Preserve] private set; }
+        public bool     SpoilReward { get; [Preserve] private set; }
+        public bool     ShowValue   { get; [Preserve] private set; }
     }
 }

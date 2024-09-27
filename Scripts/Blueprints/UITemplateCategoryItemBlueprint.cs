@@ -13,8 +13,8 @@
     [CsvHeaderKey("Id")]
     public class UITemplateCategoryItemRecord
     {
-        public string Id    { get; set; }
-        public string Icon  { get; set; }
-        public string Title { get; set; }
+        public string Id    { get; [Preserve] private set; }
+        public string Icon  { get; [Preserve] private set; }
+        public string Title { get; [Preserve] private set; }
     }
 }

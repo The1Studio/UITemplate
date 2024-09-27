@@ -9,9 +9,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Cysharp.Threading.Tasks;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
+    using UnityEngine.Scripting;
 
     public class AndroidUnityNotificationService : BaseUnityNotificationService
     {
+        [Preserve]
         public AndroidUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper, ILogService logger, IAnalyticServices analyticServices,
             IPermissionService permissionService) :

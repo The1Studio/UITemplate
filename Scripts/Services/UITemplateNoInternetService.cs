@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateNoInternetService : IInitializable
     {
@@ -18,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly IScreenManager                      screenManager;
         private readonly UITemplateGameSessionDataController uiTemplateGameSessionDataController;
 
+        [Preserve]
         public UITemplateNoInternetService(
             SignalBus                           signalBus,
             GameFeaturesSetting                 gameFeaturesSetting,

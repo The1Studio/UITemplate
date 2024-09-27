@@ -3,7 +3,8 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
-#if UNITY_ANDROID
+    using UnityEngine.Scripting;
+    #if UNITY_ANDROID
     using UnityEngine.Android;
 #endif
 #if THEONE_NOTIFICATION && UNITY_ANDROID
@@ -12,6 +13,7 @@
 
     public class AndroidPermissionService : BaseUnityPermissionService
     {
+        [Preserve]
         public AndroidPermissionService(ILogService logService, SignalBus signalBus) : base(logService, signalBus) { }
 
         protected override async UniTask<bool> InternalRequestPermission(PermissionRequest request)

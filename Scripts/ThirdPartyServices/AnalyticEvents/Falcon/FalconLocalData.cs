@@ -2,8 +2,10 @@
 {
     using System.Collections.Generic;
     using GameFoundation.Scripts.Interfaces;
+    using UnityEngine.Scripting;
 
 #if FALCON
+    [Preserve]
     public class FalconLocalData : ILocalData
     {
         public void Init() { }

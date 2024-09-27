@@ -9,9 +9,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
     using GameFoundation.Signals;
     using ServiceImplementation.IAPServices.Signals;
     using AdInfo = Core.AdsServices.AdInfo;
+    using UnityEngine.Scripting;
 
     public class AperoAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        [Preserve]
         public AperoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
             signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnIAPPurchaseSuccessHandler);

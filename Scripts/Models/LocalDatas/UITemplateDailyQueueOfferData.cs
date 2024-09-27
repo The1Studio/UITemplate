@@ -6,7 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     using GameFoundation.Scripts.Interfaces;
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateDailyQueueOfferData : ILocalData, IUITemplateLocalData
     {
         [OdinSerialize] public DateTime                         LastOfferDate          { get; set; } = DateTime.MinValue;

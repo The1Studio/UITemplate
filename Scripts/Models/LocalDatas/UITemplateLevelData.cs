@@ -8,7 +8,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateUserLevelData : ILocalData, IUITemplateLocalData
     {
         [OdinSerialize] public UITemplateItemData.UnlockType UnlockedFeature { get; set; } = UITemplateItemData.UnlockType.Default;

@@ -4,6 +4,7 @@
     using GameFoundation.DI;
     using GameFoundation.Signals;
     using UnityEngine.EventSystems;
+    using UnityEngine.Scripting;
 
     public class LockInputService : IInitializable
     {
@@ -12,6 +13,7 @@
         private readonly SignalBus   signalBus;
         private readonly EventSystem eventSystem;
 
+        [Preserve]
         public LockInputService(SignalBus signalBus, EventSystem eventSystem)
         {
             this.signalBus   = signalBus;

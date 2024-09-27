@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using UnityEngine.Scripting;
 
     public class UserDataManager
     {
@@ -17,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
         private readonly SignalBus               signalBus;
         private readonly IHandleUserDataServices handleUserDataService;
 
+        [Preserve]
         public UserDataManager(IDependencyContainer container, SignalBus signalBus, IHandleUserDataServices handleUserDataService)
         {
             this.container             = container;

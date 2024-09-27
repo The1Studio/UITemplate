@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
 
@@ -27,6 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly IGameAssets    gameAssets;
         private const    string         PrefabName = "UITemplateFlyingAnimationItem";
 
+        [Preserve]
         public UITemplateFlyingAnimationController(IScreenManager screenManager, IGameAssets gameAssets)
         {
             this.screenManager = screenManager;

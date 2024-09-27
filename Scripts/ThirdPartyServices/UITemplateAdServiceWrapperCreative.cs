@@ -11,9 +11,11 @@
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
+    using UnityEngine.Scripting;
 
     public class UITemplateAdServiceWrapperCreative : UITemplateAdServiceWrapper
     {
+        [Preserve]
         public UITemplateAdServiceWrapperCreative(
             ILogService                         logService,
             AdServicesConfig                    adServicesConfig,

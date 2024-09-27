@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateIapServices : IInitializable, IDisposable
     {
@@ -28,6 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
+        [Preserve]
         public UITemplateIapServices(
             SignalBus                            signalBus,
             ILogService                          logger,

@@ -11,9 +11,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents.LevelStart;
+    using UnityEngine.Scripting;
 
     public class MiraiAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        [Preserve]
         public MiraiAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
         }

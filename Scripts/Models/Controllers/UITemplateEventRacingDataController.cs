@@ -13,6 +13,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using Utilities.Utils;
     using Random = UnityEngine.Random;
 
@@ -53,6 +54,7 @@
         private CountryFlags countryFlags;
         public  int          RacingScoreMax { get; set; }
 
+        [Preserve]
         public UITemplateEventRacingDataController(UITemplateEventRacingData uiTemplateEventRacingData,
             IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
             SignalBus signalBus, IRemoteConfig remoteConfig, GameFeaturesSetting gameFeaturesSetting)

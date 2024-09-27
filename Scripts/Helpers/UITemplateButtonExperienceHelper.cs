@@ -10,6 +10,7 @@
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using UIModule.Utilities.UIStuff;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateButtonExperienceHelper : IInitializable
@@ -25,6 +26,7 @@
 
         private HashSet<IScreenPresenter> openedScreenList = new();
 
+        [Preserve]
         public UITemplateButtonExperienceHelper(SignalBus signalBus, IVibrationService vibrationService, IAudioService soundServices, GameFeaturesSetting gameFeaturesSetting)
         {
             this.signalBus           = signalBus;

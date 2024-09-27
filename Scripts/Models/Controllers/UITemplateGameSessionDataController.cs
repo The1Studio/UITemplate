@@ -5,12 +5,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using UnityEngine.Scripting;
 
     public class UITemplateGameSessionDataController : IUITemplateControllerData, IInitializable
     {
         private readonly UITemplateGameSessionData gameSessionData;
         private readonly SignalBus                 signalBus;
 
+        [Preserve]
         public UITemplateGameSessionDataController(UITemplateGameSessionData gameSessionData, SignalBus signalBus)
         {
             this.gameSessionData = gameSessionData;

@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward;
+    using UnityEngine.Scripting;
 
     public class UITemplateDailyRewardService : IInitializable
     {
@@ -30,6 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private bool canShowReward = true;
 
+        [Preserve]
         public UITemplateDailyRewardService(
             SignalBus                           signalBus,
             UITemplateDailyRewardController     uiTemplateDailyRewardController,

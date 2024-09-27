@@ -7,7 +7,9 @@
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateEventRacingData : ILocalData, IUITemplateLocalData
     {
         public           DateTime          startDate;

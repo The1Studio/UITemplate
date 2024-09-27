@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     // Rebind this class to your own pack view
     public class UITemplateDailyRewardPackViewHelper
@@ -17,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         protected readonly IGameAssets                     GameAssets;
         protected readonly UITemplateDailyRewardController DailyRewardController;
 
+        [Preserve]
         public UITemplateDailyRewardPackViewHelper(IGameAssets gameAssets, UITemplateDailyRewardController dailyRewardController)
         {
             this.GameAssets            = gameAssets;

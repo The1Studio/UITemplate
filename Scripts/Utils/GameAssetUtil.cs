@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class GameAssetUtil
     {
@@ -12,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
 
         #endregion
 
+        [Preserve]
         public GameAssetUtil(IGameAssets gameAssets) { this.gameAssets = gameAssets; }
 
         public string GetItemIconName(string itemId) => $"{itemId}Icon";

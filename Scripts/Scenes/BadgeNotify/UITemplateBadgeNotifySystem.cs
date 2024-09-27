@@ -9,6 +9,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
+    using UnityEngine.Scripting;
 
     public class UITemplateBadgeNotifySystem : IInitializable
 
@@ -29,6 +30,7 @@
 
         private IScreenPresenter currentPresenter;
 
+        [Preserve]
         public UITemplateBadgeNotifySystem(IScreenManager screenManager, SignalBus signalBus)
         {
             this.screenManager = screenManager;

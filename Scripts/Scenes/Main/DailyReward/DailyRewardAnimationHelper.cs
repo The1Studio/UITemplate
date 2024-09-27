@@ -4,6 +4,7 @@
     using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack;
+    using UnityEngine.Scripting;
 
     public interface IDailyRewardAnimationHelper
     {
@@ -11,6 +12,7 @@
         public UniTask PlayPostClaimRewardAnimation(UITemplateDailyRewardPopupPresenter dailyRewardPopupPresenter);
     }
 
+    [Preserve]
     public class DailyRewardAnimationHelper : IDailyRewardAnimationHelper
     {
         public virtual UniTask PlayPreClaimRewardAnimation(UITemplateDailyRewardPopupPresenter dailyRewardPopupPresenter) { return UniTask.CompletedTask; }

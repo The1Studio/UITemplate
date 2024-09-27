@@ -1,7 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using GameFoundation.Scripts.Utilities;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateSoundServices
     {
         public virtual string KeySoundWin   => "victory";

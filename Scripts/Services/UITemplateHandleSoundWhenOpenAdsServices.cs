@@ -6,12 +6,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using UnityEngine.Scripting;
 
     public class UITemplateHandleSoundWhenOpenAdsServices : IInitializable, IDisposable
     {
         private readonly SignalBus     signalBus;
         private readonly IAudioService audioManager;
 
+        [Preserve]
         public UITemplateHandleSoundWhenOpenAdsServices(SignalBus signalBus, IAudioService audioManager)
         {
             this.signalBus    = signalBus;

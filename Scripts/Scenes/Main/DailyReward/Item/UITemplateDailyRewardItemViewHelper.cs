@@ -5,6 +5,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     // Rebind this class to your own item view
     public class UITemplateDailyRewardItemViewHelper
@@ -12,6 +13,7 @@
         protected readonly IGameAssets                     GameAssets;
         protected readonly UITemplateDailyRewardController DailyRewardController;
 
+        [Preserve]
         public UITemplateDailyRewardItemViewHelper(IGameAssets gameAssets, UITemplateDailyRewardController dailyRewardController)
         {
             this.GameAssets            = gameAssets;

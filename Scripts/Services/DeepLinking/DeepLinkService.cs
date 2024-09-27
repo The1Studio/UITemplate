@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
     using GameFoundation.DI;
     using GameFoundation.Signals;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class DeepLinkService : IInitializable
     {
@@ -10,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
 
         private readonly SignalBus signalBus;
 
+        [Preserve]
         public DeepLinkService(SignalBus signalBus) { this.signalBus = signalBus; }
 
         #endregion

@@ -23,6 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
     using AdsRewardClick = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdsRewardClick;
     using AdsRewardFail = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdsRewardFail;
     using AdsRewardOffer = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdsRewardOffer;
+    using UnityEngine.Scripting;
 
     public class FalconAnalyticEventFactory : BaseAnalyticEventFactory
     {
@@ -32,6 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
         private readonly ScreenManager   screenManager;
         private readonly FalconLocalData falconLocalData;
 
+        [Preserve]
         public FalconAnalyticEventFactory(SignalBus signalBus,
                                           IAnalyticServices analyticServices,
                                           IIapServices iapServices,

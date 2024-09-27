@@ -10,9 +10,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using GameFoundation.Signals;
+    using UnityEngine.Scripting;
 
     public class RocketAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        [Preserve]
         public RocketAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
 
         public override IEvent InterstitialShow(int level, string place) => new InterstitialShow(level, place);

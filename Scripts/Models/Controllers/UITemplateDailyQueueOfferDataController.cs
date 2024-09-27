@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateDailyQueueOfferDataController : IUITemplateControllerData
     {
@@ -20,6 +21,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
 #endregion
 
+        [Preserve]
         public UITemplateDailyQueueOfferDataController
         (
             IInternetService internetService,

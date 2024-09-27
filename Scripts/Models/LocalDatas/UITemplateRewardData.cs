@@ -5,7 +5,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     using GameFoundation.Scripts.Interfaces;
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateRewardData : ILocalData, IUITemplateLocalData
     {
         //PackId can be any thing you want, it's just a key to store reward data

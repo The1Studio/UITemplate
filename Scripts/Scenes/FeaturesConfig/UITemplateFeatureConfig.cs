@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
 {
     using GameFoundation.DI;
     using ServiceImplementation.FireBaseRemoteConfig;
+    using UnityEngine.Scripting;
 
     public class UITemplateFeatureConfig : IInitializable
     {
@@ -18,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig
 
         private readonly IRemoteConfig uiTemplateRemoteConfig;
 
+        [Preserve]
         public UITemplateFeatureConfig(IRemoteConfig uiTemplateRemoteConfig)
         {
             this.uiTemplateRemoteConfig = uiTemplateRemoteConfig;

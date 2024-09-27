@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateRewardHandler
     {
@@ -15,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
         private readonly UITemplateRewardDataController                         uiTemplateRewardDataController;
         private readonly UITemplateInventoryDataController                      uiTemplateInventoryDataController;
 
+        [Preserve]
         public UITemplateRewardHandler(
             IEnumerable<IUITemplateRewardExecutor> rewardExecutors,
             UITemplateRewardDataController         uiTemplateRewardDataController,

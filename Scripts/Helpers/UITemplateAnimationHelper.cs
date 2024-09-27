@@ -6,7 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateAnimationHelper
     {
         private List<Tween>             tweens = new();

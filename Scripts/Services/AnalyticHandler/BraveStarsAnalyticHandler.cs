@@ -6,6 +6,7 @@
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using UnityEngine.Scripting;
 
     public class BraveStarsAnalyticHandler : UITemplateAnalyticHandler
     {
@@ -13,6 +14,7 @@
 
         private readonly UITemplateAdsController uiTemplateAdsController;
 
+        [Preserve]
         public BraveStarsAnalyticHandler(
             SignalBus                           signalBus,
             IAnalyticServices                   analyticServices,

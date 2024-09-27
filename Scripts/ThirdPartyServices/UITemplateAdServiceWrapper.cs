@@ -26,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
+    using UnityEngine.Scripting;
     #if ADMOB
     using ServiceImplementation.AdsServices.EasyMobile;
     #endif
@@ -71,6 +72,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     IsCheckedShowFirstOpen       { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen         { get; private set; }
 
+        [Preserve]
         public UITemplateAdServiceWrapper(
             ILogService                         logService,
             AdServicesConfig                    adServicesConfig,

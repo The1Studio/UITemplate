@@ -10,9 +10,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
+    using UnityEngine.Scripting;
 
     public class BraveStarsAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        [Preserve]
         public BraveStarsAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
         }

@@ -15,6 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateInventoryDataController : IUITemplateControllerData, IInitializable
     {
@@ -35,6 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public const string DefaultChestRoomKeyCurrencyID      = "ChestRoomKey";
         public const string DefaultLuckySpinFreeTurnCurrencyID = "LuckySpinFreeTurn";
 
+        [Preserve]
         public UITemplateInventoryDataController(UITemplateInventoryData uiTemplateInventoryData, UITemplateFlyingAnimationController uiTemplateFlyingAnimationController,
             UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, UITemplateShopBlueprint uiTemplateShopBlueprint, SignalBus signalBus,
             UITemplateItemBlueprint uiTemplateItemBlueprint, IScreenManager screenManager, IAudioService audioService)

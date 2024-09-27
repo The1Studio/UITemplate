@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateRateUsService : IInitializable
     {
@@ -19,6 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly IScreenManager                      screenManager;
         private readonly UITemplateStoreRatingHandler        storeRatingHandler;
 
+        [Preserve]
         public UITemplateRateUsService(
             SignalBus                           signalBus,
             GameFeaturesSetting                 gameFeaturesSetting,

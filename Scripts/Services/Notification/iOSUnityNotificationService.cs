@@ -10,9 +10,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using Unity.Notifications.iOS;
+    using UnityEngine.Scripting;
 
     public class IOSUnityNotificationService : BaseUnityNotificationService
     {
+        [Preserve]
         public IOSUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper, ILogService logger, IAnalyticServices analyticServices,
             IPermissionService permissionService) :

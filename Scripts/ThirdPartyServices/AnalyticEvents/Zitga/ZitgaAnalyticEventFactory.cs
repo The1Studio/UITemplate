@@ -8,9 +8,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Z
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using GameFoundation.Signals;
+    using UnityEngine.Scripting;
 
     public class ZitgaAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        [Preserve]
         public ZitgaAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
         }

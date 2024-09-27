@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using UnityEngine.Scripting;
 
     public class UITemplateLevelDataController : IUITemplateControllerData
     {
@@ -21,6 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         #endregion
 
+        [Preserve]
         public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices)
         {
             this.uiTemplateLevelBlueprint          = uiTemplateLevelBlueprint;

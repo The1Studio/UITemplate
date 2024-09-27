@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using GameFoundation.Signals;
+    using UnityEngine.Scripting;
 
     public class AdOneAnalyticEventFactory : BaseAnalyticEventFactory
     {
@@ -22,6 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         #endregion
 
+        [Preserve]
         public AdOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController) : base(
             signalBus, analyticServices)
         {

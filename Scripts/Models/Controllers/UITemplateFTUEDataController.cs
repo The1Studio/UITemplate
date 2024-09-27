@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using UnityEngine.Scripting;
 
     public class UITemplateFTUEDataController : IUITemplateControllerData
     {
@@ -11,6 +12,7 @@
 
         #endregion
 
+        [Preserve]
         public UITemplateFTUEDataController(UITemplateFTUEData templateFtueData, UITemplateFTUEBlueprint uiTemplateFtueBlueprint)
         {
             this.templateFtueData        = templateFtueData;

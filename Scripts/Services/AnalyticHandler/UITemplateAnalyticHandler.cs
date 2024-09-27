@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using UnityEngine.Scripting;
 
     public class UITemplateAnalyticHandler : IInitializable, IDisposable
     {
@@ -29,6 +30,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
+        [Preserve]
         public UITemplateAnalyticHandler(
             SignalBus                           signalBus,
             IAnalyticServices                   analyticServices,

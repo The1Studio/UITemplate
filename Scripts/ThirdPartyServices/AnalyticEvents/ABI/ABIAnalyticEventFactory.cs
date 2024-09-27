@@ -9,11 +9,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using GameFoundation.Signals;
+    using UnityEngine.Scripting;
 
     public class ABIAnalyticEventFactory : BaseAnalyticEventFactory
     {
         private readonly SignalBus         signalBus;
         private readonly IAnalyticServices analyticEvents;
+
+        [Preserve]
         public ABIAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
         public override IEvent InterstitialEligible(string place) => new AdsIntersEligible(place);
 

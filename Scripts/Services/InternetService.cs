@@ -7,6 +7,7 @@
     using Newtonsoft.Json;
     using UnityEngine;
     using UnityEngine.Networking;
+    using UnityEngine.Scripting;
 
     public interface IInternetService
     {
@@ -25,6 +26,7 @@
 
         private bool isInternetAvailable = true;
 
+        [Preserve]
         public InternetService(ILogService logService) { this.logService = logService; }
 
         public async UniTask<bool> IsDifferentDay(DateTime timeCompare)

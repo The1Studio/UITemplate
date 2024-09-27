@@ -2,7 +2,9 @@
 {
     using System.Collections.Generic;
     using BlueprintFlow.BlueprintReader;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [BlueprintReader("UITemplateNotification", true)]
     [CsvHeaderKey("Id")]
     public class UITemplateNotificationBlueprint : GenericBlueprintReaderByRow<string, UITemplateNotificationRecord>

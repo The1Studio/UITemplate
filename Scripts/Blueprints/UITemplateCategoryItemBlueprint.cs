@@ -1,8 +1,9 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
+    using UnityEngine.Scripting;
 
-   
+    [Preserve]
     [BlueprintReader("UITemplateCategoryItem", true)]
     public class UITemplateCategoryItemBlueprint : GenericBlueprintReaderByRow<string, UITemplateCategoryItemRecord>
     {

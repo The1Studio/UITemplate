@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services.Highlight;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateFTUEController
     {
@@ -16,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         private readonly SignalBus               signalBus;
         private          string                  currentActiveStepId;
 
+        [Preserve]
         public UITemplateFTUEController(HighlightController highlightController, UITemplateFTUEBlueprint uiTemplateFtueBlueprint, SignalBus signalBus)
         {
             this.highlightController     = highlightController;

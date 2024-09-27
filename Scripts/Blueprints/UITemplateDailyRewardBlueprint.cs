@@ -2,7 +2,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [CsvHeaderKey("Day")]
     [BlueprintReader("UITemplateDailyReward", true)]
     public class UITemplateDailyRewardBlueprint : GenericBlueprintReaderByRow<int, UITemplateDailyRewardRecord>

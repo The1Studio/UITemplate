@@ -6,7 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [BlueprintReader("UITemplateFTUE", true)]
     [CsvHeaderKey("Id")]
     public class UITemplateFTUEBlueprint : GenericBlueprintReaderByRow<string, UITemplateFTUERecord>
@@ -30,7 +32,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public Vector2      HandSizeDelta          { get; set; }
 
         public List<RequireCondition> GetRequireCondition() => JsonConvert.DeserializeObject<List<RequireCondition>>(this.RequireCondition);
-        
+
         public UITemplateFTUERecord()
         {
             var list = new List<RequireCondition>();
@@ -40,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 #endif
         }
     }
-    
+
 
     public class RequireCondition
     {

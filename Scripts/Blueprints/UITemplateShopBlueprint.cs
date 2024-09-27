@@ -2,7 +2,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
     using TheOneStudio.UITemplate.UITemplate.Models;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [BlueprintReader("UITemplateShop", true)]
     [CsvHeaderKey("Id")]
     public class UITemplateShopBlueprint : GenericBlueprintReaderByRow<string, UITemplateShopRecord>

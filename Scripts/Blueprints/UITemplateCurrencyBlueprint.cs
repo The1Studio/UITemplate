@@ -1,7 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [BlueprintReader("UITemplateCurrency", true)]
     [CsvHeaderKey("Id")]
     public class UITemplateCurrencyBlueprint : GenericBlueprintReaderByRow<string, UITemplateCurrencyRecord>

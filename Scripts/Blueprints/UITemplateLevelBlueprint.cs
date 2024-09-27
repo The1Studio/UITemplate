@@ -2,7 +2,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using System.Collections.Generic;
     using BlueprintFlow.BlueprintReader;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [BlueprintReader("UITemplateLevel", true)]
     [CsvHeaderKey("Level")]
     public class UITemplateLevelBlueprint : GenericBlueprintReaderByRow<int, UITemplateLevelRecord>

@@ -5,7 +5,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     using System.Linq;
     using BlueprintFlow.BlueprintReader;
     using ServiceImplementation.IAPServices;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [CsvHeaderKey("Id")]
     [BlueprintReader("UITemplateShopPack", true)]
     public class UITemplateShopPackBlueprint : GenericBlueprintReaderByRow<string, ShopPackRecord>

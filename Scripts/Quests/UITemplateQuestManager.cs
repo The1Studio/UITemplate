@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.Quests
     using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Data;
+    using UnityEngine.Scripting;
 
     public class UITemplateQuestManager : IInitializable, ITickable
     {
@@ -14,6 +15,7 @@ namespace TheOneStudio.UITemplate.Quests
 
         private readonly Dictionary<string, UITemplateQuestController> controllers = new Dictionary<string, UITemplateQuestController>();
 
+        [Preserve]
         public UITemplateQuestManager(
             IDependencyContainer     container,
             UITemplateQuestBlueprint questBlueprint,

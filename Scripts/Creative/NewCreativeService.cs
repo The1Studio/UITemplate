@@ -4,8 +4,10 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using R3;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using Object = UnityEngine.Object;
 
+    [Preserve]
     public class NewCreativeService : IInitializable
     {
         private bool  EnableTripleTap { get; set; } = true;

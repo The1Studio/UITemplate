@@ -11,7 +11,9 @@ namespace TheOneStudio.UITemplate.Quests.Data
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Rewards;
     using TheOneStudio.UITemplate.Quests.TargetHandler;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [BlueprintReader("UITemplateQuest")]
     public sealed class UITemplateQuestBlueprint : GenericBlueprintReaderByRow<string, QuestRecord>
     {

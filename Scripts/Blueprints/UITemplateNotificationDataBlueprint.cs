@@ -1,7 +1,9 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [BlueprintReader("UITemplateNotificationData", true)]
     [CsvHeaderKey("Id")]
     public class UITemplateNotificationDataBlueprint : GenericBlueprintReaderByRow<string, UITemplateNotificationDataRecord>

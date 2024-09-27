@@ -1,6 +1,4 @@
 <linker>
     <assembly fullname="HyperCasualGame.Scripts" preserve="all"/>
-    <assembly fullname="Sirenix.Serialization">
-        <type fullname="Sirenix.Serialization.Int32Serializer" preserve="all"/>
-    </assembly>
+    <assembly fullname="Sirenix.Serialization" preserve="all"/>
 </linker>

@@ -6,13 +6,6 @@
       <type fullname="Zenject.PlaceholderFactory`1" preserve="all"/>
       <type fullname="Zenject.SceneContextRegistryAdderAndRemover" preserve="all"/>
    </assembly>
-   <assembly fullname="Zenject-Signals" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.Script" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.BlueprintFlow" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.AssetLibrary" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.Models" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.UIModule" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.Utilities" preserve="all"> </assembly>
    <assembly fullname="UITemplate.Scripts" preserve="all"> </assembly>
    <assembly fullname="HyperCasualGame.Scripts" preserve="all"> </assembly>
    <assembly fullname="Sirenix.Serialization">

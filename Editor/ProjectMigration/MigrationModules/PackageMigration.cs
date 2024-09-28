@@ -13,8 +13,8 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
 
     public static class PackageMigration
     {
-        private const string OpenUPMRegistryName = "OpenUPM";
-        private const string OpenUPMRegistryUrl  = "https://package.openupm.com";
+        private const string OpenUpmRegistryName = "OpenUPM";
+        private const string OpenUpmRegistryUrl  = "https://package.openupm.com";
 
         [NonSerialized]
         private static readonly string[] RequiredScopes =
@@ -49,11 +49,10 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
         };
         
         [NonSerialized] private static readonly Dictionary<(string, string), string> NameToUnityPackageToImport = new()
-        { {("BuildScripts", "BuildScripts"), "https://cdn.builds.the1studio.org/packages/GameVersionRuntime.unitypackage"}
+        { {("BuildScripts", "Assets/BuildScripts"), "https://cdn.builds.the1studio.org/packages/GameVersionRuntime.unitypackage"}
         };
 
-        [NonSerialized]
-        private static readonly List<string> PackagesToRemove = new()
+        [NonSerialized] public static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"
         };
@@ -69,8 +68,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
 
         private static bool UpdatePackageDependencies(JObject manifest)
         {
-            var dependencies = manifest["dependencies"] as JObject;
-            if (dependencies == null)
+            if (manifest["dependencies"] is not JObject dependencies)
             {
                 dependencies             = new JObject();
                 manifest["dependencies"] = dependencies;
@@ -80,7 +78,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // Add the new packages
             foreach (var package in PackagesToAdd)
             {
-                if (!dependencies.ContainsKey(package.Key) || !dependencies[package.Key].ToString().Equals(package.Value))
+                if (!dependencies.ContainsKey(package.Key) || !dependencies[package.Key]!.ToString().Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;
@@ -100,7 +98,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // Change package version
             foreach (var package in PackagesVersionToUse)
             {
-                if (dependencies.ContainsKey(package.Key) && !dependencies[package.Key].ToString().Equals(package.Value))
+                if (dependencies.ContainsKey(package.Key) && !dependencies[package.Key]!.ToString().Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;
@@ -130,30 +128,29 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
 
         private static bool UpdateScopedRegistries(JObject manifest)
         {
-            var scopedRegistries = manifest["scopedRegistries"] as JArray;
-            if (scopedRegistries == null)
+            if (manifest["scopedRegistries"] is not JArray scopedRegistries)
             {
                 scopedRegistries             = new JArray();
                 manifest["scopedRegistries"] = scopedRegistries;
             }
 
-            var openUPMRegistry = scopedRegistries.FirstOrDefault(r => r["name"]?.ToString() == OpenUPMRegistryName) as JObject;
-            if (openUPMRegistry == null)
+            var openUpmRegistry = scopedRegistries.FirstOrDefault(r => r["name"]?.ToString() == OpenUpmRegistryName) as JObject;
+            if (openUpmRegistry == null)
             {
-                openUPMRegistry = new JObject
+                openUpmRegistry = new JObject
                 {
-                    ["name"]   = OpenUPMRegistryName,
-                    ["url"]    = OpenUPMRegistryUrl,
+                    ["name"]   = OpenUpmRegistryName,
+                    ["url"]    = OpenUpmRegistryUrl,
                     ["scopes"] = new JArray()
                 };
-                scopedRegistries.Add(openUPMRegistry);
+                scopedRegistries.Add(openUpmRegistry);
             }
 
-            var scopes = openUPMRegistry["scopes"] as JArray;
+            var scopes = openUpmRegistry["scopes"] as JArray;
             if (scopes == null)
             {
                 scopes                    = new JArray();
-                openUPMRegistry["scopes"] = scopes;
+                openUpmRegistry["scopes"] = scopes;
             }
 
             bool updated = false;

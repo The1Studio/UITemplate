@@ -32,7 +32,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
-            { "com.google.external-dependency-manager", "1.2.181" },
+            { "com.google.external-dependency-manager", "1.2.183" },
             {"com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts"},
 #if APPSFLYER
             { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" }

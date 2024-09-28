@@ -33,7 +33,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
 
         private static void UpdatePackageToVersion()
         {
-            UpdateFirebasePackages(RequirePackages, "12.1.0");
+            UpdateFirebasePackages(RequirePackages, "12.2.1");
         }
 
         private static async void UpdateFirebasePackages(List<string> packages, string version)

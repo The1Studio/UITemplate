@@ -7,6 +7,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using Newtonsoft.Json.Linq;
+    using ServiceImplementation.Configs.Common;
     using UnityEditor;
     using UnityEditor.PackageManager;
     using UnityEngine;
@@ -32,7 +33,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
             { "com.google.external-dependency-manager", "1.2.181" },
-            { "com.svermeulen.extenject", "https://github.com/svermeulen/Yazef.git?path=UnityProject/Assets/Plugins/Zenject/Source" },
+            {"com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts"},
 #if APPSFLYER
             { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" }
 #endif
@@ -44,11 +45,24 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             { "com.google.ads.mobile", "9.2.0" },
             { "com.unity.purchasing", "4.12.2" },
         };
+        
+        [NonSerialized] private static readonly Dictionary<(string, string), string> NameToUnityPackageToImport = new()
+        { {("BuildScripts", "BuildScripts"), "https://cdn.builds.the1studio.org/packages/GameVersionRuntime.unitypackage"}
+        };
 
         [NonSerialized] private static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"
         };
+
+        public static void ImportUnityPackage()
+        {
+            foreach (var ((name, path), url) in NameToUnityPackageToImport)
+            {
+                if (AssetDatabase.IsValidFolder(path)) continue;
+                UnityPackageHelper.DownloadThenImportPackage(url, name).Forget();
+            }
+        }
 
         private static bool UpdatePackageDependencies(JObject manifest)
         {

@@ -4,16 +4,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
     using System.Collections.Generic;
     using System.Linq;
     using DG.Tweening;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
-    using Zenject;
 
     public abstract class UITemplateBottomNavigatorBarView : MonoBehaviour
     {
@@ -38,18 +39,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
         private           Dictionary<Type, int> allcurrentScreen = new Dictionary<Type, int>();
         protected virtual Dictionary<Type, int> AllcurrentScreen => this.allcurrentScreen;
-
-        [Inject]
-        public void Constructor(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdServiceWrapper, IScreenManager screenManager, IVibrationService vibrationService,
-            GameFeaturesSetting gameFeaturesSetting, IAudioService audioService)
-        {
-            this.signalBus                  = signalBus;
-            this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
-            this.screenManager              = screenManager;
-            this.vibrationService           = vibrationService;
-            this.gameFeaturesSetting        = gameFeaturesSetting;
-            this.audioService               = audioService;
-        }
 
         protected virtual void Init()
         {
@@ -128,8 +117,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             rectTransform.DOSizeDelta(Vector2.up * this.Height, 0.3f);
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
+            var container = this.GetCurrentContainer();
+            this.signalBus                  = container.Resolve<SignalBus>();
+            this.uiTemplateAdServiceWrapper = container.Resolve<UITemplateAdServiceWrapper>();
+            this.screenManager              = container.Resolve<IScreenManager>();
+            this.vibrationService           = container.Resolve<IVibrationService>();
+            this.gameFeaturesSetting        = container.Resolve<GameFeaturesSetting>();
+            this.audioService               = container.Resolve<IAudioService>();
+
             this.OnChangeFocusScreen();
             this.Buttons = this.buttonParent.GetComponentsInChildren<BottomBarNavigatorTabButtonView>().ToList();
 

@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 {
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateStoreRatingHandler
     {
@@ -12,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 
         private const string StoreRatingLocalDataKey = "LD_StoreRating";
 
+        [Preserve]
         public UITemplateStoreRatingHandler(IStoreRatingService storeRatingService) { this.storeRatingService = storeRatingService; }
 
         public void LaunchStoreRating()

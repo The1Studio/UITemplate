@@ -6,7 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateInventoryData : ILocalData,IUITemplateLocalData
     {
         [OdinSerialize]

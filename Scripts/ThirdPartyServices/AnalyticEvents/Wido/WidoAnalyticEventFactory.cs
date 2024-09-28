@@ -11,8 +11,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
-    using Zenject;
+    using GameFoundation.Signals;
     using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido.LevelStart;
+    using UnityEngine.Scripting;
 
     public class WidoAnalyticEventFactory : BaseAnalyticEventFactory
     {
@@ -21,6 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         private readonly IInternetService              internetService;
         private readonly UITemplateLevelDataController uiTemplateLevelDataController;
 
+        [Preserve]
         public WidoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController) : base(
             signalBus, analyticServices)
         {

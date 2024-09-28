@@ -5,8 +5,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.Utilities.ObjectPool;
+    using GameFoundation.Signals;
     using UnityEngine;
-    using Zenject;
+    using UnityEngine.Scripting;
 
     public class UITemplateVFXSpawnService
     {
@@ -15,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private readonly IGameAssets gameAssets;
 
+        [Preserve]
         public UITemplateVFXSpawnService(SignalBus signalBus, IGameAssets gameAssets) { this.gameAssets = gameAssets; }
 
         public async void SpawnVFX(Transform target, List<string> listVFXKey, bool randomRotate = true, bool isFloat = true)

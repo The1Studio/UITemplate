@@ -4,19 +4,22 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
     using System.Linq;
     using System.Reflection;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
-    using Zenject;
+    using UnityEngine.Scripting;
 
     public class UserDataManager
     {
-        private readonly DiContainer             container;
+        private readonly IDependencyContainer    container;
         private readonly SignalBus               signalBus;
         private readonly IHandleUserDataServices handleUserDataService;
 
-        public UserDataManager(DiContainer container, SignalBus signalBus, IHandleUserDataServices handleUserDataService)
+        [Preserve]
+        public UserDataManager(IDependencyContainer container, SignalBus signalBus, IHandleUserDataServices handleUserDataService)
         {
             this.container             = container;
             this.signalBus             = signalBus;

@@ -3,12 +3,12 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using TheOneStudio.UITemplate.Quests.Data;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateQuestChestModel
     {
@@ -26,17 +26,12 @@
         [SerializeField] private UITemplateQuestChestItemView itemViewPrefab;
         [SerializeField] private Slider                       sld;
 
-        private void Awake()
-        {
-            ZenjectUtils.GetCurrentContainer().Inject(this);
-        }
-
         private ObjectPoolManager objectPoolManager;
 
-        [Inject]
-        public void Construct(ObjectPoolManager objectPoolManager)
+        private void Awake()
         {
-            this.objectPoolManager = objectPoolManager;
+            var container = this.GetCurrentContainer();
+            this.objectPoolManager = container.Resolve<ObjectPoolManager>();
         }
 
         public UITemplateQuestChestModel Model { get; set; }

@@ -1,11 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Creative
 {
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using R3;
     using UnityEngine;
-    using Zenject;
+    using UnityEngine.Scripting;
     using Object = UnityEngine.Object;
 
+    [Preserve]
     public class NewCreativeService : IInitializable
     {
         private bool  EnableTripleTap { get; set; } = true;

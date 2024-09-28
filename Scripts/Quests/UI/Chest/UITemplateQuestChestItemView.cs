@@ -1,13 +1,12 @@
 ﻿namespace TheOneStudio.UITemplate.Quests.UI
 {
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.AssetLibrary;
-    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Data;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateQuestChestItemModel
     {
@@ -27,11 +26,12 @@
         [SerializeField] private Animator   animShake;
         [SerializeField] private GameObject tick;
 
-        [Inject] private readonly IGameAssets gameAssets;
+        private IGameAssets gameAssets;
 
         private void Awake()
         {
-            ZenjectUtils.GetCurrentContainer().Inject(this);
+            var container = this.GetCurrentContainer();
+            this.gameAssets = container.Resolve<IGameAssets>();
 
             this.btn.onClick.AddListener(this.OnClick);
         }

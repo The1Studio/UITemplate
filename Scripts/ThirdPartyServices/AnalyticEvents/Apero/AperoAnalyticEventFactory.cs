@@ -6,12 +6,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
+    using GameFoundation.Signals;
     using ServiceImplementation.IAPServices.Signals;
-    using Zenject;
     using AdInfo = Core.AdsServices.AdInfo;
+    using UnityEngine.Scripting;
 
     public class AperoAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        [Preserve]
         public AperoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
             signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnIAPPurchaseSuccessHandler);
@@ -56,13 +58,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
         private void OnAdRevenueHandler(AdRevenueSignal signal)
         {
             this.TrackAdEvent("track_ad_impression",
-                              new(signal.AdsRevenueEvent.AdsRevenueSourceId,
-                                  signal.AdsRevenueEvent.AdUnit,
-                                  signal.AdsRevenueEvent.AdFormat,
-                                  signal.AdsRevenueEvent.AdNetwork,
-                                  signal.AdsRevenueEvent.NetworkPlacement,
-                                  signal.AdsRevenueEvent.Revenue,
-                                  signal.AdsRevenueEvent.Currency));
+                new(signal.AdsRevenueEvent.AdsRevenueSourceId,
+                    signal.AdsRevenueEvent.AdUnit,
+                    signal.AdsRevenueEvent.AdFormat,
+                    signal.AdsRevenueEvent.AdNetwork,
+                    signal.AdsRevenueEvent.NetworkPlacement,
+                    signal.AdsRevenueEvent.Revenue,
+                    signal.AdsRevenueEvent.Currency));
         }
 
         private void TrackAdEvent(string eventName, AdInfo adInfo)

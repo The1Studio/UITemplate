@@ -1,9 +1,12 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
+    using UnityEngine.Scripting;
+
     public class UITemplateAdsController : IUITemplateControllerData
     {
         private readonly UITemplateAdsData uiTemplateAdsData;
 
+        [Preserve]
         public UITemplateAdsController(UITemplateAdsData uiTemplateAdsData)
         {
             this.uiTemplateAdsData = uiTemplateAdsData;

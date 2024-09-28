@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateDailyRewardController : IUITemplateControllerData
     {
@@ -28,6 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         private SemaphoreSlim mySemaphoreSlim = new(1, 1);
 
+        [Preserve]
         public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFlyingAnimationController uiTemplateFlyingAnimationController)
         {

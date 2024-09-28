@@ -3,13 +3,12 @@
     using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
-    using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateSettingButtonView : MonoBehaviour
     {
@@ -17,11 +16,8 @@
         public UITemplateOnOffButton SoundButton;
         public UITemplateOnOffButton VibrateButton;
 
-        [SerializeField]
-        private Button SettingButton;
-
-        [SerializeField]
-        private bool IsDropdown;
+        [SerializeField] private Button SettingButton;
+        [SerializeField] private bool   IsDropdown;
 
         /// <summary>
         ///     Dropdown animation
@@ -29,24 +25,30 @@
         [SerializeField]
         private RectTransform BG;
 
-        [SerializeField]
-        private List<RectTransform> ButtonList;
+        [SerializeField] private List<RectTransform> ButtonList;
 
         private bool IsDropped;
 
-        private List<RectTransform>             ReverseButtonList;
+        private List<RectTransform>             reverseButtonList;
         private IScreenManager                  screenManager;
-        private UITemplateSoundServices         soundServices;
         private UITemplateSettingDataController uiTemplateSettingDataController;
 
         private void Awake()
         {
+            var container = this.GetCurrentContainer();
+            this.screenManager                   = container.Resolve<IScreenManager>();
+            this.uiTemplateSettingDataController = container.Resolve<UITemplateSettingDataController>();
+
             this.SettingButton.onClick.AddListener(this.OnClick);
-            this.ReverseButtonList = new List<RectTransform>(this.ButtonList);
-            this.ReverseButtonList.Reverse();
             this.MusicButton.Button.onClick.AddListener(this.OnClickMusicButton);
             this.SoundButton.Button.onClick.AddListener(this.OnClickSoundButton);
             this.VibrateButton.Button.onClick.AddListener(this.OnVibrationButton);
+
+            this.reverseButtonList = new(this.ButtonList);
+            this.reverseButtonList.Reverse();
+
+            this.InitDropdown();
+            this.InitButton();
         }
 
         private void OnClickSoundButton()
@@ -64,16 +66,6 @@
         private void OnVibrationButton()
         {
             this.uiTemplateSettingDataController.SetVibrationOnOff();
-            this.InitButton();
-        }
-
-        [Inject]
-        public void Init(IScreenManager screenManager, UITemplateSettingDataController uiTemplateSettingDataController, UITemplateSoundServices soundServices)
-        {
-            this.screenManager                   = screenManager;
-            this.uiTemplateSettingDataController = uiTemplateSettingDataController;
-            this.soundServices                   = soundServices;
-            this.InitDropdown();
             this.InitButton();
         }
 
@@ -104,8 +96,7 @@
                 if (this.IsDropped)
                 {
                     this.BG.DOScaleY(0, droppingTime).SetEase(Ease.InBack);
-                    var reverseList = new List<RectTransform>(this.ButtonList);
-                    foreach (var buttonTransform in this.ReverseButtonList)
+                    foreach (var buttonTransform in this.reverseButtonList)
                     {
                         buttonTransform.DOScale(0, duration).SetEase(Ease.InBack);
                         await UniTask.Delay(millisecondsDelay);

@@ -1,9 +1,10 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.Utilities;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
-    using Zenject;
 
     public class UITemplateMainSceneInstaller : BaseSceneInstaller
     {
@@ -20,3 +21,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main
         }
     }
 }
+#endif

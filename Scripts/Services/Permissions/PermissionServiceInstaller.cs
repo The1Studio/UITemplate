@@ -1,5 +1,7 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Services.Permissions
+﻿#if GDK_ZENJECT
+namespace TheOneStudio.UITemplate.UITemplate.Services.Permissions
 {
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
     using Zenject;
 
@@ -19,3 +21,4 @@
         }
     }
 }
+#endif

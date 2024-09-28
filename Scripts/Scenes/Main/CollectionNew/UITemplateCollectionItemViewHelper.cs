@@ -5,6 +5,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     // Rebind this class to your own item view
     public class UITemplateCollectionItemViewHelper
@@ -12,6 +13,7 @@
         protected readonly IGameAssets                       GameAssets;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
 
+        [Preserve]
         public UITemplateCollectionItemViewHelper(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController)
         {
             this.GameAssets                        = gameAssets;

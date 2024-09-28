@@ -1,13 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
-    using System.Net;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.LogService;
     using Newtonsoft.Json;
     using UnityEngine;
     using UnityEngine.Networking;
-    using Zenject;
+    using UnityEngine.Scripting;
 
     public interface IInternetService
     {
@@ -26,6 +26,7 @@
 
         private bool isInternetAvailable = true;
 
+        [Preserve]
         public InternetService(ILogService logService) { this.logService = logService; }
 
         public async UniTask<bool> IsDifferentDay(DateTime timeCompare)
@@ -49,13 +50,13 @@
             return day >= 1 ? (int)day : 0;
         }
 
-        public void Initialize() { this.CheckInternetInterval(); }
+        public void Initialize() { this.CheckInternetInterval().Forget(); }
 
-        private async UniTask CheckInternetInterval()
+        private async UniTaskVoid CheckInternetInterval()
         {
             this.CheckInternet();
             await UniTask.Delay(TimeSpan.FromSeconds(2), true);
-            _ = this.CheckInternetInterval();
+            this.CheckInternetInterval().Forget();
         }
 
         private async UniTask<WorldTimeAPIResponse> GetTimeIPAsync()

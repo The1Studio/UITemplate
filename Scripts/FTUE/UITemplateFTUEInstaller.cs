@@ -1,4 +1,5 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE
+﻿#if GDK_ZENJECT
+namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
@@ -21,3 +22,4 @@
         }
     }
 }
+#endif

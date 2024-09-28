@@ -1,4 +1,5 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Services
+﻿#if GDK_ZENJECT
+namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using Zenject;
@@ -18,3 +19,4 @@
         }
     }
 }
+#endif

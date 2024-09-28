@@ -1,48 +1,50 @@
 namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using BlueprintFlow.BlueprintReader;
     using ServiceImplementation.IAPServices;
+    using UnityEngine.Scripting;
 
-    [CsvHeaderKey("Id")]
+    [Preserve]
     [BlueprintReader("UITemplateShopPack", true)]
     public class UITemplateShopPackBlueprint : GenericBlueprintReaderByRow<string, ShopPackRecord>
     {
         public List<ShopPackRecord> GetPack()
         {
-#if UNITY_ANDROID
+            #if UNITY_ANDROID
             return this.Values.Where(x => x.Platforms.Contains("Android")).ToList();
-#elif UNITY_IOS||UNITY_IPHONE
+            #elif UNITY_IOS || UNITY_IPHONE
             return this.Values.Where(x => x.Platforms.Contains("IOS")).ToList();
-#else
+            #else
             return this.Values.ToList();
-#endif
+            #endif
         }
     }
 
+    [Preserve]
+    [CsvHeaderKey("Id")]
     public class ShopPackRecord
     {
-        public string                                                Id                    { get; set; }
-        public List<string>                                          Platforms             { get; set; }
-        public ProductType                                           ProductType           { get; set; }
-        public string                                                ImageAddress          { get; set; }
-        public string                                                Name                  { get; set; }
-        public string                                                Description           { get; set; }
-        public string                                                DefaultPrice          { get; set; }
-        public BlueprintByRow<string, UITemplateRewardBlueprintData> RewardIdToRewardDatas { get; set; }
+        public string                                                Id                    { get; [Preserve] private set; }
+        public List<string>                                          Platforms             { get; [Preserve] private set; }
+        public ProductType                                           ProductType           { get; [Preserve] private set; }
+        public string                                                ImageAddress          { get; [Preserve] private set; }
+        public string                                                Name                  { get; [Preserve] private set; }
+        public string                                                Description           { get; [Preserve] private set; }
+        public string                                                DefaultPrice          { get; [Preserve] private set; }
+        public BlueprintByRow<string, UITemplateRewardBlueprintData> RewardIdToRewardDatas { get; [Preserve] private set; }
     }
 
-    [Serializable]
+    [Preserve]
     [CsvHeaderKey("RewardId")]
     public class UITemplateRewardBlueprintData
     {
-        public string RewardId              { get; set; }
-        public int    RewardValue           { get; set; }
-        public int    Repeat                { get; set; }
-        public string RewardIcon            { get; set; }
-        public string RewardContent         { get; set; }
-        public string AddressableFlyingItem { get; set; }
+        public string RewardId              { get; [Preserve] private set; }
+        public int    RewardValue           { get; [Preserve] private set; }
+        public int    Repeat                { get; [Preserve] private set; }
+        public string RewardIcon            { get; [Preserve] private set; }
+        public string RewardContent         { get; [Preserve] private set; }
+        public string AddressableFlyingItem { get; [Preserve] private set; }
     }
 }

@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.Utilities.LoadImage;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
@@ -18,7 +19,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateStaterPackModel
     {
@@ -40,29 +40,33 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     [ScreenInfo(nameof(UITemplateStaterPackScreenView))]
     public class UITemplateStartPackScreenPresenter : UITemplateBaseScreenPresenter<UITemplateStaterPackScreenView, UITemplateStaterPackModel>
     {
-        private readonly UITemplateAdServiceWrapper                  adServices;
+        private readonly UITemplateAdServiceWrapper   adService;
         private readonly UITemplateShopPackBlueprint  uiTemplateShopPackBlueprint;
         private readonly UITemplateIapServices        uiTemplateIapServices;
         private readonly UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint;
-        private readonly DiContainer                  diContainer;
         private readonly LoadImageHelper              loadImageHelper;
-        private readonly IIapServices            iapServices;
-        private          string                       IapPack = "";
+        private readonly IIapServices                 iapServices;
 
-        public UITemplateStartPackScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper adServices, UITemplateShopPackBlueprint uiTemplateShopPackBlueprint, UITemplateIapServices uiTemplateIapServices,
-            UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint, DiContainer diContainer,
-            LoadImageHelper loadImageHelper,
-            IIapServices iapServices, ILogService logger) : base(signalBus,
-            logger)
+        public UITemplateStartPackScreenPresenter(
+            SignalBus                    signalBus,
+            ILogService                  logger,
+            UITemplateAdServiceWrapper   adService,
+            UITemplateShopPackBlueprint  uiTemplateShopPackBlueprint,
+            UITemplateIapServices        uiTemplateIapServices,
+            UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint,
+            LoadImageHelper              loadImageHelper,
+            IIapServices                 iapServices
+        ) : base(signalBus, logger)
         {
-            this.adServices                   = adServices;
+            this.adService                    = adService;
             this.uiTemplateShopPackBlueprint  = uiTemplateShopPackBlueprint;
             this.uiTemplateIapServices        = uiTemplateIapServices;
             this.uiTemplateMiscParamBlueprint = uiTemplateMiscParamBlueprint;
-            this.diContainer                  = diContainer;
             this.loadImageHelper              = loadImageHelper;
             this.iapServices                  = iapServices;
         }
+
+        private string iapPack = "";
 
         protected override void OnViewReady()
         {
@@ -73,9 +77,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
             this.View.btnTerms.onClick.AddListener(this.OnOpenTerm);
             this.View.btnPolicy.onClick.AddListener(this.OnOpenPolicy);
             this.View.btnRestore.gameObject.SetActive(false);
-#if UNITY_IOS
+            #if UNITY_IOS
             this.View.btnRestore.gameObject.SetActive(true);
-#endif
+            #endif
         }
 
         private void OnOpenPolicy()
@@ -98,7 +102,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 
         private void OnBuyClick()
         {
-            this.uiTemplateIapServices.BuyProduct(this.View.btnBuy.gameObject, this.IapPack, (x) =>
+            this.uiTemplateIapServices.BuyProduct(this.View.btnBuy.gameObject, this.iapPack, (x) =>
             {
                 this.CloseView();
                 this.Model.OnComplete?.Invoke(x);
@@ -108,11 +112,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         public override async UniTask BindData(UITemplateStaterPackModel screenModel)
         {
             var starterPacks = this.uiTemplateShopPackBlueprint.GetPack().Where(x => x.RewardIdToRewardDatas.Count > 1).ToList();
-            this.IapPack = starterPacks.First(packRecord => packRecord.RewardIdToRewardDatas.ContainsKey(UITemplateRemoveAdRewardExecutorBase.REWARD_ID) != this.adServices.IsRemovedAds).Id;
+            this.iapPack = starterPacks.First(packRecord => packRecord.RewardIdToRewardDatas.ContainsKey(UITemplateRemoveAdRewardExecutorBase.REWARD_ID) != this.adService.IsRemovedAds).Id;
 
-            this.View.txtPrice.text = $"Special Offer: Only {this.iapServices.GetPriceById(this.IapPack, this.uiTemplateShopPackBlueprint.GetDataById(this.IapPack).DefaultPrice)}";
+            this.View.txtPrice.text = $"Special Offer: Only {this.iapServices.GetPriceById(this.iapPack, this.uiTemplateShopPackBlueprint.GetDataById(this.iapPack).DefaultPrice)}";
 
-            if (this.uiTemplateShopPackBlueprint.TryGetValue(this.IapPack, out var shopPackRecord))
+            if (this.uiTemplateShopPackBlueprint.TryGetValue(this.iapPack, out var shopPackRecord))
             {
                 if (!shopPackRecord.ImageAddress.IsNullOrEmpty())
                 {
@@ -130,7 +134,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
                     });
                 }
 
-                _ = this.View.adapter.InitItemAdapter(model, this.diContainer);
+                this.View.adapter.InitItemAdapter(model).Forget();
             }
         }
     }

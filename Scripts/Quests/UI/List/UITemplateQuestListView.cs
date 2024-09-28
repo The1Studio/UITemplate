@@ -7,7 +7,6 @@
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.Quests.Data;
     using UnityEngine;
-    using Zenject;
 
     public class UITemplateQuestListModel
     {
@@ -23,19 +22,6 @@
     {
         [SerializeField] private UITemplateQuestListItemAdapter listItemAdapter;
 
-        private void Awake()
-        {
-            ZenjectUtils.GetCurrentContainer().Inject(this);
-        }
-
-        private DiContainer diContainer;
-
-        [Inject]
-        public void Construct(DiContainer diContainer)
-        {
-            this.diContainer = diContainer;
-        }
-
         public UITemplateQuestPopupPresenter Parent { get; set; }
 
         public UITemplateQuestListModel Model { get; set; }
@@ -48,7 +34,7 @@
                 .ThenByDescending(quest => quest.Progress.Status is QuestStatus.NotCompleted)
                 .Select(quest => new UITemplateQuestListItemModel(this.Parent, quest))
                 .ToList();
-            this.listItemAdapter.InitItemAdapter(models, this.diContainer).Forget();
+            this.listItemAdapter.InitItemAdapter(models).Forget();
         }
     }
 }

@@ -5,7 +5,9 @@
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateUserSettingData : ILocalData, IUITemplateLocalData
     {
         [OdinSerialize] public bool IsVibrationEnable = true;

@@ -1,20 +1,19 @@
-using TMPro;
-
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
 {
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateGameplayScreen : BaseView
     {
@@ -37,15 +36,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         #region Inject
 
         protected readonly SceneDirector                     SceneDirector;
-        protected readonly ScreenManager                     ScreenManager;
+        protected readonly IScreenManager                    ScreenManager;
         protected readonly UITemplateAdServiceWrapper        adService;
         protected readonly UITemplateSoundServices           SoundServices;
         protected readonly UITemplateInventoryDataController inventoryDataController;
         protected readonly UITemplateLevelDataController     levelDataController;
-        protected readonly DiContainer                       diContainer;
 
-        public UITemplateGameplayScreenPresenter(SignalBus signalBus, SceneDirector sceneDirector, ScreenManager screenManager, UITemplateAdServiceWrapper adService, UITemplateSoundServices soundServices,
-                                                 UITemplateInventoryDataController inventoryDataController, UITemplateLevelDataController levelDataController, DiContainer diContainer) : base(signalBus)
+        public UITemplateGameplayScreenPresenter(
+            SignalBus                         signalBus,
+            ILogService                       logger,
+            SceneDirector                     sceneDirector,
+            IScreenManager                    screenManager,
+            UITemplateAdServiceWrapper        adService,
+            UITemplateSoundServices           soundServices,
+            UITemplateInventoryDataController inventoryDataController,
+            UITemplateLevelDataController     levelDataController
+        ) : base(signalBus, logger)
         {
             this.SceneDirector           = sceneDirector;
             this.ScreenManager           = screenManager;
@@ -53,7 +59,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             this.SoundServices           = soundServices;
             this.inventoryDataController = inventoryDataController;
             this.levelDataController     = levelDataController;
-            this.diContainer             = diContainer;
         }
 
         #endregion
@@ -68,7 +73,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             {
                 this.View.BtnSkip.OnViewReady(this.adService);
             }
-            
+
             if (this.View.BtnHome != null)
             {
                 this.View.BtnHome.onClick.AddListener(this.OnOpenHome);
@@ -83,16 +88,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
             {
                 this.View.BtnSkip.onClick.AddListener(this.OnClickSkip);
             }
-
-            if (this.View.CurrencyView != null)
-            {
-                this.diContainer.Inject(this.View.CurrencyView);
-            }
         }
 
         public override UniTask BindData()
         {
-
             if (this.View.BtnSkip != null)
             {
                 this.View.BtnSkip.BindData(this.AdPlacement);

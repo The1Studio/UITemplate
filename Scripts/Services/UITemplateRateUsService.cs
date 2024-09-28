@@ -1,15 +1,16 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using UnityEngine;
-    using Zenject;
+    using UnityEngine.Scripting;
 
     public class UITemplateRateUsService : IInitializable
     {
@@ -19,6 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly IScreenManager                      screenManager;
         private readonly UITemplateStoreRatingHandler        storeRatingHandler;
 
+        [Preserve]
         public UITemplateRateUsService(
             SignalBus                           signalBus,
             GameFeaturesSetting                 gameFeaturesSetting,

@@ -7,14 +7,14 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.Utilities.UIStuff;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.HyperCasual.GamePlay.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
-    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UIModule.Utilities;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateRacingEventScreenView : BaseView
     {
@@ -32,31 +32,29 @@
         #region inject
 
         protected readonly UITemplateEventRacingDataController uiTemplateEventRacingDataController;
-        private readonly   IFactory<AutoCooldownTimer>         autoCooldownTimer;
-        private readonly   DiContainer                         diContainer;
+        private readonly   AutoCooldownTimer                   autoCooldownTimer;
 
         #endregion
 
         private List<Tween> tweenList = new();
 
-        public UITemplateRacingEventScreenPresenter(SignalBus signalBus,
-            UITemplateEventRacingDataController uiTemplateEventRacingDataController, IFactory<AutoCooldownTimer> autoCooldownTimer, DiContainer diContainer) : base(signalBus)
+        protected UITemplateRacingEventScreenPresenter(
+            SignalBus                           signalBus,
+            ILogService                         logger,
+            UITemplateEventRacingDataController uiTemplateEventRacingDataController,
+            AutoCooldownTimer                   autoCooldownTimer
+        ) : base(signalBus, logger)
         {
             this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController;
             this.autoCooldownTimer                   = autoCooldownTimer;
-            this.diContainer                         = diContainer;
         }
 
         protected override void OnViewReady()
         {
             base.OnViewReady();
             this.View.closeButton.onClick.AddListener(this.OnClickClose);
-            this.autoCooldownTimer.Create().CountDown(this.uiTemplateEventRacingDataController.RemainSecond,
+            this.autoCooldownTimer.CountDown(this.uiTemplateEventRacingDataController.RemainSecond,
                 _ => { this.View.countDownText.text = TimeSpan.FromSeconds(this.uiTemplateEventRacingDataController.RemainSecond).ToShortTimeString(); });
-            foreach (var uiTemplateRacingRowView in this.View.playerSliders)
-            {
-                this.diContainer.Inject(uiTemplateRacingRowView);
-            }
 
             this.InitPlayerRowView();
         }
@@ -94,9 +92,9 @@
                 {
                     this.View.progressSlider.value                                                                   = x;
                     this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].progressSlider.value = x;
-                }, yourNewProgress, 1f).SetUpdate(isIndependentUpdate: true));
+                }, yourNewProgress, 1f).SetUpdate(true));
                 this.tweenList.Add(DOTween.To(() => oldShowScore, x => { this.View.playerSliders[this.uiTemplateEventRacingDataController.YourIndex].scoreText.text = x.ToString(); }, yourNewScore, 1f)
-                                          .SetUpdate(isIndependentUpdate: true));
+                    .SetUpdate(true));
             }
 
             var simulatePlayerScore = this.uiTemplateEventRacingDataController.SimulatePlayerScore();
@@ -110,9 +108,9 @@
                 if (newProgress > oldProgress)
                 {
                     this.tweenList.Add(DOTween.To(() => oldProgress, x => { this.View.playerSliders[playerIndex].progressSlider.value = x; }, Mathf.Clamp(newProgress, 0, racingMaxProgression), 1f)
-                                              .SetUpdate(isIndependentUpdate: true));
+                        .SetUpdate(true));
                     this.tweenList.Add(DOTween.To(() => oldAndNewScore.Item1, x => { this.View.playerSliders[playerIndex].scoreText.text = x.ToString(); }, oldAndNewScore.Item2, 1f)
-                                              .SetUpdate(isIndependentUpdate: true));
+                        .SetUpdate(true));
                 }
             }
 

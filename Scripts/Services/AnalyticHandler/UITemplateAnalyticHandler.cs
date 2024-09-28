@@ -1,19 +1,20 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
-    using System.Collections.Generic;
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
+    using GameFoundation.Signals;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using Zenject;
+    using UnityEngine.Scripting;
 
     public class UITemplateAnalyticHandler : IInitializable, IDisposable
     {
@@ -29,24 +30,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
+        [Preserve]
         public UITemplateAnalyticHandler(
-            SignalBus                         signalBus,
-            IAnalyticServices                 analyticServices,
-            List<IAnalyticEventFactory>       analyticEventFactories,
-            UITemplateLevelDataController     uiTemplateLevelDataController,
-            UITemplateInventoryDataController uITemplateInventoryDataController,
-            UITemplateDailyRewardController   uiTemplateDailyRewardController,
+            SignalBus                           signalBus,
+            IAnalyticServices                   analyticServices,
+            IAnalyticEventFactory               analyticEventFactory,
+            UITemplateLevelDataController       uiTemplateLevelDataController,
+            UITemplateInventoryDataController   uITemplateInventoryDataController,
+            UITemplateDailyRewardController     uiTemplateDailyRewardController,
             UITemplateGameSessionDataController uITemplateGameSessionDataController
         )
         {
-            this.signalBus        = signalBus;
-            this.analyticServices = analyticServices;
-            this.analyticEventFactory = analyticEventFactories switch
-            {
-                { Count: 0 }   => throw new("Error: No analytic event factory found. Please add one of them (WIDO,ROCKET,ADONE,ABI...) into (Project Setting/Script Define Symbols)."),
-                { Count: > 1 } => throw new("Error: More than one analytic event factory found. Please remove one of them (Project Setting/Script Define Symbols)."),
-                _              => analyticEventFactories[0],
-            };
+            this.signalBus                           = signalBus;
+            this.analyticServices                    = analyticServices;
+            this.analyticEventFactory                = analyticEventFactory;
             this.uiTemplateLevelDataController       = uiTemplateLevelDataController;
             this.uITemplateInventoryDataController   = uITemplateInventoryDataController;
             this.uiTemplateDailyRewardController     = uiTemplateDailyRewardController;
@@ -139,21 +136,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 case "Banner":
                     this.Track(new CustomEvent()
                     {
-                        EventName       = "banner_show_success",
+                        EventName = "banner_show_success",
                         EventProperties = paramDic,
                     });
                     break;
                 case "CollapsibleBanner":
                     this.Track(new CustomEvent()
                     {
-                        EventName       = "collap_banner_show_success",
+                        EventName = "collap_banner_show_success",
                         EventProperties = paramDic,
                     });
                     break;
                 case "MREC":
                     this.Track(new CustomEvent()
                     {
-                        EventName       = "mrec_show_success",
+                        EventName = "mrec_show_success",
                         EventProperties = paramDic,
                     });
                     break;

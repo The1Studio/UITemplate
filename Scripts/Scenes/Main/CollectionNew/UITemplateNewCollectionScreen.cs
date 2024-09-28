@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using ServiceImplementation.IAPServices;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
@@ -20,7 +21,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateNewCollectionScreen : BaseView
     {
@@ -45,27 +45,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private IDisposable randomTimerDispose;
 
         public UITemplateNewCollectionScreenPresenter(
-            SignalBus signalBus,
-            EventSystem eventSystem,
-            IIapServices iapServices,
-            ILogService logger,
-            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            IGameAssets gameAssets,
-            ScreenManager screenManager,
-            DiContainer diContainer,
-            UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
-            UITemplateItemBlueprint uiTemplateItemBlueprint,
+            SignalBus                         signalBus,
+            ILogService                       logger,
+            EventSystem                       eventSystem,
+            IIapServices                      iapServices,
+            UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
+            IGameAssets                       gameAssets,
+            IScreenManager                    screenManager,
+            UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint,
+            UITemplateItemBlueprint           uiTemplateItemBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateLevelDataController levelDataController
-        ) : base(signalBus)
+            UITemplateLevelDataController     levelDataController
+        ) : base(signalBus, logger)
         {
             this.eventSystem                       = eventSystem;
             this.iapServices                       = iapServices;
-            this.logger                            = logger;
             this.uiTemplateAdServiceWrapper        = uiTemplateAdServiceWrapper;
             this.gameAssets                        = gameAssets;
             this.ScreenManager                     = screenManager;
-            this.diContainer                       = diContainer;
             this.uiTemplateCategoryItemBlueprint   = uiTemplateCategoryItemBlueprint;
             this.uiTemplateItemBlueprint           = uiTemplateItemBlueprint;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
@@ -80,7 +77,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.btnHome.onClick.AddListener(this.OnClickHomeButton);
             this.View.btnUnlockRandom.onClick.AddListener(this.OnClickUnlockRandomButton);
             this.View.btnAddMoreCoin.onClick.AddListener(this.OnClickAddMoreCoinButton);
-            this.diContainer.Inject(this.View.coinText);
         }
 
         public override async UniTask BindData()
@@ -111,8 +107,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
 
                 var collectionModel = this.itemCollectionItemModels
-                    .Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory) &&
-                                !this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id)).ToList();
+                    .Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory) && !this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id)).ToList();
 
                 foreach (var model in this.itemCollectionItemModels) model.IndexItemSelected = -1;
 
@@ -194,12 +189,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 }
             }
             this.RebindModelData();
-            await this.View.topButtonBarAdapter.InitItemAdapter(this.topButtonItemModels, this.diContainer);
+            await this.View.topButtonBarAdapter.InitItemAdapter(this.topButtonItemModels);
         }
 
         protected virtual void RebindModelData()
         {
-            
         }
 
         protected virtual async void OnButtonCategorySelected(TopButtonItemModel obj)
@@ -213,7 +207,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
             var tempModel       = this.itemCollectionItemModels.Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory)).ToList();
 
-            await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel, this.diContainer);
+            await this.View.itemCollectionGridAdapter.InitItemAdapter(tempModel);
             this.View.topButtonBarAdapter.Refresh();
             var hasOwnAllItem = tempModel.All(x => this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id));
             this.View.btnUnlockRandom.gameObject.SetActive(!hasOwnAllItem);
@@ -313,13 +307,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         #region inject
 
-        private readonly   DiContainer                       diContainer;
         private readonly   UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint;
         private readonly   UITemplateItemBlueprint           uiTemplateItemBlueprint;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly   EventSystem                       eventSystem;
         private readonly   IIapServices                      iapServices;
-        private readonly   ILogService                       logger;
         private readonly   UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper;
         private readonly   IGameAssets                       gameAssets;
         private readonly   UITemplateLevelDataController     levelDataController;
@@ -339,13 +331,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             // this.uiTemplateLuckySpinServices.OpenLuckySpin();
         }
 
-        protected virtual void BuyWithSoftCurrency(ItemCollectionItemModel obj,Action onFail = null)
+        protected virtual void BuyWithSoftCurrency(ItemCollectionItemModel obj, Action onFail = null)
         {
             var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(obj.ShopBlueprintRecord.CurrencyID);
 
             if (currentCoin < obj.ShopBlueprintRecord.Price)
             {
-                this.logger.Log($"Not Enough {obj.ShopBlueprintRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.ShopBlueprintRecord.Price}");
+                this.Logger.Log($"Not Enough {obj.ShopBlueprintRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.ShopBlueprintRecord.Price}");
                 onFail?.Invoke();
                 return;
             }

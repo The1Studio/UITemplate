@@ -1,9 +1,9 @@
 ﻿namespace TheOneStudio.HyperCasual.Quests.Conditions
 {
     using System;
+    using GameFoundation.Signals;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.Quests.Conditions;
-    using Zenject;
 
     public abstract class BaseSignalCountCondition<TSignal> : BaseCondition
     {

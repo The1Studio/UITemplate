@@ -1,9 +1,10 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
 {
+    using GameFoundation.DI;
     using UnityEngine;
     using UnityEngine.Events;
     using UnityEngine.EventSystems;
-    using Zenject;
+    using UnityEngine.Scripting;
 
     public class CreativeService : ITickable
     {
@@ -17,6 +18,7 @@
 
         public readonly UnityEvent OnTripleTap = new();
 
+        [Preserve]
         public CreativeService(EventSystem eventSystem) { this.eventSystem = eventSystem; }
 
         public void Tick()

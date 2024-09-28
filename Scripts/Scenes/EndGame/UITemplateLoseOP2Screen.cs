@@ -3,10 +3,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateLoseOP2Screen : BaseEndGameScreenView
     {
@@ -16,7 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateLoseOP2Screen))]
     public class UITemplateLoseOp2Presenter : BaseEndGameScreenPresenter<UITemplateLoseOP2Screen>
     {
-        public UITemplateLoseOp2Presenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus, uiTemplateAdService, soundServices)
+        public UITemplateLoseOp2Presenter(SignalBus signalBus, ILogService logger, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus, logger, uiTemplateAdService, soundServices)
         {
         }
 
@@ -41,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 
         public override void Dispose()
         {
-            base.Dispose(); 
+            base.Dispose();
             this.UITemplateAdService.HideMREC(AdViewPosition.Centered);
         }
 

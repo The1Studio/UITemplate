@@ -4,7 +4,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System.Collections.Generic;
     using System.Linq;
     using BlueprintFlow.Signals;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using ServiceImplementation.IAPServices;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
@@ -12,7 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using UnityEngine;
-    using Zenject;
+    using UnityEngine.Scripting;
 
     public class UITemplateIapServices : IInitializable, IDisposable
     {
@@ -27,6 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
+        [Preserve]
         public UITemplateIapServices(
             SignalBus                            signalBus,
             ILogService                          logger,

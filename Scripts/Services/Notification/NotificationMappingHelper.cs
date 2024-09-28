@@ -5,7 +5,9 @@
     using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Utils;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class NotificationMappingHelper
     {
         private const string Pattern                     = @"{.*?}";

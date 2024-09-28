@@ -3,13 +3,11 @@
     using System;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
     using Random = UnityEngine.Random;
 
     public class UITemplateLevelItemView : TViewMono
@@ -52,18 +50,14 @@
 
     public class UITemplateLevelItemPresenter : BaseUIItemPresenter<UITemplateLevelItemView, LevelData>
     {
-        private LevelData _model;
 
-        public UITemplateLevelItemPresenter(IGameAssets gameAssets, SignalBus signalBus, IScreenManager screenManager, UITemplateLevelDataController userLevelData) : base(gameAssets)
+        public UITemplateLevelItemPresenter(IGameAssets gameAssets, UITemplateLevelDataController userLevelData) : base(gameAssets)
         {
-            this.signalBus     = signalBus;
-            this.screenManager = screenManager;
             this.userLevelData = userLevelData;
         }
 
         public override void BindData(LevelData param)
         {
-            this._model = param;
             this.View.InitView(param, this.userLevelData);
             this.View.LevelButton.onClick.RemoveAllListeners();
             this.View.LevelButton.onClick.AddListener(this.OnClick);
@@ -73,7 +67,7 @@
         {
             #region test
 
-            int currentLevel = this.userLevelData.GetCurrentLevelData.Level;
+            var currentLevel = this.userLevelData.GetCurrentLevelData.Level;
             this.userLevelData.GetLevelData(currentLevel).LevelStatus = LevelData.Status.Passed;
             this.userLevelData.GetLevelData(currentLevel).StarCount   = Random.Range(1, 4);
 
@@ -84,8 +78,6 @@
 
         private readonly IGameAssets gameAssets;
 
-        private readonly SignalBus               signalBus;
-        private readonly IScreenManager          screenManager;
         private readonly UITemplateLevelDataController userLevelData;
 
         #endregion

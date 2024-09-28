@@ -2,8 +2,9 @@
 {
     using System;
     using GameFoundation.Scripts.Models;
+    using UnityEngine.Scripting;
 
-    public class UITemplateSettingDataController:IUITemplateControllerData
+    public class UITemplateSettingDataController : IUITemplateControllerData
     {
         #region Inject
 
@@ -23,6 +24,7 @@
 
         public float SoundValue => this.soundSetting.SoundValue.Value;
 
+        [Preserve]
         public UITemplateSettingDataController(UITemplateUserSettingData uiTemplateUserSettingData, SoundSetting soundSetting)
         {
             this.uiTemplateUserSettingData = uiTemplateUserSettingData;
@@ -33,9 +35,9 @@
 
         public void SetMusicOnOff() { this.soundSetting.MusicValue.Value = this.IsMusicOn ? 0 : 1; }
 
-        public void SetMusicValue(float value) { this.soundSetting.MusicValue.Value = Math.Clamp(value, 0, 1);}
-        
-        public void SetSoundValue(float value) { this.soundSetting.SoundValue.Value = Math.Clamp(value, 0, 1);}
+        public void SetMusicValue(float value) { this.soundSetting.MusicValue.Value = Math.Clamp(value, 0, 1); }
+
+        public void SetSoundValue(float value) { this.soundSetting.SoundValue.Value = Math.Clamp(value, 0, 1); }
 
         public void SetVibrationOnOff() { this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable; }
 

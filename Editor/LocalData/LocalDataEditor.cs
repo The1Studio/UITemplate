@@ -3,6 +3,7 @@ namespace UITemplate.Editor
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
@@ -16,7 +17,7 @@ namespace UITemplate.Editor
     public class LocalDataEditor : OdinEditorWindow
     {
         private const string LocalDataPrefix = BaseHandleUserDataServices.UserDataPrefix;
-        
+
         private static readonly JsonSerializerSettings JsonSetting =  BaseHandleUserDataServices.JsonSetting;
 
         [OdinSerialize, HideLabel]

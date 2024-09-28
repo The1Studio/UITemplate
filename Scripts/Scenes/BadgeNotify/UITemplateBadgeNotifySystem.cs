@@ -3,11 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.Extension;
-    using Zenject;
+    using GameFoundation.Signals;
+    using UnityEngine.Scripting;
 
     public class UITemplateBadgeNotifySystem : IInitializable
 
@@ -28,6 +30,7 @@
 
         private IScreenPresenter currentPresenter;
 
+        [Preserve]
         public UITemplateBadgeNotifySystem(IScreenManager screenManager, SignalBus signalBus)
         {
             this.screenManager = screenManager;

@@ -11,7 +11,9 @@ namespace TheOneStudio.UITemplate.Quests.Data
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Rewards;
     using TheOneStudio.UITemplate.Quests.TargetHandler;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     [BlueprintReader("UITemplateQuest")]
     public sealed class UITemplateQuestBlueprint : GenericBlueprintReaderByRow<string, QuestRecord>
     {
@@ -69,21 +71,22 @@ namespace TheOneStudio.UITemplate.Quests.Data
         }
     }
 
+    [Preserve]
     [CsvHeaderKey(nameof(Id))]
     public sealed class QuestRecord
     {
-        public string          Id          { get; private set; }
-        public string          Name        { get; private set; }
-        public string          Description { get; private set; }
-        public string          Image       { get; private set; }
-        public HashSet<string> Tags        { get; private set; }
+        public string          Id          { get; [Preserve] private set; }
+        public string          Name        { get; [Preserve] private set; }
+        public string          Description { get; [Preserve] private set; }
+        public string          Image       { get; [Preserve] private set; }
+        public HashSet<string> Tags        { get; [Preserve] private set; }
 
-        public List<IReward>         Rewards            { get; private set; }
-        public List<ICondition>      StartConditions    { get; private set; }
-        public List<ICondition>      ShowConditions     { get; private set; }
-        public List<ICondition>      CompleteConditions { get; private set; }
-        public List<ICondition>      ResetConditions    { get; private set; }
-        public List<IRedirectTarget> Target             { get; private set; }
+        public List<IReward>         Rewards            { get; [Preserve] private set; }
+        public List<ICondition>      StartConditions    { get; [Preserve] private set; }
+        public List<ICondition>      ShowConditions     { get; [Preserve] private set; }
+        public List<ICondition>      CompleteConditions { get; [Preserve] private set; }
+        public List<ICondition>      ResetConditions    { get; [Preserve] private set; }
+        public List<IRedirectTarget> Target             { get; [Preserve] private set; }
 
         public bool HasTag(string tag) => this.Tags.Contains(tag);
     }

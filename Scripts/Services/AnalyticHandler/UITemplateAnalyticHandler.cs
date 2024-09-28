@@ -335,6 +335,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void LevelSkippedHandler(LevelSkippedSignal obj)
         {
             this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time));
+            this.Track(this.analyticEventFactory.LevelSkip(obj.Level,
+                                                          0,
+                                                          obj.Time,
+                                                          null,
+                                                          null,
+                                                          DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
         }
 
         private void LevelEndedHandler(LevelEndedSignal obj)
@@ -347,6 +353,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time, levelData.WinCount)
                 : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount)
             );
+            
+            //todo: update gameModeId and totalLevelsTypePlayed param after uiTemplateLevelDataController update for multiple game mode
+            var levelEndEvent = obj.IsWin
+                ? this.analyticEventFactory.LevelWin(obj.Level,
+                                                     0,
+                                                     obj.Time,
+                                                     null,
+                                                     null,
+                                                     DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+                : this.analyticEventFactory.LevelLose(obj.Level,
+                                                      0,
+                                                      obj.Time,
+                                                      null,
+                                                      null,
+                                                      DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            this.Track(levelEndEvent);
 
             if (obj.IsWin && levelData.WinCount == 1)
             {
@@ -377,6 +399,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticServices.UserProperties[this.analyticEventFactory.LastLevelProperty] = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
             this.Track(this.analyticEventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
 
+            //todo: update gameModeId and totalLevelsTypePlayed param after uiTemplateLevelDataController update for multiple game mode
+            this.Track(this.analyticEventFactory.LevelStart(obj.Level, this.uiTemplateLevelDataController.TotalLevelSurpassed, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), 0, 0));
+            
             if (obj.Level > 50) return;
             this.Track(new CustomEvent()
             {

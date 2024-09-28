@@ -11,6 +11,7 @@ namespace UITemplate.Editor.ProjectMigration
         private static void OnProjectLoadedInEditor()
         {
             PackageMigration.CheckAndUpdatePackageManagerSettings();
+            PackageMigration.ImportUnityPackage();
             ProguardMigration.CheckAndUpdateProguardFile();
             ProjectSettingMigration.APICompatibilityLevel();
             FolderMigration.RemoveUselessFolder();

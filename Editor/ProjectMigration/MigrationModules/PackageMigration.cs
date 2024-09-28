@@ -4,6 +4,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Cysharp.Threading.Tasks;
     using Newtonsoft.Json.Linq;
     using ServiceImplementation.Configs.Common;
     using UnityEditor;

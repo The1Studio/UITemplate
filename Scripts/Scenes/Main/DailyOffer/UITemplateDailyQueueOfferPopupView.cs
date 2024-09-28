@@ -6,11 +6,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateDailyQueueOfferPopupView : BaseView
     {
@@ -24,34 +25,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
     }
 
     [PopupInfo(nameof(UITemplateDailyQueueOfferPopupView), true, false, true)]
-    public class
-        UITemplateDailyQueueOfferPopupPresenter : UITemplateBasePopupPresenter<UITemplateDailyQueueOfferPopupView>
+    public class UITemplateDailyQueueOfferPopupPresenter : UITemplateBasePopupPresenter<UITemplateDailyQueueOfferPopupView>
     {
-#region Inject
+        #region Inject
 
         private readonly UITemplateDailyQueueOfferDataController dailyOfferDataController;
-        private readonly DiContainer                             diContainer;
 
-#endregion
+        #endregion
 
         private List<UITemplateDailyQueueOfferItemModel> listModel;
 
-        public UITemplateDailyQueueOfferPopupPresenter
-        (
+        public UITemplateDailyQueueOfferPopupPresenter(
             SignalBus                               signalBus,
-            UITemplateDailyQueueOfferDataController dailyOfferDataController,
-            DiContainer                             diContainer
-        )
-            : base(signalBus)
+            ILogService                             logger,
+            UITemplateDailyQueueOfferDataController dailyOfferDataController
+        ) : base(signalBus, logger)
         {
             this.dailyOfferDataController = dailyOfferDataController;
-            this.diContainer              = diContainer;
         }
 
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.diContainer.Inject(this.View.CurrencyView);
             this.View.CloseButton.onClick.AddListener(this.CloseView);
         }
 
@@ -73,11 +68,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
         private UniTask InitOrRefreshRewardAdapter()
         {
             this.listModel ??= this.dailyOfferDataController.GetCurrentDailyQueueOfferRecord()
-               .OfferItems.Values
-               .Select(item => new UITemplateDailyQueueOfferItemModel(item.OfferId))
-               .ToList();
+                .OfferItems.Values
+                .Select(item => new UITemplateDailyQueueOfferItemModel(item.OfferId))
+                .ToList();
 
-            return this.View.RewardedAdsAdapter.InitItemAdapter(this.listModel, this.diContainer);
+            return this.View.RewardedAdsAdapter.InitItemAdapter(this.listModel);
         }
     }
 }

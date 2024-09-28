@@ -5,7 +5,9 @@
     using GameFoundation.Scripts.Interfaces;
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateDailyRewardData : ILocalData,IUITemplateLocalData
     {
         [OdinSerialize] public List<RewardStatus> RewardStatus        { get; set; } = new();

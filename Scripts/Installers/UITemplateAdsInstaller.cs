@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
@@ -35,3 +36,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         }
     }
 }
+#endif

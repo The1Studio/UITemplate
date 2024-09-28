@@ -5,11 +5,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using UnityEngine.Scripting;
 
     public class UITemplateRewardDataController : IUITemplateControllerData
     {
         private readonly UITemplateRewardData uiTemplateRewardData;
 
+        [Preserve]
         public UITemplateRewardDataController(UITemplateRewardData uiTemplateRewardData) { this.uiTemplateRewardData = uiTemplateRewardData; }
 
         public void AddRepeatedReward(string packID, Dictionary<string, UITemplateRewardItemData> rewardIdToData)
@@ -32,7 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 }
             }
         }
-        
+
         public List<KeyValuePair<string, UITemplateRewardItemData>> GetAvailableRepeatedReward()
         {
             return this.uiTemplateRewardData.PackIdToIdToRewardData.Values
@@ -40,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 .Where(keyPairValue => keyPairValue.Value.LastTimeReceive.DayOfYear + keyPairValue.Value.Repeat <= DateTime.Now.DayOfYear)
                 .ToList();
         }
-        
+
         public bool IsExistAvailableRepeatedReward()
         {
             return this.GetAvailableRepeatedReward().Count > 0;

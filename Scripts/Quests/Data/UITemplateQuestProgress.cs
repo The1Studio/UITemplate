@@ -5,7 +5,9 @@ namespace TheOneStudio.UITemplate.Quests.Data
     using GameFoundation.Scripts.Interfaces;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.Quests.Conditions;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class UITemplateQuestProgress : ILocalData
     {
         public Dictionary<string, Quest> Storage { get; } = new Dictionary<string, Quest>();

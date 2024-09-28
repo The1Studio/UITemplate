@@ -6,14 +6,16 @@
     using Core.AdsServices.CollapsibleBanner;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
-    using Zenject;
+    using UnityEngine.Scripting;
 
     public class UITemplateAdServiceWrapperCreative : UITemplateAdServiceWrapper
     {
+        [Preserve]
         public UITemplateAdServiceWrapperCreative(
             ILogService                         logService,
             AdServicesConfig                    adServicesConfig,

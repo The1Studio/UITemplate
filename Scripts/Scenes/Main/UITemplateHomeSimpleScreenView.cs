@@ -4,10 +4,11 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateHomeSimpleScreenView : BaseView
     {
@@ -20,10 +21,13 @@
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
     public class UITemplateHomeSimpleScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
-        public UITemplateHomeSimpleScreenPresenter(SignalBus signalBus, DiContainer diContainer, IScreenManager screenManager, GameFeaturesSetting gameFeaturesSetting) :
-            base(signalBus)
+        public UITemplateHomeSimpleScreenPresenter(
+            SignalBus           signalBus,
+            ILogService         logger,
+            IScreenManager      screenManager,
+            GameFeaturesSetting gameFeaturesSetting
+        ) : base(signalBus, logger)
         {
-            this.diContainer         = diContainer;
             this.ScreenManager       = screenManager;
             this.gameFeaturesSetting = gameFeaturesSetting;
         }
@@ -35,7 +39,6 @@
             {
                 this.OpenViewAsync().Forget();
             }
-            this.diContainer.Inject(this.View.SettingButtonView);
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
 
             if (this.View.LevelButton != null)
@@ -59,7 +62,6 @@
 
         #region inject
 
-        protected readonly DiContainer         diContainer;
         protected readonly IScreenManager      ScreenManager;
         private readonly   GameFeaturesSetting gameFeaturesSetting;
 

@@ -1,15 +1,14 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play.End
 {
     using System;
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -20,7 +19,6 @@
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateWinScreenModel
     {
@@ -146,11 +144,11 @@
             this.View.BtnAds.BindData(this.AdPlacement);
             this.ItemUnlockProgress(model.ItemUnlockLastValue, model.ItemUnlockNewValue);
             this.soundService.PlaySoundWin();
-            
+
             if (this.View.UseLightGlow)
             {
                 this.tweenSpin = this.View.ImgLightGlow.transform.DORotate(new Vector3(0, 0, -360), 5f, RotateMode.FastBeyond360).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
-            } 
+            }
 
             if (this.View.UseStarRate)
             {

@@ -4,7 +4,8 @@
     using System.Threading;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
-    using Zenject;
+    using GameFoundation.Signals;
+    using UnityEngine.Scripting;
 
     // Rebind this class to your own view
     public class BreakAdsViewHelper
@@ -16,6 +17,7 @@
         protected readonly SignalBus SignalBus;
 
 
+        [Preserve]
         public BreakAdsViewHelper(SignalBus signalBus) { this.SignalBus = signalBus; }
 
         public virtual void OnViewReady(BreakAdsPopupView view, BreakAdsPopupPresenter breakAdsPopupPresenter)

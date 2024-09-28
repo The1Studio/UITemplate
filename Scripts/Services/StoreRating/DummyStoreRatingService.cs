@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class DummyStoreRatingService : IStoreRatingService
     {
@@ -12,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 
         #endregion
 
+        [Preserve]
         public DummyStoreRatingService(ILogService logService) { this.logService = logService; }
 
         public UniTask LaunchStoreRating()

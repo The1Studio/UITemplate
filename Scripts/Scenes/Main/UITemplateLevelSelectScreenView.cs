@@ -5,12 +5,13 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Level;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateLevelSelectScreenView : BaseView
     {
@@ -22,15 +23,16 @@
     [ScreenInfo(nameof(UITemplateLevelSelectScreenView))]
     public class UITemplateLevelSelectScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLevelSelectScreenView>
     {
-        public UITemplateLevelSelectScreenPresenter(SignalBus signalBus,
-            DiContainer diContainer,
-            IScreenManager screenManager,
+        public UITemplateLevelSelectScreenPresenter(
+            SignalBus                         signalBus,
+            ILogService                       logger,
+            IScreenManager                    screenManager,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateLevelDataController uiTemplateLevelDataController) : base(signalBus)
+            UITemplateLevelDataController     uiTemplateLevelDataController
+        ) : base(signalBus, logger)
         {
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.uiTemplateLevelDataController     = uiTemplateLevelDataController;
-            this.diContainer                       = diContainer;
             this.screenManager                     = screenManager;
         }
 
@@ -46,7 +48,7 @@
         {
             var levelList    = this.getLevelList();
             var currentLevel = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
-            await this.View.LevelGridAdapter.InitItemAdapter(levelList, this.diContainer);
+            await this.View.LevelGridAdapter.InitItemAdapter(levelList);
             this.View.LevelGridAdapter.SmoothScrollTo(currentLevel, 1);
         }
 
@@ -54,7 +56,6 @@
 
         #region inject
 
-        protected readonly DiContainer                       diContainer;
         protected readonly IScreenManager                    screenManager;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly   UITemplateLevelDataController     uiTemplateLevelDataController;

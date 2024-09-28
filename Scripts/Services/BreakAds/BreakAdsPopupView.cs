@@ -1,10 +1,10 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services.BreakAds
 {
-    using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using Zenject;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
 
     public class BreakAdsPopupView : BaseView
     {
@@ -15,7 +15,10 @@
     {
         private readonly BreakAdsViewHelper breakAdsViewHelper;
 
-        public BreakAdsPopupPresenter(SignalBus signalBus, BreakAdsViewHelper breakAdsViewHelper) : base(signalBus) { this.breakAdsViewHelper = breakAdsViewHelper; }
+        public BreakAdsPopupPresenter(SignalBus signalBus, ILogService logger, BreakAdsViewHelper breakAdsViewHelper) : base(signalBus, logger)
+        {
+            this.breakAdsViewHelper = breakAdsViewHelper;
+        }
 
         protected override void OnViewReady() { this.breakAdsViewHelper.OnViewReady(this.View, this); }
 

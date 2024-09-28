@@ -1,35 +1,35 @@
 ﻿namespace TheOneStudio.UITemplate.Quests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.Quests.TargetHandler;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
-    using Zenject;
 
     public class UITemplateQuestController
     {
         #region Constructor
 
-        private readonly IInstantiator                                                   instantiator;
+        private readonly IDependencyContainer                                            container;
         private readonly SignalBus                                                       signalBus;
         private readonly UITemplateInventoryDataController                               inventoryDataController;
         private readonly QuestStatusChangedSignal                                        changedSignal;
         private readonly Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler> progressHandlers;
 
         public UITemplateQuestController(
-            IInstantiator                     instantiator,
+            IDependencyContainer              container,
             SignalBus                         signalBus,
             UITemplateInventoryDataController inventoryDataController
         )
         {
-            this.instantiator            = instantiator;
+            this.container               = container;
             this.signalBus               = signalBus;
             this.inventoryDataController = inventoryDataController;
             this.changedSignal           = new QuestStatusChangedSignal(this);
@@ -134,7 +134,7 @@
 
         private IRedirectTarget.IHandler AddRedirectTargetHandler(IRedirectTarget redirectTarget)
         {
-            var handler = handleTargets.GetOrAdd(redirectTarget, () => (IRedirectTarget.IHandler)this.instantiator.Instantiate(redirectTarget.GetTypeHandle));
+            var handler = handleTargets.GetOrAdd(redirectTarget, () => (IRedirectTarget.IHandler)this.container.Instantiate(redirectTarget.GetTypeHandle));
             handler.RedirectTarget = redirectTarget;
             return handler;
         }
@@ -144,7 +144,7 @@
             IterTools.StrictZip(conditions, progresses).ForEach((condition, progress) =>
             {
                 if (this.progressHandlers.ContainsKey(progress)) return;
-                var handler = (ICondition.IProgress.IHandler)this.instantiator.Instantiate(progress.HandlerType);
+                var handler = (ICondition.IProgress.IHandler)this.container.Instantiate(progress.HandlerType);
                 handler.Condition = condition;
                 handler.Progress  = progress;
                 handler.Initialize();

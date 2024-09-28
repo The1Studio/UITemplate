@@ -1,3 +1,4 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -12,3 +13,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         }
     }
 }
+#endif

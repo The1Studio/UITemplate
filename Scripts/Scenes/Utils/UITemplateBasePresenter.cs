@@ -2,20 +2,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using Core.AnalyticServices;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateBaseScreenUtils
     {
@@ -25,9 +24,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
         public UITemplateBaseScreenUtils()
         {
-            var diContainer = ZenjectUtils.GetCurrentContainer();
-            this.analyticService = diContainer.Resolve<IAnalyticServices>();
-            this.soundServices   = diContainer.Resolve<UITemplateSoundServices>();
+            var container = this.GetCurrentContainer();
+            this.analyticService = container.Resolve<IAnalyticServices>();
+            this.soundServices   = container.Resolve<UITemplateSoundServices>();
         }
 
         public static UITemplateBaseScreenUtils Instance { get; set; }
@@ -54,10 +53,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             foreach (var button in buttons) button.onClick.AddListener(() => this.OnClickButton($"{SceneDirector.CurrentSceneName}/{screenName}", button));
         }
 
-#if CREATIVE
+        #if CREATIVE
         public void SetupCreativeMode<TView>(BaseScreenPresenter<TView> presenter) where TView : IScreenView
         {
-            var creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
+            var creativeService = this.GetCurrentContainer().Resolve<CreativeService>();
             creativeService.OnTripleTap.AddListener(() => this.CreativeUIHandler(presenter));
         }
 
@@ -66,7 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             // If the view is not marked as HideOnCreative, then do nothing with it
             if (presenter.View.GetType().GetCustomAttribute<CreativeAttribute>() is { HideOnCreative: false }) return;
 
-            var creativeService = ZenjectUtils.GetCurrentContainer().Resolve<CreativeService>();
+            var creativeService = this.GetCurrentContainer().Resolve<CreativeService>();
 
             if (creativeService.IsShowUI)
             {
@@ -175,7 +174,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
                 return fieldInfosSet;
             }
         }
-#endif
+        #endif
 
         private class FieldInfoComparer : IEqualityComparer<FieldInfo>
         {
@@ -198,7 +197,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
     public abstract class UITemplateBaseScreenPresenter<TView> : BaseScreenPresenter<TView> where TView : IScreenView
     {
-        protected UITemplateBaseScreenPresenter(SignalBus signalBus) : base(signalBus)
+        protected UITemplateBaseScreenPresenter(SignalBus signalBus, ILogService logger) : base(signalBus, logger)
         {
             UITemplateBaseScreenUtils.Init();
         }
@@ -207,9 +206,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             base.OnViewReady();
             UITemplateBaseScreenUtils.Instance.BindOnClickButton(this.View.GetType().Name, this.View.RectTransform.GetComponentsInChildren<Button>());
-#if CREATIVE
+            #if CREATIVE
             UITemplateBaseScreenUtils.Instance.SetupCreativeMode(this);
-#endif
+            #endif
         }
     }
 
@@ -224,15 +223,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             base.OnViewReady();
             UITemplateBaseScreenUtils.Instance.BindOnClickButton(this.View.GetType().Name, this.View.RectTransform.GetComponentsInChildren<Button>());
-#if CREATIVE
+            #if CREATIVE
             UITemplateBaseScreenUtils.Instance.SetupCreativeMode(this);
-#endif
+            #endif
         }
     }
 
     public abstract class UITemplateBasePopupPresenter<TView> : BasePopupPresenter<TView> where TView : IScreenView
     {
-        protected UITemplateBasePopupPresenter(SignalBus signalBus) : base(signalBus)
+        protected UITemplateBasePopupPresenter(SignalBus signalBus, ILogService logger) : base(signalBus, logger)
         {
             UITemplateBaseScreenUtils.Init();
         }
@@ -241,9 +240,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             base.OnViewReady();
             UITemplateBaseScreenUtils.Instance.BindOnClickButton(this.View.GetType().Name, this.View.RectTransform.GetComponentsInChildren<Button>());
-#if CREATIVE
+            #if CREATIVE
             UITemplateBaseScreenUtils.Instance.SetupCreativeMode(this);
-#endif
+            #endif
         }
     }
 
@@ -258,9 +257,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             base.OnViewReady();
             UITemplateBaseScreenUtils.Instance.BindOnClickButton(this.View.GetType().Name, this.View.RectTransform.GetComponentsInChildren<Button>());
-#if CREATIVE
+            #if CREATIVE
             UITemplateBaseScreenUtils.Instance.SetupCreativeMode(this);
-#endif
+            #endif
         }
     }
 }

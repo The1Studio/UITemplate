@@ -6,13 +6,13 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateQuestListItemModel
     {
@@ -52,8 +52,8 @@ namespace TheOneStudio.UITemplate.Quests.UI
         private readonly GameFeaturesSetting gameFeaturesSetting;
         private readonly SignalBus           signalBus;
 
-        public UITemplateQuestListItemPresenter(IGameAssets gameAssets, 
-                                                IAudioService audioService, 
+        public UITemplateQuestListItemPresenter(IGameAssets gameAssets,
+                                                IAudioService audioService,
                                                 GameFeaturesSetting gameFeaturesSetting,
                                                 SignalBus signalBus) : base(gameAssets)
         {
@@ -70,7 +70,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.Model = model;
 
             this.InitView();
-            
+
             this.signalBus.Subscribe<ClaimAllQuestSignal>(this.ClaimQuestItem);
             this.View.BtnGo.onClick.AddListener(this.OnClickGo);
             this.View.BtnClaim.onClick.AddListener(this.OnClickClaim);

@@ -1,12 +1,14 @@
 namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
 {
+    using GameFoundation.DI;
     using GameFoundation.Scripts.AssetLibrary;
-    using Zenject;
+    using UnityEngine.Scripting;
 
     public class TheOneCheatGenerate : IInitializable
     {
         private readonly IGameAssets gameAssets;
 
+        [Preserve]
         public TheOneCheatGenerate(IGameAssets gameAssets) { this.gameAssets = gameAssets; }
 
         public void Initialize()

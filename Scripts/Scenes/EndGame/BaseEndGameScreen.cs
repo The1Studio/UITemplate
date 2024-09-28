@@ -2,11 +2,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
 {
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.UI;
-    using Zenject;
 
     public abstract class BaseEndGameScreenView : BaseView
     {
@@ -18,7 +19,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         protected readonly UITemplateSoundServices    SoundServices;
         protected readonly UITemplateAdServiceWrapper UITemplateAdService;
 
-        protected BaseEndGameScreenPresenter(SignalBus signalBus, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus)
+        protected BaseEndGameScreenPresenter(
+            SignalBus                  signalBus,
+            ILogService                logger,
+            UITemplateAdServiceWrapper uiTemplateAdService,
+            UITemplateSoundServices    soundServices
+        ) : base(signalBus, logger)
         {
             this.UITemplateAdService = uiTemplateAdService;
             this.SoundServices       = soundServices;

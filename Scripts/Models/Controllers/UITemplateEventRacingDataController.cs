@@ -2,17 +2,19 @@
 {
     using System;
     using System.Collections.Generic;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.ObjectPool;
+    using GameFoundation.Signals;
     using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using Utilities.Utils;
-    using Zenject;
     using Random = UnityEngine.Random;
 
     public class UITemplateEventRacingDataController : IUITemplateControllerData, IInitializable
@@ -52,6 +54,7 @@
         private CountryFlags countryFlags;
         public  int          RacingScoreMax { get; set; }
 
+        [Preserve]
         public UITemplateEventRacingDataController(UITemplateEventRacingData uiTemplateEventRacingData,
             IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
             SignalBus signalBus, IRemoteConfig remoteConfig, GameFeaturesSetting gameFeaturesSetting)

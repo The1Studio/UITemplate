@@ -4,14 +4,14 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Play;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateHomeTapToPlayScreenView : BaseView
     {
@@ -24,11 +24,15 @@
     [ScreenInfo(nameof(UITemplateHomeTapToPlayScreenView))]
     public class UITemplateHomeTapToPlayScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeTapToPlayScreenView>
     {
-        public UITemplateHomeTapToPlayScreenPresenter(SignalBus signalBus, IScreenManager screenManager, DiContainer diContainer, 
-            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateSoundServices soundServices) : base(signalBus)
+        public UITemplateHomeTapToPlayScreenPresenter(
+            SignalBus                         signalBus,
+            ILogService                       logger,
+            IScreenManager                    screenManager,
+            UITemplateInventoryDataController uiTemplateInventoryDataController,
+            UITemplateSoundServices           soundServices
+        ) : base(signalBus, logger)
         {
             this.ScreenManager                     = screenManager;
-            this.DiContainer                       = diContainer;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.SoundServices                     = soundServices;
         }
@@ -39,7 +43,6 @@
             await this.OpenViewAsync();
             this.View.TaptoplayButton.onClick.AddListener(this.OnClickTapToPlayButton);
             this.View.ShopButton.onClick.AddListener(this.OnClickShopButton);
-            this.DiContainer.Inject(this.View.SettingButtonView);
         }
 
         public override UniTask BindData()
@@ -60,7 +63,6 @@
         #region inject
 
         protected readonly IScreenManager                    ScreenManager;
-        protected readonly DiContainer                       DiContainer;
         private readonly   UITemplateInventoryDataController uiTemplateInventoryDataController;
         protected readonly UITemplateSoundServices           SoundServices;
 

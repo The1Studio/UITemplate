@@ -3,13 +3,14 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateRemoveAdPopupView : BaseView
     {
@@ -27,10 +28,11 @@
 
         public UITemplateRemoveAdPopupPresenter(
             SignalBus                  signalBus,
+            ILogService                logger,
             UITemplateIapServices      uiTemplateIapServices,
             GameFeaturesSetting        gameFeaturesSetting,
             UITemplateAdServiceWrapper adServiceWrapper
-        ) : base(signalBus)
+        ) : base(signalBus, logger)
         {
             this.uiTemplateIapServices = uiTemplateIapServices;
             this.gameFeaturesSetting   = gameFeaturesSetting;

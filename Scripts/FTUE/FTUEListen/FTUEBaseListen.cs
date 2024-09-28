@@ -1,8 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
 {
+    using GameFoundation.DI;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
-    using Zenject;
 
     public abstract class FTUEBaseListen : IInitializable
     {
@@ -17,7 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
 
         public             void Initialize() { this.InitInternal(); }
         protected abstract void InitInternal();
-        
+
         protected void FireFtueTriggerSignal(string ftueId)
         {
             this.SignalBus.Fire(new FTUETriggerSignal(ftueId));

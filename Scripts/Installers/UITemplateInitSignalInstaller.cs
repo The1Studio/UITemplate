@@ -1,12 +1,12 @@
+#if GDK_ZENJECT
 namespace TheOneStudio.UITemplate.UITemplate.Installers
 {
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Creative.CheatLevel;
     using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Services.Highlight;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using Zenject;
 
@@ -45,3 +45,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
         }
     }
 }
+#endif

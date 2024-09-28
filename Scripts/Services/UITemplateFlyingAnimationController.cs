@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
 
@@ -23,11 +24,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region Inject
 
-        private readonly ScreenManager screenManager;
-        private readonly IGameAssets   gameAssets;
-        private const    string        PrefabName = "UITemplateFlyingAnimationItem";
+        private readonly IScreenManager screenManager;
+        private readonly IGameAssets    gameAssets;
+        private const    string         PrefabName = "UITemplateFlyingAnimationItem";
 
-        public UITemplateFlyingAnimationController(ScreenManager screenManager, IGameAssets gameAssets)
+        [Preserve]
+        public UITemplateFlyingAnimationController(IScreenManager screenManager, IGameAssets gameAssets)
         {
             this.screenManager = screenManager;
             this.gameAssets    = gameAssets;
@@ -35,17 +37,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
-        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "",
-            float flyPunchPositionFactor = 0.3f)
-        where T : UITemplateFlyingAnimationView
+        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "", float flyPunchPositionFactor = 0.3f)
+            where T : UITemplateFlyingAnimationView
         {
             var endPosition = target != null
                 ? target.position
                 : this.screenManager.RootUICanvas
-                      .GetComponentsInChildren<T>()
-                      .FirstOrDefault()?
-                      .TargetFlyingAnimation
-                      .position;
+                    .GetComponentsInChildren<T>()
+                    .FirstOrDefault()?
+                    .TargetFlyingAnimation
+                    .position;
             if (endPosition == null || startPointRect == null) return;
 
             var totalCount  = Random.Range(minAmount, maxAmount);

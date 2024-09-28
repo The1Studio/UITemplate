@@ -6,12 +6,12 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
-    using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateRateGamePopupView : BaseView
     {
@@ -28,13 +28,11 @@
 
         public UITemplateRateGamePopupPresenter(
             SignalBus                    signalBus,
-            DiContainer                  diContainer,
+            ILogService                  logger,
             IScreenManager               screenManager,
             UITemplateStoreRatingHandler storeRatingHandler
-        )
-            : base(signalBus)
+        ) : base(signalBus, logger)
         {
-            this.diContainer        = diContainer;
             this.screenManager      = screenManager;
             this.storeRatingHandler = storeRatingHandler;
         }
@@ -50,6 +48,7 @@
 
             return UniTask.CompletedTask;
         }
+
         protected override void OnViewReady()
         {
             base.OnViewReady();
@@ -106,7 +105,6 @@
 
         #region inject
 
-        protected readonly DiContainer                  diContainer;
         protected readonly IScreenManager               screenManager;
         private readonly   UITemplateStoreRatingHandler storeRatingHandler;
 

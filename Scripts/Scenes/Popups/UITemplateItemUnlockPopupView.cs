@@ -1,13 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
     using System.Linq;
-    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -16,7 +16,6 @@
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.UI;
-    using Zenject;
 
     public class UITemplateItemUnlockPopupModel
     {
@@ -74,7 +73,7 @@
         #endregion
 
         protected virtual string AdPlacement => "unlock";
-        
+
         protected override void OnViewReady()
         {
             base.OnViewReady();

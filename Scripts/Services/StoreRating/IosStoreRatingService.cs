@@ -3,7 +3,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 {
     using Cysharp.Threading.Tasks;
     using UnityEngine.iOS;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class IosStoreRatingService : IStoreRatingService
     {
         public UniTask LaunchStoreRating()

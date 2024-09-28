@@ -1,4 +1,5 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
+﻿#if GDK_ZENJECT
+namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
 {
 #if THEONE_CHEAT
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
@@ -18,3 +19,4 @@
         }
     }
 }
+#endif

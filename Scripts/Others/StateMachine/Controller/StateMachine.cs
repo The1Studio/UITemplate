@@ -3,11 +3,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.LogService;
+    using GameFoundation.Signals;
     using TheOneStudio.HyperCasual.Others.StateMachine.Interface;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Interface;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Signals;
-    using Zenject;
 
     public abstract class StateMachine : IStateMachine, ITickable
     {

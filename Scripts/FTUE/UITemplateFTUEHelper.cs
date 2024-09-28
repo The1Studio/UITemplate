@@ -1,7 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using System;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class UITemplateFTUEHelper
     {
         private class FTUECondition
@@ -13,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             public const string HighEqual = "HighEqual";
             public const string LowEqual  = "LowEqual";
         }
-        
+
         public bool CompareIntWithCondition(int leftValue, int rightValue, string condition)
         {
             return condition switch
@@ -27,7 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
                 _ => throw new ArgumentOutOfRangeException(nameof(condition), condition, null)
             };
         }
-        
+
         public bool CompareFloatWithCondition(float leftValue, float rightValue, string condition)
         {
             return condition switch

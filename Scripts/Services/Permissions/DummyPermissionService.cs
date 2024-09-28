@@ -2,10 +2,12 @@
 {
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
-    using Zenject;
+    using GameFoundation.Signals;
+    using UnityEngine.Scripting;
 
     public class DummyPermissionService : BaseUnityPermissionService
     {
+        [Preserve]
         public DummyPermissionService(ILogService logService, SignalBus signalBus) : base(logService, signalBus)
         {
         }

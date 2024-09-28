@@ -1,12 +1,12 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 {
-    using System;
     using DG.Tweening;
+    using GameFoundation.DI;
+    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TMPro;
     using UnityEngine;
-    using Zenject;
 
     public class UITemplateCurrencyView : UITemplateFlyingAnimationView
     {
@@ -29,11 +29,11 @@
 
         private Color defaultColor = Color.white;
 
-        [Inject]
-        public void Constructor(SignalBus signalBus, UITemplateInventoryDataController uiTemplateInventoryDataController)
+        protected virtual void Awake()
         {
-            this.signalBus                         = signalBus;
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            var container = this.GetCurrentContainer();
+            this.signalBus                         = container.Resolve<SignalBus>();
+            this.uiTemplateInventoryDataController = container.Resolve<UITemplateInventoryDataController>();
 
             this.Initialize();
             this.ResetState();
@@ -60,12 +60,7 @@
 
         private void OnDestroy()
         {
-            if (this.signalBus == null)
-            {
-                throw new Exception($"Please inject for GameObject: {this.gameObject.name} - {this.gameObject.transform.parent}");
-            }
-
-            this.signalBus.Unsubscribe<OnFinishCurrencyAnimationSignal>(this.OnUpdateCurrency);
+            this.signalBus?.Unsubscribe<OnFinishCurrencyAnimationSignal>(this.OnUpdateCurrency);
         }
 
         private void OnUpdateCurrency(OnFinishCurrencyAnimationSignal obj)

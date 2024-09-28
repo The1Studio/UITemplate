@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Vibration
     using Lofelt.NiceVibrations;
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
     public class UITemplateVibrationService : IVibrationService
     {
@@ -15,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Vibration
 
         private readonly bool hapticsSupported;
 
+        [Preserve]
         public UITemplateVibrationService(UITemplateSettingDataController uiTemplateSettingDataController)
         {
             this.uiTemplateSettingDataController = uiTemplateSettingDataController;

@@ -1,6 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 {
-    using System.Collections.Generic;
     using Core.AnalyticServices.Data;
 
     public interface IAnalyticEventFactory
@@ -53,24 +52,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent AppOpenFullScreenContentOpened();
         IEvent AppOpenClicked();
 
-        IEvent LevelLose(int level, int timeSpent,  int  loseCount);
-        IEvent LevelLose(int level, int gameModeId, long timePlay, Dictionary<string, object> gainedRewards, Dictionary<string, object> spendResources, long timestamp);
-
-
-        IEvent LevelStart(int level, int gold);
-        IEvent LevelStart(int level, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed);
-
-        IEvent LevelWin(int level, int timeSpent, int winCount);
-        IEvent LevelWin(int level, int gameModeId, long timePlay, Dictionary<string, object> gainedRewards, Dictionary<string, object> spendResources, long timestamp);
-
-        IEvent FirstWin(int level, int timeSpent);
-
+        IEvent LevelLose(int    level, int timeSpent, int loseCount);
+        IEvent LevelStart(int   level, int gold);
+        IEvent LevelWin(int     level, int timeSpent, int winCount);
+        IEvent FirstWin(int     level, int timeSpent);
         IEvent LevelSkipped(int level, int timeSpent);
-        IEvent LevelSkip(int level, int gameModeId, long timePlay, Dictionary<string, object> gainedRewards, Dictionary<string, object> spendResources, long timestamp);
 
 
-        IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source);
-
+        IEvent EarnVirtualCurrency(string  virtualCurrencyName, long value, string source);
         IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName);
 
         IEvent TutorialCompletion(bool success, string tutorialId);

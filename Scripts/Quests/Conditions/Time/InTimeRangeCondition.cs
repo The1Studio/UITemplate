@@ -2,7 +2,9 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 {
     using System;
     using Newtonsoft.Json;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class InTimeRangeCondition : BaseCondition
     {
         [JsonProperty] private DateTime Begin { get; set; }
@@ -10,10 +12,12 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             protected override Type HandlerType => typeof(Handler);
 
+            [Preserve]
             private sealed class Handler : BaseHandler<InTimeRangeCondition, Progress>
             {
                 protected override float CurrentProgress => DateTime.UtcNow > this.Condition.Begin && DateTime.UtcNow < this.Condition.End ? 1 : 0;

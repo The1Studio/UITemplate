@@ -5,7 +5,9 @@
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class CompleteQuestCountCondition : BaseCondition
     {
         [JsonProperty] private string Tag   { get; set; }
@@ -13,6 +15,7 @@
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             [JsonProperty] private int Count { get; set; }
@@ -23,6 +26,7 @@
             {
                 private readonly SignalBus signalBus;
 
+                [Preserve]
                 public Handler(SignalBus signalBus)
                 {
                     this.signalBus = signalBus;

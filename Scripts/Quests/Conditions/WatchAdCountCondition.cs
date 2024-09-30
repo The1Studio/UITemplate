@@ -3,13 +3,16 @@
     using System;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class WatchAdCountCondition : BaseCondition
     {
         [JsonProperty] private int Count { get; set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             [JsonProperty] private int? StartCount { get; set; }
@@ -20,6 +23,7 @@
             {
                 private readonly UITemplateAdsController adsDataController;
 
+                [Preserve]
                 public Handler(UITemplateAdsController adsDataController)
                 {
                     this.adsDataController = adsDataController;

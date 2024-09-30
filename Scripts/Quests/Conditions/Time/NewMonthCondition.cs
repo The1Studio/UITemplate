@@ -2,17 +2,21 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 {
     using System;
     using Newtonsoft.Json;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class NewMonthCondition : BaseCondition
     {
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             [JsonProperty] private DateTime? StartTime { get; set; }
 
             protected override Type HandlerType => typeof(Handler);
 
+            [Preserve]
             private sealed class Handler : BaseHandler<NewMonthCondition, Progress>
             {
                 protected override float CurrentProgress

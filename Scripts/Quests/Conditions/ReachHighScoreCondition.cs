@@ -5,7 +5,9 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     using Newtonsoft.Json;
     using TheOneStudio.HighScore;
     using TheOneStudio.HighScore.Models;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class ReachHighScoreCondition : BaseCondition
     {
         [JsonProperty] private string        Key       { get; set; } = IHighScoreManager.DEFAULT_KEY;
@@ -14,6 +16,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             protected override Type HandlerType => typeof(Handler);
@@ -22,6 +25,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
             {
                 private readonly IHighScoreManager highScoreManager;
 
+                [Preserve]
                 public Handler(IHighScoreManager highScoreManager)
                 {
                     this.highScoreManager = highScoreManager;

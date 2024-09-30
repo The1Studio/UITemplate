@@ -3,13 +3,16 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     using System;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class ReachLevelCondition : BaseCondition
     {
         [JsonProperty] private int Level { get; set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             protected override Type HandlerType => typeof(Handler);
@@ -18,6 +21,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
             {
                 private readonly UITemplateLevelDataController levelDataController;
 
+                [Preserve]
                 public Handler(UITemplateLevelDataController levelDataController)
                 {
                     this.levelDataController = levelDataController;

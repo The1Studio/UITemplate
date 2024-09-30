@@ -3,7 +3,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
     using Core.AdsServices;
+    #if GDK_ZENJECT
     using Zenject;
+    #endif
+    #if GDK_VCONTAINER
+    using VContainer;
+    #endif
 
     public enum AdType
     {
@@ -28,9 +33,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
     public static class AdServicePriorityExtensions
     {
+        #if GDK_ZENJECT
         public static void BindAdServiceOrder<T>(this DiContainer container, AdType adType, int order) where T : IAdServices
         {
-            container.Bind<AdServiceOrder>().AsSingle().WithArguments(typeof(T), adType, order);
+            container.Bind<AdServiceOrder>().FromMethod(() => new(typeof(T), adType, order)).AsSingle();
         }
+        #endif
+
+        #if GDK_VCONTAINER
+        public static void RegisterAdServiceOrder<T>(this IContainerBuilder builder, AdType adType, int order) where T : IAdServices
+        {
+            builder.Register<AdServiceOrder>(_ => new(typeof(T), adType, order), Lifetime.Singleton);
+        }
+        #endif
     }
 }

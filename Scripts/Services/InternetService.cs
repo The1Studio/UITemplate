@@ -107,8 +107,8 @@
 
         public class WorldTimeAPIResponse
         {
-            [JsonProperty("datetime")]     public string Datetime    { get; set; }
-            [JsonProperty("utc_datetime")] public string UtcDatetime { get; set; }
+            [JsonProperty("datetime")]     public string Datetime    { get; [Preserve] set; }
+            [JsonProperty("utc_datetime")] public string UtcDatetime { get; [Preserve] set; }
 
             public DateTime? GetDateTime()
             {

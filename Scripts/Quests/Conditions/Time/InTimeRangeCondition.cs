@@ -7,8 +7,8 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     [Preserve]
     public sealed class InTimeRangeCondition : BaseCondition
     {
-        [JsonProperty] private DateTime Begin { get; set; }
-        [JsonProperty] private DateTime End   { get; set; }
+        [JsonProperty] private DateTime Begin { get; [Preserve] set; }
+        [JsonProperty] private DateTime End   { get; [Preserve] set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

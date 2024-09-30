@@ -10,9 +10,9 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     [Preserve]
     public sealed class ReachHighScoreCondition : BaseCondition
     {
-        [JsonProperty] private string        Key       { get; set; } = IHighScoreManager.DEFAULT_KEY;
-        [JsonProperty] private HighScoreType Type      { get; set; } = HighScoreType.AllTime;
-        [JsonProperty] private int           HighScore { get; set; }
+        [JsonProperty] private string        Key       { get; [Preserve] set; } = IHighScoreManager.DEFAULT_KEY;
+        [JsonProperty] private HighScoreType Type      { get; [Preserve] set; } = HighScoreType.AllTime;
+        [JsonProperty] private int           HighScore { get; [Preserve] set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

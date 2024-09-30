@@ -12,8 +12,9 @@
     [Preserve]
     public class ChangeStateRedirectTarget : BaseRedirectTarget
     {
-        [JsonProperty] private string StateName     { get; set; }
-        public override        Type   GetTypeHandle { get; } = typeof(Handler);
+        [JsonProperty] private string StateName { get; [Preserve] set; }
+
+        public override Type GetTypeHandle { get; } = typeof(Handler);
 
         private sealed class Handler : BaseHandler<ChangeStateRedirectTarget>
         {

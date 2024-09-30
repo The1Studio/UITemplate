@@ -8,7 +8,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     [Preserve]
     public sealed class CompleteQuestCondition : BaseCondition
     {
-        [JsonProperty] private string QuestId { get; set; }
+        [JsonProperty] private string QuestId { get; [Preserve] set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

@@ -8,7 +8,7 @@
     [Preserve]
     public sealed class WatchAdCountCondition : BaseCondition
     {
-        [JsonProperty] private int Count { get; set; }
+        [JsonProperty] private int Count { get; [Preserve] set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

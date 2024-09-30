@@ -4,10 +4,11 @@
     using GameFoundation.Signals;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.Quests.Conditions;
+    using UnityEngine.Scripting;
 
     public abstract class BaseSignalCountCondition<TSignal> : BaseCondition
     {
-        [JsonProperty] private int Count { get; set; }
+        [JsonProperty] private int Count { get; [Preserve] set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 

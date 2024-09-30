@@ -3,13 +3,16 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     using System;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.Quests.Data;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class CompleteQuestCondition : BaseCondition
     {
-        [JsonProperty] private string QuestId { get; set; }
+        [JsonProperty] private string QuestId { get; [Preserve] set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             protected override Type HandlerType => typeof(Handler);
@@ -18,6 +21,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
             {
                 private readonly UITemplateQuestManager questManager;
 
+                [Preserve]
                 public Handler(UITemplateQuestManager questManager)
                 {
                     this.questManager = questManager;

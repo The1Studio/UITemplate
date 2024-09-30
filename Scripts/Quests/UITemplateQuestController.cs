@@ -12,6 +12,7 @@
     using TheOneStudio.UITemplate.Quests.TargetHandler;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateQuestController
     {
@@ -23,6 +24,7 @@
         private readonly QuestStatusChangedSignal                                        changedSignal;
         private readonly Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler> progressHandlers;
 
+        [Preserve]
         public UITemplateQuestController(
             IDependencyContainer              container,
             SignalBus                         signalBus,

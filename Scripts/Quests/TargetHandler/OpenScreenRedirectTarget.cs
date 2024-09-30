@@ -8,17 +8,21 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class OpenScreenRedirectTarget : BaseRedirectTarget
     {
-        [JsonProperty] private string PresenterName { get; set; }
-        public override        Type   GetTypeHandle => typeof(Handler);
+        [JsonProperty] private string PresenterName { get; [Preserve] set; }
 
-        sealed class Handler : BaseHandler<OpenScreenRedirectTarget>
+        public override Type GetTypeHandle => typeof(Handler);
+
+        private sealed class Handler : BaseHandler<OpenScreenRedirectTarget>
         {
             private readonly IScreenManager screenManager;
             private readonly MethodInfo     openScreenMethod;
 
+            [Preserve]
             public Handler(IScreenManager screenManager)
             {
                 this.screenManager = screenManager;

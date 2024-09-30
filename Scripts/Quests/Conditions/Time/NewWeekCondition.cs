@@ -3,17 +3,21 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     using System;
     using System.Globalization;
     using Newtonsoft.Json;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class NewWeekCondition : BaseCondition
     {
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             [JsonProperty] private DateTime? StartTime { get; set; }
 
             protected override Type HandlerType => typeof(Handler);
 
+            [Preserve]
             private sealed class Handler : BaseHandler<NewWeekCondition, Progress>
             {
                 protected override float CurrentProgress

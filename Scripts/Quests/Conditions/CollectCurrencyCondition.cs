@@ -4,14 +4,17 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     using GameFoundation.Signals;
     using Newtonsoft.Json;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public sealed class CollectCurrencyCondition : BaseCondition
     {
-        [JsonProperty] private string CurrencyId { get; set; }
-        [JsonProperty] private int    Count      { get; set; }
+        [JsonProperty] private string CurrencyId { get; [Preserve] set; }
+        [JsonProperty] private int    Count      { get; [Preserve] set; }
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             [JsonProperty] private int Count { get; set; }
@@ -22,6 +25,7 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
             {
                 private readonly SignalBus signalBus;
 
+                [Preserve]
                 public Handler(SignalBus signalBus)
                 {
                     this.signalBus = signalBus;

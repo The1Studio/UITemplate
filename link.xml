@@ -1,36 +1,6 @@
 <linker>
-   <assembly fullname="Zenject">
-      <type fullname="Zenject.ZenjectManagersInstaller" preserve="all"/>
-      <type fullname="Zenject.SceneContextRegistry" preserve="all"/>
-      <type fullname="Zenject.PoolableMemoryPool`2" preserve="all"/>
-      <type fullname="Zenject.PlaceholderFactory`1" preserve="all"/>
-      <type fullname="Zenject.SceneContextRegistryAdderAndRemover" preserve="all"/>
-   </assembly>
-   <assembly fullname="Zenject-Signals" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.Script" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.BlueprintFlow" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.AssetLibrary" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.Models" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.UIModule" preserve="all"> </assembly>
-   <assembly fullname="GameFoundation.Utilities" preserve="all"> </assembly>
-   <assembly fullname="UITemplate.Scripts" preserve="all"> </assembly>
-   <assembly fullname="HyperCasualGame.Scripts" preserve="all"> </assembly>
-   <assembly fullname="Sirenix.Serialization">
-      <type fullname="Sirenix.Serialization.Int32Serializer" preserve="all"/>
-   </assembly>
-   <assembly fullname="3rdCore.Ads" preserve="all"> </assembly>
-   <assembly fullname="3rdCore.Analytic" preserve="all"> </assembly>
-   <assembly fullname="3rd.IAP" preserve="all"> </assembly>
-   <assembly fullname="3rd.ServiceImplementation.Ads" preserve="all"> </assembly>
-   <assembly fullname="3rd.ServiceImplementation.Adjust" preserve="all"> </assembly>
-   <assembly fullname="3rd.ServiceImplementation.Appsflyer" preserve="all"> </assembly>
-   <assembly fullname="3rd.FBInstant" preserve="all"> </assembly>
-   <assembly fullname="3rd.Configs" preserve="all"> </assembly>
-   <assembly fullname="3rd.RemoteConfig" preserve="all"> </assembly>
-   <assembly fullname="FirebaseTracker" preserve="all"> </assembly>
-   <assembly fullname="ByteBrewTracker" preserve="all"> </assembly>
-   <assembly fullname="AppsFlyer" preserve="all"> </assembly>
-   <assembly fullname="Newtonsoft.Json" preserve="all"> </assembly>
-   <assembly fullname="MaxSdk.Scripts" preserve="all"> </assembly>
-   <assembly fullname="UnityLogsViewer" preserve="all"> </assembly>
+    <assembly fullname="HyperCasualGame.Scripts" preserve="all"/>
+    <assembly fullname="Sirenix.Serialization">
+        <type fullname="Sirenix.Serialization.Int32Serializer" preserve="all"/>
+    </assembly>
 </linker>

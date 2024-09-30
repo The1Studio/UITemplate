@@ -62,9 +62,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         /// <summary>Have be called when level started</summary>
-        public void PlayCurrentLevel()
+        public void PlayCurrentLevel(int gameModeId = 0)
         {
-            this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
+            this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel,
+                                                       this.uiTemplateUserLevelData.CurrentLevel - 1,
+                                                       DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                                                       gameModeId,
+                                                       this.uiTemplateUserLevelData.CurrentLevel - 1
+                                ));
         }
 
         /// <summary>
@@ -82,9 +87,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player lose current level
         /// </summary>
         /// <param name="time">Play time in seconds</param>
-        public void LoseCurrentLevel(int time = 0)
+        /// <param name="gainedRewards">Rewards gained in level</param>
+        /// <param name="spentResources">Items/Resources used in level</param>
+        public void LoseCurrentLevel(int time = 0, Dictionary<string, object> gainedRewards = null, Dictionary<string, object> spentResources = null)
         {
-            this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = time, CurrentIdToValue = null });
+            this.signalBus.Fire(new LevelEndedSignal
+            {
+                Level            = this.uiTemplateUserLevelData.CurrentLevel,
+                EndStatus        = LevelEndStatus.Failed,
+                Time             = time,
+                CurrentIdToValue = null,
+                GainedRewards    = gainedRewards,
+                SpentResources   = spentResources
+            });
+            
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
 
             this.handleUserDataServices.SaveAll();
@@ -97,12 +113,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player win current level
         /// </summary>
         /// <param name="time">Play time in seconds</param>
-        public void PassCurrentLevel(int time = 0)
+        /// <param name="gainedRewards">Rewards gained in level</param>
+        /// <param name="spentResources">Items/Resources used in level</param>
+        public void PassCurrentLevel(int time = 0, Dictionary<string, object> gainedRewards = null, Dictionary<string, object> spentResources = null)
         {
             this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).WinCount++;
             this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
-            this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = time, CurrentIdToValue = null });
-            if (this.GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
+            this.signalBus.Fire(new LevelEndedSignal
+            {
+                Level            = this.uiTemplateUserLevelData.CurrentLevel,
+                EndStatus        = LevelEndStatus.Completed,
+                Time             = time,
+                CurrentIdToValue = null,
+                GainedRewards    = gainedRewards,
+                SpentResources   = spentResources
+            });
+            if(this.GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
             this.uiTemplateUserLevelData.CurrentLevel++;
 
             this.handleUserDataServices.SaveAll();
@@ -112,10 +138,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player skip current level
         /// </summary>
         /// <param name="time">Play time in seconds</param>
-        public void SkipCurrentLevel(int time = 0)
+        /// <param name="gainedRewards">Rewards gained in level</param>
+        /// <param name="spentResources">Items/Resources used in level</param>
+        public void SkipCurrentLevel(int time = 0, Dictionary<string, object> gainedRewards = null, Dictionary<string, object> spentResources = null)
         {
-            if (this.GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
+            if(this.GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
+            
             this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = time });
+            this.signalBus.Fire(new LevelEndedSignal
+            {
+                Level            = this.uiTemplateUserLevelData.CurrentLevel,
+                EndStatus        = LevelEndStatus.Skipped,
+                Time             = time,
+                CurrentIdToValue = null,
+                GainedRewards    = gainedRewards,
+                SpentResources   = spentResources
+            });
+            
             this.uiTemplateUserLevelData.CurrentLevel++;
 
             this.handleUserDataServices.SaveAll();

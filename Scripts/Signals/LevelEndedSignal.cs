@@ -4,9 +4,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Signals
 
     public class LevelEndedSignal
     {
-        public int                     Level;
-        public bool                    IsWin;
-        public int                     Time;
-        public Dictionary<string, int> CurrentIdToValue;
+        public int                        Level;
+        public LevelEndStatus             EndStatus;
+        public int                        Time;
+        public int                        GameModeId;
+        public Dictionary<string, int>    CurrentIdToValue;
+        public Dictionary<string, object> GainedRewards;
+        public Dictionary<string, object> SpentResources;
+        public int                        Timestamp;
+    }
+
+    public enum LevelEndStatus
+    {
+        Completed,
+        Failed,
+        Skipped,
+        Quit
     }
 }

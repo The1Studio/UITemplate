@@ -1,15 +1,11 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 {
-    using System;
-    using System.Collections.Generic;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
     using GameFoundation.Signals;
-    using TheOneStudio.UITemplate.ThirdPartyServices.AnalyticEvents.Level;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
-    using LevelEvent = TheOneStudio.UITemplate.ThirdPartyServices.AnalyticEvents.Level;
 
     public abstract class BaseAnalyticEventFactory : IAnalyticEventFactory
     {
@@ -74,23 +70,14 @@
         public virtual IEvent AppOpenClicked()                 => new AppOpenClicked();
 
         //Level
-        public virtual IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);
-        public virtual IEvent LevelStart(int level, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed) => new LevelEvent.LevelBegin(level, totalLevelsPlayed, timestamp, gameModeId, totalLevelsTypePlayed);
-
-        public virtual IEvent LevelWin(int level, int timeSpent,  int  winCount) => new LevelWin(level, timeSpent);
-        public virtual IEvent LevelWin(int level, int gameModeId, long timePlay, Dictionary<string, object> gainedRewards, Dictionary<string, object> spendResources, long timestamp) => new LevelEvent.LevelEnd(level, LevelEvent.LevelEnd.Status.Complete, gameModeId, timePlay, gainedRewards, spendResources, timestamp);
-
-        public virtual IEvent LevelLose(int level, int timeSpent,  int  loseCount) => new LevelLose(level, timeSpent);
-        public virtual IEvent LevelLose(int level, int gameModeId, long timePlay, Dictionary<string, object> gainedRewards, Dictionary<string, object> spendResources, long timestamp) => new LevelEvent.LevelEnd(level, LevelEvent.LevelEnd.Status.Fail, gameModeId, timePlay, gainedRewards, spendResources, timestamp);
-
-        public virtual IEvent FirstWin(int level, int timeSpent) => new FirstWin(level, timeSpent);
-
+        public virtual IEvent LevelStart(int   level, int gold)                     => new LevelStart(level, gold);
+        public virtual IEvent LevelWin(int     level, int timeSpent, int winCount)  => new LevelWin(level, timeSpent);
+        public virtual IEvent LevelLose(int    level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
+        public virtual IEvent FirstWin(int     level, int timeSpent) => new FirstWin(level, timeSpent);
         public virtual IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
-        public virtual IEvent LevelSkip(int level, int gameModeId, long timePlay, Dictionary<string, object> gainedRewards, Dictionary<string, object> spendResources, long timestamp) => new LevelEvent.LevelEnd(level, LevelEvent.LevelEnd.Status.Skip, gameModeId, timePlay, gainedRewards, spendResources, timestamp);
         
-        public virtual IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) => new EarnVirtualCurrency(virtualCurrencyName, value, source);
-
-        public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) => SpendVirtualCurrency(virtualCurrencyName, value, itemName);
+        public virtual IEvent EarnVirtualCurrency(string  virtualCurrencyName, long value, string source)   => new EarnVirtualCurrency(virtualCurrencyName, value, source);
+        public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) => new SpendVirtualCurrency(virtualCurrencyName, value, itemName);
 
         public virtual IEvent TutorialCompletion(bool success, string tutorialId) => new TutorialCompletion(success, tutorialId);
 

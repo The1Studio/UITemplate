@@ -1,8 +1,6 @@
 #if CRAZYLAB
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Crazylab
 {
-    using System;
-    using System.Collections.Generic;
     using Core.AnalyticServices;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using GameFoundation.Signals;

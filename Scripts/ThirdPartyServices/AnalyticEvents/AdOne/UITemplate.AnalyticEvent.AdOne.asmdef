@@ -1,0 +1,9 @@
+﻿{
+  "name": "UITemplate.AnalyticEvent.AdOne",
+  "references": [
+    "3rdCore.Analytic",
+    "UITemplate.AnalyticEvent",
+    "GameFoundation.Signals",
+    "UITemplate.Scripts"
+  ]
+}

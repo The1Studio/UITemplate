@@ -1,0 +1,8 @@
+﻿{
+  "name": "UITemplate.AnalyticEvent.Crazylab",
+  "references": [
+    "3rdCore.Analytic",
+    "GameFoundation.Signals",
+    "UITemplate.AnalyticEvent"
+  ]
+}

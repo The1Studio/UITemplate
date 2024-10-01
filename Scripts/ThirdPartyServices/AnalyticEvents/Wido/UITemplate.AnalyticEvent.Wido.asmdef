@@ -1,0 +1,9 @@
+﻿{
+  "name": "UITemplate.AnalyticEvent.Wido",
+  "references": [
+    "3rdCore.Analytic",
+    "UITemplate.AnalyticEvent",
+    "UITemplate.Scripts",
+    "GameFoundation.Signals",
+    "UITemplate.AnalyticEvent.Common"
+  ]}

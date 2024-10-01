@@ -1,0 +1,9 @@
+﻿{
+  "name": "UITemplate.AnalyticEvent.Zitga",
+  "references": [
+    "UITemplate.Scripts",
+    "GameFoundation.Signals",
+    "3rdCore.Analytic",
+    "UITemplate.AnalyticEvent"
+  ]
+}

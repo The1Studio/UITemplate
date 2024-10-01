@@ -1,0 +1,9 @@
+﻿{
+  "name": "UITemplate.AnalyticEvent.Mirai",
+  "references": [
+    "3rdCore.Analytic",
+    "UITemplate.AnalyticEvent",
+    "GameFoundation.Signals",
+    "UITemplate.AnalyticEvent.Common"
+  ]
+}

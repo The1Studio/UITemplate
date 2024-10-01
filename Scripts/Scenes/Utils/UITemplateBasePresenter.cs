@@ -12,7 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine;
     using UnityEngine.UI;
 

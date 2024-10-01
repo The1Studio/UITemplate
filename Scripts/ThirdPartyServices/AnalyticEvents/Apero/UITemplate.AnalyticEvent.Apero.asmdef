@@ -1,0 +1,10 @@
+﻿{
+  "name": "UITemplate.AnalyticEvent.Apero",
+  "references": [
+    "3rdCore.Analytic",
+    "3rd.IAP",
+    "UITemplate.AnalyticEvent",
+    "GameFoundation.Signals",
+    "3rdCore.Ads"
+  ]
+}

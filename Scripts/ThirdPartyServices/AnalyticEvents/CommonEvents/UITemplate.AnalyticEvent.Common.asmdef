@@ -1,0 +1,6 @@
+﻿{
+  "name": "UITemplate.AnalyticEvent.Common",
+  "references": [
+    "3rdCore.Analytic"
+  ]
+}

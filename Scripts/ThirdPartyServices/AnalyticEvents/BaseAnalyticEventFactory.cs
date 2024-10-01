@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 {
+    using System.Collections.Generic;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
@@ -40,10 +41,7 @@
             return new InterstitialAdClosed(place);
         }
 
-        public virtual IEvent InterstitialShowFail(string place, string msg)
-        {
-            return new InterstitialAdDisplayedFailed(place);
-        }
+        public virtual IEvent InterstitialShowFail(string place, string msg) => new InterstitialAdDisplayedFailed(place, msg);
 
         public virtual IEvent InterstitialClick(string place)
         {
@@ -107,20 +105,11 @@
             return new RewardedAdLoadFailed(place, 0, msg);
         }
 
-        public virtual IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)
-        {
-            return isRewarded ? new RewardedAdCompleted(place) : new RewardedSkipped(place);
-        }
+        public virtual IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)=> isRewarded ? new RewardedAdCompleted(place) : new RewardedSkipped(place);
 
-        public virtual IEvent RewardedVideoClick(string place)
-        {
-            return new RewardedAdLoadClicked(place);
-        }
+        public virtual IEvent RewardedVideoClick(string place) => new RewardedAdLoadClicked(place);
 
-        public virtual IEvent RewardedVideoShowFail(string place, string msg)
-        {
-            return new RewardedAdShowFail(place);
-        }
+        public virtual IEvent RewardedVideoShowFail(string place, string msg) => new RewardedAdShowFail(place, msg);
 
         //App open
         public virtual IEvent AppOpenCalled(string place)
@@ -164,19 +153,15 @@
         }
 
         //Level
-        public virtual IEvent LevelStart(int   level, int gold)                     => new LevelStart(level, gold);
+        public virtual IEvent LevelStart(int   level, int gold,      int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed) => new LevelStart(level, gold, totalLevelsPlayed, timestamp, gameModeId, totalLevelsTypePlayed);
         public virtual IEvent LevelWin(int     level, int timeSpent, int winCount)  => new LevelWin(level, timeSpent);
         public virtual IEvent LevelLose(int    level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
         public virtual IEvent FirstWin(int     level, int timeSpent) => new FirstWin(level, timeSpent);
         public virtual IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
-        
-        public virtual IEvent EarnVirtualCurrency(string  virtualCurrencyName, long value, string source)   => new EarnVirtualCurrency(virtualCurrencyName, value, source);
-        public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) => new SpendVirtualCurrency(virtualCurrencyName, value, itemName);
 
-        public virtual IEvent TutorialCompletion(bool success, string tutorialId)
-        {
-            return new TutorialCompletion(success, tutorialId);
-        }
+        public virtual IEvent EarnResource(string     resourceId, long   value,      string source,     Dictionary<string,object> spentResources, long   timestamp) => new EarnResource(resourceId, value, source, spentResources, timestamp);
+        public virtual IEvent SpendResource(string    resourceId, long   value,      string location,   long   timestamp)               => new SpendResource(resourceId, value, location, timestamp);
+        public virtual IEvent TutorialCompletion(bool success,    string tutorialId, int    stepId = 0, string stepName = "")           => new TutorialCompletion(success, tutorialId, stepId, stepName);
 
         public virtual void ForceUpdateAllProperties()
         {

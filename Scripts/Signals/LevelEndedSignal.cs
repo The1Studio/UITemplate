@@ -9,7 +9,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Signals
         public int                        Time;
         public int                        GameModeId;
         public Dictionary<string, int>    CurrentIdToValue;
-        public Dictionary<string, object> GainedRewards;
         public Dictionary<string, object> SpentResources;
         public int                        Timestamp;
     }
@@ -19,6 +18,5 @@ namespace TheOneStudio.UITemplate.UITemplate.Signals
         Completed,
         Failed,
         Skipped,
-        Quit
     }
 }

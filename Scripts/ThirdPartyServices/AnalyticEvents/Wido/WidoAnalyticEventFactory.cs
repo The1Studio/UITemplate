@@ -6,12 +6,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using Core.AnalyticServices.Data;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
     using GameFoundation.Signals;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido.LevelStart;
     using UnityEngine.Scripting;
 
@@ -36,13 +35,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent InterstitialShowCompleted(int level, string place) { return new InterstitialAdsSuccess(place); }
 
-        public override IEvent RewardedVideoEligible(string place) => new AdsRewardEligible(place);
+        public override IEvent RewardedVideoOffer(string place) { return new RewardedAdOffer(place); }
 
-        public override IEvent RewardedVideoOffer(string place) { return new AdsRewardOffer(place); }
 
-        public override IEvent RewardedVideoDownloaded(string place, long loadingMilis) { return new AdsRewardedDownloaded(place, loadingMilis); }
-
-        public override IEvent RewardedVideoCalled(string place) { return new AdsRewardedCalled(); }
+        public override IEvent RewardedVideoCalled(string place) { return new RewardedAdCalled(place); }
 
         public override IEvent RewardedVideoShow(int level, string place) { return new ShowRewardedAds(this.internetService.IsInternetAvailable, place); }
 
@@ -50,7 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelFailed(level, timeSpent); }
 
-        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, this.uiTemplateLevelDataController.GetLevelData(level).LevelStatus == LevelData.Status.Passed); }
+        public override IEvent LevelStart(int level, int gold, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed) { return new LevelStart(level, this.uiTemplateLevelDataController.GetLevelData(level).LevelStatus == LevelData.Status.Passed); }
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelPassed(level, timeSpent); }
 
@@ -70,22 +66,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
             IgnoreEvents = new()
             {
                 typeof(GameStarted),
-                typeof(AdInterClick),
-                typeof(AdInterFail),
-                typeof(AdsRewardFail),
-                typeof(AdsRewardOffer),
+                typeof(InterstitialAdClicked),
+                typeof(InterstitialAdDisplayedFailed),
+                typeof(RewardedAdShowFail),
+                typeof(RewardedAdOffer),
             },
             CustomEventKeys = new()
             {
                 { nameof(BannerShown), "af_banner_shown" },
-                { nameof(LevelComplete), "af_level_achieved" },
-                { nameof(AdInterLoad), "af_inters_api_called" },
-                { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdInterDownloaded), "af_inters_ad_eligible" },
-                { nameof(AdsRewardClick), "af_rewarded_ad_eligible" },
-                { nameof(AdsRewardedDownloaded), "af_rewarded_api_called" },
-                { nameof(AdsRewardShow), "af_rewarded_displayed" },
-                { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
+                { nameof(LevelWin), "af_level_achieved" },
+                { nameof(InterstitialAdCalled), "af_inters_api_called" },
+                { nameof(InterstitialAdDisplayed), "af_inters_displayed" },
+                { nameof(InterstitialAdEligible), "af_inters_ad_eligible" },
+                { nameof(RewardedAdEligible), "af_rewarded_ad_eligible" },
+                { nameof(RewardedAdCalled), "af_rewarded_api_called" },
+                { nameof(RewardedAdDisplayed), "af_rewarded_displayed" },
+                { nameof(RewardedAdCompleted), "af_rewarded_ad_completed" },
+                {nameof(RewardedAdEligible), "af_ads_reward_eligible"}
             }
         };
 
@@ -96,6 +93,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 { nameof(AppOpenFullScreenContentOpened), "aoa_show_success" },
                 { nameof(ShowInterstitialAds), "inter_show_success" },
                 { nameof(RewardedAdsSuccess), "rewarded_show_success" },
+                { nameof(RewardedAdEligible), "ads_reward_eligible" },
+                { nameof(RewardedAdOffer), "ads_reward_offer" },
+                { nameof(RewardedAdCalled), "ads_reward_called" },
+                { nameof(RewardedAdLoaded), "ads_rewarded_downloaded" }
             }
         };
     }

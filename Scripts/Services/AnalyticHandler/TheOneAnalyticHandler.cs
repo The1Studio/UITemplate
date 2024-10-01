@@ -1,52 +1,31 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
+﻿#if THEONE
+
+namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
 {
-    using System;
     using Core.AnalyticServices;
-    using Core.AnalyticServices.CommonEvents;
-    using Core.AnalyticServices.Data;
-    using GameFoundation.DI;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.TheOne;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
 
-    public class TheOneAnalyticHandler : IInitializable, IDisposable
+    public class TheOneAnalyticHandler :UITemplateAnalyticHandler
     {
-        private readonly SignalBus                         signalBus;
-        private readonly IAnalyticEventFactory             analyticEventFactory;
-        private readonly IAnalyticServices                 analyticServices;
-        private readonly UITemplateInventoryDataController inventoryDataController;
-        private readonly UITemplateLevelDataController     levelDataController;
-
-        public TheOneAnalyticHandler(SignalBus                         signalBus,
-                                     IAnalyticEventFactory             analyticEventFactory,
-                                     IAnalyticServices                 analyticServices,
-                                     UITemplateInventoryDataController inventoryDataController,
-                                     UITemplateLevelDataController     levelDataController)
+        public TheOneAnalyticHandler(SignalBus signalBus,
+                                     IAnalyticServices analyticServices, 
+                                     IAnalyticEventFactory analyticEventFactory, 
+                                     UITemplateLevelDataController uiTemplateLevelDataController,
+                                     UITemplateInventoryDataController uITemplateInventoryDataController, 
+                                     UITemplateDailyRewardController uiTemplateDailyRewardController, 
+                                     UITemplateGameSessionDataController uITemplateGameSessionDataController)
+            : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController)
         {
-            this.signalBus               = signalBus;
-            this.analyticEventFactory    = analyticEventFactory;
-            this.analyticServices        = analyticServices;
-            this.inventoryDataController = inventoryDataController;
-            this.levelDataController     = levelDataController;
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             // level
-            this.signalBus.Subscribe<LevelStartedSignal>(this.HandleLevelStart);
             this.signalBus.Subscribe<LevelEndedSignal>(this.HandleLevelEnd);
-        }
-
-        private void HandleLevelStart(LevelStartedSignal signal)
-        {
-            this.Track(new LevelStart(level: signal.Level,
-                                      gold: this.inventoryDataController.GetCurrencyValue(),
-                                      totalLevelsPlayed: this.levelDataController.TotalLevelSurpassed,
-                                      timestamp: DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                                      gameModeId: signal.GameModeId,
-                                      totalLevelsTypePlayed: signal.TotalLevelsTypePlayed));
         }
 
         private void HandleLevelEnd(LevelEndedSignal signal)
@@ -55,27 +34,15 @@
                                     status: signal.EndStatus.ToString(),
                                     gameModeId: signal.GameModeId,
                                     timePlay: signal.Time,
-                                    gainedRewards: signal.GainedRewards,
                                     spentResources: signal.SpentResources,
                                     timestamp: signal.Timestamp));
         }
-
-        private void Track(IEvent trackEvent)
-        {
-            this.analyticEventFactory.ForceUpdateAllProperties();
-
-            if (trackEvent is CustomEvent customEvent &&
-                string.IsNullOrEmpty(customEvent.EventName))
-                return;
-
-            this.analyticServices.Track(trackEvent);
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             // level
-            this.signalBus.Unsubscribe<LevelStartedSignal>(this.HandleLevelStart);
             this.signalBus.Unsubscribe<LevelEndedSignal>(this.HandleLevelEnd);
         }
     }
 }
+
+#endif

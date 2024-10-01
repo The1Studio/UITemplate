@@ -30,6 +30,7 @@ namespace TheOneStudio.UITemplate
             builder.Register<UITemplateAdServiceWrapper>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 
+            // creative service
             #if CREATIVE
             builder.Register<CreativeService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif

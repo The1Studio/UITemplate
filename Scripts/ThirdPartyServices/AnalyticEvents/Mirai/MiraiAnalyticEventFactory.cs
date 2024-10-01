@@ -6,11 +6,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
-    using LevelStart = TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents.LevelStart;
     using UnityEngine.Scripting;
 
     public class MiraiAnalyticEventFactory : BaseAnalyticEventFactory
@@ -33,27 +30,26 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
             IgnoreEvents = new HashSet<Type>()
             {
                 typeof(GameStarted),
-                typeof(AdInterClick),
-                typeof(AdInterFail),
-                typeof(AdInterDownloaded),
-                typeof(AdsRewardFail),
-                typeof(AdsRewardOffer),
-                typeof(AdsRewardedDownloaded),
-                typeof(AdsRewardClick),
-                typeof(LevelComplete),
+                typeof(InterstitialAdClicked),
+                typeof(InterstitialAdDisplayedFailed),
+                typeof(InterstitialAdDownloaded),
+                typeof(RewardedAdShowFail),
+                typeof(RewardedAdOffer),
+                typeof(RewardedAdLoaded),
+                typeof(RewardedAdLoadClicked),
+                typeof(LevelWin),
             },
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(BannerShown), "af_banner_shown" },
-                { nameof(GameTutorialCompletion), "af_tutorial_completion" },
-                { nameof(LevelAchieved), "af_level_achieved" },
-                { nameof(AdsIntersEligible), "af_inters_ad_eligible" },
-                { nameof(AdInterCalled), "af_inters_api_called" },
-                { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdsRewardEligible), "af_rewarded_ad_eligible" },
-                { nameof(AdsRewardedCalled), "af_rewarded_api_called" },
-                { nameof(AdsRewardShow), "af_rewarded_displayed" },
-                { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
+                { nameof(TutorialCompletion), "af_tutorial_completion" },
+                { nameof(FirstWin), "af_level_achieved" },
+                { nameof(InterstitialAdEligible), "af_inters_ad_eligible" },
+                { nameof(InterstitialAdCalled), "af_inters_api_called" },
+                { nameof(InterstitialAdDisplayed), "af_inters_displayed" },
+                { nameof(RewardedAdEligible), "af_rewarded_ad_eligible" },
+                { nameof(RewardedAdCalled), "af_rewarded_api_called" },
+                { nameof(RewardedAdDisplayed), "af_rewarded_displayed" }
             }
         };
 
@@ -80,14 +76,28 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
                 { nameof(InterstitialAdDisplayedFailed), "ads_Inter_fail" },
                 { nameof(RewardedAdDisplayed), "ads_Reward_show" },
                 { nameof(RewardedAdCompleted), "ads_Reward_complete" },
-                { nameof(AdsRewardFail), "ads_Reward_fail" },
+                { nameof(RewardedAdShowFail), "ads_Reward_fail" },
                 { nameof(CommonEvents.AppOpenFullScreenContentFailed), "ads_Open_fail" },
                 { nameof(CommonEvents.AppOpenFullScreenContentOpened), "ads_Open_show" },
                 { "GameLaunched", "open_app" },
             }
         };
 
-        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, gold, 0, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+        public override IEvent LevelStart(int level, int gold, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed)
+        {
+            return
+                new CustomEvent()
+                {
+                    EventName = "level_start",
+                    EventProperties = new Dictionary<string, object>()
+                    {
+                        { "level", level },
+                        { "gold", gold },
+                        { "world_id", totalLevelsPlayed },
+                        { "time_stamp", timestamp }
+                    }
+                };
+        }
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
@@ -95,7 +105,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
 
         public override IEvent LevelSkipped(int level, int timeSpent) { return new LevelEnd(level, "skip", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
-        public override IEvent RewardedVideoShowFail(string place, string msg) { return new AdsRewardFail(place, msg); }
+        public override IEvent RewardedVideoShowFail(string place, string msg) { return new RewardedAdShowFail(place, msg); }
     }
 }
 #endif

@@ -40,7 +40,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelFailed(level, timeSpent); }
 
-        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, this.uiTemplateLevelDataController.GetLevelData(level).LevelStatus == LevelData.Status.Passed); }
+        public override IEvent LevelStart(int level, int gold, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed) { return new LevelStart(level, this.uiTemplateLevelDataController.GetLevelData(level).LevelStatus == LevelData.Status.Passed); }
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelPassed(level, timeSpent); }
 

@@ -46,19 +46,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelFail(level, loseCount);
 
-        public override IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);
-
         public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelComplete(level, timeSpent);
 
         public override IEvent FirstWin(int level, int timeSpent) => new LevelAchieved(level, timeSpent);
-
-        public override IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
-
-        public override IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) => new EarnVirtualCurrency(virtualCurrencyName, value, source);
-
-        public override IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) => new SpendVirtualCurrency(virtualCurrencyName, value, itemName);
-
-        public override IEvent TutorialCompletion(bool success, string tutorialId) => new GameTutorialCompletion(success, tutorialId);
+        
+        public override IEvent TutorialCompletion(bool success, string tutorialId, int stepId = 0, string stepName = "") => new GameTutorialCompletion(success, tutorialId);
 
         public override void ForceUpdateAllProperties() { }
 

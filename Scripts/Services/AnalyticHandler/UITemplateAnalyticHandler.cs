@@ -1,4 +1,4 @@
-namespace TheOneStudio.UITemplate.UITemplate.Services
+namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
 {
     using System;
     using Core.AdsServices.Signals;
@@ -346,6 +346,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             };
             
             this.Track(levelEndEvent);
+            
+            //new standard event
+            this.Track(this.analyticEventFactory.LevelEnd(level: obj.Level,
+                                    status: obj.EndStatus.ToString(),
+                                    gameModeId: obj.GameModeId,
+                                    timePlay: obj.Time,
+                                    timestamp: obj.Timestamp,
+                                    spentResources: obj.SpentResources));
             
             if (obj.EndStatus == LevelEndStatus.Completed && levelData.WinCount == 1)
             {

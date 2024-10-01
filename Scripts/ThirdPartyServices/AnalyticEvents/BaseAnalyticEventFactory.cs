@@ -153,11 +153,12 @@
         }
 
         //Level
-        public virtual IEvent LevelStart(int   level, int gold,      int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed) => new LevelStart(level, gold, totalLevelsPlayed, timestamp, gameModeId, totalLevelsTypePlayed);
-        public virtual IEvent LevelWin(int     level, int timeSpent, int winCount)  => new LevelWin(level, timeSpent);
-        public virtual IEvent LevelLose(int    level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
-        public virtual IEvent FirstWin(int     level, int timeSpent) => new FirstWin(level, timeSpent);
-        public virtual IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
+        public virtual IEvent LevelStart(int   level, int    gold,      int totalLevelsPlayed, long timestamp, int  gameModeId,                                                                            int totalLevelsTypePlayed) => new LevelStart(level, gold, totalLevelsPlayed, timestamp, gameModeId, totalLevelsTypePlayed);
+        public virtual IEvent LevelEnd(int     level, string status,    int gameModeId,        long timePlay,  long timestamp, Dictionary<string, object> spentResources)             => new LevelEnd(level, status, gameModeId, timePlay, timestamp, spentResources);
+        public virtual IEvent LevelWin(int     level, int    timeSpent, int winCount)  => new LevelWin(level, timeSpent);
+        public virtual IEvent LevelLose(int    level, int    timeSpent, int loseCount) => new LevelLose(level, timeSpent);
+        public virtual IEvent FirstWin(int     level, int    timeSpent) => new FirstWin(level, timeSpent);
+        public virtual IEvent LevelSkipped(int level, int    timeSpent) => new LevelSkipped(level, timeSpent);
 
         public virtual IEvent EarnResource(string     resourceId, long   value,      string source,     Dictionary<string,object> spentResources, long   timestamp) => new EarnResource(resourceId, value, source, spentResources, timestamp);
         public virtual IEvent SpendResource(string    resourceId, long   value,      string location,   long   timestamp)               => new SpendResource(resourceId, value, location, timestamp);

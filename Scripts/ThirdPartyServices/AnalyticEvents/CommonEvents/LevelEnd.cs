@@ -1,22 +1,39 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents
 {
+    using System.Collections.Generic;
     using Core.AnalyticServices.Data;
 
+    /// <summary>
+    /// Event for when a level ends.
+    /// </summary>
     public class LevelEnd : IEvent
     {
-        public int    level;
-        public string status;
-        public int    worldId;
-        public double timePlay;
-        public long   timerStamp;
+        /// <summary> Ended level.</summary>
+        public int Level { get; set; }
 
-        public LevelEnd(int level, string status, int worldId, double timePlay, long timeStamp)
+        /// <summary> Level status: Completed, Failed, Skipped or Quit.</summary>
+        public string Status { get; set; }
+
+        /// <summary> Game mode id.</summary>
+        public int GameModeId { get; set; }
+
+        /// <summary> Time played in milliseconds.</summary>
+        public long TimePlay { get; set; }
+
+        /// <summary> Resource spent while playing level.</summary>
+        public Dictionary<string, object> SpentResources { get; set; }
+
+        /// <summary> Timestamp of the event.</summary>
+        public long? Timestamp { get; set; }
+
+        public LevelEnd(int level, string status, int gameModeId, long timePlay, Dictionary<string, object> spentResources = null, long? timestamp = null)
         {
-            this.level      = level;
-            this.status     = status;
-            this.worldId    = worldId;
-            this.timePlay   = timePlay;
-            this.timerStamp = timeStamp;
+            this.Level          = level;
+            this.Status         = status;
+            this.GameModeId     = gameModeId;
+            this.TimePlay       = timePlay;
+            this.SpentResources = spentResources;
+            this.Timestamp      = timestamp;
         }
     }
 }

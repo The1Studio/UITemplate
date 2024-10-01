@@ -77,6 +77,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class RewardedAdShowFail : IEvent
     {
         public string placememt;
+        public string Message;
         public RewardedAdShowFail(string placememt) { this.placememt = placememt; }
+        
+        public RewardedAdShowFail(string placememt, string message)
+        {
+            this.placememt = placememt;
+            this.Message   = message;
+        }
     }
 }

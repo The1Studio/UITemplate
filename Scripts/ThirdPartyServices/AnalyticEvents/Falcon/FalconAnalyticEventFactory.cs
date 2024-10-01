@@ -9,20 +9,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
     using Core.AnalyticServices.Data;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
-    using global::Falcon.FalconAnalytics.Scripts.Enum;
-    using global::Falcon.FalconAnalytics.Scripts.Models.Messages.PreDefines;
     using ServiceImplementation.IAPServices;
     using ServiceImplementation.IAPServices.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.Signals;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using GameFoundation.Signals;
-    using AdInterClick = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdInterClick;
-    using AdInterFail = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdInterFail;
-    using AdsRewardClick = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdsRewardClick;
-    using AdsRewardFail = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdsRewardFail;
-    using AdsRewardOffer = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdsRewardOffer;
     using UnityEngine.Scripting;
 
     public class FalconAnalyticEventFactory : BaseAnalyticEventFactory
@@ -70,14 +61,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
             IgnoreEvents = new HashSet<Type>()
             {
                 typeof(GameStarted),
-                typeof(AdInterClick),
-                typeof(AdInterFail),
-                typeof(AdInterDownloaded),
-                typeof(AdsRewardFail),
-                typeof(AdsRewardOffer),
-                typeof(AdsRewardedDownloaded),
-                typeof(AdsRewardClick),
-                typeof(LevelComplete),
+                typeof(InterstitialAdClicked),
+                typeof(InterstitialAdDisplayedFailed),
+                typeof(InterstitialAdDownloaded),
+                typeof(RewardedAdShowFail),
+                typeof(RewardedAdOffer),
+                typeof(RewardedAdLoaded),
+                typeof(RewardedAdLoadClicked),
+                typeof(LevelWin),
             },
             CustomEventKeys = new Dictionary<string, string>()
             {
@@ -141,7 +132,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
             return new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         }
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelEnd(level, "win", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+        public override IEvent RewardedVideoShowFail(string place, string msg) { return new RewardedAdShowFail(place, msg); }
+
+        public override IEvent LevelWin(int                 level, int    timeSpent, int winCount) { return new LevelEnd(level, "win", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
         public override IEvent LevelSkipped(int level, int timeSpent) { return new LevelEnd(level, "skip", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
@@ -150,7 +143,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
         private void OnLevelEnded(LevelEndedSignal obj)
         {
             LevelStatus levelStatus;
-            if (obj.IsWin)
+            if (obj.EndStatus == LevelEndStatus.Completed)
             {
                 var levelNotPassBefore = this.falconLocalData.PassedLevels.Add(obj.Level);
                 levelStatus = levelNotPassBefore ? LevelStatus.Pass : LevelStatus.ReplayPass;

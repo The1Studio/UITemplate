@@ -7,9 +7,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using GameFoundation.Signals;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
 
     public class RocketAnalyticEventFactory : BaseAnalyticEventFactory
@@ -27,7 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
 
-        public override IEvent LevelStart(int level, int gold) => new LevelStart(level);
+        public override IEvent LevelStart(int level, int gold, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed) => new LevelStart(level);
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelWin(level, timeSpent);
 
@@ -49,22 +48,22 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
             IgnoreEvents = new HashSet<Type>()
             {
                 typeof(GameStarted),
-                typeof(AdInterClick),
-                typeof(AdInterFail),
-                typeof(AdsRewardFail),
-                typeof(AdsRewardOffer),
+                typeof(InterstitialAdClicked),
+                typeof(InterstitialAdDisplayedFailed),
+                typeof(RewardedAdShowFail),
+                typeof(RewardedAdOffer),
             },
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(BannerShown), "af_banner_shown" },
-                { nameof(LevelComplete), "af_level_achieved" },
-                { nameof(AdInterLoad), "af_inters_api_called" },
-                { nameof(AdInterShow), "af_inters_displayed" },
-                { nameof(AdInterDownloaded), "af_inters_ad_eligible" },
-                { nameof(AdsRewardClick), "af_rewarded_ad_eligible" },
-                { nameof(AdsRewardedDownloaded), "af_rewarded_api_called" },
-                { nameof(AdsRewardShow), "af_rewarded_displayed" },
-                { nameof(AdsRewardComplete), "af_rewarded_ad_completed" },
+                { nameof(LevelWin), "af_level_achieved" },
+                { nameof(InterstitialCalled), "af_inters_api_called" },
+                { nameof(InterstitialAdDisplayed), "af_inters_displayed" },
+                { nameof(InterstitialAdEligible), "af_inters_ad_eligible" },
+                { nameof(RewardedAdEligible), "af_rewarded_ad_eligible" },
+                { nameof(RewardedAdCalled), "af_rewarded_api_called" },
+                { nameof(RewardedAdDisplayed), "af_rewarded_displayed" },
+                { nameof(RewardedAdCompleted), "af_rewarded_ad_completed" },
             }
         };
 

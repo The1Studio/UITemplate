@@ -20,13 +20,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     {
         #region inject
 
-        private readonly SignalBus                           signalBus;
-        private readonly IAnalyticServices                   analyticServices;
-        private readonly IAnalyticEventFactory               analyticEventFactory;
-        private readonly UITemplateLevelDataController       uiTemplateLevelDataController;
-        private readonly UITemplateInventoryDataController   uITemplateInventoryDataController;
-        private readonly UITemplateDailyRewardController     uiTemplateDailyRewardController;
-        private readonly UITemplateGameSessionDataController uITemplateGameSessionDataController;
+        protected readonly SignalBus                           signalBus;
+        protected readonly IAnalyticServices                   analyticServices;
+        protected readonly IAnalyticEventFactory               analyticEventFactory;
+        private readonly   UITemplateLevelDataController       uiTemplateLevelDataController;
+        private readonly   UITemplateInventoryDataController   uITemplateInventoryDataController;
+        private readonly   UITemplateDailyRewardController     uiTemplateDailyRewardController;
+        private readonly   UITemplateGameSessionDataController uITemplateGameSessionDataController;
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticServices.Track(trackEvent);
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             this.analyticServices.Start();
 
@@ -236,7 +236,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Track(this.analyticEventFactory.InterstitialDownloadFailed(obj.Placement, obj.Message, obj.LoadingMilis));
         }
 
-        protected virtual void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
+        private void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LastAdsPlacementProperty]     = obj.Placement;
             this.analyticServices.UserProperties[this.analyticEventFactory.TotalInterstitialAdsProperty] = obj.Placement;
@@ -361,7 +361,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void LevelStartedHandler(LevelStartedSignal obj)
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LastLevelProperty] = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
-            this.Track(this.analyticEventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
+            this.Track(this.analyticEventFactory.LevelStart(level: obj.Level,
+                                                            gold: this.uITemplateInventoryDataController.GetCurrencyValue(),
+                           gameModeId: obj.GameModeId,
+                           totalLevelsPlayed: obj.TotalLevelsPlayed,
+                           timestamp: obj.Timestamp,
+                           totalLevelsTypePlayed: obj.TotalLevelsTypePlayed));
             
             if (obj.Level > 50) return;
             this.Track(new CustomEvent()
@@ -412,7 +417,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             });
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             this.signalBus.Unsubscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Unsubscribe<LevelEndedSignal>(this.LevelEndedHandler);

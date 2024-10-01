@@ -46,7 +46,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class InterstitialAdDisplayedFailed : IEvent
     {
         public string placememt;
+        public string message;
         public InterstitialAdDisplayedFailed(string placememt) { this.placememt = placememt; }
+        public InterstitialAdDisplayedFailed(string placememt, string message)
+        {
+            this.placememt = placememt;
+            this.message   = message;
+        }
     }
 
     public class InterstitialAdClosed : IEvent

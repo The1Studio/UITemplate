@@ -6,8 +6,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
@@ -21,7 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) => new CustomEvent { EventName = $"win_level_{level}" };
 
-        public override IEvent LevelStart(int level, int gold) => new CustomEvent { EventName = $"start_level_{level}" };
+        public override IEvent LevelStart(int level, int gold, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed) => new CustomEvent { EventName = $"start_level_{level}" };
 
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
@@ -37,7 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(BannerShown), "af_banner_shown" },
-                { nameof(GameTutorialCompletion), "af_tutorial_completion" },
+                { nameof(TutorialCompletion), "af_tutorial_completion" },
                 { nameof(AchievedLevel), "af_achieved_level" },
                 { nameof(InterstitialAdEligible), "af_inters_ad_eligible" },
                 { nameof(InterstitialAdDownloaded), "af_inters_api_called" },
@@ -62,7 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
                 { "Placement", "placement" },
                 { "Currency", "currency" },
                 { "Revenue", "value" },
-                { nameof(LevelAchieved), "checkpoint" },
+                { nameof(FirstWin), "checkpoint" },
             }
         };
     }

@@ -54,8 +54,13 @@ namespace TheOneStudio.UITemplate
             // Toast
             builder.RegisterComponentInNewPrefab(toastController, Lifetime.Singleton).UnderTransform(rootTransform);
 
-            //Button experience helper
+            // Button experience helper
             builder.Register<UITemplateButtonExperienceHelper>(Lifetime.Singleton).AsImplementedInterfaces();
+            
+            // Creative
+            #if CREATIVE
+                builder.Register<CreativeService>(Lifetime.Singleton).AsInterfacesAndSelf();
+            #endif
         }
     }
 }

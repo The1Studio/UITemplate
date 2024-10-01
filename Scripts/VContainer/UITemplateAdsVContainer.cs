@@ -3,9 +3,7 @@
 namespace TheOneStudio.UITemplate
 {
     using GameFoundation.DI;
-    using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
-    using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler;
     using TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler.HiGame;
     using VContainer;
@@ -28,11 +26,6 @@ namespace TheOneStudio.UITemplate
             builder.Register<UITemplateAdServiceWrapper, UITemplateAdServiceWrapperCreative>(Lifetime.Singleton);
             #else
             builder.Register<UITemplateAdServiceWrapper>(Lifetime.Singleton).AsInterfacesAndSelf();
-            #endif
-
-            // creative service
-            #if CREATIVE
-            builder.Register<CreativeService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
         }
     }

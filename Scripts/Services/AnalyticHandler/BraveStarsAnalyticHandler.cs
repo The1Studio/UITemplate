@@ -1,4 +1,6 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
+﻿#if BRAVESTARS
+
+namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
 {
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
@@ -31,14 +33,25 @@
 
         #endregion
 
-        protected override void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
+        public override void Initialize()
         {
-            base.InterstitialAdDisplayedHandler(obj);
+            base.Initialize();
+            this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.InterstitialAdDisplayedHandler);
+        }
 
-            #if BRAVESTARS
+        private void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
+        {
             if(this.uiTemplateAdsController.WatchInterstitialAds > 20) return;
+            this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
             this.Track(new CustomEvent { EventName = $"af_inters_displayed_{this.uiTemplateAdsController.WatchInterstitialAds}_times" });
-            #endif
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.signalBus.Unsubscribe<InterstitialAdDisplayedSignal>(this.InterstitialAdDisplayedHandler);
         }
     }
 }
+
+#endif

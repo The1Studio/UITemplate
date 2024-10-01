@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 {
+    using System.Collections.Generic;
     using Core.AnalyticServices.Data;
 
     public interface IAnalyticEventFactory
@@ -53,16 +54,16 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent AppOpenClicked();
 
         IEvent LevelLose(int    level, int timeSpent, int loseCount);
-        IEvent LevelStart(int   level, int gold);
+        IEvent LevelStart(int   level, int gold,      int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed);
         IEvent LevelWin(int     level, int timeSpent, int winCount);
         IEvent FirstWin(int     level, int timeSpent);
         IEvent LevelSkipped(int level, int timeSpent);
 
 
-        IEvent EarnVirtualCurrency(string  virtualCurrencyName, long value, string source);
-        IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName);
+        IEvent EarnResource(string resourceId, long value, string source, Dictionary<string, object> spentResources, long timestamp);
+        IEvent SpendResource(string resourceId, long value, string location, long timestamp);
 
-        IEvent TutorialCompletion(bool success, string tutorialId);
+        IEvent TutorialCompletion(bool success, string tutorialId, int stepId = 0, string stepName = "");
 
         void ForceUpdateAllProperties();
 

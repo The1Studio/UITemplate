@@ -1,4 +1,4 @@
-namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido
+﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents
 {
     using Core.AnalyticServices.Data;
 

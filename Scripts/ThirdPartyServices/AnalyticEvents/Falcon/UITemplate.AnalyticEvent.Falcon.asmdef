@@ -1,0 +1,14 @@
+﻿{
+  "name": "UITemplate.AnalyticEvent.Falcon",
+  "references": [
+    "3rdCore.Analytic",
+    "GameFoundation.Models",
+    "UITemplate.AnalyticEvent",
+    "3rd.IAP",
+    "GameFoundation.UIModule",
+    "GameFoundation.Signals",
+    "UITemplate.Scripts",
+    "3rdCore.Ads",
+    "UITemplate.AnalyticEvent.Common"
+  ]
+}

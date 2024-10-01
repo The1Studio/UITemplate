@@ -1,0 +1,8 @@
+﻿{
+  "name": "UITemplate.AnalyticEvent.ABI",
+  "references": [
+    "3rdCore.Analytic",
+    "UITemplate.AnalyticEvent",
+    "GameFoundation.Signals"
+  ]
+}

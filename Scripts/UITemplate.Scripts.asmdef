@@ -52,7 +52,9 @@
     "UnityLogsViewer",
     "FalconSDK",
     "3rd.ServiceImplementation.Adjust",
-    "3rd.RemoteConfig.DI"
+    "3rd.RemoteConfig.DI",
+    "UITemplate.AnalyticEvent",
+    "UITemplate.AnalyticEvent.Common"
   ],
   "precompiledReferences": [
     "DOTween.dll",

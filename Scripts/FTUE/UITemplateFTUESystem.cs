@@ -13,6 +13,7 @@
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class UITemplateFTUESystem : IInitializable
     {
@@ -30,6 +31,7 @@
         private Dictionary<string, HashSet<GameObject>> StepIdToEnableGameObjects  { get; } = new(); //Use to enable the UI follow user's FTUE
         private Dictionary<string, HashSet<GameObject>> StepIdToDisableGameObjects { get; } = new(); //Use to disable the UI follow user's FTUE
 
+        [Preserve]
         public UITemplateFTUESystem(
             SignalBus                    signalBus,
             UITemplateFTUEDataController uiTemplateFtueDataController,

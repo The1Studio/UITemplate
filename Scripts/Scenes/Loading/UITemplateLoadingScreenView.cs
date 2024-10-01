@@ -150,20 +150,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.LoadingProgress = 0f;
             this.loadingSteps    = 1;
 
+            Debug.Log("oneLog: Start Loading Game");
             var stopWatch = Stopwatch.StartNew();
             UniTask.WhenAll(
                 this.CreateObjectPool(AudioService.AudioSourceKey, 3),
                 this.Preload(),
-                #if ADMOB || APPLOVIN
-                this.WaitForAoa(),
-                #endif
+                // #if ADMOB || APPLOVIN
+                // this.WaitForAoa(),
+                // #endif
                 UniTask.WhenAll(
                     this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
                 ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene).Forget();
             stopWatch.Stop();
-            Debug.Log("Game Loading Time: " + stopWatch.ElapsedMilliseconds + "ms");
+            Debug.Log("oneLog: Loading completed game Loading Time: " + stopWatch.ElapsedMilliseconds + "ms");
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "GameLoadingTime",

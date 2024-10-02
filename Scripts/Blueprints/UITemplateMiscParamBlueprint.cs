@@ -7,7 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     [BlueprintReader("UITemplateMiscParam", true)]
     public class UITemplateMiscParamBlueprint : GenericBlueprintReaderByCol
     {
-        public string PolicyAddress { get; set; }
-        public string TermsAddress  { get; set; }
+        public string PolicyAddress { get; [Preserve] private set; }
+        public string TermsAddress  { get; [Preserve] private set; }
     }
 }

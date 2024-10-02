@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateSuggestPopupView : BaseView
@@ -59,6 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
         private readonly IGameAssets                gameAssets;
         private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
 
+        [Preserve]
         public UITemplateSuggestPopupPresenter(SignalBus                  signalBus,
                                                ILogService                logger,
                                                IGameAssets                gameAssets,

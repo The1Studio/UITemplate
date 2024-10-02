@@ -18,6 +18,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.Serialization;
     using UnityEngine.UI;
 
@@ -54,6 +55,7 @@
         private List<UITemplateDailyRewardPackModel> listRewardModel;
         private CancellationTokenSource              closeViewCts;
 
+        [Preserve]
         public UITemplateDailyRewardPopupPresenter(
             SignalBus                       signalBus,
             ILogService                     logger,

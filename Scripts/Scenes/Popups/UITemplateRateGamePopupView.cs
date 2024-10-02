@@ -11,6 +11,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateRateGamePopupView : BaseView
@@ -26,6 +27,7 @@
     {
         private int lastStarCount;
 
+        [Preserve]
         public UITemplateRateGamePopupPresenter(
             SignalBus                    signalBus,
             ILogService                  logger,

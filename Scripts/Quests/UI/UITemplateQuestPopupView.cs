@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
     #if THEONE_BADGE_NOTIFY
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
@@ -36,6 +37,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
         private readonly UITemplateBadgeNotifySystem badgeNotifySystem;
         #endif
 
+        [Preserve]
         public UITemplateQuestPopupPresenter(
             SignalBus              signalBus,
             ILogService            logger,

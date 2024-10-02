@@ -10,6 +10,7 @@
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateConnectErrorPopupView : BaseView
@@ -31,6 +32,7 @@
         protected virtual string ReconnectButtonMessage    => "Reconnect";
         protected virtual string ReconnectingButtonMessage => "Reconnecting";
 
+        [Preserve]
         public UITemplateConnectErrorPresenter(
             SignalBus        signalBus,
             ILogService      logger,

@@ -11,6 +11,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scenes.Play;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateHomeTapToPlayScreenView : BaseView
@@ -24,6 +25,7 @@
     [ScreenInfo(nameof(UITemplateHomeTapToPlayScreenView))]
     public class UITemplateHomeTapToPlayScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeTapToPlayScreenView>
     {
+        [Preserve]
         public UITemplateHomeTapToPlayScreenPresenter(
             SignalBus                         signalBus,
             ILogService                       logger,

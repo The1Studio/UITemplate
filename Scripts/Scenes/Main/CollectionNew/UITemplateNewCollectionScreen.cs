@@ -20,6 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
     using UnityEngine.EventSystems;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateNewCollectionScreen : BaseView
@@ -44,6 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private int         currentSelectedCategoryIndex;
         private IDisposable randomTimerDispose;
 
+        [Preserve]
         public UITemplateNewCollectionScreenPresenter(
             SignalBus                         signalBus,
             ILogService                       logger,

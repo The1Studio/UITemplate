@@ -5,6 +5,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using UnityEngine.Scripting;
 
     public class BreakAdsPopupView : BaseView
     {
@@ -15,6 +16,7 @@
     {
         private readonly BreakAdsViewHelper breakAdsViewHelper;
 
+        [Preserve]
         public BreakAdsPopupPresenter(SignalBus signalBus, ILogService logger, BreakAdsViewHelper breakAdsViewHelper) : base(signalBus, logger)
         {
             this.breakAdsViewHelper = breakAdsViewHelper;

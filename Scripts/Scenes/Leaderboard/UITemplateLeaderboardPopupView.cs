@@ -15,6 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
@@ -48,6 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         private CancellationTokenSource animationCancelTokenSource;
         private List<Tween>             animationTweenList = new();
 
+        [Preserve]
         public UITemplateLeaderBoardPopupPresenter(
             SignalBus                     signalBus,
             ILogService                   logger,

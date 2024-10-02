@@ -11,6 +11,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Level;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateLevelSelectScreenView : BaseView
@@ -23,6 +24,7 @@
     [ScreenInfo(nameof(UITemplateLevelSelectScreenView))]
     public class UITemplateLevelSelectScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLevelSelectScreenView>
     {
+        [Preserve]
         public UITemplateLevelSelectScreenPresenter(
             SignalBus                         signalBus,
             ILogService                       logger,

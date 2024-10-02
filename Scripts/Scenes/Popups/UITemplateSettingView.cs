@@ -7,6 +7,7 @@
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateSettingPopupView : BaseView
@@ -28,6 +29,7 @@
 
         #endregion
 
+        [Preserve]
         public UITemplateSettingPopupPresenter(
             SignalBus                       signalBus,
             ILogService                     logger,

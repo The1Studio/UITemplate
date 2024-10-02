@@ -8,6 +8,7 @@
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateHomeSimpleScreenView : BaseView
@@ -21,6 +22,7 @@
     [ScreenInfo(nameof(UITemplateHomeSimpleScreenView))]
     public class UITemplateHomeSimpleScreenPresenter : UITemplateBaseScreenPresenter<UITemplateHomeSimpleScreenView>
     {
+        [Preserve]
         public UITemplateHomeSimpleScreenPresenter(
             SignalBus           signalBus,
             ILogService         logger,

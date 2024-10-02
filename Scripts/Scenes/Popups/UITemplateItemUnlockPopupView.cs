@@ -15,6 +15,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateItemUnlockPopupModel
@@ -53,6 +54,7 @@
         protected readonly UITemplateItemBlueprint           itemBlueprint;
         protected readonly UITemplateInventoryDataController inventoryDataController;
 
+        [Preserve]
         public UITemplateItemUnlockPopupPresenter(
             SignalBus signalBus,
             ILogService logService,

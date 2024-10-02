@@ -10,6 +10,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateRemoveAdPopupView : BaseView
@@ -26,6 +27,7 @@
         protected readonly GameFeaturesSetting        gameFeaturesSetting;
         protected readonly UITemplateAdServiceWrapper adServiceWrapper;
 
+        [Preserve]
         public UITemplateRemoveAdPopupPresenter(
             SignalBus                  signalBus,
             ILogService                logger,

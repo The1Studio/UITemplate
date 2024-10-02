@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateBlendButtonSettingPopupView : BaseView
@@ -23,6 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
     {
         private readonly UITemplateSettingDataController uiTemplateSettingDataController;
 
+        [Preserve]
         public UITemplateBlendButtonSettingPopupPresenter(
             SignalBus                       signalBus,
             ILogService                     logger,

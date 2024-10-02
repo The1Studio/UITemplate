@@ -11,6 +11,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateLoseScreenView : BaseView
@@ -31,6 +32,7 @@
         protected readonly IScreenManager                    screenManager;
         protected readonly UITemplateInventoryDataController inventoryDataController;
 
+        [Preserve]
         public UITemplateLoseScreenPresenter(
             SignalBus                         signalBus,
             ILogService                       logger,

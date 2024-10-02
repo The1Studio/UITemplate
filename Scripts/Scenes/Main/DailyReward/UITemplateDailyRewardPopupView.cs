@@ -191,6 +191,12 @@
                     dayToView.Add(this.listRewardModel[i].DailyRewardRecord.Day, this.View.dailyRewardPackAdapter.GetPresenterAtIndex(i).View.transform as RectTransform);
 
             this.uiTemplateDailyRewardController.ClaimAllAvailableReward(dayToView, this.View.claimSoundKey);
+            
+            foreach (var packPresenter in this.View.dailyRewardPackAdapter.GetPresenters()
+                                              .Where(packPresenter => packPresenter.Model.RewardStatus == RewardStatus.Unlocked))
+            {
+                this.ClaimItemInPackReward(packPresenter);
+            }
 
             var claimedPresenter = new List<UITemplateDailyRewardPackPresenter>();
 
@@ -212,6 +218,14 @@
             claimedPresenter.ForEach(presenter => presenter.ClaimReward());
 
             this.AutoClosePopup();
+        }
+        
+        private void ClaimItemInPackReward(UITemplateDailyRewardPackPresenter presenter)
+        {
+            foreach (var itemPresenter in presenter.View.DailyRewardItemAdapter.GetPresenters())
+            {
+                itemPresenter.ClaimReward();
+            }
         }
 
         private void AutoClosePopup()

@@ -13,6 +13,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Elements;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateCollectionScreenView : BaseView
@@ -33,6 +34,7 @@
 
         private readonly List<ItemCollectionItemModel> itemLists = new();
 
+        [Preserve]
         public UITemplateCollectionScreenPresenter(
             SignalBus                         signalBus,
             ILogService                       logger,

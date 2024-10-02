@@ -28,6 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using UnityEngine.ResourceManagement.AsyncOperations;
     using UnityEngine.ResourceManagement.ResourceProviders;
     using UnityEngine.SceneManagement;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
     using Debug = UnityEngine.Debug;
     using Object = UnityEngine.Object;
@@ -83,6 +84,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private readonly   UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
         private readonly   IAnalyticServices          analyticServices;
 
+        [Preserve]
         protected UITemplateLoadingScreenPresenter(
             SignalBus                  signalBus,
             ILogService                logger,

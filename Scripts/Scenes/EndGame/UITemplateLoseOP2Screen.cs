@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateLoseOP2Screen : BaseEndGameScreenView
@@ -17,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateLoseOP2Screen))]
     public class UITemplateLoseOp2Presenter : BaseEndGameScreenPresenter<UITemplateLoseOP2Screen>
     {
+        [Preserve]
         public UITemplateLoseOp2Presenter(SignalBus signalBus, ILogService logger, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus, logger, uiTemplateAdService, soundServices)
         {
         }

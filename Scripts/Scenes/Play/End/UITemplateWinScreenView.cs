@@ -18,6 +18,7 @@
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateWinScreenModel
@@ -101,6 +102,7 @@
         protected readonly UITemplateSoundServices           soundService;
         protected readonly UITemplateAdServiceWrapper        adService;
 
+        [Preserve]
         public UITemplateWinScreenPresenter(
             SignalBus                         signalBus,
             ILogService                       logService,

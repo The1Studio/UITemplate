@@ -18,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateStaterPackModel
@@ -47,6 +48,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         private readonly LoadImageHelper              loadImageHelper;
         private readonly IIapServices                 iapServices;
 
+        [Preserve]
         public UITemplateStartPackScreenPresenter(
             SignalBus                    signalBus,
             ILogService                  logger,

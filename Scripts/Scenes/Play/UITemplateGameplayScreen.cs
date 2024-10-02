@@ -13,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateGameplayScreen : BaseView
@@ -42,6 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         protected readonly UITemplateInventoryDataController inventoryDataController;
         protected readonly UITemplateLevelDataController     levelDataController;
 
+        [Preserve]
         public UITemplateGameplayScreenPresenter(
             SignalBus                         signalBus,
             ILogService                       logger,

@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateWinOP2Screen : BaseEndGameScreenView
@@ -19,6 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     [ScreenInfo(nameof(UITemplateWinOP2Screen))]
     public class UITemPlateWinOp2ScreenPresenter : BaseEndGameScreenPresenter<UITemplateWinOP2Screen>
     {
+        [Preserve]
         public UITemPlateWinOp2ScreenPresenter(
             SignalBus                  signalBus,
             ILogService                logger,

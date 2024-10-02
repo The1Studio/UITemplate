@@ -1,17 +1,11 @@
 #if CRAZYLAB
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Crazylab
 {
-    using Core.AnalyticServices;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using GameFoundation.Signals;
     using UnityEngine.Scripting;
 
+    [Preserve]
     public class CrazylabAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        [Preserve]
-        public CrazylabAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
-        {
-        }
     }
 }
 #endif

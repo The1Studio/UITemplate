@@ -20,8 +20,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
     {
         #region Inject
 
-        private readonly IIapServices    iapServices;
-        private readonly IScreenManager   screenManager;
+        private readonly SignalBus         signalBus;
+        private readonly IAnalyticServices analyticServices;
+        private readonly IIapServices      iapServices;
+        private readonly IScreenManager    screenManager;
         private readonly FalconLocalData falconLocalData;
 
         [Preserve]
@@ -30,21 +32,21 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                                           IIapServices iapServices,
                                           IScreenManager screenManager,
                                           FalconLocalData falconLocalData)
-            : base(signalBus, analyticServices)
         {
-            this.iapServices = iapServices;
-            this.screenManager = screenManager;
+            this.signalBus       = signalBus;
+            this.iapServices     = iapServices;
+            this.screenManager   = screenManager;
             this.falconLocalData = falconLocalData;
 
-            signalBus.Subscribe<LevelEndedSignal>(this.OnLevelEnded);
-            signalBus.Subscribe<LevelSkippedSignal>(this.OnLevelSkipped);
-            signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnPurchaseComplete);
+            this.signalBus.Subscribe<LevelEndedSignal>(this.OnLevelEnded);
+            this.signalBus.Subscribe<LevelSkippedSignal>(this.OnLevelSkipped);
+            this.signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnPurchaseComplete);
 
-            signalBus.Subscribe<InterstitialAdCalledSignal>(this.OnShowInterstitialAd);
-            signalBus.Subscribe<RewardedAdCalledSignal>(this.OnShowRewardedAd);
+            this.signalBus.Subscribe<InterstitialAdCalledSignal>(this.OnShowInterstitialAd);
+            this.signalBus.Subscribe<RewardedAdCalledSignal>(this.OnShowRewardedAd);
 
-            signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
-            signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+            this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrency);
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
         }
 
         #endregion

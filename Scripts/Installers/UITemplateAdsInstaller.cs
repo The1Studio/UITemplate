@@ -20,6 +20,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 #if !THEONE_PLAYABLE_ADS
     #if BRAVESTARS
             this.Container.BindInterfacesAndSelfTo<BraveStarsAnalyticHandler>().AsCached();
+    #elif WIDO 
+            this.Container.BindInterfacesAndSelfTo<WidoAnalyticHandler>().AsCached();
     #else
             this.Container.BindInterfacesAndSelfTo<UITemplateAnalyticHandler>().AsCached();
     #endif

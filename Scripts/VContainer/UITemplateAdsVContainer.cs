@@ -16,6 +16,9 @@ namespace TheOneStudio.UITemplate
             builder.Register<BraveStarsAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #elif APERO
             builder.Register<AperoAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
+            #elif WIDO 
+            builder.Register<WidoAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
+
             #elif HIGAME
             builder.Register<HiGameAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #else

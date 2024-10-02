@@ -3,19 +3,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Z
 {
     using System;
     using System.Collections.Generic;
-    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using GameFoundation.Signals;
     using UnityEngine.Scripting;
 
+    [Preserve]
     public class ZitgaAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        [Preserve]
-        public ZitgaAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
-        {
-        }
-
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IncludeEvents = new HashSet<string>()

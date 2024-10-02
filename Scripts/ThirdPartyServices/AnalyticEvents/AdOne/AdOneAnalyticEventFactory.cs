@@ -4,10 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 {
     using System;
     using System.Collections.Generic;
-    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
@@ -22,8 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         #endregion
 
         [Preserve]
-        public AdOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, UITemplateLevelDataController uiTemplateLevelDataController) : base(
-            signalBus, analyticServices)
+        public AdOneAnalyticEventFactory(UITemplateLevelDataController uiTemplateLevelDataController)
         {
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }

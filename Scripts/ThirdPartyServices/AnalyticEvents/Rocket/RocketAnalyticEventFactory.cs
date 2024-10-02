@@ -3,18 +3,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
 {
     using System;
     using System.Collections.Generic;
-    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
 
+    [Preserve]
     public class RocketAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        [Preserve]
-        public RocketAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
-
         public override IEvent InterstitialShow(int level, string place) => new InterstitialShow(level, place);
 
         public override IEvent InterstitialShowCompleted(int level, string place) => new InterstitialShowCompleted(place);

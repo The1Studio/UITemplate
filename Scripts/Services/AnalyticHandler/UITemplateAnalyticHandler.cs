@@ -125,40 +125,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
             this.TotalDaysPlayedChange();
         }
 
+        private string AdRevenueEventName { get; } = "ad_impression"; 
         private void AddRevenueHandler(AdRevenueSignal obj)
         {
-            #if WIDO
-            var paramDic = new Dictionary<string, object>()
+            this.analyticServices.Track(new CustomEvent()
             {
-                { "ad_platform", obj.AdsRevenueEvent.AdNetwork },
-                { "placement", obj.AdsRevenueEvent.Placement },
-            };
-
-            switch (obj.AdsRevenueEvent.AdFormat)
-            {
-                case "Banner":
-                    this.Track(new CustomEvent()
-                    {
-                        EventName = "banner_show_success",
-                        EventProperties = paramDic,
-                    });
-                    break;
-                case "CollapsibleBanner":
-                    this.Track(new CustomEvent()
-                    {
-                        EventName = "collap_banner_show_success",
-                        EventProperties = paramDic,
-                    });
-                    break;
-                case "MREC":
-                    this.Track(new CustomEvent()
-                    {
-                        EventName = "mrec_show_success",
-                        EventProperties = paramDic,
-                    });
-                    break;
-            }
-            #endif
+                EventName = this.AdRevenueEventName,
+                EventProperties = new()
+                {
+                    { "ad_platform", obj.AdsRevenueEvent.AdsRevenueSourceId },
+                    { "ad_source", obj.AdsRevenueEvent.AdNetwork },
+                    { "ad_unit_name", obj.AdsRevenueEvent.AdUnit },
+                    { "ad_format", obj.AdsRevenueEvent.AdFormat },
+                    { "placement", obj.AdsRevenueEvent.Placement },
+                    { "currency", obj.AdsRevenueEvent.Currency },
+                    { "value", obj.AdsRevenueEvent.Revenue },
+                }
+            });
         }
 
         private void AppOpenClickedHandler(AppOpenClickedSignal obj)

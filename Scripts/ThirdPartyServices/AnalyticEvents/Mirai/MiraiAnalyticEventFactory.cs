@@ -3,19 +3,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
 {
     using System;
     using System.Collections.Generic;
-    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
 
+    [Preserve]
     public class MiraiAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        [Preserve]
-        public MiraiAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
-        {
-        }
 
         public override void ForceUpdateAllProperties() { }
 

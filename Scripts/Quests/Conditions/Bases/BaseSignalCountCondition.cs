@@ -12,6 +12,7 @@
 
         protected override ICondition.IProgress SetupProgress() => new Progress();
 
+        [Preserve]
         private sealed class Progress : BaseProgress
         {
             [JsonProperty] private int Count { get; set; }
@@ -22,6 +23,7 @@
             {
                 private readonly SignalBus signalBus;
 
+                [Preserve]
                 public Handler(SignalBus signalBus)
                 {
                     this.signalBus = signalBus;

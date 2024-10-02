@@ -1,22 +1,16 @@
 ﻿#if APERO
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Apero
 {
-    using Core.AdsServices.Signals;
+
     using Core.AnalyticServices;
-    using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using Core.AnalyticServices.Signal;
     using GameFoundation.Signals;
-    using ServiceImplementation.IAPServices.Signals;
-    using AdInfo = Core.AdsServices.AdInfo;
     using UnityEngine.Scripting;
 
     public class AperoAnalyticEventFactory : BaseAnalyticEventFactory
     {
         [Preserve]
-        public AperoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
-        {
-        }
+        public AperoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
 
         public override AnalyticsEventCustomizationConfig ByteBrewAnalyticsEventCustomizationConfig { get; set; } = new()
         {
@@ -38,5 +32,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
             },
         };
     }
+
 }
 #endif

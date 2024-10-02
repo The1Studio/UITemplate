@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     using GameFoundation.Scripts.UIModule.MVP;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateLeaderboardItemModel
@@ -45,6 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
 
     public class UITemplateLeaderboardItemPresenter : BaseUIItemPresenter<UITemplateLeaderboardItemView, UITemplateLeaderboardItemModel>
     {
+        [Preserve]
         public UITemplateLeaderboardItemPresenter(IGameAssets gameAssets) : base(gameAssets) { }
 
         public override void BindData(UITemplateLeaderboardItemModel param)

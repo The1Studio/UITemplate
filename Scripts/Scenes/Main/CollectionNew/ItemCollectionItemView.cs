@@ -10,6 +10,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class ItemCollectionItemModel
@@ -52,6 +53,7 @@
     {
         private readonly UITemplateCollectionItemViewHelper uiTemplateCollectionItemViewHelper;
 
+        [Preserve]
         public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
             UITemplateCollectionItemViewHelper uiTemplateCollectionItemViewHelper) : base(gameAssets)
         {

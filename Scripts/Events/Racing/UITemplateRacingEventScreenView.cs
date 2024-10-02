@@ -14,6 +14,7 @@
     using TMPro;
     using UIModule.Utilities;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateRacingEventScreenView : BaseView
@@ -38,6 +39,7 @@
 
         private List<Tween> tweenList = new();
 
+        [Preserve]
         protected UITemplateRacingEventScreenPresenter(
             SignalBus                           signalBus,
             ILogService                         logger,

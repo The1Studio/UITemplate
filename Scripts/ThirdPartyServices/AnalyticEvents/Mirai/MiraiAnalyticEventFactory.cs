@@ -78,7 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.M
             }
         };
 
-        public override IEvent LevelStart(int level, int gold, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed)
+        public override IEvent LevelStart(int level, int gold, int totalLevelsPlayed, long? timestamp, int gameModeId, int totalLevelsTypePlayed)
         {
             return
                 new CustomEvent()

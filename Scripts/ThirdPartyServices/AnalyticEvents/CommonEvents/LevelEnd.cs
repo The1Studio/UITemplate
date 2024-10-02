@@ -27,7 +27,7 @@
         public Dictionary<string, object> SpentResources { get; set; }
         
 
-        public LevelEnd(int level, string status, int gameModeId, long timePlay, long timestamp, Dictionary<string, object> spentResources = null)
+        public LevelEnd(int level, string status, int gameModeId, long timePlay, long? timestamp, Dictionary<string, object> spentResources = null)
         {
             this.Level          = level;
             this.Status         = status;

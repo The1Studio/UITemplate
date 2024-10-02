@@ -35,7 +35,7 @@
 
         private void SetLockInput(bool value)
         {
-            Debug.Log($"oneLog: set input {value}");
+            Debug.Log($"duckLog: set input {value}");
             if (this.eventSystem == null) return;
             this.eventSystem.enabled = value;
         }

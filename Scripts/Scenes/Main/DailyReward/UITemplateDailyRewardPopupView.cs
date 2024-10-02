@@ -225,7 +225,7 @@
             if (this.gameFeaturesSetting.DailyRewardConfig.preReceiveDailyRewardStrategy != PreReceiveDailyRewardStrategy.None) return;
 
             UniTask.Delay(TimeSpan.FromSeconds(1.5f),
-                          cancellationToken: (this.closeViewCts = new()).Token)
+                          cancellationToken: (this.closeViewCts = new()).Token, ignoreTimeScale:true)
                    .ContinueWith(this.CloseViewAsync)
                    .Forget();
         }
@@ -237,6 +237,7 @@
             base.Dispose();
             this.closeViewCts?.Cancel();
             this.closeViewCts?.Dispose();
+            this.closeViewCts = null;
         }
     }
 }

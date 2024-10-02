@@ -7,6 +7,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
     using Random = UnityEngine.Random;
 
@@ -50,7 +51,7 @@
 
     public class UITemplateLevelItemPresenter : BaseUIItemPresenter<UITemplateLevelItemView, LevelData>
     {
-
+        [Preserve]
         public UITemplateLevelItemPresenter(IGameAssets gameAssets, UITemplateLevelDataController userLevelData) : base(gameAssets)
         {
             this.userLevelData = userLevelData;

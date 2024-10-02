@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.Serialization;
     using UnityEngine.UI;
 
@@ -95,6 +96,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
         #endregion
 
+        [Preserve]
         public UITemplateDailyRewardPackPresenter(
             IGameAssets                         gameAssets,
             UITemplateDailyRewardPackViewHelper dailyRewardPackViewHelper

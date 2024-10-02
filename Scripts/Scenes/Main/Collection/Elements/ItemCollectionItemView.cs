@@ -7,6 +7,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Base;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class ItemCollectionItemModel : BaseItemCollectionModel
     {
@@ -25,6 +26,7 @@
 
         private ItemCollectionItemModel model;
 
+        [Preserve]
         public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateInventoryData inventoryData) : base(gameAssets)
         {
             this.gameAssets    = gameAssets;

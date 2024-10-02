@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using GameFoundation.Scripts.UIModule.Utilities.LoadImage;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TMPro;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateStartPackItemModel
@@ -22,6 +23,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     public class UITemplateStartPackItemPresenter : BaseUIItemPresenter<UITemplateStartPackItemView, UITemplateStartPackItemModel>
     {
         private readonly LoadImageHelper loadImageHelper;
+
+        [Preserve]
         public UITemplateStartPackItemPresenter(IGameAssets gameAssets, LoadImageHelper loadImageHelper) : base(gameAssets) { this.loadImageHelper = loadImageHelper; }
 
         public override async void BindData(UITemplateStartPackItemModel param)

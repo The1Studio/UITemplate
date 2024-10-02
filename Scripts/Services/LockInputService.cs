@@ -2,6 +2,7 @@
 {
     using System;
     using Core.AdsServices.Signals;
+    using UnityEngine;
     using UnityEngine.EventSystems;
     using Zenject;
 
@@ -34,6 +35,7 @@
 
         private void SetLockInput(bool value)
         {
+            Debug.Log($"oneLog: set input {value}");
             if (this.eventSystem == null) return;
             this.eventSystem.enabled = value;
         }

@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class TopButtonItemModel
@@ -42,6 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     {
         private readonly UITemplateSoundServices soundServices;
 
+        [Preserve]
         public TopButtonPresenter(IGameAssets gameAssets, UITemplateSoundServices soundServices) : base(gameAssets)
         {
             this.soundServices = soundServices;

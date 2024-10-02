@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateQuestListItemModel
@@ -52,6 +53,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
         private readonly GameFeaturesSetting gameFeaturesSetting;
         private readonly SignalBus           signalBus;
 
+        [Preserve]
         public UITemplateQuestListItemPresenter(IGameAssets gameAssets,
                                                 IAudioService audioService,
                                                 GameFeaturesSetting gameFeaturesSetting,

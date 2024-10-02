@@ -8,6 +8,7 @@
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TMPro;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateDailyRewardItemModel
@@ -56,6 +57,7 @@
 
         #endregion
 
+        [Preserve]
         public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper) : base(gameAssets) { this.dailyRewardItemViewHelper = dailyRewardItemViewHelper; }
 
         public override void BindData(UITemplateDailyRewardItemModel param)

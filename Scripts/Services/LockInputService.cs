@@ -38,6 +38,7 @@
             Debug.Log($"duckLog: set input {value}");
             if (this.eventSystem == null) return;
             this.eventSystem.enabled = value;
+            Debug.Log($"duckLog: set event system success input {value}");
         }
     }
 }

@@ -502,6 +502,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             this.logService.Log($"onelog: ShowRewardedAd {place} - {adService.GetType().Name}");
+            Debug.Log("duckLog: Uitemplateadservice ShowRewardedAd");
 
             var adInfo = new AdInfo(adService.AdPlatform, place, "Rewarded");
             this.signalBus.Fire(new RewardedAdCalledSignal(place, adInfo));

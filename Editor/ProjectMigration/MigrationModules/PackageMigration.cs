@@ -35,6 +35,8 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
             { "com.google.external-dependency-manager", "1.2.183" },
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
+            { "com.theone.extensions", "https://github.com/The1Studio/The1Extensions.git" },
+            { "com.theone.logging", "https://github.com/The1Studio/The1Logging.git" },
             #if APPSFLYER
             { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" },
             #endif

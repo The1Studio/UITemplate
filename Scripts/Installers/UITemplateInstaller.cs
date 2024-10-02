@@ -47,7 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
             // not lock in editor because interstitial fake ads can not close
 #if !UNITY_EDITOR
-            this.Container.BindInterfacesAndSelfTo<LockInputService>().AsCached().NonLazy();
+            // this.Container.BindInterfacesAndSelfTo<LockInputService>().AsCached().NonLazy();
 #endif
 
             //Feature

@@ -19,9 +19,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
         public Dictionary<string, object> SpentResources { get; set; }
         
         /// <summary> Timestamp of the event.</summary>
-        public long Timestamp { get; set; }
+        public long? Timestamp { get; set; }
 
-        public EarnResource(string resourceId, long value, string source, Dictionary<string,object> spentResources,long timestamp)
+        public EarnResource(string resourceId, long value, string source, Dictionary<string,object> spentResources,long? timestamp)
         {
             this.ResourceId     = resourceId;
             this.Value          = value;
@@ -44,9 +44,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
         public string Location   { get; set; }
         
         /// <summary> Timestamp of the event.</summary>
-        public long   Timestamp  { get; set; }
+        public long?   Timestamp  { get; set; }
 
-        public SpendResource(string resourceId, long value, string location, long timestamp)
+        public SpendResource(string resourceId, long value, string location, long? timestamp)
         {
             this.ResourceId = resourceId;
             this.Value      = value;

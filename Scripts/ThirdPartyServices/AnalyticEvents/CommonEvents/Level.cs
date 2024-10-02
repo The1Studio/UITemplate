@@ -15,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
         public int  TotalLevelsPlayed     { get; set; }
         
         /// <summary> Timestamp for the event.</summary>
-        public long Timestamp             { get; set; }
+        public long? Timestamp             { get; set; }
         
         /// <summary> Game mode id of the level.</summary>
         public int  GameModeId            { get; set; }
@@ -30,7 +30,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
             this.Gold  = gold;
         }
         
-        public LevelStart(int level, int gold, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed)
+        public LevelStart(int level, int gold, int totalLevelsPlayed, long? timestamp, int gameModeId, int totalLevelsTypePlayed)
         {
             this.Level                 = level;
             this.Gold                  = gold;

@@ -21,7 +21,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
 
-        public override IEvent LevelStart(int level, int gold, int totalLevelsPlayed, long timestamp, int gameModeId, int totalLevelsTypePlayed) => new LevelStart(level);
+        public override IEvent LevelStart(int level, int gold, int totalLevelsPlayed, long? timestamp, int gameModeId, int totalLevelsTypePlayed) => new LevelStart(level);
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelWin(level, timeSpent);
 

@@ -49,6 +49,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList();
         }
 
+        public IEnumerable<LevelData> GetAllLevelData()
+        {
+            return this.uiTemplateUserLevelData.LevelToLevelData.Values;
+        }
+
         public LevelData GetLevelData(int level)
         {
             return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked));

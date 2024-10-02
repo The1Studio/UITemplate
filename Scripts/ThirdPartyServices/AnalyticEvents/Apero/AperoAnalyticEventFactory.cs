@@ -9,6 +9,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 
     public class AperoAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        private readonly IAnalyticServices analyticServices;
+        
         [Preserve]
         public AperoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
 

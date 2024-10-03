@@ -30,14 +30,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
         #region Inject
 
         private readonly IIapServices    iapServices;
-        private readonly ScreenManager   screenManager;
+        private readonly IScreenManager   screenManager;
         private readonly FalconLocalData falconLocalData;
 
         [Preserve]
         public FalconAnalyticEventFactory(SignalBus signalBus,
                                           IAnalyticServices analyticServices,
                                           IIapServices iapServices,
-                                          ScreenManager screenManager,
+                                          IScreenManager screenManager,
                                           FalconLocalData falconLocalData)
             : base(signalBus, analyticServices)
         {

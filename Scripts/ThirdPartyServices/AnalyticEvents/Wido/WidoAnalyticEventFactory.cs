@@ -78,8 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 { nameof(RewardedAdEligible), "af_rewarded_ad_eligible" },
                 { nameof(RewardedAdCalled), "af_rewarded_api_called" },
                 { nameof(RewardedAdDisplayed), "af_rewarded_displayed" },
-                { nameof(RewardedAdCompleted), "af_rewarded_ad_completed" },
-                {nameof(RewardedAdEligible), "af_ads_reward_eligible"}
+                { nameof(RewardedAdCompleted), "af_rewarded_ad_completed" }
             }
         };
 

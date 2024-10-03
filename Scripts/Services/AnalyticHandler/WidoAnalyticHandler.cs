@@ -68,7 +68,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
         public override void Dispose()
         {
             base.Dispose();
-            this.signalBus.Subscribe<AdRevenueSignal>(this.HandleAdRevenue);
+            this.signalBus.Unsubscribe<AdRevenueSignal>(this.HandleAdRevenue);
         }
     }
 }

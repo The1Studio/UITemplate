@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
+    using System.Collections.Generic;
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;

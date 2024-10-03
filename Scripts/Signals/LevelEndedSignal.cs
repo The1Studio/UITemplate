@@ -10,7 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Signals
         public int                        GameModeId;
         public Dictionary<string, int>    CurrentIdToValue;
         public Dictionary<string, object> SpentResources;
-        public int                        Timestamp;
+        public long                       TimeBetweenLastSignal;
     }
 
     public enum LevelEndStatus

@@ -19,22 +19,21 @@
 
         /// <summary> Time played in milliseconds.</summary>
         public long TimePlay { get; set; }
-        
+
         /// <summary> Timestamp of the event.</summary>
-        public long? Timestamp { get; set; }
+        public long TimeBetweenLastEvent { get; set; }
 
         /// <summary> Resource spent while playing level.</summary>
         public Dictionary<string, object> SpentResources { get; set; }
-        
 
-        public LevelEnd(int level, string status, int gameModeId, long timePlay, long? timestamp, Dictionary<string, object> spentResources = null)
+        public LevelEnd(int level, string status, int gameModeId, long timePlay, long timeBetweenLastEvent, Dictionary<string, object> spentResources = null)
         {
-            this.Level          = level;
-            this.Status         = status;
-            this.GameModeId     = gameModeId;
-            this.TimePlay       = timePlay;
-            this.Timestamp      = timestamp;
-            this.SpentResources = spentResources;
+            this.Level                = level;
+            this.Status               = status;
+            this.GameModeId           = gameModeId;
+            this.TimePlay             = timePlay;
+            this.TimeBetweenLastEvent = timeBetweenLastEvent;
+            this.SpentResources       = spentResources;
         }
     }
 }

@@ -54,15 +54,15 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent AppOpenClicked(string                 place);
 
         IEvent LevelLose(int    level, int    timeSpent, int loseCount);
-        IEvent LevelStart(int   level, int    gold,      int totalLevelsPlayed, long? timestamp, int  gameModeId, int                        totalLevelsTypePlayed);
-        IEvent LevelEnd(int     level, string status,    int gameModeId,        long timePlay,  long? timestamp,  Dictionary<string, object> spentResources);
+        IEvent LevelStart(int   level, int    gold,      int totalLevelsPlayed, long timeBetweenLastEvent, int  gameModeId, int                        totalLevelsTypePlayed);
+        IEvent LevelEnd(int     level, string status,    int gameModeId,        long timePlay,  long timeBetweenLastEvent,  Dictionary<string, object> spentResources);
         IEvent LevelWin(int     level, int    timeSpent, int winCount);
         IEvent FirstWin(int     level, int    timeSpent);
         IEvent LevelSkipped(int level, int    timeSpent);
 
 
-        IEvent EarnResource(string resourceId, long value, string source, Dictionary<string, object> spentResources, long? timestamp);
-        IEvent SpendResource(string resourceId, long value, string location, long? timestamp);
+        IEvent EarnResource(string  resourceId, long value, string source,   Dictionary<string, object> spentResources, long timeBetweenLastEvent);
+        IEvent SpendResource(string resourceId, long value, string location, long                      timeBetweenLastEvent);
 
         IEvent TutorialCompletion(bool success, string tutorialId, int stepId = 0, string stepName = "");
 

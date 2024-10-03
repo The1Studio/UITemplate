@@ -7,21 +7,21 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class LevelStart : IEvent
     {
         /// <summary> Level of the event.</summary>
-        public int  Level                 { get; set; }
-        
-        public int  Gold                  { get; set; }
-        
+        public int Level { get; set; }
+
+        public int Gold { get; set; }
+
         /// <summary> Total level played.</summary>
-        public int  TotalLevelsPlayed     { get; set; }
-        
+        public int TotalLevelsPlayed { get; set; }
+
         /// <summary> Timestamp for the event.</summary>
-        public long? Timestamp             { get; set; }
-        
+        public long TimeBetweenLastEvent { get; set; }
+
         /// <summary> Game mode id of the level.</summary>
-        public int  GameModeId            { get; set; }
-        
+        public int GameModeId { get; set; }
+
         /// <summary> Total levels played in the same game mode.</summary>
-        public int  TotalLevelsTypePlayed { get; set; }
+        public int TotalLevelsTypePlayed { get; set; }
 
         [Obsolete]
         public LevelStart(int level, int gold)
@@ -29,13 +29,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
             this.Level = level;
             this.Gold  = gold;
         }
-        
-        public LevelStart(int level, int gold, int totalLevelsPlayed, long? timestamp, int gameModeId, int totalLevelsTypePlayed)
+
+        public LevelStart(int level, int gold, int totalLevelsPlayed, long timeBetweenLastEvent, int gameModeId, int totalLevelsTypePlayed)
         {
             this.Level                 = level;
             this.Gold                  = gold;
             this.GameModeId            = gameModeId;
-            this.Timestamp             = timestamp;
+            this.TimeBetweenLastEvent  = timeBetweenLastEvent;
             this.TotalLevelsPlayed     = totalLevelsPlayed;
             this.TotalLevelsTypePlayed = totalLevelsTypePlayed;
         }

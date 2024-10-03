@@ -135,8 +135,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenClose);
             this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
 
-            // this.signalBus.Subscribe<CollapsibleBannerAdLoadedSignal>(this.OnBannerLoaded);
-            // this.signalBus.Subscribe<BannerAdLoadedSignal>(this.OnBannerLoaded);
+            this.signalBus.Subscribe<CollapsibleBannerAdLoadedSignal>(this.OnBannerLoaded);
+            this.signalBus.Subscribe<BannerAdLoadedSignal>(this.OnBannerLoaded);
         }
 
         #region banner
@@ -153,8 +153,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             await UniTask.WaitUntil(() => adService.IsAdsInitialized());
 
-            this.logService.Log($"onelog: ShowBannerAd this.adServicesConfig.EnableBannerAd {this.adServicesConfig.EnableBannerAd}");
-            if (!this.adServicesConfig.EnableBannerAd) return;
+            this.logService.Log($"onelog: ShowBannerAd IsCurrentScreenCanShowMREC {this.IsCurrentScreenCanShowMREC()} this.adServicesConfig.EnableBannerAd {this.adServicesConfig.EnableBannerAd}");
+            if (this.IsCurrentScreenCanShowMREC() || !this.adServicesConfig.EnableBannerAd) return;
             this.logService.Log($"onelog: ShowBannerAd IsShowBannerAd {this.IsShowBannerAd}");
             if (this.IsShowBannerAd)
             {
@@ -228,6 +228,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.RefreshCollapsibleCts = null;
             // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
+        }
+
+        private void OnBannerLoaded()
+        {
+            if (this.IsCurrentScreenCanShowMREC())
+            {
+                this.HideBannerAd();
+            }
         }
 
         private void OnScreenChanged(IScreenPresenter screenPresenter)
@@ -527,6 +535,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
+                if (this.IsShowBannerAd) this.HideBannerAd();
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
                 this.IsShowMRECAd = true;
@@ -625,6 +634,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void HideAllMREC()
         {
             if (!this.IsShowMRECAd) return;
+            if (!this.IsShowBannerAd) this.ShowBannerAd();
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();

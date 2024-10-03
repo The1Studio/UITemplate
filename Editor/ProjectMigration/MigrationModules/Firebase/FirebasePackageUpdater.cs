@@ -29,7 +29,7 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             { "com.google.play.core", "1.8.4" },
             { "com.google.play.common", "1.9.1" },
             { "com.google.android.appbundle", "1.9.0" },
-            {"com.google.play.review", "1.8.2"}
+            { "com.google.play.review", "1.8.2" }
         };
 
         static FirebasePackagesUpdater() { UpdatePackageToVersion(); }
@@ -42,9 +42,9 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             var existingPackages = Directory.GetFiles(packagesDirectoryPath, "*.tgz")
                 .Select(Path.GetFileNameWithoutExtension)
                 .ToList();
-
+            
             // Check if all the packages of the required version already exist
-            if (packages.All(valuePair => existingPackages.Any(p => p.StartsWith(valuePair.Key) && p == valuePair + "-" + valuePair.Value)))
+            if (packages.All(valuePair => existingPackages.Any(p => p.StartsWith(valuePair.Key) && p == valuePair.Key + "-" + valuePair.Value)))
             {
                 return;
             }

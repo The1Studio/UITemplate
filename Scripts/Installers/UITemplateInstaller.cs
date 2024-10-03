@@ -15,8 +15,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using Zenject;
 
+    [Preserve]
     public class UITemplateInstaller : Installer<ToastController, UITemplateInstaller>
     {
         private readonly ToastController toastCanvas;

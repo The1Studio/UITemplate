@@ -12,8 +12,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using TheOneStudio.UITemplate.UITemplate.Services.Vibration;
     using TheOneStudio.UITemplate.UITemplate.Utils;
+    using UnityEngine.Scripting;
     using Zenject;
 
+    [Preserve]
     public class UITemplateServicesInstaller : Installer<ToastController, UITemplateServicesInstaller>
     {
         private readonly ToastController toastController;

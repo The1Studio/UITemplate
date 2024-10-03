@@ -8,9 +8,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.UserData;
+    using UnityPreserve = UnityEngine.Scripting;
     using Zenject;
     using Zenject.Internal;
 
+    [UnityPreserve.Preserve]
     public class UITemplateLocalDataInstaller : Installer<UITemplateLocalDataInstaller>
     {
         public override void InstallBindings()

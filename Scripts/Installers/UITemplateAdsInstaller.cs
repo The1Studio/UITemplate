@@ -5,12 +5,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler;
+    using UnityEngine.Scripting;
     using Zenject;
 #if APPLOVIN
 #endif
 #if ADMOB || IRONSOURCE
 #endif
 
+    [Preserve]
     public class UITemplateAdsInstaller : Installer<UITemplateAdsInstaller>
     {
         private const string MinPauseSecondsToShowAoaRemoteConfigKey = "min_pause_seconds_to_show_aoa";

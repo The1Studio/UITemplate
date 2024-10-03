@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using UnityEngine.Scripting;
     using Zenject;
 
     /// <summary>
@@ -15,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     /// We use this installer to declare signals in the container.
     /// We don't you reflection to declare signals.
     /// </summary>
+    [Preserve]
     public class UITemplateDeclareSignalInstaller : Installer<UITemplateDeclareSignalInstaller>
     {
         public override void InstallBindings()

@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using Zenject;
 #if !FIREBASE_REMOTE_CONFIG
     using TheOneStudio.UITemplate.UITemplate.Interfaces;
@@ -27,6 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
     using ServiceImplementation.AppsflyerAnalyticTracker;
 #endif
 
+    [Preserve]
     public class UITemplateThirdPartyInstaller : Installer<UITemplateThirdPartyInstaller>
     {
         public override void InstallBindings()

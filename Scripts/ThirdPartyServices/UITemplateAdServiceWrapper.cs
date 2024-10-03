@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices;
     using Core.AdsServices.CollapsibleBanner;
     using Core.AdsServices.Signals;
+    using Core.AnalyticServices.CommonEvents;
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
@@ -16,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using R3;
+    using ServiceImplementation;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
@@ -477,7 +479,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             void InternalShowInterstitial()
             {
                 this.totalNoAdsPlayingTime = 0;
-                var adInfo = new AdInfo(adService.AdPlatform, place, "Interstitial");
+                var adInfo = new AdInfo(adService.AdPlatform, place, AdFormatConstants.Interstitial);
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place, adInfo));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
                 this.IsResumedFromAnotherServices = true;
@@ -512,7 +514,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.logService.Log($"onelog: ShowRewardedAd {place} - {adService.GetType().Name}");
 
-            var adInfo = new AdInfo(adService.AdPlatform, place, "Rewarded");
+            var adInfo = new AdInfo(adService.AdPlatform, place, AdFormatConstants.Rewarded);
             this.signalBus.Fire(new RewardedAdCalledSignal(place, adInfo));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAnotherServices = true;

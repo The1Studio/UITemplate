@@ -46,7 +46,7 @@ namespace TheOneStudio.UITemplate
             builder.RegisterCheatView();
 
             // not lock in editor because interstitial fake ads can not close
-            #if !UNITY_EDITOR
+            #if !UNITY_EDITOR && !DISABLE_LOCK_INPUT
             builder.Register<LockInputService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 

@@ -41,11 +41,13 @@ namespace UITemplate.Editor.ProjectMigration.MigrationModules
             // add more packages as needed
         };
 
+        // Add the package version to use here if you want to use a specific version
         [NonSerialized]
         private static readonly Dictionary<string, string> PackagesVersionToUse = new()
         {
             { "com.google.ads.mobile", "9.2.0" },
             { "com.unity.purchasing", "4.12.2" },
+            { "com.cysharp.unitask", "2.5.10" }
         };
         
         [NonSerialized] private static readonly Dictionary<(string, string), string> NameToUnityPackageToImport = new()

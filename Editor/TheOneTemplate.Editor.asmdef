@@ -1,0 +1,23 @@
+{
+    "name": "TheOneTemplate.Editor",
+    "rootNamespace": "TheOneTemplate.Editor",
+    "references": [
+        "GUID:3d4daf6696a825240b11d99d0d2865ed",
+        "GUID:fd63a94f96a04194697a9732d6239b71",
+        "GUID:563749aea2450c64fb6d1e8f8ea88217",
+        "GUID:69448af7b92c7f342b298e06a37122aa",
+        "GUID:f65752179be32364b817b701577f9fe6",
+        "GUID:6b28cbb273055954e86d38c33d8ca853",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:f51af22c92914bc6b143539603c8f57d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

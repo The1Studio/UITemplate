@@ -172,7 +172,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     var useNewGuid = this.IsRefreshingCollapsible
                         ? this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled
-                        : (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.CollapsibleBannerADInterval;
+                        : (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval;
                     if (useNewGuid)
                     {
                         this.LastCollapsibleBannerChangeGuid = DateTime.Now;

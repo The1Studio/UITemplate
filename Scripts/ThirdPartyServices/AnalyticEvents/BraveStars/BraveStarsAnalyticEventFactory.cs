@@ -25,15 +25,19 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
 
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
-            IgnoreEvents = new HashSet<Type>()
-            {
-                typeof(GameStarted),
-                typeof(InterstitialAdClicked),
-                typeof(InterstitialAdDisplayedFailed),
-                typeof(RewardedSkipped),
-                typeof(RewardedAdOffer),
-                typeof(RewardedAdLoadClicked)
-            },
+            IncludeEvents = new HashSet<string>()
+                            {
+                                "af_banner_shown",
+                                "af_tutorial_completion",
+                                "af_achieved_level",
+                                "af_inters_ad_eligible",
+                                "af_inters_api_called",
+                                "af_inters_displayed",
+                                "af_rewarded_ad_eligible",
+                                "af_rewarded_api_called",
+                                "af_rewarded_displayed",
+                                "af_rewarded_ad_completed",
+                            },
             CustomEventKeys = new Dictionary<string, string>()
             {
                 { nameof(BannerShown), "af_banner_shown" },

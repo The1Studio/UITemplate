@@ -36,7 +36,7 @@
             base.InterstitialAdDisplayedHandler(obj);
 
             #if BRAVESTARS
-            if(this.uiTemplateAdsController.WatchInterstitialAds >= 20) return;
+            if(this.uiTemplateAdsController.WatchInterstitialAds > 20) return;
             this.Track(new CustomEvent { EventName = $"af_inters_displayed_{this.uiTemplateAdsController.WatchInterstitialAds}_times" });
             #endif
         }

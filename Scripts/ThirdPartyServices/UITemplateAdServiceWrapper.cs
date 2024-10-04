@@ -544,7 +544,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
-                if (this.IsShowBannerAd) this.HideBannerAd();
                 this.AddScreenCanShowMREC(typeof(TPresenter));
                 mrecAdService.ShowMREC(adViewPosition);
                 this.IsShowMRECAd = true;

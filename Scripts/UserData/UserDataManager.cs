@@ -28,6 +28,8 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
 
         public async UniTask LoadUserData()
         {
+            // Màn loading sử dụng InitScreenManually nên sẽ đc BindData trong Awake nên cần chờ 1 frame để các service khác subscribe UserDataLoadedSignal trong Start 
+            await UniTask.NextFrame();
             var types     = ReflectionUtils.GetAllDerivedTypes<ILocalData>().ToArray();
             var datas     = await this.handleUserDataService.Load(types);
             var dataCache = (Dictionary<string, ILocalData>)typeof(BaseHandleUserDataServices).GetField("userDataCache", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(this.handleUserDataService);

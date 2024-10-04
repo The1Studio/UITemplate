@@ -1,7 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
+#if WIDO
     using System.Collections.Generic;
+#endif
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;

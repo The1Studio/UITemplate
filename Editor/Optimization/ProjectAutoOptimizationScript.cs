@@ -1,6 +1,6 @@
-namespace UITemplate.Editor.Optimization
+namespace TheOne.Tool.Optimization
 {
-    using UITemplate.Editor.Optimization.Addressable;
+    using TheOne.Tool.Optimization.Addressable;
     using UnityEditor;
     using UnityEngine;
 

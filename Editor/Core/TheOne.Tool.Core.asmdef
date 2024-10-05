@@ -1,6 +1,6 @@
 {
-    "name": "TheOneTemplate.Editor",
-    "rootNamespace": "TheOneTemplate.Editor",
+    "name": "TheOne.Tool.Core",
+    "rootNamespace": "TheOne.Tool.Core",
     "references": [
         "GameFoundation.Utilities",
         "GameFoundation.Models",

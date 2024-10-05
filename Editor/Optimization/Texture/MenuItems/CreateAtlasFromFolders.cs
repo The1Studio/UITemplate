@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.Optimization.TextureOptimization.MenuItems
+namespace TheOne.Tool.Optimization.Texture.MenuItems
 {
     using System.IO;
     using System.Linq;

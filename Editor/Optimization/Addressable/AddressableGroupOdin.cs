@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.Optimization.Addressable
+namespace TheOne.Tool.Optimization.Addressable
 {
     using System.Collections.Generic;
     using System.Linq;

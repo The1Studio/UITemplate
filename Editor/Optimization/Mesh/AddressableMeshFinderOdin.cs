@@ -1,10 +1,11 @@
-﻿namespace UITemplate.Editor.Optimization
+﻿namespace TheOne.Tool.Optimization.Mesh
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
+    using TheOne.Tool.Core;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;

@@ -2,7 +2,7 @@
 /// This namespace contains classes related to the migration of the LevelPlay project.
 /// </summary>
 
-namespace UITemplate.Editor.ProjectMigration.MigrationModules
+namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.LevelPlay
 {
     using System.Collections.Generic;
     using System.IO;

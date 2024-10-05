@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.ProjectMigration.MigrationModules
+namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.LevelPlay
 {
     using System.IO;
     using ServiceImplementation.Configs.Common;

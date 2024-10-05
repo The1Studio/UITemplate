@@ -1,0 +1,25 @@
+{
+  "name": "TheOne.Tool.Migration",
+  "rootNamespace": "TheOne.Tool.Migration",
+  "references": [
+    "GameFoundation.Utilities",
+    "3rd.Configs",
+    "Unity.Addressables.Editor",
+    "UITemplate.Scripts",
+    "UniTask",
+    "GameFoundation.DI",
+    "MaxSdk.Scripts.IntegrationManager.Editor",
+    "MaxSdk.Scripts"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

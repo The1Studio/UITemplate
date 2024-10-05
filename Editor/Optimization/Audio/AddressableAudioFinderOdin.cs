@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Editor.Optimization
+﻿namespace TheOne.Tool.Optimization.Audio
 {
     using System;
     using System.Collections.Generic;

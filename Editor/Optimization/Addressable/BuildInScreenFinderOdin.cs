@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.Optimization.Addressable
+namespace TheOne.Tool.Optimization.Addressable
 {
     using System.Collections.Generic;
     using System.IO;
@@ -6,7 +6,8 @@ namespace UITemplate.Editor.Optimization.Addressable
     using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
-    using UITemplate.Editor.Optimization.TextureOptimization.MenuItems;
+    using TheOne.Tool.Core;
+    using TheOne.Tool.Optimization.Texture.MenuItems;
     using UnityEditor;
     using UnityEngine;
 

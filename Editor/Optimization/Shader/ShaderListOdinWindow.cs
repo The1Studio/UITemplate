@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.Optimization
+namespace TheOne.Tool.Optimization.Shader
 {
     using System.Collections.Generic;
     using System.Linq;

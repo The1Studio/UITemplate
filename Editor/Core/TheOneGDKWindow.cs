@@ -1,6 +1,6 @@
-namespace UITemplate.Editor.TheOneWindowTools
+namespace TheOne.Tool.Core
 {
-    using Core.AnalyticServices;
+    using global::Core.AnalyticServices;
     using ServiceImplementation.Configs;
     using ServiceImplementation.FireBaseRemoteConfig;
     using Sirenix.OdinInspector;
@@ -8,7 +8,6 @@ namespace UITemplate.Editor.TheOneWindowTools
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using UnityEditor;
     using UnityEngine;
-    using UnityEngine.Serialization;
 
     public class TheOneWindow : OdinEditorWindow
     {

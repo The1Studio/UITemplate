@@ -1,4 +1,4 @@
-namespace UITemplate.Editor
+namespace TheOne.Tool.Core
 {
     using System.Collections.Generic;
     using System.IO;

@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.Networking;
-
-namespace UITemplate.Editor.Optimization.TextureOptimization
+namespace TheOne.Tool.Optimization.Texture
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
+    using Cysharp.Threading.Tasks;
+    using UnityEngine;
+    using UnityEngine.Networking;
+
     public static class TinyPngCompressor
     {
         private const string ApiKey = "6PMpnKmQD03fSjVW2SvWQLVKBz4K0f4g"; // Replace with your actual API key

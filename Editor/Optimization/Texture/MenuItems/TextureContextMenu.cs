@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
-
-namespace UITemplate.Editor.Optimization.TextureOptimization.MenuItems
+namespace TheOne.Tool.Optimization.Texture.MenuItems
 {
+    using System.Collections.Generic;
+    using UnityEditor;
+    using UnityEngine;
+
     public static class TextureContextMenu
     {
         [MenuItem("Assets/TheOne/TinyPNG Compress", true)]

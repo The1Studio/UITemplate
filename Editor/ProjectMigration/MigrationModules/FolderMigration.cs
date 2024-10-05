@@ -1,4 +1,4 @@
-namespace UITemplate.Editor.ProjectMigration.MigrationModules
+namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 {
     using System;
     using System.Collections.Generic;

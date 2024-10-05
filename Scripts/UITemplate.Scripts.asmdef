@@ -87,6 +87,11 @@
       "name": "jp.hadashikick.vcontainer",
       "expression": "",
       "define": "GDK_VCONTAINER"
+    },
+    {
+      "name": "com.unity.localization",
+      "expression": "",
+      "define": "THEONE_LOCALIZATION"
     }
   ]
 }

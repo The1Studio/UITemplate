@@ -1,8 +1,7 @@
-namespace UITemplate.Editor.TheOneWindowTools.ListAndOptimize
+namespace TheOne.Tool.Optimization.Texture
 {
     using System;
     using System.Collections.Generic;
-    using UITemplate.Editor.Optimization.TextureOptimization;
     using UnityEngine;
 
     [Serializable]

@@ -1,0 +1,21 @@
+{
+  "name": "TheOne.Tool.Optimization",
+  "rootNamespace": "TheOne.Tool.Optimization",
+  "references": [
+    "GameFoundation.Utilities",
+    "Unity.Addressables.Editor",
+    "UniTask",
+    "TheOne.Tool.Core"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

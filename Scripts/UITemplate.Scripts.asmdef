@@ -51,7 +51,8 @@
     "ByteBrewTracker",
     "UnityLogsViewer",
     "FalconSDK",
-    "3rd.ServiceImplementation.Adjust"
+    "3rd.ServiceImplementation.Adjust",
+    "3rd.RemoteConfig.DI"
   ],
   "precompiledReferences": [
     "DOTween.dll",

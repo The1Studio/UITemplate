@@ -288,5 +288,5 @@ namespace TheOne.Tool.Localization
             return foundTransform ? foundTransform.gameObject : null;
         }
     }
-#endif
 }
+#endif

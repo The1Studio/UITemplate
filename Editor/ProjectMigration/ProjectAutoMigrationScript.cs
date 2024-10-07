@@ -13,6 +13,7 @@ namespace TheOne.Tool.Migration.ProjectMigration
         {
             PackageMigration.CheckAndUpdatePackageManagerSettings();
             PackageMigration.ImportUnityPackage();
+            AndroidManifestMigration.UpdateAndroidManifest();
             ProguardMigration.CheckAndUpdateProguardFile();
             ProjectSettingMigration.APICompatibilityLevel();
             FolderMigration.RemoveUselessFolder();

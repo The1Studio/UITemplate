@@ -28,7 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using UnityEngine.Scripting;
-    using Zenject;
+    // using Zenject;
 #if ADMOB
     using ServiceImplementation.AdsServices.EasyMobile;
     #endif

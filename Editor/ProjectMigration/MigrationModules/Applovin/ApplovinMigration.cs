@@ -4,7 +4,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Applovin
     using System.Collections.Generic;
     using System.IO;
     using System.Xml;
+#if APPLOVIN
     using AppLovinMax.Scripts.IntegrationManager.Editor;
+#endif
     using Cysharp.Threading.Tasks;
     using UnityEditor;
     using UnityEngine;

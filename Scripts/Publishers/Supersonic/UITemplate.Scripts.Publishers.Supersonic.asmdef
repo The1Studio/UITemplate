@@ -49,7 +49,7 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "SUPERSONIC_WISDOM"
+        "SUPERSONIC"
     ],
     "versionDefines": [],
     "noEngineReferences": false

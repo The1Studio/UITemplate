@@ -7,10 +7,12 @@
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using GameFoundation.Signals;
-    using SupersonicWisdomSDK;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Loading;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
+#if SUPERSONIC_WISDOM
+    using SupersonicWisdomSDK;
+#endif
 
     public class SupersonicLoadingScenePresenter : UITemplateLoadingScreenPresenter
     {

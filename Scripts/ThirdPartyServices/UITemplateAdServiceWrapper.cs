@@ -308,7 +308,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        public double LoadingTimeToShowAOA => this.thirdPartiesConfig.AdSettings.AOAThreshHold;
+        public double LoadingTimeToShowAOA => this.adServicesConfig.AOALoadingThreshHold;
 
         private void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true)
         {

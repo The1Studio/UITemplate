@@ -7,7 +7,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using Core.AdsServices;
     using Core.AdsServices.CollapsibleBanner;
     using Core.AdsServices.Signals;
-    using Core.AnalyticServices.CommonEvents;
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;

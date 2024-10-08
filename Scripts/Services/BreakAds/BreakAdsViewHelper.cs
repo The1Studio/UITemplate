@@ -28,9 +28,9 @@
 
         public virtual async UniTask BindData()
         {
-            this.SignalBus.Subscribe<InterstitialAdClosedSignal>(this.BreakAdsPopupPresenter.CloseView);
-            this.SignalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.BreakAdsPopupPresenter.CloseView);
-            this.SignalBus.Subscribe<InterstitialAdDisplayedSignal>(this.BreakAdsPopupPresenter.CloseView);
+            this.SignalBus.TrySubscribe<InterstitialAdClosedSignal>(this.BreakAdsPopupPresenter.CloseView);
+            this.SignalBus.TrySubscribe<InterstitialAdDisplayedFailedSignal>(this.BreakAdsPopupPresenter.CloseView);
+            this.SignalBus.TrySubscribe<InterstitialAdDisplayedSignal>(this.BreakAdsPopupPresenter.CloseView);
             this.AutomaticCloseView();
         }
 
@@ -51,9 +51,9 @@
 
         public virtual void Dispose()
         {
-            this.SignalBus.Unsubscribe<InterstitialAdClosedSignal>(this.BreakAdsPopupPresenter.CloseView);
-            this.SignalBus.Unsubscribe<InterstitialAdDisplayedFailedSignal>(this.BreakAdsPopupPresenter.CloseView);
-            this.SignalBus.Unsubscribe<InterstitialAdDisplayedSignal>(this.BreakAdsPopupPresenter.CloseView);
+            this.SignalBus.TryUnsubscribe<InterstitialAdClosedSignal>(this.BreakAdsPopupPresenter.CloseView);
+            this.SignalBus.TryUnsubscribe<InterstitialAdDisplayedFailedSignal>(this.BreakAdsPopupPresenter.CloseView);
+            this.SignalBus.TryUnsubscribe<InterstitialAdDisplayedSignal>(this.BreakAdsPopupPresenter.CloseView);
             this.Cts?.Cancel();
         }
     }

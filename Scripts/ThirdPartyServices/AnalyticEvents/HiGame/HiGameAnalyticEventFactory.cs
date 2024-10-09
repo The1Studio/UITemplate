@@ -39,6 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.H
                 { "level", "af_level" },
                 
                 { nameof(InterstitialAdCalled), "af_inters_call_show" },
+                { nameof(InterstitialAdEligible), "af_inters_passed_capping_time" },
                 { nameof(InterstitialAdDownloaded), "af_inters_available" },
                 { nameof(InterstitialAdDisplayed), "af_inters_displayed" },
                 { nameof(InterstitialAdLoadFailed), "af_inters_load_fail" },

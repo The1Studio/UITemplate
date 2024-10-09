@@ -7,20 +7,21 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler;
+    using TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler.HiGame;
     using VContainer;
 
     public static class UITemplateAdsVContainer
     {
         public static void RegisterUITemplateAdsService(this IContainerBuilder builder)
         {
-            #if !THEONE_PLAYABLE_ADS
             #if BRAVESTARS
             builder.Register<BraveStarsAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #elif APERO
             builder.Register<AperoAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
+            #elif HIGAME
+            builder.Register<HiGameAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #else
             builder.Register<UITemplateAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
-            #endif
             #endif
 
             #if CREATIVE

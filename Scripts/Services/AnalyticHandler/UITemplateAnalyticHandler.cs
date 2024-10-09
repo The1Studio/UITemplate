@@ -23,13 +23,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     {
         #region inject
 
-        private readonly SignalBus                           signalBus;
-        private readonly IAnalyticServices                   analyticServices;
-        private readonly IAnalyticEventFactory               analyticEventFactory;
-        private readonly UITemplateLevelDataController       uiTemplateLevelDataController;
-        private readonly UITemplateInventoryDataController   uITemplateInventoryDataController;
-        private readonly UITemplateDailyRewardController     uiTemplateDailyRewardController;
-        private readonly UITemplateGameSessionDataController uITemplateGameSessionDataController;
+        protected readonly SignalBus                           signalBus;
+        protected readonly IAnalyticServices                   analyticServices;
+        protected readonly IAnalyticEventFactory               analyticEventFactory;
+        protected readonly UITemplateLevelDataController       uiTemplateLevelDataController;
+        protected readonly UITemplateInventoryDataController   uITemplateInventoryDataController;
+        protected readonly UITemplateDailyRewardController     uiTemplateDailyRewardController;
+        protected readonly UITemplateGameSessionDataController uITemplateGameSessionDataController;
 
         #endregion
 
@@ -63,7 +63,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticServices.Track(trackEvent);
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             this.analyticServices.Start();
 

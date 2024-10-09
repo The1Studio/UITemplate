@@ -28,8 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using UnityEngine.Scripting;
-    // using Zenject;
-#if ADMOB
+    #if ADMOB
     using ServiceImplementation.AdsServices.EasyMobile;
     #endif
 
@@ -418,10 +417,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool ShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false, bool showAdsBreak = true)
         {
-            if (showAdsBreak && !this.CanShowInterstitialAd(place, force))
+            if (showAdsBreak)
             {
-                onShowInterstitialFinished?.Invoke(false);
-                return false;
+                if (this.IsRemovedAds)
+                {
+                    onShowInterstitialFinished?.Invoke(false);
+                    return false;
+                }
+            }
+            else
+            {
+                if (!this.CanShowInterstitialAd(place, force))
+                {
+                    onShowInterstitialFinished?.Invoke(false);
+                    return false;
+                }   
             }
 
             this.signalBus.Fire(new InterstitialAdEligibleSignal(place));

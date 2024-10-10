@@ -172,7 +172,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     var useNewGuid = this.IsRefreshingCollapsible
                         ? this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled
-                        : (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval;
+                        : (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.InterstitialAdInterval;
                     if (useNewGuid)
                     {
                         this.LastCollapsibleBannerChangeGuid = DateTime.Now;
@@ -201,10 +201,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.RefreshCollapsibleCts?.Cancel();
             this.RefreshCollapsibleCts?.Dispose();
             this.RefreshCollapsibleCts = null;
-            if (this.adServicesConfig.CollapsibleBannerADInterval <= 0) return;
+            if (this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval <= 0) return;
             if (!this.adServicesConfig.CollapsibleBannerAutoRefreshEnabled) return;
             UniTask.WaitForSeconds(
-                this.adServicesConfig.CollapsibleBannerADInterval,
+                this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval,
                 ignoreTimeScale: true,
                 cancellationToken: (this.RefreshCollapsibleCts = new()).Token
             ).ContinueWith(() =>

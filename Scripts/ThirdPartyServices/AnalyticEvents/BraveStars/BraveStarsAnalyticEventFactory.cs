@@ -14,15 +14,26 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
 
     public class BraveStarsAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        private const int MAX_LEVEL_FIRE_COMPLETED_LEVEL_AF_EVENT = 20;
+        private const int MAX_TIME_FIRE_INTER_DISPLAYED_AF_EVENT  = 20;
+
         [Preserve]
         public BraveStarsAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
+            for (var i = 0; i < MAX_LEVEL_FIRE_COMPLETED_LEVEL_AF_EVENT; i++)
+            {
+                this.AppsFlyerAnalyticsEventCustomizationConfig.IncludeEvents.Add($"completed_level_{i}");
+            }
+            for (var i = 0; i < MAX_TIME_FIRE_INTER_DISPLAYED_AF_EVENT; i++)
+            {
+                this.AppsFlyerAnalyticsEventCustomizationConfig.IncludeEvents.Add($"af_inters_displayed_{i}_times");
+            }
         }
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount) => new CustomEvent { EventName = $"win_level_{level}" };
 
         public override IEvent LevelStart(int level, int gold) => new CustomEvent { EventName = $"start_level_{level}" };
-
+        
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IncludeEvents = new HashSet<string>()
@@ -35,8 +46,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
                                 "af_inters_displayed",
                                 "af_rewarded_ad_eligible",
                                 "af_rewarded_api_called",
-                                "af_rewarded_displayed",
-                                "af_rewarded_ad_completed",
+                                "af_rewarded_ad_displayed",
                             },
             CustomEventKeys = new Dictionary<string, string>()
             {
@@ -48,8 +58,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
                 { nameof(InterstitialAdDisplayed), "af_inters_displayed" },
                 { nameof(RewardedAdEligible), "af_rewarded_ad_eligible" },
                 { nameof(RewardedAdLoaded), "af_rewarded_api_called" },
-                { nameof(RewardedAdDisplayed), "af_rewarded_displayed" },
-                { nameof(RewardedAdCompleted), "af_rewarded_ad_completed" }
+                { nameof(RewardedAdDisplayed), "af_rewarded_ad_displayed" }
             }
         };
 

@@ -34,10 +34,13 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
             { "com.google.external-dependency-manager", "1.2.183" },
-            {"com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts"},
-#if APPSFLYER
-            { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" }
-#endif
+            { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
+            #if APPSFLYER
+            { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" },
+            #endif
+            #if BYTEBREW
+            { "com.bytebrew.unitysdk", "https://github.com/The1Studio/ByteBrewUnitySDK.git?path=UPMPackage#" },
+            #endif
             // add more packages as needed
         };
 
@@ -49,12 +52,15 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" }
         };
-        
-        [NonSerialized] private static readonly Dictionary<(string, string), string> NameToUnityPackageToImport = new()
-        { {("BuildScripts", "Assets/BuildScripts"), "https://cdn.builds.the1studio.org/packages/GameVersionRuntime.unitypackage"}
+
+        [NonSerialized]
+        private static readonly Dictionary<(string, string), string> NameToUnityPackageToImport = new()
+        {
+            { ("BuildScripts", "Assets/BuildScripts"), "https://cdn.builds.the1studio.org/packages/GameVersionRuntime.unitypackage" }
         };
 
-        [NonSerialized] public static readonly List<string> PackagesToRemove = new()
+        [NonSerialized]
+        public static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"
         };

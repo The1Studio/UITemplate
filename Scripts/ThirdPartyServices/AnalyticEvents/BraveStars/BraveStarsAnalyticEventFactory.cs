@@ -20,11 +20,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
         [Preserve]
         public BraveStarsAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
-            for (var i = 0; i < MAX_LEVEL_FIRE_COMPLETED_LEVEL_AF_EVENT; i++)
+            for (var i = 1; i <= MAX_LEVEL_FIRE_COMPLETED_LEVEL_AF_EVENT; i++)
             {
                 this.AppsFlyerAnalyticsEventCustomizationConfig.IncludeEvents.Add($"completed_level_{i}");
             }
-            for (var i = 0; i < MAX_TIME_FIRE_INTER_DISPLAYED_AF_EVENT; i++)
+            for (var i = 1; i <= MAX_TIME_FIRE_INTER_DISPLAYED_AF_EVENT; i++)
             {
                 this.AppsFlyerAnalyticsEventCustomizationConfig.IncludeEvents.Add($"af_inters_displayed_{i}_times");
             }

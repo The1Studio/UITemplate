@@ -11,6 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class UITemplateDailyQueueOfferPopupView : BaseView
@@ -35,6 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 
         private List<UITemplateDailyQueueOfferItemModel> listModel;
 
+        [Preserve]
         public UITemplateDailyQueueOfferPopupPresenter(
             SignalBus                               signalBus,
             ILogService                             logger,

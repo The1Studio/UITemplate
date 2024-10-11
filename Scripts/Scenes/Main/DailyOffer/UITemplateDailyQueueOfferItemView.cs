@@ -13,6 +13,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
     using TMPro;
     using UnityEngine;
     using UnityEngine.UI;
+    using UnityEngine.Scripting;
 
     public class UITemplateDailyQueueOfferItemView : TViewMono
     {
@@ -65,6 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 
         private const string AdsPlacement = "Daily_Offer";
 
+        [Preserve]
         public UITemplateDailyQueueOfferItemPresenter
         (
             IGameAssets                             gameAssets,

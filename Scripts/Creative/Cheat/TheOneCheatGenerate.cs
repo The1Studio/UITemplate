@@ -9,7 +9,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
         private readonly IGameAssets gameAssets;
 
         [Preserve]
-        public TheOneCheatGenerate(IGameAssets gameAssets) { this.gameAssets = gameAssets; }
+        public TheOneCheatGenerate(IGameAssets gameAssets)
+        {
+            this.gameAssets = gameAssets;
+        }
 
         public void Initialize()
         {

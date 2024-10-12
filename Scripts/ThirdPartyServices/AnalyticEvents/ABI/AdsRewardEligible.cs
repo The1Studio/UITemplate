@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
     {
         private readonly string placement;
+
         public AdsRewardEligible(string placement)
         {
             this.placement = placement;

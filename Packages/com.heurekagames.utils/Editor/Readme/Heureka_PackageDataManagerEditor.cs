@@ -15,14 +15,14 @@ namespace HeurekaGames.Utils
     {
         public static readonly string ShowedReadmeProjectStateName = "HeurekaGames.PackageDataManager.ShowedReadme";
 
-        static float kSpace = 16f;
+        private static float kSpace = 16f;
 
         static Heureka_PackageDataManagerEditor()
         {
             EditorApplication.delayCall += SelectReadmeAutomatically;
         }
 
-        static void SelectReadmeAutomatically()
+        private static void SelectReadmeAutomatically()
         {
             if (!EditorPrefs.GetBool(getUniqueReadMeStatePrefKey(), false))
             {
@@ -57,74 +57,74 @@ namespace HeurekaGames.Utils
 
         private void OnEnable()
         {
-            readmeManager = SelectReadme();// (Heureka_PackageDataManager)target;
+            this.readmeManager = SelectReadme(); // (Heureka_PackageDataManager)target;
             //populate sections
-            var guids = AssetDatabase.FindAssets($"t:{nameof(Heureka_PackageData).ToString()}");
-            List<Heureka_PackageData> tmpList = new List<Heureka_PackageData>();
+            var guids   = AssetDatabase.FindAssets($"t:{nameof(Heureka_PackageData).ToString()}");
+            var tmpList = new List<Heureka_PackageData>();
             foreach (var item in guids)
             {
-                string path = AssetDatabase.GUIDToAssetPath(item);
+                var path = AssetDatabase.GUIDToAssetPath(item);
                 tmpList.Add(AssetDatabase.LoadAssetAtPath<Heureka_PackageData>(path));
             }
-            readmeManager.sections = tmpList.ToArray();
+            this.readmeManager.sections = tmpList.ToArray();
             //readmeManager.sections = Resources.FindObjectsOfTypeAll<Heureka_PackageData>();
 
             //Sorted lidt by show Priority
-            readmeManager.sections = readmeManager.sections.OrderByDescending(val => val.PackageShowPrio).ToArray();
+            this.readmeManager.sections = this.readmeManager.sections.OrderByDescending(val => val.PackageShowPrio).ToArray();
 
-            List<Heureka_PackageData> listUniqueEntries = new List<Heureka_PackageData>();
-            foreach (var item in readmeManager.sections)
-            {
+            var listUniqueEntries = new List<Heureka_PackageData>();
+            foreach (var item in this.readmeManager.sections)
                 //If we dont have this asset identifier in list already
-                if (!listUniqueEntries.Any(val=>val.AssetIdentifier == item.AssetIdentifier))
+            {
+                if (!listUniqueEntries.Any(val => val.AssetIdentifier == item.AssetIdentifier))
+                {
                     listUniqueEntries.Add(item);
+                }
                 //If it IS in list already find the one that is NOT a promo, and put that in list
                 else
                 {
                     //If the one we look at right now is a promo, just ignore
                     if (item.GetType() == typeof(Heureka_PackageDataPromo))
+                    {
                         continue;
+                    }
                     else
                     {
                         //Remove the promo from list and insert the new one with similar identifier (Which should be a readme)
-                        listUniqueEntries.Remove(listUniqueEntries.Find(val=>val.AssetIdentifier == item.AssetIdentifier));
+                        listUniqueEntries.Remove(listUniqueEntries.Find(val => val.AssetIdentifier == item.AssetIdentifier));
                         listUniqueEntries.Add(item);
                     }
                 }
             }
-            readmeManager.sections = listUniqueEntries.ToArray();
+            this.readmeManager.sections = listUniqueEntries.ToArray();
         }
 
         protected override void OnHeaderGUI()
         {
-            Init();
+            this.Init();
 
             //Make sure we have the proper readme's
             SelectReadme();
 
-            var iconWidth = 96;// Mathf.Min(EditorGUIUtility.currentViewWidth / 3f - 20f, 128f);
+            var iconWidth = 96; // Mathf.Min(EditorGUIUtility.currentViewWidth / 3f - 20f, 128f);
 
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(10);
                 EditorGUILayout.BeginVertical();
                 GUILayout.Space(10);
-                GUILayout.Label(readmeManager.icon, GUILayout.Width(iconWidth), GUILayout.Height(iconWidth));
+                GUILayout.Label(this.readmeManager.icon, GUILayout.Width(iconWidth), GUILayout.Height(iconWidth));
                 EditorGUILayout.EndVertical();
 
                 EditorGUILayout.BeginVertical();
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(readmeManager.title, TitleStyle);
+                GUILayout.Label(this.readmeManager.title, this.TitleStyle);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
 
-                foreach (var link in readmeManager.Links.Where(val => val.ActiveLink == true))
-                {
-                    if (LinkLabel(new GUIContent(link.Name)))
-                    {
+                foreach (var link in this.readmeManager.Links.Where(val => val.ActiveLink == true))
+                    if (this.LinkLabel(new(link.Name)))
                         Application.OpenURL(link.Link);
-                    }
-                }
                 EditorGUILayout.EndVertical();
             }
             GUILayout.EndHorizontal();
@@ -133,60 +133,48 @@ namespace HeurekaGames.Utils
         public override void OnInspectorGUI()
         {
             GUILayout.Space(20);
-            Init();
+            this.Init();
 
-            foreach (var section in readmeManager.sections)
+            foreach (var section in this.readmeManager.sections)
             {
-                drawSeparator();
+                this.drawSeparator();
 
                 if (!string.IsNullOrEmpty(section.AssetName))
                 {
                     EditorGUILayout.BeginHorizontal();
                     GUILayout.Box(section.Icon, GUIStyle.none, GUILayout.Width(64), GUILayout.Height(64));
                     EditorGUILayout.BeginVertical();
-                    GUILayout.Label(section.AssetName, TitleStyle);
-                    GUILayout.Label(section.Subheader, HeadingStyle);
+                    GUILayout.Label(section.AssetName, this.TitleStyle);
+                    GUILayout.Label(section.Subheader, this.HeadingStyle);
                     EditorGUILayout.EndVertical();
                     EditorGUILayout.EndHorizontal();
                     GUILayout.Space(kSpace);
                 }
-                if (!string.IsNullOrEmpty(section.Description))
-                {
-                    GUILayout.Label(section.Description, BodyStyle);
-                }
+                if (!string.IsNullOrEmpty(section.Description)) GUILayout.Label(section.Description, this.BodyStyle);
                 if (section.Links != null)
-                {
                     foreach (var link in section.Links.Where(val => val.ActiveLink == true))
-                    {
-                        if (LinkLabel(new GUIContent(link.Name)))
-                        {
+                        if (this.LinkLabel(new(link.Name)))
                             Application.OpenURL(link.Link);
-                        }
-                    }
-                }
                 GUILayout.Space(10);
 
                 //If this is a versioned data package
                 if (section.GetType() == typeof(Heureka_PackageDataVersioned))
                 {
-                    Heureka_PackageDataVersioned versionedSection = (Heureka_PackageDataVersioned)section;
+                    var versionedSection = (Heureka_PackageDataVersioned)section;
                     if (versionedSection.VersionData != null && versionedSection.VersionData.Count > 0)
                     {
                         versionedSection.FoldOutVersionHistory = EditorGUILayout.Foldout(versionedSection.FoldOutVersionHistory, "Version History");
                         if (versionedSection.FoldOutVersionHistory)
                         {
-                            for (int i = versionedSection.VersionData.Count() - 1; i >= 0; i--)
+                            for (var i = versionedSection.VersionData.Count() - 1; i >= 0; i--)
                             {
                                 EditorGUI.indentLevel++;
                                 {
-                                    GUILayout.Label(versionedSection.VersionData[i].VersionNum.GetVersionString(), HeadingStyle);
+                                    GUILayout.Label(versionedSection.VersionData[i].VersionNum.GetVersionString(), this.HeadingStyle);
 
-                                    EditorGUI.indentLevel+=2;
-                                    foreach (var versionChange in versionedSection.VersionData[i].VersionChanges)
-                                    {
-                                        EditorGUILayout.LabelField("- " + versionChange, BodyStyle);
-                                    }
-                                    EditorGUI.indentLevel-=2;
+                                    EditorGUI.indentLevel += 2;
+                                    foreach (var versionChange in versionedSection.VersionData[i].VersionChanges) EditorGUILayout.LabelField("- " + versionChange, this.BodyStyle);
+                                    EditorGUI.indentLevel -= 2;
                                 }
                                 EditorGUI.indentLevel--;
                                 GUILayout.Space(4);
@@ -207,61 +195,60 @@ namespace HeurekaGames.Utils
             EditorGUILayout.Space();
         }
 
-        bool m_Initialized;
+        private bool m_Initialized;
 
-        GUIStyle LinkStyle { get { return m_LinkStyle; } }
-        [SerializeField] GUIStyle m_LinkStyle;
+        private                  GUIStyle LinkStyle => this.m_LinkStyle;
+        [SerializeField] private GUIStyle m_LinkStyle;
 
-        GUIStyle TitleStyle { get { return m_TitleStyle; } }
-        [SerializeField] GUIStyle m_TitleStyle;
+        private                  GUIStyle TitleStyle => this.m_TitleStyle;
+        [SerializeField] private GUIStyle m_TitleStyle;
 
-        GUIStyle HeadingStyle { get { return m_HeadingStyle; } }
-        [SerializeField] GUIStyle m_HeadingStyle;
+        private                  GUIStyle HeadingStyle => this.m_HeadingStyle;
+        [SerializeField] private GUIStyle m_HeadingStyle;
 
-        GUIStyle BodyStyle { get { return m_BodyStyle; } }
-        [SerializeField] GUIStyle m_BodyStyle;
+        private                  GUIStyle BodyStyle => this.m_BodyStyle;
+        [SerializeField] private GUIStyle m_BodyStyle;
 
         private Heureka_PackageDataManager readmeManager;
 
-        void Init()
+        private void Init()
         {
-            if (m_Initialized)
-                return;
+            if (this.m_Initialized) return;
 
-            m_BodyStyle = new GUIStyle(EditorStyles.label);
-            m_BodyStyle.wordWrap = true;
-            m_BodyStyle.fontSize = 12;
+            this.m_BodyStyle          = new(EditorStyles.label);
+            this.m_BodyStyle.wordWrap = true;
+            this.m_BodyStyle.fontSize = 12;
 
-            m_TitleStyle = new GUIStyle(m_BodyStyle);
-            m_TitleStyle.wordWrap = false;
-            m_TitleStyle.fontSize = 18;
+            this.m_TitleStyle          = new(this.m_BodyStyle);
+            this.m_TitleStyle.wordWrap = false;
+            this.m_TitleStyle.fontSize = 18;
 
-            m_HeadingStyle = new GUIStyle(m_BodyStyle);
-            m_HeadingStyle.wordWrap = false;
-            m_HeadingStyle.fontSize = 14;
+            this.m_HeadingStyle          = new(this.m_BodyStyle);
+            this.m_HeadingStyle.wordWrap = false;
+            this.m_HeadingStyle.fontSize = 14;
 
-            m_LinkStyle = new GUIStyle(m_BodyStyle);
-            m_LinkStyle.wordWrap = false;
+            this.m_LinkStyle          = new(this.m_BodyStyle);
+            this.m_LinkStyle.wordWrap = false;
             // Match selection color which works nicely for both light and dark skins
-            m_LinkStyle.normal.textColor = new Color(0x00 / 255f, 0x78 / 255f, 0xDA / 255f, 1f);
-            m_LinkStyle.stretchWidth = false;
+            this.m_LinkStyle.normal.textColor = new(0x00 / 255f, 0x78 / 255f, 0xDA / 255f, 1f);
+            this.m_LinkStyle.stretchWidth     = false;
 
-            m_Initialized = true;
+            this.m_Initialized = true;
         }
 
-        bool LinkLabel(GUIContent label, params GUILayoutOption[] options)
+        private bool LinkLabel(GUIContent label, params GUILayoutOption[] options)
         {
-            var position = GUILayoutUtility.GetRect(label, LinkStyle, options);
+            var position = GUILayoutUtility.GetRect(label, this.LinkStyle, options);
 
             Handles.BeginGUI();
-            Handles.color = LinkStyle.normal.textColor;
-            Handles.DrawLine(new Vector3(position.xMin, position.yMax), new Vector3(position.xMax, position.yMax));
+            Handles.color = this.LinkStyle.normal.textColor;
+            Handles.DrawLine(new(position.xMin, position.yMax), new(position.xMax, position.yMax));
             Handles.color = Color.white;
             Handles.EndGUI();
 
             EditorGUIUtility.AddCursorRect(position, MouseCursor.Link);
 
-            return GUI.Button(position, label, LinkStyle);
+            return GUI.Button(position, label, this.LinkStyle);
         }
     }
 }

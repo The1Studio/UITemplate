@@ -41,8 +41,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                                           FalconLocalData falconLocalData)
             : base(signalBus, analyticServices)
         {
-            this.iapServices     = iapServices;
-            this.screenManager   = screenManager;
+            this.iapServices = iapServices;
+            this.screenManager = screenManager;
             this.falconLocalData = falconLocalData;
 
             signalBus.Subscribe<LevelEndedSignal>(this.OnLevelEnded);
@@ -204,9 +204,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
         private void OnPurchaseComplete(OnIAPPurchaseSuccessSignal obj)
         {
             //TODO: Implement transaction ID
-            var productData   = this.iapServices.GetProductData(obj.Product.Id);
+            var productData = this.iapServices.GetProductData(obj.Product.Id);
             var transactionID = "obj.PurchasedProduct.transactionID";
-            var where         = this.CurrentScreen;
+            var where = this.CurrentScreen;
             new FInAppLog(obj.Product.Id, productData.Price, productData.CurrencyCode, where, transactionID, this.screenManager.CurrentActiveScreen.Value.ToString()).Send();
             throw new NotImplementedException();
         }

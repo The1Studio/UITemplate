@@ -6,6 +6,9 @@
     {
         public IState State { get; }
 
-        public OnStateExitSignal(IState state) { this.State = state; }
+        public OnStateExitSignal(IState state)
+        {
+            this.State = state;
+        }
     }
 }

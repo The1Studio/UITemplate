@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     {
         public string place;
         public long   loadingMilis;
+
         public AdInterDownloaded(string place, long loadingMilis)
         {
             this.place        = place;

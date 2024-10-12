@@ -9,25 +9,25 @@ namespace Lofelt.NiceVibrations
 {
     public class Pagination : MonoBehaviour
     {
-        public GameObject PaginationDotPrefab;
-        public Color ActiveColor;
-        public Color InactiveColor;
+        public    GameObject  PaginationDotPrefab;
+        public    Color       ActiveColor;
+        public    Color       InactiveColor;
         protected List<Image> _images;
 
         public virtual void InitializePagination(int numberOfPages)
         {
-            _images = new List<Image>();
-            for (int i = 0; i < numberOfPages; i++)
+            this._images = new();
+            for (var i = 0; i < numberOfPages; i++)
             {
-                GameObject dotPrefab = Instantiate(PaginationDotPrefab);
+                var dotPrefab = Instantiate(this.PaginationDotPrefab);
                 dotPrefab.transform.SetParent(this.transform);
                 dotPrefab.name = "PaginationDot" + i;
-                _images.Add(dotPrefab.GetComponent<Image>());
+                this._images.Add(dotPrefab.GetComponent<Image>());
             }
-            foreach (Image image in _images)
+            foreach (var image in this._images)
             {
-                image.color = InactiveColor;
-                image.rectTransform.localScale = Vector3.one;
+                image.color                       = this.InactiveColor;
+                image.rectTransform.localScale    = Vector3.one;
                 image.rectTransform.localPosition = Vector3.zero;
                 image.SetNativeSize();
             }
@@ -35,16 +35,12 @@ namespace Lofelt.NiceVibrations
 
         public virtual void SetCurrentPage(int numberOfPages, int currentPage)
         {
-            for (int i = 0; i < numberOfPages; i++)
+            for (var i = 0; i < numberOfPages; i++)
             {
                 if (i == currentPage)
-                {
-                    _images[i].color = ActiveColor;
-                }
+                    this._images[i].color = this.ActiveColor;
                 else
-                {
-                    _images[i].color = InactiveColor;
-                }
+                    this._images[i].color = this.InactiveColor;
             }
         }
     }

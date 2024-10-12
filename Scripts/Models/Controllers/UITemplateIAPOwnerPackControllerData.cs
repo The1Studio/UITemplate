@@ -8,7 +8,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateIAPOwnerPackData uiTemplateIAPOwnerPackData;
 
         [Preserve]
-        public UITemplateIAPOwnerPackControllerData(UITemplateIAPOwnerPackData uiTemplateIAPOwnerPackData) { this.uiTemplateIAPOwnerPackData = uiTemplateIAPOwnerPackData; }
+        public UITemplateIAPOwnerPackControllerData(UITemplateIAPOwnerPackData uiTemplateIAPOwnerPackData)
+        {
+            this.uiTemplateIAPOwnerPackData = uiTemplateIAPOwnerPackData;
+        }
 
         public void AddPack(string packId)
         {
@@ -16,6 +19,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateIAPOwnerPackData.OwnedPacks.Add(packId);
         }
 
-        public bool IsOwnerPack(string packId) => this.uiTemplateIAPOwnerPackData.OwnedPacks.Contains(packId);
+        public bool IsOwnerPack(string packId)
+        {
+            return this.uiTemplateIAPOwnerPackData.OwnedPacks.Contains(packId);
+        }
     }
 }

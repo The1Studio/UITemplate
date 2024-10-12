@@ -15,12 +15,24 @@
     [Preserve]
     public class DailyRewardAnimationHelper : IDailyRewardAnimationHelper
     {
-        public virtual UniTask PlayPreClaimRewardAnimation(UITemplateDailyRewardPopupPresenter dailyRewardPopupPresenter) { return UniTask.CompletedTask; }
+        public virtual UniTask PlayPreClaimRewardAnimation(UITemplateDailyRewardPopupPresenter dailyRewardPopupPresenter)
+        {
+            return UniTask.CompletedTask;
+        }
 
-        public virtual UniTask PlayPostClaimRewardAnimation(UITemplateDailyRewardPopupPresenter dailyRewardPopupPresenter) { return UniTask.CompletedTask; }
+        public virtual UniTask PlayPostClaimRewardAnimation(UITemplateDailyRewardPopupPresenter dailyRewardPopupPresenter)
+        {
+            return UniTask.CompletedTask;
+        }
 
-        protected List<UITemplateDailyRewardPackPresenter> GetPackPresenters(UITemplateDailyRewardPopupPresenter dailyRewardPopupPresenter) { return dailyRewardPopupPresenter.View.dailyRewardPackAdapter.GetPresenters(); }
+        protected List<UITemplateDailyRewardPackPresenter> GetPackPresenters(UITemplateDailyRewardPopupPresenter dailyRewardPopupPresenter)
+        {
+            return dailyRewardPopupPresenter.View.dailyRewardPackAdapter.GetPresenters();
+        }
 
-        protected List<UITemplateDailyRewardItemPresenter> GetItemPresenters(UITemplateDailyRewardPackPresenter packPresenter) { return packPresenter.View.DailyRewardItemAdapter.GetPresenters(); }
+        protected List<UITemplateDailyRewardItemPresenter> GetItemPresenters(UITemplateDailyRewardPackPresenter packPresenter)
+        {
+            return packPresenter.View.DailyRewardItemAdapter.GetPresenters();
+        }
     }
 }

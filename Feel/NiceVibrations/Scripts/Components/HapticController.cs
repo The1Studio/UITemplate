@@ -38,41 +38,37 @@ namespace Lofelt.NiceVibrations
     /// cause undefined behaviour and memory leaks.
     public static class HapticController
     {
-        static bool lofeltHapticsInitalized = false;
+        private static bool lofeltHapticsInitalized = false;
 
         // Timer used to call HandleFinishedPlayback() when playback is complete
-        static Timer playbackFinishedTimer = new Timer();
+        private static Timer playbackFinishedTimer = new();
 
         // Duration of the loaded haptic clip, in seconds
-        static float clipLoadedDurationSecs = 0.0f;
+        private static float clipLoadedDurationSecs = 0.0f;
 
         // Whether Load() has been called before
-        static bool clipLoaded = false;
+        private static bool clipLoaded = false;
 
         // The value of the last call to seek()
-        static float lastSeekTime = 0.0f;
+        private static float lastSeekTime = 0.0f;
 
         // Flag indicating if the device supports playing back .haptic clips
-        static bool deviceMeetsAdvancedRequirements = false;
+        private static bool deviceMeetsAdvancedRequirements = false;
 
         // Flag indicating if the user enabled playback looping.
         // This does not necessarily mean that the currently active playback is looping, for
         // example gamepads don't support looping.
-        static bool isLoopingEnabledByUser = false;
+        private static bool isLoopingEnabledByUser = false;
 
         // Flag indicating if the currently active playback is looping
-        static bool isPlaybackLooping = false;
+        private static bool isPlaybackLooping = false;
 
-        static HapticPatterns.PresetType _fallbackPreset = HapticPatterns.PresetType.None;
+        private static HapticPatterns.PresetType _fallbackPreset = HapticPatterns.PresetType.None;
 
         /// <summary>
         /// The haptic preset to be played when it's not possible to play a haptic clip
         /// </summary>
-        public static HapticPatterns.PresetType fallbackPreset
-        {
-            get { return _fallbackPreset; }
-            set { _fallbackPreset = value; }
-        }
+        public static HapticPatterns.PresetType fallbackPreset { get => _fallbackPreset; set => _fallbackPreset = value; }
 
         internal static bool _hapticsEnabled = true;
 
@@ -81,13 +77,10 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public static bool hapticsEnabled
         {
-            get { return _hapticsEnabled; }
+            get => _hapticsEnabled;
             set
             {
-                if (_hapticsEnabled)
-                {
-                    Stop();
-                }
+                if (_hapticsEnabled) Stop();
                 _hapticsEnabled = value;
             }
         }
@@ -119,7 +112,7 @@ namespace Lofelt.NiceVibrations
         [System.ComponentModel.DefaultValue(1.0f)]
         public static float outputLevel
         {
-            get { return _outputLevel; }
+            get => _outputLevel;
             set
             {
                 _outputLevel = value;
@@ -164,7 +157,7 @@ namespace Lofelt.NiceVibrations
         [System.ComponentModel.DefaultValue(1.0f)]
         public static float clipLevel
         {
-            get { return _clipLevel; }
+            get => _clipLevel;
             set
             {
                 _clipLevel = value;
@@ -195,10 +188,7 @@ namespace Lofelt.NiceVibrations
         // LofeltHaptics
         private static void ApplyLevelsToLofeltHaptics()
         {
-            if (Init())
-            {
-                LofeltHaptics.SetAmplitudeMultiplication(_outputLevel * _clipLevel);
-            }
+            if (Init()) LofeltHaptics.SetAmplitudeMultiplication(_outputLevel * _clipLevel);
         }
 
         // Applies the current clip level and output level as the motor speed multiplication to
@@ -237,14 +227,15 @@ namespace Lofelt.NiceVibrations
                 lofeltHapticsInitalized = true;
 
                 var syncContext = System.Threading.SynchronizationContext.Current;
-                playbackFinishedTimer.Elapsed += (object obj, System.Timers.ElapsedEventArgs args) =>
+                playbackFinishedTimer.Elapsed += (object obj, ElapsedEventArgs args) =>
                 {
                     // Timer elapsed events are called from a separate thread, so use
                     // SynchronizationContext to handle it in the main thread.
                     syncContext.Post(_ =>
-                    {
-                        HandleFinishedPlayback();
-                    }, null);
+                        {
+                            HandleFinishedPlayback();
+                        },
+                        null);
                 };
 
                 if (DeviceCapabilities.isVersionSupported)
@@ -273,13 +264,10 @@ namespace Lofelt.NiceVibrations
         public static void Load(byte[] data)
         {
             GamepadRumbler.Unload();
-            lastSeekTime = 0.0f;
-            clipLoaded = true;
+            lastSeekTime           = 0.0f;
+            clipLoaded             = true;
             clipLoadedDurationSecs = 0.0f;
-            if (Init())
-            {
-                LofeltHaptics.Load(data);
-            }
+            if (Init()) LofeltHaptics.Load(data);
             clipLevel = 1.0f;
             LoadedClipChanged?.Invoke();
         }
@@ -322,16 +310,13 @@ namespace Lofelt.NiceVibrations
             // Load() only sets the correct clip duration on iOS and Android, and sets it to 0.0
             // on other platforms. For the other platforms, set a clip duration based on the
             // GamepadRumble here.
-            if (clipLoadedDurationSecs == 0.0f && rumble.IsValid())
-            {
-                clipLoadedDurationSecs = rumble.totalDurationMs / 1000.0f;
-            }
+            if (clipLoadedDurationSecs == 0.0f && rumble.IsValid()) clipLoadedDurationSecs = rumble.totalDurationMs / 1000.0f;
         }
 
-        static void HandleFinishedPlayback()
+        private static void HandleFinishedPlayback()
         {
-            lastSeekTime = 0.0f;
-            isPlaybackLooping = false;
+            lastSeekTime                  = 0.0f;
+            isPlaybackLooping             = false;
             playbackFinishedTimer.Enabled = false;
             PlaybackStopped?.Invoke();
         }
@@ -349,13 +334,10 @@ namespace Lofelt.NiceVibrations
         /// they aren't available for haptic presets.
         public static void Play()
         {
-            if (!_hapticsEnabled)
-            {
-                return;
-            }
+            if (!_hapticsEnabled) return;
 
-            float remainingPlayDuration = 0.0f;
-            bool canLoop = false;
+            var remainingPlayDuration = 0.0f;
+            var canLoop               = false;
             if (GamepadRumbler.CanPlay())
             {
                 remainingPlayDuration = clipLoadedDurationSecs;
@@ -364,7 +346,7 @@ namespace Lofelt.NiceVibrations
             else if (Init())
             {
                 remainingPlayDuration = Mathf.Max(clipLoadedDurationSecs - lastSeekTime, 0.0f);
-                canLoop = DeviceCapabilities.canLoop;
+                canLoop               = DeviceCapabilities.canLoop;
                 LofeltHaptics.Play();
             }
             else if (DeviceCapabilities.isVersionSupported)
@@ -381,22 +363,21 @@ namespace Lofelt.NiceVibrations
             //
             if (remainingPlayDuration > 0.0f)
             {
-                playbackFinishedTimer.Interval = remainingPlayDuration * 1000;
+                playbackFinishedTimer.Interval  = remainingPlayDuration * 1000;
                 playbackFinishedTimer.AutoReset = false;
-                playbackFinishedTimer.Enabled = !isPlaybackLooping;
+                playbackFinishedTimer.Enabled   = !isPlaybackLooping;
             }
             else
-            {
                 // Setting playbackFinishedTimer.Interval needs an interval > 0, otherwise it will
                 // throw an exception.
                 // Even if the remaining play duration is 0, we still want to trigger everything
                 // that happens in HandleFinishedPlayback().
                 // A playback duration of 0 happens in the Unity editor, when loading the clip
                 // failed or when seeking to the end of a clip.
+            {
                 HandleFinishedPlayback();
             }
         }
-
 
         /// <summary>
         /// Loads and plays the HapticClip given as an argument.
@@ -415,15 +396,10 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public static void Stop()
         {
-
             if (Init())
-            {
                 LofeltHaptics.Stop();
-            }
             else
-            {
                 LofeltHaptics.StopPattern();
-            }
             GamepadRumbler.Stop();
             HandleFinishedPlayback();
         }
@@ -475,10 +451,7 @@ namespace Lofelt.NiceVibrations
         {
             set
             {
-                if (Init())
-                {
-                    LofeltHaptics.SetFrequencyShift(value);
-                }
+                if (Init()) LofeltHaptics.SetFrequencyShift(value);
             }
         }
 
@@ -498,10 +471,7 @@ namespace Lofelt.NiceVibrations
         /// clip will only be played once.</param>
         public static void Loop(bool enabled)
         {
-            if (Init())
-            {
-                LofeltHaptics.Loop(enabled);
-            }
+            if (Init()) LofeltHaptics.Loop(enabled);
             isLoopingEnabledByUser = enabled;
         }
 
@@ -513,13 +483,9 @@ namespace Lofelt.NiceVibrations
         public static bool IsPlaying()
         {
             if (playbackFinishedTimer.Enabled)
-            {
                 return true;
-            }
             else
-            {
                 return isPlaybackLooping;
-            }
         }
 
         /// <summary>
@@ -536,7 +502,7 @@ namespace Lofelt.NiceVibrations
             {
                 Seek(0.0f);
                 Stop();
-                clipLevel = 1.0f;
+                clipLevel          = 1.0f;
                 clipFrequencyShift = 0.0f;
                 Loop(false);
             }
@@ -557,12 +523,10 @@ namespace Lofelt.NiceVibrations
         public static void ProcessApplicationFocus(bool hasFocus)
         {
             if (!hasFocus)
-            {
                 // While LofeltHaptics stops playback when the app loses focus,
                 // calling Stop() here handles additional things such as invoking
                 // the PlaybackStopped Action.
                 Stop();
-            }
         }
     }
 }

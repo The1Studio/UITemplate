@@ -35,15 +35,9 @@
         {
             var rectTransform = this.objReward.GetComponent<RectTransform>();
 
-            if (position is not null)
-            {
-                rectTransform.anchoredPosition = position.Value;
-            }
+            if (position is { }) rectTransform.anchoredPosition = position.Value;
 
-            if (size is not null)
-            {
-                rectTransform.sizeDelta = size.Value;
-            }
+            if (size is { }) rectTransform.sizeDelta = size.Value;
         }
     }
 
@@ -58,7 +52,10 @@
         #endregion
 
         [Preserve]
-        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper) : base(gameAssets) { this.dailyRewardItemViewHelper = dailyRewardItemViewHelper; }
+        public UITemplateDailyRewardItemPresenter(IGameAssets gameAssets, UITemplateDailyRewardItemViewHelper dailyRewardItemViewHelper) : base(gameAssets)
+        {
+            this.dailyRewardItemViewHelper = dailyRewardItemViewHelper;
+        }
 
         public override void BindData(UITemplateDailyRewardItemModel param)
         {
@@ -66,6 +63,9 @@
             this.dailyRewardItemViewHelper.BindDataItem(param, this.View, this);
         }
 
-        public override void Dispose() { this.dailyRewardItemViewHelper.DisposeItem(this); }
+        public override void Dispose()
+        {
+            this.dailyRewardItemViewHelper.DisposeItem(this);
+        }
     }
 }

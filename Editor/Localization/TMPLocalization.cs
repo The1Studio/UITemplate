@@ -99,7 +99,7 @@ namespace TheOne.Tool.Localization
                         var value = field.GetValue(monoBehaviour) as TMP_Text;
                         if (value == tmp)
                         {
-                            refMono   = monoBehaviour;
+                            refMono = monoBehaviour;
                             fieldName = field.Name;
                             return true;
                         }
@@ -108,7 +108,7 @@ namespace TheOne.Tool.Localization
                     {
                         if (field.GetValue(monoBehaviour) is IEnumerable<TMP_Text> collection && collection.Contains(tmp))
                         {
-                            refMono   = monoBehaviour;
+                            refMono = monoBehaviour;
                             fieldName = field.Name;
                             return true;
                         }
@@ -170,7 +170,7 @@ namespace TheOne.Tool.Localization
         public TMPTextInfo(TMP_Text text, GameObject gameObject)
         {
             this.tmpText = text;
-            this.prefab  = gameObject;
+            this.prefab = gameObject;
         }
 
         private void RemoveElementFromList()
@@ -198,7 +198,7 @@ namespace TheOne.Tool.Localization
         public void Localized()
         {
             var isTMPReferencedInGameObject = TMPLocalization.IsTMPReferencedInGameObject(this.tmpText, this.prefab, out var refMn, out var fn);
-            this.refMono   = refMn;
+            this.refMono = refMn;
             this.fieldName = fn;
             this.UpdatePrefab((tmpTextInInstance) =>
             {
@@ -241,8 +241,8 @@ namespace TheOne.Tool.Localization
 
         private void UpdatePrefab(Action<GameObject> updatePrefabAction, List<TMPTextInfo> newList)
         {
-            var prefabInstance    = PrefabUtility.InstantiatePrefab(this.prefab) as GameObject;
-            var pathInPrefab      = GetPathInPrefab(this.tmpText.transform);
+            var prefabInstance = PrefabUtility.InstantiatePrefab(this.prefab) as GameObject;
+            var pathInPrefab = GetPathInPrefab(this.tmpText.transform);
             var tmpTextInInstance = GetGameObjectInPrefabInstance(prefabInstance, pathInPrefab);
 
             updatePrefabAction.Invoke(tmpTextInInstance);
@@ -275,7 +275,7 @@ namespace TheOne.Tool.Localization
             var path = t.name;
             while (t.parent.parent != null) // We check the parent's parent to stop one level before the root
             {
-                t    = t.parent;
+                t = t.parent;
                 path = t.name + "/" + path;
             }
 

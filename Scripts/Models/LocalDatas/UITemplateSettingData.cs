@@ -14,7 +14,9 @@
 
         [OdinSerialize] public bool IsFlashLightEnable = true;
 
-        public void Init() { }
+        public void Init()
+        {
+        }
 
         public Type ControllerType => typeof(UITemplateSettingDataController);
     }

@@ -60,22 +60,74 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Unsubscribe<LevelStartedSignal>(this.OnStartLevel);
         }
 
-        private void OnStartLevel(LevelStartedSignal                                   obj) { this.ResumeSound(); }
-        private void OnRewardInterClosed(RewardInterstitialAdClosedSignal              obj) { this.ResumeSound(); }
-        private void OnRewardedAdClose(RewardedAdClosedSignal                          obj) { this.ResumeSound(); }
-        private void OnRewardedAdShowFail(RewardedAdShowFailedSignal                   obj) { this.ResumeSound(); }
-        private void OnAppFullScreenContentClosed(AppOpenFullScreenContentClosedSignal obj) { this.ResumeSound(); }
-        private void OnInterstitialAdClosed(InterstitialAdClosedSignal                 obj) { this.ResumeSound(); }
+        private void OnStartLevel(LevelStartedSignal obj)
+        {
+            this.ResumeSound();
+        }
 
-        private void OnInterAdCalled(InterstitialAdCalledSignal                        obj) { this.PauseSound(); }
-        private void OnRewardAdsCalled(RewardedAdCalledSignal                          obj) { this.PauseSound(); }
-        private void OnRewardInterAdsCalled(RewardInterstitialAdCalledSignal           obj) { this.PauseSound(); }
-        private void OnAppFullScreenContentOpened(AppOpenFullScreenContentOpenedSignal obj) { this.PauseSound(); }
-        private void OnInterstitialAdDisplayed(InterstitialAdDisplayedSignal           obj) { this.PauseSound(); }
-        private void OnDisplayRewardedAd(RewardedAdDisplayedSignal                     obj) { this.PauseSound(); }
+        private void OnRewardInterClosed(RewardInterstitialAdClosedSignal obj)
+        {
+            this.ResumeSound();
+        }
 
-        private void PauseSound() { this.audioManager.PauseEverything(); }
+        private void OnRewardedAdClose(RewardedAdClosedSignal obj)
+        {
+            this.ResumeSound();
+        }
 
-        private void ResumeSound() { this.audioManager.ResumeEverything(); }
+        private void OnRewardedAdShowFail(RewardedAdShowFailedSignal obj)
+        {
+            this.ResumeSound();
+        }
+
+        private void OnAppFullScreenContentClosed(AppOpenFullScreenContentClosedSignal obj)
+        {
+            this.ResumeSound();
+        }
+
+        private void OnInterstitialAdClosed(InterstitialAdClosedSignal obj)
+        {
+            this.ResumeSound();
+        }
+
+        private void OnInterAdCalled(InterstitialAdCalledSignal obj)
+        {
+            this.PauseSound();
+        }
+
+        private void OnRewardAdsCalled(RewardedAdCalledSignal obj)
+        {
+            this.PauseSound();
+        }
+
+        private void OnRewardInterAdsCalled(RewardInterstitialAdCalledSignal obj)
+        {
+            this.PauseSound();
+        }
+
+        private void OnAppFullScreenContentOpened(AppOpenFullScreenContentOpenedSignal obj)
+        {
+            this.PauseSound();
+        }
+
+        private void OnInterstitialAdDisplayed(InterstitialAdDisplayedSignal obj)
+        {
+            this.PauseSound();
+        }
+
+        private void OnDisplayRewardedAd(RewardedAdDisplayedSignal obj)
+        {
+            this.PauseSound();
+        }
+
+        private void PauseSound()
+        {
+            this.audioManager.PauseEverything();
+        }
+
+        private void ResumeSound()
+        {
+            this.audioManager.ResumeEverything();
+        }
     }
 }

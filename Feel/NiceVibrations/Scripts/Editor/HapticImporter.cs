@@ -8,13 +8,14 @@ using System.Text;
 
 #if UNITY_2020_2_OR_NEWER
 using UnityEditor.AssetImporters;
+
 #elif UNITY_2019_4_OR_NEWER
 using UnityEditor.Experimental.AssetImporters;
 #endif
 
 namespace Lofelt.NiceVibrations
 {
-    [ScriptedImporter(version: 3, ext: "haptic", AllowCaching = true)]
+    [ScriptedImporter(3, "haptic", AllowCaching = true)]
     /// <summary>
     /// Provides an importer for the HapticClip component.
     /// </summary>
@@ -22,7 +23,7 @@ namespace Lofelt.NiceVibrations
     /// The importer takes a <c>.haptic</c> file and converts it into a HapticClip.
     public class HapticImporter : ScriptedImporter
     {
-#if !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+        #if !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
         [DllImport("nice_vibrations_editor_plugin")]
         private static extern IntPtr nv_plugin_convert_haptic_to_gamepad_rumble([In] byte[] bytes, long size);
 
@@ -55,44 +56,41 @@ namespace Lofelt.NiceVibrations
         // supported by Unity
         private string PtrToStringUTF8(IntPtr ptr, int length)
         {
-            byte[] bytes = new byte[length];
+            var bytes = new byte[length];
             Marshal.Copy(ptr, bytes, 0, length);
             return Encoding.UTF8.GetString(bytes, 0, length);
         }
-#endif
+        #endif
 
         public override void OnImportAsset(AssetImportContext ctx)
         {
             // Load .haptic clip from file
-            var fileName = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
-            var jsonBytes = File.ReadAllBytes(ctx.assetPath);
-            var hapticClip = HapticClip.CreateInstance<HapticClip>();
+            var fileName   = Path.GetFileNameWithoutExtension(ctx.assetPath);
+            var jsonBytes  = File.ReadAllBytes(ctx.assetPath);
+            var hapticClip = ScriptableObject.CreateInstance<HapticClip>();
             hapticClip.json = jsonBytes;
 
-#if !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+            #if !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             // Convert JSON to a GamepadRumble struct. The conversion algorithm is inside the native
             // library nice_vibrations_editor_plugin. That plugin is only used in the Unity editor, and
             // not at runtime.
-            GamepadRumble rumble = default;
-            IntPtr nativeRumble = nv_plugin_convert_haptic_to_gamepad_rumble(jsonBytes, jsonBytes.Length);
+            GamepadRumble rumble       = default;
+            var           nativeRumble = nv_plugin_convert_haptic_to_gamepad_rumble(jsonBytes, jsonBytes.Length);
             if (nativeRumble != IntPtr.Zero)
             {
                 try
                 {
-                    uint length = (uint)nv_plugin_get_length(nativeRumble);
-                    rumble.durationsMs = new int[length];
-                    rumble.lowFrequencyMotorSpeeds = new float[length];
+                    var length = (uint)nv_plugin_get_length(nativeRumble);
+                    rumble.durationsMs              = new int[length];
+                    rumble.lowFrequencyMotorSpeeds  = new float[length];
                     rumble.highFrequencyMotorSpeeds = new float[length];
 
                     nv_plugin_get_durations(nativeRumble, rumble.durationsMs);
                     nv_plugin_get_low_frequency_motor_speeds(nativeRumble, rumble.lowFrequencyMotorSpeeds);
                     nv_plugin_get_high_frequency_motor_speeds(nativeRumble, rumble.highFrequencyMotorSpeeds);
 
-                    int totalDurationMs = 0;
-                    foreach (int duration in rumble.durationsMs)
-                    {
-                        totalDurationMs += duration;
-                    }
+                    var totalDurationMs                                          = 0;
+                    foreach (var duration in rumble.durationsMs) totalDurationMs += duration;
                     rumble.totalDurationMs = totalDurationMs;
                 }
                 finally
@@ -102,14 +100,14 @@ namespace Lofelt.NiceVibrations
             }
             else
             {
-                var lastErrorPtr = nv_plugin_get_last_error();
+                var lastErrorPtr    = nv_plugin_get_last_error();
                 var lastErrorLength = (int)nv_plugin_get_last_error_length();
-                var lastError = PtrToStringUTF8(lastErrorPtr, lastErrorLength);
+                var lastError       = this.PtrToStringUTF8(lastErrorPtr, lastErrorLength);
                 Debug.LogWarning($"Failed to convert haptic clip {ctx.assetPath} to gamepad rumble: {lastError}");
             }
 
             hapticClip.gamepadRumble = rumble;
-#endif
+            #endif
 
             // Use hapticClip as the imported asset
             ctx.AddObjectToAsset("com.lofelt.HapticClip", hapticClip);

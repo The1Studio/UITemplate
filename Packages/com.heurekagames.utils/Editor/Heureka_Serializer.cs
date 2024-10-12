@@ -15,9 +15,9 @@ namespace HeurekaGames.Utils
 
         public static List<string> DeserializeStringList(string json)
         {
-            StringList list = JsonUtility.FromJson<StringList>(json);
+            var list = JsonUtility.FromJson<StringList>(json);
 
-            return (list != null) ? list.Items : new List<string>();
+            return list != null ? list.Items : new();
         }
 
         public static Type DeSerializeType(string serializedType)
@@ -33,7 +33,7 @@ namespace HeurekaGames.Utils
         [SerializeField]
         public class StringList
         {
-            public List<string> Items = new List<string>();
+            public List<string> Items = new();
 
             public StringList(List<string> items)
             {
@@ -41,6 +41,7 @@ namespace HeurekaGames.Utils
             }
         }
     }
+
     public static class Heureka_Utils
     {
         public static PackageInfo GetPackageInfo<T>()
@@ -61,14 +62,14 @@ namespace HeurekaGames.Utils
 
         public static string GetAssetStoreSearchLink(IEnumerable<string> tags)
         {
-            string tracker = @"https://prf.hn/click/camref:1011l4Izm/pubref:SBSearch/destination:";
-            string search = string.Join(" ", tags);
+            var tracker = @"https://prf.hn/click/camref:1011l4Izm/pubref:SBSearch/destination:";
+            var search  = string.Join(" ", tags);
             return tracker + @"https://assetstore.unity.com/?category=3d%5C2d&q=" + search + @"&orderBy=1";
         }
 
         public static bool IsUnityVersionGreaterThan(int major)
         {
-            return System.Int32.Parse(Application.unityVersion.Split('.')[0]) > major;
+            return int.Parse(Application.unityVersion.Split('.')[0]) > major;
         }
     }
 }

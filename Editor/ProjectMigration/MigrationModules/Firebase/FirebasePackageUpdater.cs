@@ -18,8 +18,8 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Firebase
 
         private const string BaseUrl = "https://dl.google.com/games/registry/unity/";
 
-
-        [NonSerialized] private static readonly Dictionary<string, string> RequirePackages = new()
+        [NonSerialized]
+        private static readonly Dictionary<string, string> RequirePackages = new()
         {
             { "com.google.firebase.analytics", "12.3.0" },
             { "com.google.firebase.app", "12.3.0" },
@@ -29,12 +29,18 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Firebase
             { "com.google.play.core", "1.8.4" },
             { "com.google.play.common", "1.9.1" },
             { "com.google.android.appbundle", "1.9.0" },
-            { "com.google.play.review", "1.8.2" }
+            { "com.google.play.review", "1.8.2" },
         };
 
-        static FirebasePackagesUpdater() { UpdatePackageToVersion(); }
+        static FirebasePackagesUpdater()
+        {
+            UpdatePackageToVersion();
+        }
 
-        private static void UpdatePackageToVersion() { UpdateFirebasePackages(RequirePackages); }
+        private static void UpdatePackageToVersion()
+        {
+            UpdateFirebasePackages(RequirePackages);
+        }
 
         private static async void UpdateFirebasePackages(Dictionary<string, string> packages)
         {
@@ -42,12 +48,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Firebase
             var existingPackages = Directory.GetFiles(packagesDirectoryPath, "*.tgz")
                 .Select(Path.GetFileNameWithoutExtension)
                 .ToList();
-            
+
             // Check if all the packages of the required version already exist
-            if (packages.All(valuePair => existingPackages.Any(p => p.StartsWith(valuePair.Key) && p == valuePair.Key + "-" + valuePair.Value)))
-            {
-                return;
-            }
+            if (packages.All(valuePair => existingPackages.Any(p => p.StartsWith(valuePair.Key) && p == valuePair.Key + "-" + valuePair.Value))) return;
 
             // Show a dialog box that blocks user interaction
             EditorUtility.DisplayDialog($"Update google packages to locked version", "Please wait while the packages are being downloaded...", "OK");
@@ -74,10 +77,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Firebase
                     Debug.Log($"Deleting old package {oldPackageFile}");
                     // Delete the old package file
                     var oldPackagePath = Path.Combine(packagesDirectoryPath, oldPackageFile + ".tgz");
-                    if (File.Exists(oldPackagePath))
-                    {
-                        File.Delete(oldPackagePath);
-                    }
+                    if (File.Exists(oldPackagePath)) File.Delete(oldPackagePath);
                 }
 
                 // Download the new package file
@@ -97,7 +97,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Firebase
 
                     // Update the progress
                     completedDownloads++;
-                    float progress = (float)completedDownloads / packages.Count;
+                    var progress = (float)completedDownloads / packages.Count;
                     EditorUtility.DisplayProgressBar("Download in progress", $"Downloading {completedDownloads} of {packages.Count} packages...", progress);
                 }
             }
@@ -117,14 +117,11 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Firebase
             var dependencies = manifest["dependencies"] as JObject;
             if (dependencies == null)
             {
-                dependencies             = new JObject();
+                dependencies             = new();
                 manifest["dependencies"] = dependencies;
             }
 
-            foreach (var (package, version) in packages)
-            {
-                dependencies[package] = "file:GoogleDependency/" + package + "-" + version + ".tgz";
-            }
+            foreach (var (package, version) in packages) dependencies[package] = "file:GoogleDependency/" + package + "-" + version + ".tgz";
 
             File.WriteAllText(manifestPath, manifest.ToString());
             Client.Resolve();

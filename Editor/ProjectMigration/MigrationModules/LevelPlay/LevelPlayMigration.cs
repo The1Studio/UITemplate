@@ -23,19 +23,18 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.LevelPlay
             // { "IronSourceMaioAdapter", "4.1.11.11" },
             // Add other iosPodName and newVersion pairs as needed
         };
-        
+
         /// <summary>
         /// This method is the entry point for the migration of the LevelPlay project.
         /// It changes the version of the iosPods in all AdapterDependencies.xml files according to the predefined dictionary.
         /// </summary>
         public static void DoMigration()
         {
-#if IRONSOURCE
+            #if IRONSOURCE
             ChangeIosPodVersionInAllFiles();
             MolocoMigration.UpdateIosPostProcess();
-#endif
+            #endif
         }
-        
 
         /// <summary>
         /// This method changes the version of the iosPods in all AdapterDependencies.xml files according to the predefined dictionary.
@@ -51,7 +50,6 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.LevelPlay
 
                 var updated = false;
                 if (iosPodNodes != null)
-                {
                     foreach (XmlNode iosPodNode in iosPodNodes)
                     {
                         // Check if the name attribute of the iosPod node is in the dictionary
@@ -60,10 +58,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.LevelPlay
                         {
                             // Change the version attribute to the new version from the dictionary
                             iosPodNode.Attributes["version"].Value = IOSPodVersions[ipodName];
-                            updated = true;
+                            updated                                = true;
                         }
                     }
-                }
 
                 if (updated)
                 {
@@ -96,16 +93,10 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.LevelPlay
                 var iosPodNodes = doc.SelectNodes("//iosPod");
 
                 if (iosPodNodes != null)
-                {
                     foreach (XmlNode iosPodNode in iosPodNodes)
-                    {
                         // Check if the name attribute of the iosPod node is in the dictionary
                         if (iosPodNode.Attributes != null && adapterName.Equals(iosPodNode.Attributes["name"].Value))
-                        {
                             return true;
-                        }
-                    }
-                }
             }
 
             return false;

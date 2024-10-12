@@ -15,7 +15,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         [OdinSerialize] public string CurrentStep { get; set; } = "";
 
-        public void Init() { }
+        public void Init()
+        {
+        }
 
         public Type ControllerType => typeof(UITemplateFTUEDataController);
     }

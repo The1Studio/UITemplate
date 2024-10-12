@@ -8,17 +8,13 @@
 
     public class UITemplateStarRateView : MonoBehaviour
     {
-        [SerializeField]
-        private List<GameObject> StarOnList;
+        [SerializeField] private List<GameObject> StarOnList;
 
-        [SerializeField]
-        private List<GameObject> StarOffList;
+        [SerializeField] private List<GameObject> StarOffList;
 
-        [SerializeField]
-        private float timeAnimStar = 1.5f;
+        [SerializeField] private float timeAnimStar = 1.5f;
 
-        [SerializeField]
-        private float timeDelay = 0.3f;
+        [SerializeField] private float timeDelay = 0.3f;
 
         public async UniTask SetStarRate(int rate)
         {
@@ -35,7 +31,7 @@
                 await UniTask.Delay(TimeSpan.FromSeconds(this.timeDelay));
                 var isActive = i < rate;
                 this.StarOnList[i].SetActive(isActive);
-                this.StarOnList[i].transform.DORotate(new Vector3(0, 0, -360), this.timeAnimStar, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
+                this.StarOnList[i].transform.DORotate(new(0, 0, -360), this.timeAnimStar, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
                 this.StarOnList[i].transform.DOScale(Vector3.one, this.timeAnimStar).SetEase(Ease.OutBack);
 
                 this.StarOffList[i].SetActive(!isActive);

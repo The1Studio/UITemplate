@@ -11,20 +11,20 @@ namespace TheOne.Tool.Optimization.Addressable
 
     public class AddressableGroupOdin : OdinEditorWindow
     {
-        [ShowInInspector] [TableList] [Title("Addressable Group", TitleAlignment = TitleAlignments.Centered)]
-        private List<AddressableGroupInfo> groups = new();
-
-
-
+        [ShowInInspector] [TableList] [Title("Addressable Group", TitleAlignment = TitleAlignments.Centered)] private List<AddressableGroupInfo> groups = new();
 
         [MenuItem("TheOne/List And Optimize/Addressable Group")]
-        private static void OpenWindow() { GetWindow<AddressableGroupOdin>().Show(); }
+        private static void OpenWindow()
+        {
+            GetWindow<AddressableGroupOdin>().Show();
+        }
 
         [ButtonGroup("List all groups")]
-        [Button(ButtonSizes.Medium), GUIColor(0, 1, 0)]
+        [Button(ButtonSizes.Medium)]
+        [GUIColor(0, 1, 0)]
         public void GetAllGroup()
         {
-            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            var settings               = AddressableAssetSettingsDefaultObject.Settings;
             var remoteBuildProfileData = settings.profileSettings.GetProfileDataByName(AddressableAssetSettings.kRemoteBuildPath);
 
             this.groups = settings.groups.Select(group =>
@@ -35,23 +35,24 @@ namespace TheOne.Tool.Optimization.Addressable
                 {
                     Group      = group,
                     Schema     = bundledAssetGroupSchema,
-                    IsRemotely = bundledAssetGroupSchema.BuildPath.Id.Equals(remoteBuildProfileData.Id)
+                    IsRemotely = bundledAssetGroupSchema.BuildPath.Id.Equals(remoteBuildProfileData.Id),
                 };
-            }).Where(groupInfo => groupInfo is not null).ToList();
+            }).Where(groupInfo => groupInfo is { }).ToList();
 
             // addressableAssetGroup.HasSchema<>()
         }
 
-        private void SetToLocalGroup(BundledAssetGroupSchema schema) { }
+        private void SetToLocalGroup(BundledAssetGroupSchema schema)
+        {
+        }
     }
 
     public class AddressableGroupInfo
     {
-        public AddressableAssetGroup   Group;
-        public BundledAssetGroupSchema Schema;
-        [OnValueChanged("OnChangeLoadType")]
-        public bool                    IsRemotely;
-        
+        public                                      AddressableAssetGroup   Group;
+        public                                      BundledAssetGroupSchema Schema;
+        [OnValueChanged("OnChangeLoadType")] public bool                    IsRemotely;
+
         private void OnChangeLoadType()
         {
             this.Schema.BuildPath.SetVariableByName(AddressableAssetSettingsDefaultObject.Settings, this.IsRemotely ? AddressableAssetSettings.kRemoteBuildPath : AddressableAssetSettings.kLocalBuildPath);

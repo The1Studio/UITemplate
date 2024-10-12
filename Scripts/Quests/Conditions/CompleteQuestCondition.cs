@@ -10,7 +10,10 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     {
         [JsonProperty] private string QuestId { get; [Preserve] set; }
 
-        protected override ICondition.IProgress SetupProgress() => new Progress();
+        protected override ICondition.IProgress SetupProgress()
+        {
+            return new Progress();
+        }
 
         [Preserve]
         private sealed class Progress : BaseProgress

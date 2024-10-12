@@ -43,10 +43,7 @@
         {
             this.signalBus.Subscribe<OnFinishCurrencyAnimationSignal>(this.OnUpdateCurrency);
             this.UpdateData(this.uiTemplateInventoryDataController.GetCurrencyValue(this.currencyId));
-            if (this.currencyValueText != null)
-            {
-                this.defaultColor = this.currencyValueText.color;
-            }
+            if (this.currencyValueText != null) this.defaultColor = this.currencyValueText.color;
         }
 
         private void ResetState()
@@ -56,7 +53,10 @@
             this.currencyValueText.color = this.defaultColor;
         }
 
-        private void UpdateData(int newValue) { this.currencyValueText.text = newValue.ToString(); }
+        private void UpdateData(int newValue)
+        {
+            this.currencyValueText.text = newValue.ToString();
+        }
 
         private void OnDestroy()
         {
@@ -69,7 +69,7 @@
 
             var yoyoTime   = 4;
             var scaleValue = 1.2f;
-            this.CurrencyIcon.transform.DOScale(Vector3.one * scaleValue, this.animDuration / yoyoTime).SetLoops(yoyoTime, LoopType.Yoyo).SetUpdate(isIndependentUpdate: true);
+            this.CurrencyIcon.transform.DOScale(Vector3.one * scaleValue, this.animDuration / yoyoTime).SetLoops(yoyoTime, LoopType.Yoyo).SetUpdate(true);
             this.updateCurrencyTween?.Kill();
             this.currencyValueText.color = obj.Amount >= 0 ? Color.green : Color.red;
 
@@ -77,7 +77,7 @@
             {
                 this.UpdateData(obj.FinalValue);
                 this.ResetState();
-            }).SetUpdate(isIndependentUpdate: true);
+            }).SetUpdate(true);
         }
 
         public override string CurrencyKey => this.currencyId;

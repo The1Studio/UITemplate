@@ -13,7 +13,7 @@ namespace TheOneStudio.UITemplate.Quests
         private readonly UITemplateQuestBlueprint questBlueprint;
         private readonly UITemplateQuestProgress  questProgress;
 
-        private readonly Dictionary<string, UITemplateQuestController> controllers = new Dictionary<string, UITemplateQuestController>();
+        private readonly Dictionary<string, UITemplateQuestController> controllers = new();
 
         [Preserve]
         public UITemplateQuestManager(
@@ -42,10 +42,7 @@ namespace TheOneStudio.UITemplate.Quests
                 this.questProgress.Storage.Remove(id);
                 this.InstantiateHandler(id);
             }
-            foreach (var controller in this.controllers.Values)
-            {
-                controller.UpdateStatus();
-            }
+            foreach (var controller in this.controllers.Values) controller.UpdateStatus();
         }
 
         public UITemplateQuestController GetController(string id)
@@ -61,7 +58,7 @@ namespace TheOneStudio.UITemplate.Quests
         private void InstantiateHandler(string id)
         {
             var record     = this.questBlueprint[id];
-            var progress   = this.questProgress.Storage.GetOrAdd(record.Id, () => new UITemplateQuestProgress.Quest(record));
+            var progress   = this.questProgress.Storage.GetOrAdd(record.Id, () => new(record));
             var controller = this.container.Instantiate<UITemplateQuestController>();
             controller.Record   = record;
             controller.Progress = progress;

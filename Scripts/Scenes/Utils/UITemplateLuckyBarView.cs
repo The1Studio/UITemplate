@@ -12,8 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         [SerializeField]                private TMP_Text txtCoin;
         [SerializeField] [MinValue(0f)] private float    duration;
 
-        [SerializeField] [MinMaxSlider(0f, 1f, true)]
-        private Vector2 sliderRange;
+        [SerializeField] [MinMaxSlider(0f, 1f, true)] private Vector2 sliderRange;
 
         private Tweener sliderTweener;
 
@@ -26,16 +25,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             var mid   = (min + max) / 2;
             var range = max - min;
             this.sliderTweener = DOTween.To(
-                getter: () => min,
-                setter: value =>
+                () => min,
+                value =>
                 {
                     this.pointer.value = value;
                     var coin = maxCoin - (maxCoin - minCoin) * Mathf.Abs(value - mid) / (range / 2);
                     this.Coin = Mathf.Round(coin / coinUpdateInterval) * coinUpdateInterval;
                     if (this.txtCoin) this.txtCoin.text = $"+{this.Coin:N0}";
                 },
-                endValue: max,
-                duration: this.duration
+                max,
+                this.duration
             ).SetLoops(-1, LoopType.Yoyo).SetEase(ease);
         }
 
@@ -43,10 +42,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             this.sliderTweener.Kill();
         }
+
         public void Pause()
         {
             this.sliderTweener.Pause();
         }
+
         public void Resume()
         {
             this.sliderTweener.Play();

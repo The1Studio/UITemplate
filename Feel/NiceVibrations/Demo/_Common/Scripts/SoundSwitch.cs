@@ -14,20 +14,20 @@ namespace Lofelt.NiceVibrations
 
         protected virtual void Awake()
         {
-            _switch = this.gameObject.GetComponent<MMSwitch>();
+            this._switch = this.gameObject.GetComponent<MMSwitch>();
         }
 
         protected virtual void OnEnable()
         {
-            if (DemoManager.SoundActive)
+            if (this.DemoManager.SoundActive)
             {
-                _switch.CurrentSwitchState = MMSwitch.SwitchStates.On;
-                _switch.InitializeState();
+                this._switch.CurrentSwitchState = MMSwitch.SwitchStates.On;
+                this._switch.InitializeState();
             }
             else
             {
-                _switch.CurrentSwitchState = MMSwitch.SwitchStates.Off;
-                _switch.InitializeState();
+                this._switch.CurrentSwitchState = MMSwitch.SwitchStates.Off;
+                this._switch.InitializeState();
             }
         }
     }

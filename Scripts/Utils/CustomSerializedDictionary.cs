@@ -35,12 +35,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
             this.currencyIdToRewardValue.Clear();
         }
     }
-    
+
     [Serializable]
     public class StringToButtonDictionary : SerializableDictionary<string, Button>
     {
     }
-    
+
     [Serializable]
     public class StringToIntDictionary : SerializableDictionary<string, int>
     {

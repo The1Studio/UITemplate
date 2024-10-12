@@ -5,89 +5,84 @@ using UnityEngine;
 
 namespace BuildReportTool
 {
-	[System.Serializable, System.Xml.Serialization.XmlRoot("MeshData")]
-	public class MeshData : BuildReportTool.IDataFile
-	{
-		// ==================================================================================
+    [Serializable]
+    [System.Xml.Serialization.XmlRoot("MeshData")]
+    public class MeshData : IDataFile
+    {
+        // ==================================================================================
 
-		/// <summary>
-		/// Name of project folder.
-		/// </summary>
-		public string ProjectName;
+        /// <summary>
+        /// Name of project folder.
+        /// </summary>
+        public string ProjectName;
 
-		/// <summary>
-		/// Type of build that the project was configured to, at the time that MeshData was collected.
-		/// </summary>
-		public string BuildType;
+        /// <summary>
+        /// Type of build that the project was configured to, at the time that MeshData was collected.
+        /// </summary>
+        public string BuildType;
 
-		/// <summary>
-		/// When MeshData was collected.
-		/// </summary>
-		public System.DateTime TimeGot;
+        /// <summary>
+        /// When MeshData was collected.
+        /// </summary>
+        public DateTime TimeGot;
 
-		public string GetDefaultFilename()
-		{
-			return BuildReportTool.Util.GetMeshDataDefaultFilename(ProjectName, BuildType, TimeGot);
-		}
+        public string GetDefaultFilename()
+        {
+            return Util.GetMeshDataDefaultFilename(this.ProjectName, this.BuildType, this.TimeGot);
+        }
 
-		public string GetAccompanyingBuildReportFilename()
-		{
-			return BuildReportTool.Util.GetBuildInfoDefaultFilename(ProjectName, BuildType, TimeGot);
-		}
+        public string GetAccompanyingBuildReportFilename()
+        {
+            return Util.GetBuildInfoDefaultFilename(this.ProjectName, this.BuildType, this.TimeGot);
+        }
 
-		/// <summary>
-		/// Full path where this MeshData is saved in the local storage.
-		/// </summary>
-		string _savedPath;
+        /// <summary>
+        /// Full path where this MeshData is saved in the local storage.
+        /// </summary>
+        private string _savedPath;
 
-		/// <inheritdoc cref="_savedPath"/>
-		public string SavedPath
-		{
-			get { return _savedPath; }
-		}
+        /// <inheritdoc cref="_savedPath"/>
+        public string SavedPath => this._savedPath;
 
-		public void SetSavedPath(string val)
-		{
-			_savedPath = val.Replace("\\", "/");
-		}
+        public void SetSavedPath(string val)
+        {
+            this._savedPath = val.Replace("\\", "/");
+        }
 
-		public bool HasContents
-		{
-			get { return _meshData.Count > 0; }
-		}
+        public bool HasContents => this._meshData.Count > 0;
 
-		public void Clear()
-		{
-			_meshData.Clear();
-		}
+        public void Clear()
+        {
+            this._meshData.Clear();
+        }
 
-		// ==================================================================================
+        // ==================================================================================
 
-		public enum DataId
-		{
-			None,
-			MeshFilterCount,
-			SkinnedMeshRendererCount,
-			SubMeshCount,
-			VertexCount,
-			TriangleCount,
-			AnimationType,
-			AnimationClipCount,
-		}
+        public enum DataId
+        {
+            None,
+            MeshFilterCount,
+            SkinnedMeshRendererCount,
+            SubMeshCount,
+            VertexCount,
+            TriangleCount,
+            AnimationType,
+            AnimationClipCount,
+        }
 
-		public const string TOOLTIP_TEXT_MESH_FILTER_COUNT = @"<b><color=white>Non-skinned Mesh Count</color></b>
+        public const string TOOLTIP_TEXT_MESH_FILTER_COUNT = @"<b><color=white>Non-skinned Mesh Count</color></b>
 
 Number of MeshFilter components in the asset.";
 
-		public const string TOOLTIP_TEXT_SKINNED_MESH_RENDERER_COUNT = @"<b><color=white>Skinned Mesh Count</color></b>
+        public const string TOOLTIP_TEXT_SKINNED_MESH_RENDERER_COUNT = @"<b><color=white>Skinned Mesh Count</color></b>
 
 Number of SkinnedMeshRenderer components in the asset.";
 
-		public const string TOOLTIP_TEXT_SUB_MESH_COUNT = @"<b><color=white>Sub-Mesh Count</color></b>
+        public const string TOOLTIP_TEXT_SUB_MESH_COUNT = @"<b><color=white>Sub-Mesh Count</color></b>
 
 Total number of sub-meshes in the asset.";
 
-		public const string TOOLTIP_TEXT_VERTEX_COUNT = @"<b><color=white>Vertex Count</color></b>
+        public const string TOOLTIP_TEXT_VERTEX_COUNT = @"<b><color=white>Vertex Count</color></b>
 
 Total number of vertices from all meshes in the asset.
 
@@ -95,166 +90,142 @@ This is the number of vertices <b>used in the triangles</b>. Some vertices are r
 
 For example, a regular cube will have 24 in its vertex count, instead of 8 (4 vertices for each face, 6 faces in total, 4 x 6 = 24).";
 
-		public const string TOOLTIP_TEXT_TRIANGLE_COUNT = @"<b><color=white>Face Count</color></b>
+        public const string TOOLTIP_TEXT_TRIANGLE_COUNT = @"<b><color=white>Face Count</color></b>
 
 Total number of triangles from all meshes in the asset.
 
 If <b><color=white>Keep Quads</color></b> was turned on in the asset's Import Settings, then this count is a mix of triangles and quads.";
 
-		public const string TOOLTIP_TEXT_ANIMATION_TYPE = @"<b><color=white>Animation Type</color></b>
+        public const string TOOLTIP_TEXT_ANIMATION_TYPE = @"<b><color=white>Animation Type</color></b>
 
 Whether this asset is set to use Humanoid, Generic, or Legacy type of animation.";
 
-		public const string TOOLTIP_TEXT_ANIMATION_CLIP_COUNT = @"<b><color=white>Animation Clip Count</color></b>
+        public const string TOOLTIP_TEXT_ANIMATION_CLIP_COUNT = @"<b><color=white>Animation Clip Count</color></b>
 
 Number of imported Animation Clips in the asset.";
 
-		public static string GetTooltipTextFromId(DataId textureDataId)
-		{
-			switch (textureDataId)
-			{
-				case DataId.MeshFilterCount:
-					return TOOLTIP_TEXT_MESH_FILTER_COUNT;
-				case DataId.SkinnedMeshRendererCount:
-					return TOOLTIP_TEXT_SKINNED_MESH_RENDERER_COUNT;
-				case DataId.SubMeshCount:
-					return TOOLTIP_TEXT_SUB_MESH_COUNT;
-				case DataId.VertexCount:
-					return TOOLTIP_TEXT_VERTEX_COUNT;
-				case DataId.TriangleCount:
-					return TOOLTIP_TEXT_TRIANGLE_COUNT;
-				case DataId.AnimationType:
-					return TOOLTIP_TEXT_ANIMATION_TYPE;
-				case DataId.AnimationClipCount:
-					return TOOLTIP_TEXT_ANIMATION_CLIP_COUNT;
-				default:
-					return null;
-			}
-		}
-		// ==================================================================================
+        public static string GetTooltipTextFromId(DataId textureDataId)
+        {
+            switch (textureDataId)
+            {
+                case DataId.MeshFilterCount:          return TOOLTIP_TEXT_MESH_FILTER_COUNT;
+                case DataId.SkinnedMeshRendererCount: return TOOLTIP_TEXT_SKINNED_MESH_RENDERER_COUNT;
+                case DataId.SubMeshCount:             return TOOLTIP_TEXT_SUB_MESH_COUNT;
+                case DataId.VertexCount:              return TOOLTIP_TEXT_VERTEX_COUNT;
+                case DataId.TriangleCount:            return TOOLTIP_TEXT_TRIANGLE_COUNT;
+                case DataId.AnimationType:            return TOOLTIP_TEXT_ANIMATION_TYPE;
+                case DataId.AnimationClipCount:       return TOOLTIP_TEXT_ANIMATION_CLIP_COUNT;
+                default:                              return null;
+            }
+        }
+        // ==================================================================================
 
-		public struct Entry
-		{
-			/// <summary>
-			/// Number of MeshFilter components in the asset.
-			/// </summary>
-			public int MeshFilterCount;
+        public struct Entry
+        {
+            /// <summary>
+            /// Number of MeshFilter components in the asset.
+            /// </summary>
+            public int MeshFilterCount;
 
-			/// <summary>
-			/// Number of SkinnedMeshRenderer components in the asset.
-			/// </summary>
-			public int SkinnedMeshRendererCount;
+            /// <summary>
+            /// Number of SkinnedMeshRenderer components in the asset.
+            /// </summary>
+            public int SkinnedMeshRendererCount;
 
-			/// <summary>
-			/// Total number of meshes in the asset.
-			/// </summary>
-			public int SubMeshCount;
+            /// <summary>
+            /// Total number of meshes in the asset.
+            /// </summary>
+            public int SubMeshCount;
 
-			/// <summary>
-			/// Number of vertices in the asset.
-			/// </summary>
-			/// <remarks>
-			/// <para>This is the number of vertices <b>used in the triangles</b>.
-			/// Some vertices are re-used, which means the number here will
-			/// normally be higher than what 3d programs usually display.</para>
-			///
-			/// <para>For example, a regular cube will have 24 in its vertex count, instead of 8.</para>
-			///
-			/// <para>4 vertices for each face, 6 faces in total, 4 x 6 = 24</para>
-			///
-			/// <para>This is the total from all meshes in the asset.</para>
-			/// </remarks>
-			public int VertexCount;
+            /// <summary>
+            /// Number of vertices in the asset.
+            /// </summary>
+            /// <remarks>
+            /// <para>This is the number of vertices <b>used in the triangles</b>.
+            /// Some vertices are re-used, which means the number here will
+            /// normally be higher than what 3d programs usually display.</para>
+            ///
+            /// <para>For example, a regular cube will have 24 in its vertex count, instead of 8.</para>
+            ///
+            /// <para>4 vertices for each face, 6 faces in total, 4 x 6 = 24</para>
+            ///
+            /// <para>This is the total from all meshes in the asset.</para>
+            /// </remarks>
+            public int VertexCount;
 
-			/// <summary>
-			/// Number of triangles in the asset.
-			/// </summary>
-			/// <remarks>
-			/// This is the total triangles from all meshes in the asset.
-			/// </remarks>
-			public int TriangleCount;
+            /// <summary>
+            /// Number of triangles in the asset.
+            /// </summary>
+            /// <remarks>
+            /// This is the total triangles from all meshes in the asset.
+            /// </remarks>
+            public int TriangleCount;
 
-			public string AnimationType;
-			public int AnimationClipCount;
+            public string AnimationType;
+            public int    AnimationClipCount;
 
-			public string ToDisplayedValue(DataId dataId)
-			{
-				switch (dataId)
-				{
-					case DataId.MeshFilterCount:
-						return MeshFilterCount.ToString("N0");
-					case DataId.SkinnedMeshRendererCount:
-						return SkinnedMeshRendererCount.ToString("N0");
-					case DataId.SubMeshCount:
-						return SubMeshCount.ToString("N0");
-					case DataId.VertexCount:
-						return VertexCount.ToString("N0");
-					case DataId.TriangleCount:
-						return TriangleCount.ToString("N0");
-					case DataId.AnimationType:
-						return AnimationType;
-					case DataId.AnimationClipCount:
-						return AnimationClipCount.ToString("N0");
-					// ------------------------
-					default:
-						return string.Empty;
-				}
-			}
-		}
+            public string ToDisplayedValue(DataId dataId)
+            {
+                switch (dataId)
+                {
+                    case DataId.MeshFilterCount:          return this.MeshFilterCount.ToString("N0");
+                    case DataId.SkinnedMeshRendererCount: return this.SkinnedMeshRendererCount.ToString("N0");
+                    case DataId.SubMeshCount:             return this.SubMeshCount.ToString("N0");
+                    case DataId.VertexCount:              return this.VertexCount.ToString("N0");
+                    case DataId.TriangleCount:            return this.TriangleCount.ToString("N0");
+                    case DataId.AnimationType:            return this.AnimationType;
+                    case DataId.AnimationClipCount:       return this.AnimationClipCount.ToString("N0");
+                    // ------------------------
+                    default: return string.Empty;
+                }
+            }
+        }
 
-		// ==================================================================================
+        // ==================================================================================
 
-		Dictionary<string, Entry> _meshData = new Dictionary<string, Entry>();
+        private Dictionary<string, Entry> _meshData = new();
 
-		public List<string> Assets;
-		public List<Entry> Data;
+        public List<string> Assets;
+        public List<Entry>  Data;
 
-		public Dictionary<string, Entry> GetMeshData()
-		{
-			return _meshData;
-		}
+        public Dictionary<string, Entry> GetMeshData()
+        {
+            return this._meshData;
+        }
 
-		// ==================================================================================
+        // ==================================================================================
 
-		public void OnBeforeSave()
-		{
-			if (Assets != null)
-			{
-				Assets.Clear();
-			}
-			else
-			{
-				Assets = new List<string>();
-			}
+        public void OnBeforeSave()
+        {
+            if (this.Assets != null)
+                this.Assets.Clear();
+            else
+                this.Assets = new();
 
-			Assets.AddRange(_meshData.Keys);
+            this.Assets.AddRange(this._meshData.Keys);
 
-			if (Data != null)
-			{
-				Data.Clear();
-			}
-			else
-			{
-				Data = new List<Entry>();
-			}
+            if (this.Data != null)
+                this.Data.Clear();
+            else
+                this.Data = new();
 
-			Data.AddRange(_meshData.Values);
-		}
+            this.Data.AddRange(this._meshData.Values);
+        }
 
-		public void OnAfterLoad()
-		{
-			_meshData.Clear();
+        public void OnAfterLoad()
+        {
+            this._meshData.Clear();
 
-			//var platformName = TextureData.GetPlatformNameFromBuildType(BuildType);
-			var len = Mathf.Min(Assets.Count, Data.Count);
-			for (int n = 0; n < len; ++n)
-			{
-				var entryToModify = Data[n];
-				//entryToModify.UpdateShownSettings(platformName);
-				Data[n] = entryToModify; // have to assign it back, Entry is a struct
+            //var platformName = TextureData.GetPlatformNameFromBuildType(BuildType);
+            var len = Mathf.Min(this.Assets.Count, this.Data.Count);
+            for (var n = 0; n < len; ++n)
+            {
+                var entryToModify = this.Data[n];
+                //entryToModify.UpdateShownSettings(platformName);
+                this.Data[n] = entryToModify; // have to assign it back, Entry is a struct
 
-				_meshData.Add(Assets[n], Data[n]);
-			}
-		}
-	}
+                this._meshData.Add(this.Assets[n], this.Data[n]);
+            }
+        }
+    }
 }

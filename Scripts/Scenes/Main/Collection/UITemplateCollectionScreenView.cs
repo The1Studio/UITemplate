@@ -88,7 +88,7 @@
                     Category                    = CatItem,
                     OnBuy                       = this.OnBuyItem,
                     OnSelected                  = this.OnSelectedItem,
-                    OnNotEnoughMoney            = this.OnNotEnoughMoney
+                    OnNotEnoughMoney            = this.OnNotEnoughMoney,
                 };
                 source.Add(model);
             }

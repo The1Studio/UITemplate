@@ -6,6 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     {
         public string Placement;
 
-        public AdsRewardComplete(string placement) { this.Placement = placement; }
+        public AdsRewardComplete(string placement)
+        {
+            this.Placement = placement;
+        }
     }
 }

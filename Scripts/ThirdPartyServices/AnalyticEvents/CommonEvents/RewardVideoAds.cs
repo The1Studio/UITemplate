@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     {
         public string placememt;
         public long   loadingMilis;
+
         public RewardedAdLoaded(string placememt, long loadingMilis)
         {
             this.placememt    = placememt;
@@ -30,13 +31,18 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class RewardedAdLoadClicked : IEvent
     {
         public string placememt;
-        public RewardedAdLoadClicked(string placememt) { this.placememt = placememt; }
+
+        public RewardedAdLoadClicked(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 
     public class RewardedAdDisplayed : IEvent
     {
         public string placememt;
         public int    level;
+
         public RewardedAdDisplayed(string placememt, int level)
         {
             this.placememt = placememt;
@@ -47,36 +53,60 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class RewardedAdCompleted : IEvent
     {
         public string placememt;
-        public RewardedAdCompleted(string placememt) { this.placememt = placememt; }
+
+        public RewardedAdCompleted(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 
     public class RewardedSkipped : IEvent
     {
         public string placememt;
-        public RewardedSkipped(string placememt) { this.placememt = placememt; }
+
+        public RewardedSkipped(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 
     public class RewardedAdEligible : IEvent
     {
         public string placememt;
-        public RewardedAdEligible(string placememt) { this.placememt = placememt; }
+
+        public RewardedAdEligible(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 
     public class RewardedAdCalled : IEvent
     {
         public string placememt;
-        public RewardedAdCalled(string placememt) { this.placememt = placememt; }
+
+        public RewardedAdCalled(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 
     public class RewardedAdOffer : IEvent
     {
         public string placememt;
-        public RewardedAdOffer(string placememt) { this.placememt = placememt; }
+
+        public RewardedAdOffer(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
-    
+
     public class RewardedAdShowFail : IEvent
     {
         public string placememt;
-        public RewardedAdShowFail(string placememt) { this.placememt = placememt; }
+
+        public RewardedAdShowFail(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 }

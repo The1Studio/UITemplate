@@ -2,9 +2,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 {
     using Core.AnalyticServices.Data;
 
-    public class GameTutorialCompletion: IEvent
+    public class GameTutorialCompletion : IEvent
     {
-        public bool Success;
+        public bool   Success;
         public string TutorialId;
 
         public GameTutorialCompletion(bool success, string tutorialId)

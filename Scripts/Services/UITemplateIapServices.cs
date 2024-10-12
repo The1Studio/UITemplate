@@ -53,11 +53,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             foreach (var record in this.uiTemplateShopPackBlueprint.GetPack())
             {
-                dicData.Add(record.Id, new IAPModel()
-                {
-                    Id          = record.Id,
-                    ProductType = record.ProductType
-                });
+                dicData.Add(record.Id,
+                    new()
+                    {
+                        Id          = record.Id,
+                        ProductType = record.ProductType,
+                    });
             }
 
             this.iapServices.InitIapServices(dicData);
@@ -67,11 +68,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             this.logger.Warning($"BuyProduct {productId}");
 
-            this.iapServices.BuyProductID(productId, (x) =>
-            {
-                this.OnPurchaseComplete(productId, source);
-                onComplete?.Invoke(x);
-            }, onFail);
+            this.iapServices.BuyProductID(productId,
+                (x) =>
+                {
+                    this.OnPurchaseComplete(productId, source);
+                    onComplete?.Invoke(x);
+                },
+                onFail);
         }
 
         private void OnPurchaseComplete(string productId, GameObject source)
@@ -82,15 +85,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             var rewardItemData = dataShopPackRecord.RewardIdToRewardDatas.ToDictionary(keyPairValue => keyPairValue.Key,
                 keyPairValue => new UITemplateRewardItemData(keyPairValue.Value.RewardValue, keyPairValue.Value.Repeat, keyPairValue.Value.AddressableFlyingItem));
 
-            if (rewardItemData.Count > 0)
-            {
-                this.uiTemplateRewardHandler.AddRewardsWithPackId(productId, rewardItemData, source);
-            }
+            if (rewardItemData.Count > 0) this.uiTemplateRewardHandler.AddRewardsWithPackId(productId, rewardItemData, source);
         }
 
-        private void OnHandleRestorePurchase(OnRestorePurchaseCompleteSignal obj) { this.OnPurchaseComplete(obj.ProductID, null); }
+        private void OnHandleRestorePurchase(OnRestorePurchaseCompleteSignal obj)
+        {
+            this.OnPurchaseComplete(obj.ProductID, null);
+        }
 
-        public void RestorePurchase(Action onComplete = null) { this.iapServices.RestorePurchases(onComplete); }
+        public void RestorePurchase(Action onComplete = null)
+        {
+            this.iapServices.RestorePurchases(onComplete);
+        }
 
         public bool IsProductOwned(string productId = "")
         {
@@ -98,9 +104,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             return this.uiTemplateShopPackBlueprint.Values.Where(x => x.RewardIdToRewardDatas.Count > 1).Any(shopPackRecord => this.uiTemplateIAPOwnerPackControllerData.IsOwnerPack(shopPackRecord.Id));
         }
 
-        public ProductData GetProductData(string productId) { return this.iapServices.GetProductData(productId); }
+        public ProductData GetProductData(string productId)
+        {
+            return this.iapServices.GetProductData(productId);
+        }
 
-        public string GetPriceById(string productId, string defaultPrice) { return this.iapServices.GetPriceById(productId, defaultPrice); }
+        public string GetPriceById(string productId, string defaultPrice)
+        {
+            return this.iapServices.GetPriceById(productId, defaultPrice);
+        }
 
         public void Initialize()
         {

@@ -17,17 +17,13 @@
         public Image    BackgroundImage;
         public Button   LevelButton;
 
-        [SerializeField]
-        private Sprite LockedSprite;
+        [SerializeField] private Sprite LockedSprite;
 
-        [SerializeField]
-        private Sprite NowSprite;
+        [SerializeField] private Sprite NowSprite;
 
-        [SerializeField]
-        private Sprite PassedSprite;
+        [SerializeField] private Sprite PassedSprite;
 
-        [SerializeField]
-        private Sprite SkippedSprite;
+        [SerializeField] private Sprite SkippedSprite;
 
         public virtual void InitView(LevelData data, UITemplateLevelDataController userLevelData)
         {
@@ -44,7 +40,7 @@
                 LevelData.Status.Locked  => this.LockedSprite,
                 LevelData.Status.Passed  => this.PassedSprite,
                 LevelData.Status.Skipped => this.SkippedSprite,
-                _                        => throw new ArgumentOutOfRangeException(nameof(levelStatus), levelStatus, null)
+                _                        => throw new ArgumentOutOfRangeException(nameof(levelStatus), levelStatus, null),
             };
         }
     }

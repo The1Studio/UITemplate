@@ -4,9 +4,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
     public class LevelStart : IEvent
     {
-        public int level;
+        public int  level;
         public bool restart;
-        
+
         public LevelStart(int level, bool restart)
         {
             this.level   = level;

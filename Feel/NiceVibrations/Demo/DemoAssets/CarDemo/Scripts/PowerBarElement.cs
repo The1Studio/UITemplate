@@ -9,49 +9,46 @@ namespace Lofelt.NiceVibrations
 {
     public class PowerBarElement : MonoBehaviour
     {
-        public float BumpDuration = 0.15f;
-        public Color NormalColor;
-        public Color InactiveColor;
+        public float          BumpDuration = 0.15f;
+        public Color          NormalColor;
+        public Color          InactiveColor;
         public AnimationCurve Curve;
 
         protected Image _image;
-        protected float _bumpDuration = 0f;
-        protected bool _active = false;
-        protected bool _activeLastFrame = false;
+        protected float _bumpDuration    = 0f;
+        protected bool  _active          = false;
+        protected bool  _activeLastFrame = false;
 
         protected virtual void Awake()
         {
-            _image = this.gameObject.GetComponent<Image>();
+            this._image = this.gameObject.GetComponent<Image>();
         }
 
         public virtual void SetActive(bool status)
         {
-            _active = status;
-            _image.color = status ? NormalColor : InactiveColor;
+            this._active      = status;
+            this._image.color = status ? this.NormalColor : this.InactiveColor;
         }
 
         protected virtual void Update()
         {
-            if (_active && !_activeLastFrame)
-            {
-                StartCoroutine(ColorBump());
-            }
-            _activeLastFrame = _active;
+            if (this._active && !this._activeLastFrame) this.StartCoroutine(this.ColorBump());
+            this._activeLastFrame = this._active;
         }
 
         protected virtual IEnumerator ColorBump()
         {
-            _bumpDuration = 0f;
-            while (_bumpDuration < BumpDuration)
+            this._bumpDuration = 0f;
+            while (this._bumpDuration < this.BumpDuration)
             {
-                float curveValue = Curve.Evaluate(_bumpDuration / BumpDuration);
-                _image.color = Color.Lerp(NormalColor, Color.white, curveValue);
+                var curveValue = this.Curve.Evaluate(this._bumpDuration / this.BumpDuration);
+                this._image.color = Color.Lerp(this.NormalColor, Color.white, curveValue);
 
-                _bumpDuration += Time.deltaTime;
+                this._bumpDuration += Time.deltaTime;
                 yield return null;
             }
 
-            _image.color = NormalColor;
+            this._image.color = this.NormalColor;
         }
     }
 }

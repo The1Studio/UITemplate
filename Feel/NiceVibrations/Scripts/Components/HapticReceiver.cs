@@ -32,19 +32,16 @@ namespace Lofelt.NiceVibrations
         // fields for them. Before serialization, these fields are set to the values
         // from HapticController, and after deserialization the values are restored
         // back to HapticController.
-        [SerializeField]
-        [Range(0.0f, 5.0f)]
-        private float _outputLevel = 1.0f;
-        [SerializeField]
-        private bool _hapticsEnabled = true;
+        [SerializeField] [Range(0.0f, 5.0f)] private float _outputLevel    = 1.0f;
+        [SerializeField]                     private bool  _hapticsEnabled = true;
 
         /// <summary>
         /// Loads all fields from HapticController.
         /// </summary>
         public void OnBeforeSerialize()
         {
-            _outputLevel = HapticController._outputLevel;
-            _hapticsEnabled = HapticController._hapticsEnabled;
+            this._outputLevel    = HapticController._outputLevel;
+            this._hapticsEnabled = HapticController._hapticsEnabled;
         }
 
         /// <summary>
@@ -52,30 +49,21 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public void OnAfterDeserialize()
         {
-            HapticController._outputLevel = _outputLevel;
-            HapticController._hapticsEnabled = _hapticsEnabled;
+            HapticController._outputLevel    = this._outputLevel;
+            HapticController._hapticsEnabled = this._hapticsEnabled;
         }
 
         /// <summary>
         /// Forwarded HapticController::outputLevel
         /// </summary>
         [System.ComponentModel.DefaultValue(1.0f)]
-        public float outputLevel
-        {
-            get { return HapticController.outputLevel; }
-            set { HapticController.outputLevel = value; }
-        }
-
+        public float outputLevel { get => HapticController.outputLevel; set => HapticController.outputLevel = value; }
 
         /// <summary>
         /// Forwarded HapticController::hapticsEnabled
         /// </summary>
         [System.ComponentModel.DefaultValue(true)]
-        public bool hapticsEnabled
-        {
-            get { return HapticController.hapticsEnabled; }
-            set { HapticController.hapticsEnabled = value; }
-        }
+        public bool hapticsEnabled { get => HapticController.hapticsEnabled; set => HapticController.hapticsEnabled = value; }
 
         /// <summary>
         /// Initializes HapticController.
@@ -83,7 +71,7 @@ namespace Lofelt.NiceVibrations
         ///
         /// This ensures that the initialization time is spent at startup instead of when
         /// the first haptic is triggered during gameplay.
-        void Start()
+        private void Start()
         {
             HapticController.Init();
         }
@@ -91,7 +79,7 @@ namespace Lofelt.NiceVibrations
         /// <summary>
         /// Forwards an application focus change event to HapticController.
         /// </summary>
-        void OnApplicationFocus(bool hasFocus)
+        private void OnApplicationFocus(bool hasFocus)
         {
             HapticController.ProcessApplicationFocus(hasFocus);
         }
@@ -100,7 +88,7 @@ namespace Lofelt.NiceVibrations
         /// Stops haptic playback on the gamepad when destroyed, to make sure the gamepad
         /// stops vibrating when quitting the application.
         /// </summary>
-        void OnDestroy()
+        private void OnDestroy()
         {
             GamepadRumbler.Stop();
         }

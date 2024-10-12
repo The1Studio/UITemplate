@@ -5,14 +5,15 @@
     using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
     using TheOneStudio.UITemplate.UITemplate.Services.Vibration;
     using UnityEngine;
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
     using UnityEditor;
     using System.IO;
     using ServiceImplementation.Configs.Editor;
-#endif
+    #endif
 
     [CreateAssetMenu(fileName = nameof(GameFeaturesSetting),
-        menuName = "TheOne/ScriptableObjects/SpawnGameFeatruesSettingConfig", order = 1)]
+        menuName = "TheOne/ScriptableObjects/SpawnGameFeatruesSettingConfig",
+        order = 1)]
     public class GameFeaturesSetting : ScriptableObject
     {
         #region essential
@@ -23,7 +24,7 @@
         private const string NotificationSymbol = "THEONE_NOTIFICATION";
 
         #endregion
-        
+
         private const string IAPSymbol              = "THEONE_IAP";
         private const string RacingEventSymbol      = "THEONE_RACING_EVENT";
         private const string BadgeNotifySymbol      = "THEONE_BADGE_NOTIFY";
@@ -35,11 +36,9 @@
 
         #region Racing Event
 
-        [OnValueChanged("OnChangeRacingEvent")]
-        public bool enableRacingEvent;
+        [OnValueChanged("OnChangeRacingEvent")] public bool enableRacingEvent;
 
-        [SerializeField] [ShowIf("enableRacingEvent")] [BoxGroup("Racing Event")]
-        public GameEventRacingConfig racingConfig;
+        [SerializeField] [ShowIf("enableRacingEvent")] [BoxGroup("Racing Event")] public GameEventRacingConfig racingConfig;
 
         public GameEventRacingConfig RacingConfig => this.racingConfig;
 
@@ -47,68 +46,61 @@
 
         #region Daily Reward
 
-        [OnValueChanged("OnChangeDailyReward")] [FoldoutGroup("Essential", expanded:true)]
-        public bool enableDailyReward;
+        [OnValueChanged("OnChangeDailyReward")] [FoldoutGroup("Essential", true)] public bool enableDailyReward;
 
-        [SerializeField] [ShowIf(nameof(enableDailyReward))] [BoxGroup("Daily Reward")]
-        private DailyRewardConfig dailyRewardConfig;
+        [SerializeField] [ShowIf(nameof(enableDailyReward))] [BoxGroup("Daily Reward")] private DailyRewardConfig dailyRewardConfig;
 
         public DailyRewardConfig DailyRewardConfig => this.dailyRewardConfig;
 
         #endregion
 
-        #region No Internet 
-            
-        [OnValueChanged("OnChangeNoInternet")] [FoldoutGroup("Essential", expanded:true)]
-        public bool enableNoInternet;
-        
-        [SerializeField] [ShowIf(nameof(enableNoInternet))] [BoxGroup("No Internet")]
-        private NoInternetConfig noInternetConfig;
-        
+        #region No Internet
+
+        [OnValueChanged("OnChangeNoInternet")] [FoldoutGroup("Essential", true)] public bool enableNoInternet;
+
+        [SerializeField] [ShowIf(nameof(enableNoInternet))] [BoxGroup("No Internet")] private NoInternetConfig noInternetConfig;
+
         public NoInternetConfig NoInternetConfig => this.noInternetConfig;
+
         #endregion
 
         #region IAP
 
-        [OnValueChanged("OnChangeIAP")] [FoldoutGroup("Essential", expanded:true)]
-        public bool enableIAP;
-        
-        [SerializeField] [ShowIf(nameof(enableIAP))] [BoxGroup("IAP")]
-        private IAPConfig iapConfig;
-        
+        [OnValueChanged("OnChangeIAP")] [FoldoutGroup("Essential", true)] public bool enableIAP;
+
+        [SerializeField] [ShowIf(nameof(enableIAP))] [BoxGroup("IAP")] private IAPConfig iapConfig;
+
         public IAPConfig IAPConfig => this.iapConfig;
 
         #endregion
-        
+
         #region Rate Us
-        [OnValueChanged("OnChangeRateUs")] [FoldoutGroup("Essential", expanded:true)]
-        public bool enableRateUs;
-        
-        [SerializeField] [ShowIf(nameof(enableRateUs))] [BoxGroup("Rate Us")]
-        private RateUsConfig rateUsConfig;
-        
+
+        [OnValueChanged("OnChangeRateUs")] [FoldoutGroup("Essential", true)] public bool enableRateUs;
+
+        [SerializeField] [ShowIf(nameof(enableRateUs))] [BoxGroup("Rate Us")] private RateUsConfig rateUsConfig;
+
         public RateUsConfig RateUsConfig => this.rateUsConfig;
+
         #endregion
-        
+
         #region Notification
-        [OnValueChanged("OnChangeNotification")] [FoldoutGroup("Essential", expanded:true)]
-        public bool enableNotification;
+
+        [OnValueChanged("OnChangeNotification")] [FoldoutGroup("Essential", true)] public bool enableNotification;
+
         #endregion
 
         #region Badge Notify
 
-        [OnValueChanged("OnChangeBadgeNotify")]
-        public bool enableBadgeNotify;
+        [OnValueChanged("OnChangeBadgeNotify")] public bool enableBadgeNotify;
 
         #endregion
 
         #region Quest
 
-        [OnValueChanged("OnChangeQuestSystem")]
-        public bool enableQuestSystem;
+        [OnValueChanged("OnChangeQuestSystem")] public bool enableQuestSystem;
 
-        [SerializeField] [ShowIf(nameof(enableQuestSystem))] [BoxGroup("Quest System")]
-        private QuestSystemConfig questSystemConfig;
+        [SerializeField] [ShowIf(nameof(enableQuestSystem))] [BoxGroup("Quest System")] private QuestSystemConfig questSystemConfig;
 
         public QuestSystemConfig QuestSystemConfig => this.questSystemConfig;
 
@@ -123,11 +115,9 @@
 
         #region Button Experience
 
-        [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")]
-        public VibrationPresetType vibrationPresetType = VibrationPresetType.Selection;
+        [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")] public VibrationPresetType vibrationPresetType = VibrationPresetType.Selection;
 
-        [FoldoutGroup("Button Experience")] [Tooltip("Set to empty to disable")]
-        public string clickButtonSound = "click_button";
+        [FoldoutGroup("Button Experience")] [Tooltip("Set to empty to disable")] public string clickButtonSound = "click_button";
 
         [FoldoutGroup("Button Experience")] public bool enableScaleAnimationOnCLicked = true;
 
@@ -135,15 +125,13 @@
 
         #region Firebase
 
-        [OnValueChanged("OnChangeFirebaseAuth")] [BoxGroup("Firebase")]
-        public bool enableFirebaseAuth;
+        [OnValueChanged("OnChangeFirebaseAuth")] [BoxGroup("Firebase")] public bool enableFirebaseAuth;
 
         #endregion
 
         #region Daily Queue Reward
 
-        [OnValueChanged("OnChangeDailyQueueReward")] [BoxGroup("Daily Queue Reward")]
-        public bool enableDailyQueueReward;
+        [OnValueChanged("OnChangeDailyQueueReward")] [BoxGroup("Daily Queue Reward")] public bool enableDailyQueueReward;
 
         #endregion
 
@@ -153,25 +141,52 @@
 
         #endregion
 
-#if UNITY_EDITOR
-        
-        private void OnChangeDailyReward() { EditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward); }
-        
-        private void OnChangeNoInternet() { EditorUtils.SetDefineSymbol(NoInternetSymbol, this.enableNoInternet); }
+        #if UNITY_EDITOR
 
-        private void OnChangeNotification() { EditorUtils.SetDefineSymbol(NotificationSymbol, this.enableNotification); }
+        private void OnChangeDailyReward()
+        {
+            EditorUtils.SetDefineSymbol(DailyRewardSymbol, this.enableDailyReward);
+        }
 
-        private void OnChangeRateUs() { EditorUtils.SetDefineSymbol(RateUsSymbol, this.enableRateUs); }
-        
-        private void OnChangeIAP() { EditorUtils.SetDefineSymbol(IAPSymbol, this.enableIAP); }
+        private void OnChangeNoInternet()
+        {
+            EditorUtils.SetDefineSymbol(NoInternetSymbol, this.enableNoInternet);
+        }
 
-        private void OnChangeRacingEvent() { EditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent); }
+        private void OnChangeNotification()
+        {
+            EditorUtils.SetDefineSymbol(NotificationSymbol, this.enableNotification);
+        }
 
-        private void OnChangeBadgeNotify() { EditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify); }
+        private void OnChangeRateUs()
+        {
+            EditorUtils.SetDefineSymbol(RateUsSymbol, this.enableRateUs);
+        }
 
-        private void OnChangeQuestSystem() { EditorUtils.SetDefineSymbol(QuestSystemSymbol, this.enableQuestSystem); }
+        private void OnChangeIAP()
+        {
+            EditorUtils.SetDefineSymbol(IAPSymbol, this.enableIAP);
+        }
 
-        private void OnChangeFirebaseAuth() { EditorUtils.SetDefineSymbol(FireBaseAuthSymbol, this.enableFirebaseAuth); }
+        private void OnChangeRacingEvent()
+        {
+            EditorUtils.SetDefineSymbol(RacingEventSymbol, this.enableRacingEvent);
+        }
+
+        private void OnChangeBadgeNotify()
+        {
+            EditorUtils.SetDefineSymbol(BadgeNotifySymbol, this.enableBadgeNotify);
+        }
+
+        private void OnChangeQuestSystem()
+        {
+            EditorUtils.SetDefineSymbol(QuestSystemSymbol, this.enableQuestSystem);
+        }
+
+        private void OnChangeFirebaseAuth()
+        {
+            EditorUtils.SetDefineSymbol(FireBaseAuthSymbol, this.enableFirebaseAuth);
+        }
 
         private async void OnChangeDailyQueueReward()
         {
@@ -181,13 +196,10 @@
             if (!this.enableDailyQueueReward) return;
             if (File.Exists(filePath)) return;
 
-            await using (var writer = new StreamWriter(filePath, true))
-            {
-                await writer.WriteLineAsync("Day,OfferId,ItemId,ImageId,Value,IsRewardedAds");
-            }
+            await using (var writer = new StreamWriter(filePath, true)) await writer.WriteLineAsync("Day,OfferId,ItemId,ImageId,Value,IsRewardedAds");
 
             AssetDatabase.Refresh();
         }
-#endif
+        #endif
     }
 }

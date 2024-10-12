@@ -28,7 +28,9 @@
             this.SetViewItem(param, view);
         }
 
-        public virtual void DisposeItem(ItemCollectionItemView view) { }
+        public virtual void DisposeItem(ItemCollectionItemView view)
+        {
+        }
 
         protected virtual void SetViewItem(ItemCollectionItemModel param, ItemCollectionItemView view)
         {
@@ -70,18 +72,15 @@
             view.btnStartPack.gameObject.SetActive(isStartPack && !isOwner && isUnlocked);
 
             view.objUsed.SetActive(param.ItemIndex == param.IndexItemUsed);
-            view.objChoose.SetActive((!isStartPack || isStartPack && isOwner) && param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
+            view.objChoose.SetActive((!isStartPack || (isStartPack && isOwner)) && param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
             view.objChooseStaredPack.SetActive(isStartPack && !isOwner && param.ItemIndex == param.IndexItemSelected && param.ItemIndex != param.IndexItemUsed);
-            view.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected && (!isStartPack || isStartPack && isOwner));
+            view.objNormal.SetActive(param.ItemIndex != param.IndexItemSelected && (!isStartPack || (isStartPack && isOwner)));
             view.objStaredPack.SetActive(isStartPack && !isUse && !isOwner);
         }
 
         protected virtual bool IsItemBuyCoinAble(ItemCollectionItemModel param)
         {
-            if (string.IsNullOrEmpty(param.ShopBlueprintRecord.CurrencyID))
-            {
-                return true;
-            }
+            if (string.IsNullOrEmpty(param.ShopBlueprintRecord.CurrencyID)) return true;
 
             var currentCoin = this.uiTemplateInventoryDataController.GetCurrencyValue(param.ShopBlueprintRecord.CurrencyID);
 

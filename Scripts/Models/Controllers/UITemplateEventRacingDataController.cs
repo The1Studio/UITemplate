@@ -32,7 +32,7 @@
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly SignalBus                         signalBus;
         private readonly IRemoteConfig                     remoteConfig;
-        private readonly GameFeaturesSetting                 gameFeaturesSetting;
+        private readonly GameFeaturesSetting               gameFeaturesSetting;
 
         #endregion
 
@@ -41,10 +41,8 @@
             get
             {
                 if (this.countryFlags == null)
-                {
                     this.countryFlags = this.gameAssets.LoadAssetAsync<GameObject>(CountryFlagsPrefab).WaitForCompletion()
-                                            .Spawn().GetComponent<CountryFlags>();
-                }
+                        .Spawn().GetComponent<CountryFlags>();
 
                 return this.countryFlags;
             }
@@ -55,16 +53,21 @@
         public  int          RacingScoreMax { get; set; }
 
         [Preserve]
-        public UITemplateEventRacingDataController(UITemplateEventRacingData uiTemplateEventRacingData,
-            IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
-            SignalBus signalBus, IRemoteConfig remoteConfig, GameFeaturesSetting gameFeaturesSetting)
+        public UITemplateEventRacingDataController(
+            UITemplateEventRacingData         uiTemplateEventRacingData,
+            IGameAssets                       gameAssets,
+            UITemplateInventoryDataController uiTemplateInventoryDataController,
+            SignalBus                         signalBus,
+            IRemoteConfig                     remoteConfig,
+            GameFeaturesSetting               gameFeaturesSetting
+        )
         {
             this.uiTemplateEventRacingData         = uiTemplateEventRacingData;
             this.gameAssets                        = gameAssets;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.signalBus                         = signalBus;
             this.remoteConfig                      = remoteConfig;
-            this.gameFeaturesSetting                 = gameFeaturesSetting;
+            this.gameFeaturesSetting               = gameFeaturesSetting;
         }
 
         public int      YourOldShowScore => this.uiTemplateEventRacingData.YourOldShowScore;
@@ -77,10 +80,7 @@
         {
             get
             {
-                if (this.uiTemplateEventRacingData.endDate == DateTime.MinValue)
-                {
-                    this.uiTemplateEventRacingData.endDate = this.uiTemplateEventRacingData.startDate.AddDays(this.gameFeaturesSetting.RacingConfig.RacingDay - Random.Range(0, 1.5f));
-                }
+                if (this.uiTemplateEventRacingData.endDate == DateTime.MinValue) this.uiTemplateEventRacingData.endDate = this.uiTemplateEventRacingData.startDate.AddDays(this.gameFeaturesSetting.RacingConfig.RacingDay - Random.Range(0, 1.5f));
 
                 return this.uiTemplateEventRacingData.endDate;
             }
@@ -94,7 +94,10 @@
                 this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameFeaturesSetting.RacingConfig.RacingCurrency);
         }
 
-        public void Initialize() { this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.OnFetchSucceedHandler); }
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.OnFetchSucceedHandler);
+        }
 
         private void OnFetchSucceedHandler(RemoteConfigFetchedSucceededSignal obj)
         {
@@ -107,33 +110,36 @@
             this.uiTemplateEventRacingData.playerIndexToData[yourIndex].Score += addedScore;
         }
 
-        private void AddScore(int playIndex, int addedScore) { this.uiTemplateEventRacingData.playerIndexToData[playIndex].Score += addedScore; }
+        private void AddScore(int playIndex, int addedScore)
+        {
+            this.uiTemplateEventRacingData.playerIndexToData[playIndex].Score += addedScore;
+        }
 
-        public Sprite GetCountryFlagSprite(string countryCode) => this.CountryFlags.GetFlag(countryCode);
+        public Sprite GetCountryFlagSprite(string countryCode)
+        {
+            return this.CountryFlags.GetFlag(countryCode);
+        }
 
         public UITemplateRacingPlayerData GetPlayerData(int playIndex)
         {
             var isYou = this.IsPlayer(playIndex);
-            var racingPlayerData = this.uiTemplateEventRacingData.playerIndexToData.GetOrAdd(playIndex, () =>
-                new UITemplateRacingPlayerData
-                {
-                    Name  = isYou ? "You" : NVJOBNameGen.GiveAName(Random.Range(1, 8)),
-                    Score = 0,
-                    CountryCode =
-                        isYou ? RegionHelper.GetCountryCodeByDeviceLang() : this.CountryFlags.RandomCountryCode(),
-                    IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.PickRandom(),
-                });
+            var racingPlayerData = this.uiTemplateEventRacingData.playerIndexToData.GetOrAdd(playIndex,
+                () =>
+                    new()
+                    {
+                        Name  = isYou ? "You" : NVJOBNameGen.GiveAName(Random.Range(1, 8)),
+                        Score = 0,
+                        CountryCode =
+                            isYou ? RegionHelper.GetCountryCodeByDeviceLang() : this.CountryFlags.RandomCountryCode(),
+                        IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.PickRandom(),
+                    });
 
-            if (racingPlayerData.IconAddressable.IsNullOrEmpty())
-            {
-                racingPlayerData.IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.PickRandom();
-            }
+            if (racingPlayerData.IconAddressable.IsNullOrEmpty()) racingPlayerData.IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.PickRandom();
 
             if (isYou) racingPlayerData.Score = this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameFeaturesSetting.RacingConfig.RacingCurrency);
 
             return racingPlayerData;
         }
-
 
         //Simulate score for all player except yourIndex and add to playerIndexToScore with to make them reach GameEventRacingValue.RacingMaxProgressionPercent of total score as max
         //The score of players will depend the time from lastRandomTime to now the gameEventRacingData.startDate (starting time of event) and gameEventRacingData.endDate (ending time of event
@@ -156,8 +162,7 @@
                 var maxRandomScore = maxScore - racingPlayerData.Score;
 
                 //calculate random score
-                var randomAddingScore = (int)(totalSecondsFromLastSimulation /
-                    totalSecondsUntilEndEventFromLastSimulation * maxRandomScore);
+                var randomAddingScore = (int)(totalSecondsFromLastSimulation / totalSecondsUntilEndEventFromLastSimulation * maxRandomScore);
                 randomAddingScore = (int)(randomAddingScore * Random.Range(0.3f, 1.1f));
                 playIndexToAddedScore.Add(playerIndex,
                     (racingPlayerData.Score, racingPlayerData.Score + randomAddingScore));
@@ -168,11 +173,20 @@
             return playIndexToAddedScore;
         }
 
-        public bool RacingEventComplete() => this.YourNewScore >= this.RacingScoreMax;
+        public bool RacingEventComplete()
+        {
+            return this.YourNewScore >= this.RacingScoreMax;
+        }
 
-        public bool IsPlayer(int playerIndex) => playerIndex == this.uiTemplateEventRacingData.yourIndex;
+        public bool IsPlayer(int playerIndex)
+        {
+            return playerIndex == this.uiTemplateEventRacingData.yourIndex;
+        }
 
-        public bool ChangeStatusClaimItem(int idPlayer, bool status = true) { return this.uiTemplateEventRacingData.playerIndexToData[idPlayer].IsClaimItem = status; }
+        public bool ChangeStatusClaimItem(int idPlayer, bool status = true)
+        {
+            return this.uiTemplateEventRacingData.playerIndexToData[idPlayer].IsClaimItem = status;
+        }
 
         public bool GetStatusClaimItem(int idPlayer = -1)
         {

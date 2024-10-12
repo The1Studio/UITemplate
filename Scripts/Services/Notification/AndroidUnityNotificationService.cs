@@ -14,16 +14,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     public class AndroidUnityNotificationService : BaseUnityNotificationService
     {
         [Preserve]
-        public AndroidUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
-            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper, ILogService logger, IAnalyticServices analyticServices,
-            IPermissionService permissionService) :
+        public AndroidUnityNotificationService(
+            SignalBus                           signalBus,
+            UITemplateNotificationBlueprint     uiTemplateNotificationBlueprint,
+            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint,
+            NotificationMappingHelper           notificationMappingHelper,
+            ILogService                         logger,
+            IAnalyticServices                   analyticServices,
+            IPermissionService                  permissionService
+        ) :
             base(signalBus, uiTemplateNotificationBlueprint, uiTemplateNotificationDataBlueprint, notificationMappingHelper, logger, analyticServices, permissionService)
         {
         }
 
         protected override void RegisterNotification()
         {
-            var channel = new AndroidNotificationChannel(ChannelId, ChannelName, ChannelDescription, Importance.Default);
+            var channel = new AndroidNotificationChannel(this.ChannelId, this.ChannelName, this.ChannelDescription, Importance.Default);
             AndroidNotificationCenter.RegisterNotificationChannel(channel);
         }
 
@@ -31,11 +37,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             await UniTask.DelayFrame(1); // await 1 frame are required to get the last notification intent
             var intent = AndroidNotificationCenter.GetLastNotificationIntent();
-            if (intent != null)
-                this.TrackEventClick(new NotificationContent(intent.Notification.Title, intent.Notification.Text));
+            if (intent != null) this.TrackEventClick(new(intent.Notification.Title, intent.Notification.Text));
         }
 
-        public override void CancelNotification() { AndroidNotificationCenter.CancelAllNotifications(); }
+        public override void CancelNotification()
+        {
+            AndroidNotificationCenter.CancelAllNotifications();
+        }
 
         public override void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
         {
@@ -44,11 +52,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 Title     = title,
                 Text      = body,
-                SmallIcon = SmallIcon,
-                LargeIcon = LargeIcon,
-                FireTime  = fireTime
+                SmallIcon = this.SmallIcon,
+                LargeIcon = this.LargeIcon,
+                FireTime  = fireTime,
             };
-            AndroidNotificationCenter.SendNotification(notification, ChannelId);
+            AndroidNotificationCenter.SendNotification(notification, this.ChannelId);
         }
     }
 }

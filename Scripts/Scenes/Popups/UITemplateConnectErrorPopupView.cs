@@ -56,7 +56,10 @@
             this.View.Reconnect.onClick.AddListener(this.OnClickReconnect);
         }
 
-        protected virtual void OnConnectSuccess() { this.CloseView(); }
+        protected virtual void OnConnectSuccess()
+        {
+            this.CloseView();
+        }
 
         private void UpdateImage(bool isConnecting)
         {

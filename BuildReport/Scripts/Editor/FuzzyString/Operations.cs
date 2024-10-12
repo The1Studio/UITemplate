@@ -14,35 +14,26 @@ namespace FuzzyString
 
         public static string[] SplitIntoIndividualElements(string source)
         {
-            string[] stringCollection = new string[source.Length];
+            var stringCollection = new string[source.Length];
 
-            for (int i = 0; i < stringCollection.Length; i++)
-            {
-                stringCollection[i] = source[i].ToString();
-            }
+            for (var i = 0; i < stringCollection.Length; i++) stringCollection[i] = source[i].ToString();
 
             return stringCollection;
         }
 
         public static string MergeIndividualElementsIntoString(IEnumerable<string> source)
         {
-            string returnString = "";
+            var returnString = "";
 
-            for (int i = 0; i < source.Count(); i++)
-            {
-                returnString += source.ElementAt<string>(i);
-            }
+            for (var i = 0; i < source.Count(); i++) returnString += source.ElementAt<string>(i);
             return returnString;
         }
 
         public static List<string> ListPrefixes(this string source)
         {
-            List<string> prefixes = new List<string>();
+            var prefixes = new List<string>();
 
-            for (int i = 0; i < source.Length; i++)
-            {
-                prefixes.Add(source.Substring(0, i));
-            }
+            for (var i = 0; i < source.Length; i++) prefixes.Add(source.Substring(0, i));
 
             return prefixes;
         }
@@ -59,7 +50,7 @@ namespace FuzzyString
 
         public static List<string> ListNGrams(this string source, int n)
         {
-            List<string> nGrams = new List<string>();
+            var nGrams = new List<string>();
 
             if (n > source.Length)
             {
@@ -72,10 +63,7 @@ namespace FuzzyString
             }
             else
             {
-                for (int i = 0; i < source.Length - n; i++)
-                {
-                    nGrams.Add(source.Substring(i, n));
-                }
+                for (var i = 0; i < source.Length - n; i++) nGrams.Add(source.Substring(i, n));
 
                 return nGrams;
             }

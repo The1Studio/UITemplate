@@ -1,5 +1,4 @@
 #if ROCKET
-
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Rocket
 {
     using System;

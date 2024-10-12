@@ -56,12 +56,12 @@
 
         [Preserve]
         public UITemplateItemUnlockPopupPresenter(
-            SignalBus signalBus,
-            ILogService logService,
-            IScreenManager screenManager,
-            IGameAssets gameAssets,
-            UITemplateAdServiceWrapper adService,
-            UITemplateItemBlueprint itemBlueprint,
+            SignalBus                         signalBus,
+            ILogService                       logService,
+            IScreenManager                    screenManager,
+            IGameAssets                       gameAssets,
+            UITemplateAdServiceWrapper        adService,
+            UITemplateItemBlueprint           itemBlueprint,
             UITemplateInventoryDataController inventoryDataController
         ) : base(signalBus, logService)
         {
@@ -104,11 +104,12 @@
         protected virtual void OnClickGet()
         {
             if (!this.adService.IsRewardedAdReady("")) return;
-            this.adService.ShowRewardedAd("", () =>
-            {
-                this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.Owned);
-                this.CloseView();
-            });
+            this.adService.ShowRewardedAd("",
+                () =>
+                {
+                    this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.Owned);
+                    this.CloseView();
+                });
         }
 
         protected virtual void OnClickSkip()

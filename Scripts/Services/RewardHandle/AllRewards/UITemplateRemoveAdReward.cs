@@ -17,8 +17,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle.AllRewards
         public override string RewardId => REWARD_ID;
 
         [Preserve]
-        public UITemplateRemoveAdRewardExecutorBase(UITemplateAdServiceWrapper uiTemplateAdServiceWrapper) { this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper; }
+        public UITemplateRemoveAdRewardExecutorBase(UITemplateAdServiceWrapper uiTemplateAdServiceWrapper)
+        {
+            this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
+        }
 
-        public override void ReceiveReward(int value, RectTransform startPosAnimation) { this.uiTemplateAdServiceWrapper.RemoveAds(); }
+        public override void ReceiveReward(int value, RectTransform startPosAnimation)
+        {
+            this.uiTemplateAdServiceWrapper.RemoveAds();
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
     {
         public Sprite OnSprite;
         public Sprite OffSprite;
-        
+
         [SerializeField] private Image  handle;
         [SerializeField] private Button button;
         [SerializeField] private Slider slider;
@@ -20,7 +20,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         [SerializeField] private float  duration = 0.5f;
         public                   Button Button => this.button;
 
-        private void Awake() { this.button.onClick.AddListener(this.OnClick); }
+        private void Awake()
+        {
+            this.button.onClick.AddListener(this.OnClick);
+        }
 
         private void OnClick()
         {
@@ -57,8 +60,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
             this.InitColorText(isOn);
         }
 
-        protected virtual void ChangeColorText(float handleValue) {}
-        
-        protected virtual void InitColorText(bool isOn) {}
+        protected virtual void ChangeColorText(float handleValue)
+        {
+        }
+
+        protected virtual void InitColorText(bool isOn)
+        {
+        }
     }
 }

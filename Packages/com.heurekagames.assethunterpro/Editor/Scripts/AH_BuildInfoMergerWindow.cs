@@ -11,16 +11,16 @@ namespace HeurekaGames.AssetHunterPRO
     public class AH_BuildInfoMergerWindow : EditorWindow
     {
         private static AH_BuildInfoMergerWindow m_window;
-        private string buildInfoFolder;
+        private        string                   buildInfoFolder;
 
-        private Vector2 scrollPos;
+        private Vector2                  scrollPos;
         private List<BuildInfoSelection> buildInfoFiles;
 
         [MenuItem("Tools/Asset Hunter PRO/Merge tool")]
         [MenuItem("Window/Heureka/Asset Hunter PRO/Merge tool")]
         public static void Init()
         {
-            m_window = GetWindow<AH_BuildInfoMergerWindow>("AH Merger", true, typeof(AH_Window));
+            m_window                    = GetWindow<AH_BuildInfoMergerWindow>("AH Merger", true, typeof(AH_Window));
             m_window.titleContent.image = AH_EditorData.Icons.Merge;
 
             m_window.buildInfoFolder = AH_SerializationHelper.GetBuildInfoFolder();
@@ -29,21 +29,17 @@ namespace HeurekaGames.AssetHunterPRO
 
         private void updateBuildInfoFiles()
         {
-            buildInfoFiles = new List<BuildInfoSelection>();
+            this.buildInfoFiles = new();
 
-            System.IO.DirectoryInfo directoryInfo = new System.IO.DirectoryInfo(buildInfoFolder);
-            foreach (var item in directoryInfo.GetFiles("*." + AH_SerializationHelper.BuildInfoExtension).OrderByDescending(val=>val.LastWriteTime))
-            {
-                buildInfoFiles.Add(new BuildInfoSelection(item));
-            } 
+            var directoryInfo = new System.IO.DirectoryInfo(this.buildInfoFolder);
+            foreach (var item in directoryInfo.GetFiles("*." + AH_SerializationHelper.BuildInfoExtension).OrderByDescending(val => val.LastWriteTime)) this.buildInfoFiles.Add(new(item));
         }
 
         private void OnGUI()
         {
-            if (!m_window)
-                Init();
+            if (!m_window) Init();
 
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+            this.scrollPos = EditorGUILayout.BeginScrollView(this.scrollPos);
             Heureka_WindowStyler.DrawGlobalHeader(Heureka_WindowStyler.clr_Dark, "BUILD INFO MERGER");
             EditorGUILayout.Space();
 
@@ -53,50 +49,44 @@ namespace HeurekaGames.AssetHunterPRO
 
             if (GUILayout.Button("Change", GUILayout.ExpandWidth(false)))
             {
-                buildInfoFolder = EditorUtility.OpenFolderPanel("Buildinfo folder", buildInfoFolder, "");
-                updateBuildInfoFiles();
+                this.buildInfoFolder = EditorUtility.OpenFolderPanel("Buildinfo folder", this.buildInfoFolder, "");
+                this.updateBuildInfoFiles();
             }
-            EditorGUILayout.LabelField("Current folder: " + buildInfoFolder);
+            EditorGUILayout.LabelField("Current folder: " + this.buildInfoFolder);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
 
             //Show all used types
             EditorGUILayout.BeginVertical();
 
-            foreach (var item in buildInfoFiles)
-            {
-                item.Selected = EditorGUILayout.ToggleLeft(item.BuildInfoFile.Name, item.Selected);
-            }
+            foreach (var item in this.buildInfoFiles) item.Selected = EditorGUILayout.ToggleLeft(item.BuildInfoFile.Name, item.Selected);
 
             EditorGUILayout.Space();
-            EditorGUI.BeginDisabledGroup(buildInfoFiles.Count(val=>val.Selected==true) < 2);
+            EditorGUI.BeginDisabledGroup(this.buildInfoFiles.Count(val => val.Selected == true) < 2);
             if (GUILayout.Button("Merge Selected", GUILayout.ExpandWidth(false)))
             {
-                AH_SerializedBuildInfo merged = new AH_SerializedBuildInfo();
-                foreach (var item in buildInfoFiles.FindAll(val=>val.Selected))
-                {
-                    merged.MergeWith(item.BuildInfoFile.FullName);
-                }
+                var merged = new AH_SerializedBuildInfo();
+                foreach (var item in this.buildInfoFiles.FindAll(val => val.Selected)) merged.MergeWith(item.BuildInfoFile.FullName);
                 merged.SaveAfterMerge();
 
                 EditorUtility.DisplayDialog("Merge completed", "A new buildinfo was created by combined existing buildinfos", "Ok");
                 //Reset
-                buildInfoFiles.ForEach(val => val.Selected = false);
-                updateBuildInfoFiles();
+                this.buildInfoFiles.ForEach(val => val.Selected = false);
+                this.updateBuildInfoFiles();
             }
             EditorGUI.EndDisabledGroup();
             //Make sure this window has focus to update contents
-            Repaint();
+            this.Repaint();
 
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndScrollView();
         }
 
-        [System.Serializable]
+        [Serializable]
         private class BuildInfoSelection
         {
             public System.IO.FileInfo BuildInfoFile;
-            public bool Selected = false;
+            public bool               Selected = false;
 
             public BuildInfoSelection(System.IO.FileInfo buildInfoFile)
             {

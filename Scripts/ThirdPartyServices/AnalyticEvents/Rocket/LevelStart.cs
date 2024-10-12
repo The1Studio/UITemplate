@@ -5,6 +5,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
     public class LevelStart : IEvent
     {
         public int level;
-        public LevelStart(int level) { this.level = level; }
+
+        public LevelStart(int level)
+        {
+            this.level = level;
+        }
     }
 }

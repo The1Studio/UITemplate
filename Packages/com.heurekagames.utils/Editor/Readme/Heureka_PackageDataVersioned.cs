@@ -9,8 +9,8 @@ namespace HeurekaGames.Utils
 {
     public class Heureka_PackageDataVersioned : Heureka_PackageData
     {
-        public List<PackageVersion> VersionData = new List<PackageVersion>();
-        internal bool FoldOutVersionHistory;
+        public   List<PackageVersion> VersionData = new();
+        internal bool                 FoldOutVersionHistory;
 
         private void Item_OnChanged()
         {
@@ -19,54 +19,51 @@ namespace HeurekaGames.Utils
 
         public void AddNewVersion(int major, int minor, int patch)
         {
-            PackageVersion newPackageVersion = new PackageVersion(major, minor, patch);
-            VersionData.Add(newPackageVersion);
+            var newPackageVersion = new PackageVersion(major, minor, patch);
+            this.VersionData.Add(newPackageVersion);
         }
 
         public void CollapseAll()
         {
-            foreach (var item in VersionData)
-            {
-                item.FoldOut = false;
-            }
+            foreach (var item in this.VersionData) item.FoldOut = false;
         }
 
         public void Delete(PackageVersion target)
         {
-            VersionData.Remove(target);
+            this.VersionData.Remove(target);
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class PackageVersion
     {
-        [SerializeField] public PackageVersionNum VersionNum = new PackageVersionNum();
-        [SerializeField] public List<string> VersionChanges = new List<string>();
+        [SerializeField] public PackageVersionNum VersionNum     = new();
+        [SerializeField] public List<string>      VersionChanges = new();
 
-        internal bool FoldOut = false;
-        PackageVersionNum newVersionNum = new PackageVersionNum();
+        internal bool              FoldOut       = false;
+        private  PackageVersionNum newVersionNum = new();
 
-        private const float btnWidth = 150;
-        private ReorderableList reorderableList;
+        private const float           btnWidth = 150;
+        private       ReorderableList reorderableList;
 
         private bool initialized = false;
 
         public PackageVersion(int major, int minor, int patch)
         {
-            this.VersionNum = newVersionNum = new PackageVersionNum(major, minor, patch);
-            this.FoldOut = true;
+            this.VersionNum = this.newVersionNum = new(major, minor, patch);
+            this.FoldOut    = true;
         }
 
         private void initialize()
         {
-            initialized = true;
-            reorderableList = new ReorderableList(VersionChanges, typeof(string), true, true, true, true);
+            this.initialized     = true;
+            this.reorderableList = new(this.VersionChanges, typeof(string), true, true, true, true);
 
-            reorderableList.drawHeaderCallback += DrawHeader;
-            reorderableList.drawElementCallback += DrawElement;
+            this.reorderableList.drawHeaderCallback  += this.DrawHeader;
+            this.reorderableList.drawElementCallback += this.DrawElement;
 
-            reorderableList.onAddCallback += AddItem;
-            reorderableList.onRemoveCallback += RemoveItem;
+            this.reorderableList.onAddCallback    += this.AddItem;
+            this.reorderableList.onRemoveCallback += this.RemoveItem;
         }
 
         /// <summary>
@@ -87,71 +84,65 @@ namespace HeurekaGames.Utils
         /// <param name="focused"></param>
         private void DrawElement(Rect rect, int index, bool active, bool focused)
         {
-            VersionChanges[index] = EditorGUI.TextField(new Rect(rect.x + 18, rect.y, rect.width - 18, rect.height), VersionChanges[index]);
+            this.VersionChanges[index] = EditorGUI.TextField(new(rect.x + 18, rect.y, rect.width - 18, rect.height), this.VersionChanges[index]);
         }
 
         private void AddItem(ReorderableList list)
         {
-            VersionChanges.Add("");
+            this.VersionChanges.Add("");
         }
 
         private void RemoveItem(ReorderableList list)
         {
-            VersionChanges.RemoveAt(list.index);
+            this.VersionChanges.RemoveAt(list.index);
         }
 
         public void OnGUI(ref bool shouldDelete)
         {
-            if (!initialized || reorderableList == null)
-                initialize();
+            if (!this.initialized || this.reorderableList == null) this.initialize();
 
             GUILayout.Space(10);
-            FoldOut = EditorGUILayout.Foldout(FoldOut, VersionNum.GetVersionString());
+            this.FoldOut = EditorGUILayout.Foldout(this.FoldOut, this.VersionNum.GetVersionString());
 
-            if (GUILayout.Button("Delete Version", GUILayout.Width(btnWidth)))
-                shouldDelete = true;
+            if (GUILayout.Button("Delete Version", GUILayout.Width(btnWidth))) shouldDelete = true;
 
-            if (FoldOut)
+            if (this.FoldOut)
             {
                 EditorGUILayout.BeginHorizontal();
 
-                if (GUILayout.Button("Update Version", GUILayout.Width(btnWidth)))
-                    updateVersion();
+                if (GUILayout.Button("Update Version", GUILayout.Width(btnWidth))) this.updateVersion();
 
                 //Allow for changing version num
-                newVersionNum.Major = EditorGUILayout.IntField(newVersionNum.Major);
-                newVersionNum.Minor = EditorGUILayout.IntField(newVersionNum.Minor);
-                newVersionNum.Patch = EditorGUILayout.IntField(newVersionNum.Patch);
+                this.newVersionNum.Major = EditorGUILayout.IntField(this.newVersionNum.Major);
+                this.newVersionNum.Minor = EditorGUILayout.IntField(this.newVersionNum.Minor);
+                this.newVersionNum.Patch = EditorGUILayout.IntField(this.newVersionNum.Patch);
 
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginHorizontal();
 
                 //versionDescription = GUILayout.TextArea(versionDescription);
-                if (reorderableList.count > 0 && (GUILayout.Button("Copy to clipboard")))
+                if (this.reorderableList.count > 0 && GUILayout.Button("Copy to clipboard"))
                 {
-                    string clipboardString = "";
-                    foreach (var item in reorderableList.list)
-                    {
-                        clipboardString += item.ToString() + Environment.NewLine;
-                    }
+                    var clipboardString                                             = "";
+                    foreach (var item in this.reorderableList.list) clipboardString += item.ToString() + Environment.NewLine;
                     EditorGUIUtility.systemCopyBuffer = clipboardString;
                 }
 
                 EditorGUILayout.EndHorizontal();
                 {
-                    reorderableList.DoLayoutList();
+                    this.reorderableList.DoLayoutList();
                 }
             }
         }
 
         private void updateVersion()
         {
-            VersionNum = new PackageVersionNum(newVersionNum.Major, newVersionNum.Minor, newVersionNum.Patch);
+            this.VersionNum = new(this.newVersionNum.Major, this.newVersionNum.Minor, this.newVersionNum.Patch);
             //TODO SORT Parent list
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct PackageVersionNum : IComparable<PackageVersionNum>
     {
         [SerializeField] public int Major;
@@ -185,12 +176,12 @@ namespace HeurekaGames.Utils
 
         public string GetVersionString()
         {
-            return string.Format("{0}.{1}.{2}", Major, Minor, Patch);
+            return string.Format("{0}.{1}.{2}", this.Major, this.Minor, this.Patch);
         }
 
         public bool IsEmpty()
         {
-            return (Major == 0 && Minor == 0 && Patch == 0);
+            return this.Major == 0 && this.Minor == 0 && this.Patch == 0;
         }
     }
 }

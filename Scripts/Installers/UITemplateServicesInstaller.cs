@@ -20,7 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Installers
 
         public UITemplateServicesInstaller(ToastController toastController)
         {
-            this.toastController  = toastController;
+            this.toastController = toastController;
         }
 
         public override void InstallBindings()

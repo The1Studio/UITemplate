@@ -25,6 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
         }
 
         public override string Id => "enough_currency";
+
         protected override bool IsPassedCondition(FTUEEnoughCurrencyContidionModel data)
         {
             return this.uiTemplateFtueHelper.CompareIntWithCondition(this.uiTemplateInventoryDataController.GetCurrencyValue(data.Id), data.Value, data.Condition);

@@ -16,9 +16,9 @@ namespace TheOne.Tool.Optimization.Texture
         // Method to start the compression process for a list of textures
         public static async UniTaskVoid CompressTextures(List<string> filePaths)
         {
-            var           skippedCount     = 0;
-            var           compressedCount  = 0;
-            List<UniTask> compressionTasks = new List<UniTask>();
+            var skippedCount     = 0;
+            var compressedCount  = 0;
+            var compressionTasks = new List<UniTask>();
 
             foreach (var filePath in filePaths)
             {

@@ -65,7 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
             this.timeSpent = timeSpent;
         }
     }
-    
+
     public class LevelEnd : IEvent
     {
         public int    level;

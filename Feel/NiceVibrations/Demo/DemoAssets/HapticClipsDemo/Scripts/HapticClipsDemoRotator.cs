@@ -13,14 +13,14 @@ namespace Lofelt.NiceVibrations
     public class HapticClipsDemoRotator : MonoBehaviour
     {
         /// the speed at which the image should rotate
-        public Vector3 RotationSpeed = new Vector3(0, 0, 100f);
+        public Vector3 RotationSpeed = new(0, 0, 100f);
 
         /// <summary>
         /// On Update we rotate our image
         /// </summary>
         protected void Update()
         {
-            this.transform.Rotate(RotationSpeed * Time.deltaTime, Space.Self);
+            this.transform.Rotate(this.RotationSpeed * Time.deltaTime, Space.Self);
         }
     }
 }

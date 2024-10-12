@@ -43,7 +43,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private Tween tween;
         private float trueProgress;
 
-        private void Start() { this.LoadingSlider.value = 0f; }
+        private void Start()
+        {
+            this.LoadingSlider.value = 0f;
+        }
 
         public void SetProgress(float progress)
         {
@@ -51,15 +54,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             if (progress <= this.trueProgress) return;
             this.tween.Kill();
             this.tween = DOTween.To(
-                getter: () => this.LoadingSlider.value,
-                setter: value =>
+                () => this.LoadingSlider.value,
+                value =>
                 {
                     this.LoadingSlider.value = value;
-                    if (this.loadingProgressTxt != null)
-                        this.loadingProgressTxt.text = string.Format(this.loadingText, (int)(value * 100));
+                    if (this.loadingProgressTxt != null) this.loadingProgressTxt.text = string.Format(this.loadingText, (int)(value * 100));
                 },
-                endValue: this.trueProgress = progress,
-                duration: 0.5f
+                this.trueProgress = progress,
+                0.5f
             ).SetUpdate(true);
         }
 
@@ -114,7 +116,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         /// Please fill loading text with format "Text {0}" where {0} is the value position."
         /// </summary>
         /// <param name="text"></param>
-        protected virtual string GetLoadingText() => "Loading {0}%";
+        protected virtual string GetLoadingText()
+        {
+            return "Loading {0}%";
+        }
 
         private bool IsClosedFirstOpen { get; set; }
 
@@ -169,7 +174,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "GameLoadingTime",
-                EventProperties = new Dictionary<string, object>()
+                EventProperties = new()
                 {
                     { "timeMilis", stopWatch.ElapsedMilliseconds },
                 },
@@ -185,7 +190,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Unsubscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
         }
 
-        private void OnAOAClosedHandler() { this.IsClosedFirstOpen = true; }
+        private void OnAOAClosedHandler()
+        {
+            this.IsClosedFirstOpen = true;
+        }
 
         protected virtual async UniTask LoadNextScene()
         {
@@ -204,7 +212,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "LoadingMainSceneTime",
-                EventProperties = new Dictionary<string, object>()
+                EventProperties = new()
                 {
                     { "timeMilis", stopWatch.ElapsedMilliseconds },
                 },
@@ -221,9 +229,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.adService.ShowBannerAd();
         }
 
-        protected virtual void OnAfterLoading() { }
+        protected virtual void OnAfterLoading()
+        {
+        }
 
-        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
+        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync()
+        {
+            return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false);
+        }
 
         private UniTask LoadBlueprint()
         {
@@ -233,7 +246,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return this.blueprintManager.LoadBlueprint();
         }
 
-        private UniTask LoadUserData() { return this.TrackProgress(this.userDataManager.LoadUserData()); }
+        private UniTask LoadUserData()
+        {
+            return this.TrackProgress(this.userDataManager.LoadUserData());
+        }
 
         private UniTask WaitForAoa()
         {
@@ -246,15 +262,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             );
         }
 
-        protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnBlueprintLoaded()
+        {
+            return UniTask.CompletedTask;
+        }
 
-        protected virtual UniTask OnUserDataLoaded() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnUserDataLoaded()
+        {
+            return UniTask.CompletedTask;
+        }
 
-        protected virtual UniTask OnBlueprintAndUserDataLoaded() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnBlueprintAndUserDataLoaded()
+        {
+            return UniTask.CompletedTask;
+        }
 
-        protected virtual UniTask OnLoadingCompleted() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnLoadingCompleted()
+        {
+            return UniTask.CompletedTask;
+        }
 
-        protected virtual UniTask Preload() { return UniTask.CompletedTask; }
+        protected virtual UniTask Preload()
+        {
+            return UniTask.CompletedTask;
+        }
 
         protected UniTask PreloadAssets<T>(params object[] keys)
         {
@@ -306,10 +337,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             {
                 this.LoadingProgress += progress.Percent - localLoadingProgress;
                 localLoadingProgress =  progress.Percent;
-                if (progress.Percent >= 1f)
-                {
-                    this.SignalBus.Unsubscribe<T>(UpdateProgress);
-                }
+                if (progress.Percent >= 1f) this.SignalBus.Unsubscribe<T>(UpdateProgress);
             }
         }
     }

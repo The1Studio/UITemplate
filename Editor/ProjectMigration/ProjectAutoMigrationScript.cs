@@ -17,13 +17,13 @@ namespace TheOne.Tool.Migration.ProjectMigration
             ProguardMigration.CheckAndUpdateProguardFile();
             ProjectSettingMigration.APICompatibilityLevel();
             FolderMigration.RemoveUselessFolder();
-            
+
             if (EditorUtility.scriptCompilationFailed || EditorApplication.isCompiling)
             {
                 Debug.LogWarning("Skipping migration due to compilation errors or isCompiling.");
                 return;
             }
-            
+
             // TODO: Temporary disable auto migration for Applovin, Update it later
             // ApplovinMigration.DoMigrate();
             LevelPlayMigration.DoMigration();

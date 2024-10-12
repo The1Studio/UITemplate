@@ -49,13 +49,8 @@ namespace Lofelt.NiceVibrations
         /// will check \ref meetsAdvancedRequirements before calling into <c>LofeltHaptics</c>.
         /// In case the device does not support advanced haptics there is a possibility of fallback
         /// haptics based on presets.
-        public static bool meetsAdvancedRequirements
-        {
-            get
-            {
-                return _meetsAdvancedRequirements;
-            }
-        }
+        public static bool meetsAdvancedRequirements => _meetsAdvancedRequirements;
+
         private static bool _meetsAdvancedRequirements;
 
         /// <summary>
@@ -75,85 +70,50 @@ namespace Lofelt.NiceVibrations
         /// Indicates if the device is capable of amplitude control in order to recreate
         /// advanced haptics.
         /// </summary>
-        public static bool hasAmplitudeControl
-        {
-            get
-            {
-                return _hasAmplitudeControl;
-            }
-        }
+        public static bool hasAmplitudeControl => _hasAmplitudeControl;
+
         private static bool _hasAmplitudeControl;
 
         /// <summary>
         /// Indicates if the device is capable of changing the frequency of haptic signals
         /// </summary>
-        public static bool hasFrequencyControl
-        {
-            get
-            {
-                return _hasFrequencyControl;
-            }
-        }
+        public static bool hasFrequencyControl => _hasFrequencyControl;
+
         private static bool _hasFrequencyControl;
 
         /// <summary>
         /// Indicates if the device is capable of real-time amplitude modulation of haptic signals
         /// </summary>
-        public static bool hasAmplitudeModulation
-        {
-            get
-            {
-                return _hasAmplitudeModulation;
-            }
-        }
+        public static bool hasAmplitudeModulation => _hasAmplitudeModulation;
+
         private static bool _hasAmplitudeModulation;
 
         /// <summary>
         /// Indicates if the device is capable of real-time frequency modulation of haptic signals
         /// </summary>
-        public static bool hasFrequencyModulation
-        {
-            get
-            {
-                return _hasFrequencyModulation;
-            }
-        }
+        public static bool hasFrequencyModulation => _hasFrequencyModulation;
+
         private static bool _hasFrequencyModulation;
 
         /// <summary>
         /// Indicates if the device is capable of natively reproducing emphasized haptics
         /// </summary>
-        public static bool hasEmphasis
-        {
-            get
-            {
-                return _hasEmphasis;
-            }
-        }
+        public static bool hasEmphasis => _hasEmphasis;
+
         private static bool _hasEmphasis;
 
         /// <summary>
         /// Indicates if the device is capable of emulating emphasized haptics
         /// </summary>
-        public static bool canEmulateEmphasis
-        {
-            get
-            {
-                return _canEmulateEmphasis;
-            }
-        }
+        public static bool canEmulateEmphasis => _canEmulateEmphasis;
+
         private static bool _canEmulateEmphasis;
 
         /// <summary>
         /// Indicates if the device is capable of looping haptic clips
         /// </summary>
-        public static bool canLoop
-        {
-            get
-            {
-                return _canLoop;
-            }
-        }
+        public static bool canLoop => _canLoop;
+
         private static bool _canLoop;
 
         /// <summary>
@@ -163,15 +123,15 @@ namespace Lofelt.NiceVibrations
         /// initializing <c>LofeltHaptics</c>
         static DeviceCapabilities()
         {
-            platform = Application.platform;
-            platformVersion = 0;
+            platform           = Application.platform;
+            platformVersion    = 0;
             isVersionSupported = false;
 
-#if (UNITY_ANDROID && !UNITY_EDITOR)
+            #if (UNITY_ANDROID && !UNITY_EDITOR)
             platformVersion = int.Parse(SystemInfo.operatingSystem.Substring(SystemInfo.operatingSystem.IndexOf("-") + 1, 3));
             const int minimumSupportedAndroidSDKVersion = 17;
             isVersionSupported = platformVersion >= minimumSupportedAndroidSDKVersion;
-#elif (UNITY_IOS && !UNITY_EDITOR)
+            #elif (UNITY_IOS && !UNITY_EDITOR)
             string versionString = Device.systemVersion;
             string[] versionArray = versionString.Split('.');
             platformVersion = int.Parse(versionArray[0]);
@@ -224,9 +184,9 @@ namespace Lofelt.NiceVibrations
                 isVersionSupported = false;
             }
 
-#elif (UNITY_EDITOR)
+            #elif (UNITY_EDITOR)
             isVersionSupported = true;
-#endif
+            #endif
         }
 
         /// <summary>
@@ -235,18 +195,18 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public static void Init()
         {
-#if (UNITY_ANDROID && !UNITY_EDITOR)
+            #if (UNITY_ANDROID && !UNITY_EDITOR)
             _hasAmplitudeControl = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
             _canEmulateEmphasis = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
             _canLoop = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
-#elif (UNITY_IOS && !UNITY_EDITOR)
+            #elif (UNITY_IOS && !UNITY_EDITOR)
             _hasAmplitudeControl = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
             _hasFrequencyControl = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
             _hasAmplitudeModulation = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
             _hasFrequencyModulation = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
             _hasEmphasis = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
             _canLoop = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
-#endif
+            #endif
             _meetsAdvancedRequirements = LofeltHaptics.DeviceMeetsMinimumPlatformRequirements();
         }
     }

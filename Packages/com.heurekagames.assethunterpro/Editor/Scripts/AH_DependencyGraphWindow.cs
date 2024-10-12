@@ -11,7 +11,7 @@ namespace HeurekaGames.AssetHunterPRO
 {
     public class AH_DependencyGraphWindow : EditorWindow
     {
-        private static AH_DependencyGraphWindow window;
+        private static          AH_DependencyGraphWindow  window;
         [SerializeField] public AH_DependencyGraphManager dependencyGraphManager;
 
         private GUIContent lockedReference;
@@ -19,24 +19,24 @@ namespace HeurekaGames.AssetHunterPRO
         private GUIContent contentToggleRefsTo;
         private GUIContent contentToggleRefsFrom;
 
-        [SerializeField] GUIContent guiContentRefresh;
+        [SerializeField] private GUIContent guiContentRefresh;
 
-        [SerializeField] SearchField searchField;
-        private bool initialized;
+        [SerializeField] private SearchField searchField;
+        private                  bool        initialized;
 
         // Editor gameObjectEditor;
         private UnityEngine.Object previewObject;
 
         //UI Rect
-        Vector2 uiStartPos = new Vector2(10, 50);
-        [SerializeField] private bool seeRefsToInProject;
-        [SerializeField] private bool seeRefsFromInProject;
-        private Texture2D previewTexture;
-        private static readonly string WINDOWNAME = "AH Dependency Graph";
+        private                  Vector2   uiStartPos = new(10, 50);
+        [SerializeField] private bool      seeRefsToInProject;
+        [SerializeField] private bool      seeRefsFromInProject;
+        private                  Texture2D previewTexture;
+        private static readonly  string    WINDOWNAME = "AH Dependency Graph";
 
         //Add menu named "Dependency Graph" to the window menu  
-        [UnityEditor.MenuItem("Tools/Asset Hunter PRO/Dependency Graph _%#h", priority = AH_Window.WINDOWMENUITEMPRIO + 1)]
-        [UnityEditor.MenuItem("Window/Heureka/Asset Hunter PRO/Dependency Graph", priority = AH_Window.WINDOWMENUITEMPRIO + 1)]
+        [MenuItem("Tools/Asset Hunter PRO/Dependency Graph _%#h", priority = AH_Window.WINDOWMENUITEMPRIO + 1)]
+        [MenuItem("Window/Heureka/Asset Hunter PRO/Dependency Graph", priority = AH_Window.WINDOWMENUITEMPRIO + 1)]
         public static void OpenDependencyGraph()
         {
             Init();
@@ -44,9 +44,8 @@ namespace HeurekaGames.AssetHunterPRO
 
         public static void Init()
         {
-            window = AH_DependencyGraphWindow.GetWindow<AH_DependencyGraphWindow>(WINDOWNAME, true);
-            if (window.dependencyGraphManager == null)
-                window.dependencyGraphManager = AH_DependencyGraphManager.instance;
+            window = GetWindow<AH_DependencyGraphWindow>(WINDOWNAME, true);
+            if (window.dependencyGraphManager == null) window.dependencyGraphManager = AH_DependencyGraphManager.instance;
 
             window.initializeGUIContent();
         }
@@ -55,121 +54,112 @@ namespace HeurekaGames.AssetHunterPRO
         {
             Init();
 
-            AH_Window[] mainWindows = Resources.FindObjectsOfTypeAll<AH_Window>();
-            if (mainWindows.Length != 0)
-            {
-                HeurekaGames.Docker.Dock(mainWindows[0], window, dockPosition);
-            }
+            var mainWindows = Resources.FindObjectsOfTypeAll<AH_Window>();
+            if (mainWindows.Length != 0) Docker.Dock(mainWindows[0], window, dockPosition);
         }
 
         private void OnEnable()
         {
-            Selection.selectionChanged += OnSelectionChanged;
-            EditorApplication.projectChanged += EditorApplication_projectChanged;
-            EditorApplication.projectWindowItemOnGUI += EditorApplication_ProjectWindowItemCallback;
+            Selection.selectionChanged               += this.OnSelectionChanged;
+            EditorApplication.projectChanged         += this.EditorApplication_projectChanged;
+            EditorApplication.projectWindowItemOnGUI += this.EditorApplication_ProjectWindowItemCallback;
 
-            contentToggleRefsFrom = new GUIContent(EditorGUIUtility.IconContent("sv_icon_dot9_sml"));
-            contentToggleRefsFrom.text = "Is dependency";
+            this.contentToggleRefsFrom      = new(EditorGUIUtility.IconContent("sv_icon_dot9_sml"));
+            this.contentToggleRefsFrom.text = "Is dependency";
 
-            contentToggleRefsTo = new GUIContent(EditorGUIUtility.IconContent("sv_icon_dot12_sml"));
-            contentToggleRefsTo.text = "Has dependencies";
+            this.contentToggleRefsTo      = new(EditorGUIUtility.IconContent("sv_icon_dot12_sml"));
+            this.contentToggleRefsTo.text = "Has dependencies";
 
-            lockedReference = new GUIContent()
+            this.lockedReference = new()
             {
                 tooltip = "Target Asset is locked, click to unlock",
-                image = EditorGUIUtility.IconContent("LockIcon-On").image
+                image   = EditorGUIUtility.IconContent("LockIcon-On").image,
             };
-            unlockedReference = new GUIContent()
+            this.unlockedReference = new()
             {
                 tooltip = "Target Asset is unlocked, click to lock",
-                image = EditorGUIUtility.IconContent("LockIcon").image
+                image   = EditorGUIUtility.IconContent("LockIcon").image,
             };
-            seeRefsToInProject = EditorPrefs.GetBool("AHP_seeRefsToInProject", true);
-            seeRefsFromInProject = EditorPrefs.GetBool("AHP_seeRefsFromInProject", true);
+            this.seeRefsToInProject   = EditorPrefs.GetBool("AHP_seeRefsToInProject", true);
+            this.seeRefsFromInProject = EditorPrefs.GetBool("AHP_seeRefsFromInProject", true);
         }
 
-        void EditorApplication_ProjectWindowItemCallback(string guid, Rect r)
+        private void EditorApplication_ProjectWindowItemCallback(string guid, Rect r)
         {
             //If nothing references this asset, ignore it
-            if (!seeRefsFromInProject && !seeRefsToInProject)
-                return;
+            if (!this.seeRefsFromInProject && !this.seeRefsToInProject) return;
 
             var frame = new Rect(r);
             frame.x += frame.width;
 
-            if (seeRefsFromInProject && dependencyGraphManager!=null && dependencyGraphManager.GetReferencesFrom().ContainsKey(guid))
+            if (this.seeRefsFromInProject && this.dependencyGraphManager != null && this.dependencyGraphManager.GetReferencesFrom().ContainsKey(guid))
             {
-                frame.x += -12;
+                frame.x     += -12;
                 frame.width += 10f;
 
-                GUI.Label(frame, contentToggleRefsFrom.image, EditorStyles.miniLabel);
+                GUI.Label(frame, this.contentToggleRefsFrom.image, EditorStyles.miniLabel);
             }
-            if (seeRefsToInProject && dependencyGraphManager != null && dependencyGraphManager.GetReferencesTo().ContainsKey(guid))
+            if (this.seeRefsToInProject && this.dependencyGraphManager != null && this.dependencyGraphManager.GetReferencesTo().ContainsKey(guid))
             {
-                frame.x += -12f;
+                frame.x     += -12f;
                 frame.width += 10f;
 
-                GUI.Label(frame, contentToggleRefsTo.image, EditorStyles.miniLabel);
+                GUI.Label(frame, this.contentToggleRefsTo.image, EditorStyles.miniLabel);
             }
         }
 
         private void EditorApplication_projectChanged()
         {
-            if (dependencyGraphManager == null)
+            if (this.dependencyGraphManager == null)
             {
-                initIfNeeded();
+                this.initIfNeeded();
                 return;
             }
 
-            dependencyGraphManager.IsDirty = true;
-            dependencyGraphManager.ResetHistory();
+            this.dependencyGraphManager.IsDirty = true;
+            this.dependencyGraphManager.ResetHistory();
         }
 
         private void OnGUI()
         {
-            initIfNeeded();
-            doHeader();
+            this.initIfNeeded();
+            this.doHeader();
 
-            if (dependencyGraphManager != null)
+            if (this.dependencyGraphManager != null)
             {
                 //If window has no cached data
-                if (!dependencyGraphManager.HasCache())
+                if (!this.dependencyGraphManager.HasCache())
                 {
                     Heureka_WindowStyler.DrawCenteredMessage(window, AH_EditorData.Icons.RefFromWhite, 240f, 110f, "No Graph" + Environment.NewLine + "Build Graph");
                     EditorGUILayout.BeginVertical();
                     GUILayout.FlexibleSpace();
-                    Color origClr = GUI.backgroundColor;
+                    var origClr = GUI.backgroundColor;
 
                     GUI.backgroundColor = Heureka_WindowStyler.clr_Red;
-                    if (GUILayout.Button("Build Graph", GUILayout.Height(40)))
-                    {
-                        dependencyGraphManager.RefreshReferenceGraph();
-                    }
+                    if (GUILayout.Button("Build Graph", GUILayout.Height(40))) this.dependencyGraphManager.RefreshReferenceGraph();
                     GUI.backgroundColor = origClr;
                     EditorGUILayout.EndVertical();
                     return;
                 }
 
-                if (dependencyGraphManager.HasSelection)
+                if (this.dependencyGraphManager.HasSelection)
                 {
                     using (new EditorGUILayout.VerticalScope("box"))
                     {
                         using (new EditorGUILayout.HorizontalScope())
                         {
-                            if (GUILayout.Button($"{dependencyGraphManager.GetSelectedName()}" + (dependencyGraphManager.LockedSelection ? " (Locked)" : ""), GUILayout.ExpandWidth(true)))
-                                EditorGUIUtility.PingObject(dependencyGraphManager.SelectedAsset);
+                            if (GUILayout.Button($"{this.dependencyGraphManager.GetSelectedName()}" + (this.dependencyGraphManager.LockedSelection ? " (Locked)" : ""), GUILayout.ExpandWidth(true))) EditorGUIUtility.PingObject(this.dependencyGraphManager.SelectedAsset);
 
-                            if (GUILayout.Button(dependencyGraphManager.LockedSelection ? lockedReference : unlockedReference, EditorStyles.boldLabel, GUILayout.ExpandWidth(false)))
-                                dependencyGraphManager.LockedSelection = !dependencyGraphManager.LockedSelection;
+                            if (GUILayout.Button(this.dependencyGraphManager.LockedSelection ? this.lockedReference : this.unlockedReference, EditorStyles.boldLabel, GUILayout.ExpandWidth(false))) this.dependencyGraphManager.LockedSelection = !this.dependencyGraphManager.LockedSelection;
                         }
-                        drawPreview();
+                        this.drawPreview();
                     }
 
-                    var viewFrom = dependencyGraphManager.GetTreeViewFrom();
-                    bool isValidFrom = (viewFrom?.treeModel?.numberOfDataElements > 1);
+                    var viewFrom    = this.dependencyGraphManager.GetTreeViewFrom();
+                    var isValidFrom = viewFrom?.treeModel?.numberOfDataElements > 1;
 
-                    var viewTo = dependencyGraphManager.GetTreeViewTo();
-                    bool isValidTo = (viewTo?.treeModel?.numberOfDataElements > 1);
+                    var viewTo    = this.dependencyGraphManager.GetTreeViewTo();
+                    var isValidTo = viewTo?.treeModel?.numberOfDataElements > 1;
 
                     using (new EditorGUILayout.VerticalScope("box", GUILayout.ExpandWidth(true)))
                     {
@@ -179,12 +169,11 @@ namespace HeurekaGames.AssetHunterPRO
                             using (new EditorGUILayout.VerticalScope(GUILayout.Height(32)))
                             {
                                 GUILayout.FlexibleSpace();
-                                EditorGUILayout.LabelField($"A dependency of {(isValidFrom ? (viewFrom.treeModel.root.children.Count()) : 0)}", EditorStyles.boldLabel);
+                                EditorGUILayout.LabelField($"A dependency of {(isValidFrom ? viewFrom.treeModel.root.children.Count() : 0)}", EditorStyles.boldLabel);
                                 GUILayout.FlexibleSpace();
                             }
                         }
-                        if (isValidFrom)
-                            drawAssetList(dependencyGraphManager.GetTreeViewFrom());
+                        if (isValidFrom) this.drawAssetList(this.dependencyGraphManager.GetTreeViewFrom());
 
                         using (new EditorGUILayout.HorizontalScope("box", GUILayout.ExpandWidth(true)))
                         {
@@ -192,16 +181,14 @@ namespace HeurekaGames.AssetHunterPRO
                             using (new EditorGUILayout.VerticalScope(GUILayout.Height(32)))
                             {
                                 GUILayout.FlexibleSpace();
-                                EditorGUILayout.LabelField($"Depends on {(isValidTo ? (viewTo.treeModel.root.children.Count()) : 0)}", EditorStyles.boldLabel);
+                                EditorGUILayout.LabelField($"Depends on {(isValidTo ? viewTo.treeModel.root.children.Count() : 0)}", EditorStyles.boldLabel);
                                 GUILayout.FlexibleSpace();
                             }
                         }
-                        if (isValidTo)
-                            drawAssetList(dependencyGraphManager.GetTreeViewTo());
+                        if (isValidTo) this.drawAssetList(this.dependencyGraphManager.GetTreeViewTo());
 
                         //Force flexible size here to make sure the preview area doesn't fill entire window
-                        if (!isValidTo && !isValidFrom)
-                            GUILayout.FlexibleSpace();
+                        if (!isValidTo && !isValidFrom) GUILayout.FlexibleSpace();
                     }
                 }
                 else
@@ -209,34 +196,30 @@ namespace HeurekaGames.AssetHunterPRO
                     Heureka_WindowStyler.DrawCenteredMessage(window, AH_EditorData.Icons.RefFromWhite, 240f, 110f, "No selection" + Environment.NewLine + "Select asset in project view");
                 }
             }
-            doFooter();
+            this.doFooter();
             //Make sure this window has focus to update contents
-            Repaint();
+            this.Repaint();
         }
 
         private void drawPreview()
         {
-            if (dependencyGraphManager.SelectedAsset != null)
+            if (this.dependencyGraphManager.SelectedAsset != null)
             {
-                var old = previewObject;
-                previewObject = dependencyGraphManager.SelectedAsset;
+                var old = this.previewObject;
+                this.previewObject = this.dependencyGraphManager.SelectedAsset;
                 //if (previewObject != old)
                 {
-                    previewTexture = AssetPreview.GetAssetPreview(previewObject); //Asnyc, so we have to do this each frame
-                    if (previewTexture == null)
-                        previewTexture = AssetPreview.GetMiniThumbnail(previewObject);
+                    this.previewTexture = AssetPreview.GetAssetPreview(this.previewObject); //Asnyc, so we have to do this each frame
+                    if (this.previewTexture == null) this.previewTexture = AssetPreview.GetMiniThumbnail(this.previewObject);
                 }
                 using (new EditorGUILayout.VerticalScope("box"))
                 {
                     EditorGUILayout.BeginHorizontal();
-                    drawHistoryButton(-1);
+                    this.drawHistoryButton(-1);
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(previewTexture, EditorStyles.boldLabel, /*GUILayout.Width(64),*/ GUILayout.MaxHeight(64), GUILayout.ExpandWidth(true)))
-                    {
-                        EditorGUIUtility.PingObject(previewObject);
-                    }
+                    if (GUILayout.Button(this.previewTexture, EditorStyles.boldLabel, /*GUILayout.Width(64),*/ GUILayout.MaxHeight(64), GUILayout.ExpandWidth(true))) EditorGUIUtility.PingObject(this.previewObject);
                     GUILayout.FlexibleSpace();
-                    drawHistoryButton(1);
+                    this.drawHistoryButton(1);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -244,23 +227,22 @@ namespace HeurekaGames.AssetHunterPRO
 
         private void drawHistoryButton(int direction)
         {
-            if (!dependencyGraphManager.LockedSelection)
+            if (!this.dependencyGraphManager.LockedSelection)
             {
-                var style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
+                var    style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
                 string tooltip;
-                bool validDirection = dependencyGraphManager.HasHistory(direction, out tooltip);
+                var    validDirection = this.dependencyGraphManager.HasHistory(direction, out tooltip);
 
                 EditorGUI.BeginDisabledGroup(!validDirection);
-                var content = new GUIContent(validDirection ? direction == -1 ? "<" : ">" : string.Empty);
-                if (!string.IsNullOrEmpty(tooltip))
-                    content.tooltip = tooltip;
+                var content                                         = new GUIContent(validDirection ? direction == -1 ? "<" : ">" : string.Empty);
+                if (!string.IsNullOrEmpty(tooltip)) content.tooltip = tooltip;
 
                 if (GUILayout.Button(content, style, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(false), GUILayout.Width(12)))
                 {
                     if (direction == -1)
-                        dependencyGraphManager.SelectPreviousFromHistory();
+                        this.dependencyGraphManager.SelectPreviousFromHistory();
                     else if (direction == 1)
-                        dependencyGraphManager.SelectNextFromHistory();
+                        this.dependencyGraphManager.SelectNextFromHistory();
                     else
                         Debug.LogWarning("Wrong integer. You must select -1 or 1");
                 }
@@ -270,64 +252,58 @@ namespace HeurekaGames.AssetHunterPRO
 
         private void initIfNeeded()
         {
-            if (!dependencyGraphManager || !window)
-                Init();
+            if (!this.dependencyGraphManager || !window) Init();
 
-            if (dependencyGraphManager.RequiresRefresh())
-                OnSelectionChanged();
+            if (this.dependencyGraphManager.RequiresRefresh()) this.OnSelectionChanged();
 
             //We dont need to do stuff when in play mode
-            if (dependencyGraphManager && !initialized)
+            if (this.dependencyGraphManager && !this.initialized)
             {
-                if (searchField == null)
-                    searchField = new SearchField();
+                if (this.searchField == null) this.searchField = new();
 
-                dependencyGraphManager.Initialize(searchField, multiColumnTreeViewRect);
-                initialized = true;
+                this.dependencyGraphManager.Initialize(this.searchField, this.multiColumnTreeViewRect);
+                this.initialized = true;
 
                 InternalEditorUtility.RepaintAllViews();
             }
 
             //This is an (ugly) fix to make sure we dotn loose our icons due to some singleton issues after play/stop
-            if (guiContentRefresh.image == null)
-                initializeGUIContent();
+            if (this.guiContentRefresh.image == null) this.initializeGUIContent();
         }
 
         private void initializeGUIContent()
         {
-            titleContent = Heureka_ResourceLoader.GetContentWithTitle(AH_Window.myPackage, AH_EditorData.IconNames.RefFrom, WINDOWNAME);
-            guiContentRefresh = Heureka_ResourceLoader.GetContentWithTitle(AH_Window.myPackage, AH_EditorData.IconNames.Refresh, "Refresh data");
+            this.titleContent      = Heureka_ResourceLoader.GetContentWithTitle(AH_Window.myPackage, AH_EditorData.IconNames.RefFrom, WINDOWNAME);
+            this.guiContentRefresh = Heureka_ResourceLoader.GetContentWithTitle(AH_Window.myPackage, AH_EditorData.IconNames.Refresh, "Refresh data");
         }
 
         private void doFooter()
         {
-            if (dependencyGraphManager != null)
+            if (this.dependencyGraphManager != null)
             {
-                if (!dependencyGraphManager.HasSelection)
-                    GUILayout.FlexibleSpace();
+                if (!this.dependencyGraphManager.HasSelection) GUILayout.FlexibleSpace();
 
-                GUIContent RefreshGUIContent = new GUIContent(guiContentRefresh);
-                Color origColor = GUI.color;
-                if (dependencyGraphManager.IsDirty)
+                var RefreshGUIContent = new GUIContent(this.guiContentRefresh);
+                var origColor         = GUI.color;
+                if (this.dependencyGraphManager.IsDirty)
                 {
-                    GUI.color = Heureka_WindowStyler.clr_Red;
-                    RefreshGUIContent.tooltip = String.Format("{0}{1}", RefreshGUIContent.tooltip, " (Project has changed which means that treeview is out of date)");
+                    GUI.color                 = Heureka_WindowStyler.clr_Red;
+                    RefreshGUIContent.tooltip = string.Format("{0}{1}", RefreshGUIContent.tooltip, " (Project has changed which means that treeview is out of date)");
                 }
 
-                if (AH_UIUtilities.DrawSelectionButton(RefreshGUIContent))
-                    dependencyGraphManager.RefreshReferenceGraph();
+                if (AH_UIUtilities.DrawSelectionButton(RefreshGUIContent)) this.dependencyGraphManager.RefreshReferenceGraph();
 
                 GUI.color = origColor;
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUI.BeginChangeCheck();
-                seeRefsToInProject = GUILayout.Toggle(seeRefsToInProject, contentToggleRefsTo);
-                seeRefsFromInProject = GUILayout.Toggle(seeRefsFromInProject, contentToggleRefsFrom);
+                this.seeRefsToInProject   = GUILayout.Toggle(this.seeRefsToInProject, this.contentToggleRefsTo);
+                this.seeRefsFromInProject = GUILayout.Toggle(this.seeRefsFromInProject, this.contentToggleRefsFrom);
                 //Do we need to repaint projewct view?
                 if (EditorGUI.EndChangeCheck())
                 {
-                    EditorPrefs.SetBool("AHP_seeRefsToInProject", seeRefsToInProject);
-                    EditorPrefs.SetBool("AHP_seeRefsFromInProject", seeRefsFromInProject);
+                    EditorPrefs.SetBool("AHP_seeRefsToInProject", this.seeRefsToInProject);
+                    EditorPrefs.SetBool("AHP_seeRefsFromInProject", this.seeRefsFromInProject);
                     InternalEditorUtility.RepaintAllViews();
                 }
 
@@ -339,17 +315,15 @@ namespace HeurekaGames.AssetHunterPRO
         {
             Heureka_WindowStyler.DrawGlobalHeader(Heureka_WindowStyler.clr_lBlue, WINDOWNAME);
 
-            bool hasReferenceGraph = (dependencyGraphManager != null);
+            var hasReferenceGraph = this.dependencyGraphManager != null;
             if (hasReferenceGraph)
-            {
-                if (dependencyGraphManager.HasSelection && dependencyGraphManager.HasCache())
+                if (this.dependencyGraphManager.HasSelection && this.dependencyGraphManager.HasCache())
                 {
                     EditorGUILayout.BeginHorizontal(GUILayout.Height(AH_Window.ButtonMaxHeight));
-                    doSearchBar(searchBar);
+                    this.doSearchBar(this.searchBar);
                     GUILayout.FlexibleSpace();
                     EditorGUILayout.EndHorizontal();
                 }
-            }
         }
 
         private void drawAssetList(TreeView view)
@@ -372,45 +346,41 @@ namespace HeurekaGames.AssetHunterPRO
             return GUILayout.Button(btnContent, GUILayout.MaxHeight(AH_SettingsManager.Instance.HideButtonText ? AH_Window.ButtonMaxHeight * 2f : AH_Window.ButtonMaxHeight));
         }*/
 
-        void doSearchBar(Rect rect)
+        private void doSearchBar(Rect rect)
         {
-            if (searchField != null)
-                dependencyGraphManager.SearchString = searchField.OnGUI(rect, dependencyGraphManager.SearchString);
+            if (this.searchField != null) this.dependencyGraphManager.SearchString = this.searchField.OnGUI(rect, this.dependencyGraphManager.SearchString);
         }
 
         private void OnSelectionChanged()
         {
-            if (dependencyGraphManager != null && !dependencyGraphManager.LockedSelection)
+            if (this.dependencyGraphManager != null && !this.dependencyGraphManager.LockedSelection)
             {
-                dependencyGraphManager.UpdateSelectedAsset((Selection.activeObject) ? Selection.activeObject : null);
-                initialized = false;
+                this.dependencyGraphManager.UpdateSelectedAsset(Selection.activeObject ? Selection.activeObject : null);
+                this.initialized = false;
             }
         }
 
-        Rect searchBar
-        {
-            get { return new Rect(uiStartPos.x + AH_Window.ButtonMaxHeight, uiStartPos.y - (AH_Window.ButtonMaxHeight + 6), position.width - (uiStartPos.x * 2) - AH_Window.ButtonMaxHeight * 2, AH_Window.ButtonMaxHeight); }
-        }
+        private Rect searchBar => new(this.uiStartPos.x + AH_Window.ButtonMaxHeight, this.uiStartPos.y - (AH_Window.ButtonMaxHeight + 6), this.position.width - this.uiStartPos.x * 2 - AH_Window.ButtonMaxHeight * 2, AH_Window.ButtonMaxHeight);
 
-        Rect multiColumnTreeViewRect
+        private Rect multiColumnTreeViewRect
         {
             get
             {
-                Rect newRect = new Rect(uiStartPos.x, uiStartPos.y + 20 + (AH_SettingsManager.Instance.HideButtonText ? 20 : 0), position.width - (uiStartPos.x * 2), position.height - 90 - (AH_SettingsManager.Instance.HideButtonText ? 20 : 0));
+                var newRect = new Rect(this.uiStartPos.x, this.uiStartPos.y + 20 + (AH_SettingsManager.Instance.HideButtonText ? 20 : 0), this.position.width - this.uiStartPos.x * 2, this.position.height - 90 - (AH_SettingsManager.Instance.HideButtonText ? 20 : 0));
                 return newRect;
             }
         }
 
         private void OnDisable()
         {
-            Selection.selectionChanged -= OnSelectionChanged;
-            EditorApplication.projectChanged -= EditorApplication_projectChanged;
-            EditorApplication.projectWindowItemOnGUI -= EditorApplication_ProjectWindowItemCallback;
+            Selection.selectionChanged               -= this.OnSelectionChanged;
+            EditorApplication.projectChanged         -= this.EditorApplication_projectChanged;
+            EditorApplication.projectWindowItemOnGUI -= this.EditorApplication_ProjectWindowItemCallback;
         }
 
         private void OnDestroy()
         {
-            DestroyImmediate(dependencyGraphManager);
+            DestroyImmediate(this.dependencyGraphManager);
         }
     }
 }

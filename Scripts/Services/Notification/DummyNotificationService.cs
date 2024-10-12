@@ -14,17 +14,33 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         #endregion
 
         [Preserve]
-        public DummyNotificationService(ILogService logService) { this.logService = logService; }
+        public DummyNotificationService(ILogService logService)
+        {
+            this.logService = logService;
+        }
 
         public bool IsInitialized { get; set; }
 
-        public void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime) { }
+        public void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
+        {
+        }
 
-        public void SetupCustomNotification(string notificationId, TimeSpan? delayTime = null) { this.logService.Log($"Notify: Id - {notificationId}, delay - {delayTime}"); }
+        public void SetupCustomNotification(string notificationId, TimeSpan? delayTime = null)
+        {
+            this.logService.Log($"Notify: Id - {notificationId}, delay - {delayTime}");
+        }
 
-        public UniTask CheckPermission() { return UniTask.CompletedTask; }
+        public UniTask CheckPermission()
+        {
+            return UniTask.CompletedTask;
+        }
 
-        public void SetUpNotification()  { }
-        public void CancelNotification() { }
+        public void SetUpNotification()
+        {
+        }
+
+        public void CancelNotification()
+        {
+        }
     }
 }

@@ -54,10 +54,12 @@ namespace TheOneStudio.UITemplate.Quests.UI
         private readonly SignalBus           signalBus;
 
         [Preserve]
-        public UITemplateQuestListItemPresenter(IGameAssets gameAssets,
-                                                IAudioService audioService,
-                                                GameFeaturesSetting gameFeaturesSetting,
-                                                SignalBus signalBus) : base(gameAssets)
+        public UITemplateQuestListItemPresenter(
+            IGameAssets         gameAssets,
+            IAudioService       audioService,
+            GameFeaturesSetting gameFeaturesSetting,
+            SignalBus           signalBus
+        ) : base(gameAssets)
         {
             this.gameAssets          = gameAssets;
             this.audioService        = audioService;
@@ -119,10 +121,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         private void OnClickClaim()
         {
-            if (!string.IsNullOrEmpty(this.gameFeaturesSetting.QuestSystemConfig.questClaimSoundKey))
-            {
-                this.audioService.PlaySound(this.gameFeaturesSetting.QuestSystemConfig.questClaimSoundKey);
-            }
+            if (!string.IsNullOrEmpty(this.gameFeaturesSetting.QuestSystemConfig.questClaimSoundKey)) this.audioService.PlaySound(this.gameFeaturesSetting.QuestSystemConfig.questClaimSoundKey);
             this.ClaimQuestItem();
         }
 

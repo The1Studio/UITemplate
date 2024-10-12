@@ -16,74 +16,76 @@ namespace Lofelt.NiceVibrations
     /// The inspector lets you link a HapticSource to a HapticClip.
     public class HapticSourceInspector : Editor
     {
-        string hapticsDirectory;
+        private string hapticsDirectory;
 
-        SerializedProperty hapticClip;
-        SerializedProperty priority;
-        SerializedProperty level;
-        SerializedProperty frequencyShift;
-        SerializedProperty loop;
-        SerializedProperty fallbackPreset;
+        private SerializedProperty hapticClip;
+        private SerializedProperty priority;
+        private SerializedProperty level;
+        private SerializedProperty frequencyShift;
+        private SerializedProperty loop;
+        private SerializedProperty fallbackPreset;
 
-        public static GUIContent hapticClipLabel = EditorGUIUtility.TrTextContent("Haptic Clip", "The HapticClip asset played by the HapticSource.");
+        public static GUIContent hapticClipLabel     = EditorGUIUtility.TrTextContent("Haptic Clip", "The HapticClip asset played by the HapticSource.");
         public static GUIContent fallbackPresetLabel = EditorGUIUtility.TrTextContent("Haptic Preset fallback", "Set the haptic preset to play in case the device doesn't support playback of haptic clips");
-        public static GUIContent loopLabel = EditorGUIUtility.TrTextContent("Loop", "Set the haptic source to loop playback of the haptic clip");
+        public static GUIContent loopLabel           = EditorGUIUtility.TrTextContent("Loop", "Set the haptic source to loop playback of the haptic clip");
 
-        void OnEnable()
+        private void OnEnable()
         {
-            hapticClip = serializedObject.FindProperty("clip");
-            priority = serializedObject.FindProperty("priority");
-            level = serializedObject.FindProperty("_level");
-            frequencyShift = serializedObject.FindProperty("_frequencyShift");
-            fallbackPreset = serializedObject.FindProperty("_fallbackPreset");
-            loop = serializedObject.FindProperty("_loop");
+            this.hapticClip     = this.serializedObject.FindProperty("clip");
+            this.priority       = this.serializedObject.FindProperty("priority");
+            this.level          = this.serializedObject.FindProperty("_level");
+            this.frequencyShift = this.serializedObject.FindProperty("_frequencyShift");
+            this.fallbackPreset = this.serializedObject.FindProperty("_fallbackPreset");
+            this.loop           = this.serializedObject.FindProperty("_loop");
         }
 
         public override void OnInspectorGUI()
         {
-            serializedObject.Update();
+            this.serializedObject.Update();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PropertyField(hapticClip, hapticClipLabel);
+            EditorGUILayout.PropertyField(this.hapticClip, hapticClipLabel);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PropertyField(fallbackPreset, fallbackPresetLabel);
+            EditorGUILayout.PropertyField(this.fallbackPreset, fallbackPresetLabel);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PropertyField(loop, loopLabel);
+            EditorGUILayout.PropertyField(this.loop, loopLabel);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
 
-            CreatePrioritySlider();
-            CreateLevelSlider();
-            CreateFrequencyShiftSlider();
+            this.CreatePrioritySlider();
+            this.CreateLevelSlider();
+            this.CreateFrequencyShiftSlider();
 
-            serializedObject.ApplyModifiedProperties();
+            this.serializedObject.ApplyModifiedProperties();
         }
 
         /// Helper function to create a priority slider for haptic source with High and Max text labels.
-        void CreatePrioritySlider()
+        private void CreatePrioritySlider()
         {
-            Rect position = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
+            var position = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
 
-            EditorGUI.IntSlider(position, priority, 0, 256);
+            EditorGUI.IntSlider(position, this.priority, 0, 256);
 
             // Move to next line
             position.y += EditorGUIUtility.singleLineHeight;
 
             // Subtract the label
-            position.x += EditorGUIUtility.labelWidth;
+            position.x     += EditorGUIUtility.labelWidth;
             position.width -= EditorGUIUtility.labelWidth;
 
             // Subtract the text field width thats drawn with slider
             position.width -= EditorGUIUtility.fieldWidth;
 
-            GUIStyle style = GUI.skin.label;
-            TextAnchor defaultAlignment = GUI.skin.label.alignment;
-            style.alignment = TextAnchor.UpperLeft; EditorGUI.LabelField(position, "High", style);
-            style.alignment = TextAnchor.UpperRight; EditorGUI.LabelField(position, "Low", style);
+            var style            = GUI.skin.label;
+            var defaultAlignment = GUI.skin.label.alignment;
+            style.alignment = TextAnchor.UpperLeft;
+            EditorGUI.LabelField(position, "High", style);
+            style.alignment = TextAnchor.UpperRight;
+            EditorGUI.LabelField(position, "Low", style);
             GUI.skin.label.alignment = defaultAlignment;
 
             // Allow space for the High/Low labels
@@ -94,26 +96,28 @@ namespace Lofelt.NiceVibrations
 
         /// Helper function to create a level slider for haptic
         /// source with labels.
-        void CreateLevelSlider()
+        private void CreateLevelSlider()
         {
-            Rect position = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
+            var position = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
 
-            EditorGUI.Slider(position, level, 0.0f, 5.0f);
+            EditorGUI.Slider(position, this.level, 0.0f, 5.0f);
 
             // Move to next line
             position.y += EditorGUIUtility.singleLineHeight;
 
             // Subtract the label
-            position.x += EditorGUIUtility.labelWidth;
+            position.x     += EditorGUIUtility.labelWidth;
             position.width -= EditorGUIUtility.labelWidth;
 
             // Subtract the text field width thats drawn with slider
             position.width -= EditorGUIUtility.fieldWidth;
 
-            GUIStyle style = GUI.skin.label;
-            TextAnchor defaultAlignment = GUI.skin.label.alignment;
-            style.alignment = TextAnchor.UpperLeft; EditorGUI.LabelField(position, "0.0", style);
-            style.alignment = TextAnchor.UpperRight; EditorGUI.LabelField(position, "5.0", style);
+            var style            = GUI.skin.label;
+            var defaultAlignment = GUI.skin.label.alignment;
+            style.alignment = TextAnchor.UpperLeft;
+            EditorGUI.LabelField(position, "0.0", style);
+            style.alignment = TextAnchor.UpperRight;
+            EditorGUI.LabelField(position, "5.0", style);
             GUI.skin.label.alignment = defaultAlignment;
 
             // Allow space for the labels
@@ -124,26 +128,28 @@ namespace Lofelt.NiceVibrations
 
         /// Helper function to create a frequency shift slider for haptic
         /// source with labels.
-        void CreateFrequencyShiftSlider()
+        private void CreateFrequencyShiftSlider()
         {
-            Rect position = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
+            var position = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
 
-            EditorGUI.Slider(position, frequencyShift, -1.0f, 1.0f);
+            EditorGUI.Slider(position, this.frequencyShift, -1.0f, 1.0f);
 
             // Move to next line
             position.y += EditorGUIUtility.singleLineHeight;
 
             // Subtract the label
-            position.x += EditorGUIUtility.labelWidth;
+            position.x     += EditorGUIUtility.labelWidth;
             position.width -= EditorGUIUtility.labelWidth;
 
             // Subtract the text field width thats drawn with slider
             position.width -= EditorGUIUtility.fieldWidth;
 
-            GUIStyle style = GUI.skin.label;
-            TextAnchor defaultAlignment = GUI.skin.label.alignment;
-            style.alignment = TextAnchor.UpperLeft; EditorGUI.LabelField(position, "-1.0", style);
-            style.alignment = TextAnchor.UpperRight; EditorGUI.LabelField(position, "1.0", style);
+            var style            = GUI.skin.label;
+            var defaultAlignment = GUI.skin.label.alignment;
+            style.alignment = TextAnchor.UpperLeft;
+            EditorGUI.LabelField(position, "-1.0", style);
+            style.alignment = TextAnchor.UpperRight;
+            EditorGUI.LabelField(position, "1.0", style);
             GUI.skin.label.alignment = defaultAlignment;
 
             // Allow space for the labels

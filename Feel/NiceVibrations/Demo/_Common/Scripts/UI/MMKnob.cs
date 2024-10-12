@@ -13,108 +13,103 @@ namespace Lofelt.NiceVibrations
     {
         public RenderMode ParentCanvasRenderMode { get; protected set; }
 
-        [Header("Bindings")]
-        public Camera TargetCamera;
+        [Header("Bindings")] public Camera TargetCamera;
 
-        [Header("Settings")]
-        public float MinimumAngle = 45f;
-        public float MaximumAngle = -225f;
-        public float MaximumDistance = 50f;
-        public Color ActiveColor;
-        public Color InactiveColor;
+        [Header("Settings")] public float MinimumAngle    = 45f;
+        public                      float MaximumAngle    = -225f;
+        public                      float MaximumDistance = 50f;
+        public                      Color ActiveColor;
+        public                      Color InactiveColor;
 
-        [Header("Output")]
-        public bool Dragging = false;
-        public float Value = 0f;
-        public bool Active = true;
+        [Header("Output")] public bool  Dragging = false;
+        public                    float Value    = 0f;
+        public                    bool  Active   = true;
 
-        public Image _image;
+        public    Image            _image;
         protected PointerEventData _pointerEventData;
-        protected float _distance;
-        public RectTransform _rectTransform;
-        protected Vector3 _rotation = Vector3.zero;
-        protected Canvas _canvas;
-        protected Vector2 _workPosition;
+        protected float            _distance;
+        public    RectTransform    _rectTransform;
+        protected Vector3          _rotation = Vector3.zero;
+        protected Canvas           _canvas;
+        protected Vector2          _workPosition;
 
         protected virtual void Awake()
         {
-            _image = this.gameObject.GetComponent<Image>();
-            _canvas = GetComponentInParent<Canvas>();
-            ParentCanvasRenderMode = GetComponentInParent<Canvas>().renderMode;
-            _rectTransform = this.GetComponent<RectTransform>();
-            SetRotation(MinimumAngle);
+            this._image                 = this.gameObject.GetComponent<Image>();
+            this._canvas                = this.GetComponentInParent<Canvas>();
+            this.ParentCanvasRenderMode = this.GetComponentInParent<Canvas>().renderMode;
+            this._rectTransform         = this.GetComponent<RectTransform>();
+            this.SetRotation(this.MinimumAngle);
         }
 
         protected virtual void Update()
         {
-            if (!Active)
+            if (!this.Active)
             {
-                Dragging = false;
-                _image.color = InactiveColor;
+                this.Dragging     = false;
+                this._image.color = this.InactiveColor;
                 return;
             }
             else
             {
-                _image.color = ActiveColor;
+                this._image.color = this.ActiveColor;
             }
 
-            if (!Dragging)
-            {
-                return;
-            }
+            if (!this.Dragging) return;
 
-            Vector2 v1 = Vector2.down;
-            Vector2 v2 = this.transform.position - GetWorldPosition(_pointerEventData.position);
+            var     v1 = Vector2.down;
+            Vector2 v2 = this.transform.position - this.GetWorldPosition(this._pointerEventData.position);
 
-            float angle = Vector2.SignedAngle(v1, v2);
+            var angle = Vector2.SignedAngle(v1, v2);
 
             angle = Mathf.Clamp(angle, -130f, 130f);
 
-            _rotation.z = NiceVibrationsDemoHelpers.Remap(angle, -130f, 130f, MaximumAngle, MinimumAngle);
-            _rectTransform.SetPositionAndRotation(this.transform.position, Quaternion.Euler(_rotation));
+            this._rotation.z = NiceVibrationsDemoHelpers.Remap(angle, -130f, 130f, this.MaximumAngle, this.MinimumAngle);
+            this._rectTransform.SetPositionAndRotation(this.transform.position, Quaternion.Euler(this._rotation));
 
-            Value = NiceVibrationsDemoHelpers.Remap(angle, -130f, 130f, 1f, 0f);
+            this.Value = NiceVibrationsDemoHelpers.Remap(angle, -130f, 130f, 1f, 0f);
         }
 
         protected virtual void SetRotation(float angle)
         {
-            angle = Mathf.Clamp(angle, MaximumAngle, MinimumAngle);
-            _rotation.z = angle;
-            _rectTransform.SetPositionAndRotation(this.transform.position, Quaternion.Euler(_rotation));
+            angle            = Mathf.Clamp(angle, this.MaximumAngle, this.MinimumAngle);
+            this._rotation.z = angle;
+            this._rectTransform.SetPositionAndRotation(this.transform.position, Quaternion.Euler(this._rotation));
         }
 
         public virtual void SetActive(bool status)
         {
-            Active = status;
+            this.Active = status;
         }
 
         public virtual void SetValue(float value)
         {
-            SetRotation(MinimumAngle);
-            Value = value;
-            float angle = NiceVibrationsDemoHelpers.Remap(value, 0f, 1f, MinimumAngle, MaximumAngle);
+            this.SetRotation(this.MinimumAngle);
+            this.Value = value;
+            var angle = NiceVibrationsDemoHelpers.Remap(value, 0f, 1f, this.MinimumAngle, this.MaximumAngle);
 
-            _rotation.z = angle;
-            _rectTransform.SetPositionAndRotation(this.transform.position, Quaternion.Euler(_rotation));
+            this._rotation.z = angle;
+            this._rectTransform.SetPositionAndRotation(this.transform.position, Quaternion.Euler(this._rotation));
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            _pointerEventData = eventData;
-            Dragging = true;
+            this._pointerEventData = eventData;
+            this.Dragging          = true;
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            _pointerEventData = null;
-            Dragging = false;
+            this._pointerEventData = null;
+            this.Dragging          = false;
         }
+
         protected virtual Vector3 GetWorldPosition(Vector3 testPosition)
         {
-            if (ParentCanvasRenderMode == RenderMode.ScreenSpaceCamera)
+            if (this.ParentCanvasRenderMode == RenderMode.ScreenSpaceCamera)
             {
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvas.transform as RectTransform, testPosition, _canvas.worldCamera, out _workPosition);
-                return _canvas.transform.TransformPoint(_workPosition);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(this._canvas.transform as RectTransform, testPosition, this._canvas.worldCamera, out this._workPosition);
+                return this._canvas.transform.TransformPoint(this._workPosition);
             }
             else
             {

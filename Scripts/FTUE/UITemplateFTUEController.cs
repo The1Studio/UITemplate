@@ -25,7 +25,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.signalBus               = signalBus;
         }
 
-        public bool ThereIsFTUEActive() => !string.IsNullOrEmpty(this.currentActiveStepId);
+        public bool ThereIsFTUEActive()
+        {
+            return !string.IsNullOrEmpty(this.currentActiveStepId);
+        }
 
         public void DoDeactiveFTUE(string stepId)
         {
@@ -41,20 +44,19 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         public void DoActiveFTUE(string stepId, HashSet<GameObject> disableObjectSet)
         {
             this.currentActiveStepId = stepId;
-            foreach (var disableObject in disableObjectSet)
-            {
-                disableObject.SetActive(true);
-            }
+            foreach (var disableObject in disableObjectSet) disableObject.SetActive(true);
             this.SetHighlight(stepId).Forget();
         }
 
         private async UniTask SetHighlight(string stepId)
         {
             var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
-            await this.highlightController.SetHighlight(record.HighLightPath, record.ButtonCanClick, onButtonDown: () =>
-            {
-                this.signalBus.Fire(new FTUEButtonClickSignal(stepId));
-            });
+            await this.highlightController.SetHighlight(record.HighLightPath,
+                record.ButtonCanClick,
+                () =>
+                {
+                    this.signalBus.Fire(new FTUEButtonClickSignal(stepId));
+                });
             this.highlightController.ConfigHand(TypeConfigHand.AllAppear, record.HandSizeDelta, record.Radius, record.HandAnchor, record.HandRotation);
         }
     }

@@ -12,13 +12,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Creative.CheatLevel
         public TMP_InputField inputField;
         public Button         btnSubmit;
 
-        private void Awake() { this.btnSubmit.onClick.AddListener(this.OnSubmit); }
+        private void Awake()
+        {
+            this.btnSubmit.onClick.AddListener(this.OnSubmit);
+        }
 
         private void OnEnable()
         {
-#if !CREATIVE
+            #if !CREATIVE
             this.gameObject.SetActive(false);
-#endif
+            #endif
         }
 
         private void OnSubmit()

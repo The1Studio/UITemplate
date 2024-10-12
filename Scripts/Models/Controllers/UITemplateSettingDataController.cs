@@ -31,16 +31,34 @@
             this.soundSetting              = soundSetting;
         }
 
-        public void SetSoundOnOff() { this.soundSetting.SoundValue.Value = this.IsSoundOn ? 0 : 1; }
+        public void SetSoundOnOff()
+        {
+            this.soundSetting.SoundValue.Value = this.IsSoundOn ? 0 : 1;
+        }
 
-        public void SetMusicOnOff() { this.soundSetting.MusicValue.Value = this.IsMusicOn ? 0 : 1; }
+        public void SetMusicOnOff()
+        {
+            this.soundSetting.MusicValue.Value = this.IsMusicOn ? 0 : 1;
+        }
 
-        public void SetMusicValue(float value) { this.soundSetting.MusicValue.Value = Math.Clamp(value, 0, 1); }
+        public void SetMusicValue(float value)
+        {
+            this.soundSetting.MusicValue.Value = Math.Clamp(value, 0, 1);
+        }
 
-        public void SetSoundValue(float value) { this.soundSetting.SoundValue.Value = Math.Clamp(value, 0, 1); }
+        public void SetSoundValue(float value)
+        {
+            this.soundSetting.SoundValue.Value = Math.Clamp(value, 0, 1);
+        }
 
-        public void SetVibrationOnOff() { this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable; }
+        public void SetVibrationOnOff()
+        {
+            this.uiTemplateUserSettingData.IsVibrationEnable = !this.uiTemplateUserSettingData.IsVibrationEnable;
+        }
 
-        public void SetFlashLightOnOff() { this.uiTemplateUserSettingData.IsFlashLightEnable = !this.uiTemplateUserSettingData.IsFlashLightEnable; }
+        public void SetFlashLightOnOff()
+        {
+            this.uiTemplateUserSettingData.IsFlashLightEnable = !this.uiTemplateUserSettingData.IsFlashLightEnable;
+        }
     }
 }

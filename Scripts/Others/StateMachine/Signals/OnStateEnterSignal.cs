@@ -6,6 +6,9 @@
     {
         public IState State { get; }
 
-        public OnStateEnterSignal(IState state) { this.State = state; }
+        public OnStateEnterSignal(IState state)
+        {
+            this.State = state;
+        }
     }
 }

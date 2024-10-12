@@ -6,6 +6,9 @@
     {
         public string Placement;
 
-        public AdInterCalled(string placement) { this.Placement = placement; }
+        public AdInterCalled(string placement)
+        {
+            this.Placement = placement;
+        }
     }
 }

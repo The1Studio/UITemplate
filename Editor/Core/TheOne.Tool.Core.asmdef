@@ -1,27 +1,27 @@
 {
-    "name": "TheOne.Tool.Core",
-    "rootNamespace": "TheOne.Tool.Core",
-    "references": [
-        "GameFoundation.Utilities",
-        "GameFoundation.Models",
-        "3rd.Configs",
-        "Unity.Addressables.Editor",
-        "UITemplate.Scripts",
-        "3rdCore.Analytic",
-        "UniTask",
-        "GameFoundation.DI",
-        "MaxSdk.Scripts.IntegrationManager.Editor",
-        "MaxSdk.Scripts"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "TheOne.Tool.Core",
+  "rootNamespace": "TheOne.Tool.Core",
+  "references": [
+    "GameFoundation.Utilities",
+    "GameFoundation.Models",
+    "3rd.Configs",
+    "Unity.Addressables.Editor",
+    "UITemplate.Scripts",
+    "3rdCore.Analytic",
+    "UniTask",
+    "GameFoundation.DI",
+    "MaxSdk.Scripts.IntegrationManager.Editor",
+    "MaxSdk.Scripts"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

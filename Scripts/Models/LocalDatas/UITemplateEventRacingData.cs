@@ -12,9 +12,9 @@
     [Preserve]
     public class UITemplateEventRacingData : ILocalData, IUITemplateLocalData
     {
-        public           DateTime          startDate;
-        public           DateTime          endDate;
-        public           DateTime          lastRandomTime;
+        public DateTime startDate;
+        public DateTime endDate;
+        public DateTime lastRandomTime;
 
         public int YourOldShowScore;
         public int yourIndex;
@@ -29,7 +29,7 @@
             this.startDate         = DateTime.Today.AddDays(-0.75f);
             this.lastRandomTime    = this.startDate;
             this.endDate           = DateTime.MinValue;
-            this.playerIndexToData = new Dictionary<int, UITemplateRacingPlayerData>();
+            this.playerIndexToData = new();
             this.yourIndex         = new Random().Next(0, UITemplateEventRacingDataController.TotalRacingPlayer);
         }
 

@@ -16,36 +16,27 @@ namespace HeurekaGames.AssetHunterPRO
 
         internal static string GetSizeAsString(long byteSize)
         {
-            string sizeAsString = String.Empty;
+            var sizeAsString = string.Empty;
 
-            float b = byteSize;
-            float kb = b / 1024f;
-            float mb = kb / 1024;
-            float gb = mb / 1024;
+            float b  = byteSize;
+            var   kb = b / 1024f;
+            var   mb = kb / 1024;
+            var   gb = mb / 1024;
 
             if (gb >= 1)
-            {
-                sizeAsString = String.Format(((float)Math.Round(gb, 1)).ToString(), "0.00") + " gb";
-            }
+                sizeAsString = string.Format(((float)Math.Round(gb, 1)).ToString(), "0.00") + " gb";
             else if (mb >= 1)
-            {
-                sizeAsString = String.Format(((float)Math.Round(mb, 1)).ToString(), "0.00") + " mb";
-            }
+                sizeAsString = string.Format(((float)Math.Round(mb, 1)).ToString(), "0.00") + " mb";
             else if (kb >= 1)
-            {
-                sizeAsString = String.Format(((float)Math.Round(kb, 1)).ToString(), "0.00") + " kb";
-            }
-            else if (byteSize >= 0)
-            {
-                sizeAsString = String.Format(((float)Math.Round(b, 1)).ToString(), "0.00") + " b";
-            }
+                sizeAsString                     = string.Format(((float)Math.Round(kb, 1)).ToString(), "0.00") + " kb";
+            else if (byteSize >= 0) sizeAsString = string.Format(((float)Math.Round(b, 1)).ToString(), "0.00") + " b";
             return sizeAsString;
         }
 
         internal static void GetRelativePathAndAssetID(string absPath, out string relativePath, out string assetGuid)
         {
             relativePath = FileUtil.GetProjectRelativePath(absPath);
-            assetGuid = AssetDatabase.AssetPathToGUID(relativePath);
+            assetGuid    = AssetDatabase.AssetPathToGUID(relativePath);
         }
 
         public static string[] GetEnabledSceneNamesInBuild()
@@ -63,24 +54,22 @@ namespace HeurekaGames.AssetHunterPRO
             return (from scene in AssetDatabase.GetAllAssetPaths() where scene.EndsWith(".unity") select scene).ToArray();
         }
 
-        public static System.String BytesToString(long byteCount)
+        public static string BytesToString(long byteCount)
         {
             string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
-            if (byteCount == 0)
-                return "0" + suf[0];
-            long bytes = Math.Abs(byteCount);
-            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
-            double num = Math.Round(bytes / Math.Pow(1024, place), 1);
+            if (byteCount == 0) return "0" + suf[0];
+            var bytes = Math.Abs(byteCount);
+            var place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+            var num   = Math.Round(bytes / Math.Pow(1024, place), 1);
             return (Math.Sign(byteCount) * num).ToString() + suf[place];
         }
 
         internal static void PingObjectAtPath(string assetPath, bool select)
         {
-            UnityEngine.Object loadObj = AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityEngine.Object));
+            var loadObj = AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityEngine.Object));
             EditorGUIUtility.PingObject(loadObj);
 
-            if (select)
-                Selection.activeObject = loadObj;
+            if (select) Selection.activeObject = loadObj;
         }
 
         /// <summary>
@@ -92,47 +81,32 @@ namespace HeurekaGames.AssetHunterPRO
         public static string ShrinkPathMiddle(string absolutepath, int limit)
         {
             //no path provided
-            if (string.IsNullOrEmpty(absolutepath))
-            {
-                return "";
-            }
+            if (string.IsNullOrEmpty(absolutepath)) return "";
 
-            var name = Path.GetFileName(absolutepath);
-            int namelen = name.Length;
-            int pathlen = absolutepath.Length;
-            var dir = absolutepath.Substring(0, pathlen - namelen);
-            string delimiter = "…";
+            var name      = Path.GetFileName(absolutepath);
+            var namelen   = name.Length;
+            var pathlen   = absolutepath.Length;
+            var dir       = absolutepath.Substring(0, pathlen - namelen);
+            var delimiter = "…";
 
-            int delimlen = delimiter.Length;
-            int idealminlen = namelen + delimlen;
+            var delimlen    = delimiter.Length;
+            var idealminlen = namelen + delimlen;
 
-            var slash = (absolutepath.IndexOf("/") > -1 ? "/" : "\\");
+            var slash = absolutepath.IndexOf("/") > -1 ? "/" : "\\";
 
             //less than the minimum amt
-            if (limit < ((2 * delimlen) + 1))
-            {
-                return "";
-            }
+            if (limit < 2 * delimlen + 1) return "";
 
             //fullpath
-            if (limit >= pathlen)
-            {
-                return absolutepath;
-            }
+            if (limit >= pathlen) return absolutepath;
 
             //file name condensing
-            if (limit < idealminlen)
-            {
-                return delimiter + name.Substring(0, (limit - (2 * delimlen))) + delimiter;
-            }
+            if (limit < idealminlen) return delimiter + name.Substring(0, limit - 2 * delimlen) + delimiter;
 
             //whole name only, no folder structure shown
-            if (limit == idealminlen)
-            {
-                return delimiter + name;
-            }
+            if (limit == idealminlen) return delimiter + name;
 
-            return dir.Substring(0, (limit - (idealminlen + 1))) + delimiter + slash + name;
+            return dir.Substring(0, limit - (idealminlen + 1)) + delimiter + slash + name;
         }
 
         internal static int BoolToInt(bool value)
@@ -142,95 +116,74 @@ namespace HeurekaGames.AssetHunterPRO
 
         internal static bool IntToBool(int value)
         {
-            return (value != 0) ? true : false;
+            return value != 0 ? true : false;
         }
 
         public static string ShrinkPathEnd(string absolutepath, int limit)
         {
             //no path provided
-            if (string.IsNullOrEmpty(absolutepath))
-            {
-                return "";
-            }
+            if (string.IsNullOrEmpty(absolutepath)) return "";
 
-            var name = Path.GetFileName(absolutepath);
-            int namelen = name.Length;
-            int pathlen = absolutepath.Length;
-            string delimiter = "…";
+            var name      = Path.GetFileName(absolutepath);
+            var namelen   = name.Length;
+            var pathlen   = absolutepath.Length;
+            var delimiter = "…";
 
-            int delimlen = delimiter.Length;
+            var delimlen = delimiter.Length;
 
-            var slash = (absolutepath.IndexOf("/") > -1 ? "/" : "\\");
+            var slash = absolutepath.IndexOf("/") > -1 ? "/" : "\\";
 
             //filesname longer than limit
-            if (namelen >= limit)
-            {
-                return name;
-            }
+            if (namelen >= limit) return name;
 
             //fullpath
-            if (limit >= pathlen)
-            {
-                return absolutepath;
-            }
+            if (limit >= pathlen) return absolutepath;
 
             //Get substring within limit
             var pathWithinLimit = absolutepath.Substring(pathlen - limit, limit);
-            int indexOfSlash = pathWithinLimit.IndexOf(slash);
+            var indexOfSlash    = pathWithinLimit.IndexOf(slash);
             return delimiter + pathWithinLimit.Substring(indexOfSlash, pathWithinLimit.Length - indexOfSlash);
         }
 
         internal static List<Texture> GetTargetGroupAssetDependencies(BuildTargetGroup targetGroup)
         {
-            List<Texture> buildTargetAssetDependencies = new List<Texture>();
+            var buildTargetAssetDependencies = new List<Texture>();
 
             //Run through icons, splashscreens etc and include them as being used
-#if UNITY_2023_1_OR_NEWER
+            #if UNITY_2023_1_OR_NEWER
             Texture2D[] targetGroupIcons = PlayerSettings.GetIcons(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(targetGroup),IconKind.Any);
-#else
-            Texture2D[] targetGroupIcons = PlayerSettings.GetIconsForTargetGroup(targetGroup);
-#endif
-            List<Texture2D> additionalTargetGroupIcons = getAdditionalTargetAssets(targetGroup);
+            #else
+            var targetGroupIcons = PlayerSettings.GetIconsForTargetGroup(targetGroup);
+            #endif
+            var additionalTargetGroupIcons = getAdditionalTargetAssets(targetGroup);
 
-#if UNITY_2023_1_OR_NEWER
+            #if UNITY_2023_1_OR_NEWER
             Texture2D[] unknownTargetGroupIcons = PlayerSettings.GetIcons(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(BuildTargetGroup.Unknown), IconKind.Any);
-#else
-            Texture2D[] unknownTargetGroupIcons = PlayerSettings.GetIconsForTargetGroup(BuildTargetGroup.Unknown);
-#endif
-            
+            #else
+            var unknownTargetGroupIcons = PlayerSettings.GetIconsForTargetGroup(BuildTargetGroup.Unknown);
+            #endif
 
-            PlayerSettings.SplashScreenLogo[] splashLogos = PlayerSettings.SplashScreen.logos;
+            var splashLogos = PlayerSettings.SplashScreen.logos;
 
             //Loop default targetgroup icons
-            for (int i = 0; i < unknownTargetGroupIcons.Length; i++)
-            {
-                addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, unknownTargetGroupIcons[i]);
-            }
+            for (var i = 0; i < unknownTargetGroupIcons.Length; i++) addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, unknownTargetGroupIcons[i]);
             //Loop targetgroup icons
-            for (int i = 0; i < targetGroupIcons.Length; i++)
-            {
-                addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, targetGroupIcons[i]);
-            }
+            for (var i = 0; i < targetGroupIcons.Length; i++) addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, targetGroupIcons[i]);
             //Loop additional targetgroup icons
             if (additionalTargetGroupIcons != null)
-                for (int i = 0; i < additionalTargetGroupIcons.Count; i++)
-                {
+                for (var i = 0; i < additionalTargetGroupIcons.Count; i++)
                     addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, additionalTargetGroupIcons[i]);
-                }
             //Loop splash
-            for (int i = 0; i < splashLogos.Length; i++)
-            {
-                addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, splashLogos[i].logo);
-            }
+            for (var i = 0; i < splashLogos.Length; i++) addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, splashLogos[i].logo);
 
             //Get all the custom playersetting textures
             addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, PlayerSettings.defaultCursor);
             addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, PlayerSettings.virtualRealitySplashScreen);
             addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, PlayerSettings.SplashScreen.background);
             addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, PlayerSettings.SplashScreen.backgroundPortrait);
-#if !UNITY_2019_1_OR_NEWER
+            #if !UNITY_2019_1_OR_NEWER
             addTextureToPlayerSettingsList(ref buildTargetAssetDependencies, PlayerSettings.resolutionDialogBanner);
-#endif
+            #endif
             return buildTargetAssetDependencies;
         }
 
@@ -238,7 +191,7 @@ namespace HeurekaGames.AssetHunterPRO
         {
             switch (targetGroup)
             {
-#if !UNITY_2018_3_OR_NEWER
+                #if !UNITY_2018_3_OR_NEWER
                 case BuildTargetGroup.N3DS:
                     {
                         break;
@@ -251,108 +204,101 @@ namespace HeurekaGames.AssetHunterPRO
                     {
                         break;
                     }
-#endif
-#if !UNITY_2019_3_OR_NEWER
+                #endif
+                #if !UNITY_2019_3_OR_NEWER
                 case BuildTargetGroup.Facebook:
                     {
                         break;
                     }
-#endif
+                #endif
                 case BuildTargetGroup.Android:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case BuildTargetGroup.iOS:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case BuildTargetGroup.PS4:
-                    {
-                        Debug.Log("AH: Need " + targetGroup + " documentation to add platform specific images and assets");
-                        break;
-                    }
+                {
+                    Debug.Log("AH: Need " + targetGroup + " documentation to add platform specific images and assets");
+                    break;
+                }
                 case BuildTargetGroup.Standalone:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case BuildTargetGroup.Switch:
-                    {
-                        return PlayerSettings.Switch.icons.ToList();
-                    }
+                {
+                    return PlayerSettings.Switch.icons.ToList();
+                }
                 case BuildTargetGroup.tvOS:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case BuildTargetGroup.WebGL:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case BuildTargetGroup.WSA:
-                    {
-                        List<Texture2D> textures = new List<Texture2D>();
+                {
+                    var textures = new List<Texture2D>();
 
-#if !UNITY_2021_1_OR_NEWER
+                    #if !UNITY_2021_1_OR_NEWER
                         //Obsolete at some point in 2021
                         textures.Add(AssetDatabase.LoadAssetAtPath<Texture2D>(PlayerSettings.WSA.packageLogo));
-#endif
+                    #endif
 
-                        HashSet<PlayerSettings.WSAImageScale> exceptionScales = new HashSet<PlayerSettings.WSAImageScale>();
+                    var exceptionScales = new HashSet<PlayerSettings.WSAImageScale>();
 
-                        foreach (PlayerSettings.WSAImageType imageType in Enum.GetValues(typeof(PlayerSettings.WSAImageType)))
+                    foreach (PlayerSettings.WSAImageType imageType in Enum.GetValues(typeof(PlayerSettings.WSAImageType)))
+                    foreach (PlayerSettings.WSAImageScale imageScale in Enum.GetValues(typeof(PlayerSettings.WSAImageScale)))
+                    {
+                        try
                         {
-                            foreach (PlayerSettings.WSAImageScale imageScale in Enum.GetValues(typeof(PlayerSettings.WSAImageScale)))
-                            {
-                                try
-                                {
-                                    string imagePath = PlayerSettings.WSA.GetVisualAssetsImage(imageType, imageScale);
-                                    textures.Add(AssetDatabase.LoadAssetAtPath<Texture2D>(imagePath));
-                                }
-                                catch (Exception)
-                                {
-                                    exceptionScales.Add(imageScale);
-                                    //If that scale doesn't apply to the given WSA image type
-                                }
-                            }
+                            var imagePath = PlayerSettings.WSA.GetVisualAssetsImage(imageType, imageScale);
+                            textures.Add(AssetDatabase.LoadAssetAtPath<Texture2D>(imagePath));
                         }
-
-                        if (exceptionScales.Count >= 1)
+                        catch (Exception)
                         {
-                            string scaleListString = "";
-
-                            foreach (var item in exceptionScales)
-                            {
-                                scaleListString += item.ToString() + (exceptionScales.ElementAt(exceptionScales.Count - 1) == item ? "":", ");
-                            }
-
-                            Debug.Log("GetVisualAssetsImage method missing support for WSA image scale: " + scaleListString);
+                            exceptionScales.Add(imageScale);
+                            //If that scale doesn't apply to the given WSA image type
                         }
-
-                        return textures;
                     }
+
+                    if (exceptionScales.Count >= 1)
+                    {
+                        var scaleListString = "";
+
+                        foreach (var item in exceptionScales) scaleListString += item.ToString() + (exceptionScales.ElementAt(exceptionScales.Count - 1) == item ? "" : ", ");
+
+                        Debug.Log("GetVisualAssetsImage method missing support for WSA image scale: " + scaleListString);
+                    }
+
+                    return textures;
+                }
                 case BuildTargetGroup.XboxOne:
-                    {
-                        Debug.Log("AH: Need " + targetGroup + " documentation to add platform specific images and assets");
-                        break;
-                    }
+                {
+                    Debug.Log("AH: Need " + targetGroup + " documentation to add platform specific images and assets");
+                    break;
+                }
                 default:
-                    {
-                        Debug.LogWarning("AH: Targetgroup unknown: " + targetGroup);
-                        break;
-                    }
+                {
+                    Debug.LogWarning("AH: Targetgroup unknown: " + targetGroup);
+                    break;
+                }
             }
             return null;
         }
 
         private static void addTextureToPlayerSettingsList(ref List<Texture> playerSettingsTextures, Sprite sprite)
         {
-            if (sprite != null)
-                addTextureToPlayerSettingsList(ref playerSettingsTextures, sprite.texture);
+            if (sprite != null) addTextureToPlayerSettingsList(ref playerSettingsTextures, sprite.texture);
         }
 
         private static void addTextureToPlayerSettingsList(ref List<Texture> playerSettingsTextures, Texture2D texture)
         {
-            if ((texture != null) && AssetDatabase.IsMainAsset(texture))
-                playerSettingsTextures.Add(texture);
+            if (texture != null && AssetDatabase.IsMainAsset(texture)) playerSettingsTextures.Add(texture);
         }
     }
 }

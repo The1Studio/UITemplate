@@ -7,25 +7,26 @@ namespace HeurekaGames.Utils
 {
     public static class Heureka_ResourceLoader
     {
-        private static readonly Dictionary<HeurekaPackage, string> iconPaths = new Dictionary<HeurekaPackage, string>()
+        private static readonly Dictionary<HeurekaPackage, string> iconPaths = new()
         {
-            {HeurekaPackage.SHARED, "com.heurekagames.utils" },
-            {HeurekaPackage.AHP, "com.heurekagames.assethunterpro" },
-            {HeurekaPackage.SB, "com.heurekagames.smartbuilder" },
-            {HeurekaPackage.AFP, "com.heurekagames.assetfinderpro" }
+            { HeurekaPackage.SHARED, "com.heurekagames.utils" },
+            { HeurekaPackage.AHP, "com.heurekagames.assethunterpro" },
+            { HeurekaPackage.SB, "com.heurekagames.smartbuilder" },
+            { HeurekaPackage.AFP, "com.heurekagames.assetfinderpro" },
         };
+
         public static class Content
         {
             public static GUIContent Previous = GetInternalContentWithTooltip("tab_prev", "Previous");
-            public static GUIContent Next = GetInternalContentWithTooltip("tab_next", "Next");
+            public static GUIContent Next     = GetInternalContentWithTooltip("tab_next", "Next");
         }
 
         public static class Icons
         {
-            public static Texture Pick = EditorGUIUtility.IconContent("pick").image;
-            public static Texture Clear = EditorGUIUtility.IconContent(Heureka_Utils.IsUnityVersionGreaterThan(2020) ? "clear" : "Toolbar Minus").image;
+            public static Texture Pick     = EditorGUIUtility.IconContent("pick").image;
+            public static Texture Clear    = EditorGUIUtility.IconContent(Heureka_Utils.IsUnityVersionGreaterThan(2020) ? "clear" : "Toolbar Minus").image;
             public static Texture Previous = EditorGUIUtility.IconContent("tab_prev").image;
-            public static Texture Next= EditorGUIUtility.IconContent("tab_next").image;
+            public static Texture Next     = EditorGUIUtility.IconContent("tab_next").image;
         }
 
         public static class IconNames
@@ -38,14 +39,14 @@ namespace HeurekaGames.Utils
             SHARED,
             AHP,
             SB,
-            AFP
+            AFP,
         }
 
         public static string GetIconPath(HeurekaPackage package, string iconName)
         {
-            var path = $"Packages/{iconPaths[package]}/UI/Icons/{iconName}.png";
+            var path   = $"Packages/{iconPaths[package]}/UI/Icons/{iconName}.png";
             var folder = System.IO.Directory.GetCurrentDirectory() + $"/Packages/{iconPaths[package]}/UI/Icons";
-            bool exists = System.IO.Directory.Exists(folder);
+            var exists = System.IO.Directory.Exists(folder);
 
             //If this icon resides in "packages"
             if (exists)
@@ -59,7 +60,7 @@ namespace HeurekaGames.Utils
 
                 if (targetDir.Length > 0)
                 {
-                    var iconPath = string.Join(", ", System.IO.Directory.GetDirectories(targetDir[0], "Icons", System.IO.SearchOption.AllDirectories)) + $"/{iconName}.png";
+                    var iconPath     = string.Join(", ", System.IO.Directory.GetDirectories(targetDir[0], "Icons", System.IO.SearchOption.AllDirectories)) + $"/{iconName}.png";
                     var relativepath = "Assets" + iconPath.Substring(Application.dataPath.Length);
                     return relativepath;
                 }
@@ -91,7 +92,7 @@ namespace HeurekaGames.Utils
 
         public static GUIContent GetInternalContentWithTooltip(string iconName, string tooltip)
         {
-            return new GUIContent(EditorGUIUtility.IconContent(iconName).image, tooltip);
+            return new(EditorGUIUtility.IconContent(iconName).image, tooltip);
         }
 
         public static Texture GetInternalIcon(string iconName)

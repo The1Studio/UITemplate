@@ -9,48 +9,44 @@ namespace Lofelt.NiceVibrations
 {
     public class BallTouchZone : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     {
-        public RenderMode ParentCanvasRenderMode { get; protected set; }
-        public RectTransform BallMover;
-        protected bool _holding = false;
+        public    RenderMode       ParentCanvasRenderMode { get; protected set; }
+        public    RectTransform    BallMover;
+        protected bool             _holding = false;
         protected PointerEventData _pointerEventData;
-        protected Vector3 _newPosition;
-        protected Canvas _canvas;
-        protected float _initialZPosition;
-        protected Vector2 _workPosition;
-
+        protected Vector3          _newPosition;
+        protected Canvas           _canvas;
+        protected float            _initialZPosition;
+        protected Vector2          _workPosition;
 
         protected virtual void Start()
         {
-            Initialization();
+            this.Initialization();
         }
 
         protected virtual void Initialization()
         {
-            ParentCanvasRenderMode = GetComponentInParent<Canvas>().renderMode;
-            _canvas = GetComponentInParent<Canvas>();
-            _initialZPosition = transform.position.z;
+            this.ParentCanvasRenderMode = this.GetComponentInParent<Canvas>().renderMode;
+            this._canvas                = this.GetComponentInParent<Canvas>();
+            this._initialZPosition      = this.transform.position.z;
         }
 
         protected virtual void Update()
         {
-            if (_holding)
-            {
-                _newPosition = GetWorldPosition(_pointerEventData.position);
-            }
+            if (this._holding)
+                this._newPosition = this.GetWorldPosition(this._pointerEventData.position);
             else
-            {
-                _newPosition = Vector3.one * 5000f;
-            }
+                this._newPosition = Vector3.one * 5000f;
 
-            _newPosition.z = _initialZPosition;
-            BallMover.position = _newPosition;
+            this._newPosition.z     = this._initialZPosition;
+            this.BallMover.position = this._newPosition;
         }
+
         protected virtual Vector3 GetWorldPosition(Vector3 testPosition)
         {
-            if (ParentCanvasRenderMode == RenderMode.ScreenSpaceCamera)
+            if (this.ParentCanvasRenderMode == RenderMode.ScreenSpaceCamera)
             {
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvas.transform as RectTransform, testPosition, _canvas.worldCamera, out _workPosition);
-                return _canvas.transform.TransformPoint(_workPosition);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(this._canvas.transform as RectTransform, testPosition, this._canvas.worldCamera, out this._workPosition);
+                return this._canvas.transform.TransformPoint(this._workPosition);
             }
             else
             {
@@ -60,14 +56,13 @@ namespace Lofelt.NiceVibrations
 
         public virtual void OnPointerEnter(PointerEventData data)
         {
-            _holding = true;
-            _pointerEventData = data;
+            this._holding          = true;
+            this._pointerEventData = data;
         }
 
         public virtual void OnPointerExit(PointerEventData data)
         {
-            _holding = false;
+            this._holding = false;
         }
-
     }
 }

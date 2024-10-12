@@ -58,7 +58,7 @@
             {
                 TheOneCheatActiveType.TripleTap        => new TripleTapCheatDetector(),
                 TheOneCheatActiveType.DrawTripleCircle => new CircleDrawCheatDetector(),
-                _                                      => null
+                _                                      => null,
             };
 
             this.goContainer.SetActive(false);
@@ -72,7 +72,10 @@
             this.signalBus.Fire(new ChangeLevelCreativeSignal(level));
         }
 
-        protected void OnCloseView() { this.goContainer.SetActive(false); }
+        protected void OnCloseView()
+        {
+            this.goContainer.SetActive(false);
+        }
 
         protected void OnAddCurrencyClick()
         {

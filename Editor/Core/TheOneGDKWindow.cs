@@ -12,33 +12,32 @@ namespace TheOne.Tool.Core
     public class TheOneWindow : OdinEditorWindow
     {
         [MenuItem("TheOne/Configuration And Tools")]
-        private static void OpenWindow() { GetWindow<TheOneWindow>().Show(); }
+        private static void OpenWindow()
+        {
+            GetWindow<TheOneWindow>().Show();
+        }
 
-        [TabGroup("Analytics Config")] [InlineEditor]
-        public AnalyticConfig AnalyticConfig;
+        [TabGroup("Analytics Config")] [InlineEditor] public AnalyticConfig AnalyticConfig;
 
-        [TabGroup("Ads Config")] [InlineEditor]
-        public ThirdPartiesConfig ThirdPartiesConfig;
+        [TabGroup("Ads Config")] [InlineEditor] public ThirdPartiesConfig ThirdPartiesConfig;
 
-        [InlineEditor] [TabGroup("Remote Config")]
-        public RemoteConfigSetting remoteConfigSetting;
-        
-        [InlineEditor] [TabGroup("Game Features")]
-        public GameFeaturesSetting gameFeaturesSetting;
+        [InlineEditor] [TabGroup("Remote Config")] public RemoteConfigSetting remoteConfigSetting;
+
+        [InlineEditor] [TabGroup("Game Features")] public GameFeaturesSetting gameFeaturesSetting;
 
         private void OnEnable()
         {
             this.AnalyticConfig      = Resources.Load<AnalyticConfig>($"GameConfigs/{nameof(this.AnalyticConfig)}");
             this.ThirdPartiesConfig  = Resources.Load<ThirdPartiesConfig>($"GameConfigs/{nameof(this.ThirdPartiesConfig)}");
             this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);
-            this.gameFeaturesSetting   = Resources.Load<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath);
+            this.gameFeaturesSetting = Resources.Load<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath);
 
             if (this.remoteConfigSetting == null)
             {
                 AssetDatabase.CreateAsset(CreateInstance<RemoteConfigSetting>(), $"Assets/Resources/{RemoteConfigSetting.ResourcePath}.asset");
                 this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>($"GameConfigs/{nameof(RemoteConfigSetting)}");
             }
-            
+
             if (this.gameFeaturesSetting == null)
             {
                 AssetDatabase.CreateAsset(CreateInstance<GameFeaturesSetting>(), $"Assets/Resources/{GameFeaturesSetting.ResourcePath}.asset");

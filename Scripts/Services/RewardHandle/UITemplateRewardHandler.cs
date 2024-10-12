@@ -35,10 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
                 .GroupBy(keyPairValue => keyPairValue.Key)
                 .ToDictionary(group => group.Key, group => group.Sum(keyPairValue => keyPairValue.Value.RewardValue));
 
-            foreach (var (rewardId, value) in availableRepeatedReward)
-            {
-                this.ReceiveReward(rewardId, value);
-            }
+            foreach (var (rewardId, value) in availableRepeatedReward) this.ReceiveReward(rewardId, value);
 
             rewardList.ForEach(keyPairValue => keyPairValue.Value.LastTimeReceive = DateTime.Now);
 
@@ -54,22 +51,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
 
         public void AddRewards(Dictionary<string, UITemplateRewardItemData> rewardIdToData, GameObject sourceGameObject)
         {
-            foreach (var rewardData in rewardIdToData)
-            {
-                this.ReceiveReward(rewardData.Key, rewardData.Value.RewardValue, sourceGameObject == null ? null : sourceGameObject.transform as RectTransform);
-            }
+            foreach (var rewardData in rewardIdToData) this.ReceiveReward(rewardData.Key, rewardData.Value.RewardValue, sourceGameObject == null ? null : sourceGameObject.transform as RectTransform);
         }
 
         private void ReceiveReward(string rewardId, int rewardValue, RectTransform startPos = null)
         {
             if (this.rewardIdToRewardExecutor.TryGetValue(rewardId, out var dicRewardRecord))
-            {
                 dicRewardRecord.ReceiveReward(rewardValue, startPos);
-            }
             else
-            {
                 this.uiTemplateInventoryDataController.AddGenericReward(rewardId, rewardValue, startPos).Forget();
-            }
         }
     }
 }

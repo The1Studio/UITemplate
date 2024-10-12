@@ -12,44 +12,40 @@ namespace Lofelt.NiceVibrations
     {
         public RenderMode ParentCanvasRenderMode { get; protected set; }
 
-        [Header("Bindings")]
-        public Camera TargetCamera;
-        public AudioSource SpringAudioSource;
-        public Animator TargetAnimator;
+        [Header("Bindings")] public Camera      TargetCamera;
+        public                      AudioSource SpringAudioSource;
+        public                      Animator    TargetAnimator;
 
-        [Header("Haptics")]
-        public HapticSource SpringHapticSource;
+        [Header("Haptics")] public HapticSource SpringHapticSource;
 
-        [Header("Colors")]
-        public Image TargetModel;
+        [Header("Colors")] public Image TargetModel;
 
-        [Header("Wobble")]
-        public float OffDuration = 0.1f;
-        public float MaxRange;
-        public AnimationCurve WobbleCurve;
-        public float DragResetDuration = 4f;
-        public float WobbleFactor = 2f;
+        [Header("Wobble")] public float          OffDuration = 0.1f;
+        public                    float          MaxRange;
+        public                    AnimationCurve WobbleCurve;
+        public                    float          DragResetDuration = 4f;
+        public                    float          WobbleFactor      = 2f;
 
-        protected Vector3 _neutralPosition;
-        protected Canvas _canvas;
-        protected Vector3 _newTargetPosition;
-        protected Vector3 _eventPosition;
-        protected Vector2 _workPosition;
-        protected float _initialZPosition;
-        protected bool _dragging;
-        protected int _pointerID;
+        protected Vector3          _neutralPosition;
+        protected Canvas           _canvas;
+        protected Vector3          _newTargetPosition;
+        protected Vector3          _eventPosition;
+        protected Vector2          _workPosition;
+        protected float            _initialZPosition;
+        protected bool             _dragging;
+        protected int              _pointerID;
         protected PointerEventData _pointerEventData;
-        protected RectTransform _rectTransform;
+        protected RectTransform    _rectTransform;
 
         protected Vector3 _dragEndedPosition;
-        protected float _dragEndedAt;
+        protected float   _dragEndedAt;
         protected Vector3 _dragResetDirection;
-        protected bool _pointerOn = false;
-        protected bool _draggedOnce = false;
-        protected int _sparkAnimationParameter;
+        protected bool    _pointerOn   = false;
+        protected bool    _draggedOnce = false;
+        protected int     _sparkAnimationParameter;
 
-        protected long[] _wobbleAndroidPattern = { 0, 40, 40, 80 };
-        protected int[] _wobbleAndroidAmplitude = { 0, 40, 0, 80 };
+        protected long[] _wobbleAndroidPattern   = { 0, 40, 40, 80 };
+        protected int[]  _wobbleAndroidAmplitude = { 0, 40, 0, 80 };
 
         protected virtual void Start()
         {
@@ -57,31 +53,31 @@ namespace Lofelt.NiceVibrations
 
         public virtual void SetPitch(float newPitch)
         {
-            SpringAudioSource.pitch = newPitch;
-            SpringHapticSource.frequencyShift = NiceVibrationsDemoHelpers.Remap(newPitch, 0.3f, 1f, -1.0f, 1.0f);
+            this.SpringAudioSource.pitch           = newPitch;
+            this.SpringHapticSource.frequencyShift = NiceVibrationsDemoHelpers.Remap(newPitch, 0.3f, 1f, -1.0f, 1.0f);
         }
 
         public virtual void Initialization()
         {
-            _sparkAnimationParameter = Animator.StringToHash("Spark");
-            ParentCanvasRenderMode = GetComponentInParent<Canvas>().renderMode;
-            _canvas = GetComponentInParent<Canvas>();
-            _initialZPosition = transform.position.z;
-            _rectTransform = this.gameObject.GetComponent<RectTransform>();
-            SetNeutralPosition();
+            this._sparkAnimationParameter = Animator.StringToHash("Spark");
+            this.ParentCanvasRenderMode   = this.GetComponentInParent<Canvas>().renderMode;
+            this._canvas                  = this.GetComponentInParent<Canvas>();
+            this._initialZPosition        = this.transform.position.z;
+            this._rectTransform           = this.gameObject.GetComponent<RectTransform>();
+            this.SetNeutralPosition();
         }
 
         public virtual void SetNeutralPosition()
         {
-            _neutralPosition = _rectTransform.transform.position;
+            this._neutralPosition = this._rectTransform.transform.position;
         }
 
         protected virtual Vector3 GetWorldPosition(Vector3 testPosition)
         {
-            if (ParentCanvasRenderMode == RenderMode.ScreenSpaceCamera)
+            if (this.ParentCanvasRenderMode == RenderMode.ScreenSpaceCamera)
             {
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvas.transform as RectTransform, testPosition, _canvas.worldCamera, out _workPosition);
-                return _canvas.transform.TransformPoint(_workPosition);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(this._canvas.transform as RectTransform, testPosition, this._canvas.worldCamera, out this._workPosition);
+                return this._canvas.transform.TransformPoint(this._workPosition);
             }
             else
             {
@@ -91,101 +87,89 @@ namespace Lofelt.NiceVibrations
 
         protected virtual void Update()
         {
-            if (_pointerOn && !_dragging)
+            if (this._pointerOn && !this._dragging)
             {
-                _newTargetPosition = GetWorldPosition(_pointerEventData.position);
+                this._newTargetPosition = this.GetWorldPosition(this._pointerEventData.position);
 
-                float distance = (_newTargetPosition - _neutralPosition).magnitude;
+                var distance = (this._newTargetPosition - this._neutralPosition).magnitude;
 
-                if (distance < MaxRange)
-                {
-                    _dragging = true;
-                }
+                if (distance < this.MaxRange)
+                    this._dragging = true;
                 else
-                {
-                    _dragging = false;
-                }
+                    this._dragging = false;
             }
 
-            if (_dragging)
-            {
-                StickToPointer();
-            }
+            if (this._dragging)
+                this.StickToPointer();
             else
-            {
-                GoBackToInitialPosition();
-            }
+                this.GoBackToInitialPosition();
         }
 
         protected virtual void StickToPointer()
         {
-            _draggedOnce = true;
-            _eventPosition = _pointerEventData.position;
+            this._draggedOnce   = true;
+            this._eventPosition = this._pointerEventData.position;
 
-            _newTargetPosition = GetWorldPosition(_eventPosition);
+            this._newTargetPosition = this.GetWorldPosition(this._eventPosition);
 
             // We clamp the stick's position to let it move only inside its defined max range
-            _newTargetPosition = Vector2.ClampMagnitude(_newTargetPosition - _neutralPosition, MaxRange);
-            _newTargetPosition = _neutralPosition + _newTargetPosition;
-            _newTargetPosition.z = _initialZPosition;
+            this._newTargetPosition   = Vector2.ClampMagnitude(this._newTargetPosition - this._neutralPosition, this.MaxRange);
+            this._newTargetPosition   = this._neutralPosition + this._newTargetPosition;
+            this._newTargetPosition.z = this._initialZPosition;
 
-            transform.position = _newTargetPosition;
+            this.transform.position = this._newTargetPosition;
         }
 
         protected virtual void GoBackToInitialPosition()
         {
-            if (!_draggedOnce)
-            {
-                return;
-            }
+            if (!this._draggedOnce) return;
 
-            if (Time.time - _dragEndedAt < DragResetDuration)
+            if (Time.time - this._dragEndedAt < this.DragResetDuration)
             {
-                float time = Remap(Time.time - _dragEndedAt, 0f, DragResetDuration, 0f, 1f);
-                float value = WobbleCurve.Evaluate(time) * WobbleFactor;
-                _newTargetPosition = Vector3.LerpUnclamped(_neutralPosition, _dragEndedPosition, value);
-                _newTargetPosition.z = _initialZPosition;
+                var time  = this.Remap(Time.time - this._dragEndedAt, 0f, this.DragResetDuration, 0f, 1f);
+                var value = this.WobbleCurve.Evaluate(time) * this.WobbleFactor;
+                this._newTargetPosition   = Vector3.LerpUnclamped(this._neutralPosition, this._dragEndedPosition, value);
+                this._newTargetPosition.z = this._initialZPosition;
             }
             else
             {
-                _newTargetPosition = _neutralPosition;
-                _newTargetPosition.z = _initialZPosition;
+                this._newTargetPosition   = this._neutralPosition;
+                this._newTargetPosition.z = this._initialZPosition;
             }
-            transform.position = _newTargetPosition;
+            this.transform.position = this._newTargetPosition;
         }
 
         public virtual void OnPointerEnter(PointerEventData data)
         {
-            _pointerID = data.pointerId;
-            _pointerEventData = data;
-            _pointerOn = true;
+            this._pointerID        = data.pointerId;
+            this._pointerEventData = data;
+            this._pointerOn        = true;
         }
 
         public virtual void OnPointerExit(PointerEventData data)
         {
-            _eventPosition = _pointerEventData.position;
+            this._eventPosition = this._pointerEventData.position;
 
-            _newTargetPosition = GetWorldPosition(_eventPosition);
-            _newTargetPosition = Vector2.ClampMagnitude(_newTargetPosition - _neutralPosition, MaxRange);
-            _newTargetPosition = _neutralPosition + _newTargetPosition;
-            _newTargetPosition.z = _initialZPosition;
+            this._newTargetPosition   = this.GetWorldPosition(this._eventPosition);
+            this._newTargetPosition   = Vector2.ClampMagnitude(this._newTargetPosition - this._neutralPosition, this.MaxRange);
+            this._newTargetPosition   = this._neutralPosition + this._newTargetPosition;
+            this._newTargetPosition.z = this._initialZPosition;
 
-            _dragging = false;
-            _dragEndedPosition = _newTargetPosition;
-            _dragEndedAt = Time.time;
-            _dragResetDirection = _dragEndedPosition - _neutralPosition;
-            _pointerOn = false;
+            this._dragging           = false;
+            this._dragEndedPosition  = this._newTargetPosition;
+            this._dragEndedAt        = Time.time;
+            this._dragResetDirection = this._dragEndedPosition - this._neutralPosition;
+            this._pointerOn          = false;
 
-            TargetAnimator.SetTrigger(_sparkAnimationParameter);
-            SpringAudioSource.Play();
-            SpringHapticSource.Play();
+            this.TargetAnimator.SetTrigger(this._sparkAnimationParameter);
+            this.SpringAudioSource.Play();
+            this.SpringHapticSource.Play();
         }
 
         protected virtual float Remap(float x, float A, float B, float C, float D)
         {
-            float remappedValue = C + (x - A) / (B - A) * (D - C);
+            var remappedValue = C + (x - A) / (B - A) * (D - C);
             return remappedValue;
         }
     }
 }
-

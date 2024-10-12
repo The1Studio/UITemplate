@@ -47,31 +47,25 @@
 
         [SerializeField] private bool useItemUnlockProgressText;
 
-        [SerializeField] [ShowIf("useItemUnlockProgressText")]
-        private TMP_Text txtItemUnlockProgress;
+        [SerializeField] [ShowIf("useItemUnlockProgressText")] private TMP_Text txtItemUnlockProgress;
 
         [SerializeField] private bool useItemUnlockProgressImage;
 
-        [SerializeField] [ShowIf("useItemUnlockProgressImage")]
-        private Image imgItemUnlockProgress;
+        [SerializeField] [ShowIf("useItemUnlockProgressImage")] private Image imgItemUnlockProgress;
 
-        [SerializeField] [ShowIf("useItemUnlockProgressImage")]
-        private Image imgItemUnlockProgressBackground;
+        [SerializeField] [ShowIf("useItemUnlockProgressImage")] private Image imgItemUnlockProgressBackground;
 
         [SerializeField] private bool useItemUnlockProgressSlider;
 
-        [SerializeField] [ShowIf("useItemUnlockProgressSlider")]
-        private Slider sliderItemUnlockProgress;
+        [SerializeField] [ShowIf("useItemUnlockProgressSlider")] private Slider sliderItemUnlockProgress;
 
         [SerializeField] private bool useLightGlow;
 
-        [SerializeField] [ShowIf("useLightGlow")]
-        private Image imgLightGlow;
+        [SerializeField] [ShowIf("useLightGlow")] private Image imgLightGlow;
 
         [SerializeField] private bool useStarRate;
 
-        [SerializeField] [ShowIf("UseStarRate")]
-        private UITemplateStarRateView starRateView;
+        [SerializeField] [ShowIf("UseStarRate")] private UITemplateStarRateView starRateView;
 
         public Button                 BtnHome                         => this.btnHome;
         public Button                 BtnReplay                       => this.btnReplay;
@@ -122,23 +116,18 @@
 
         #endregion
 
-        protected virtual string AdPlacement     => "x2_reward";
-        private IDisposable spinDisposable;
-        private Tween       tweenSpin;
+        protected virtual string      AdPlacement => "x2_reward";
+        private           IDisposable spinDisposable;
+        private           Tween       tweenSpin;
 
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            if (this.View.BtnAds != null)
-                this.View.BtnAds.OnViewReady(this.adService);
-            if (this.View.BtnHome != null)
-                this.View.BtnHome.onClick.AddListener(this.OnClickHome);
-            if (this.View.BtnReplay != null)
-                this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
-            if (this.View.BtnNext != null)
-                this.View.BtnNext.onClick.AddListener(this.OnClickNext);
-            if (this.View.BtnAds != null)
-                this.View.BtnAds.onClick.AddListener(this.OnClickAds);
+            if (this.View.BtnAds != null) this.View.BtnAds.OnViewReady(this.adService);
+            if (this.View.BtnHome != null) this.View.BtnHome.onClick.AddListener(this.OnClickHome);
+            if (this.View.BtnReplay != null) this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
+            if (this.View.BtnNext != null) this.View.BtnNext.onClick.AddListener(this.OnClickNext);
+            if (this.View.BtnAds != null) this.View.BtnAds.onClick.AddListener(this.OnClickAds);
         }
 
         public override async UniTask BindData(UITemplateWinScreenModel model)
@@ -147,15 +136,9 @@
             this.ItemUnlockProgress(model.ItemUnlockLastValue, model.ItemUnlockNewValue);
             this.soundService.PlaySoundWin();
 
-            if (this.View.UseLightGlow)
-            {
-                this.tweenSpin = this.View.ImgLightGlow.transform.DORotate(new Vector3(0, 0, -360), 5f, RotateMode.FastBeyond360).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
-            }
+            if (this.View.UseLightGlow) this.tweenSpin = this.View.ImgLightGlow.transform.DORotate(new(0, 0, -360), 5f, RotateMode.FastBeyond360).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
 
-            if (this.View.UseStarRate)
-            {
-                await this.View.StarRateView.SetStarRate(model.StarRate);
-            }
+            if (this.View.UseStarRate) await this.View.StarRateView.SetStarRate(model.StarRate);
         }
 
         protected async void ItemUnlockProgress(float lastValue, float newValue)
@@ -167,13 +150,13 @@
                 this.View.TxtItemUnlockProgress.text = $"{lastValue * 100:N0}%";
                 sequence.Join(
                     DOTween.To(
-                        getter: () => lastValue,
-                        setter: value =>
+                        () => lastValue,
+                        value =>
                         {
                             this.View.TxtItemUnlockProgress.text = $"{value * 100:N0}%";
                         },
-                        endValue: newValue,
-                        duration: .5f
+                        newValue,
+                        .5f
                     ).SetEase(Ease.Linear)
                 );
             }
@@ -181,39 +164,33 @@
             if (this.View.UseItemUnlockProgressImage)
             {
                 var itemData = this.inventoryDataController.GetItemData(this.Model.ItemId);
-                var sprite = await this.gameAssets.LoadAssetAsync<Sprite>(itemData.ItemBlueprintRecord.ImageAddress);
+                var sprite   = await this.gameAssets.LoadAssetAsync<Sprite>(itemData.ItemBlueprintRecord.ImageAddress);
                 this.View.ImgItemUnlockProgress.sprite           = sprite;
                 this.View.ImgItemUnlockProgressBackground.sprite = sprite;
                 sequence.Join(
                     DOTween.To(
-                        getter: () => this.View.ImgItemUnlockProgress.fillAmount    = lastValue,
-                        setter: value => this.View.ImgItemUnlockProgress.fillAmount = value,
-                        endValue: newValue,
-                        duration: .5f
+                        () => this.View.ImgItemUnlockProgress.fillAmount    = lastValue,
+                        value => this.View.ImgItemUnlockProgress.fillAmount = value,
+                        newValue,
+                        .5f
                     ).SetEase(Ease.Linear)
                 );
             }
 
             if (this.View.UseItemUnlockProgressSlider)
-            {
                 sequence.Join(
                     DOTween.To(
-                        getter: () => this.View.SliderItemUnlockProgress.value    = lastValue,
-                        setter: value => this.View.SliderItemUnlockProgress.value = value,
-                        endValue: newValue,
-                        duration: .5f
+                        () => this.View.SliderItemUnlockProgress.value    = lastValue,
+                        value => this.View.SliderItemUnlockProgress.value = value,
+                        newValue,
+                        .5f
                     ).SetEase(Ease.Linear)
                 );
-            }
 
             if (newValue < 1f)
-            {
                 this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.InProgress);
-            }
             else
-            {
                 sequence.onComplete += this.OnItemUnlock;
-            }
         }
 
         protected virtual void OnClickHome()
@@ -233,9 +210,10 @@
 
         protected virtual void OnClickAds()
         {
-            this.adService.ShowRewardedAd(this.AdPlacement, () =>
-            {
-            });
+            this.adService.ShowRewardedAd(this.AdPlacement,
+                () =>
+                {
+                });
         }
 
         protected virtual void OnItemUnlock()

@@ -2,8 +2,7 @@
 {
     using Core.AnalyticServices.Data;
 
-    public class AdInterRequest: IEvent
+    public class AdInterRequest : IEvent
     {
-        
     }
 }

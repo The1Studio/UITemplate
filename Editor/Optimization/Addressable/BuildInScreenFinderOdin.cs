@@ -15,26 +15,30 @@ namespace TheOne.Tool.Optimization.Addressable
     {
         private static string NotBuildinScreenAssetGroupName = "NotBuildInScreenAsset";
 
-        [ShowInInspector] [TableList] [Title("Dependencies asset", TitleAlignment = TitleAlignments.Centered)]
-        private Dictionary<SceneAsset, HashSet<Object>> sceneToDependencyAsset = new();
+        [ShowInInspector] [TableList] [Title("Dependencies asset", TitleAlignment = TitleAlignments.Centered)] private Dictionary<SceneAsset, HashSet<Object>> sceneToDependencyAsset = new();
 
-        [ShowInInspector] [TableList] [Title("Not In Right atlas texture", TitleAlignment = TitleAlignments.Centered)]
-        private Dictionary<SceneAsset, HashSet<Texture>> notInRightAtlasTexture = new();
-        
-        [ShowInInspector] [TableList] [Title("Build In Scenes Assets that not in right group", TitleAlignment = TitleAlignments.Centered)]
-        private Dictionary<SceneAsset, HashSet<Object>> buildInSceneAssetsThatNotInRightGroup = new();
+        [ShowInInspector] [TableList] [Title("Not In Right atlas texture", TitleAlignment = TitleAlignments.Centered)] private Dictionary<SceneAsset, HashSet<Texture>> notInRightAtlasTexture = new();
 
-        [ShowInInspector] [TableList] [Title("Not Build In Scenes Assets that not in right group", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<Object> notBuildInSceneAssetsThatNotInRightGroup = new();
+        [ShowInInspector] [TableList] [Title("Build In Scenes Assets that not in right group", TitleAlignment = TitleAlignments.Centered)] private Dictionary<SceneAsset, HashSet<Object>> buildInSceneAssetsThatNotInRightGroup = new();
+
+        [ShowInInspector] [TableList] [Title("Not Build In Scenes Assets that not in right group", TitleAlignment = TitleAlignments.Centered)] private HashSet<Object> notBuildInSceneAssetsThatNotInRightGroup = new();
 
         [MenuItem("TheOne/List And Optimize/Build-In Screens List")]
-        private static void OpenWindow() { GetWindow<BuildInScreenFinderOdin>().Show(); }
+        private static void OpenWindow()
+        {
+            GetWindow<BuildInScreenFinderOdin>().Show();
+        }
 
         [ButtonGroup("Optimize Loading Screen")]
-        [Button(ButtonSizes.Medium),  GUIColor(0, 1, 0)]
-        private void AnalyzeBuildInScene() { this.FindActiveScreensAndAddressableReferences(); }
+        [Button(ButtonSizes.Medium)]
+        [GUIColor(0, 1, 0)]
+        private void AnalyzeBuildInScene()
+        {
+            this.FindActiveScreensAndAddressableReferences();
+        }
 
-        [ButtonGroup("Optimize Loading Screen"), GUIColor(1, 1, 0)]
+        [ButtonGroup("Optimize Loading Screen")]
+        [GUIColor(1, 1, 0)]
         [Button(ButtonSizes.Medium)]
         private void RegroupBuildInScreenAddressable()
         {
@@ -42,7 +46,10 @@ namespace TheOne.Tool.Optimization.Addressable
             this.ReGroup();
         }
 
-        private static string GetSceneAssetGroupName(SceneAsset sceneAsset) => $"BuildInScreenAsset_{sceneAsset.name}";
+        private static string GetSceneAssetGroupName(SceneAsset sceneAsset)
+        {
+            return $"BuildInScreenAsset_{sceneAsset.name}";
+        }
 
         private void FindActiveScreensAndAddressableReferences()
         {
@@ -56,27 +63,29 @@ namespace TheOne.Tool.Optimization.Addressable
             // Find all active screens in the build
             var activeScenes = FindActiveScreens().ToList();
             // Find all referenced assets in Addressable
-            var sceneToDependencyAssets = activeScenes.ToDictionary(scene => scene, scene =>
-            {
-                var hashSet = AssetSearcher.GetAllDependencies<Object>(scene).ToHashSet();
-                return hashSet;
-            });
+            var sceneToDependencyAssets = activeScenes.ToDictionary(scene => scene,
+                scene =>
+                {
+                    var hashSet = AssetSearcher.GetAllDependencies<Object>(scene).ToHashSet();
+                    return hashSet;
+                });
 
-            var countedAssets  = new HashSet<Object>();
-            var buildInSceneAssetsThatNotInRightGroup = sceneToDependencyAssets.ToDictionary(kp => kp.Key, kp =>
-            {
-                var hashSet = kp.Value.Where(asset => IsAssetInNotRightBuildInGroup(asset, kp.Key))
-                    .ToHashSet();
-                hashSet.RemoveRange(countedAssets);
-                countedAssets.AddRange(kp.Value);
-                return hashSet;
-            });
-            
+            var countedAssets = new HashSet<Object>();
+            var buildInSceneAssetsThatNotInRightGroup = sceneToDependencyAssets.ToDictionary(kp => kp.Key,
+                kp =>
+                {
+                    var hashSet = kp.Value.Where(asset => IsAssetInNotRightBuildInGroup(asset, kp.Key))
+                        .ToHashSet();
+                    hashSet.RemoveRange(countedAssets);
+                    countedAssets.AddRange(kp.Value);
+                    return hashSet;
+                });
+
             var allAssetsInGroup = activeScenes.SelectMany(scene => AssetSearcher.GetAllAssetsInGroup(GetSceneAssetGroupName(scene))).ToHashSet();
             var dependencyAssets = sceneToDependencyAssets.SelectMany(kp => kp.Value).ToHashSet();
             var notBuildInSceneAssetsThatNotInRightGroup = allAssetsInGroup.Where(asset => !dependencyAssets.Contains(asset))
                 .ToHashSet();
-            
+
             return (sceneToDependencyAssets, buildInSceneAssetsThatNotInRightGroup, notBuildInSceneAssetsThatNotInRightGroup);
         }
 
@@ -87,30 +96,30 @@ namespace TheOne.Tool.Optimization.Addressable
 
         private static Dictionary<SceneAsset, HashSet<Texture>> AnalyzeAtlases(Dictionary<SceneAsset, HashSet<Object>> sceneToDependencyAsset)
         {
-            var result            = new Dictionary<SceneAsset, HashSet<Texture>>();
+            var result = new Dictionary<SceneAsset, HashSet<Texture>>();
 
             var countedTextures = new HashSet<Texture>();
             foreach (var (scene, assets) in sceneToDependencyAsset)
             {
-                result.Add(scene, new HashSet<Texture>());
+                result.Add(scene, new());
                 var textures = assets.OfType<Texture>().ToHashSet();
                 textures.RemoveRange(countedTextures);
                 foreach (var texture in textures)
                 {
                     var assetPath = AssetDatabase.GetAssetPath(texture);
                     var fileName  = Path.GetFileName(assetPath);
-                    if (!assetPath.Equals($"{GetTextureBuildInPath(scene)}/{fileName}"))
-                    {
-                        result[scene].Add(texture);
-                    }
+                    if (!assetPath.Equals($"{GetTextureBuildInPath(scene)}/{fileName}")) result[scene].Add(texture);
                 }
                 countedTextures.AddRange(textures);
             }
-            
+
             return result;
         }
 
-        private static IEnumerable<SceneAsset> FindActiveScreens() => EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path));
+        private static IEnumerable<SceneAsset> FindActiveScreens()
+        {
+            return EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(scene => AssetDatabase.LoadAssetAtPath<SceneAsset>(scene.path));
+        }
 
         public static void AutoOptimize()
         {
@@ -142,14 +151,11 @@ namespace TheOne.Tool.Optimization.Addressable
                     CreateAtlasFromFolders.CreateAtlasForFolder(folderPath, AssetDatabase.LoadAssetAtPath<Object>(folderPath));
                     AssetDatabase.Refresh();
                 }
-                foreach (var texture in textures)
-                {
-                    AssetSearcher.MoveToNewFolder(texture, folderPath);
-                }
+                foreach (var texture in textures) AssetSearcher.MoveToNewFolder(texture, folderPath);
             }
             AssetDatabase.Refresh();
         }
-        
+
         private void ReGroup()
         {
             //if there is no asset in BuilbuildInSceneAssetsThatNotInRightGroupd and notBuildInSceneAssetsThatNotInRightGroup, return
@@ -158,14 +164,11 @@ namespace TheOne.Tool.Optimization.Addressable
                 EditorUtility.DisplayDialog("Optimizing BuildIn Scene Assets!!", "There are no assets to reorganize.", "OK");
                 return;
             }
-            
-            // Information and Confirmation Dialog
-            bool userConfirmed = EditorUtility.DisplayDialog("Optimizing BuildIn Scene Assets!!", "This will reorganize assets into the correct Addressable Asset Groups based on their usage. Do you want to proceed?", "Ok");
 
-            if (!userConfirmed)
-            {
-                return; // Exit if the user does not confirm
-            }
+            // Information and Confirmation Dialog
+            var userConfirmed = EditorUtility.DisplayDialog("Optimizing BuildIn Scene Assets!!", "This will reorganize assets into the correct Addressable Asset Groups based on their usage. Do you want to proceed?", "Ok");
+
+            if (!userConfirmed) return; // Exit if the user does not confirm
 
             var totalAssets     = this.buildInSceneAssetsThatNotInRightGroup.Count + this.notBuildInSceneAssetsThatNotInRightGroup.Count;
             var processedAssets = 0;
@@ -176,14 +179,12 @@ namespace TheOne.Tool.Optimization.Addressable
             var movedAssets = new List<string>();
 
             foreach (var (scene, values) in this.buildInSceneAssetsThatNotInRightGroup)
+            foreach (var asset in values)
             {
-                foreach (var asset in values)
-                {
-                    AssetSearcher.MoveAssetToGroup(asset, GetSceneAssetGroupName(scene));
-                    processedAssets++;
-                    movedAssets.Add(AssetDatabase.GetAssetPath(asset));
-                    EditorUtility.DisplayProgressBar("ReGrouping Assets", $"Processing {AssetDatabase.GetAssetPath(asset)}", processedAssets / (float)totalAssets);
-                }
+                AssetSearcher.MoveAssetToGroup(asset, GetSceneAssetGroupName(scene));
+                processedAssets++;
+                movedAssets.Add(AssetDatabase.GetAssetPath(asset));
+                EditorUtility.DisplayProgressBar("ReGrouping Assets", $"Processing {AssetDatabase.GetAssetPath(asset)}", processedAssets / (float)totalAssets);
             }
 
             foreach (var asset in this.notBuildInSceneAssetsThatNotInRightGroup)
@@ -200,7 +201,7 @@ namespace TheOne.Tool.Optimization.Addressable
             // Display Analysis Popup
             var movedAssetsSummary = string.Join("\n", movedAssets);
             EditorUtility.DisplayDialog("Optimizing BuildIn Scene Assets Summary", $"ReGrouping Complete. Moved Assets:\n{movedAssetsSummary}", "OK");
-            
+
             this.FindActiveScreensAndAddressableReferences();
         }
     }

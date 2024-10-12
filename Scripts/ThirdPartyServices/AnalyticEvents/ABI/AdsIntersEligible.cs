@@ -5,6 +5,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     public class AdsIntersEligible : IEvent
     {
         public readonly string placement;
-        public AdsIntersEligible(string placement) { this.placement = placement; }
+
+        public AdsIntersEligible(string placement)
+        {
+            this.placement = placement;
+        }
     }
 }

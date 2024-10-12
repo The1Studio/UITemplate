@@ -31,14 +31,30 @@
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
             IEnumerable<AdServiceOrder>         adServiceOrders
-        ) : base(logService, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController, gameSessionDataController, aoaAdServices, toastController, levelDataController,
-            thirdPartiesConfig, screenManager, collapsibleBannerAd, adServiceOrders)
+        ) : base(logService,
+            adServicesConfig,
+            signalBus,
+            adServices,
+            mrecAdServices,
+            uiTemplateAdsController,
+            gameSessionDataController,
+            aoaAdServices,
+            toastController,
+            levelDataController,
+            thirdPartiesConfig,
+            screenManager,
+            collapsibleBannerAd,
+            adServiceOrders)
         {
         }
 
-        public override void ShowBannerAd(int width = 320, int height = 50) { }
+        public override void ShowBannerAd(int width = 320, int height = 50)
+        {
+        }
 
-        public override void HideBannerAd() { }
+        public override void HideBannerAd()
+        {
+        }
 
         public override bool ShowInterstitialAd(string place, Action<bool> onInterstitialFinished, bool force = false)
         {
@@ -47,16 +63,31 @@
             return false;
         }
 
-        public override void ShowRewardedAd(string place, Action onComplete, Action onFail = null) { onComplete.Invoke(); }
+        public override void ShowRewardedAd(string place, Action onComplete, Action onFail = null)
+        {
+            onComplete.Invoke();
+        }
 
-        public override void RewardedAdOffer(string place) { }
+        public override void RewardedAdOffer(string place)
+        {
+        }
 
-        public override bool IsRewardedAdReady(string place) { return true; }
+        public override bool IsRewardedAdReady(string place)
+        {
+            return true;
+        }
 
-        public override bool IsInterstitialAdReady(string place) { return true; }
+        public override bool IsInterstitialAdReady(string place)
+        {
+            return true;
+        }
 
-        public override void ShowMREC<TPresenter>(AdViewPosition adViewPosition) { }
+        public override void ShowMREC<TPresenter>(AdViewPosition adViewPosition)
+        {
+        }
 
-        public override void HideMREC(AdViewPosition adViewPosition) { }
+        public override void HideMREC(AdViewPosition adViewPosition)
+        {
+        }
     }
 }

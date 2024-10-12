@@ -14,20 +14,20 @@ namespace Lofelt.NiceVibrations
 
         protected virtual void Awake()
         {
-            _text = this.gameObject.GetComponent<Text>();
+            this._text = this.gameObject.GetComponent<Text>();
         }
 
         protected virtual void Start()
         {
             // There is not much space in the text, so make the string for alpha
             // and beta versions a bit shorter
-            _text.text = Version.Replace("-alpha.", "a").Replace("-beta.", "b");
+            this._text.text = this.Version.Replace("-alpha.", "a").Replace("-beta.", "b");
 
-#if (UNITY_IOS && !UNITY_EDITOR)
+            #if (UNITY_IOS && !UNITY_EDITOR)
             _text.text += " iOS " + DeviceCapabilities.platformVersion.ToString();
-#elif (UNITY_ANDROID && !UNITY_EDITOR)
+            #elif (UNITY_ANDROID && !UNITY_EDITOR)
             _text.text += " Android " + DeviceCapabilities.platformVersion.ToString();
-#endif
+            #endif
         }
     }
 }

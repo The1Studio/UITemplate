@@ -1,57 +1,53 @@
-﻿
-#if !UNITY_CLOUD_BUILD
+﻿#if !UNITY_CLOUD_BUILD
 namespace HeurekaGames.AssetHunterPRO
 {
     using System.Linq;
     using UnityEngine;
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
     using UnityEditor;
-#endif
+    #endif
     using UnityEditor.Build.Reporting;
     using UnityEditor.Build;
 
-    class AH_BuildProcessor : IPreprocessBuildWithReport, IPostprocessBuildWithReport, IProcessSceneWithReport
+    internal class AH_BuildProcessor : IPreprocessBuildWithReport, IPostprocessBuildWithReport, IProcessSceneWithReport
     {
         public void OnProcessScene(UnityEngine.SceneManagement.Scene scene, BuildReport report)
         {
             //This was called on "Editor Play", so ignore
-            if (report == null)
-                return;
+            if (report == null) return;
 
             //For some reason I have to do both recursive, and non-recursive version
-            string[] dependencies = AssetDatabase.GetDependencies(scene.path, true);
+            var dependencies = AssetDatabase.GetDependencies(scene.path, true);
             dependencies.ToList().AddRange(AssetDatabase.GetDependencies(scene.path, false));
             {
-                foreach (string dependency in dependencies)
-                    processUsedAsset(scene.path, dependency);
+                foreach (var dependency in dependencies) this.processUsedAsset(scene.path, dependency);
             }
         }
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            initBuildReport(report.summary.platform, report.summary.outputPath);
+            this.initBuildReport(report.summary.platform, report.summary.outputPath);
         }
 
         public void OnPostprocessBuild(BuildReport report)
         {
-            finalizeBuildReport(report);
+            this.finalizeBuildReport(report);
         }
 
         private void finalizeBuildReport(BuildReport report)
         {
-            addBuildReportInfo(report);
+            this.addBuildReportInfo(report);
 
             //Dont force add special folders (resources etc) in 2018.1 because we have asccess to buildreport
-            finalizeBuildReport(report.summary.platform);
+            this.finalizeBuildReport(report.summary.platform);
         }
 
         private void addBuildReportInfo(BuildReport report)
         {
-            if (buildInfo != null)
-                buildInfo.ProcessBuildReport(report);
+            if (buildInfo != null) buildInfo.ProcessBuildReport(report);
         }
 
-        static AH_SerializedBuildInfo buildInfo;
+        private static AH_SerializedBuildInfo buildInfo;
 
         private bool isProcessing;
         //private static bool isGenerating;
@@ -59,12 +55,12 @@ namespace HeurekaGames.AssetHunterPRO
         private void initBuildReport(BuildTarget platform, string outputPath)
         {
             //Only start processing if its set in preferences
-            isProcessing = AH_SettingsManager.Instance.AutoCreateLog /*|| isGenerating*/;
+            this.isProcessing = AH_SettingsManager.Instance.AutoCreateLog /*|| isGenerating*/;
 
-            if (isProcessing)
+            if (this.isProcessing)
             {
                 Debug.Log("AH: Initiated new buildreport - " + System.DateTime.Now);
-                buildInfo = new AH_SerializedBuildInfo();
+                buildInfo = new();
             }
             else
             {
@@ -74,9 +70,9 @@ namespace HeurekaGames.AssetHunterPRO
 
         private void finalizeBuildReport(BuildTarget target)
         {
-            if (isProcessing)
+            if (this.isProcessing)
             {
-                isProcessing = false;
+                this.isProcessing = false;
 
                 Debug.Log("AH: Finalizing new build report - " + System.DateTime.Now);
 
@@ -86,11 +82,10 @@ namespace HeurekaGames.AssetHunterPRO
 
         private void processUsedAsset(string scenePath, string assetPath)
         {
-            if (isProcessing)
-                buildInfo.AddBuildDependency(scenePath, assetPath);
+            if (this.isProcessing) buildInfo.AddBuildDependency(scenePath, assetPath);
         }
 
-        public int callbackOrder { get { return 0; } }
+        public int callbackOrder => 0;
     }
 }
 #endif

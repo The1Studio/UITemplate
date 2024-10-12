@@ -8,10 +8,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateCommonData uiTemplateCommonData;
 
         [Preserve]
-        public UITemplateCommonController(UITemplateCommonData uiTemplateCommonData) { this.uiTemplateCommonData = uiTemplateCommonData; }
+        public UITemplateCommonController(UITemplateCommonData uiTemplateCommonData)
+        {
+            this.uiTemplateCommonData = uiTemplateCommonData;
+        }
 
         public bool IsFirstTimeOpenGame => this.uiTemplateCommonData.IsFirstTimeOpenGame;
 
-        public void ChangeGameIsAlreadyOpened() { this.uiTemplateCommonData.IsFirstTimeOpenGame = false; }
+        public void ChangeGameIsAlreadyOpened()
+        {
+            this.uiTemplateCommonData.IsFirstTimeOpenGame = false;
+        }
     }
 }

@@ -16,9 +16,11 @@
 
         protected readonly SignalBus SignalBus;
 
-
         [Preserve]
-        public BreakAdsViewHelper(SignalBus signalBus) { this.SignalBus = signalBus; }
+        public BreakAdsViewHelper(SignalBus signalBus)
+        {
+            this.SignalBus = signalBus;
+        }
 
         public virtual void OnViewReady(BreakAdsPopupView view, BreakAdsPopupPresenter breakAdsPopupPresenter)
         {
@@ -39,7 +41,7 @@
             try
             {
                 this.Cts?.Cancel();
-                this.Cts = new CancellationTokenSource();
+                this.Cts = new();
                 await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: this.Cts.Token);
                 this.BreakAdsPopupPresenter.CloseView();
             }

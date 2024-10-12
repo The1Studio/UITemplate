@@ -6,7 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
     {
         public int level;
         public int time;
-        
+
         public LevelLose(int level, int time)
         {
             this.level = level;

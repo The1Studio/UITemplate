@@ -12,7 +12,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateRewardData uiTemplateRewardData;
 
         [Preserve]
-        public UITemplateRewardDataController(UITemplateRewardData uiTemplateRewardData) { this.uiTemplateRewardData = uiTemplateRewardData; }
+        public UITemplateRewardDataController(UITemplateRewardData uiTemplateRewardData)
+        {
+            this.uiTemplateRewardData = uiTemplateRewardData;
+        }
 
         public void AddRepeatedReward(string packID, Dictionary<string, UITemplateRewardItemData> rewardIdToData)
         {

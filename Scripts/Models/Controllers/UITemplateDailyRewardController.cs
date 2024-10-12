@@ -30,8 +30,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private SemaphoreSlim mySemaphoreSlim = new(1, 1);
 
         [Preserve]
-        public UITemplateDailyRewardController(IInternetService internetService, UITemplateDailyRewardData uiTemplateDailyRewardData, UITemplateDailyRewardBlueprint uiTemplateDailyRewardBlueprint,
-            UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFlyingAnimationController uiTemplateFlyingAnimationController)
+        public UITemplateDailyRewardController(
+            IInternetService                    internetService,
+            UITemplateDailyRewardData           uiTemplateDailyRewardData,
+            UITemplateDailyRewardBlueprint      uiTemplateDailyRewardBlueprint,
+            UITemplateInventoryDataController   uiTemplateInventoryDataController,
+            UITemplateFlyingAnimationController uiTemplateFlyingAnimationController
+        )
         {
             this.internetService                     = internetService;
             this.uiTemplateDailyRewardData           = uiTemplateDailyRewardData;
@@ -56,14 +61,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                 if (firstLockedDayIndex == -1)
                 {
-                    if (!this.CanClaimReward)
-                    {
-                        this.InitRewardStatus(currentTime);
-                    }
+                    if (!this.CanClaimReward) this.InitRewardStatus(currentTime);
                 }
                 else
                 {
-                    if (firstLockedDayIndex / TotalDayInWeek == (firstLockedDayIndex) / TotalDayInWeek)
+                    if (firstLockedDayIndex / TotalDayInWeek == firstLockedDayIndex / TotalDayInWeek)
                     {
                         this.uiTemplateDailyRewardData.RewardStatus[firstLockedDayIndex] = RewardStatus.Unlocked;
                         this.uiTemplateDailyRewardData.LastRewardedDate                  = currentTime;
@@ -76,7 +78,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        private int FindFirstLockedDayIndex() { return this.uiTemplateDailyRewardData.RewardStatus.FirstIndex(status => status is RewardStatus.Locked); }
+        private int FindFirstLockedDayIndex()
+        {
+            return this.uiTemplateDailyRewardData.RewardStatus.FirstIndex(status => status is RewardStatus.Locked);
+        }
 
         public int GetCurrentDayIndex()
         {
@@ -85,13 +90,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return firstLockedDayIndex == -1 ? this.uiTemplateDailyRewardData.RewardStatus.Count - 1 : firstLockedDayIndex - 1;
         }
 
-        public void UnlockDailyReward(int day) => this.uiTemplateDailyRewardData.RewardStatus[day - 1] = RewardStatus.Unlocked;
+        public void UnlockDailyReward(int day)
+        {
+            this.uiTemplateDailyRewardData.RewardStatus[day - 1] = RewardStatus.Unlocked;
+        }
 
         /// <param name="day"> start from 1</param>
         /// <returns></returns>
-        public RewardStatus GetDateRewardStatus(int day) => this.uiTemplateDailyRewardData.RewardStatus[day - 1];
+        public RewardStatus GetDateRewardStatus(int day)
+        {
+            return this.uiTemplateDailyRewardData.RewardStatus[day - 1];
+        }
 
-        public async void ClaimAllAvailableReward(Dictionary<int, RectTransform> dayToView,  string claimSoundKey = null)
+        public async void ClaimAllAvailableReward(Dictionary<int, RectTransform> dayToView, string claimSoundKey = null)
         {
             var playAnimTask = UniTask.CompletedTask;
 
@@ -103,10 +114,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                     var reward = this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1);
 
-                    foreach (var (key, item) in reward.Reward)
-                    {
-                        this.uiTemplateInventoryDataController.AddGenericReward(item.RewardId, item.RewardValue, dayToView[reward.Day],claimSoundKey).Forget();
-                    }
+                    foreach (var (key, item) in reward.Reward) this.uiTemplateInventoryDataController.AddGenericReward(item.RewardId, item.RewardValue, dayToView[reward.Day], claimSoundKey).Forget();
                 }
             }
 
@@ -117,10 +125,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             this.uiTemplateDailyRewardData.RewardStatus = new();
 
-            for (var i = 0; i < this.uiTemplateDailyRewardBlueprint.Values.Count; i++)
-            {
-                this.uiTemplateDailyRewardData.RewardStatus.Add(RewardStatus.Locked);
-            }
+            for (var i = 0; i < this.uiTemplateDailyRewardBlueprint.Values.Count; i++) this.uiTemplateDailyRewardData.RewardStatus.Add(RewardStatus.Locked);
 
             this.uiTemplateDailyRewardData.RewardStatus[0]  = RewardStatus.Unlocked;
             this.uiTemplateDailyRewardData.LastRewardedDate = currentTime;

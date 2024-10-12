@@ -19,7 +19,10 @@
         public readonly UnityEvent OnTripleTap = new();
 
         [Preserve]
-        public CreativeService(EventSystem eventSystem) { this.eventSystem = eventSystem; }
+        public CreativeService(EventSystem eventSystem)
+        {
+            this.eventSystem = eventSystem;
+        }
 
         public void Tick()
         {
@@ -38,13 +41,9 @@
             }
 
             if (this.counter > 0)
-            {
                 this.counter -= Time.unscaledDeltaTime;
-            }
             else
-            {
                 this.touchCount = 0;
-            }
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -59,6 +58,9 @@
             }
         }
 
-        public void DisableTripleTap() { this.EnableTripleTap = false; }
+        public void DisableTripleTap()
+        {
+            this.EnableTripleTap = false;
+        }
     }
 }

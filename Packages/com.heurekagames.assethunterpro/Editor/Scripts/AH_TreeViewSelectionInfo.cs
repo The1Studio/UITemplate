@@ -10,60 +10,51 @@ using System.IO;
 
 namespace HeurekaGames.AssetHunterPRO
 {
-    [System.Serializable]
+    [Serializable]
     public class AH_TreeViewSelectionInfo
     {
         public delegate void AssetDeletedHandler();
+
         public static event AssetDeletedHandler OnAssetDeleted;
 
         private bool hasSelection;
-        public bool HasSelection
-        {
-            get
-            {
-                return hasSelection;
-            }
-        }
+        public  bool HasSelection => this.hasSelection;
 
         public const float Height = 64;
 
-        private AH_MultiColumnHeader multiColumnHeader;
+        private AH_MultiColumnHeader     multiColumnHeader;
         private List<AH_TreeviewElement> selection;
 
         internal void Reset()
         {
-            selection = null;
-            hasSelection = false;
+            this.selection    = null;
+            this.hasSelection = false;
         }
 
         internal void SetSelection(AH_TreeViewWithTreeModel treeview, IList<int> selectedIds)
         {
-            multiColumnHeader = (AH_MultiColumnHeader)(treeview.multiColumnHeader);
-            selection = new List<AH_TreeviewElement>();
+            this.multiColumnHeader = (AH_MultiColumnHeader)treeview.multiColumnHeader;
+            this.selection         = new();
 
-            foreach (var itemID in selectedIds)
-            {
-                selection.Add(treeview.treeModel.Find(itemID));
-            }
+            foreach (var itemID in selectedIds) this.selection.Add(treeview.treeModel.Find(itemID));
 
-            hasSelection = (selection.Count > 0);
+            this.hasSelection = this.selection.Count > 0;
 
             //If we have more, select the assets in project view
-            if (hasSelection)
+            if (this.hasSelection)
             {
-                if (selection.Count > 1)
+                if (this.selection.Count > 1)
                 {
-                    UnityEngine.Object[] selectedObjects = new UnityEngine.Object[selection.Count];
-                    for (int i = 0; i < selection.Count; i++)
-                    {
-                        selectedObjects[i] = AssetDatabase.LoadMainAssetAtPath(selection[i].RelativePath);
-                    }
+                    var selectedObjects                                               = new UnityEngine.Object[this.selection.Count];
+                    for (var i = 0; i < this.selection.Count; i++) selectedObjects[i] = AssetDatabase.LoadMainAssetAtPath(this.selection[i].RelativePath);
                     Selection.objects = selectedObjects;
                 }
                 else
-                    Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(selection[0].RelativePath);
+                {
+                    Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(this.selection[0].RelativePath);
+                }
 
-                AH_Utils.PingObjectAtPath(selection[selection.Count - 1].RelativePath, false);
+                AH_Utils.PingObjectAtPath(this.selection[this.selection.Count - 1].RelativePath, false);
             }
         }
 
@@ -74,14 +65,10 @@ namespace HeurekaGames.AssetHunterPRO
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (selection.Count == 1)
-                {
-                    drawSingle();
-                }
+                if (this.selection.Count == 1)
+                    this.drawSingle();
                 else
-                {
-                    drawMulti();
-                }
+                    this.drawMulti();
             }
             GUILayout.EndArea();
         }
@@ -90,24 +77,21 @@ namespace HeurekaGames.AssetHunterPRO
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.BeginVertical();
-            drawAssetPreview(true);
+            this.drawAssetPreview(true);
             EditorGUILayout.EndVertical();
 
             //Draw info from single asset
             EditorGUILayout.BeginVertical();
 
-            GUILayout.Label(selection[0].RelativePath);
-            if (!selection[0].IsFolder)
-            {
-                GUILayout.Label("(" + selection[0].AssetType + ")");
-            }
+            GUILayout.Label(this.selection[0].RelativePath);
+            if (!this.selection[0].IsFolder) GUILayout.Label("(" + this.selection[0].AssetType + ")");
 
             EditorGUILayout.EndVertical();
             GUILayout.FlexibleSpace();
-            if (selection[0].IsFolder)
-                DrawDeleteFolderButton(selection[0]);
+            if (this.selection[0].IsFolder)
+                this.DrawDeleteFolderButton(this.selection[0]);
             else
-                drawDeleteAssetsButton();
+                this.drawDeleteAssetsButton();
 
             EditorGUILayout.EndHorizontal();
         }
@@ -115,52 +99,46 @@ namespace HeurekaGames.AssetHunterPRO
         private void drawMulti()
         {
             //Make sure we have not selected folders
-            bool allFolders = selection.All(val => val.IsFolder);
-            bool allFiles = !selection.Any(val => val.IsFolder);
-            var allSameType = selection.All(var => var.AssetType == selection[0].AssetType);
+            var allFolders  = this.selection.All(val => val.IsFolder);
+            var allFiles    = !this.selection.Any(val => val.IsFolder);
+            var allSameType = this.selection.All(var => var.AssetType == this.selection[0].AssetType);
 
-            bool containsNested = false;
-            foreach (var item in selection)
+            var containsNested = false;
+            foreach (var item in this.selection)
             {
-                if (!item.IsFolder)
-                    continue;
+                if (!item.IsFolder) continue;
 
-                foreach (var other in selection)
+                foreach (var other in this.selection)
                 {
-                    if (other == item)
-                        continue;
+                    if (other == item) continue;
 
-                    if (!other.RelativePath.StartsWith(item.RelativePath))
-                        continue;
+                    if (!other.RelativePath.StartsWith(item.RelativePath)) continue;
 
-                    DirectoryInfo dirInfo = new DirectoryInfo(item.RelativePath);
+                    var dirInfo = new DirectoryInfo(item.RelativePath);
 
                     if (other.IsFolder)
                     {
-                        DirectoryInfo otherDir = new DirectoryInfo(other.RelativePath);
+                        var otherDir = new DirectoryInfo(other.RelativePath);
 
-                        if (!dirInfo.GetDirectories(otherDir.Name, SearchOption.AllDirectories).Any(x => x.FullName == otherDir.FullName))
-                            continue;
+                        if (!dirInfo.GetDirectories(otherDir.Name, SearchOption.AllDirectories).Any(x => x.FullName == otherDir.FullName)) continue;
 
                         /*if (dirInfo.Parent.FullName == otherDir.Parent.FullName)
                             continue;*/
                     }
                     else
                     {
-                        FileInfo fi = new FileInfo(other.RelativePath);
+                        var fi = new FileInfo(other.RelativePath);
 
-                        if (!dirInfo.GetFiles(fi.Name, SearchOption.AllDirectories).Any(x=>x.FullName == fi.FullName))
-                            continue;
+                        if (!dirInfo.GetFiles(fi.Name, SearchOption.AllDirectories).Any(x => x.FullName == fi.FullName)) continue;
                     }
 
                     containsNested = true;
                 }
 
-                if (containsNested)
-                    break;
+                if (containsNested) break;
             }
 
-            drawAssetPreview(allSameType);
+            this.drawAssetPreview(allSameType);
 
             EditorGUILayout.BeginHorizontal();
             //Draw info from multiple
@@ -168,28 +146,24 @@ namespace HeurekaGames.AssetHunterPRO
 
             //Identical files
             if (allSameType && allFiles)
-            {
-                GUILayout.Label(selection[0].AssetType.ToString() + " (" + selection.Count() + ")");
-            }
+                GUILayout.Label(this.selection[0].AssetType.ToString() + " (" + this.selection.Count() + ")");
             //all folders
             else if (allSameType)
-            {
-                GUILayout.Label("Folders (" + selection.Count() + ")");
-            }
+                GUILayout.Label("Folders (" + this.selection.Count() + ")");
             //Non identical selection
             else
-            {
-                GUILayout.Label("Items (" + selection.Count() + ")");
-            }
+                GUILayout.Label("Items (" + this.selection.Count() + ")");
 
             EditorGUILayout.EndVertical();
 
             if (!containsNested)
-                drawDeleteAssetsButton();
+            {
+                this.drawDeleteAssetsButton();
+            }
             else
             {
                 GUILayout.FlexibleSpace();
-                GUIStyle s = new GUIStyle(EditorStyles.textField);
+                var s = new GUIStyle(EditorStyles.textField);
                 s.normal.textColor = Color.red;
                 EditorGUILayout.LabelField("Nested selection is not allowed", s);
             }
@@ -199,113 +173,104 @@ namespace HeurekaGames.AssetHunterPRO
 
         private void drawDeleteAssetsButton()
         {
-            if (multiColumnHeader.ShowMode != AH_MultiColumnHeader.AssetShowMode.Unused)
-                return;
+            if (this.multiColumnHeader.ShowMode != AH_MultiColumnHeader.AssetShowMode.Unused) return;
 
             long combinedSize = 0;
-            foreach (var item in selection)
+            foreach (var item in this.selection)
             {
                 if (item.IsFolder)
                     combinedSize += item.GetFileSizeRecursively(AH_MultiColumnHeader.AssetShowMode.Unused);
                 else
                     combinedSize += item.FileSize;
             }
-            if (GUILayout.Button("Delete " + (AH_Utils.GetSizeAsString(combinedSize)), GUILayout.Width(160), GUILayout.Height(32)))
-                deleteUnusedAssets();
+            if (GUILayout.Button("Delete " + AH_Utils.GetSizeAsString(combinedSize), GUILayout.Width(160), GUILayout.Height(32))) this.deleteUnusedAssets();
         }
 
         private void DrawDeleteFolderButton(AH_TreeviewElement folder)
         {
-            if (multiColumnHeader.ShowMode != AH_MultiColumnHeader.AssetShowMode.Unused)
-                return;
+            if (this.multiColumnHeader.ShowMode != AH_MultiColumnHeader.AssetShowMode.Unused) return;
 
-            string description = "Delete unused assets from folder";
-            GUIContent content = new GUIContent("Delete " + (AH_Utils.GetSizeAsString(folder.GetFileSizeRecursively(AH_MultiColumnHeader.AssetShowMode.Unused))), description);
-            GUIStyle style = new GUIStyle(GUI.skin.button);
-            DrawDeleteFolderButton(content, folder, style, description, "Do you want to delete all unused assets from:" + Environment.NewLine + folder.RelativePath, GUILayout.Width(160), GUILayout.Height(32));
+            var description = "Delete unused assets from folder";
+            var content     = new GUIContent("Delete " + AH_Utils.GetSizeAsString(folder.GetFileSizeRecursively(AH_MultiColumnHeader.AssetShowMode.Unused)), description);
+            var style       = new GUIStyle(GUI.skin.button);
+            this.DrawDeleteFolderButton(content, folder, style, description, "Do you want to delete all unused assets from:" + Environment.NewLine + folder.RelativePath, GUILayout.Width(160), GUILayout.Height(32));
         }
 
         public void DrawDeleteFolderButton(GUIContent content, AH_TreeviewElement folder, GUIStyle style, string dialogHeader, string dialogDescription, params GUILayoutOption[] layout)
         {
-            if (GUILayout.Button(content, style, layout))
-                deleteUnusedFromFolder(dialogHeader, dialogDescription, folder);
+            if (GUILayout.Button(content, style, layout)) this.deleteUnusedFromFolder(dialogHeader, dialogDescription, folder);
         }
 
         private void drawAssetPreview(bool bDraw)
         {
-            GUIContent content = new GUIContent();
+            var content = new GUIContent();
 
             //Draw asset preview
-            if (bDraw && !selection[0].IsFolder)
+            if (bDraw && !this.selection[0].IsFolder)
             {
-                var preview = AssetPreview.GetAssetPreview(AssetDatabase.LoadMainAssetAtPath(selection[0].RelativePath));
-                content = new GUIContent(preview);
+                var preview = AssetPreview.GetAssetPreview(AssetDatabase.LoadMainAssetAtPath(this.selection[0].RelativePath));
+                content = new(preview);
             }
             //Draw Folder icon
             else if (bDraw)
+            {
                 content = EditorGUIUtility.IconContent("Folder Icon");
+            }
 
-            GUILayout.Label(content,GUILayout.Width(Height), GUILayout.Height(Height));
+            GUILayout.Label(content, GUILayout.Width(Height), GUILayout.Height(Height));
         }
 
         private void deleteUnusedAssets()
         {
-            int choice = EditorUtility.DisplayDialogComplex("Delete unused assets", "Do you want to delete the selected assets", "Yes", "Cancel", "Backup (Very slow)");
-            List<string> affectedAssets = new List<string>();
+            var choice         = EditorUtility.DisplayDialogComplex("Delete unused assets", "Do you want to delete the selected assets", "Yes", "Cancel", "Backup (Very slow)");
+            var affectedAssets = new List<string>();
 
-
-            if (choice == 0)//Delete
+            if (choice == 0) //Delete
             {
-                foreach (var item in selection)
+                foreach (var item in this.selection)
                 {
                     if (item.IsFolder)
                         affectedAssets.AddRange(item.GetUnusedPathsRecursively());
                     else
                         affectedAssets.Add(item.RelativePath);
                 }
-                deleteMultipleAssets(affectedAssets);
+                this.deleteMultipleAssets(affectedAssets);
             }
-            else if (choice == 2)//Backup
+            else if (choice == 2) //Backup
             {
-                foreach (var item in selection)
+                foreach (var item in this.selection)
                 {
                     if (item.IsFolder)
                         affectedAssets.AddRange(item.GetUnusedPathsRecursively());
                     else
                         affectedAssets.Add(item.RelativePath);
                 }
-                exportAssetsToPackage("Backup as unitypackage", affectedAssets);
+                this.exportAssetsToPackage("Backup as unitypackage", affectedAssets);
             }
         }
 
         private void deleteUnusedFromFolder(string header, string description, AH_TreeviewElement folder)
         {
-            int choice = EditorUtility.DisplayDialogComplex(header, description, "Yes", "Cancel", "Backup (Very slow)");
+            var choice = EditorUtility.DisplayDialogComplex(header, description, "Yes", "Cancel", "Backup (Very slow)");
 
-            List<string> affectedAssets = new List<string>();
-            if (choice != 1)//Not Cancel
-            {
+            var affectedAssets = new List<string>();
+            if (choice != 1) //Not Cancel
                 //Collect affected assets
                 affectedAssets = folder.GetUnusedPathsRecursively();
-            }
-            if (choice == 0)//Delete
-            {
-                deleteMultipleAssets(affectedAssets);
-            }
-            else if (choice == 2)//Backup
-            {
-                exportAssetsToPackage("Backup as unitypackage", affectedAssets);
-            }
+            if (choice == 0) //Delete
+                this.deleteMultipleAssets(affectedAssets);
+            else if (choice == 2) //Backup
+                this.exportAssetsToPackage("Backup as unitypackage", affectedAssets);
         }
 
         private void exportAssetsToPackage(string header, List<string> affectedAssets)
         {
-            string filename = Environment.UserName + "_Backup_" + "_" + AH_SerializationHelper.GetDateString();
-            string savePath = EditorUtility.SaveFilePanel(
-            header,
-            AH_SerializationHelper.GetBackupFolder(),
-            filename,
-            "unitypackage");
+            var filename = Environment.UserName + "_Backup_" + "_" + AH_SerializationHelper.GetDateString();
+            var savePath = EditorUtility.SaveFilePanel(
+                header,
+                AH_SerializationHelper.GetBackupFolder(),
+                filename,
+                "unitypackage");
 
             if (!string.IsNullOrEmpty(savePath))
             {
@@ -314,18 +279,18 @@ namespace HeurekaGames.AssetHunterPRO
                 EditorUtility.ClearProgressBar();
                 EditorUtility.RevealInFinder(savePath);
 
-                deleteMultipleAssets(affectedAssets);
+                this.deleteMultipleAssets(affectedAssets);
             }
         }
 
         private void deleteMultipleAssets(List<string> affectedAssets)
         {
-#if UNITY_2020_1_OR_NEWER
-            EditorUtility.DisplayProgressBar("Deleting unused assets", $"Deleting {affectedAssets.Count()} unused assets",.5f);
-            List<string> failedPaths = new List<string>();
+            #if UNITY_2020_1_OR_NEWER
+            EditorUtility.DisplayProgressBar("Deleting unused assets", $"Deleting {affectedAssets.Count()} unused assets", .5f);
+            var failedPaths = new List<string>();
             AssetDatabase.DeleteAssets(affectedAssets.ToArray(), failedPaths);
             EditorUtility.ClearProgressBar();
-#else
+            #else
             foreach (var asset in affectedAssets)
             {
                 EditorUtility.DisplayProgressBar("Deleting unused assets", $"Deleting {affectedAssets.IndexOf(asset)}:{affectedAssets.Count()}", affectedAssets.IndexOf(asset)/ affectedAssets.Count());
@@ -333,12 +298,11 @@ namespace HeurekaGames.AssetHunterPRO
                 FileUtil.DeleteFileOrDirectory(asset);
             }
             EditorUtility.ClearProgressBar();
-#endif
+            #endif
 
             AssetDatabase.Refresh();
 
-            if (OnAssetDeleted != null)
-                OnAssetDeleted();
+            if (OnAssetDeleted != null) OnAssetDeleted();
         }
     }
 }

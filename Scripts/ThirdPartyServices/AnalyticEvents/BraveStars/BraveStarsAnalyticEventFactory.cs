@@ -15,7 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
     public class BraveStarsAnalyticEventFactory : BaseAnalyticEventFactory
     {
         private const int MAX_LEVEL_FIRE_COMPLETED_LEVEL_AF_EVENT = 20;
-        private const int MAX_TIME_FIRE_INTER_DISPLAYED_AF_EVENT  = 20;
+        private const int MAX_TIME_FIRE_INTER_DISPLAYED_AF_EVENT = 20;
 
         [Preserve]
         public BraveStarsAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)

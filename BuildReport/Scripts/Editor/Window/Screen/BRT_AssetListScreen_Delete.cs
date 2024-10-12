@@ -2,301 +2,254 @@
 using UnityEditor;
 using System.Collections.Generic;
 
-
 namespace BuildReportTool.Window.Screen
 {
-	public partial class AssetList
-	{
-		bool ShouldShowDeleteButtons(BuildInfo buildReportToDisplay)
-		{
-			return
-				(IsShowingUnusedAssets && buildReportToDisplay.HasUnusedAssets) ||
-				(buildReportToDisplay.HasUsedAssets && BuildReportTool.Options.AllowDeletingOfUsedAssets);
-		}
+    public partial class AssetList
+    {
+        private bool ShouldShowDeleteButtons(BuildInfo buildReportToDisplay)
+        {
+            return
+                (this.IsShowingUnusedAssets && buildReportToDisplay.HasUnusedAssets) || (buildReportToDisplay.HasUsedAssets && BuildReportTool.Options.AllowDeletingOfUsedAssets);
+        }
 
+        private void InitiateDeleteSelectedUsed(BuildInfo buildReportToDisplay)
+        {
+            var listToDeleteFrom = this.GetAssetListToDisplay(buildReportToDisplay);
 
-		void InitiateDeleteSelectedUsed(BuildInfo buildReportToDisplay)
-		{
-			BuildReportTool.AssetList listToDeleteFrom = GetAssetListToDisplay(buildReportToDisplay);
+            this.InitiateDeleteSelectedInAssetList(buildReportToDisplay, listToDeleteFrom);
+        }
 
-			InitiateDeleteSelectedInAssetList(buildReportToDisplay, listToDeleteFrom);
-		}
+        private void InitiateDeleteSelectedInAssetList(BuildInfo buildReportToDisplay, BuildReportTool.AssetList listToDeleteFrom)
+        {
+            if (listToDeleteFrom.IsNothingSelected) return;
 
-		void InitiateDeleteSelectedInAssetList(BuildInfo buildReportToDisplay, BuildReportTool.AssetList listToDeleteFrom)
-		{
-			if (listToDeleteFrom.IsNothingSelected)
-			{
-				return;
-			}
+            var all = listToDeleteFrom.All;
 
+            var numOfFilesRequestedToDelete = listToDeleteFrom.GetSelectedCount();
+            var numOfFilesToDelete          = numOfFilesRequestedToDelete;
+            var systemDeletionFileCount     = 0;
+            var brtFilesSelectedForDelete   = 0;
 
-			BuildReportTool.SizePart[] all = listToDeleteFrom.All;
+            // filter out files that shouldn't be deleted
+            // and identify unrecoverable files
+            for (int n = 0, len = all.Length; n < len; ++n)
+            {
+                var b                     = all[n];
+                var isThisFileToBeDeleted = listToDeleteFrom.InSumSelection(b);
 
-			int numOfFilesRequestedToDelete = listToDeleteFrom.GetSelectedCount();
-			int numOfFilesToDelete = numOfFilesRequestedToDelete;
-			int systemDeletionFileCount = 0;
-			int brtFilesSelectedForDelete = 0;
+                if (isThisFileToBeDeleted)
+                {
+                    if (Util.IsFileInBuildReportFolder(b.Name) && !Util.IsUselessFile(b.Name))
+                    {
+                        //Debug.Log("BRT file? " + b.Name);
+                        --numOfFilesToDelete;
+                        ++brtFilesSelectedForDelete;
+                    }
+                    else if (Util.HaveToUseSystemForDelete(b.Name))
+                    {
+                        ++systemDeletionFileCount;
+                    }
+                }
+            }
 
+            if (numOfFilesToDelete <= 0)
+            {
+                if (brtFilesSelectedForDelete > 0)
+                {
+                    EditorApplication.Beep();
+                    EditorUtility.DisplayDialog("Can't delete!",
+                        "Take note that for safety, Build Report Tool assets themselves will not be included for deletion.",
+                        "OK");
+                }
 
-			// filter out files that shouldn't be deleted
-			// and identify unrecoverable files
-			for (int n = 0, len = all.Length; n < len; ++n)
-			{
-				BuildReportTool.SizePart b = all[n];
-				bool isThisFileToBeDeleted = listToDeleteFrom.InSumSelection(b);
+                return;
+            }
 
-				if (isThisFileToBeDeleted)
-				{
-					if (BuildReportTool.Util.IsFileInBuildReportFolder(b.Name) &&
-					    !BuildReportTool.Util.IsUselessFile(b.Name))
-					{
-						//Debug.Log("BRT file? " + b.Name);
-						--numOfFilesToDelete;
-						++brtFilesSelectedForDelete;
-					}
-					else if (BuildReportTool.Util.HaveToUseSystemForDelete(b.Name))
-					{
-						++systemDeletionFileCount;
-					}
-				}
-			}
+            // prepare warning message for user
 
-			if (numOfFilesToDelete <= 0)
-			{
-				if (brtFilesSelectedForDelete > 0)
-				{
-					EditorApplication.Beep();
-					EditorUtility.DisplayDialog("Can't delete!",
-						"Take note that for safety, Build Report Tool assets themselves will not be included for deletion.",
-						"OK");
-				}
+            var deletingSystemFilesOnly = systemDeletionFileCount == numOfFilesToDelete;
+            var deleteIsRecoverable     = !deletingSystemFilesOnly;
 
-				return;
-			}
+            var plural                         = "";
+            if (numOfFilesToDelete > 1) plural = "s";
 
+            string message;
 
-			// prepare warning message for user
+            if (numOfFilesRequestedToDelete != numOfFilesToDelete)
+                message = "Among " + numOfFilesRequestedToDelete + " file" + plural + " requested to be deleted, only " + numOfFilesToDelete + " will be deleted.";
+            else
+                message = "This will delete " + numOfFilesToDelete + " asset" + plural + " in your project.";
 
-			bool deletingSystemFilesOnly = (systemDeletionFileCount == numOfFilesToDelete);
-			bool deleteIsRecoverable = !deletingSystemFilesOnly;
+            // add warning about BRT files that are skipped
+            if (brtFilesSelectedForDelete > 0) message += "\n\nTake note that for safety, " + brtFilesSelectedForDelete + " file" + (brtFilesSelectedForDelete > 1 ? "s" : "") + " found to be Build Report Tool assets are not included for deletion.";
 
-			string plural = "";
-			if (numOfFilesToDelete > 1)
-			{
-				plural = "s";
-			}
+            // add warning about unrecoverable files
+            if (systemDeletionFileCount > 0)
+            {
+                if (deletingSystemFilesOnly)
+                    message += "\n\nThe deleted file" + plural + " will not be recoverable from the " + Util.NameOfOSTrashFolder + ", unless you have your own backup.";
+                else
+                    message += "\n\nAmong the " + numOfFilesToDelete + " file" + plural + " for deletion, " + systemDeletionFileCount + " will not be recoverable from the " + Util.NameOfOSTrashFolder + ", unless you have your own backup.";
 
-			string message;
+                message +=
+                    "\n\nThis is a limitation in Unity and .NET code. To ensure deleting will move the files to the " + Util.NameOfOSTrashFolder + " instead, delete your files the usual way using your project view.";
+            }
+            else
+            {
+                message += "\n\nThe deleted file" + plural + " can be recovered from your " + Util.NameOfOSTrashFolder + ".";
+            }
 
-			if (numOfFilesRequestedToDelete != numOfFilesToDelete)
-			{
-				message = "Among " + numOfFilesRequestedToDelete + " file" + plural + " requested to be deleted, only " +
-				          numOfFilesToDelete + " will be deleted.";
-			}
-			else
-			{
-				message = "This will delete " + numOfFilesToDelete + " asset" + plural + " in your project.";
-			}
+            message +=
+                "\n\nDeleting a large number of files may take a long time as Unity will rebuild the project's Library folder.\n\nProceed with deleting?";
 
-			// add warning about BRT files that are skipped
-			if (brtFilesSelectedForDelete > 0)
-			{
-				message += "\n\nTake note that for safety, " + brtFilesSelectedForDelete + " file" +
-				           ((brtFilesSelectedForDelete > 1) ? "s" : "") +
-				           " found to be Build Report Tool assets are not included for deletion.";
-			}
+            EditorApplication.Beep();
+            if (!EditorUtility.DisplayDialog("Delete?", message, "Yes", "No")) return;
 
-			// add warning about unrecoverable files
-			if (systemDeletionFileCount > 0)
-			{
-				if (deletingSystemFilesOnly)
-				{
-					message += "\n\nThe deleted file" + plural + " will not be recoverable from the " +
-					           BuildReportTool.Util.NameOfOSTrashFolder + ", unless you have your own backup.";
-				}
-				else
-				{
-					message += "\n\nAmong the " + numOfFilesToDelete + " file" + plural + " for deletion, " +
-					           systemDeletionFileCount + " will not be recoverable from the " +
-					           BuildReportTool.Util.NameOfOSTrashFolder + ", unless you have your own backup.";
-				}
+            var allList  = new List<SizePart>(all);
+            var toRemove = new List<SizePart>(all.Length / 4);
 
-				message +=
-					"\n\nThis is a limitation in Unity and .NET code. To ensure deleting will move the files to the " +
-					BuildReportTool.Util.NameOfOSTrashFolder +
-					" instead, delete your files the usual way using your project view.";
-			}
-			else
-			{
-				message += "\n\nThe deleted file" + plural + " can be recovered from your " +
-				           BuildReportTool.Util.NameOfOSTrashFolder + ".";
-			}
+            // finally, delete the files
+            var deletedCount = 0;
+            for (int n = 0, len = allList.Count; n < len; ++n)
+            {
+                var b = allList[n];
 
-			message +=
-				"\n\nDeleting a large number of files may take a long time as Unity will rebuild the project's Library folder.\n\nProceed with deleting?";
+                var okToDelete = Util.IsUselessFile(b.Name) || !Util.IsFileInBuildReportFolder(b.Name);
 
-			EditorApplication.Beep();
-			if (!EditorUtility.DisplayDialog("Delete?", message, "Yes", "No"))
-			{
-				return;
-			}
+                if (listToDeleteFrom.InSumSelection(b) && okToDelete)
+                {
+                    // delete this
 
-			List<BuildReportTool.SizePart> allList = new List<BuildReportTool.SizePart>(all);
-			List<BuildReportTool.SizePart> toRemove = new List<BuildReportTool.SizePart>(all.Length / 4);
+                    if (Util.ShowFileDeleteProgress(deletedCount,
+                        numOfFilesToDelete,
+                        b.Name,
+                        deleteIsRecoverable))
+                        return;
 
-			// finally, delete the files
-			int deletedCount = 0;
-			for (int n = 0, len = allList.Count; n < len; ++n)
-			{
-				BuildReportTool.SizePart b = allList[n];
+                    Util.DeleteSizePartFile(b);
+                    toRemove.Add(b);
+                    ++deletedCount;
+                }
+            }
 
+            EditorUtility.ClearProgressBar();
 
-				bool okToDelete = BuildReportTool.Util.IsUselessFile(b.Name) ||
-				                  !BuildReportTool.Util.IsFileInBuildReportFolder(b.Name);
+            // refresh the asset lists
+            allList.RemoveAll(i => toRemove.Contains(i));
+            var allWithRemoved = allList.ToArray();
 
-				if (listToDeleteFrom.InSumSelection(b) && okToDelete)
-				{
-					// delete this
+            // recreate per category list (maybe just remove from existing per category lists instead?)
+            var perCategoryOfList =
+                ReportGenerator.SegregateAssetSizesPerCategory(allWithRemoved,
+                    buildReportToDisplay.FileFilters);
 
-					if (BuildReportTool.Util.ShowFileDeleteProgress(deletedCount, numOfFilesToDelete, b.Name,
-						deleteIsRecoverable))
-					{
-						return;
-					}
+            listToDeleteFrom.Reinit(allWithRemoved,
+                perCategoryOfList,
+                this.IsShowingUsedAssets
+                    ? BuildReportTool.Options.NumberOfTopLargestUsedAssetsToShow
+                    : BuildReportTool.Options.NumberOfTopLargestUnusedAssetsToShow);
+            listToDeleteFrom.ClearSelection();
 
-					BuildReportTool.Util.DeleteSizePartFile(b);
-					toRemove.Add(b);
-					++deletedCount;
-				}
-			}
+            // print info about the delete operation to console
+            var finalMessage                      = string.Format("{0} file{1} removed from your project.", deletedCount.ToString(), plural);
+            if (deleteIsRecoverable) finalMessage += " They can be recovered from your " + Util.NameOfOSTrashFolder + ".";
 
-			EditorUtility.ClearProgressBar();
+            EditorApplication.Beep();
+            EditorUtility.DisplayDialog("Delete successful", finalMessage, "OK");
 
+            Debug.LogWarning(finalMessage);
+        }
 
-			// refresh the asset lists
-			allList.RemoveAll(i => toRemove.Contains(i));
-			BuildReportTool.SizePart[] allWithRemoved = allList.ToArray();
+        private void InitiateDeleteAllUnused(BuildInfo buildReportToDisplay)
+        {
+            var list = buildReportToDisplay.UnusedAssets;
+            var all  = list.All;
 
-			// recreate per category list (maybe just remove from existing per category lists instead?)
-			BuildReportTool.SizePart[][] perCategoryOfList =
-				BuildReportTool.ReportGenerator.SegregateAssetSizesPerCategory(allWithRemoved,
-					buildReportToDisplay.FileFilters);
+            var filesToDeleteCount = 0;
 
-			listToDeleteFrom.Reinit(allWithRemoved, perCategoryOfList,
-				IsShowingUsedAssets
-					? BuildReportTool.Options.NumberOfTopLargestUsedAssetsToShow
-					: BuildReportTool.Options.NumberOfTopLargestUnusedAssetsToShow);
-			listToDeleteFrom.ClearSelection();
+            for (int n = 0, len = all.Length; n < len; ++n)
+            {
+                var b = all[n];
 
+                var okToDelete = Util.IsFileOkForDeleteAllOperation(b.Name);
 
-			// print info about the delete operation to console
-			string finalMessage = string.Format("{0} file{1} removed from your project.", deletedCount.ToString(), plural);
-			if (deleteIsRecoverable)
-			{
-				finalMessage += " They can be recovered from your " + BuildReportTool.Util.NameOfOSTrashFolder + ".";
-			}
+                if (okToDelete)
+                    //Debug.Log("added " + b.Name + " for deletion");
+                    ++filesToDeleteCount;
+            }
 
-			EditorApplication.Beep();
-			EditorUtility.DisplayDialog("Delete successful", finalMessage, "OK");
+            if (filesToDeleteCount == 0)
+            {
+                const string NOTHING_TO_DELETE =
+                    "Take note that for safety, Build Report Tool assets, Unity editor assets, version control metadata, and Unix-style hidden files will not be included for deletion.\n\nYou can force deleting them by selecting them (via the checkbox) and using \"Delete selected\", or simply delete them the normal way in your project view.";
 
-			Debug.LogWarning(finalMessage);
-		}
+                EditorApplication.Beep();
+                EditorUtility.DisplayDialog("Nothing to delete!", NOTHING_TO_DELETE, "Ok");
+                return;
+            }
 
+            var plural                         = "";
+            if (filesToDeleteCount > 1) plural = "s";
 
-		void InitiateDeleteAllUnused(BuildInfo buildReportToDisplay)
-		{
-			BuildReportTool.AssetList list = buildReportToDisplay.UnusedAssets;
-			BuildReportTool.SizePart[] all = list.All;
+            EditorApplication.Beep();
+            if (!EditorUtility.DisplayDialog("Delete?",
+                string.Format(
+                    "Among {0} file{1} in your project, {2} will be deleted.\n\nBuild Report Tool assets themselves, Unity editor assets, version control metadata, and Unix-style hidden files will not be included for deletion. You can force-delete those by selecting them (via the checkbox) and use \"Delete selected\", or simply delete them the normal way in your project view.\n\nDeleting a large number of files may take a long time as Unity will rebuild the project's Library folder.\n\nAre you sure about this?\n\nThe file{1} can be recovered from your {3}.",
+                    all.Length.ToString(),
+                    plural,
+                    filesToDeleteCount.ToString(),
+                    Util.NameOfOSTrashFolder),
+                "Yes",
+                "No"))
+                return;
 
-			int filesToDeleteCount = 0;
+            var newAll = new List<SizePart>();
 
-			for (int n = 0, len = all.Length; n < len; ++n)
-			{
-				BuildReportTool.SizePart b = all[n];
+            var deletedCount = 0;
+            for (int n = 0, len = all.Length; n < len; ++n)
+            {
+                var b = all[n];
 
-				bool okToDelete = BuildReportTool.Util.IsFileOkForDeleteAllOperation(b.Name);
+                var okToDelete = Util.IsFileOkForDeleteAllOperation(b.Name);
 
-				if (okToDelete)
-				{
-					//Debug.Log("added " + b.Name + " for deletion");
-					++filesToDeleteCount;
-				}
-			}
+                if (okToDelete)
+                {
+                    // delete this
+                    if (Util.ShowFileDeleteProgress(deletedCount, filesToDeleteCount, b.Name, true)) return;
 
-			if (filesToDeleteCount == 0)
-			{
-				const string NOTHING_TO_DELETE =
-					"Take note that for safety, Build Report Tool assets, Unity editor assets, version control metadata, and Unix-style hidden files will not be included for deletion.\n\nYou can force deleting them by selecting them (via the checkbox) and using \"Delete selected\", or simply delete them the normal way in your project view.";
+                    Util.DeleteSizePartFile(b);
+                    ++deletedCount;
+                }
+                else
+                    //Debug.Log("added " + b.Name + " to new list");
+                {
+                    newAll.Add(b);
+                }
+            }
 
-				EditorApplication.Beep();
-				EditorUtility.DisplayDialog("Nothing to delete!", NOTHING_TO_DELETE, "Ok");
-				return;
-			}
+            EditorUtility.ClearProgressBar();
 
-			string plural = "";
-			if (filesToDeleteCount > 1)
-			{
-				plural = "s";
-			}
+            var newAllArr = newAll.ToArray();
 
-			EditorApplication.Beep();
-			if (!EditorUtility.DisplayDialog("Delete?",
-				    string.Format(
-					    "Among {0} file{1} in your project, {2} will be deleted.\n\nBuild Report Tool assets themselves, Unity editor assets, version control metadata, and Unix-style hidden files will not be included for deletion. You can force-delete those by selecting them (via the checkbox) and use \"Delete selected\", or simply delete them the normal way in your project view.\n\nDeleting a large number of files may take a long time as Unity will rebuild the project's Library folder.\n\nAre you sure about this?\n\nThe file{1} can be recovered from your {3}.",
-					    all.Length.ToString(), plural, filesToDeleteCount.ToString(),
-					    BuildReportTool.Util.NameOfOSTrashFolder), "Yes", "No"))
-			{
-				return;
-			}
+            var perCategoryUnused =
+                ReportGenerator.SegregateAssetSizesPerCategory(newAllArr, buildReportToDisplay.FileFilters);
 
-			List<BuildReportTool.SizePart> newAll = new List<BuildReportTool.SizePart>();
+            list.Reinit(newAllArr,
+                perCategoryUnused,
+                this.IsShowingUsedAssets
+                    ? BuildReportTool.Options.NumberOfTopLargestUsedAssetsToShow
+                    : BuildReportTool.Options.NumberOfTopLargestUnusedAssetsToShow);
+            list.ClearSelection();
 
-			int deletedCount = 0;
-			for (int n = 0, len = all.Length; n < len; ++n)
-			{
-				BuildReportTool.SizePart b = all[n];
+            var finalMessage = string.Format(
+                "{0} file{1} removed from your project. They can be recovered from your {2}.",
+                filesToDeleteCount.ToString(),
+                plural,
+                Util.NameOfOSTrashFolder);
+            Debug.LogWarning(finalMessage);
 
-				bool okToDelete = BuildReportTool.Util.IsFileOkForDeleteAllOperation(b.Name);
-
-				if (okToDelete)
-				{
-					// delete this
-					if (BuildReportTool.Util.ShowFileDeleteProgress(deletedCount, filesToDeleteCount, b.Name, true))
-					{
-						return;
-					}
-
-					BuildReportTool.Util.DeleteSizePartFile(b);
-					++deletedCount;
-				}
-				else
-				{
-					//Debug.Log("added " + b.Name + " to new list");
-					newAll.Add(b);
-				}
-			}
-
-			EditorUtility.ClearProgressBar();
-
-			BuildReportTool.SizePart[] newAllArr = newAll.ToArray();
-
-			BuildReportTool.SizePart[][] perCategoryUnused =
-				BuildReportTool.ReportGenerator.SegregateAssetSizesPerCategory(newAllArr, buildReportToDisplay.FileFilters);
-
-			list.Reinit(newAllArr, perCategoryUnused,
-				IsShowingUsedAssets
-					? BuildReportTool.Options.NumberOfTopLargestUsedAssetsToShow
-					: BuildReportTool.Options.NumberOfTopLargestUnusedAssetsToShow);
-			list.ClearSelection();
-
-
-			string finalMessage = string.Format(
-				"{0} file{1} removed from your project. They can be recovered from your {2}.",
-				filesToDeleteCount.ToString(), plural, BuildReportTool.Util.NameOfOSTrashFolder);
-			Debug.LogWarning(finalMessage);
-
-			EditorApplication.Beep();
-			EditorUtility.DisplayDialog("Delete successful", finalMessage, "OK");
-		}
-	}
+            EditorApplication.Beep();
+            EditorUtility.DisplayDialog("Delete successful", finalMessage, "OK");
+        }
+    }
 }

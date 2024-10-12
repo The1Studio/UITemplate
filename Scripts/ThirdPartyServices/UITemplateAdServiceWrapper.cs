@@ -171,10 +171,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     var useNewGuid = this.IsRefreshingCollapsible
                         ? this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled
                         : (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.CollapsibleBannerADInterval;
-                    if (useNewGuid)
-                    {
-                        this.LastCollapsibleBannerChangeGuid = DateTime.Now;
-                    }
+                    if (useNewGuid) this.LastCollapsibleBannerChangeGuid = DateTime.Now;
 
                     this.InternalHideMediationBannerAd();
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd(useNewGuid, this.thirdPartiesConfig.AdSettings.BannerPosition);
@@ -203,7 +200,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServicesConfig.CollapsibleBannerAutoRefreshEnabled) return;
             UniTask.WaitForSeconds(
                 this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval,
-                ignoreTimeScale: true,
+                true,
                 cancellationToken: (this.RefreshCollapsibleCts = new()).Token
             ).ContinueWith(() =>
             {
@@ -226,7 +223,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService.Log("onelog: HideBannerAd");
         }
 
-        private void InternalHideMediationBannerAd() { this.bannerAdService.HideBannedAd(); }
+        private void InternalHideMediationBannerAd()
+        {
+            this.bannerAdService.HideBannedAd();
+        }
 
         private void InternalHideCollapsibleBannerAd()
         {
@@ -265,7 +265,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.ShownAdInDifferentProcessHandler();
         }
 
-        private void OnStartDoingIAPHandler() { this.IsResumedFromAnotherServices = true; }
+        private void OnStartDoingIAPHandler()
+        {
+            this.IsResumedFromAnotherServices = true;
+        }
 
         private async void CloseAdInDifferentProcessHandler()
         {
@@ -273,7 +276,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.IsResumedFromAnotherServices = false;
         }
 
-        private void ShownAdInDifferentProcessHandler() { this.IsResumedFromAnotherServices = true; }
+        private void ShownAdInDifferentProcessHandler()
+        {
+            this.IsResumedFromAnotherServices = true;
+        }
 
         private bool IsFiredFirstOpenEligibleSignal = false;
 
@@ -305,25 +311,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
 
-            if (isFireEligibleSignal)
-            {
-                this.signalBus.Fire(new AppOpenEligibleSignal(""));
-            }
+            if (isFireEligibleSignal) this.signalBus.Fire(new AppOpenEligibleSignal(""));
 
             var typeToAvailable = string.Join(" | ", this.aoaAdServices.Select(aoa => aoa.GetType().Name + " isReady: " + aoa.IsAOAReady()));
             this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: useAdmob: {this.adServicesConfig.UseAoaAdmob} | {typeToAvailable}");
             foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
             {
-                if ((this.adServicesConfig.UseAoaAdmob
-                        #if ADMOB
-                        && aoa is AdMobWrapper
-                        #endif
-                    )
-                    || (!this.adServicesConfig.UseAoaAdmob
-                        #if ADMOB
-                        && aoa is not AdMobWrapper
-                        #endif
-                    ))
+                if (this.adServicesConfig.UseAoaAdmob
+                    || !this.adServicesConfig.UseAoaAdmob)
                 {
                     this.signalBus.Fire(new AppOpenCalledSignal(""));
                     aoa.ShowAOAAds();
@@ -341,18 +336,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.StartBackgroundTime = DateTime.Now;
                 return;
             }
-            
+
             var totalBackgroundSeconds = (DateTime.Now - this.StartBackgroundTime).TotalSeconds;
             if (totalBackgroundSeconds < this.adServicesConfig.MinPauseSecondToShowAoaAd)
             {
                 this.logService.Log($"AOA background time: {totalBackgroundSeconds}");
                 return;
             }
-            
-            if (this.IsResumedFromAnotherServices)
-            {
-                return;
-            }
+
+            if (this.IsResumedFromAnotherServices) return;
 
             this.ShowAOAAdsIfAvailable();
         }
@@ -360,16 +352,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)
         {
             if (this.IsRemovedAds)
-            {
                 this.bannerAdService.DestroyBannerAd();
-            }
-            else if (!this.IsShowBannerAd)
-            {
-                this.bannerAdService.HideBannedAd();
-            }
+            else if (!this.IsShowBannerAd) this.bannerAdService.HideBannedAd();
         }
 
-        private void OnInterstitialDisplayedFailedHandler(InterstitialAdDisplayedFailedSignal obj) { this.DoOnInterstitialFinishedAction(false); }
+        private void OnInterstitialDisplayedFailedHandler(InterstitialAdDisplayedFailedSignal obj)
+        {
+            this.DoOnInterstitialFinishedAction(false);
+        }
 
         private void OnInterstitialAdClosedHandler()
         {
@@ -385,7 +375,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #region InterstitialAd
 
-        public virtual bool IsInterstitialAdReady(string place) => this.adServices.Any(adService => adService.IsInterstitialAdReady(place));
+        public virtual bool IsInterstitialAdReady(string place)
+        {
+            return this.adServices.Any(adService => adService.IsInterstitialAdReady(place));
+        }
 
         private int FirstInterstitialAdsDelayTime =>
             this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
@@ -402,16 +395,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log(
                 $"onelog: ShowInterstitialAd1 {place} force {force} this.adServicesConfig.EnableInterstitialAd {isInterstitialAdEnable} this.levelDataController.CurrentLevel {this.levelDataController.CurrentLevel} this.adServicesConfig.InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
-            if (this.IsRemovedAds || !isInterstitialAdEnable || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel)
-            {
-                return false;
-            }
+            if (this.IsRemovedAds || !isInterstitialAdEnable || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel) return false;
 
-            var interstitialAdInterval = this.adServicesConfig.InterstitialAdInterval;
-            if (this.thirdPartiesConfig.AdSettings.CustomInterstitialCappingTime.TryGetValue(place, out var cappingTime) && cappingTime.GetCappingTime > -1)
-            {
-                interstitialAdInterval = cappingTime.GetCappingTime;
-            }
+            var interstitialAdInterval                                                                                                                                              = this.adServicesConfig.InterstitialAdInterval;
+            if (this.thirdPartiesConfig.AdSettings.CustomInterstitialCappingTime.TryGetValue(place, out var cappingTime) && cappingTime.GetCappingTime > -1) interstitialAdInterval = cappingTime.GetCappingTime;
 
             this.logService.Log(
                 $"onelog: ShowInterstitialAd2 {place} force {force} check1 {this.totalNoAdsPlayingTime < interstitialAdInterval} check2 {this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime}");
@@ -447,13 +434,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService.Log($"onelog: ShowInterstitialAd {place} - {adService.GetType().Name}");
 
             if (this.thirdPartiesConfig.AdSettings.EnableBreakAds)
-            {
                 ShowDelayInter(InternalShowInterstitial).Forget();
-            }
             else
-            {
                 InternalShowInterstitial();
-            }
 
             return true;
 
@@ -513,16 +496,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 onComplete?.Invoke();
 
-                if (this.adServicesConfig.ResetInterAdIntervalAfterRewardAd)
-                {
-                    this.totalNoAdsPlayingTime = 0;
-                }
+                if (this.adServicesConfig.ResetInterAdIntervalAfterRewardAd) this.totalNoAdsPlayingTime = 0;
             }
         }
 
-        public virtual bool IsRewardedAdReady(string place) => this.adServices.Any(adService => adService.IsRewardedAdReady(place));
+        public virtual bool IsRewardedAdReady(string place)
+        {
+            return this.adServices.Any(adService => adService.IsRewardedAdReady(place));
+        }
 
-        public virtual void RewardedAdOffer(string place) { this.signalBus.Fire(new RewardedAdOfferSignal(place)); }
+        public virtual void RewardedAdOffer(string place)
+        {
+            this.signalBus.Fire(new RewardedAdOfferSignal(place));
+        }
 
         #endregion
 
@@ -547,10 +533,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdServices.Count > 0)
             {
-                foreach (var mrecAdService in mrecAdServices)
-                {
-                    mrecAdService.HideMREC(adViewPosition);
-                }
+                foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(adViewPosition);
                 this.logService.Log($"onelog: HideMREC {adViewPosition}");
             }
         }
@@ -571,15 +554,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             // Solution: Time.unscaledDeltaTime is count from the last frame to current frame, so if the time between 2 frames is too long, we will not increase the capping time
             // If EnableInterCappingTimeFocus is set to false, we will keep the existing capping time behavior
             // If EnableInterCappingTimeFocus is set to true, we will not increase the capping time while application is not focused
-            if (!this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus || Time.unscaledDeltaTime < 1)
-            {
-                this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
-            }
-            
-            if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession)
-            {
-                this.CheckShowFirstOpen();
-            }
+            if (!this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus || Time.unscaledDeltaTime < 1) this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
+
+            if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession) this.CheckShowFirstOpen();
         }
 
         #region Auto Hide MREC
@@ -595,10 +572,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return;
             }
 
-            if (this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType()))
-            {
-                return;
-            }
+            if (this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType())) return;
 
             this.HideAllMREC();
         }
@@ -612,10 +586,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnMRECLoaded()
         {
-            if (!this.IsCurrentScreenCanShowMREC())
-            {
-                this.HideAllMREC();
-            }
+            if (!this.IsCurrentScreenCanShowMREC()) this.HideAllMREC();
         }
 
         private void AddScreenCanShowMREC(Type screenType)
@@ -639,16 +610,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        private bool IsCurrentScreenCanShowMREC() => this.screenManager?.CurrentActiveScreen?.Value != null && this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType());
+        private bool IsCurrentScreenCanShowMREC()
+        {
+            return this.screenManager?.CurrentActiveScreen?.Value != null && this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType());
+        }
 
         #endregion
 
         public void RemoveAds()
         {
-            foreach (var adService in this.adServices)
-            {
-                adService.RemoveAds();
-            }
+            foreach (var adService in this.adServices) adService.RemoveAds();
             this.OnRemoveAdsComplete();
             this.signalBus.Fire<OnRemoveAdsSucceedSignal>();
         }

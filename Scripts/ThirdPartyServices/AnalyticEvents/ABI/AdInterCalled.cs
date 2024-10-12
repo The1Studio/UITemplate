@@ -2,8 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 {
     using Core.AnalyticServices.Data;
 
-    public class AdInterCalled: IEvent
+    public class AdInterCalled : IEvent
     {
-        
     }
 }

@@ -14,7 +14,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         [OdinSerialize] public int WatchedRewardedAds { get; set; }
 
-        public void Init() { }
+        public void Init()
+        {
+        }
 
         public Type ControllerType => typeof(UITemplateAdsController);
     }

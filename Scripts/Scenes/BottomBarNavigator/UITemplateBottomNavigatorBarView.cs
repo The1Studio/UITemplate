@@ -37,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         private   bool IsShowingBar              = true;
         private   bool IsFirstTimeOpenDefaultTab = true;
 
-        private           Dictionary<Type, int> allcurrentScreen = new Dictionary<Type, int>();
+        private           Dictionary<Type, int> allcurrentScreen = new();
         protected virtual Dictionary<Type, int> AllcurrentScreen => this.allcurrentScreen;
 
         protected virtual void Init()
@@ -58,20 +58,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
         /// </summary>
         protected abstract void RegisterScreens();
 
-        private void OnScreenCloseSignalHandler(ScreenCloseSignal obj) { this.OnChangeFocusScreen(); }
+        private void OnScreenCloseSignalHandler(ScreenCloseSignal obj)
+        {
+            this.OnChangeFocusScreen();
+        }
 
         private void OnScreenShowSignalHandler(ScreenShowSignal obj)
         {
-            if (this.AllcurrentScreen.TryGetValue(this.screenManager.CurrentActiveScreen.Value.GetType(), out var currentScreen))
-            {
-                this.CurrentActiveIndex = currentScreen;
-            }
+            if (this.AllcurrentScreen.TryGetValue(this.screenManager.CurrentActiveScreen.Value.GetType(), out var currentScreen)) this.CurrentActiveIndex = currentScreen;
 
             this.OnChangeFocusScreen();
-            if (this.AllcurrentScreen.ContainsKey(this.screenManager.CurrentActiveScreen.Value.GetType()))
-            {
-                this.OnClickBottomBarButton(this.CurrentActiveIndex);
-            }
+            if (this.AllcurrentScreen.ContainsKey(this.screenManager.CurrentActiveScreen.Value.GetType())) this.OnClickBottomBarButton(this.CurrentActiveIndex);
         }
 
         private void OnChangeFocusScreen()
@@ -100,13 +97,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
             if (!this.gameFeaturesSetting.showBottomBarWithBanner)
             {
                 if (isActive)
-                {
                     this.uiTemplateAdServiceWrapper.HideBannerAd();
-                }
                 else
-                {
                     this.uiTemplateAdServiceWrapper.ShowBannerAd();
-                }
             }
         }
 
@@ -139,10 +132,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
                 {
                     this.OnClickBottomBarButton(index1);
                     this.vibrationService.PlayPresetType(this.gameFeaturesSetting.vibrationPresetType);
-                    if (!this.gameFeaturesSetting.clickButtonSound.IsNullOrEmpty())
-                    {
-                        this.audioService.PlaySound(this.gameFeaturesSetting.clickButtonSound);
-                    }
+                    if (!this.gameFeaturesSetting.clickButtonSound.IsNullOrEmpty()) this.audioService.PlaySound(this.gameFeaturesSetting.clickButtonSound);
                 });
             }
 
@@ -167,13 +157,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.BottomBarNavigator
 
             //Do change tab or open screen
             if (!this.IsFirstTimeOpenDefaultTab)
-            {
                 this.OnCLickButton(index);
-            }
             else
-            {
                 this.IsFirstTimeOpenDefaultTab = false;
-            }
         }
 
         protected abstract void OnCLickButton(int index);

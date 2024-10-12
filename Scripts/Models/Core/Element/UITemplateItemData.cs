@@ -13,26 +13,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public          Status CurrentStatus;
         public          int    RemainingAdsProgress;
 
-        [JsonIgnore]
-        public UITemplateShopRecord ShopBlueprintRecord { get; internal set; }
+        [JsonIgnore] public UITemplateShopRecord ShopBlueprintRecord { get; internal set; }
 
-        [JsonIgnore]
-        public UITemplateItemRecord ItemBlueprintRecord { get; internal set; }
+        [JsonIgnore] public UITemplateItemRecord ItemBlueprintRecord { get; internal set; }
 
-        public UITemplateItemData(string               id,
-                                  UITemplateShopRecord shopBlueprintRecord,
-                                  UITemplateItemRecord itemBlueprintRecord,
-                                  Status               currentStatus = Status.Locked)
+        public UITemplateItemData(
+            string               id,
+            UITemplateShopRecord shopBlueprintRecord,
+            UITemplateItemRecord itemBlueprintRecord,
+            Status               currentStatus = Status.Locked
+        )
         {
             this.Id                  = id;
             this.CurrentStatus       = currentStatus;
             this.ShopBlueprintRecord = shopBlueprintRecord;
             this.ItemBlueprintRecord = itemBlueprintRecord;
 
-            if (this.ShopBlueprintRecord is not null && (this.ShopBlueprintRecord.UnlockType & UnlockType.Ads) != 0)
-            {
-                this.RemainingAdsProgress = this.ShopBlueprintRecord?.Price ?? 0;
-            }
+            if (this.ShopBlueprintRecord is { } && (this.ShopBlueprintRecord.UnlockType & UnlockType.Ads) != 0) this.RemainingAdsProgress = this.ShopBlueprintRecord?.Price ?? 0;
         }
 
         public enum Status
@@ -40,7 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             Owned      = 0,
             Unlocked   = 1,
             InProgress = 2,
-            Locked     = 3
+            Locked     = 3,
         }
 
         [Flags]
@@ -57,7 +54,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             StartedPack  = 1 << 8,
             Shard        = 1 << 9,
             All          = -1,
-            Default      = IAP | SoftCurrency | Ads | Progression | Gift | StartedPack
+            Default      = IAP | SoftCurrency | Ads | Progression | Gift | StartedPack,
         }
 
         public class DefaultComparer : IComparer<UITemplateItemData>

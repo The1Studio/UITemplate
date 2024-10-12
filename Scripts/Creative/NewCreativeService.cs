@@ -14,7 +14,10 @@
         private float lastTimeCheck;
         private int   tapCheckCount;
 
-        public void Initialize() { Observable.EveryUpdate().Where(_ => Input.GetMouseButtonDown(0)).Subscribe(this.OnMouseDown); }
+        public void Initialize()
+        {
+            Observable.EveryUpdate().Where(_ => Input.GetMouseButtonDown(0)).Subscribe(this.OnMouseDown);
+        }
 
         private void OnMouseDown(Unit _)
         {
@@ -46,6 +49,9 @@
             canvas.enabled = !canvas.enabled;
         }
 
-        public void DisableTripleTapAction() { this.EnableTripleTap = false; }
+        public void DisableTripleTapAction()
+        {
+            this.EnableTripleTap = false;
+        }
     }
 }

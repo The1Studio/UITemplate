@@ -9,26 +9,25 @@ namespace HeurekaGames.AssetHunterPRO
     internal class AH_SerializationHelper
     {
         public delegate void NewBuildInfoCreatedDelegate(string path);
+
         public static NewBuildInfoCreatedDelegate NewBuildInfoCreated;
 
         public const string BuildInfoExtension = "ahbuildinfo";
-        public const string SettingsExtension = "ahsetting";
-        public const string FileDumpExtension = "ahfiledump";
+        public const string SettingsExtension  = "ahsetting";
+        public const string FileDumpExtension  = "ahfiledump";
 
         public const string DateTimeFormat = "yyyy_MM_dd_HH_mm_ss";
 
         internal static void SerializeAndSave(AH_SerializedBuildInfo ahBuildInfo)
         {
-            string buildinfoFileName = ahBuildInfo.buildTargetInfo + "_" + ahBuildInfo.dateTime + "." + BuildInfoExtension;
-            string filePath = GetBuildInfoFolder() + System.IO.Path.DirectorySeparatorChar + buildinfoFileName;
+            var buildinfoFileName = ahBuildInfo.buildTargetInfo + "_" + ahBuildInfo.dateTime + "." + BuildInfoExtension;
+            var filePath          = GetBuildInfoFolder() + System.IO.Path.DirectorySeparatorChar + buildinfoFileName;
             System.IO.Directory.CreateDirectory(GetBuildInfoFolder());
 
             System.IO.File.WriteAllText(filePath, JsonUtility.ToJson(ahBuildInfo));
-            if (AH_SettingsManager.Instance.AutoOpenLog)
-                EditorUtility.RevealInFinder(filePath);
+            if (AH_SettingsManager.Instance.AutoOpenLog) EditorUtility.RevealInFinder(filePath);
 
-            if (NewBuildInfoCreated != null)
-                NewBuildInfoCreated(filePath);
+            if (NewBuildInfoCreated != null) NewBuildInfoCreated(filePath);
         }
 
         internal static string GetDateString()
@@ -43,10 +42,10 @@ namespace HeurekaGames.AssetHunterPRO
 
         internal static void SerializeAndSaveCSV(AH_ElementList elementList, string path)
         {
-            List<string[]> rowData = new List<string[]>();
+            var rowData = new List<string[]>();
 
             // Creating First row of titles manually..
-            string[] rowDataTemp = new string[5];
+            var rowDataTemp = new string[5];
             rowDataTemp[0] = "GUID";
             rowDataTemp[1] = "Path";
             rowDataTemp[2] = "Bytes";
@@ -56,36 +55,32 @@ namespace HeurekaGames.AssetHunterPRO
 
             foreach (var item in elementList.elements)
             {
-                rowDataTemp = new string[5];
+                rowDataTemp    = new string[5];
                 rowDataTemp[0] = item.GUID;
                 rowDataTemp[1] = item.relativePath;
                 rowDataTemp[2] = item.fileSize.ToString();
                 rowDataTemp[3] = item.usedInBuild.ToString();
-                rowDataTemp[4] = (item.scenesReferencingAsset != null)?string.Join(",", item.scenesReferencingAsset):"";
+                rowDataTemp[4] = item.scenesReferencingAsset != null ? string.Join(",", item.scenesReferencingAsset) : "";
                 rowData.Add(rowDataTemp);
             }
 
-            string[][] output = new string[rowData.Count][];
+            var output = new string[rowData.Count][];
 
-            for (int i = 0; i < output.Length; i++)
-            {
-                output[i] = rowData[i];
-            }
+            for (var i = 0; i < output.Length; i++) output[i] = rowData[i];
 
-            int length = output.GetLength(0);
-            string delimiter = ",";
+            var length    = output.GetLength(0);
+            var delimiter = ",";
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            for (int index = 0; index < length; index++)
-                sb.AppendLine(string.Join(delimiter, output[index]));
+            for (var index = 0; index < length; index++) sb.AppendLine(string.Join(delimiter, output[index]));
 
             System.IO.File.WriteAllText(path, sb.ToString());
         }
 
         internal static AH_SerializedBuildInfo LoadBuildReport(string path)
         {
-            string fileContent = "";
+            var fileContent = "";
             try
             {
                 fileContent = System.IO.File.ReadAllText(path);
@@ -93,9 +88,9 @@ namespace HeurekaGames.AssetHunterPRO
             catch (System.IO.FileNotFoundException e)
             {
                 EditorUtility.DisplayDialog(
-                "File Not Found",
-                "Unable to find:" + Environment.NewLine + path,
-                "Ok");
+                    "File Not Found",
+                    "Unable to find:" + Environment.NewLine + path,
+                    "Ok");
 
                 Debug.LogError("AH: Unable to find: " + path + Environment.NewLine + e);
 
@@ -104,7 +99,7 @@ namespace HeurekaGames.AssetHunterPRO
 
             try
             {
-                AH_SerializedBuildInfo buildInfo = JsonUtility.FromJson<AH_SerializedBuildInfo>(fileContent);
+                var buildInfo = JsonUtility.FromJson<AH_SerializedBuildInfo>(fileContent);
                 buildInfo.Sort();
                 return buildInfo;
             }
@@ -122,8 +117,8 @@ namespace HeurekaGames.AssetHunterPRO
 
         internal static string GetSettingFolder()
         {
-            string userpreferencesPath = AH_SettingsManager.Instance.UserPreferencePath;
-            System.IO.DirectoryInfo dirInfo = System.IO.Directory.CreateDirectory(userpreferencesPath);
+            var userpreferencesPath = AH_SettingsManager.Instance.UserPreferencePath;
+            var dirInfo             = System.IO.Directory.CreateDirectory(userpreferencesPath);
             return dirInfo.FullName;
         }
 
@@ -134,7 +129,7 @@ namespace HeurekaGames.AssetHunterPRO
 
         internal static void LoadSettings(AH_SettingsManager instance, string path)
         {
-            string text = System.IO.File.ReadAllText(path);
+            var text = System.IO.File.ReadAllText(path);
             try
             {
                 EditorJsonUtility.FromJsonOverwrite(text, instance);

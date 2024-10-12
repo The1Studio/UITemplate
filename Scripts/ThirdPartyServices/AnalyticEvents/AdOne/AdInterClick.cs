@@ -2,7 +2,7 @@
 {
     using Core.AnalyticServices.Data;
 
-    public class AdInterClick:IEvent
+    public class AdInterClick : IEvent
     {
         public string Placement;
 

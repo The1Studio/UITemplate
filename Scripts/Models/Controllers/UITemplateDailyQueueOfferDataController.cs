@@ -30,10 +30,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             UITemplateInventoryDataController inventoryDataController
         )
         {
-            this.internetService           = internetService;
-            this.dailyQueueOfferData       = dailyQueueOfferData;
-            this.dailyQueueOfferBlueprint  = dailyQueueOfferBlueprint;
-            this.inventoryDataController   = inventoryDataController;
+            this.internetService = internetService;
+            this.dailyQueueOfferData = dailyQueueOfferData;
+            this.dailyQueueOfferBlueprint = dailyQueueOfferBlueprint;
+            this.inventoryDataController = inventoryDataController;
         }
 
         public event Action OnUpdateOfferItem;
@@ -41,7 +41,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void CheckOfferStatus()
         {
             var isFirstTimeOpen = this.dailyQueueOfferData.OfferToStatusDuringDay.Count == 0;
-            var isDifferentDay  = this.GetRemainTimeToNextDay().Days < 0;
+            var isDifferentDay = this.GetRemainTimeToNextDay().Days < 0;
             if (isDifferentDay || isFirstTimeOpen)
             {
                 this.InitAllOfferStatus();
@@ -62,10 +62,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         private int GetCurrentDayIndex()
         {
-            var lastOfferDate       = this.dailyQueueOfferData.LastOfferDate;
+            var lastOfferDate = this.dailyQueueOfferData.LastOfferDate;
             var firstTimeOpenedDate = this.dailyQueueOfferData.FirstTimeOpen;
-            var loginTime           = (int)(lastOfferDate - firstTimeOpenedDate).TotalDays;
-            var lastTimeLoginToNow  = (int)(DateTime.Now  - lastOfferDate).TotalDays;
+            var loginTime = (int)(lastOfferDate - firstTimeOpenedDate).TotalDays;
+            var lastTimeLoginToNow = (int)(DateTime.Now  - lastOfferDate).TotalDays;
             if (lastTimeLoginToNow > 0)
             {
                 loginTime++;

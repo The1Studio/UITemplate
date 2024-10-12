@@ -33,32 +33,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
     public class UITemplateDailyRewardPackView : TViewMono
     {
-        [BoxGroup("View"), SerializeField] private UITemplateDailyRewardItemAdapter dailyRewardItemAdapter;
-        [BoxGroup("View"), SerializeField] private Button                           btnClaim;
-        [BoxGroup("View"), SerializeField] private TextMeshProUGUI                  txtDayLabel;
-        [BoxGroup("View"), SerializeField] private GameObject                       objClaimed;
-        [BoxGroup("View"), SerializeField] private GameObject                       objClaimedCheckIcon;
-        [BoxGroup("View"), SerializeField] private GameObject                       objClaimByAds;
+        [BoxGroup("View")] [SerializeField] private UITemplateDailyRewardItemAdapter dailyRewardItemAdapter;
+        [BoxGroup("View")] [SerializeField] private Button                           btnClaim;
+        [BoxGroup("View")] [SerializeField] private TextMeshProUGUI                  txtDayLabel;
+        [BoxGroup("View")] [SerializeField] private GameObject                       objClaimed;
+        [BoxGroup("View")] [SerializeField] private GameObject                       objClaimedCheckIcon;
+        [BoxGroup("View")] [SerializeField] private GameObject                       objClaimByAds;
 
-        [BoxGroup("View/Background"), SerializeField]
-        private Image imgBackground;
+        [BoxGroup("View/Background")] [SerializeField] private Image imgBackground;
 
-        [BoxGroup("View/Background"), SerializeField]
-        private Sprite sprBgNormal;
+        [BoxGroup("View/Background")] [SerializeField] private Sprite sprBgNormal;
 
-        [BoxGroup("View/Background"), SerializeField]
-        private Sprite sprBgCurrentDay;
+        [BoxGroup("View/Background")] [SerializeField] private Sprite sprBgCurrentDay;
 
-        [BoxGroup("View/PackImage"), SerializeField]
-        private Image packImg;
+        [BoxGroup("View/PackImage")] [SerializeField] private Image packImg;
 
-        [BoxGroup("Feature/CoverPack")]
-        [SerializeField]
-        private bool coverPackWhenAllItemsHidden;
+        [BoxGroup("Feature/CoverPack")] [SerializeField] private bool coverPackWhenAllItemsHidden;
 
-        [BoxGroup("Feature/CoverPack")]
-        [SerializeField]
-        private Image coverImg;
+        [BoxGroup("Feature/CoverPack")] [SerializeField] private Image coverImg;
 
         public UITemplateDailyRewardItemAdapter DailyRewardItemAdapter      => this.dailyRewardItemAdapter;
         public Button                           BtnClaim                    => this.btnClaim;
@@ -77,12 +69,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
         private void Awake()
         {
             if (this.btnClaim != null)
-            {
                 this.btnClaim.onClick.AddListener(() =>
                 {
                     this.OnClickClaimButton?.Invoke();
                 });
-            }
         }
     }
 
@@ -113,14 +103,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
             if (!string.IsNullOrEmpty(this.Model.DailyRewardRecord.PackImage)) return;
             var models = param.DailyRewardRecord.Reward.Values
-                              .Select(item => new UITemplateDailyRewardItemModel
-                              {
-                                  DailyRewardRecord = this.Model.DailyRewardRecord,
-                                  RewardRecord      = item,
-                                  RewardStatus      = this.Model.RewardStatus,
-                                  IsGetWithAds      = this.Model.IsGetWithAds
-                              })
-                              .ToList();
+                .Select(item => new UITemplateDailyRewardItemModel
+                {
+                    DailyRewardRecord = this.Model.DailyRewardRecord,
+                    RewardRecord      = item,
+                    RewardStatus      = this.Model.RewardStatus,
+                    IsGetWithAds      = this.Model.IsGetWithAds,
+                })
+                .ToList();
             this.View.DailyRewardItemAdapter.InitItemAdapter(models).Forget();
 
             this.CoverPack(models);
@@ -128,7 +118,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
         private void CoverPack(IEnumerable<UITemplateDailyRewardItemModel> itemModels)
         {
-            if(!this.View.CoverPackWhenAllItemsHidden) return;
+            if (!this.View.CoverPackWhenAllItemsHidden) return;
 
             if (this.Model.RewardStatus == RewardStatus.Claimed)
             {
@@ -146,6 +136,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
             this.dailyRewardPackViewHelper.DisposeItem(this);
         }
 
-        public void ClaimReward() { this.dailyRewardPackViewHelper.OnClaimReward(this); }
+        public void ClaimReward()
+        {
+            this.dailyRewardPackViewHelper.OnClaimReward(this);
+        }
     }
 }

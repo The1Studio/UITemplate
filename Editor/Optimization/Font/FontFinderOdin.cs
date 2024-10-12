@@ -12,21 +12,25 @@
 
     public class FontFinderOdin : OdinEditorWindow
     {
-        [ShowInInspector] [TableList] [Title("Compressed Font", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<FontInfo> compressedFonts = new();
+        [ShowInInspector] [TableList] [Title("Compressed Font", TitleAlignment = TitleAlignments.Centered)] private HashSet<FontInfo> compressedFonts = new();
 
-        [ShowInInspector] [TableList] [Title("Non-Compressed Font", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<FontInfo> noneCompressedFonts = new();
+        [ShowInInspector] [TableList] [Title("Non-Compressed Font", TitleAlignment = TitleAlignments.Centered)] private HashSet<FontInfo> noneCompressedFonts = new();
 
         [MenuItem("TheOne/List And Optimize/Font List")]
-        private static void OpenWindow() { GetWindow<FontFinderOdin>().Show(); }
+        private static void OpenWindow()
+        {
+            GetWindow<FontFinderOdin>().Show();
+        }
 
         [ButtonGroup("Action")]
         [Button(ButtonSizes.Medium)]
-        private void FindAllFonts() { this.FindFontsInAddressable(); }
+        private void FindAllFonts()
+        {
+            this.FindFontsInAddressable();
+        }
 
         // Temporary disable this feature because it's not working as expected
-        
+
         // [ButtonGroup("Action")]
         // [Button(ButtonSizes.Medium)]
         // [GUIColor(0.3f, 0.8f, 0.3f)]
@@ -60,23 +64,22 @@
                     case FontTextureCase.ASCII:
                     case FontTextureCase.ASCIIUpperCase:
                     case FontTextureCase.ASCIILowerCase:
-                        this.noneCompressedFonts.Add(new FontInfo
+                        this.noneCompressedFonts.Add(new()
                         {
                             Font         = font,
                             FontImporter = fontImporter,
-                            Objects  = keyValuePair.Value.ToList()
+                            Objects      = keyValuePair.Value.ToList(),
                         });
                         break;
                     case FontTextureCase.CustomSet:
-                        this.compressedFonts.Add(new FontInfo
+                        this.compressedFonts.Add(new()
                         {
                             Font         = font,
                             FontImporter = fontImporter,
-                            Objects  = keyValuePair.Value.ToList()
+                            Objects      = keyValuePair.Value.ToList(),
                         });
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    default: throw new ArgumentOutOfRangeException();
                 }
             }
         }

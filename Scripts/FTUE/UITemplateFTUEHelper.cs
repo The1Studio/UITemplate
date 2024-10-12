@@ -20,13 +20,13 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         {
             return condition switch
             {
-                FTUECondition.Equal => leftValue == rightValue,
-                FTUECondition.NotEqual => leftValue != rightValue,
-                FTUECondition.Higher => leftValue > rightValue,
-                FTUECondition.Lower => leftValue < rightValue,
+                FTUECondition.Equal     => leftValue == rightValue,
+                FTUECondition.NotEqual  => leftValue != rightValue,
+                FTUECondition.Higher    => leftValue > rightValue,
+                FTUECondition.Lower     => leftValue < rightValue,
                 FTUECondition.HighEqual => leftValue >= rightValue,
-                FTUECondition.LowEqual => leftValue <= rightValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(condition), condition, null)
+                FTUECondition.LowEqual  => leftValue <= rightValue,
+                _                       => throw new ArgumentOutOfRangeException(nameof(condition), condition, null),
             };
         }
 
@@ -34,13 +34,13 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         {
             return condition switch
             {
-                FTUECondition.Equal => Math.Abs(leftValue - rightValue) < float.Epsilon,
-                FTUECondition.NotEqual => Math.Abs(leftValue - rightValue) > float.Epsilon,
-                FTUECondition.Higher => leftValue > rightValue,
-                FTUECondition.Lower => leftValue < rightValue,
+                FTUECondition.Equal     => Math.Abs(leftValue - rightValue) < float.Epsilon,
+                FTUECondition.NotEqual  => Math.Abs(leftValue - rightValue) > float.Epsilon,
+                FTUECondition.Higher    => leftValue > rightValue,
+                FTUECondition.Lower     => leftValue < rightValue,
                 FTUECondition.HighEqual => leftValue >= rightValue,
-                FTUECondition.LowEqual => leftValue <= rightValue,
-                _ => throw new ArgumentOutOfRangeException(nameof(condition), condition, null)
+                FTUECondition.LowEqual  => leftValue <= rightValue,
+                _                       => throw new ArgumentOutOfRangeException(nameof(condition), condition, null),
             };
         }
     }

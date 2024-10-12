@@ -37,30 +37,30 @@
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            if (this.gameFeaturesSetting.enableInitHomeScreenManually)
-            {
-                this.OpenViewAsync().Forget();
-            }
+            if (this.gameFeaturesSetting.enableInitHomeScreenManually) this.OpenViewAsync().Forget();
             this.View.PlayButton.onClick.AddListener(this.OnClickPlay);
 
-            if (this.View.LevelButton != null)
-            {
-                this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
-            }
+            if (this.View.LevelButton != null) this.View.LevelButton.onClick.AddListener(this.OnClickLevel);
 
-            if (this.View.ShopButton != null)
-            {
-                this.View.ShopButton.onClick.AddListener(this.OnClickShop);
-            }
+            if (this.View.ShopButton != null) this.View.ShopButton.onClick.AddListener(this.OnClickShop);
         }
 
-        protected virtual void OnClickLevel() { }
+        protected virtual void OnClickLevel()
+        {
+        }
 
-        protected virtual void OnClickShop() { }
+        protected virtual void OnClickShop()
+        {
+        }
 
-        protected virtual void OnClickPlay() { }
+        protected virtual void OnClickPlay()
+        {
+        }
 
-        public override UniTask BindData() { return UniTask.CompletedTask; }
+        public override UniTask BindData()
+        {
+            return UniTask.CompletedTask;
+        }
 
         #region inject
 

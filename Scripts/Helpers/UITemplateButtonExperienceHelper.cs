@@ -35,7 +35,10 @@
             this.gameFeaturesSetting = gameFeaturesSetting;
         }
 
-        public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShowHandler); }
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShowHandler);
+        }
 
         private void OnScreenShowHandler(ScreenShowSignal obj)
         {
@@ -47,15 +50,9 @@
                 newButton.onClick.AddListener(() =>
                 {
                     this.vibrationService.PlayPresetType(this.gameFeaturesSetting.vibrationPresetType);
-                    if (!this.gameFeaturesSetting.clickButtonSound.IsNullOrEmpty())
-                    {
-                        this.soundServices.PlaySound(this.gameFeaturesSetting.clickButtonSound);
-                    }
+                    if (!this.gameFeaturesSetting.clickButtonSound.IsNullOrEmpty()) this.soundServices.PlaySound(this.gameFeaturesSetting.clickButtonSound);
                 });
-                if (this.gameFeaturesSetting.enableScaleAnimationOnCLicked && newButton.gameObject.GetComponent<AnimationButton>() == null)
-                {
-                    newButton.gameObject.AddComponent<AnimationButton>();
-                }
+                if (this.gameFeaturesSetting.enableScaleAnimationOnCLicked && newButton.gameObject.GetComponent<AnimationButton>() == null) newButton.gameObject.AddComponent<AnimationButton>();
             }
         }
     }

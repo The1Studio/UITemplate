@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
     {
         public int level;
         public int time;
+
         public LevelSkipped(int level, int time)
         {
             this.level = level;

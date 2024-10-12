@@ -15,22 +15,22 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.T
         public TheOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
         }
-        
+
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
-            IgnoreEvents = new HashSet<Type>()
+            IgnoreEvents = new()
             {
             },
-            CustomEventKeys = new Dictionary<string, string>()
+            CustomEventKeys = new()
             {
-                { nameof(BannerShown), "af_banner_shown" }
-            }
+                { nameof(BannerShown), "af_banner_shown" },
+            },
         };
 
         public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
         {
-            IgnoreEvents = new HashSet<Type>(),
-            CustomEventKeys = new Dictionary<string, string>()
+            IgnoreEvents = new(),
+            CustomEventKeys = new()
             {
                 { nameof(AdsRevenueEvent), "ad_impression_abi" },
                 { "AdsRevenueSourceId", "ad_platform" },
@@ -40,8 +40,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.T
                 { "Placement", "placement" },
                 { "Currency", "currency" },
                 { "Revenue", "value" },
-                { "Message", "errormsg" }
-            }
+                { "Message", "errormsg" },
+            },
         };
     }
 }

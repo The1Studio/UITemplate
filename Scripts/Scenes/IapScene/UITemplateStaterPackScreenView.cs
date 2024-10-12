@@ -86,29 +86,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 
         private void OnOpenPolicy()
         {
-            if (!string.IsNullOrEmpty(this.uiTemplateMiscParamBlueprint.PolicyAddress))
-            {
-                Application.OpenURL(this.uiTemplateMiscParamBlueprint.PolicyAddress);
-            }
+            if (!string.IsNullOrEmpty(this.uiTemplateMiscParamBlueprint.PolicyAddress)) Application.OpenURL(this.uiTemplateMiscParamBlueprint.PolicyAddress);
         }
 
         private void OnOpenTerm()
         {
-            if (!string.IsNullOrEmpty(this.uiTemplateMiscParamBlueprint.TermsAddress))
-            {
-                Application.OpenURL(this.uiTemplateMiscParamBlueprint.TermsAddress);
-            }
+            if (!string.IsNullOrEmpty(this.uiTemplateMiscParamBlueprint.TermsAddress)) Application.OpenURL(this.uiTemplateMiscParamBlueprint.TermsAddress);
         }
 
-        private void OnRestore() { this.uiTemplateIapServices.RestorePurchase(this.CloseView); }
+        private void OnRestore()
+        {
+            this.uiTemplateIapServices.RestorePurchase(this.CloseView);
+        }
 
         private void OnBuyClick()
         {
-            this.uiTemplateIapServices.BuyProduct(this.View.btnBuy.gameObject, this.iapPack, (x) =>
-            {
-                this.CloseView();
-                this.Model.OnComplete?.Invoke(x);
-            });
+            this.uiTemplateIapServices.BuyProduct(this.View.btnBuy.gameObject,
+                this.iapPack,
+                (x) =>
+                {
+                    this.CloseView();
+                    this.Model.OnComplete?.Invoke(x);
+                });
         }
 
         public override async UniTask BindData(UITemplateStaterPackModel screenModel)
@@ -120,19 +119,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 
             if (this.uiTemplateShopPackBlueprint.TryGetValue(this.iapPack, out var shopPackRecord))
             {
-                if (!shopPackRecord.ImageAddress.IsNullOrEmpty())
-                {
-                    this.View.imgGift.sprite = await this.loadImageHelper.LoadLocalSprite(shopPackRecord.ImageAddress);
-                }
+                if (!shopPackRecord.ImageAddress.IsNullOrEmpty()) this.View.imgGift.sprite = await this.loadImageHelper.LoadLocalSprite(shopPackRecord.ImageAddress);
 
                 var model = new List<UITemplateStartPackItemModel>();
 
                 foreach (var rewardBlueprintData in shopPackRecord.RewardIdToRewardDatas)
                 {
-                    model.Add(new UITemplateStartPackItemModel()
+                    model.Add(new()
                     {
                         IconAddress = rewardBlueprintData.Value.RewardIcon,
-                        Value       = rewardBlueprintData.Value.RewardContent
+                        Value       = rewardBlueprintData.Value.RewardContent,
                     });
                 }
 

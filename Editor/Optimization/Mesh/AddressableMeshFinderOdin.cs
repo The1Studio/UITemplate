@@ -12,24 +12,26 @@
 
     public class AddressableMeshFinderOdin : OdinEditorWindow
     {
-        [ShowInInspector] [TableList] [Title("Off Compression Meshes", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<MeshInfo> offCompressionMeshInfoList = new();
+        [ShowInInspector] [TableList] [Title("Off Compression Meshes", TitleAlignment = TitleAlignments.Centered)] private HashSet<MeshInfo> offCompressionMeshInfoList = new();
 
-        [ShowInInspector] [TableList] [Title("Low Compression Meshes", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<MeshInfo> lowCompressionMeshInfoList = new();
+        [ShowInInspector] [TableList] [Title("Low Compression Meshes", TitleAlignment = TitleAlignments.Centered)] private HashSet<MeshInfo> lowCompressionMeshInfoList = new();
 
-        [ShowInInspector] [TableList] [Title("Medium Compression Meshes", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<MeshInfo> mediumCompressionMeshInfoList = new();
+        [ShowInInspector] [TableList] [Title("Medium Compression Meshes", TitleAlignment = TitleAlignments.Centered)] private HashSet<MeshInfo> mediumCompressionMeshInfoList = new();
 
-        [ShowInInspector] [TableList] [Title("Hih Compression Meshes", TitleAlignment = TitleAlignments.Centered)]
-        private HashSet<MeshInfo> highCompressionMeshInfoList = new();
+        [ShowInInspector] [TableList] [Title("Hih Compression Meshes", TitleAlignment = TitleAlignments.Centered)] private HashSet<MeshInfo> highCompressionMeshInfoList = new();
 
         [MenuItem("TheOne/List And Optimize/Mesh List")]
-        private static void OpenWindow() { GetWindow<AddressableMeshFinderOdin>().Show(); }
+        private static void OpenWindow()
+        {
+            GetWindow<AddressableMeshFinderOdin>().Show();
+        }
 
         [ButtonGroup("Action")]
         [Button(ButtonSizes.Medium)]
-        private void FindAllMeshAndImporter() { this.FindMeshesInAddressables(); }
+        private void FindAllMeshAndImporter()
+        {
+            this.FindMeshesInAddressables();
+        }
 
         [ButtonGroup("Action")]
         [Button(ButtonSizes.Medium)]
@@ -70,8 +72,8 @@
                 var meshInfo = new MeshInfo
                 {
                     Mesh          = mesh,
-                    Objects   = keyValuePair.Value.ToList(),
-                    ModelImporter = modelImporter // Storing the reference
+                    Objects       = keyValuePair.Value.ToList(),
+                    ModelImporter = modelImporter, // Storing the reference
                 };
 
                 switch (modelImporter.meshCompression)
@@ -88,8 +90,7 @@
                     case ModelImporterMeshCompression.High:
                         this.highCompressionMeshInfoList.Add(meshInfo);
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    default: throw new ArgumentOutOfRangeException();
                 }
             }
         }
@@ -104,8 +105,10 @@
         [InlineProperty] [ShowInInspector] public ModelImporterMeshCompression      MeshCompression      => this.ModelImporter.meshCompression;
         [InlineProperty] [ShowInInspector] public ModelImporterAnimationCompression AnimationCompression => this.ModelImporter.animationCompression;
 
-
         // Example method to get specific information from ModelImporter
-        public string GetImporterInfo() { return this.ModelImporter != null ? this.ModelImporter.assetPath : "No Importer"; }
+        public string GetImporterInfo()
+        {
+            return this.ModelImporter != null ? this.ModelImporter.assetPath : "No Importer";
+        }
     }
 }

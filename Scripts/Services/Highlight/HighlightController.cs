@@ -41,9 +41,15 @@
             this.signalBus.Subscribe<FinishLoadingNewSceneSignal>(this.OnFinishLoadingNewScene);
         }
 
-        private void OnFinishLoadingNewScene(FinishLoadingNewSceneSignal obj) { this.MoveToCurrentRootUI(this.screenManager.CurrentOverlayRoot); }
+        private void OnFinishLoadingNewScene(FinishLoadingNewSceneSignal obj)
+        {
+            this.MoveToCurrentRootUI(this.screenManager.CurrentOverlayRoot);
+        }
 
-        private void OnStartLoadingNewScene(StartLoadingNewSceneSignal obj) { this.MoveToOriginParent(); }
+        private void OnStartLoadingNewScene(StartLoadingNewSceneSignal obj)
+        {
+            this.MoveToOriginParent();
+        }
 
         private void OnButtonClick()
         {
@@ -72,7 +78,7 @@
 
         #region Highlight
 
-        private List<Transform> highlightObjects = new List<Transform>();
+        private List<Transform> highlightObjects = new();
 
         public async UniTask SetHighlight(string highlightPath, bool clickable = false, Action onButtonDown = null)
         {
@@ -92,12 +98,11 @@
 
             var containHighlightObject = this.highlightObjects[0];
             foreach (var obj in this.highlightObjects)
-            {
-                if (containHighlightObject.IsChildOf(obj)) containHighlightObject = obj;
-            }
+                if (containHighlightObject.IsChildOf(obj))
+                    containHighlightObject = obj;
             var rectMask = containHighlightObject.GetComponentInParent<Mask>();
             var osa      = containHighlightObject.GetComponentInParent<IOSA>();
-            if(rectMask is null || osa is null) return;
+            if (rectMask is null || osa is null) return;
             var rectTf = rectMask.GetComponent<RectTransform>();
             this.ConfigAdapter(containHighlightObject.gameObject, rectTf, osa);
         }
@@ -110,10 +115,7 @@
             this.ClearHighlightObject();
 
             if (this.activeHand.Count == 0) return;
-            for (var i = this.activeHand.Count - 1; i >= 0; i--)
-            {
-                this.DespawnHand(this.activeHand[i]);
-            }
+            for (var i = this.activeHand.Count - 1; i >= 0; i--) this.DespawnHand(this.activeHand[i]);
             this.activeHand.Clear();
         }
 
@@ -172,13 +174,11 @@
                 {
                     var button = highlightObject.GetComponentInChildren<Button>();
                     if (button != null)
-                    {
                         this.disposables.Add(button.OnPointerClickAsObservable().Subscribe(data =>
                         {
                             this.OnButtonClick();
                             onButtonDown?.Invoke();
                         }));
-                    }
                 }
             }
             this.btnCompleteStep.gameObject.SetActive(!clickable);
@@ -213,8 +213,8 @@
 
         #region HandleHand
 
-        private Queue<HighlightHand> handPools  = new Queue<HighlightHand>();
-        private List<HighlightHand>  activeHand = new List<HighlightHand>();
+        private Queue<HighlightHand> handPools  = new();
+        private List<HighlightHand>  activeHand = new();
 
         private HighlightHand SpawnHand(Vector2 handSize, float radius, string anchor, Vector3 rotation)
         {
@@ -245,7 +245,7 @@
                 "BottomLeft"  => -45,
                 "Bottom"      => 0,
                 "BottomRight" => -315,
-                _             => 0f
+                _             => 0f,
             };
             hand.rotateHand.localEulerAngles = new(0, 0, angle);
             hand.iconHand.localEulerAngles   = Vector3.zero;
@@ -327,8 +327,8 @@
 
         private bool IsRectTransformFullyInside(RectTransform container, RectTransform target)
         {
-            var containerWorldRect = GetWorldRect(container);
-            var targetWorldRect    = GetWorldRect(target);
+            var containerWorldRect = this.GetWorldRect(container);
+            var targetWorldRect    = this.GetWorldRect(target);
 
             return containerWorldRect.Contains(targetWorldRect.min) && containerWorldRect.Contains(targetWorldRect.max);
         }
@@ -341,7 +341,7 @@
             var bottomLeft = corners[0];
             var topRight   = corners[2];
 
-            return new Rect(bottomLeft, topRight - bottomLeft);
+            return new(bottomLeft, topRight - bottomLeft);
         }
 
         #endregion
@@ -351,6 +351,6 @@
     {
         AllAppear,
         AppearOneByOneWithDelay,
-        MoveOneByOneWithDelay
+        MoveOneByOneWithDelay,
     }
 }

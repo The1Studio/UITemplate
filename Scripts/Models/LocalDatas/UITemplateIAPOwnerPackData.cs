@@ -7,11 +7,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     using UnityEngine.Scripting;
 
     [Preserve]
-    public class UITemplateIAPOwnerPackData : ILocalData,IUITemplateLocalData
+    public class UITemplateIAPOwnerPackData : ILocalData, IUITemplateLocalData
     {
-        public List<string> OwnedPacks { get; set; } = new ();
+        public List<string> OwnedPacks { get; set; } = new();
 
-        public void Init()         { }
+        public void Init()
+        {
+        }
+
         public Type ControllerType => typeof(UITemplateIAPOwnerPackControllerData);
     }
 }

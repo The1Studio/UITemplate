@@ -1,5 +1,4 @@
 ﻿#if ZITGA
-
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Zitga
 {
     using System;

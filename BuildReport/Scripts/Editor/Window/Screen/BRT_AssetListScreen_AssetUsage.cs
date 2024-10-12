@@ -6,1514 +6,1391 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.Globalization;
 
-
 namespace BuildReportTool.Window.Screen
 {
-	public partial class AssetList
-	{
-		// ----------------------------------------------------------------
-
-		/// <summary>
-		/// "is used by"
-		/// </summary>
-		static readonly GUIContent AssetUsageIsUsedByLabel = new GUIContent("is used by");
-
-		/// <summary>
-		/// "which is used by"
-		/// </summary>
-		static readonly GUIContent AssetUsageWhichIsUsedByLabel = new GUIContent("which is used by");
-
-		// ---------------------------------------
-
-		/// <summary>
-		/// "is used as default material by"
-		/// </summary>
-		static readonly GUIContent AssetUsageIsUsedAsDefaultMaterialByLabel =
-			new GUIContent("is used as default material by");
-
-		/// <summary>
-		/// "which is used as default material by"
-		/// </summary>
-		static readonly GUIContent AssetUsageWhichIsUsedAsDefaultMaterialByLabel =
-			new GUIContent("which is used as default material by");
-
-		// ---------------------------------------
-
-		/// <summary>
-		/// "is used as default value by"
-		/// </summary>
-		static readonly GUIContent AssetUsageIsUsedAsDefaultValueByLabel =
-			new GUIContent("is used as default value by");
-
-		/// <summary>
-		/// "which is used as default value by"
-		/// </summary>
-		static readonly GUIContent AssetUsageWhichIsUsedAsDefaultValueByLabel =
-			new GUIContent("which is used as default value by");
-
-		// ---------------------------------------
-
-		/// <summary>
-		/// "is a Resources asset, so it's always in the build. But it's also used by"
-		/// </summary>
-		static readonly GUIContent AssetUsageIsAResourcesAssetButAlsoUsedByLabel =
-			new GUIContent("is a Resources asset, so it's always in the build. But it's also used by");
-
-		/// <summary>
-		/// "which is a Resources asset, so it's always in the build. But it's also used by"
-		/// </summary>
-		static readonly GUIContent AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel =
-			new GUIContent("which is a Resources asset, so it's always in the build. But it's also used by");
-
-		// --------------------------------------------------
-
-		/// <summary>
-		/// "which is in the build"
-		/// </summary>
-		static readonly GUIContent AssetUsageWhichIsInTheBuildLabel = new GUIContent("which is in the build");
-
-		/// <summary>
-		/// "is a Resources asset, so it's always in the build"
-		/// </summary>
-		static readonly GUIContent AssetUsageIsAResourcesAssetLabel =
-			new GUIContent("is a Resources asset, so it's always in the build");
-
-		/// <summary>
-		/// "which is a Resources asset, so it's always in the build"
-		/// </summary>
-		static readonly GUIContent AssetUsageWhichIsAResourcesAssetLabel =
-			new GUIContent("which is a Resources asset, so it's always in the build");
-
-		/// <summary>
-		/// "(cyclic dependency)"
-		/// </summary>
-		static readonly GUIContent AssetUsageWhichIsACyclicDependencyLabel = new GUIContent("(cyclic dependency)");
-
-		static readonly GUIContent AssetUsageAncestryDefaultMaterialInFbxOfScene = new GUIContent(
-			"* even though the scene is certainly using the material, Build Report Tool is not certain that the instantiated fbx in the scene is really the one using the material");
-
-		// ----------------------------------------------------------------
-
-		struct PrettyAssetLabel
-		{
-			public string AssetPath;
-			public string AssetPathSelected;
-			public string AssetName;
-		}
-
-		struct PrettyAssetLabelWithNumber
-		{
-			public string AssetPath;
-			public string AssetPathSelected;
-			public string AssetName;
-			public int NumberForPath;
-			public int NumberForPathSelected;
-			public int NumberForName;
-		}
-
-		readonly Dictionary<string, PrettyAssetLabel> _prettyAssetLabels = new Dictionary<string, PrettyAssetLabel>();
-
-		readonly Dictionary<string, PrettyAssetLabelWithNumber> _prettyAssetLabelsWithNumber =
-			new Dictionary<string, PrettyAssetLabelWithNumber>();
-
-		string GetPrettyAssetPath(string assetPath, bool showAssetPath, bool selected)
-		{
-			PrettyAssetLabel entry;
-
-			if (_prettyAssetLabels.ContainsKey(assetPath))
-			{
-				entry = _prettyAssetLabels[assetPath];
-			}
-			else
-			{
-				var path = BuildReportTool.Util.GetAssetPath(assetPath);
-				var filename = BuildReportTool.Util.GetAssetFilename(assetPath);
-
-				entry.AssetPathSelected = string.Format("<color=#{0}>{1}</color><color=white><b>{2}</b></color>",
-					BuildReportTool.Window.Screen.AssetList.GetPathColor(true),
-					path, filename);
-
-				entry.AssetPath = string.Format("<color=#{0}>{1}</color><b>{2}</b>",
-					BuildReportTool.Window.Screen.AssetList.GetPathColor(false),
-					path, filename);
-
-				entry.AssetName = string.Format("<b>{0}</b>", filename);
-
-				_prettyAssetLabels.Add(assetPath, entry);
-			}
-
-			if (showAssetPath)
-			{
-				if (selected)
-				{
-					return entry.AssetPathSelected;
-				}
-				else
-				{
-					return entry.AssetPath;
-				}
-			}
-			else
-			{
-				return entry.AssetName;
-			}
-		}
-
-		string GetPrettyAssetPath(string assetPath, int number, bool showAssetPath, bool selected)
-		{
-			PrettyAssetLabelWithNumber entry;
-
-			if (_prettyAssetLabelsWithNumber.ContainsKey(assetPath))
-			{
-				entry = _prettyAssetLabelsWithNumber[assetPath];
-			}
-			else
-			{
-				entry.AssetPath = null;
-				entry.AssetPathSelected = null;
-				entry.AssetName = null;
-				entry.NumberForPath = -1;
-				entry.NumberForPathSelected = -1;
-				entry.NumberForName = -1;
-				_prettyAssetLabelsWithNumber.Add(assetPath, entry);
-			}
-
-			if (showAssetPath)
-			{
-				if (selected)
-				{
-					if (string.IsNullOrEmpty(entry.AssetPathSelected) || entry.NumberForPathSelected != number)
-					{
-						entry.AssetPathSelected = string.Format(" {0}. <color=#{1}>{2}</color><b>{3}</b>",
-							(number + 1).ToString(),
-							BuildReportTool.Window.Screen.AssetList.GetPathColor(true),
-							BuildReportTool.Util.GetAssetPath(assetPath),
-							BuildReportTool.Util.GetAssetFilename(assetPath));
-						entry.NumberForPathSelected = number;
-						_prettyAssetLabelsWithNumber[assetPath] = entry;
-					}
-
-					return entry.AssetPathSelected;
-				}
-				else
-				{
-					if (string.IsNullOrEmpty(entry.AssetPath) || entry.NumberForPath != number)
-					{
-						entry.AssetPath = string.Format(" {0}. <color=#{1}>{2}</color><b>{3}</b>",
-							(number + 1).ToString(),
-							BuildReportTool.Window.Screen.AssetList.GetPathColor(false),
-							BuildReportTool.Util.GetAssetPath(assetPath),
-							BuildReportTool.Util.GetAssetFilename(assetPath));
-						entry.NumberForPath = number;
-						_prettyAssetLabelsWithNumber[assetPath] = entry;
-					}
-
-					return entry.AssetPath;
-				}
-			}
-			else
-			{
-				if (string.IsNullOrEmpty(entry.AssetName) || entry.NumberForName != number)
-				{
-					entry.AssetName = string.Format(" {0}. <b>{1}</b>",
-						(number + 1).ToString(), BuildReportTool.Util.GetAssetFilename(assetPath));
-					entry.NumberForName = number;
-					_prettyAssetLabelsWithNumber[assetPath] = entry;
-				}
-
-				return entry.AssetName;
-			}
-		}
-
-		/// <summary>
-		/// The size of the Asset Usage Panel that shows up below the Asset Screen.
-		/// </summary>
-		Rect _assetUsageRect;
-
-		/// <summary>
-		/// Upper portion of the Asset Usage Panel that shows toolbar plus contextual info.
-		/// </summary>
-		Rect _assetInfoPanelRect;
-
-		/// <summary>
-		/// Scrollbar pos for the asset user list.
-		/// </summary>
-		Vector2 _assetUsagePanelScrollbarPos;
-
-		/// <summary>
-		/// Re-used GUIContent for drawing the asset user list.
-		/// </summary>
-		readonly GUIContent _assetUsageEntryLabel = new GUIContent();
-
-		/// <summary>
-		/// Which asset is selected/highlighted in the Asset User List.
-		/// </summary>
-		int _selectedAssetUserIdx = -1;
-
-		/// <summary>
-		/// Used when the Asset User List is showing "All" (flattened),
-		/// meaning show both direct and indirect users in one giant list.
-		///
-		/// This is the chain of "which is used by", "which is used by", etc.
-		/// chain for the currently selected asset user.
-		///
-		/// The very first element in the list is the asset being looked at,
-		/// and the very last element is, most often, the scene where it's used,
-		/// telling the user why the asset got included in the build.
-		/// </summary>
-		readonly List<AssetUsageAncestry> _assetUsageAncestry = new List<AssetUsageAncestry>();
-
-		/// <summary>
-		/// Used when the Asset User List is showing "Direct",
-		/// meaning showing only direct users.
-		///
-		/// This is the breadcrumb history of inspected direct users.
-		/// </summary>
-		readonly List<AssetUserCrumb> _assetUserCrumbs = new List<AssetUserCrumb>();
-
-		struct AssetUserCrumb
-		{
-			public string AssetPath;
-			public float ScrollbarPosY;
-		}
-
-		int _assetUserCrumbActiveIdx;
-
-		float _preferredDirectAssetUserListViewHeight;
-
-		/// <summary>
-		/// True when the asset selected is from a Resources folder, meaning it has no
-		/// asset dependencies. It is automatically included in the build because of being
-		/// in a Resources folder.
-		/// </summary>
-		bool _selectedIsAResourcesAsset;
-
-		/// <summary>
-		/// When the selected asset in the main asset list is a Resources asset, this stores
-		/// the filename and icon.
-		/// </summary>
-		readonly GUIContent _selectedResourcesAsset = new GUIContent();
-
-		/// <summary>
-		/// Path to the selected Resources asset, starting from "Assets/"
-		/// </summary>
-		string _selectedResourcesAssetPath;
-
-		/// <summary>
-		/// Special case when a scene is using an fbx directly (did not save it as a prefab first).
-		/// In this case, it's impossible to tell whether the fbx in that scene is using its
-		/// default material, or if it's overriden to use no material. So, without opening the scene
-		/// and checking directly, we cannot be sure of the Asset Usage Ancestry in this situation.
-		/// </summary>
-		bool _assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene;
-
-		/// <summary>
-		/// Toggled by user to show a list of all users of selected asset, "users" being other assets.
-		/// </summary>
-		bool _showAssetUsagesList;
-
-		struct AssetUsageAncestry
-		{
-			public GUIContent Label;
-			public string AssetPath;
-			public bool CyclicDependency;
-		}
-
-		Texture _indentLine;
-
-		static readonly string[] AssetUsageDisplayLabel = new[]
-		{
-			"All", "Direct", "End"
-		};
-
-		const int ASSET_USAGE_DISPLAY_ALL = 0;
-		const int ASSET_USAGE_DISPLAY_DIRECT = 1;
-		const int ASSET_USAGE_DISPLAY_END = 2;
-
-		int _selectedAssetUsageDisplayIdx = ASSET_USAGE_DISPLAY_ALL;
-
-		const int ASSET_USAGE_HISTORY_ROW_SPACING = 2;
-		const int ASSET_USAGE_HISTORY_LAST_ROW_PADDING = 2;
-
-		const int ASSET_INFO_ROW_HEIGHT = 20;
-
-		// ----------------------------------------------------------------
-
-		static bool IsFileNextToFile(List<AssetUsageAncestry> list, int idx, string fileTypeInIdx, string fileTypeInNext)
-		{
-			return !string.IsNullOrEmpty(list[idx].AssetPath) && list[idx].AssetPath.IsFileOfType(fileTypeInIdx) &&
-			       (idx < list.Count - 1) &&
-			       !string.IsNullOrEmpty(list[idx + 1].AssetPath) && list[idx + 1].AssetPath.IsFileOfType(fileTypeInNext);
-		}
-
-		public void DrawAssetUsage(Rect position, BuildReportTool.AssetList listToDisplay,
-			BuildInfo buildReportToDisplay, AssetDependencies assetDependencies)
-		{
-			if (buildReportToDisplay == null)
-			{
-				_assetUsageRect.height = 0;
-				return;
-			}
-
-			if (listToDisplay == null)
-			{
-				_assetUsageRect.height = 0;
-				return;
-			}
-
-			if (assetDependencies == null)
-			{
-				_assetUsageRect.height = 0;
-				return;
-			}
-
-			var assetStyle = GUI.skin.FindStyle("Asset");
-			if (assetStyle == null)
-			{
-				assetStyle = GUI.skin.label;
-			}
-
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+    public partial class AssetList
+    {
+        // ----------------------------------------------------------------
+
+        /// <summary>
+        /// "is used by"
+        /// </summary>
+        private static readonly GUIContent AssetUsageIsUsedByLabel = new("is used by");
+
+        /// <summary>
+        /// "which is used by"
+        /// </summary>
+        private static readonly GUIContent AssetUsageWhichIsUsedByLabel = new("which is used by");
+
+        // ---------------------------------------
+
+        /// <summary>
+        /// "is used as default material by"
+        /// </summary>
+        private static readonly GUIContent AssetUsageIsUsedAsDefaultMaterialByLabel = new("is used as default material by");
+
+        /// <summary>
+        /// "which is used as default material by"
+        /// </summary>
+        private static readonly GUIContent AssetUsageWhichIsUsedAsDefaultMaterialByLabel = new("which is used as default material by");
+
+        // ---------------------------------------
+
+        /// <summary>
+        /// "is used as default value by"
+        /// </summary>
+        private static readonly GUIContent AssetUsageIsUsedAsDefaultValueByLabel = new("is used as default value by");
+
+        /// <summary>
+        /// "which is used as default value by"
+        /// </summary>
+        private static readonly GUIContent AssetUsageWhichIsUsedAsDefaultValueByLabel = new("which is used as default value by");
+
+        // ---------------------------------------
+
+        /// <summary>
+        /// "is a Resources asset, so it's always in the build. But it's also used by"
+        /// </summary>
+        private static readonly GUIContent AssetUsageIsAResourcesAssetButAlsoUsedByLabel =
+            new("is a Resources asset, so it's always in the build. But it's also used by");
+
+        /// <summary>
+        /// "which is a Resources asset, so it's always in the build. But it's also used by"
+        /// </summary>
+        private static readonly GUIContent AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel =
+            new("which is a Resources asset, so it's always in the build. But it's also used by");
+
+        // --------------------------------------------------
+
+        /// <summary>
+        /// "which is in the build"
+        /// </summary>
+        private static readonly GUIContent AssetUsageWhichIsInTheBuildLabel = new("which is in the build");
+
+        /// <summary>
+        /// "is a Resources asset, so it's always in the build"
+        /// </summary>
+        private static readonly GUIContent AssetUsageIsAResourcesAssetLabel = new("is a Resources asset, so it's always in the build");
+
+        /// <summary>
+        /// "which is a Resources asset, so it's always in the build"
+        /// </summary>
+        private static readonly GUIContent AssetUsageWhichIsAResourcesAssetLabel = new("which is a Resources asset, so it's always in the build");
+
+        /// <summary>
+        /// "(cyclic dependency)"
+        /// </summary>
+        private static readonly GUIContent AssetUsageWhichIsACyclicDependencyLabel = new("(cyclic dependency)");
+
+        private static readonly GUIContent AssetUsageAncestryDefaultMaterialInFbxOfScene = new(
+            "* even though the scene is certainly using the material, Build Report Tool is not certain that the instantiated fbx in the scene is really the one using the material");
+
+        // ----------------------------------------------------------------
+
+        private struct PrettyAssetLabel
+        {
+            public string AssetPath;
+            public string AssetPathSelected;
+            public string AssetName;
+        }
+
+        private struct PrettyAssetLabelWithNumber
+        {
+            public string AssetPath;
+            public string AssetPathSelected;
+            public string AssetName;
+            public int    NumberForPath;
+            public int    NumberForPathSelected;
+            public int    NumberForName;
+        }
+
+        private readonly Dictionary<string, PrettyAssetLabel> _prettyAssetLabels = new();
+
+        private readonly Dictionary<string, PrettyAssetLabelWithNumber> _prettyAssetLabelsWithNumber = new();
+
+        private string GetPrettyAssetPath(string assetPath, bool showAssetPath, bool selected)
+        {
+            PrettyAssetLabel entry;
+
+            if (this._prettyAssetLabels.ContainsKey(assetPath))
+            {
+                entry = this._prettyAssetLabels[assetPath];
+            }
+            else
+            {
+                var path     = Util.GetAssetPath(assetPath);
+                var filename = Util.GetAssetFilename(assetPath);
+
+                entry.AssetPathSelected = string.Format("<color=#{0}>{1}</color><color=white><b>{2}</b></color>",
+                    GetPathColor(true),
+                    path,
+                    filename);
+
+                entry.AssetPath = string.Format("<color=#{0}>{1}</color><b>{2}</b>",
+                    GetPathColor(false),
+                    path,
+                    filename);
+
+                entry.AssetName = string.Format("<b>{0}</b>", filename);
+
+                this._prettyAssetLabels.Add(assetPath, entry);
+            }
+
+            if (showAssetPath)
+            {
+                if (selected)
+                    return entry.AssetPathSelected;
+                else
+                    return entry.AssetPath;
+            }
+            else
+            {
+                return entry.AssetName;
+            }
+        }
+
+        private string GetPrettyAssetPath(string assetPath, int number, bool showAssetPath, bool selected)
+        {
+            PrettyAssetLabelWithNumber entry;
+
+            if (this._prettyAssetLabelsWithNumber.ContainsKey(assetPath))
+            {
+                entry = this._prettyAssetLabelsWithNumber[assetPath];
+            }
+            else
+            {
+                entry.AssetPath             = null;
+                entry.AssetPathSelected     = null;
+                entry.AssetName             = null;
+                entry.NumberForPath         = -1;
+                entry.NumberForPathSelected = -1;
+                entry.NumberForName         = -1;
+                this._prettyAssetLabelsWithNumber.Add(assetPath, entry);
+            }
+
+            if (showAssetPath)
+            {
+                if (selected)
+                {
+                    if (string.IsNullOrEmpty(entry.AssetPathSelected) || entry.NumberForPathSelected != number)
+                    {
+                        entry.AssetPathSelected = string.Format(" {0}. <color=#{1}>{2}</color><b>{3}</b>",
+                            (number + 1).ToString(),
+                            GetPathColor(true),
+                            Util.GetAssetPath(assetPath),
+                            Util.GetAssetFilename(assetPath));
+                        entry.NumberForPathSelected                  = number;
+                        this._prettyAssetLabelsWithNumber[assetPath] = entry;
+                    }
+
+                    return entry.AssetPathSelected;
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(entry.AssetPath) || entry.NumberForPath != number)
+                    {
+                        entry.AssetPath = string.Format(" {0}. <color=#{1}>{2}</color><b>{3}</b>",
+                            (number + 1).ToString(),
+                            GetPathColor(false),
+                            Util.GetAssetPath(assetPath),
+                            Util.GetAssetFilename(assetPath));
+                        entry.NumberForPath                          = number;
+                        this._prettyAssetLabelsWithNumber[assetPath] = entry;
+                    }
+
+                    return entry.AssetPath;
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(entry.AssetName) || entry.NumberForName != number)
+                {
+                    entry.AssetName = string.Format(" {0}. <b>{1}</b>",
+                        (number + 1).ToString(),
+                        Util.GetAssetFilename(assetPath));
+                    entry.NumberForName                          = number;
+                    this._prettyAssetLabelsWithNumber[assetPath] = entry;
+                }
+
+                return entry.AssetName;
+            }
+        }
+
+        /// <summary>
+        /// The size of the Asset Usage Panel that shows up below the Asset Screen.
+        /// </summary>
+        private Rect _assetUsageRect;
+
+        /// <summary>
+        /// Upper portion of the Asset Usage Panel that shows toolbar plus contextual info.
+        /// </summary>
+        private Rect _assetInfoPanelRect;
+
+        /// <summary>
+        /// Scrollbar pos for the asset user list.
+        /// </summary>
+        private Vector2 _assetUsagePanelScrollbarPos;
+
+        /// <summary>
+        /// Re-used GUIContent for drawing the asset user list.
+        /// </summary>
+        private readonly GUIContent _assetUsageEntryLabel = new();
+
+        /// <summary>
+        /// Which asset is selected/highlighted in the Asset User List.
+        /// </summary>
+        private int _selectedAssetUserIdx = -1;
+
+        /// <summary>
+        /// Used when the Asset User List is showing "All" (flattened),
+        /// meaning show both direct and indirect users in one giant list.
+        ///
+        /// This is the chain of "which is used by", "which is used by", etc.
+        /// chain for the currently selected asset user.
+        ///
+        /// The very first element in the list is the asset being looked at,
+        /// and the very last element is, most often, the scene where it's used,
+        /// telling the user why the asset got included in the build.
+        /// </summary>
+        private readonly List<AssetUsageAncestry> _assetUsageAncestry = new();
+
+        /// <summary>
+        /// Used when the Asset User List is showing "Direct",
+        /// meaning showing only direct users.
+        ///
+        /// This is the breadcrumb history of inspected direct users.
+        /// </summary>
+        private readonly List<AssetUserCrumb> _assetUserCrumbs = new();
+
+        private struct AssetUserCrumb
+        {
+            public string AssetPath;
+            public float  ScrollbarPosY;
+        }
+
+        private int _assetUserCrumbActiveIdx;
+
+        private float _preferredDirectAssetUserListViewHeight;
+
+        /// <summary>
+        /// True when the asset selected is from a Resources folder, meaning it has no
+        /// asset dependencies. It is automatically included in the build because of being
+        /// in a Resources folder.
+        /// </summary>
+        private bool _selectedIsAResourcesAsset;
+
+        /// <summary>
+        /// When the selected asset in the main asset list is a Resources asset, this stores
+        /// the filename and icon.
+        /// </summary>
+        private readonly GUIContent _selectedResourcesAsset = new();
+
+        /// <summary>
+        /// Path to the selected Resources asset, starting from "Assets/"
+        /// </summary>
+        private string _selectedResourcesAssetPath;
+
+        /// <summary>
+        /// Special case when a scene is using an fbx directly (did not save it as a prefab first).
+        /// In this case, it's impossible to tell whether the fbx in that scene is using its
+        /// default material, or if it's overriden to use no material. So, without opening the scene
+        /// and checking directly, we cannot be sure of the Asset Usage Ancestry in this situation.
+        /// </summary>
+        private bool _assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene;
+
+        /// <summary>
+        /// Toggled by user to show a list of all users of selected asset, "users" being other assets.
+        /// </summary>
+        private bool _showAssetUsagesList;
+
+        private struct AssetUsageAncestry
+        {
+            public GUIContent Label;
+            public string     AssetPath;
+            public bool       CyclicDependency;
+        }
+
+        private Texture _indentLine;
+
+        private static readonly string[] AssetUsageDisplayLabel = new[]
+        {
+            "All", "Direct", "End",
+        };
+
+        private const int ASSET_USAGE_DISPLAY_ALL    = 0;
+        private const int ASSET_USAGE_DISPLAY_DIRECT = 1;
+        private const int ASSET_USAGE_DISPLAY_END    = 2;
+
+        private int _selectedAssetUsageDisplayIdx = ASSET_USAGE_DISPLAY_ALL;
+
+        private const int ASSET_USAGE_HISTORY_ROW_SPACING      = 2;
+        private const int ASSET_USAGE_HISTORY_LAST_ROW_PADDING = 2;
+
+        private const int ASSET_INFO_ROW_HEIGHT = 20;
+
+        // ----------------------------------------------------------------
+
+        private static bool IsFileNextToFile(List<AssetUsageAncestry> list, int idx, string fileTypeInIdx, string fileTypeInNext)
+        {
+            return !string.IsNullOrEmpty(list[idx].AssetPath) && list[idx].AssetPath.IsFileOfType(fileTypeInIdx) && idx < list.Count - 1 && !string.IsNullOrEmpty(list[idx + 1].AssetPath) && list[idx + 1].AssetPath.IsFileOfType(fileTypeInNext);
+        }
+
+        public void DrawAssetUsage(
+            Rect                      position,
+            BuildReportTool.AssetList listToDisplay,
+            BuildInfo                 buildReportToDisplay,
+            AssetDependencies         assetDependencies
+        )
+        {
+            if (buildReportToDisplay == null)
+            {
+                this._assetUsageRect.height = 0;
+                return;
+            }
+
+            if (listToDisplay == null)
+            {
+                this._assetUsageRect.height = 0;
+                return;
+            }
+
+            if (assetDependencies == null)
+            {
+                this._assetUsageRect.height = 0;
+                return;
+            }
+
+            var assetStyle                     = GUI.skin.FindStyle("Asset");
+            if (assetStyle == null) assetStyle = GUI.skin.label;
+
+            #if BRT_ASSET_LIST_SCREEN_DEBUG
 			_debugText.AppendFormat("listToDisplay.GetSelectedCount(): {0}\n",
 				listToDisplay.GetSelectedCount().ToString());
-#endif
+            #endif
 
-			if (listToDisplay.GetSelectedCount() != 1)
-			{
-				// no asset selected, or too many selected
-				_assetUsageRect.height = 0;
-				return;
-			}
+            if (listToDisplay.GetSelectedCount() != 1)
+            {
+                // no asset selected, or too many selected
+                this._assetUsageRect.height = 0;
+                return;
+            }
 
-			var selectedAsset = listToDisplay.GetLastSelected();
+            var selectedAsset = listToDisplay.GetLastSelected();
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+            #if BRT_ASSET_LIST_SCREEN_DEBUG
 			_debugText.AppendFormat("selectedAsset: {0}\n",
 				selectedAsset != null ? selectedAsset.Name : "<i>null</i>");
-#endif
+            #endif
 
-			if (selectedAsset == null)
-			{
-				// selected is null?
-				_assetUsageRect.height = 0;
-				return;
-			}
+            if (selectedAsset == null)
+            {
+                // selected is null?
+                this._assetUsageRect.height = 0;
+                return;
+            }
 
-			var dependencies = assetDependencies.GetAssetDependencies();
+            var dependencies = assetDependencies.GetAssetDependencies();
 
-			if (dependencies == null)
-			{
-				_assetUsageRect.height = 0;
-				return;
-			}
+            if (dependencies == null)
+            {
+                this._assetUsageRect.height = 0;
+                return;
+            }
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+            #if BRT_ASSET_LIST_SCREEN_DEBUG
 			_debugText.AppendFormat("AssetDependencies has \"{0}\" ? {1}\n",
 				selectedAsset.Name,
 				dependencies.ContainsKey(selectedAsset.Name).ToString());
-#endif
+            #endif
 
-			var selectedHasNoAssetDependencies = false;
-			DependencyEntry selectedAssetDependencies;
+            var             selectedHasNoAssetDependencies = false;
+            DependencyEntry selectedAssetDependencies;
 
-			if (dependencies.TryGetValue(selectedAsset.Name, out selectedAssetDependencies))
-			{
-				// There may be record of selected Asset but check first if
-				// selected Asset has no recorded users
+            if (dependencies.TryGetValue(selectedAsset.Name, out selectedAssetDependencies))
+            {
+                // There may be record of selected Asset but check first if
+                // selected Asset has no recorded users
 
-				var selectedAssetUsers = selectedAssetDependencies != null ? selectedAssetDependencies.Users : null;
+                var selectedAssetUsers = selectedAssetDependencies != null ? selectedAssetDependencies.Users : null;
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                #if BRT_ASSET_LIST_SCREEN_DEBUG
 				_debugText.AppendFormat("selectedAssetDependencies.Users.Count: {0}\n",
 					selectedAssetUsers != null ? selectedAssetUsers.Count.ToString() : "-1");
-#endif
-				if (selectedAssetUsers == null || selectedAssetUsers.Count <= 0)
-				{
-					// No asset is using the selected asset
-					selectedHasNoAssetDependencies = true;
-				}
-			}
-			else
-			{
-				// selected asset is not in the calculated
-				// Asset Dependencies of the project
-				selectedAssetDependencies = null;
-				selectedHasNoAssetDependencies = true;
-			}
+                #endif
+                if (selectedAssetUsers == null || selectedAssetUsers.Count <= 0)
+                    // No asset is using the selected asset
+                    selectedHasNoAssetDependencies = true;
+            }
+            else
+            {
+                // selected asset is not in the calculated
+                // Asset Dependencies of the project
+                selectedAssetDependencies      = null;
+                selectedHasNoAssetDependencies = true;
+            }
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+            #if BRT_ASSET_LIST_SCREEN_DEBUG
 			_debugText.AppendFormat("selectedHasNoAssetDependencies: {0}\n_selectedIsAResourcesAsset: {1}\n",
 				selectedHasNoAssetDependencies.ToString(), _selectedIsAResourcesAsset.ToString());
-#endif
+            #endif
 
-			var assetInfoPanelNoListStyle = GUI.skin.FindStyle("AssetInfoPanelNoList");
-			if (assetInfoPanelNoListStyle == null)
-			{
-				assetInfoPanelNoListStyle = GUI.skin.box;
-			}
+            var assetInfoPanelNoListStyle                                    = GUI.skin.FindStyle("AssetInfoPanelNoList");
+            if (assetInfoPanelNoListStyle == null) assetInfoPanelNoListStyle = GUI.skin.box;
 
-			GUIStyle assetInfoPanelStyle;
-			if (_showAssetUsagesList)
-			{
-				if (_selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_ALL)
-				{
-					assetInfoPanelStyle = GUI.skin.FindStyle("AssetInfoPanelToolbarTopAllList");
-				}
-				else
-				{
-					assetInfoPanelStyle = GUI.skin.FindStyle("AssetInfoPanelToolbarTop");
-				}
-			}
-			else
-			{
-				assetInfoPanelStyle = GUI.skin.FindStyle("AssetInfoPanel");
-			}
-			if (assetInfoPanelStyle == null)
-			{
-				assetInfoPanelStyle = GUI.skin.box;
-			}
+            GUIStyle assetInfoPanelStyle;
+            if (this._showAssetUsagesList)
+            {
+                if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_ALL)
+                    assetInfoPanelStyle = GUI.skin.FindStyle("AssetInfoPanelToolbarTopAllList");
+                else
+                    assetInfoPanelStyle = GUI.skin.FindStyle("AssetInfoPanelToolbarTop");
+            }
+            else
+            {
+                assetInfoPanelStyle = GUI.skin.FindStyle("AssetInfoPanel");
+            }
+            if (assetInfoPanelStyle == null) assetInfoPanelStyle = GUI.skin.box;
 
-			var labelSingleLineStyle = GUI.skin.FindStyle("LabelSingleLine");
-			if (labelSingleLineStyle == null)
-			{
-				labelSingleLineStyle = GUI.skin.label;
-			}
+            var labelSingleLineStyle                               = GUI.skin.FindStyle("LabelSingleLine");
+            if (labelSingleLineStyle == null) labelSingleLineStyle = GUI.skin.label;
 
-			if (selectedHasNoAssetDependencies)
-			{
-				// Selected asset is not used by another asset and/or is not using any asset, so we will abort.
+            if (selectedHasNoAssetDependencies)
+            {
+                // Selected asset is not used by another asset and/or is not using any asset, so we will abort.
 
-				// But if it's a Resources asset, we will at least indicate so.
-				// It's most likely this Resources asset is only referenced in code,
-				// (or also could be not at all!)
-				if (_selectedIsAResourcesAsset)
-				{
-					var height = ASSET_INFO_ROW_HEIGHT + assetInfoPanelNoListStyle.padding.vertical;
-					_assetUsageRect =
-						new Rect(0, position.height - height, position.width, height);
+                // But if it's a Resources asset, we will at least indicate so.
+                // It's most likely this Resources asset is only referenced in code,
+                // (or also could be not at all!)
+                if (this._selectedIsAResourcesAsset)
+                {
+                    var height = ASSET_INFO_ROW_HEIGHT + assetInfoPanelNoListStyle.padding.vertical;
+                    this._assetUsageRect =
+                        new(0, position.height - height, position.width, height);
 
-					_assetUsageRect.y = Mathf.RoundToInt(_assetUsageRect.y);
+                    this._assetUsageRect.y = Mathf.RoundToInt(this._assetUsageRect.y);
 
-					GUILayout.Space(height);
-					GUILayout.BeginArea(_assetUsageRect);
+                    GUILayout.Space(height);
+                    GUILayout.BeginArea(this._assetUsageRect);
 
+                    GUILayout.BeginVertical(string.Empty, assetInfoPanelNoListStyle, BRT_BuildReportWindow.LayoutNone);
+                    GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
 
-					GUILayout.BeginVertical(string.Empty, assetInfoPanelNoListStyle, BRT_BuildReportWindow.LayoutNone);
-					GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
+                    if (GUILayout.Button(this._selectedResourcesAsset, assetStyle, BRT_BuildReportWindow.LayoutNone)) Utility.PingAssetInProject(this._selectedResourcesAssetPath);
 
-					if (GUILayout.Button(_selectedResourcesAsset, assetStyle, BRT_BuildReportWindow.LayoutNone))
-					{
-						Utility.PingAssetInProject(_selectedResourcesAssetPath);
-					}
+                    if (Event.current.type == EventType.Repaint && (Event.current.mousePosition.x < position.width || Event.current.mousePosition.y < position.height))
+                    {
+                        var assetUsageAncestryEntryRect = GUILayoutUtility.GetLastRect();
 
-					if (Event.current.type == EventType.Repaint &&
-					    (Event.current.mousePosition.x < position.width ||
-					     Event.current.mousePosition.y < position.height))
-					{
-						var assetUsageAncestryEntryRect = GUILayoutUtility.GetLastRect();
+                        if (assetUsageAncestryEntryRect.Contains(Event.current.mousePosition))
+                        {
+                            // there really isn't an asset usage ancestry list in this case,
+                            // but we do this to flag the code that a tooltip should be drawn
+                            this._assetUsageAncestryHoveredIdx = 0;
 
-						if (assetUsageAncestryEntryRect.Contains(Event.current.mousePosition))
-						{
-							// there really isn't an asset usage ancestry list in this case,
-							// but we do this to flag the code that a tooltip should be drawn
-							_assetUsageAncestryHoveredIdx = 0;
+                            // ----------------
+                            // update what is considered the hovered asset, for use later on
+                            // when the tooltip will be drawn
+                            BRT_BuildReportWindow.UpdateHoveredAsset(this._selectedResourcesAssetPath,
+                                assetUsageAncestryEntryRect,
+                                this.IsShowingUsedAssets,
+                                buildReportToDisplay,
+                                assetDependencies);
 
-							// ----------------
-							// update what is considered the hovered asset, for use later on
-							// when the tooltip will be drawn
-							BRT_BuildReportWindow.UpdateHoveredAsset(_selectedResourcesAssetPath,
-								assetUsageAncestryEntryRect, IsShowingUsedAssets,
-								buildReportToDisplay, assetDependencies);
+                            // ----------------
+                            // if mouse is hovering over the correct area, we signify that
+                            // the tooltip thumbnail should be drawn
+                            if (BuildReportTool.Options.ShowTooltipThumbnail && BRT_BuildReportWindow.GetAssetPreview(this._selectedResourcesAssetPath) != null)
+                                this._shouldShowThumbnailOnHoveredAsset = true;
+                            else
+                                this._shouldShowThumbnailOnHoveredAsset = false;
+                        }
+                        else
+                            // there's only 1 asset being displayed in the asset usage ancestry panel
+                            // which is the resources asset that's selected
+                            // so if the mouse isn't on it, then we're sure it's not on any
+                            // other asset usage ancestry entry
+                        {
+                            this._assetUsageAncestryHoveredIdx = -1;
+                        }
+                    }
 
-							// ----------------
-							// if mouse is hovering over the correct area, we signify that
-							// the tooltip thumbnail should be drawn
-							if (BuildReportTool.Options.ShowTooltipThumbnail &&
-							    BRT_BuildReportWindow.GetAssetPreview(_selectedResourcesAssetPath) != null)
-							{
-								_shouldShowThumbnailOnHoveredAsset = true;
-							}
-							else
-							{
-								_shouldShowThumbnailOnHoveredAsset = false;
-							}
-						}
-						else
-						{
-							// there's only 1 asset being displayed in the asset usage ancestry panel
-							// which is the resources asset that's selected
-							// so if the mouse isn't on it, then we're sure it's not on any
-							// other asset usage ancestry entry
-							_assetUsageAncestryHoveredIdx = -1;
-						}
-					}
+                    GUILayout.Label(AssetUsageIsAResourcesAssetLabel, labelSingleLineStyle, BRT_BuildReportWindow.LayoutNone);
 
-					GUILayout.Label(AssetUsageIsAResourcesAssetLabel, labelSingleLineStyle, BRT_BuildReportWindow.LayoutNone);
+                    GUILayout.EndHorizontal();
+                    GUILayout.EndVertical();
 
-					GUILayout.EndHorizontal();
-					GUILayout.EndVertical();
+                    GUILayout.EndArea();
+                }
+                else
+                {
+                    this._assetUsageRect.height = 0;
+                }
 
-					GUILayout.EndArea();
-				}
-				else
-				{
-					_assetUsageRect.height = 0;
-				}
+                return;
+            }
 
-				return;
-			}
+            // at this point, we are sure selectedAssetDependencies isn't null
 
-			// at this point, we are sure selectedAssetDependencies isn't null
+            var usersFlattened = selectedAssetDependencies.UsersFlattened;
 
-			var usersFlattened = selectedAssetDependencies.UsersFlattened;
+            if (usersFlattened == null || usersFlattened.Count == 0)
+            {
+                // no users?
+                this._assetUsageRect.height = 0;
+                return;
+            }
 
-			if (usersFlattened == null || usersFlattened.Count == 0)
-			{
-				// no users?
-				_assetUsageRect.height = 0;
-				return;
-			}
+            var expandButtonStyle                            = GUI.skin.FindStyle("ExpandButton");
+            if (expandButtonStyle == null) expandButtonStyle = GUI.skin.button;
 
-			var expandButtonStyle = GUI.skin.FindStyle("ExpandButton");
-			if (expandButtonStyle == null)
-			{
-				expandButtonStyle = GUI.skin.button;
-			}
+            var availableWidth = position.width - 10;
 
-			var availableWidth = position.width - 10;
-
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+            #if BRT_ASSET_LIST_SCREEN_DEBUG
 			_debugText.AppendFormat("availableWidth: {0}\nexpandButtonStyle.lineHeight: {1}\n",
 				availableWidth.ToString(CultureInfo.InvariantCulture),
 				expandButtonStyle.lineHeight.ToString(CultureInfo.InvariantCulture));
 
-#endif
+            #endif
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+            #if BRT_ASSET_LIST_SCREEN_DEBUG
 			_debugText.AppendFormat("_selectedAssetUserIdx: {0}\n_showAllAssetUsagesList: {1}\n",
 				_selectedAssetUserIdx.ToString(),
 				_showAssetUsagesList.ToString());
-#endif
+            #endif
 
-			// expand button height is the height of the small toolbar
-			float assetInfoPanelHeight = expandButtonStyle.lineHeight;
+            // expand button height is the height of the small toolbar
+            var assetInfoPanelHeight = expandButtonStyle.lineHeight;
 
-			switch (_selectedAssetUsageDisplayIdx)
-			{
-				case ASSET_USAGE_DISPLAY_ALL:
-				{
-					var numberOfRowsInAssetUsageAncestry = 0;
-					if (_selectedAssetUserIdx != -1)
-					{
-						numberOfRowsInAssetUsageAncestry =
-							GetNumberOfAssetUsageAncestryRows(_assetUsageAncestry, availableWidth);
+            switch (this._selectedAssetUsageDisplayIdx)
+            {
+                case ASSET_USAGE_DISPLAY_ALL:
+                {
+                    var numberOfRowsInAssetUsageAncestry = 0;
+                    if (this._selectedAssetUserIdx != -1)
+                    {
+                        numberOfRowsInAssetUsageAncestry = this.GetNumberOfAssetUsageAncestryRows(this._assetUsageAncestry, availableWidth);
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                        #if BRT_ASSET_LIST_SCREEN_DEBUG
 						_debugText.AppendFormat("numberOfRowsInAssetUsageTraceHistory: {0}\n",
 							numberOfRowsInAssetUsageAncestry.ToString());
-#endif
-					}
+                        #endif
+                    }
 
-					assetInfoPanelHeight +=
-						(ASSET_INFO_ROW_HEIGHT * numberOfRowsInAssetUsageAncestry) + assetInfoPanelStyle.padding.vertical;
+                    assetInfoPanelHeight +=
+                        ASSET_INFO_ROW_HEIGHT * numberOfRowsInAssetUsageAncestry + assetInfoPanelStyle.padding.vertical;
 
-					if (numberOfRowsInAssetUsageAncestry > 1)
-					{
-						// asset usage ancestry is using up more than 1 row
-						// include the spacing in-between rows
-						assetInfoPanelHeight += ASSET_USAGE_HISTORY_ROW_SPACING * (numberOfRowsInAssetUsageAncestry - 1);
-						assetInfoPanelHeight += ASSET_USAGE_HISTORY_LAST_ROW_PADDING;
-					}
+                    if (numberOfRowsInAssetUsageAncestry > 1)
+                    {
+                        // asset usage ancestry is using up more than 1 row
+                        // include the spacing in-between rows
+                        assetInfoPanelHeight += ASSET_USAGE_HISTORY_ROW_SPACING * (numberOfRowsInAssetUsageAncestry - 1);
+                        assetInfoPanelHeight += ASSET_USAGE_HISTORY_LAST_ROW_PADDING;
+                    }
 
-					if (_assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene)
-					{
-						assetInfoPanelHeight +=
-							GUI.skin.label.CalcHeight(AssetUsageAncestryDefaultMaterialInFbxOfScene, position.width) +
-							GUI.skin.label.margin.vertical;
-					}
+                    if (this._assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene)
+                        assetInfoPanelHeight +=
+                            GUI.skin.label.CalcHeight(AssetUsageAncestryDefaultMaterialInFbxOfScene, position.width) + GUI.skin.label.margin.vertical;
 
-					break;
-				}
+                    break;
+                }
 
-				case ASSET_USAGE_DISPLAY_DIRECT:
-					//assetUsageToolbarHeight += breadcrumbLeftStyle.lineHeight + assetInfoPanelStyle.padding.vertical;
+                case ASSET_USAGE_DISPLAY_DIRECT:
+                    //assetUsageToolbarHeight += breadcrumbLeftStyle.lineHeight + assetInfoPanelStyle.padding.vertical;
 
-					// height of the breadcrumbs chain + padding
-					// there's only one row of breadcrumbs so it's a constant value
-					assetInfoPanelHeight += 20;
-					break;
-			}
+                    // height of the breadcrumbs chain + padding
+                    // there's only one row of breadcrumbs so it's a constant value
+                    assetInfoPanelHeight += 20;
+                    break;
+            }
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+            #if BRT_ASSET_LIST_SCREEN_DEBUG
 			_debugText.AppendFormat("_selectedAssetUsageDisplayIdx: {0}\nassetInfoToolbarHeight: {1}\n",
 				_selectedAssetUsageDisplayIdx.ToString(),
 				assetInfoPanelHeight.ToString(CultureInfo.InvariantCulture));
-#endif
-			// ----------------------------------------------------
+            #endif
+            // ----------------------------------------------------
 
-			int assetUsageScrollViewHeight;
-			int heightToUse;
+            int assetUsageScrollViewHeight;
+            int heightToUse;
 
-			var assetUsageListScrollViewHeightIsClamped = false;
+            var assetUsageListScrollViewHeightIsClamped = false;
 
-			// ----------------------------------------------------
-			// getting the height of the asset users list
+            // ----------------------------------------------------
+            // getting the height of the asset users list
 
-			float assetUsageListHeight = 0;
-			float assetUsageListRealHeight = 0;
-			if (_showAssetUsagesList)
-			{
-				switch (_selectedAssetUsageDisplayIdx)
-				{
-					case ASSET_USAGE_DISPLAY_ALL:
-						// currently showing asset usage flattened list
-						assetUsageListHeight =
-							(BRT_BuildReportWindow.LIST_HEIGHT * usersFlattened.Count) + 10; // 10 for some padding
-						assetUsageListRealHeight = assetUsageListHeight;
-						break;
+            float assetUsageListHeight     = 0;
+            float assetUsageListRealHeight = 0;
+            if (this._showAssetUsagesList)
+            {
+                switch (this._selectedAssetUsageDisplayIdx)
+                {
+                    case ASSET_USAGE_DISPLAY_ALL:
+                        // currently showing asset usage flattened list
+                        assetUsageListHeight =
+                            BRT_BuildReportWindow.LIST_HEIGHT * usersFlattened.Count + 10; // 10 for some padding
+                        assetUsageListRealHeight = assetUsageListHeight;
+                        break;
 
-					case ASSET_USAGE_DISPLAY_DIRECT:
-						// currently showing asset direct users list
-						var countToUse = selectedAssetDependencies.Users.Count;
+                    case ASSET_USAGE_DISPLAY_DIRECT:
+                        // currently showing asset direct users list
+                        var countToUse = selectedAssetDependencies.Users.Count;
 
-						if (_assetUserCrumbs.Count > 0 && _assetUserCrumbActiveIdx >= 0 &&
-						    _assetUserCrumbActiveIdx < _assetUserCrumbs.Count)
-						{
-							var activeAssetUserCrumb = _assetUserCrumbs[_assetUserCrumbActiveIdx].AssetPath;
+                        if (this._assetUserCrumbs.Count > 0 && this._assetUserCrumbActiveIdx >= 0 && this._assetUserCrumbActiveIdx < this._assetUserCrumbs.Count)
+                        {
+                            var activeAssetUserCrumb = this._assetUserCrumbs[this._assetUserCrumbActiveIdx].AssetPath;
 
-							{
-								DependencyEntry activeAssetUserCrumbDependencyEntry;
-								if (dependencies.TryGetValue(activeAssetUserCrumb, out activeAssetUserCrumbDependencyEntry))
-								{
-									countToUse = activeAssetUserCrumbDependencyEntry.Users.Count;
-								}
-							}
-						}
+                            {
+                                DependencyEntry activeAssetUserCrumbDependencyEntry;
+                                if (dependencies.TryGetValue(activeAssetUserCrumb, out activeAssetUserCrumbDependencyEntry)) countToUse = activeAssetUserCrumbDependencyEntry.Users.Count;
+                            }
+                        }
 
-						var initialListViewHeight =
-							(BRT_BuildReportWindow.LIST_HEIGHT * selectedAssetDependencies.Users.Count) +
-							10; // 10 for some padding;
+                        var initialListViewHeight =
+                            BRT_BuildReportWindow.LIST_HEIGHT * selectedAssetDependencies.Users.Count + 10; // 10 for some padding;
 
-						assetUsageListRealHeight =
-							(BRT_BuildReportWindow.LIST_HEIGHT * countToUse) + 10; // 10 for some padding
+                        assetUsageListRealHeight =
+                            BRT_BuildReportWindow.LIST_HEIGHT * countToUse + 10; // 10 for some padding
 
+                        if (initialListViewHeight > this._preferredDirectAssetUserListViewHeight) this._preferredDirectAssetUserListViewHeight = initialListViewHeight;
 
-						if (initialListViewHeight > _preferredDirectAssetUserListViewHeight)
-						{
-							_preferredDirectAssetUserListViewHeight = initialListViewHeight;
-						}
+                        if (assetUsageListRealHeight > this._preferredDirectAssetUserListViewHeight) this._preferredDirectAssetUserListViewHeight = assetUsageListRealHeight;
 
-						if (assetUsageListRealHeight > _preferredDirectAssetUserListViewHeight)
-						{
-							_preferredDirectAssetUserListViewHeight = assetUsageListRealHeight;
-						}
+                        assetUsageListHeight = this._preferredDirectAssetUserListViewHeight;
 
-						assetUsageListHeight = _preferredDirectAssetUserListViewHeight;
+                        break;
 
-						break;
+                    case ASSET_USAGE_DISPLAY_END:
+                    {
+                        // currently showing asset end users list
+                        var endUsersList = selectedAssetDependencies.GetEndUserLabels();
+                        if (endUsersList.Count == 0) AssetDependencies.PopulateAssetEndUsers(selectedAsset.Name, assetDependencies);
 
-					case ASSET_USAGE_DISPLAY_END:
-					{
-						// currently showing asset end users list
-						var endUsersList = selectedAssetDependencies.GetEndUserLabels();
-						if (endUsersList.Count == 0)
-						{
-							BuildReportTool.AssetDependencies.PopulateAssetEndUsers(selectedAsset.Name, assetDependencies);
-						}
+                        assetUsageListHeight =
+                            BRT_BuildReportWindow.LIST_HEIGHT * endUsersList.Count + 10; // 10 for some padding
+                        assetUsageListRealHeight = assetUsageListHeight;
+                        break;
+                    }
+                }
 
-						assetUsageListHeight =
-							(BRT_BuildReportWindow.LIST_HEIGHT * endUsersList.Count) + 10; // 10 for some padding
-						assetUsageListRealHeight = assetUsageListHeight;
-						break;
-					}
-				}
+                var properHeight = assetInfoPanelHeight + assetUsageListHeight;
 
+                if (properHeight > position.height / 2)
+                {
+                    // asset usage panel height is too much. clamp it
+                    // scrollview also has to be limited
+                    heightToUse                             = Mathf.RoundToInt(position.height / 2);
+                    assetUsageScrollViewHeight              = Mathf.RoundToInt(heightToUse - assetInfoPanelHeight);
+                    assetUsageListScrollViewHeightIsClamped = true;
+                }
+                else
+                {
+                    heightToUse                = Mathf.RoundToInt(properHeight);
+                    assetUsageScrollViewHeight = Mathf.RoundToInt(assetUsageListHeight);
+                }
+            }
+            else
+            {
+                // not showing asset usage flattened list
 
-				var properHeight = assetInfoPanelHeight + assetUsageListHeight;
+                heightToUse                = Mathf.RoundToInt(assetInfoPanelHeight);
+                assetUsageScrollViewHeight = 0;
+            }
 
-				if (properHeight > position.height / 2)
-				{
-					// asset usage panel height is too much. clamp it
-					// scrollview also has to be limited
-					heightToUse = Mathf.RoundToInt(position.height / 2);
-					assetUsageScrollViewHeight = Mathf.RoundToInt(heightToUse - assetInfoPanelHeight);
-					assetUsageListScrollViewHeightIsClamped = true;
-				}
-				else
-				{
-					heightToUse = Mathf.RoundToInt(properHeight);
-					assetUsageScrollViewHeight = Mathf.RoundToInt(assetUsageListHeight);
-				}
-			}
-			else
-			{
-				// not showing asset usage flattened list
+            // ----------------------------------------------------
 
-				heightToUse = Mathf.RoundToInt(assetInfoPanelHeight);
-				assetUsageScrollViewHeight = 0;
-			}
+            heightToUse += 6; // compensate for the bottom edge of the window border
 
-			// ----------------------------------------------------
+            // ----------------------------------------------------
+            // Reserve the space used for the entire Asset Info Panel
 
-			heightToUse += 6; // compensate for the bottom edge of the window border
+            GUILayout.Space(heightToUse);
 
+            // ----------------------------------------------------
+            // We draw the Asset Usage Panel from a GUILayout.Area
+            // that will occupy that space we reserved just now
 
-			// ----------------------------------------------------
-			// Reserve the space used for the entire Asset Info Panel
+            this._assetUsageRect =
+                new(0, position.height - heightToUse, position.width, heightToUse);
 
-			GUILayout.Space(heightToUse);
+            this._assetUsageRect.y = Mathf.RoundToInt(this._assetUsageRect.y);
+            if (this._showAssetUsagesList)
+            {
+                this._assetUsageRect.y      -= 3;
+                this._assetUsageRect.height += 2;
+            }
 
-			// ----------------------------------------------------
-			// We draw the Asset Usage Panel from a GUILayout.Area
-			// that will occupy that space we reserved just now
+            // ----------------------------------------------------
 
-			_assetUsageRect =
-				new Rect(0, position.height - heightToUse, position.width, heightToUse);
+            GUILayout.BeginArea(this._assetUsageRect);
 
-			_assetUsageRect.y = Mathf.RoundToInt(_assetUsageRect.y);
-			if (_showAssetUsagesList)
-			{
-				_assetUsageRect.y -= 3;
-				_assetUsageRect.height += 2;
-			}
+            // ----------------------------------------------------
+            // Asset Info Panel
 
-			// ----------------------------------------------------
+            GUILayout.BeginVertical(string.Empty, assetInfoPanelStyle, BRT_BuildReportWindow.LayoutNone);
 
-			GUILayout.BeginArea(_assetUsageRect);
+            if (this._showAssetUsagesList)
+                // toolbar at top
+                // reserve space for the toolbar
+                GUILayout.Space(ASSET_INFO_TOOLBAR_HEIGHT);
 
-			// ----------------------------------------------------
-			// Asset Info Panel
+            this.DrawAssetInfoPanel(position, availableWidth, buildReportToDisplay, assetDependencies);
 
-			GUILayout.BeginVertical(string.Empty, assetInfoPanelStyle, BRT_BuildReportWindow.LayoutNone);
+            GUILayout.EndVertical(); // end of Asset Info Panel
+            if (Event.current.type == EventType.Repaint) this._assetInfoPanelRect = GUILayoutUtility.GetLastRect();
+            //_assetInfoPanelRect.height += ASSET_INFO_TOOLBAR_HEIGHT;
+            // ----------------------------------------------------
+            // Asset Users List
 
-			if (_showAssetUsagesList)
-			{
-				// toolbar at top
-				// reserve space for the toolbar
-				GUILayout.Space(ASSET_INFO_TOOLBAR_HEIGHT);
-			}
+            var    newEntryHoveredIdx       = -1;
+            string newEntryHoveredAssetPath = null;
+            var    newEntryHoveredRect      = new Rect();
 
-			DrawAssetInfoPanel(position, availableWidth, buildReportToDisplay, assetDependencies);
+            if (this._showAssetUsagesList)
+            {
+                // the rect inside the scrollview. it has the real height of the asset user list
+                var scrollViewRect = new Rect(0, 0, position.width - 15, assetUsageListRealHeight);
 
-			GUILayout.EndVertical(); // end of Asset Info Panel
-			if (Event.current.type == EventType.Repaint)
-			{
-				_assetInfoPanelRect = GUILayoutUtility.GetLastRect();
-				//_assetInfoPanelRect.height += ASSET_INFO_TOOLBAR_HEIGHT;
-			}
+                this._assetUsagePanelScrollbarPos = GUI.BeginScrollView(
+                    new(0, this._assetInfoPanelRect.height, position.width, assetUsageScrollViewHeight),
+                    this._assetUsagePanelScrollbarPos,
+                    scrollViewRect);
 
+                switch (this._selectedAssetUsageDisplayIdx)
+                {
+                    case ASSET_USAGE_DISPLAY_ALL:
+                        this.DrawAllAssetUsers(scrollViewRect.width,
+                            assetUsageScrollViewHeight,
+                            assetUsageListScrollViewHeightIsClamped,
+                            selectedAsset.Name,
+                            usersFlattened,
+                            out newEntryHoveredIdx,
+                            out newEntryHoveredAssetPath,
+                            out newEntryHoveredRect);
+                        break;
 
-			// ----------------------------------------------------
-			// Asset Users List
+                    case ASSET_USAGE_DISPLAY_DIRECT:
+                        var assetToShowDirectUsersOf = selectedAsset.Name;
 
-			var newEntryHoveredIdx = -1;
-			string newEntryHoveredAssetPath = null;
-			Rect newEntryHoveredRect = new Rect();
+                        if (this._assetUserCrumbs.Count > 0 && this._assetUserCrumbActiveIdx >= 0 && this._assetUserCrumbActiveIdx < this._assetUserCrumbs.Count) assetToShowDirectUsersOf = this._assetUserCrumbs[this._assetUserCrumbActiveIdx].AssetPath;
 
-			if (_showAssetUsagesList)
-			{
-				// the rect inside the scrollview. it has the real height of the asset user list
-				var scrollViewRect = new Rect(0, 0, position.width - 15, assetUsageListRealHeight);
+                        List<string> users = null;
+                    {
+                        DependencyEntry entry;
+                        if (dependencies.TryGetValue(assetToShowDirectUsersOf, out entry)) users = entry.Users;
+                    }
 
-				_assetUsagePanelScrollbarPos = GUI.BeginScrollView(
-					new Rect(0, _assetInfoPanelRect.height, position.width, assetUsageScrollViewHeight),
-					_assetUsagePanelScrollbarPos, scrollViewRect);
+                        this.DrawDirectAssetUsers(scrollViewRect.width,
+                            assetUsageScrollViewHeight,
+                            assetUsageListScrollViewHeightIsClamped,
+                            users,
+                            assetDependencies,
+                            out newEntryHoveredIdx,
+                            out newEntryHoveredAssetPath,
+                            out newEntryHoveredRect);
+                        break;
 
-				switch (_selectedAssetUsageDisplayIdx)
-				{
-					case ASSET_USAGE_DISPLAY_ALL:
-						DrawAllAssetUsers(scrollViewRect.width, assetUsageScrollViewHeight,
-							assetUsageListScrollViewHeightIsClamped,
-							selectedAsset.Name, usersFlattened,
-							out newEntryHoveredIdx, out newEntryHoveredAssetPath, out newEntryHoveredRect);
-						break;
+                    case ASSET_USAGE_DISPLAY_END:
+                    {
+                        var endUsersList = selectedAssetDependencies.GetEndUserLabels();
+                        if (endUsersList.Count == 0)
+                            AssetDependencies.PopulateAssetEndUsers(selectedAsset.Name,
+                                endUsersList,
+                                assetDependencies);
 
-					case ASSET_USAGE_DISPLAY_DIRECT:
-						var assetToShowDirectUsersOf = selectedAsset.Name;
-
-						if (_assetUserCrumbs.Count > 0 && _assetUserCrumbActiveIdx >= 0 &&
-						    _assetUserCrumbActiveIdx < _assetUserCrumbs.Count)
-						{
-							assetToShowDirectUsersOf = _assetUserCrumbs[_assetUserCrumbActiveIdx].AssetPath;
-						}
-
-						List<string> users = null;
-					{
-						DependencyEntry entry;
-						if (dependencies.TryGetValue(assetToShowDirectUsersOf, out entry))
-						{
-							users = entry.Users;
-						}
-					}
-
-						DrawDirectAssetUsers(scrollViewRect.width, assetUsageScrollViewHeight,
-							assetUsageListScrollViewHeightIsClamped,
-							users, assetDependencies,
-							out newEntryHoveredIdx, out newEntryHoveredAssetPath, out newEntryHoveredRect);
-						break;
-
-					case ASSET_USAGE_DISPLAY_END:
-					{
-						var endUsersList = selectedAssetDependencies.GetEndUserLabels();
-						if (endUsersList.Count == 0)
-						{
-							BuildReportTool.AssetDependencies.PopulateAssetEndUsers(selectedAsset.Name,
-								endUsersList, assetDependencies);
-						}
-
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                        #if BRT_ASSET_LIST_SCREEN_DEBUG
 						_debugText.AppendFormat(
 							"endUsersList.Count: {0}\n",
 							endUsersList.Count.ToString());
-#endif
+                        #endif
 
-						DrawEndAssetUsers(scrollViewRect.width, assetUsageScrollViewHeight,
-							assetUsageListScrollViewHeightIsClamped, endUsersList,
-							out newEntryHoveredIdx, out newEntryHoveredAssetPath, out newEntryHoveredRect);
-					}
-						break;
-				}
+                        this.DrawEndAssetUsers(scrollViewRect.width,
+                            assetUsageScrollViewHeight,
+                            assetUsageListScrollViewHeightIsClamped,
+                            endUsersList,
+                            out newEntryHoveredIdx,
+                            out newEntryHoveredAssetPath,
+                            out newEntryHoveredRect);
+                    }
+                        break;
+                }
 
-				GUI.EndScrollView(true);
+                GUI.EndScrollView(true);
 
-				if (Event.current.type == EventType.Repaint)
-				{
-					_assetUserEntryHoveredIdx = newEntryHoveredIdx;
-				}
-			}
+                if (Event.current.type == EventType.Repaint) this._assetUserEntryHoveredIdx = newEntryHoveredIdx;
+            }
 
-			GUILayout.EndArea(); // end of Asset Usage Panel
+            GUILayout.EndArea(); // end of Asset Usage Panel
 
-			// ----------------------------------------------------
-			// toolbar
+            // ----------------------------------------------------
+            // toolbar
 
-			DrawAssetInfoToolbar(position, selectedAsset.Name, assetDependencies);
+            this.DrawAssetInfoToolbar(position, selectedAsset.Name, assetDependencies);
 
-			// ---------------------------------------------------------
+            // ---------------------------------------------------------
 
-			if (Event.current.type == EventType.Repaint)
-			{
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+            if (Event.current.type == EventType.Repaint)
+            {
+                #if BRT_ASSET_LIST_SCREEN_DEBUG
 				_debugText.AppendFormat(
 					"Event.current.mousePosition.y: {0}\n_assetInfoPanelRect: {1}\n_assetUsageRect: {2}\n",
 					Event.current.mousePosition.y.ToString(CultureInfo.InvariantCulture),
 					_assetInfoPanelRect.ToString(),
 					_assetUsageRect.ToString());
-#endif
-				if (Event.current.mousePosition.y < _assetUsageRect.y + _assetInfoPanelRect.height)
-				{
-					// mouse is in the asset info panel
-					_assetUserEntryHoveredIdx = -1;
-				}
-
-				if (!_assetUsageRect.Contains(Event.current.mousePosition))
-				{
-					// mouse is outside
-					_assetUserEntryHoveredIdx = -1;
-				}
-
-				if (_assetUserEntryHoveredIdx != -1)
-				{
-					// ----------------
-					// update what is considered the hovered asset, for use later on
-					// when the tooltip will be drawn
-					BRT_BuildReportWindow.UpdateHoveredAsset(newEntryHoveredAssetPath, newEntryHoveredRect,
-						IsShowingUsedAssets, buildReportToDisplay, assetDependencies);
-				}
-			}
-		}
-
-
-		void ChangeAssetUserCrumbRootIfNeeded(string assetPath)
-		{
-			if (_assetUserCrumbs.Count == 0 ||
-			    !_assetUserCrumbs[0].AssetPath.Equals(assetPath, StringComparison.OrdinalIgnoreCase))
-			{
-				_assetUserCrumbs.Clear();
-
-				AssetUserCrumb newEntry;
-				newEntry.AssetPath = assetPath;
-				newEntry.ScrollbarPosY = 0;
-				_assetUserCrumbs.Add(newEntry);
-
-				_assetUserCrumbActiveIdx = 0;
-				_preferredDirectAssetUserListViewHeight = 0;
-
-				_assetUsagePanelScrollbarPos.y = 0;
-			}
-		}
-
-		void SelectNextAssetUserCrumb(Dictionary<string, DependencyEntry> dependencies)
-		{
-			if (_assetUserCrumbActiveIdx < 0)
-			{
-				// do not allow if current active crumb is negative
-				return;
-			}
-
-			if (_assetUserCrumbActiveIdx >= _assetUserCrumbs.Count - 1)
-			{
-				// do not allow if current active crumb is last in the breadcrumb list
-				// just clear selection
-				// if there is only 1 crumb, this also applies
-				_selectedAssetUserIdx = -1;
-				return;
-			}
-
-			var thisAsset = _assetUserCrumbs[_assetUserCrumbActiveIdx].AssetPath;
-			var nextAsset = _assetUserCrumbs[_assetUserCrumbActiveIdx + 1].AssetPath;
-
-			if (dependencies.ContainsKey(thisAsset))
-			{
-				var thisAssetUsers = dependencies[thisAsset].Users;
-				var idxOfNextAsset = thisAssetUsers.IndexOf(nextAsset);
-				if (idxOfNextAsset != -1)
-				{
-					_selectedAssetUserIdx = idxOfNextAsset;
-				}
-			}
-		}
-
-		void DrawDirectAssetUsers(float assetUsageScrollViewWidth, int assetUsageScrollViewHeight,
-			bool assetUsageListScrollViewHeightIsClamped, List<string> directUsers, AssetDependencies assetDependencies,
-			out int newEntryHoveredIdx, out string newEntryHoveredAssetPath, out Rect newEntryHoveredRect)
-		{
-			newEntryHoveredIdx = -1;
-			newEntryHoveredAssetPath = null;
-			newEntryHoveredRect = new Rect();
-
-			float currentY = 0;
-
-			// draw only what's visible in the scrollview
-
-			int directUserN = 0;
-			int directUserLen = directUsers.Count;
-
-			if (assetUsageListScrollViewHeightIsClamped && directUsers.Count > 0)
-			{
-				// figure out which entry to start in
-
-				// for every BRT_BuildReportWindow.LIST_HEIGHT in _assetUsagePanelScrollbarPos.y
-				// an entry has been hidden and doesn't need to be drawn
-				// and we only need to draw up until the number of entries that can fit in assetUsageScrollViewHeight
-
-				// minus 1 since the first label at the top is not from the list
-				var toSkip =
-					Mathf.FloorToInt(_assetUsagePanelScrollbarPos.y / BRT_BuildReportWindow.LIST_HEIGHT);
-
-				var amountToDraw = (assetUsageScrollViewHeight / BRT_BuildReportWindow.LIST_HEIGHT) + 2;
-
-				if (toSkip >= 0)
-				{
-					directUserN = toSkip;
-					currentY += toSkip * BRT_BuildReportWindow.LIST_HEIGHT;
-
-					directUserLen = toSkip + amountToDraw;
-					if (directUserLen >= directUsers.Count)
-					{
-						directUserLen = directUsers.Count;
-					}
-
-					if (directUserN >= directUsers.Count)
-					{
-						directUserN = directUsers.Count - 1;
-						directUserLen = 1;
-					}
-				}
-			}
-
-			const int PING_BUTTON_WIDTH = 37;
-			const int PING_BUTTON_HEIGHT = 18;
-
-			const int INSPECT_BUTTON_WIDTH = 50;
-			const int INSPECT_BUTTON_HEIGHT = 18;
-
-			var listEntryStyle = GUI.skin.FindStyle(BuildReportTool.Window.Settings.LIST_SMALL_STYLE_NAME);
-			var listAltEntryStyle = GUI.skin.FindStyle(BuildReportTool.Window.Settings.LIST_SMALL_ALT_STYLE_NAME);
-			var listSelectedEntryStyle = GUI.skin.FindStyle(BuildReportTool.Window.Settings.LIST_SMALL_SELECTED_NAME);
-
-			if (listEntryStyle == null)
-			{
-				listEntryStyle = GUI.skin.label;
-			}
-			if (listAltEntryStyle == null)
-			{
-				listAltEntryStyle = GUI.skin.label;
-			}
-			if (listSelectedEntryStyle == null)
-			{
-				listSelectedEntryStyle = GUI.skin.label;
-			}
-
-			EditorGUIUtility.SetIconSize(BRT_BuildReportWindow.IconSize);
-
-			var dependencies = assetDependencies.GetAssetDependencies();
-
-			for (; directUserN < directUserLen; ++directUserN)
-			{
-				var useAlt = (directUserN % 2) == 0;
-
-				var styleToUse = useAlt ? listAltEntryStyle : listEntryStyle;
-				if (_selectedAssetUserIdx == directUserN)
-				{
-					styleToUse = listSelectedEntryStyle;
-				}
-
-				// -----------------------------------------------
-
-				bool labelPressed = false;
-
-				var assetPath = directUsers[directUserN];
-
-				// -----------------------------------------------
-				// Background color
-
-				GUI.Box(new Rect(0, currentY, assetUsageScrollViewWidth, BRT_BuildReportWindow.LIST_HEIGHT), string.Empty,
-					styleToUse);
-
-				float currentX = 0;
-
-				var labelRect = new Rect(
-					0, currentY,
-					0, BRT_BuildReportWindow.LIST_HEIGHT);
-
-				// -------------------------
-				// Ping button
-
-				if (!BuildReportTool.Options.DoubleClickOnAssetWillPing)
-				{
-					if (GUI.Button(new Rect(0, currentY + 1, PING_BUTTON_WIDTH, PING_BUTTON_HEIGHT), "Ping", "ListButton"))
-					{
-						// only asset entries inside the top-level assets folder can be pinged
-						if (assetPath.IsInAssetsFolder())
-						{
-							Utility.PingAssetInProject(assetPath);
-						}
-					}
-
-					currentX += PING_BUTTON_WIDTH + 2; // 2 for some spacing
-				}
-
-				// -----------------------------------------------
-				// Inspect button
-
-				var shouldDrawInspectButton =
-					dependencies.ContainsKey(assetPath) && dependencies[assetPath].Users.Count > 0;
-
-				if (shouldDrawInspectButton)
-				{
-					var inspectButtonRect =
-						new Rect(currentX, currentY + 1, INSPECT_BUTTON_WIDTH, INSPECT_BUTTON_HEIGHT);
-					if (GUI.Button(inspectButtonRect, "Inspect", "ListButton"))
-					{
-						// store the scrollbar pos so that we can return to it
-						if (_assetUserCrumbs.Count > 0 && _assetUserCrumbActiveIdx >= 0 &&
-						    _assetUserCrumbActiveIdx < _assetUserCrumbs.Count)
-						{
-							var entryToModify = _assetUserCrumbs[_assetUserCrumbActiveIdx];
-							entryToModify.ScrollbarPosY = _assetUsagePanelScrollbarPos.y;
-							_assetUserCrumbs[_assetUserCrumbActiveIdx] = entryToModify;
-						}
-
-						// add the current asset user to the breadcrumbs
-						// if the current asset is already in the breadcrumbs, just switch to it
-
-						var alreadyInBreadcrumbHistory = false;
-						for (int n = 0, len = _assetUserCrumbs.Count; n < len; ++n)
-						{
-							if (_assetUserCrumbs[n].AssetPath.Equals(assetPath, StringComparison.OrdinalIgnoreCase))
-							{
-								// asset is already in breadcrumb history. this is most likely a cyclic dependency
-								// switch to the existing one
-								_assetUserCrumbActiveIdx = n;
-								_assetUsagePanelScrollbarPos.y = _assetUserCrumbs[n].ScrollbarPosY;
-								SelectNextAssetUserCrumb(dependencies);
-								alreadyInBreadcrumbHistory = true;
-								break;
-							}
-						}
-
-						if (!alreadyInBreadcrumbHistory)
-						{
-							if (_assetUserCrumbActiveIdx != _assetUserCrumbs.Count - 1)
-							{
-								// everything after _assetUserCrumbActiveIdx is removed
-								var removalStartIdx = _assetUserCrumbActiveIdx + 1;
-								_assetUserCrumbs.RemoveRange(removalStartIdx, _assetUserCrumbs.Count - removalStartIdx);
-							}
-
-							AssetUserCrumb newEntry;
-							newEntry.AssetPath = assetPath;
-							newEntry.ScrollbarPosY = 0;
-							_assetUserCrumbs.Add(newEntry);
-
-							_assetUserCrumbActiveIdx = _assetUserCrumbs.Count - 1;
-
-							// since this is a newly viewed direct user list,
-							// reset the scrollbar and currently selected
-							_assetUsagePanelScrollbarPos.y = 0;
-							_selectedAssetUserIdx = -1;
-						}
-					}
-				}
-
-				// even if we don't draw the inspect button, we still
-				// need to add space so that it lines up with the other
-				// entries that do have that button
-				currentX += INSPECT_BUTTON_WIDTH;
-
-				// -----------------------------------------------
-				// Asset Path/Name
-
-				_assetUsageEntryLabel.text =
-					GetPrettyAssetPath(assetPath, BuildReportTool.Options.ShowColumnAssetPath, _selectedAssetUserIdx == directUserN);
-				_assetUsageEntryLabel.image = AssetDatabase.GetCachedIcon(assetPath);
-
-				if (_assetUsageEntryLabel.image == null)
-				{
-					// no icon, leave some space before the label to represent where the icon would be
-					currentX += BRT_BuildReportWindow.ICON_WIDTH_WITH_PADDING;
-				}
-
-				labelRect.x = currentX;
-				// allow asset label width to take up remaining width
-				labelRect.width = assetUsageScrollViewWidth - labelRect.x;
-
-				labelPressed |= GUI.Button(labelRect, _assetUsageEntryLabel, styleToUse);
-
-				// -----------------------------------------------
-				// Respond to Click
-
-				if (labelPressed)
-				{
-					// Respond to Double-click Ping if needed
-					if (BuildReportTool.Options.DoubleClickOnAssetWillPing &&
-					    _selectedAssetUserIdx == directUserN &&
-					    (EditorApplication.timeSinceStartup - _assetListEntryLastClickedTime) < DOUBLE_CLICK_THRESHOLD &&
-					    assetPath.IsInAssetsFolder())
-					{
-						Utility.PingAssetInProject(assetPath);
-					}
-
-					_selectedAssetUserIdx = directUserN;
-					_assetListEntryLastClickedTime = EditorApplication.timeSinceStartup;
-				}
-
-				// -----------------------------------------------
-				// Hover Check
-
-				if (Event.current.type == EventType.Repaint)
-				{
-					const int ICON_WIDTH = 20;
-
-					var mousePos = Event.current.mousePosition;
-
-					if (labelRect.Contains(mousePos))
-					{
-						newEntryHoveredIdx = directUserN;
-						newEntryHoveredAssetPath = assetPath;
-						newEntryHoveredRect = labelRect;
-
-						// ----------------
-						// put a border on the icon to signify that it's the one being hovered
-						// note: _assetUsageEntryLabel.image currently has the icon of the asset we hovered
-						Rect iconHoveredRect = labelRect;
-						iconHoveredRect.x += 1;
-						iconHoveredRect.y += 2;
-						iconHoveredRect.width = 17;
-						iconHoveredRect.height = 16;
-						GUI.Box(iconHoveredRect, _assetUsageEntryLabel.image, "IconHovered");
-
-						// ----------------
-						// if mouse is hovering over the correct area, we signify that
-						// the tooltip thumbnail should be drawn
-						if (BuildReportTool.Options.ShowTooltipThumbnail &&
-						    (BuildReportTool.Options.ShowThumbnailOnHoverLabelToo ||
-						     Mathf.Abs(mousePos.x - labelRect.x) < ICON_WIDTH) &&
-						    BRT_BuildReportWindow.GetAssetPreview(assetPath) != null)
-						{
-							_shouldShowThumbnailOnHoveredAsset = true;
-						}
-						else
-						{
-							_shouldShowThumbnailOnHoveredAsset = false;
-						}
-					}
-				}
-
-				// -----------------------------------------------
-
-				currentY += BRT_BuildReportWindow.LIST_HEIGHT;
-			}
-		}
-
-		void DrawEndAssetUsers(float assetUsageScrollViewWidth, int assetUsageScrollViewHeight,
-			bool assetUsageListScrollViewHeightIsClamped, List<GUIContent> endUsers,
-			out int newEntryHoveredIdx, out string newEntryHoveredAssetPath, out Rect newEntryHoveredRect)
-		{
-			newEntryHoveredIdx = -1;
-			newEntryHoveredAssetPath = null;
-			newEntryHoveredRect = new Rect();
-
-			float currentY = 0;
-
-			// draw only what's visible in the scrollview
-
-			int endUserN = 0;
-			int endUserLen = endUsers.Count;
-
-			if (assetUsageListScrollViewHeightIsClamped && endUsers.Count > 0)
-			{
-				// figure out which entry to start in
-
-				// for every BRT_BuildReportWindow.LIST_HEIGHT in _assetUsagePanelScrollbarPos.y
-				// an entry has been hidden and doesn't need to be drawn
-				// and we only need to draw up until the number of entries that can fit in assetUsageScrollViewHeight
-
-				// minus 1 since the first label at the top is not from the list
-				var toSkip =
-					Mathf.FloorToInt(_assetUsagePanelScrollbarPos.y / BRT_BuildReportWindow.LIST_HEIGHT);
-
-				var amountToDraw = (assetUsageScrollViewHeight / BRT_BuildReportWindow.LIST_HEIGHT) + 2;
-
-				if (toSkip >= 0)
-				{
-					endUserN = toSkip;
-					currentY += toSkip * BRT_BuildReportWindow.LIST_HEIGHT;
-
-					endUserLen = toSkip + amountToDraw;
-					if (endUserLen >= endUsers.Count)
-					{
-						endUserLen = endUsers.Count;
-					}
-
-					if (endUserN >= endUsers.Count)
-					{
-						endUserN = endUsers.Count - 1;
-						endUserLen = 1;
-					}
-				}
-			}
-
-			const int PING_BUTTON_WIDTH = 37;
-			const int PING_BUTTON_HEIGHT = 18;
-
-			var listEntryStyle = GUI.skin.FindStyle(BuildReportTool.Window.Settings.LIST_SMALL_STYLE_NAME);
-			var listAltEntryStyle = GUI.skin.FindStyle(BuildReportTool.Window.Settings.LIST_SMALL_ALT_STYLE_NAME);
-			var listSelectedEntryStyle = GUI.skin.FindStyle(BuildReportTool.Window.Settings.LIST_SMALL_SELECTED_NAME);
-
-			if (listEntryStyle == null)
-			{
-				listEntryStyle = GUI.skin.label;
-			}
-			if (listAltEntryStyle == null)
-			{
-				listAltEntryStyle = GUI.skin.label;
-			}
-			if (listSelectedEntryStyle == null)
-			{
-				listSelectedEntryStyle = GUI.skin.label;
-			}
-
-			EditorGUIUtility.SetIconSize(BRT_BuildReportWindow.IconSize);
-
-
-			for (; endUserN < endUserLen; ++endUserN)
-			{
-				var useAlt = (endUserN % 2) == 0;
-
-				var styleToUse = useAlt ? listAltEntryStyle : listEntryStyle;
-				if (_selectedAssetUserIdx == endUserN)
-				{
-					styleToUse = listSelectedEntryStyle;
-				}
-
-				// -----------------------------------------------
-
-				bool labelPressed = false;
-
-				var assetPath = endUsers[endUserN].tooltip;
-
-				// -----------------------------------------------
-				// Background color
-
-				GUI.Box(new Rect(0, currentY, assetUsageScrollViewWidth, BRT_BuildReportWindow.LIST_HEIGHT), string.Empty,
-					styleToUse);
-
-				var labelRect = new Rect(
-					0, currentY,
-					0, BRT_BuildReportWindow.LIST_HEIGHT);
-
-				// -------------------------
-				// Ping button
-
-				if (!BuildReportTool.Options.DoubleClickOnAssetWillPing)
-				{
-					labelRect.x += PING_BUTTON_WIDTH;
-					if (GUI.Button(new Rect(0, currentY + 1, PING_BUTTON_WIDTH, PING_BUTTON_HEIGHT), "Ping", "ListButton"))
-					{
-						// only asset entries inside the top-level assets folder can be pinged
-						if (assetPath.IsInAssetsFolder())
-						{
-							Utility.PingAssetInProject(assetPath);
-						}
-					}
-				}
-
-				// -----------------------------------------------
-				// Asset Path/Name
-
-				_assetUsageEntryLabel.text =
-					GetPrettyAssetPath(assetPath, BuildReportTool.Options.ShowColumnAssetPath, _selectedAssetUserIdx == endUserN);
-				_assetUsageEntryLabel.image = endUsers[endUserN].image;
-
-				if (_assetUsageEntryLabel.image == null)
-				{
-					// no icon, leave some space before the label to represent where the icon would be
-					labelRect.x += BRT_BuildReportWindow.ICON_WIDTH_WITH_PADDING;
-				}
-
-				// allow asset label width to take up remaining width
-				labelRect.width = assetUsageScrollViewWidth - labelRect.x;
-
-				labelPressed |= GUI.Button(labelRect, _assetUsageEntryLabel, styleToUse);
-
-				// -----------------------------------------------
-				// Respond to click
-
-				if (labelPressed)
-				{
-					// Double-click Ping
-					if (BuildReportTool.Options.DoubleClickOnAssetWillPing &&
-					    _selectedAssetUserIdx == endUserN &&
-					    (EditorApplication.timeSinceStartup - _assetListEntryLastClickedTime) < DOUBLE_CLICK_THRESHOLD &&
-					    assetPath.IsInAssetsFolder())
-					{
-						Utility.PingAssetInProject(assetPath);
-					}
-
-					_selectedAssetUserIdx = endUserN;
-					_assetListEntryLastClickedTime = EditorApplication.timeSinceStartup;
-				}
-
-				// -----------------------------------------------
-				// Hover Check
-
-				if (Event.current.type == EventType.Repaint)
-				{
-					const int ICON_WIDTH = 20;
-
-					var mousePos = Event.current.mousePosition;
-
-					if (labelRect.Contains(mousePos))
-					{
-						newEntryHoveredIdx = endUserN;
-						newEntryHoveredAssetPath = assetPath;
-						newEntryHoveredRect = labelRect;
-
-						// ----------------
-						// put a border on the icon to signify that it's the one being hovered
-						// note: _assetUsageEntryLabel.image currently has the icon of the asset we hovered
-						Rect iconHoveredRect = labelRect;
-						iconHoveredRect.x += 1;
-						iconHoveredRect.y += 2;
-						iconHoveredRect.width = 17;
-						iconHoveredRect.height = 16;
-						GUI.Box(iconHoveredRect, _assetUsageEntryLabel.image, "IconHovered");
-
-						// ----------------
-						// if mouse is hovering over the correct area, we signify that
-						// the tooltip thumbnail should be drawn
-						if (BuildReportTool.Options.ShowTooltipThumbnail &&
-						    (BuildReportTool.Options.ShowThumbnailOnHoverLabelToo ||
-						     Mathf.Abs(mousePos.x - labelRect.x) < ICON_WIDTH) &&
-						    BRT_BuildReportWindow.GetAssetPreview(assetPath) != null)
-						{
-							_shouldShowThumbnailOnHoveredAsset = true;
-						}
-						else
-						{
-							_shouldShowThumbnailOnHoveredAsset = false;
-						}
-					}
-				}
-
-				// -----------------------------------------------
-
-				currentY += BRT_BuildReportWindow.LIST_HEIGHT;
-			}
-		}
-
-		void DrawAllAssetUsers(float assetUsageScrollViewWidth, int assetUsageScrollViewHeight,
-			bool assetUsageListScrollViewHeightIsClamped,
-			string pathOfSelectedAsset, List<AssetUserFlattened> usersFlattened,
-			out int newEntryHoveredIdx, out string newEntryHoveredAssetPath, out Rect newEntryHoveredRect)
-		{
-			newEntryHoveredIdx = -1;
-			newEntryHoveredAssetPath = null;
-			newEntryHoveredRect = new Rect();
-
-			/*
-			_assetUsageEntryLabel.image = null;
-			if (IsShowingUsedAssets)
-			{
-				if (_selectedIsAResourcesAsset)
-				{
-					_assetUsageEntryLabel.text = "This Resources asset is used by:";
-				}
-				else
-				{
-					_assetUsageEntryLabel.text = "Included in the build because it's used by:";
-				}
-			}
-			else
-			{
-				_assetUsageEntryLabel.text = "Used by:";
-			}
-
-			var listLabelSize = GUI.skin.label.CalcSize(_assetUsageEntryLabel);
-			GUI.Label(new Rect(0, 0, scrollViewRect.width, listLabelSize.y), _assetUsageEntryLabel);*/
-
-			float currentY = 0;
-
-			// draw only what's visible in the scrollview
-
-			int userFlattenedN = 0;
-			int userFlattenedLen = usersFlattened.Count;
-
-			if (assetUsageListScrollViewHeightIsClamped && usersFlattened.Count > 0)
-			{
-				// figure out which entry to start in
-
-				// for every BRT_BuildReportWindow.LIST_HEIGHT in _assetUsagePanelScrollbarPos.y
-				// an entry has been hidden and doesn't need to be drawn
-				// and we only need to draw up until the number of entries that can fit in assetUsageScrollViewHeight
-
-				// minus 1 since the first label at the top is not from the list
-				var toSkip =
-					Mathf.FloorToInt(_assetUsagePanelScrollbarPos.y / BRT_BuildReportWindow.LIST_HEIGHT);
-
-				var amountToDraw = (assetUsageScrollViewHeight / BRT_BuildReportWindow.LIST_HEIGHT) + 2;
-
-				if (toSkip >= 0)
-				{
-					userFlattenedN = toSkip;
-					currentY += toSkip * BRT_BuildReportWindow.LIST_HEIGHT;
-
-					userFlattenedLen = toSkip + amountToDraw;
-					if (userFlattenedLen >= usersFlattened.Count)
-					{
-						userFlattenedLen = usersFlattened.Count;
-					}
-
-					if (userFlattenedN >= usersFlattened.Count)
-					{
-						userFlattenedN = usersFlattened.Count - 1;
-						userFlattenedLen = 1;
-					}
-				}
-
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                #endif
+                if (Event.current.mousePosition.y < this._assetUsageRect.y + this._assetInfoPanelRect.height)
+                    // mouse is in the asset info panel
+                    this._assetUserEntryHoveredIdx = -1;
+
+                if (!this._assetUsageRect.Contains(Event.current.mousePosition))
+                    // mouse is outside
+                    this._assetUserEntryHoveredIdx = -1;
+
+                if (this._assetUserEntryHoveredIdx != -1)
+                    // ----------------
+                    // update what is considered the hovered asset, for use later on
+                    // when the tooltip will be drawn
+                    BRT_BuildReportWindow.UpdateHoveredAsset(newEntryHoveredAssetPath,
+                        newEntryHoveredRect,
+                        this.IsShowingUsedAssets,
+                        buildReportToDisplay,
+                        assetDependencies);
+            }
+        }
+
+        private void ChangeAssetUserCrumbRootIfNeeded(string assetPath)
+        {
+            if (this._assetUserCrumbs.Count == 0 || !this._assetUserCrumbs[0].AssetPath.Equals(assetPath, StringComparison.OrdinalIgnoreCase))
+            {
+                this._assetUserCrumbs.Clear();
+
+                AssetUserCrumb newEntry;
+                newEntry.AssetPath     = assetPath;
+                newEntry.ScrollbarPosY = 0;
+                this._assetUserCrumbs.Add(newEntry);
+
+                this._assetUserCrumbActiveIdx                = 0;
+                this._preferredDirectAssetUserListViewHeight = 0;
+
+                this._assetUsagePanelScrollbarPos.y = 0;
+            }
+        }
+
+        private void SelectNextAssetUserCrumb(Dictionary<string, DependencyEntry> dependencies)
+        {
+            if (this._assetUserCrumbActiveIdx < 0)
+                // do not allow if current active crumb is negative
+                return;
+
+            if (this._assetUserCrumbActiveIdx >= this._assetUserCrumbs.Count - 1)
+            {
+                // do not allow if current active crumb is last in the breadcrumb list
+                // just clear selection
+                // if there is only 1 crumb, this also applies
+                this._selectedAssetUserIdx = -1;
+                return;
+            }
+
+            var thisAsset = this._assetUserCrumbs[this._assetUserCrumbActiveIdx].AssetPath;
+            var nextAsset = this._assetUserCrumbs[this._assetUserCrumbActiveIdx + 1].AssetPath;
+
+            if (dependencies.ContainsKey(thisAsset))
+            {
+                var thisAssetUsers                                   = dependencies[thisAsset].Users;
+                var idxOfNextAsset                                   = thisAssetUsers.IndexOf(nextAsset);
+                if (idxOfNextAsset != -1) this._selectedAssetUserIdx = idxOfNextAsset;
+            }
+        }
+
+        private void DrawDirectAssetUsers(
+            float             assetUsageScrollViewWidth,
+            int               assetUsageScrollViewHeight,
+            bool              assetUsageListScrollViewHeightIsClamped,
+            List<string>      directUsers,
+            AssetDependencies assetDependencies,
+            out int           newEntryHoveredIdx,
+            out string        newEntryHoveredAssetPath,
+            out Rect          newEntryHoveredRect
+        )
+        {
+            newEntryHoveredIdx       = -1;
+            newEntryHoveredAssetPath = null;
+            newEntryHoveredRect      = new();
+
+            float currentY = 0;
+
+            // draw only what's visible in the scrollview
+
+            var directUserN   = 0;
+            var directUserLen = directUsers.Count;
+
+            if (assetUsageListScrollViewHeightIsClamped && directUsers.Count > 0)
+            {
+                // figure out which entry to start in
+
+                // for every BRT_BuildReportWindow.LIST_HEIGHT in _assetUsagePanelScrollbarPos.y
+                // an entry has been hidden and doesn't need to be drawn
+                // and we only need to draw up until the number of entries that can fit in assetUsageScrollViewHeight
+
+                // minus 1 since the first label at the top is not from the list
+                var toSkip =
+                    Mathf.FloorToInt(this._assetUsagePanelScrollbarPos.y / BRT_BuildReportWindow.LIST_HEIGHT);
+
+                var amountToDraw = assetUsageScrollViewHeight / BRT_BuildReportWindow.LIST_HEIGHT + 2;
+
+                if (toSkip >= 0)
+                {
+                    directUserN =  toSkip;
+                    currentY    += toSkip * BRT_BuildReportWindow.LIST_HEIGHT;
+
+                    directUserLen = toSkip + amountToDraw;
+                    if (directUserLen >= directUsers.Count) directUserLen = directUsers.Count;
+
+                    if (directUserN >= directUsers.Count)
+                    {
+                        directUserN   = directUsers.Count - 1;
+                        directUserLen = 1;
+                    }
+                }
+            }
+
+            const int PING_BUTTON_WIDTH  = 37;
+            const int PING_BUTTON_HEIGHT = 18;
+
+            const int INSPECT_BUTTON_WIDTH  = 50;
+            const int INSPECT_BUTTON_HEIGHT = 18;
+
+            var listEntryStyle         = GUI.skin.FindStyle(Settings.LIST_SMALL_STYLE_NAME);
+            var listAltEntryStyle      = GUI.skin.FindStyle(Settings.LIST_SMALL_ALT_STYLE_NAME);
+            var listSelectedEntryStyle = GUI.skin.FindStyle(Settings.LIST_SMALL_SELECTED_NAME);
+
+            if (listEntryStyle == null) listEntryStyle                 = GUI.skin.label;
+            if (listAltEntryStyle == null) listAltEntryStyle           = GUI.skin.label;
+            if (listSelectedEntryStyle == null) listSelectedEntryStyle = GUI.skin.label;
+
+            EditorGUIUtility.SetIconSize(BRT_BuildReportWindow.IconSize);
+
+            var dependencies = assetDependencies.GetAssetDependencies();
+
+            for (; directUserN < directUserLen; ++directUserN)
+            {
+                var useAlt = directUserN % 2 == 0;
+
+                var styleToUse                                            = useAlt ? listAltEntryStyle : listEntryStyle;
+                if (this._selectedAssetUserIdx == directUserN) styleToUse = listSelectedEntryStyle;
+
+                // -----------------------------------------------
+
+                var labelPressed = false;
+
+                var assetPath = directUsers[directUserN];
+
+                // -----------------------------------------------
+                // Background color
+
+                GUI.Box(new(0, currentY, assetUsageScrollViewWidth, BRT_BuildReportWindow.LIST_HEIGHT),
+                    string.Empty,
+                    styleToUse);
+
+                float currentX = 0;
+
+                var labelRect = new Rect(
+                    0,
+                    currentY,
+                    0,
+                    BRT_BuildReportWindow.LIST_HEIGHT);
+
+                // -------------------------
+                // Ping button
+
+                if (!BuildReportTool.Options.DoubleClickOnAssetWillPing)
+                {
+                    if (GUI.Button(new(0, currentY + 1, PING_BUTTON_WIDTH, PING_BUTTON_HEIGHT), "Ping", "ListButton"))
+                        // only asset entries inside the top-level assets folder can be pinged
+                        if (assetPath.IsInAssetsFolder())
+                            Utility.PingAssetInProject(assetPath);
+
+                    currentX += PING_BUTTON_WIDTH + 2; // 2 for some spacing
+                }
+
+                // -----------------------------------------------
+                // Inspect button
+
+                var shouldDrawInspectButton =
+                    dependencies.ContainsKey(assetPath) && dependencies[assetPath].Users.Count > 0;
+
+                if (shouldDrawInspectButton)
+                {
+                    var inspectButtonRect =
+                        new Rect(currentX, currentY + 1, INSPECT_BUTTON_WIDTH, INSPECT_BUTTON_HEIGHT);
+                    if (GUI.Button(inspectButtonRect, "Inspect", "ListButton"))
+                    {
+                        // store the scrollbar pos so that we can return to it
+                        if (this._assetUserCrumbs.Count > 0 && this._assetUserCrumbActiveIdx >= 0 && this._assetUserCrumbActiveIdx < this._assetUserCrumbs.Count)
+                        {
+                            var entryToModify = this._assetUserCrumbs[this._assetUserCrumbActiveIdx];
+                            entryToModify.ScrollbarPosY                          = this._assetUsagePanelScrollbarPos.y;
+                            this._assetUserCrumbs[this._assetUserCrumbActiveIdx] = entryToModify;
+                        }
+
+                        // add the current asset user to the breadcrumbs
+                        // if the current asset is already in the breadcrumbs, just switch to it
+
+                        var alreadyInBreadcrumbHistory = false;
+                        for (int n = 0, len = this._assetUserCrumbs.Count; n < len; ++n)
+                        {
+                            if (this._assetUserCrumbs[n].AssetPath.Equals(assetPath, StringComparison.OrdinalIgnoreCase))
+                            {
+                                // asset is already in breadcrumb history. this is most likely a cyclic dependency
+                                // switch to the existing one
+                                this._assetUserCrumbActiveIdx       = n;
+                                this._assetUsagePanelScrollbarPos.y = this._assetUserCrumbs[n].ScrollbarPosY;
+                                this.SelectNextAssetUserCrumb(dependencies);
+                                alreadyInBreadcrumbHistory = true;
+                                break;
+                            }
+                        }
+
+                        if (!alreadyInBreadcrumbHistory)
+                        {
+                            if (this._assetUserCrumbActiveIdx != this._assetUserCrumbs.Count - 1)
+                            {
+                                // everything after _assetUserCrumbActiveIdx is removed
+                                var removalStartIdx = this._assetUserCrumbActiveIdx + 1;
+                                this._assetUserCrumbs.RemoveRange(removalStartIdx, this._assetUserCrumbs.Count - removalStartIdx);
+                            }
+
+                            AssetUserCrumb newEntry;
+                            newEntry.AssetPath     = assetPath;
+                            newEntry.ScrollbarPosY = 0;
+                            this._assetUserCrumbs.Add(newEntry);
+
+                            this._assetUserCrumbActiveIdx = this._assetUserCrumbs.Count - 1;
+
+                            // since this is a newly viewed direct user list,
+                            // reset the scrollbar and currently selected
+                            this._assetUsagePanelScrollbarPos.y = 0;
+                            this._selectedAssetUserIdx          = -1;
+                        }
+                    }
+                }
+
+                // even if we don't draw the inspect button, we still
+                // need to add space so that it lines up with the other
+                // entries that do have that button
+                currentX += INSPECT_BUTTON_WIDTH;
+
+                // -----------------------------------------------
+                // Asset Path/Name
+
+                this._assetUsageEntryLabel.text  = this.GetPrettyAssetPath(assetPath, BuildReportTool.Options.ShowColumnAssetPath, this._selectedAssetUserIdx == directUserN);
+                this._assetUsageEntryLabel.image = AssetDatabase.GetCachedIcon(assetPath);
+
+                if (this._assetUsageEntryLabel.image == null)
+                    // no icon, leave some space before the label to represent where the icon would be
+                    currentX += BRT_BuildReportWindow.ICON_WIDTH_WITH_PADDING;
+
+                labelRect.x = currentX;
+                // allow asset label width to take up remaining width
+                labelRect.width = assetUsageScrollViewWidth - labelRect.x;
+
+                labelPressed |= GUI.Button(labelRect, this._assetUsageEntryLabel, styleToUse);
+
+                // -----------------------------------------------
+                // Respond to Click
+
+                if (labelPressed)
+                {
+                    // Respond to Double-click Ping if needed
+                    if (BuildReportTool.Options.DoubleClickOnAssetWillPing && this._selectedAssetUserIdx == directUserN && EditorApplication.timeSinceStartup - this._assetListEntryLastClickedTime < DOUBLE_CLICK_THRESHOLD && assetPath.IsInAssetsFolder()) Utility.PingAssetInProject(assetPath);
+
+                    this._selectedAssetUserIdx          = directUserN;
+                    this._assetListEntryLastClickedTime = EditorApplication.timeSinceStartup;
+                }
+
+                // -----------------------------------------------
+                // Hover Check
+
+                if (Event.current.type == EventType.Repaint)
+                {
+                    const int ICON_WIDTH = 20;
+
+                    var mousePos = Event.current.mousePosition;
+
+                    if (labelRect.Contains(mousePos))
+                    {
+                        newEntryHoveredIdx       = directUserN;
+                        newEntryHoveredAssetPath = assetPath;
+                        newEntryHoveredRect      = labelRect;
+
+                        // ----------------
+                        // put a border on the icon to signify that it's the one being hovered
+                        // note: _assetUsageEntryLabel.image currently has the icon of the asset we hovered
+                        var iconHoveredRect = labelRect;
+                        iconHoveredRect.x      += 1;
+                        iconHoveredRect.y      += 2;
+                        iconHoveredRect.width  =  17;
+                        iconHoveredRect.height =  16;
+                        GUI.Box(iconHoveredRect, this._assetUsageEntryLabel.image, "IconHovered");
+
+                        // ----------------
+                        // if mouse is hovering over the correct area, we signify that
+                        // the tooltip thumbnail should be drawn
+                        if (BuildReportTool.Options.ShowTooltipThumbnail && (BuildReportTool.Options.ShowThumbnailOnHoverLabelToo || Mathf.Abs(mousePos.x - labelRect.x) < ICON_WIDTH) && BRT_BuildReportWindow.GetAssetPreview(assetPath) != null)
+                            this._shouldShowThumbnailOnHoveredAsset = true;
+                        else
+                            this._shouldShowThumbnailOnHoveredAsset = false;
+                    }
+                }
+
+                // -----------------------------------------------
+
+                currentY += BRT_BuildReportWindow.LIST_HEIGHT;
+            }
+        }
+
+        private void DrawEndAssetUsers(
+            float            assetUsageScrollViewWidth,
+            int              assetUsageScrollViewHeight,
+            bool             assetUsageListScrollViewHeightIsClamped,
+            List<GUIContent> endUsers,
+            out int          newEntryHoveredIdx,
+            out string       newEntryHoveredAssetPath,
+            out Rect         newEntryHoveredRect
+        )
+        {
+            newEntryHoveredIdx       = -1;
+            newEntryHoveredAssetPath = null;
+            newEntryHoveredRect      = new();
+
+            float currentY = 0;
+
+            // draw only what's visible in the scrollview
+
+            var endUserN   = 0;
+            var endUserLen = endUsers.Count;
+
+            if (assetUsageListScrollViewHeightIsClamped && endUsers.Count > 0)
+            {
+                // figure out which entry to start in
+
+                // for every BRT_BuildReportWindow.LIST_HEIGHT in _assetUsagePanelScrollbarPos.y
+                // an entry has been hidden and doesn't need to be drawn
+                // and we only need to draw up until the number of entries that can fit in assetUsageScrollViewHeight
+
+                // minus 1 since the first label at the top is not from the list
+                var toSkip =
+                    Mathf.FloorToInt(this._assetUsagePanelScrollbarPos.y / BRT_BuildReportWindow.LIST_HEIGHT);
+
+                var amountToDraw = assetUsageScrollViewHeight / BRT_BuildReportWindow.LIST_HEIGHT + 2;
+
+                if (toSkip >= 0)
+                {
+                    endUserN =  toSkip;
+                    currentY += toSkip * BRT_BuildReportWindow.LIST_HEIGHT;
+
+                    endUserLen = toSkip + amountToDraw;
+                    if (endUserLen >= endUsers.Count) endUserLen = endUsers.Count;
+
+                    if (endUserN >= endUsers.Count)
+                    {
+                        endUserN   = endUsers.Count - 1;
+                        endUserLen = 1;
+                    }
+                }
+            }
+
+            const int PING_BUTTON_WIDTH  = 37;
+            const int PING_BUTTON_HEIGHT = 18;
+
+            var listEntryStyle         = GUI.skin.FindStyle(Settings.LIST_SMALL_STYLE_NAME);
+            var listAltEntryStyle      = GUI.skin.FindStyle(Settings.LIST_SMALL_ALT_STYLE_NAME);
+            var listSelectedEntryStyle = GUI.skin.FindStyle(Settings.LIST_SMALL_SELECTED_NAME);
+
+            if (listEntryStyle == null) listEntryStyle                 = GUI.skin.label;
+            if (listAltEntryStyle == null) listAltEntryStyle           = GUI.skin.label;
+            if (listSelectedEntryStyle == null) listSelectedEntryStyle = GUI.skin.label;
+
+            EditorGUIUtility.SetIconSize(BRT_BuildReportWindow.IconSize);
+
+            for (; endUserN < endUserLen; ++endUserN)
+            {
+                var useAlt = endUserN % 2 == 0;
+
+                var styleToUse                                         = useAlt ? listAltEntryStyle : listEntryStyle;
+                if (this._selectedAssetUserIdx == endUserN) styleToUse = listSelectedEntryStyle;
+
+                // -----------------------------------------------
+
+                var labelPressed = false;
+
+                var assetPath = endUsers[endUserN].tooltip;
+
+                // -----------------------------------------------
+                // Background color
+
+                GUI.Box(new(0, currentY, assetUsageScrollViewWidth, BRT_BuildReportWindow.LIST_HEIGHT),
+                    string.Empty,
+                    styleToUse);
+
+                var labelRect = new Rect(
+                    0,
+                    currentY,
+                    0,
+                    BRT_BuildReportWindow.LIST_HEIGHT);
+
+                // -------------------------
+                // Ping button
+
+                if (!BuildReportTool.Options.DoubleClickOnAssetWillPing)
+                {
+                    labelRect.x += PING_BUTTON_WIDTH;
+                    if (GUI.Button(new(0, currentY + 1, PING_BUTTON_WIDTH, PING_BUTTON_HEIGHT), "Ping", "ListButton"))
+                        // only asset entries inside the top-level assets folder can be pinged
+                        if (assetPath.IsInAssetsFolder())
+                            Utility.PingAssetInProject(assetPath);
+                }
+
+                // -----------------------------------------------
+                // Asset Path/Name
+
+                this._assetUsageEntryLabel.text  = this.GetPrettyAssetPath(assetPath, BuildReportTool.Options.ShowColumnAssetPath, this._selectedAssetUserIdx == endUserN);
+                this._assetUsageEntryLabel.image = endUsers[endUserN].image;
+
+                if (this._assetUsageEntryLabel.image == null)
+                    // no icon, leave some space before the label to represent where the icon would be
+                    labelRect.x += BRT_BuildReportWindow.ICON_WIDTH_WITH_PADDING;
+
+                // allow asset label width to take up remaining width
+                labelRect.width = assetUsageScrollViewWidth - labelRect.x;
+
+                labelPressed |= GUI.Button(labelRect, this._assetUsageEntryLabel, styleToUse);
+
+                // -----------------------------------------------
+                // Respond to click
+
+                if (labelPressed)
+                {
+                    // Double-click Ping
+                    if (BuildReportTool.Options.DoubleClickOnAssetWillPing && this._selectedAssetUserIdx == endUserN && EditorApplication.timeSinceStartup - this._assetListEntryLastClickedTime < DOUBLE_CLICK_THRESHOLD && assetPath.IsInAssetsFolder()) Utility.PingAssetInProject(assetPath);
+
+                    this._selectedAssetUserIdx          = endUserN;
+                    this._assetListEntryLastClickedTime = EditorApplication.timeSinceStartup;
+                }
+
+                // -----------------------------------------------
+                // Hover Check
+
+                if (Event.current.type == EventType.Repaint)
+                {
+                    const int ICON_WIDTH = 20;
+
+                    var mousePos = Event.current.mousePosition;
+
+                    if (labelRect.Contains(mousePos))
+                    {
+                        newEntryHoveredIdx       = endUserN;
+                        newEntryHoveredAssetPath = assetPath;
+                        newEntryHoveredRect      = labelRect;
+
+                        // ----------------
+                        // put a border on the icon to signify that it's the one being hovered
+                        // note: _assetUsageEntryLabel.image currently has the icon of the asset we hovered
+                        var iconHoveredRect = labelRect;
+                        iconHoveredRect.x      += 1;
+                        iconHoveredRect.y      += 2;
+                        iconHoveredRect.width  =  17;
+                        iconHoveredRect.height =  16;
+                        GUI.Box(iconHoveredRect, this._assetUsageEntryLabel.image, "IconHovered");
+
+                        // ----------------
+                        // if mouse is hovering over the correct area, we signify that
+                        // the tooltip thumbnail should be drawn
+                        if (BuildReportTool.Options.ShowTooltipThumbnail && (BuildReportTool.Options.ShowThumbnailOnHoverLabelToo || Mathf.Abs(mousePos.x - labelRect.x) < ICON_WIDTH) && BRT_BuildReportWindow.GetAssetPreview(assetPath) != null)
+                            this._shouldShowThumbnailOnHoveredAsset = true;
+                        else
+                            this._shouldShowThumbnailOnHoveredAsset = false;
+                    }
+                }
+
+                // -----------------------------------------------
+
+                currentY += BRT_BuildReportWindow.LIST_HEIGHT;
+            }
+        }
+
+        private void DrawAllAssetUsers(
+            float                    assetUsageScrollViewWidth,
+            int                      assetUsageScrollViewHeight,
+            bool                     assetUsageListScrollViewHeightIsClamped,
+            string                   pathOfSelectedAsset,
+            List<AssetUserFlattened> usersFlattened,
+            out int                  newEntryHoveredIdx,
+            out string               newEntryHoveredAssetPath,
+            out Rect                 newEntryHoveredRect
+        )
+        {
+            newEntryHoveredIdx       = -1;
+            newEntryHoveredAssetPath = null;
+            newEntryHoveredRect      = new();
+
+            /*
+            _assetUsageEntryLabel.image = null;
+            if (IsShowingUsedAssets)
+            {
+                if (_selectedIsAResourcesAsset)
+                {
+                    _assetUsageEntryLabel.text = "This Resources asset is used by:";
+                }
+                else
+                {
+                    _assetUsageEntryLabel.text = "Included in the build because it's used by:";
+                }
+            }
+            else
+            {
+                _assetUsageEntryLabel.text = "Used by:";
+            }
+
+            var listLabelSize = GUI.skin.label.CalcSize(_assetUsageEntryLabel);
+            GUI.Label(new Rect(0, 0, scrollViewRect.width, listLabelSize.y), _assetUsageEntryLabel);*/
+
+            float currentY = 0;
+
+            // draw only what's visible in the scrollview
+
+            var userFlattenedN   = 0;
+            var userFlattenedLen = usersFlattened.Count;
+
+            if (assetUsageListScrollViewHeightIsClamped && usersFlattened.Count > 0)
+            {
+                // figure out which entry to start in
+
+                // for every BRT_BuildReportWindow.LIST_HEIGHT in _assetUsagePanelScrollbarPos.y
+                // an entry has been hidden and doesn't need to be drawn
+                // and we only need to draw up until the number of entries that can fit in assetUsageScrollViewHeight
+
+                // minus 1 since the first label at the top is not from the list
+                var toSkip =
+                    Mathf.FloorToInt(this._assetUsagePanelScrollbarPos.y / BRT_BuildReportWindow.LIST_HEIGHT);
+
+                var amountToDraw = assetUsageScrollViewHeight / BRT_BuildReportWindow.LIST_HEIGHT + 2;
+
+                if (toSkip >= 0)
+                {
+                    userFlattenedN =  toSkip;
+                    currentY       += toSkip * BRT_BuildReportWindow.LIST_HEIGHT;
+
+                    userFlattenedLen = toSkip + amountToDraw;
+                    if (userFlattenedLen >= usersFlattened.Count) userFlattenedLen = usersFlattened.Count;
+
+                    if (userFlattenedN >= usersFlattened.Count)
+                    {
+                        userFlattenedN   = usersFlattened.Count - 1;
+                        userFlattenedLen = 1;
+                    }
+                }
+
+                #if BRT_ASSET_LIST_SCREEN_DEBUG
 				_debugText.AppendFormat(
 					"_assetUsagePanelScrollbarPos.y: {0}\nassetUsageScrollViewHeight: {1}\ntoSkip: {2}\namountToDraw: {3}\ntotal Count: {4}\n",
 					_assetUsagePanelScrollbarPos.y.ToString(CultureInfo.InvariantCulture),
@@ -1521,1111 +1398,970 @@ namespace BuildReportTool.Window.Screen
 					toSkip.ToString(CultureInfo.InvariantCulture),
 					amountToDraw.ToString(CultureInfo.InvariantCulture),
 					usersFlattened.Count.ToString(CultureInfo.InvariantCulture));
-#endif
-			}
-
-			const int INDENT_SPACE = 20;
-			const int PING_BUTTON_WIDTH = 37;
-			const int PING_BUTTON_HEIGHT = 18;
-
-			var listEntryStyle = GUI.skin.FindStyle(BuildReportTool.Window.Settings.LIST_SMALL_STYLE_NAME);
-			var listAltEntryStyle = GUI.skin.FindStyle(BuildReportTool.Window.Settings.LIST_SMALL_ALT_STYLE_NAME);
-			var listSelectedEntryStyle = GUI.skin.FindStyle(BuildReportTool.Window.Settings.LIST_SMALL_SELECTED_NAME);
-
-			if (listEntryStyle == null)
-			{
-				listEntryStyle = GUI.skin.label;
-			}
-			if (listAltEntryStyle == null)
-			{
-				listAltEntryStyle = GUI.skin.label;
-			}
-			if (listSelectedEntryStyle == null)
-			{
-				listSelectedEntryStyle = GUI.skin.label;
-			}
-
-			EditorGUIUtility.SetIconSize(BRT_BuildReportWindow.IconSize);
-
-			for (; userFlattenedN < userFlattenedLen; ++userFlattenedN)
-			{
-				var useAlt = ((usersFlattened[userFlattenedN].IndentLevel % 2) == 0);
-
-				var styleToUse = useAlt ? listAltEntryStyle : listEntryStyle;
-				if (_selectedAssetUserIdx == userFlattenedN)
-				{
-					styleToUse = listSelectedEntryStyle;
-				}
-
-				// -----------------------------------------------
-
-				bool labelPressed = false;
-
-				var assetPath = usersFlattened[userFlattenedN].AssetPath;
-
-				// -----------------------------------------------
-				// Background color
-
-				GUI.Box(new Rect(0, currentY, assetUsageScrollViewWidth, BRT_BuildReportWindow.LIST_HEIGHT), string.Empty,
-					styleToUse);
-
-				var labelRect = new Rect(
-					(INDENT_SPACE * (usersFlattened[userFlattenedN].IndentLevel - 1)), currentY,
-					0, BRT_BuildReportWindow.LIST_HEIGHT);
-
-				// -------------------------
-				// Ping button
-
-				var pingButtonUsedWidth = 0;
-				if (!BuildReportTool.Options.DoubleClickOnAssetWillPing)
-				{
-					labelRect.x += PING_BUTTON_WIDTH;
-					pingButtonUsedWidth = PING_BUTTON_WIDTH;
-					if (GUI.Button(new Rect(0, currentY + 1, PING_BUTTON_WIDTH, PING_BUTTON_HEIGHT), "Ping", "ListButton"))
-					{
-						// only asset entries inside the top-level assets folder can be pinged
-						if (assetPath.IsInAssetsFolder())
-						{
-							Utility.PingAssetInProject(assetPath);
-						}
-					}
-				}
-
-				// -----------------------------------------------
-				// Prefix Label
-
-				if (usersFlattened[userFlattenedN].IndentLevel > 1)
-				{
-					var prefixLabelRect = new Rect(
-						pingButtonUsedWidth + (INDENT_SPACE * (usersFlattened[userFlattenedN].IndentLevel - 1)), currentY,
-						0, BRT_BuildReportWindow.LIST_HEIGHT);
-
-					int idxOfPrevious;
-					if (BuildReportTool.AssetDependencyGenerator.IsFileTypeBeforeAnother(usersFlattened, userFlattenedN,
-						".mat", ".fbx", out idxOfPrevious))
-					{
-						prefixLabelRect.width = styleToUse.CalcSize(AssetUsageWhichIsUsedAsDefaultMaterialByLabel).x;
-						labelPressed |= GUI.Button(prefixLabelRect, AssetUsageWhichIsUsedAsDefaultMaterialByLabel,
-							styleToUse);
-					}
-					else if (assetPath.IsFileOfType(".cs"))
-					{
-						prefixLabelRect.width = styleToUse.CalcSize(AssetUsageWhichIsUsedAsDefaultValueByLabel).x;
-						labelPressed |= GUI.Button(prefixLabelRect, AssetUsageWhichIsUsedAsDefaultValueByLabel, styleToUse);
-					}
-					else
-					{
-						prefixLabelRect.width = styleToUse.CalcSize(AssetUsageWhichIsUsedByLabel).x;
-						labelPressed |= GUI.Button(prefixLabelRect, AssetUsageWhichIsUsedByLabel, styleToUse);
-					}
-
-					labelRect.x += prefixLabelRect.width;
-				}
-
-				// -----------------------------------------------
-				// Asset Path/Name
-
-				_assetUsageEntryLabel.text = GetPrettyAssetPath(usersFlattened[userFlattenedN].AssetPath, BuildReportTool.Options.ShowColumnAssetPath,
-					_selectedAssetUserIdx == userFlattenedN);
-				_assetUsageEntryLabel.image = AssetDatabase.GetCachedIcon(assetPath);
-
-				if (_assetUsageEntryLabel.image == null)
-				{
-					// no icon, leave some space before the label to represent where the icon would be
-					labelRect.x += BRT_BuildReportWindow.ICON_WIDTH_WITH_PADDING;
-				}
-
-				if (usersFlattened[userFlattenedN].CyclicDependency)
-				{
-					// asset has a suffix label, width of the asset label itself should not take up entire remaining width
-					labelRect.width = listEntryStyle.CalcSize(_assetUsageEntryLabel).x;
-				}
-				else
-				{
-					// allow asset label width to take up remaining width
-					labelRect.width = assetUsageScrollViewWidth - labelRect.x;
-				}
-
-				labelPressed |= GUI.Button(labelRect, _assetUsageEntryLabel, styleToUse);
-
-				// -----------------------------------------------
-				// Suffix Label
-
-				if (usersFlattened[userFlattenedN].CyclicDependency)
-				{
-					// cyclic dependency means there's a label after the asset name,
-					// so we can't expand the width for the asset name, or the next label
-					// would show up away from it
-
-					var suffixLabelRect = new Rect(
-						labelRect.xMax, currentY,
-						assetUsageScrollViewWidth - labelRect.xMax, BRT_BuildReportWindow.LIST_HEIGHT);
-
-					labelPressed |= GUI.Button(suffixLabelRect, AssetUsageWhichIsACyclicDependencyLabel, styleToUse);
-				}
-
-				// -----------------------------------------------
-				// Indent Lines
-
-				if (_indentLine == null)
-				{
-					var indentStyle = GUI.skin.FindStyle("IndentStyle1");
-					if (indentStyle != null)
-					{
-						_indentLine = indentStyle.normal.background;
-					}
-				}
-
-				var prevColor = GUI.color;
-				GUI.color = new Color(0, 0, 0, 0.5f);
-				for (int indentN = 1, indentLen = usersFlattened[userFlattenedN].IndentLevel;
-				     indentN < indentLen;
-				     ++indentN)
-				{
-					var indentRect = new Rect(pingButtonUsedWidth + ((indentN - 1) * 20), currentY, 20, 20);
-					GUI.DrawTexture(indentRect, _indentLine, ScaleMode.StretchToFill);
-				}
-
-				GUI.color = prevColor;
-
-				// -----------------------------------------------
-				// Respond to Click
-
-				if (labelPressed)
-				{
-					// ---------------------------
-					// Respond to Double-click Ping if needed
-					if (BuildReportTool.Options.DoubleClickOnAssetWillPing &&
-					    _selectedAssetUserIdx == userFlattenedN &&
-					    (EditorApplication.timeSinceStartup - _assetListEntryLastClickedTime) < DOUBLE_CLICK_THRESHOLD &&
-					    assetPath.IsInAssetsFolder())
-					{
-						Utility.PingAssetInProject(assetPath);
-					}
-
-					// ---------------------------
-
-					SetAssetUsageAncestry(_assetUsageAncestry, usersFlattened, userFlattenedN,
-						pathOfSelectedAsset);
-					_assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene =
-						DoesAssetUsageAncestryHaveFbxUsingDefaultMaterialUsedInScene(_assetUsageAncestry);
-
-					_selectedAssetUserIdx = userFlattenedN;
-					_assetListEntryLastClickedTime = EditorApplication.timeSinceStartup;
-				}
-
-				// -----------------------------------------------
-				// Hover Check
-
-				if (Event.current.type == EventType.Repaint)
-				{
-					const int ICON_WIDTH = 20;
-
-					var mousePos = Event.current.mousePosition;
-
-					if (labelRect.Contains(mousePos))
-					{
-						newEntryHoveredIdx = userFlattenedN;
-						newEntryHoveredAssetPath = assetPath;
-						newEntryHoveredRect = labelRect;
-
-						// ----------------
-						// put a border on the icon to signify that it's the one being hovered
-						// note: _assetUsageEntryLabel.image currently has the icon of the asset we hovered
-						Rect iconHoveredRect = labelRect;
-						iconHoveredRect.x += 1;
-						iconHoveredRect.y += 2;
-						iconHoveredRect.width = 17;
-						iconHoveredRect.height = 16;
-						GUI.Box(iconHoveredRect, _assetUsageEntryLabel.image, "IconHovered");
-
-						// ----------------
-						// if mouse is hovering over the correct area, we signify that
-						// the tooltip thumbnail should be drawn
-						if (BuildReportTool.Options.ShowTooltipThumbnail &&
-						    (BuildReportTool.Options.ShowThumbnailOnHoverLabelToo ||
-						     Mathf.Abs(mousePos.x - labelRect.x) < ICON_WIDTH) &&
-						    BRT_BuildReportWindow.GetAssetPreview(assetPath) != null)
-						{
-							_shouldShowThumbnailOnHoveredAsset = true;
-						}
-						else
-						{
-							_shouldShowThumbnailOnHoveredAsset = false;
-						}
-					}
-				}
-
-				// -----------------------------------------------
-
-				currentY += BRT_BuildReportWindow.LIST_HEIGHT;
-			}
-		}
-
-
-		void DrawAssetInfoPanel(Rect position, float availableWidth, BuildInfo buildReportToDisplay,
-			AssetDependencies assetDependencies)
-		{
-			if (_selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_ALL)
-			{
-				DrawAssetUsageAncestry(position, availableWidth, buildReportToDisplay, assetDependencies);
-			}
-			else if (_selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_DIRECT)
-			{
-				GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
-
-				_assetUsageEntryLabel.text = BuildReportTool.Util.GetAssetFilename(_assetUserCrumbs[0].AssetPath);
-				_assetUsageEntryLabel.image = AssetDatabase.GetCachedIcon(_assetUserCrumbs[0].AssetPath);
-				if (GUILayout.Toggle(_assetUserCrumbActiveIdx == 0, _assetUsageEntryLabel, BRT_BuildReportWindow.STYLE_BREADCRUMB_LEFT) &&
-				    _assetUserCrumbActiveIdx != 0)
-				{
-					// before switching, store the scrollbar pos so that we can return to it
-					if (_assetUserCrumbs.Count > 0 && _assetUserCrumbActiveIdx >= 0 &&
-					    _assetUserCrumbActiveIdx < _assetUserCrumbs.Count)
-					{
-						var entryToModify = _assetUserCrumbs[_assetUserCrumbActiveIdx];
-						entryToModify.ScrollbarPosY = _assetUsagePanelScrollbarPos.y;
-						_assetUserCrumbs[_assetUserCrumbActiveIdx] = entryToModify;
-					}
-
-					_assetUserCrumbActiveIdx = 0;
-					_assetUsagePanelScrollbarPos.y = _assetUserCrumbs[0].ScrollbarPosY;
-					SelectNextAssetUserCrumb(assetDependencies.GetAssetDependencies());
-				}
-
-				for (int crumbN = 1, crumbLen = _assetUserCrumbs.Count; crumbN < crumbLen; ++crumbN)
-				{
-					_assetUsageEntryLabel.text = BuildReportTool.Util.GetAssetFilename(_assetUserCrumbs[crumbN].AssetPath);
-					_assetUsageEntryLabel.image = AssetDatabase.GetCachedIcon(_assetUserCrumbs[crumbN].AssetPath);
-
-					if (GUILayout.Toggle(_assetUserCrumbActiveIdx == crumbN, _assetUsageEntryLabel,
-						    BRT_BuildReportWindow.STYLE_BREADCRUMB_MID) && _assetUserCrumbActiveIdx != crumbN)
-					{
-						// before switching, store the scrollbar pos so that we can return to it
-						if (_assetUserCrumbs.Count > 0 && _assetUserCrumbActiveIdx >= 0 &&
-						    _assetUserCrumbActiveIdx < _assetUserCrumbs.Count)
-						{
-							var entryToModify = _assetUserCrumbs[_assetUserCrumbActiveIdx];
-							entryToModify.ScrollbarPosY = _assetUsagePanelScrollbarPos.y;
-							_assetUserCrumbs[_assetUserCrumbActiveIdx] = entryToModify;
-						}
-
-						_assetUserCrumbActiveIdx = crumbN;
-						_assetUsagePanelScrollbarPos.y = _assetUserCrumbs[crumbN].ScrollbarPosY;
-						SelectNextAssetUserCrumb(assetDependencies.GetAssetDependencies());
-					}
-				}
-
-				GUILayout.EndHorizontal();
-			}
-		}
-
-		const int ASSET_INFO_TOOLBAR_HEIGHT = 15;
-
-		void DrawAssetInfoToolbar(Rect position, string selectedAssetPath, AssetDependencies assetDependencies)
-		{
-			var bgRect = new Rect(0, 0,
-				position.width, ASSET_INFO_TOOLBAR_HEIGHT);
-
-			if (_showAssetUsagesList)
-			{
-				bgRect.y = _assetUsageRect.y + 2;
-			}
-			else
-			{
-				bgRect.y = position.height - ASSET_INFO_TOOLBAR_HEIGHT;
-				bgRect.height += 3;
-			}
-
-			GUI.Box(bgRect, "", "ListButton");
-
-			const int EXPAND_BUTTON_WIDTH = 150;
-			var expandButtonRect = new Rect(bgRect.x + ((bgRect.width - EXPAND_BUTTON_WIDTH) / 2), bgRect.y,
-				EXPAND_BUTTON_WIDTH, ASSET_INFO_TOOLBAR_HEIGHT);
-
-			var showAllUsagesLabel = _showAssetUsagesList
-				                         ? "Hide"
-				                         : "Show More Usages";
-
-			var newShowAssetUsersList =
-				GUI.Toggle(expandButtonRect, _showAssetUsagesList, showAllUsagesLabel, "ExpandButton");
-
-			if (newShowAssetUsersList != _showAssetUsagesList)
-			{
-				_showAssetUsagesList = newShowAssetUsersList;
-				if (!newShowAssetUsersList)
-				{
-					if (_selectedAssetUsageDisplayIdx != ASSET_USAGE_DISPLAY_ALL)
-					{
-						_selectedAssetUsageDisplayIdx = ASSET_USAGE_DISPLAY_ALL;
-						SetAssetUsageHistoryToFirstEndUser(selectedAssetPath, assetDependencies);
-					}
-				}
-			}
-
-			if (_showAssetUsagesList)
-			{
-				// ---------------------------------------------
-				// if asset users list is shown,
-				// show the toggles to change what kind
-				// of users list is shown
-
-				const int ASSET_USAGE_LABEL_WIDTH = 40;
-				var assetUsageLabelRect =
-					new Rect(bgRect.x + 5, bgRect.y,
-						ASSET_USAGE_LABEL_WIDTH, ASSET_INFO_TOOLBAR_HEIGHT);
-				GUI.Label(assetUsageLabelRect, "Show:");
-
-				var newAssetUsageDisplayIdx = GUI.SelectionGrid(
-					new Rect(assetUsageLabelRect.xMax, bgRect.y,
-						150, ASSET_INFO_TOOLBAR_HEIGHT),
-					_selectedAssetUsageDisplayIdx, AssetUsageDisplayLabel, 3, "ListButtonRadio");
-
-				if (newAssetUsageDisplayIdx != _selectedAssetUsageDisplayIdx)
-				{
-					// previously showing direct users and is leaving it
-					// store the scrollbar pos so that we can return to it
-					if (_selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_DIRECT)
-					{
-						if (_assetUserCrumbs.Count > 0 && _assetUserCrumbActiveIdx >= 0 &&
-						    _assetUserCrumbActiveIdx < _assetUserCrumbs.Count)
-						{
-							var entryToModify = _assetUserCrumbs[_assetUserCrumbActiveIdx];
-							entryToModify.ScrollbarPosY = _assetUsagePanelScrollbarPos.y;
-							_assetUserCrumbs[_assetUserCrumbActiveIdx] = entryToModify;
-						}
-					}
-
-					_selectedAssetUsageDisplayIdx = newAssetUsageDisplayIdx;
-
-					// what asset user list is shown has been changed
-					// so we need to change what asset user is selected
-					if (_selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_ALL)
-					{
-						SetAssetUsageHistoryToFirstEndUser(selectedAssetPath, assetDependencies);
-					}
-					else
-					{
-						_selectedAssetUserIdx = -1;
-					}
-
-					// switched to showing direct users
-					// ensure crumbs is showing proper values
-					if (_selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_DIRECT)
-					{
-						ChangeAssetUserCrumbRootIfNeeded(selectedAssetPath);
-
-						if (_assetUserCrumbs.Count > 0 && _assetUserCrumbActiveIdx >= 0 &&
-						    _assetUserCrumbActiveIdx < _assetUserCrumbs.Count)
-						{
-							_assetUsagePanelScrollbarPos.y = _assetUserCrumbs[_assetUserCrumbActiveIdx].ScrollbarPosY;
-
-							SelectNextAssetUserCrumb(assetDependencies.GetAssetDependencies());
-						}
-					}
-				}
-			}
-		}
-
-
-		void DrawAssetUsageAncestry(Rect position, float availableWidth, BuildInfo buildReportToDisplay,
-			AssetDependencies assetDependencies)
-		{
-			var assetStyle = GUI.skin.FindStyle("Asset");
-			var assetHoveredStyle = GUI.skin.FindStyle("AssetHovered");
-			var assetLabelInBetweenStyle = GUI.skin.FindStyle("LabelSingleLine");
-			var assetUsageArrowStyle = GUI.skin.FindStyle("AssetUsageArrow");
-
-			if (assetStyle == null)
-			{
-				assetStyle = GUI.skin.label;
-			}
-			if (assetHoveredStyle == null)
-			{
-				assetHoveredStyle = GUI.skin.label;
-			}
-			if (assetLabelInBetweenStyle == null)
-			{
-				assetLabelInBetweenStyle = GUI.skin.label;
-			}
-			Texture2D assetUsageArrow;
-			if (assetUsageArrowStyle != null)
-			{
-				assetUsageArrow = assetUsageArrowStyle.normal.background;
-			}
-			else
-			{
-				assetUsageArrow = null;
-				assetUsageArrowStyle = GUI.skin.label;
-			}
-
-			// draw usage ancestry
-			// for selected user
-
-			float currentRowWidth = 0;
-			bool moreThan1Row = false;
-
-			GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
-
-			var newAssetUsageAncestryEntryHoveredIdx = -1;
-
-			for (int n = 0, len = _assetUsageAncestry.Count; n < len; ++n)
-			{
-				// --------------------------
-				// width of the asset name itself
-				var widthToAdd = assetStyle.CalcSize(_assetUsageAncestry[n].Label).x;
-
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                #endif
+            }
+
+            const int INDENT_SPACE       = 20;
+            const int PING_BUTTON_WIDTH  = 37;
+            const int PING_BUTTON_HEIGHT = 18;
+
+            var listEntryStyle         = GUI.skin.FindStyle(Settings.LIST_SMALL_STYLE_NAME);
+            var listAltEntryStyle      = GUI.skin.FindStyle(Settings.LIST_SMALL_ALT_STYLE_NAME);
+            var listSelectedEntryStyle = GUI.skin.FindStyle(Settings.LIST_SMALL_SELECTED_NAME);
+
+            if (listEntryStyle == null) listEntryStyle                 = GUI.skin.label;
+            if (listAltEntryStyle == null) listAltEntryStyle           = GUI.skin.label;
+            if (listSelectedEntryStyle == null) listSelectedEntryStyle = GUI.skin.label;
+
+            EditorGUIUtility.SetIconSize(BRT_BuildReportWindow.IconSize);
+
+            for (; userFlattenedN < userFlattenedLen; ++userFlattenedN)
+            {
+                var useAlt = usersFlattened[userFlattenedN].IndentLevel % 2 == 0;
+
+                var styleToUse                                               = useAlt ? listAltEntryStyle : listEntryStyle;
+                if (this._selectedAssetUserIdx == userFlattenedN) styleToUse = listSelectedEntryStyle;
+
+                // -----------------------------------------------
+
+                var labelPressed = false;
+
+                var assetPath = usersFlattened[userFlattenedN].AssetPath;
+
+                // -----------------------------------------------
+                // Background color
+
+                GUI.Box(new(0, currentY, assetUsageScrollViewWidth, BRT_BuildReportWindow.LIST_HEIGHT),
+                    string.Empty,
+                    styleToUse);
+
+                var labelRect = new Rect(
+                    INDENT_SPACE * (usersFlattened[userFlattenedN].IndentLevel - 1),
+                    currentY,
+                    0,
+                    BRT_BuildReportWindow.LIST_HEIGHT);
+
+                // -------------------------
+                // Ping button
+
+                var pingButtonUsedWidth = 0;
+                if (!BuildReportTool.Options.DoubleClickOnAssetWillPing)
+                {
+                    labelRect.x         += PING_BUTTON_WIDTH;
+                    pingButtonUsedWidth =  PING_BUTTON_WIDTH;
+                    if (GUI.Button(new(0, currentY + 1, PING_BUTTON_WIDTH, PING_BUTTON_HEIGHT), "Ping", "ListButton"))
+                        // only asset entries inside the top-level assets folder can be pinged
+                        if (assetPath.IsInAssetsFolder())
+                            Utility.PingAssetInProject(assetPath);
+                }
+
+                // -----------------------------------------------
+                // Prefix Label
+
+                if (usersFlattened[userFlattenedN].IndentLevel > 1)
+                {
+                    var prefixLabelRect = new Rect(
+                        pingButtonUsedWidth + INDENT_SPACE * (usersFlattened[userFlattenedN].IndentLevel - 1),
+                        currentY,
+                        0,
+                        BRT_BuildReportWindow.LIST_HEIGHT);
+
+                    int idxOfPrevious;
+                    if (AssetDependencyGenerator.IsFileTypeBeforeAnother(usersFlattened,
+                        userFlattenedN,
+                        ".mat",
+                        ".fbx",
+                        out idxOfPrevious))
+                    {
+                        prefixLabelRect.width = styleToUse.CalcSize(AssetUsageWhichIsUsedAsDefaultMaterialByLabel).x;
+                        labelPressed |= GUI.Button(prefixLabelRect,
+                            AssetUsageWhichIsUsedAsDefaultMaterialByLabel,
+                            styleToUse);
+                    }
+                    else if (assetPath.IsFileOfType(".cs"))
+                    {
+                        prefixLabelRect.width =  styleToUse.CalcSize(AssetUsageWhichIsUsedAsDefaultValueByLabel).x;
+                        labelPressed          |= GUI.Button(prefixLabelRect, AssetUsageWhichIsUsedAsDefaultValueByLabel, styleToUse);
+                    }
+                    else
+                    {
+                        prefixLabelRect.width =  styleToUse.CalcSize(AssetUsageWhichIsUsedByLabel).x;
+                        labelPressed          |= GUI.Button(prefixLabelRect, AssetUsageWhichIsUsedByLabel, styleToUse);
+                    }
+
+                    labelRect.x += prefixLabelRect.width;
+                }
+
+                // -----------------------------------------------
+                // Asset Path/Name
+
+                this._assetUsageEntryLabel.text = this.GetPrettyAssetPath(usersFlattened[userFlattenedN].AssetPath,
+                    BuildReportTool.Options.ShowColumnAssetPath,
+                    this._selectedAssetUserIdx == userFlattenedN);
+                this._assetUsageEntryLabel.image = AssetDatabase.GetCachedIcon(assetPath);
+
+                if (this._assetUsageEntryLabel.image == null)
+                    // no icon, leave some space before the label to represent where the icon would be
+                    labelRect.x += BRT_BuildReportWindow.ICON_WIDTH_WITH_PADDING;
+
+                if (usersFlattened[userFlattenedN].CyclicDependency)
+                    // asset has a suffix label, width of the asset label itself should not take up entire remaining width
+                    labelRect.width = listEntryStyle.CalcSize(this._assetUsageEntryLabel).x;
+                else
+                    // allow asset label width to take up remaining width
+                    labelRect.width = assetUsageScrollViewWidth - labelRect.x;
+
+                labelPressed |= GUI.Button(labelRect, this._assetUsageEntryLabel, styleToUse);
+
+                // -----------------------------------------------
+                // Suffix Label
+
+                if (usersFlattened[userFlattenedN].CyclicDependency)
+                {
+                    // cyclic dependency means there's a label after the asset name,
+                    // so we can't expand the width for the asset name, or the next label
+                    // would show up away from it
+
+                    var suffixLabelRect = new Rect(
+                        labelRect.xMax,
+                        currentY,
+                        assetUsageScrollViewWidth - labelRect.xMax,
+                        BRT_BuildReportWindow.LIST_HEIGHT);
+
+                    labelPressed |= GUI.Button(suffixLabelRect, AssetUsageWhichIsACyclicDependencyLabel, styleToUse);
+                }
+
+                // -----------------------------------------------
+                // Indent Lines
+
+                if (this._indentLine == null)
+                {
+                    var indentStyle                           = GUI.skin.FindStyle("IndentStyle1");
+                    if (indentStyle != null) this._indentLine = indentStyle.normal.background;
+                }
+
+                var prevColor = GUI.color;
+                GUI.color = new(0, 0, 0, 0.5f);
+                for (int indentN = 1, indentLen = usersFlattened[userFlattenedN].IndentLevel;
+                    indentN < indentLen;
+                    ++indentN)
+                {
+                    var indentRect = new Rect(pingButtonUsedWidth + (indentN - 1) * 20, currentY, 20, 20);
+                    GUI.DrawTexture(indentRect, this._indentLine, ScaleMode.StretchToFill);
+                }
+
+                GUI.color = prevColor;
+
+                // -----------------------------------------------
+                // Respond to Click
+
+                if (labelPressed)
+                {
+                    // ---------------------------
+                    // Respond to Double-click Ping if needed
+                    if (BuildReportTool.Options.DoubleClickOnAssetWillPing && this._selectedAssetUserIdx == userFlattenedN && EditorApplication.timeSinceStartup - this._assetListEntryLastClickedTime < DOUBLE_CLICK_THRESHOLD && assetPath.IsInAssetsFolder()) Utility.PingAssetInProject(assetPath);
+
+                    // ---------------------------
+
+                    SetAssetUsageAncestry(this._assetUsageAncestry,
+                        usersFlattened,
+                        userFlattenedN,
+                        pathOfSelectedAsset);
+                    this._assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene =
+                        DoesAssetUsageAncestryHaveFbxUsingDefaultMaterialUsedInScene(this._assetUsageAncestry);
+
+                    this._selectedAssetUserIdx          = userFlattenedN;
+                    this._assetListEntryLastClickedTime = EditorApplication.timeSinceStartup;
+                }
+
+                // -----------------------------------------------
+                // Hover Check
+
+                if (Event.current.type == EventType.Repaint)
+                {
+                    const int ICON_WIDTH = 20;
+
+                    var mousePos = Event.current.mousePosition;
+
+                    if (labelRect.Contains(mousePos))
+                    {
+                        newEntryHoveredIdx       = userFlattenedN;
+                        newEntryHoveredAssetPath = assetPath;
+                        newEntryHoveredRect      = labelRect;
+
+                        // ----------------
+                        // put a border on the icon to signify that it's the one being hovered
+                        // note: _assetUsageEntryLabel.image currently has the icon of the asset we hovered
+                        var iconHoveredRect = labelRect;
+                        iconHoveredRect.x      += 1;
+                        iconHoveredRect.y      += 2;
+                        iconHoveredRect.width  =  17;
+                        iconHoveredRect.height =  16;
+                        GUI.Box(iconHoveredRect, this._assetUsageEntryLabel.image, "IconHovered");
+
+                        // ----------------
+                        // if mouse is hovering over the correct area, we signify that
+                        // the tooltip thumbnail should be drawn
+                        if (BuildReportTool.Options.ShowTooltipThumbnail && (BuildReportTool.Options.ShowThumbnailOnHoverLabelToo || Mathf.Abs(mousePos.x - labelRect.x) < ICON_WIDTH) && BRT_BuildReportWindow.GetAssetPreview(assetPath) != null)
+                            this._shouldShowThumbnailOnHoveredAsset = true;
+                        else
+                            this._shouldShowThumbnailOnHoveredAsset = false;
+                    }
+                }
+
+                // -----------------------------------------------
+
+                currentY += BRT_BuildReportWindow.LIST_HEIGHT;
+            }
+        }
+
+        private void DrawAssetInfoPanel(
+            Rect              position,
+            float             availableWidth,
+            BuildInfo         buildReportToDisplay,
+            AssetDependencies assetDependencies
+        )
+        {
+            if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_ALL)
+            {
+                this.DrawAssetUsageAncestry(position, availableWidth, buildReportToDisplay, assetDependencies);
+            }
+            else if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_DIRECT)
+            {
+                GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
+
+                this._assetUsageEntryLabel.text  = Util.GetAssetFilename(this._assetUserCrumbs[0].AssetPath);
+                this._assetUsageEntryLabel.image = AssetDatabase.GetCachedIcon(this._assetUserCrumbs[0].AssetPath);
+                if (GUILayout.Toggle(this._assetUserCrumbActiveIdx == 0, this._assetUsageEntryLabel, BRT_BuildReportWindow.STYLE_BREADCRUMB_LEFT) && this._assetUserCrumbActiveIdx != 0)
+                {
+                    // before switching, store the scrollbar pos so that we can return to it
+                    if (this._assetUserCrumbs.Count > 0 && this._assetUserCrumbActiveIdx >= 0 && this._assetUserCrumbActiveIdx < this._assetUserCrumbs.Count)
+                    {
+                        var entryToModify = this._assetUserCrumbs[this._assetUserCrumbActiveIdx];
+                        entryToModify.ScrollbarPosY                          = this._assetUsagePanelScrollbarPos.y;
+                        this._assetUserCrumbs[this._assetUserCrumbActiveIdx] = entryToModify;
+                    }
+
+                    this._assetUserCrumbActiveIdx       = 0;
+                    this._assetUsagePanelScrollbarPos.y = this._assetUserCrumbs[0].ScrollbarPosY;
+                    this.SelectNextAssetUserCrumb(assetDependencies.GetAssetDependencies());
+                }
+
+                for (int crumbN = 1, crumbLen = this._assetUserCrumbs.Count; crumbN < crumbLen; ++crumbN)
+                {
+                    this._assetUsageEntryLabel.text  = Util.GetAssetFilename(this._assetUserCrumbs[crumbN].AssetPath);
+                    this._assetUsageEntryLabel.image = AssetDatabase.GetCachedIcon(this._assetUserCrumbs[crumbN].AssetPath);
+
+                    if (GUILayout.Toggle(this._assetUserCrumbActiveIdx == crumbN,
+                            this._assetUsageEntryLabel,
+                            BRT_BuildReportWindow.STYLE_BREADCRUMB_MID)
+                        && this._assetUserCrumbActiveIdx != crumbN)
+                    {
+                        // before switching, store the scrollbar pos so that we can return to it
+                        if (this._assetUserCrumbs.Count > 0 && this._assetUserCrumbActiveIdx >= 0 && this._assetUserCrumbActiveIdx < this._assetUserCrumbs.Count)
+                        {
+                            var entryToModify = this._assetUserCrumbs[this._assetUserCrumbActiveIdx];
+                            entryToModify.ScrollbarPosY                          = this._assetUsagePanelScrollbarPos.y;
+                            this._assetUserCrumbs[this._assetUserCrumbActiveIdx] = entryToModify;
+                        }
+
+                        this._assetUserCrumbActiveIdx       = crumbN;
+                        this._assetUsagePanelScrollbarPos.y = this._assetUserCrumbs[crumbN].ScrollbarPosY;
+                        this.SelectNextAssetUserCrumb(assetDependencies.GetAssetDependencies());
+                    }
+                }
+
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        private const int ASSET_INFO_TOOLBAR_HEIGHT = 15;
+
+        private void DrawAssetInfoToolbar(Rect position, string selectedAssetPath, AssetDependencies assetDependencies)
+        {
+            var bgRect = new Rect(0,
+                0,
+                position.width,
+                ASSET_INFO_TOOLBAR_HEIGHT);
+
+            if (this._showAssetUsagesList)
+            {
+                bgRect.y = this._assetUsageRect.y + 2;
+            }
+            else
+            {
+                bgRect.y      =  position.height - ASSET_INFO_TOOLBAR_HEIGHT;
+                bgRect.height += 3;
+            }
+
+            GUI.Box(bgRect, "", "ListButton");
+
+            const int EXPAND_BUTTON_WIDTH = 150;
+            var expandButtonRect = new Rect(bgRect.x + (bgRect.width - EXPAND_BUTTON_WIDTH) / 2,
+                bgRect.y,
+                EXPAND_BUTTON_WIDTH,
+                ASSET_INFO_TOOLBAR_HEIGHT);
+
+            var showAllUsagesLabel = this._showAssetUsagesList
+                ? "Hide"
+                : "Show More Usages";
+
+            var newShowAssetUsersList =
+                GUI.Toggle(expandButtonRect, this._showAssetUsagesList, showAllUsagesLabel, "ExpandButton");
+
+            if (newShowAssetUsersList != this._showAssetUsagesList)
+            {
+                this._showAssetUsagesList = newShowAssetUsersList;
+                if (!newShowAssetUsersList)
+                    if (this._selectedAssetUsageDisplayIdx != ASSET_USAGE_DISPLAY_ALL)
+                    {
+                        this._selectedAssetUsageDisplayIdx = ASSET_USAGE_DISPLAY_ALL;
+                        this.SetAssetUsageHistoryToFirstEndUser(selectedAssetPath, assetDependencies);
+                    }
+            }
+
+            if (this._showAssetUsagesList)
+            {
+                // ---------------------------------------------
+                // if asset users list is shown,
+                // show the toggles to change what kind
+                // of users list is shown
+
+                const int ASSET_USAGE_LABEL_WIDTH = 40;
+                var assetUsageLabelRect =
+                    new Rect(bgRect.x + 5,
+                        bgRect.y,
+                        ASSET_USAGE_LABEL_WIDTH,
+                        ASSET_INFO_TOOLBAR_HEIGHT);
+                GUI.Label(assetUsageLabelRect, "Show:");
+
+                var newAssetUsageDisplayIdx = GUI.SelectionGrid(
+                    new(assetUsageLabelRect.xMax,
+                        bgRect.y,
+                        150,
+                        ASSET_INFO_TOOLBAR_HEIGHT),
+                    this._selectedAssetUsageDisplayIdx,
+                    AssetUsageDisplayLabel,
+                    3,
+                    "ListButtonRadio");
+
+                if (newAssetUsageDisplayIdx != this._selectedAssetUsageDisplayIdx)
+                {
+                    // previously showing direct users and is leaving it
+                    // store the scrollbar pos so that we can return to it
+                    if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_DIRECT)
+                        if (this._assetUserCrumbs.Count > 0 && this._assetUserCrumbActiveIdx >= 0 && this._assetUserCrumbActiveIdx < this._assetUserCrumbs.Count)
+                        {
+                            var entryToModify = this._assetUserCrumbs[this._assetUserCrumbActiveIdx];
+                            entryToModify.ScrollbarPosY                          = this._assetUsagePanelScrollbarPos.y;
+                            this._assetUserCrumbs[this._assetUserCrumbActiveIdx] = entryToModify;
+                        }
+
+                    this._selectedAssetUsageDisplayIdx = newAssetUsageDisplayIdx;
+
+                    // what asset user list is shown has been changed
+                    // so we need to change what asset user is selected
+                    if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_ALL)
+                        this.SetAssetUsageHistoryToFirstEndUser(selectedAssetPath, assetDependencies);
+                    else
+                        this._selectedAssetUserIdx = -1;
+
+                    // switched to showing direct users
+                    // ensure crumbs is showing proper values
+                    if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_DIRECT)
+                    {
+                        this.ChangeAssetUserCrumbRootIfNeeded(selectedAssetPath);
+
+                        if (this._assetUserCrumbs.Count > 0 && this._assetUserCrumbActiveIdx >= 0 && this._assetUserCrumbActiveIdx < this._assetUserCrumbs.Count)
+                        {
+                            this._assetUsagePanelScrollbarPos.y = this._assetUserCrumbs[this._assetUserCrumbActiveIdx].ScrollbarPosY;
+
+                            this.SelectNextAssetUserCrumb(assetDependencies.GetAssetDependencies());
+                        }
+                    }
+                }
+            }
+        }
+
+        private void DrawAssetUsageAncestry(
+            Rect              position,
+            float             availableWidth,
+            BuildInfo         buildReportToDisplay,
+            AssetDependencies assetDependencies
+        )
+        {
+            var assetStyle               = GUI.skin.FindStyle("Asset");
+            var assetHoveredStyle        = GUI.skin.FindStyle("AssetHovered");
+            var assetLabelInBetweenStyle = GUI.skin.FindStyle("LabelSingleLine");
+            var assetUsageArrowStyle     = GUI.skin.FindStyle("AssetUsageArrow");
+
+            if (assetStyle == null) assetStyle                             = GUI.skin.label;
+            if (assetHoveredStyle == null) assetHoveredStyle               = GUI.skin.label;
+            if (assetLabelInBetweenStyle == null) assetLabelInBetweenStyle = GUI.skin.label;
+            Texture2D assetUsageArrow;
+            if (assetUsageArrowStyle != null)
+            {
+                assetUsageArrow = assetUsageArrowStyle.normal.background;
+            }
+            else
+            {
+                assetUsageArrow      = null;
+                assetUsageArrowStyle = GUI.skin.label;
+            }
+
+            // draw usage ancestry
+            // for selected user
+
+            float currentRowWidth = 0;
+            var   moreThan1Row    = false;
+
+            GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
+
+            var newAssetUsageAncestryEntryHoveredIdx = -1;
+
+            for (int n = 0, len = this._assetUsageAncestry.Count; n < len; ++n)
+            {
+                // --------------------------
+                // width of the asset name itself
+                var widthToAdd = assetStyle.CalcSize(this._assetUsageAncestry[n].Label).x;
+
+                #if BRT_ASSET_LIST_SCREEN_DEBUG
 				//_debugText.AppendFormat("Actual Item {0} name width: {1}\n",
 				//	n,
 				//	widthToAdd.ToString(CultureInfo.InvariantCulture));
-#endif
+                #endif
 
-				if (currentRowWidth + widthToAdd >= availableWidth)
-				{
-					moreThan1Row = true;
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                if (currentRowWidth + widthToAdd >= availableWidth)
+                {
+                    moreThan1Row = true;
+                    #if BRT_ASSET_LIST_SCREEN_DEBUG
 					_debugText.AppendFormat("Actual Row width: {0}\n",
 						currentRowWidth.ToString(CultureInfo.InvariantCulture));
-#endif
+                    #endif
 
-					currentRowWidth = 0;
-					GUILayout.EndHorizontal();
-					GUILayout.Space(ASSET_USAGE_HISTORY_ROW_SPACING);
-					GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
-				}
+                    currentRowWidth = 0;
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(ASSET_USAGE_HISTORY_ROW_SPACING);
+                    GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
+                }
 
-				currentRowWidth += widthToAdd;
+                currentRowWidth += widthToAdd;
 
-				// --------------------------
-				// asset name
+                // --------------------------
+                // asset name
 
-				var assetPressed = GUILayout.Button(_assetUsageAncestry[n].Label,
-					n == _assetUsageAncestryHoveredIdx ? assetHoveredStyle : assetStyle,
-					BRT_BuildReportWindow.LayoutHeight21);
+                var assetPressed = GUILayout.Button(this._assetUsageAncestry[n].Label,
+                    n == this._assetUsageAncestryHoveredIdx ? assetHoveredStyle : assetStyle,
+                    BRT_BuildReportWindow.LayoutHeight21);
 
-				if (Event.current.type == EventType.Repaint &&
-				    (Event.current.mousePosition.x < position.width ||
-				     Event.current.mousePosition.y < position.height))
-				{
-					var assetUsageAncestryEntryRect = GUILayoutUtility.GetLastRect();
+                if (Event.current.type == EventType.Repaint && (Event.current.mousePosition.x < position.width || Event.current.mousePosition.y < position.height))
+                {
+                    var assetUsageAncestryEntryRect = GUILayoutUtility.GetLastRect();
 
-					if (assetUsageAncestryEntryRect.Contains(Event.current.mousePosition))
-					{
-						newAssetUsageAncestryEntryHoveredIdx = n;
+                    if (assetUsageAncestryEntryRect.Contains(Event.current.mousePosition))
+                    {
+                        newAssetUsageAncestryEntryHoveredIdx = n;
 
-						// ----------------
-						// update what is considered the hovered asset, for use later on
-						// when the tooltip will be drawn
-						BRT_BuildReportWindow.UpdateHoveredAsset(_assetUsageAncestry[n].AssetPath,
-							assetUsageAncestryEntryRect, IsShowingUsedAssets,
-							buildReportToDisplay, assetDependencies);
+                        // ----------------
+                        // update what is considered the hovered asset, for use later on
+                        // when the tooltip will be drawn
+                        BRT_BuildReportWindow.UpdateHoveredAsset(this._assetUsageAncestry[n].AssetPath,
+                            assetUsageAncestryEntryRect,
+                            this.IsShowingUsedAssets,
+                            buildReportToDisplay,
+                            assetDependencies);
 
-						// ----------------
-						// if mouse is hovering over the correct area, we signify that
-						// the tooltip thumbnail should be drawn
-						if (BuildReportTool.Options.ShowTooltipThumbnail &&
-						    BRT_BuildReportWindow.GetAssetPreview(_assetUsageAncestry[n].AssetPath) != null)
-						{
-							_shouldShowThumbnailOnHoveredAsset = true;
-						}
-						else
-						{
-							_shouldShowThumbnailOnHoveredAsset = false;
-						}
-					}
-				}
+                        // ----------------
+                        // if mouse is hovering over the correct area, we signify that
+                        // the tooltip thumbnail should be drawn
+                        if (BuildReportTool.Options.ShowTooltipThumbnail && BRT_BuildReportWindow.GetAssetPreview(this._assetUsageAncestry[n].AssetPath) != null)
+                            this._shouldShowThumbnailOnHoveredAsset = true;
+                        else
+                            this._shouldShowThumbnailOnHoveredAsset = false;
+                    }
+                }
 
-				if (assetPressed)
-				{
-					Utility.PingAssetInProject(_assetUsageAncestry[n].AssetPath);
-				}
+                if (assetPressed) Utility.PingAssetInProject(this._assetUsageAncestry[n].AssetPath);
 
-				// --------------------------
-				// width of the label following the asset
-				widthToAdd = 0;
+                // --------------------------
+                // width of the label following the asset
+                widthToAdd = 0;
 
-				var isMaterialUsedByMesh = IsFileNextToFile(_assetUsageAncestry, n, ".mat", ".fbx");
-				var isAResourcesAsset = _assetUsageAncestry[n].AssetPath.IsInResourcesFolder();
-				var isAssetUsedByScript = (n < len - 1) && _assetUsageAncestry[n + 1].AssetPath.IsFileOfType(".cs");
+                var isMaterialUsedByMesh = IsFileNextToFile(this._assetUsageAncestry, n, ".mat", ".fbx");
+                var isAResourcesAsset    = this._assetUsageAncestry[n].AssetPath.IsInResourcesFolder();
+                var isAssetUsedByScript  = n < len - 1 && this._assetUsageAncestry[n + 1].AssetPath.IsFileOfType(".cs");
 
-				if (BuildReportTool.Options.IsAssetUsageLabelTypeOnVerbose)
-				{
-					if (n == 0)
-					{
-						if (isMaterialUsedByMesh)
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedAsDefaultMaterialByLabel).x;
-						}
-						else if (isAResourcesAsset)
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsAResourcesAssetButAlsoUsedByLabel).x;
-						}
-						else if (isAssetUsedByScript)
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedAsDefaultValueByLabel).x;
-						}
-						else
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedByLabel).x;
-						}
+                if (BuildReportTool.Options.IsAssetUsageLabelTypeOnVerbose)
+                {
+                    if (n == 0)
+                    {
+                        if (isMaterialUsedByMesh)
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedAsDefaultMaterialByLabel).x;
+                        else if (isAResourcesAsset)
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsAResourcesAssetButAlsoUsedByLabel).x;
+                        else if (isAssetUsedByScript)
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedAsDefaultValueByLabel).x;
+                        else
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedByLabel).x;
 
-						widthToAdd += assetLabelInBetweenStyle.margin.horizontal;
-					}
-					else if (n < len - 1)
-					{
-						if (isMaterialUsedByMesh)
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedAsDefaultMaterialByLabel).x;
-						}
-						else if (isAResourcesAsset)
-						{
-							widthToAdd = assetLabelInBetweenStyle
-							             .CalcSize(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel).x;
-						}
-						else if (isAssetUsedByScript)
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedAsDefaultValueByLabel).x;
-						}
-						else
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedByLabel).x;
-						}
+                        widthToAdd += assetLabelInBetweenStyle.margin.horizontal;
+                    }
+                    else if (n < len - 1)
+                    {
+                        if (isMaterialUsedByMesh)
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedAsDefaultMaterialByLabel).x;
+                        else if (isAResourcesAsset)
+                            widthToAdd = assetLabelInBetweenStyle
+                                .CalcSize(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel).x;
+                        else if (isAssetUsedByScript)
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedAsDefaultValueByLabel).x;
+                        else
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedByLabel).x;
 
-						widthToAdd += assetLabelInBetweenStyle.margin.horizontal;
-					}
-					else if (n == len - 1)
-					{
-						if (_assetUsageAncestry[n].AssetPath.IsSceneFile())
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsInTheBuildLabel).x +
-							             assetLabelInBetweenStyle.margin.horizontal;
-						}
-						else if (_assetUsageAncestry[n].AssetPath.IsInResourcesFolder())
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsAResourcesAssetLabel).x +
-							             assetLabelInBetweenStyle.margin.horizontal;
-						}
-						else if (_assetUsageAncestry[n].CyclicDependency)
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsACyclicDependencyLabel).x +
-							             assetLabelInBetweenStyle.margin.horizontal;
-						}
-					}
-				}
-				else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnStandard)
-				{
-					if (n < len - 1)
-					{
-						// todo determine if _assetUsageAncestry[n] has extra info and add that to width
-						widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
-					}
-				}
-				else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnMinimal)
-				{
-					if (n < len - 1)
-					{
-						widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
-					}
-				}
+                        widthToAdd += assetLabelInBetweenStyle.margin.horizontal;
+                    }
+                    else if (n == len - 1)
+                    {
+                        if (this._assetUsageAncestry[n].AssetPath.IsSceneFile())
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsInTheBuildLabel).x + assetLabelInBetweenStyle.margin.horizontal;
+                        else if (this._assetUsageAncestry[n].AssetPath.IsInResourcesFolder())
+                            widthToAdd                                                    = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsAResourcesAssetLabel).x + assetLabelInBetweenStyle.margin.horizontal;
+                        else if (this._assetUsageAncestry[n].CyclicDependency) widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsACyclicDependencyLabel).x + assetLabelInBetweenStyle.margin.horizontal;
+                    }
+                }
+                else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnStandard)
+                {
+                    if (n < len - 1)
+                        // todo determine if _assetUsageAncestry[n] has extra info and add that to width
+                        widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                }
+                else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnMinimal)
+                {
+                    if (n < len - 1) widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                }
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                #if BRT_ASSET_LIST_SCREEN_DEBUG
 				_debugText.AppendFormat("Actual Item {0} in-between width: {1}\n",
 					n.ToString(),
 					widthToAdd.ToString(CultureInfo.InvariantCulture));
-#endif
+                #endif
 
-				if (currentRowWidth + widthToAdd >= availableWidth)
-				{
-					moreThan1Row = true;
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                if (currentRowWidth + widthToAdd >= availableWidth)
+                {
+                    moreThan1Row = true;
+                    #if BRT_ASSET_LIST_SCREEN_DEBUG
 					_debugText.AppendFormat("Actual Row width: {0}\n",
 						currentRowWidth.ToString(CultureInfo.InvariantCulture));
-#endif
+                    #endif
 
-					currentRowWidth = 0;
-					GUILayout.EndHorizontal();
-					GUILayout.Space(ASSET_USAGE_HISTORY_ROW_SPACING);
-					GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
-				}
+                    currentRowWidth = 0;
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(ASSET_USAGE_HISTORY_ROW_SPACING);
+                    GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
+                }
 
-				currentRowWidth += widthToAdd;
+                currentRowWidth += widthToAdd;
 
-				// --------------------------
-				// label following the asset
+                // --------------------------
+                // label following the asset
 
-				if (BuildReportTool.Options.IsAssetUsageLabelTypeOnVerbose)
-				{
-					if (n == 0)
-					{
-						if (isMaterialUsedByMesh)
-						{
-							GUILayout.Label(AssetUsageIsUsedAsDefaultMaterialByLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-						else if (isAResourcesAsset)
-						{
-							GUILayout.Label(AssetUsageIsAResourcesAssetButAlsoUsedByLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-						else if (isAssetUsedByScript)
-						{
-							GUILayout.Label(AssetUsageIsUsedAsDefaultValueByLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-						else
-						{
-							GUILayout.Label(AssetUsageIsUsedByLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-					}
-					else if (n < len - 1)
-					{
-						if (isMaterialUsedByMesh)
-						{
-							GUILayout.Label(AssetUsageWhichIsUsedAsDefaultMaterialByLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-						else if (isAResourcesAsset)
-						{
-							GUILayout.Label(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-						else if (isAssetUsedByScript)
-						{
-							GUILayout.Label(AssetUsageWhichIsUsedAsDefaultValueByLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-						else
-						{
-							GUILayout.Label(AssetUsageWhichIsUsedByLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-					}
-					else if (n == len - 1)
-					{
-						if (_assetUsageAncestry[n].AssetPath.IsSceneFile())
-						{
-							GUILayout.Label(AssetUsageWhichIsInTheBuildLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-						else if (_assetUsageAncestry[n].AssetPath.IsInResourcesFolder())
-						{
-							GUILayout.Label(AssetUsageWhichIsAResourcesAssetLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-						else if (_assetUsageAncestry[n].CyclicDependency)
-						{
-							GUILayout.Label(AssetUsageWhichIsACyclicDependencyLabel,
-								assetLabelInBetweenStyle, BRT_BuildReportWindow.LayoutNone);
-						}
-					}
-				}
-				else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnStandard)
-				{
-					// don't draw arrow after last asset
-					if (n < len - 1)
-					{
-						// todo determine if _assetUsageAncestry[n] has extra info and draw that and different kind of arrow
+                if (BuildReportTool.Options.IsAssetUsageLabelTypeOnVerbose)
+                {
+                    if (n == 0)
+                    {
+                        if (isMaterialUsedByMesh)
+                            GUILayout.Label(AssetUsageIsUsedAsDefaultMaterialByLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                        else if (isAResourcesAsset)
+                            GUILayout.Label(AssetUsageIsAResourcesAssetButAlsoUsedByLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                        else if (isAssetUsedByScript)
+                            GUILayout.Label(AssetUsageIsUsedAsDefaultValueByLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                        else
+                            GUILayout.Label(AssetUsageIsUsedByLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                    }
+                    else if (n < len - 1)
+                    {
+                        if (isMaterialUsedByMesh)
+                            GUILayout.Label(AssetUsageWhichIsUsedAsDefaultMaterialByLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                        else if (isAResourcesAsset)
+                            GUILayout.Label(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                        else if (isAssetUsedByScript)
+                            GUILayout.Label(AssetUsageWhichIsUsedAsDefaultValueByLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                        else
+                            GUILayout.Label(AssetUsageWhichIsUsedByLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                    }
+                    else if (n == len - 1)
+                    {
+                        if (this._assetUsageAncestry[n].AssetPath.IsSceneFile())
+                            GUILayout.Label(AssetUsageWhichIsInTheBuildLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                        else if (this._assetUsageAncestry[n].AssetPath.IsInResourcesFolder())
+                            GUILayout.Label(AssetUsageWhichIsAResourcesAssetLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                        else if (this._assetUsageAncestry[n].CyclicDependency)
+                            GUILayout.Label(AssetUsageWhichIsACyclicDependencyLabel,
+                                assetLabelInBetweenStyle,
+                                BRT_BuildReportWindow.LayoutNone);
+                    }
+                }
+                else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnStandard)
+                {
+                    // don't draw arrow after last asset
+                    if (n < len - 1)
+                    {
+                        // todo determine if _assetUsageAncestry[n] has extra info and draw that and different kind of arrow
 
-						var needWidth = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                        var needWidth = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
 
-						// Note: I set the width to 9 for the GetRect(), and it gives me a width of 422 (???)
-						// I have to force set expand width to false. It seems expand width is set to true,
-						// even with no style specified.
-						Rect arrowRect = GUILayoutUtility.GetRect(needWidth, assetUsageArrow.height,
-							GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
+                        // Note: I set the width to 9 for the GetRect(), and it gives me a width of 422 (???)
+                        // I have to force set expand width to false. It seems expand width is set to true,
+                        // even with no style specified.
+                        var arrowRect = GUILayoutUtility.GetRect(needWidth,
+                            assetUsageArrow.height,
+                            GUILayout.ExpandWidth(false),
+                            GUILayout.ExpandHeight(false));
 
-						//Debug.LogFormat("Event.current.type: {0}\nrequested width x height: {1}x{2}\ngot rect: {3}",
-						//	Event.current.type, needWidth, needHeight, arrowRect);
+                        //Debug.LogFormat("Event.current.type: {0}\nrequested width x height: {1}x{2}\ngot rect: {3}",
+                        //	Event.current.type, needWidth, needHeight, arrowRect);
 
-						if (Event.current.type == EventType.Repaint)
-						{
-							arrowRect.y += ((ASSET_INFO_ROW_HEIGHT - assetUsageArrow.height) / 2.0f);
-							arrowRect.height = assetUsageArrow.height;
-							GUI.DrawTexture(arrowRect, assetUsageArrow);
-						}
-					}
-				}
-				else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnMinimal)
-				{
-					// don't draw arrow after last asset
-					if (n < len - 1)
-					{
-						var needWidth = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                        if (Event.current.type == EventType.Repaint)
+                        {
+                            arrowRect.y      += (ASSET_INFO_ROW_HEIGHT - assetUsageArrow.height) / 2.0f;
+                            arrowRect.height =  assetUsageArrow.height;
+                            GUI.DrawTexture(arrowRect, assetUsageArrow);
+                        }
+                    }
+                }
+                else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnMinimal)
+                    // don't draw arrow after last asset
+                {
+                    if (n < len - 1)
+                    {
+                        var needWidth = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
 
-						// Note: I set the width to 9 for the GetRect(), and it gives me a width of 422 (???)
-						// I have to force set expand width to false. It seems expand width is set to true,
-						// even with no style specified.
-						Rect arrowRect = GUILayoutUtility.GetRect(needWidth, assetUsageArrow.height,
-							GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
+                        // Note: I set the width to 9 for the GetRect(), and it gives me a width of 422 (???)
+                        // I have to force set expand width to false. It seems expand width is set to true,
+                        // even with no style specified.
+                        var arrowRect = GUILayoutUtility.GetRect(needWidth,
+                            assetUsageArrow.height,
+                            GUILayout.ExpandWidth(false),
+                            GUILayout.ExpandHeight(false));
 
-						//Debug.LogFormat("Event.current.type: {0}\nrequested width x height: {1}x{2}\ngot rect: {3}",
-						//	Event.current.type, needWidth, needHeight, arrowRect);
+                        //Debug.LogFormat("Event.current.type: {0}\nrequested width x height: {1}x{2}\ngot rect: {3}",
+                        //	Event.current.type, needWidth, needHeight, arrowRect);
+                        if (Event.current.type == EventType.Repaint)
+                        {
+                            arrowRect.y      += (ASSET_INFO_ROW_HEIGHT - assetUsageArrow.height) / 2.0f;
+                            arrowRect.height =  assetUsageArrow.height;
+                            GUI.DrawTexture(arrowRect, assetUsageArrow);
+                        }
+                    }
+                }
 
-						if (Event.current.type == EventType.Repaint)
-						{
-							arrowRect.y += ((ASSET_INFO_ROW_HEIGHT - assetUsageArrow.height) / 2.0f);
-							arrowRect.height = assetUsageArrow.height;
-							GUI.DrawTexture(arrowRect, assetUsageArrow);
-						}
-					}
-				}
+                // --------------------------
+            } // end of for-loop on asset usage ancestry
 
-				// --------------------------
-			} // end of for-loop on asset usage ancestry
+            if (Event.current.type == EventType.Repaint) this._assetUsageAncestryHoveredIdx = newAssetUsageAncestryEntryHoveredIdx;
 
-			if (Event.current.type == EventType.Repaint)
-			{
-				_assetUsageAncestryHoveredIdx = newAssetUsageAncestryEntryHoveredIdx;
-			}
+            GUILayout.EndHorizontal();
+            if (moreThan1Row) GUILayout.Space(ASSET_USAGE_HISTORY_LAST_ROW_PADDING);
 
-			GUILayout.EndHorizontal();
-			if (moreThan1Row)
-			{
-				GUILayout.Space(ASSET_USAGE_HISTORY_LAST_ROW_PADDING);
-			}
+            if (this._assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene) GUILayout.Label(AssetUsageAncestryDefaultMaterialInFbxOfScene, BRT_BuildReportWindow.LayoutNone);
+        }
 
-			if (_assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene)
-			{
-				GUILayout.Label(AssetUsageAncestryDefaultMaterialInFbxOfScene, BRT_BuildReportWindow.LayoutNone);
-			}
-		}
+        private int GetNumberOfAssetUsageAncestryRows(List<AssetUsageAncestry> list, float availableWidth)
+        {
+            var assetStyle               = GUI.skin.FindStyle("Asset");
+            var assetLabelInBetweenStyle = GUI.skin.FindStyle("LabelSingleLine");
+            var assetUsageArrowStyle     = GUI.skin.FindStyle("AssetUsageArrow");
 
+            if (assetStyle == null) assetStyle                             = GUI.skin.label;
+            if (assetLabelInBetweenStyle == null) assetLabelInBetweenStyle = GUI.skin.label;
+            Texture2D assetUsageArrow;
+            if (assetUsageArrowStyle != null)
+            {
+                assetUsageArrow = assetUsageArrowStyle.normal.background;
+            }
+            else
+            {
+                assetUsageArrow      = null;
+                assetUsageArrowStyle = GUI.skin.label;
+            }
 
-		int GetNumberOfAssetUsageAncestryRows(List<AssetUsageAncestry> list, float availableWidth)
-		{
-			var assetStyle = GUI.skin.FindStyle("Asset");
-			var assetLabelInBetweenStyle = GUI.skin.FindStyle("LabelSingleLine");
-			var assetUsageArrowStyle = GUI.skin.FindStyle("AssetUsageArrow");
+            var numberOfRowsInAssetUsageAncestry = 1;
 
-			if (assetStyle == null)
-			{
-				assetStyle = GUI.skin.label;
-			}
-			if (assetLabelInBetweenStyle == null)
-			{
-				assetLabelInBetweenStyle = GUI.skin.label;
-			}
-			Texture2D assetUsageArrow;
-			if (assetUsageArrowStyle != null)
-			{
-				assetUsageArrow = assetUsageArrowStyle.normal.background;
-			}
-			else
-			{
-				assetUsageArrow = null;
-				assetUsageArrowStyle = GUI.skin.label;
-			}
+            float currentRowWidth = 0;
 
-			var numberOfRowsInAssetUsageAncestry = 1;
+            for (int n = 0, len = list.Count; n < len; ++n)
+            {
+                // --------------------------
+                // width of the asset name
 
-			float currentRowWidth = 0;
+                var widthToAdd = assetStyle.CalcSize(list[n].Label).x;
 
-			for (int n = 0, len = list.Count; n < len; ++n)
-			{
-				// --------------------------
-				// width of the asset name
-
-				var widthToAdd = assetStyle.CalcSize(list[n].Label).x;
-
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                #if BRT_ASSET_LIST_SCREEN_DEBUG
 				_debugText.AppendFormat("Item {0} name width: {1}\n",
 					n.ToString(),
 					widthToAdd.ToString(CultureInfo.InvariantCulture));
-#endif
+                #endif
 
-				if (currentRowWidth + widthToAdd >= availableWidth)
-				{
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                if (currentRowWidth + widthToAdd >= availableWidth)
+                {
+                    #if BRT_ASSET_LIST_SCREEN_DEBUG
 					_debugText.AppendFormat("Row {0} width: {1}\n",
 						numberOfRowsInAssetUsageAncestry.ToString(),
 						currentRowWidth.ToString(CultureInfo.InvariantCulture));
-#endif
+                    #endif
 
-					currentRowWidth = 0;
+                    currentRowWidth = 0;
 
-					++numberOfRowsInAssetUsageAncestry;
-				}
+                    ++numberOfRowsInAssetUsageAncestry;
+                }
 
-				currentRowWidth += widthToAdd;
+                currentRowWidth += widthToAdd;
 
-				// --------------------------
-				// width of the label following the asset
+                // --------------------------
+                // width of the label following the asset
 
-				widthToAdd = 0;
+                widthToAdd = 0;
 
-				if (BuildReportTool.Options.IsAssetUsageLabelTypeOnVerbose)
-				{
-					if (n == 0)
-					{
-						if (IsFileNextToFile(list, n, ".mat", ".fbx"))
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedAsDefaultMaterialByLabel).x;
-						}
-						else if (list[n].AssetPath.IsInResourcesFolder())
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsAResourcesAssetButAlsoUsedByLabel).x;
-						}
-						else if ((n < len - 1) && list[n + 1].AssetPath.IsFileOfType(".cs"))
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedAsDefaultValueByLabel).x;
-						}
-						else
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedByLabel).x;
-						}
+                if (BuildReportTool.Options.IsAssetUsageLabelTypeOnVerbose)
+                {
+                    if (n == 0)
+                    {
+                        if (IsFileNextToFile(list, n, ".mat", ".fbx"))
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedAsDefaultMaterialByLabel).x;
+                        else if (list[n].AssetPath.IsInResourcesFolder())
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsAResourcesAssetButAlsoUsedByLabel).x;
+                        else if (n < len - 1 && list[n + 1].AssetPath.IsFileOfType(".cs"))
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedAsDefaultValueByLabel).x;
+                        else
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageIsUsedByLabel).x;
 
-						widthToAdd += assetLabelInBetweenStyle.margin.horizontal;
-					}
-					else if (n < len - 1)
-					{
-						if (IsFileNextToFile(list, n, ".mat", ".fbx"))
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedAsDefaultMaterialByLabel).x;
-						}
-						else if (list[n].AssetPath.IsInResourcesFolder())
-						{
-							widthToAdd = assetLabelInBetweenStyle
-							             .CalcSize(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel).x;
-						}
-						else if ((n < len - 1) && list[n + 1].AssetPath.IsFileOfType(".cs"))
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedAsDefaultValueByLabel).x;
-						}
-						else
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedByLabel).x;
-						}
+                        widthToAdd += assetLabelInBetweenStyle.margin.horizontal;
+                    }
+                    else if (n < len - 1)
+                    {
+                        if (IsFileNextToFile(list, n, ".mat", ".fbx"))
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedAsDefaultMaterialByLabel).x;
+                        else if (list[n].AssetPath.IsInResourcesFolder())
+                            widthToAdd = assetLabelInBetweenStyle
+                                .CalcSize(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel).x;
+                        else if (n < len - 1 && list[n + 1].AssetPath.IsFileOfType(".cs"))
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedAsDefaultValueByLabel).x;
+                        else
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsUsedByLabel).x;
 
-						widthToAdd += assetLabelInBetweenStyle.margin.horizontal;
-					}
-					else if (n == len - 1)
-					{
-						if (list[n].AssetPath.IsSceneFile())
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsInTheBuildLabel).x +
-							             assetLabelInBetweenStyle.margin.horizontal;
-						}
-						else if (list[n].AssetPath.IsInResourcesFolder())
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsAResourcesAssetLabel).x +
-							             assetLabelInBetweenStyle.margin.horizontal;
-						}
-						else if (list[n].CyclicDependency)
-						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsACyclicDependencyLabel).x +
-							             assetLabelInBetweenStyle.margin.horizontal;
-						}
-					}
-				}
-				else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnStandard)
-				{
-					if (n < len - 1)
-					{
-						// todo determine if list[n] has extra info and add that to width
-						widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
-					}
-				}
-				else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnMinimal)
-				{
-					if (n < len - 1)
-					{
-						widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
-					}
-				}
+                        widthToAdd += assetLabelInBetweenStyle.margin.horizontal;
+                    }
+                    else if (n == len - 1)
+                    {
+                        if (list[n].AssetPath.IsSceneFile())
+                            widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsInTheBuildLabel).x + assetLabelInBetweenStyle.margin.horizontal;
+                        else if (list[n].AssetPath.IsInResourcesFolder())
+                            widthToAdd                                = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsAResourcesAssetLabel).x + assetLabelInBetweenStyle.margin.horizontal;
+                        else if (list[n].CyclicDependency) widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsACyclicDependencyLabel).x + assetLabelInBetweenStyle.margin.horizontal;
+                    }
+                }
+                else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnStandard)
+                {
+                    if (n < len - 1)
+                        // todo determine if list[n] has extra info and add that to width
+                        widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                }
+                else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnMinimal)
+                {
+                    if (n < len - 1) widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                }
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                #if BRT_ASSET_LIST_SCREEN_DEBUG
 				_debugText.AppendFormat("Item {0} in-between label width: {1}\n",
 					n,
 					widthToAdd.ToString(CultureInfo.InvariantCulture));
-#endif
+                #endif
 
-				if (currentRowWidth + widthToAdd >= availableWidth)
-				{
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+                if (currentRowWidth + widthToAdd >= availableWidth)
+                {
+                    #if BRT_ASSET_LIST_SCREEN_DEBUG
 					_debugText.AppendFormat("Row {0} width: {1}\n",
 						numberOfRowsInAssetUsageAncestry.ToString(),
 						currentRowWidth.ToString(CultureInfo.InvariantCulture));
-#endif
+                    #endif
 
-					currentRowWidth = 0;
+                    currentRowWidth = 0;
 
-					++numberOfRowsInAssetUsageAncestry;
-				}
+                    ++numberOfRowsInAssetUsageAncestry;
+                }
 
-				currentRowWidth += widthToAdd;
-			}
+                currentRowWidth += widthToAdd;
+            }
 
-#if BRT_ASSET_LIST_SCREEN_DEBUG
+            #if BRT_ASSET_LIST_SCREEN_DEBUG
 			_debugText.AppendFormat("numberOfRowsInAssetUsageTraceHistory: {0}\n",
 				numberOfRowsInAssetUsageAncestry.ToString());
-#endif
+            #endif
 
+            return numberOfRowsInAssetUsageAncestry;
+        }
 
-			return numberOfRowsInAssetUsageAncestry;
-		}
+        /// <summary>
+        /// Trace the ancestry
+        /// "end user" is either a scene that's included in the build, or a Resources asset.
+        /// </summary>
+        /// <param name="rootAsset">the asset whose usage we are inspecting</param>
+        /// <param name="assetDependencies"></param>
+        private void SetAssetUsageHistoryToFirstEndUser(string rootAsset, AssetDependencies assetDependencies)
+        {
+            if (assetDependencies == null) return;
 
+            var dependencies = assetDependencies.GetAssetDependencies();
 
-		/// <summary>
-		/// Trace the ancestry
-		/// "end user" is either a scene that's included in the build, or a Resources asset.
-		/// </summary>
-		/// <param name="rootAsset">the asset whose usage we are inspecting</param>
-		/// <param name="assetDependencies"></param>
-		void SetAssetUsageHistoryToFirstEndUser(string rootAsset, AssetDependencies assetDependencies)
-		{
-			if (assetDependencies == null)
-			{
-				return;
-			}
+            if (!dependencies.ContainsKey(rootAsset)) return;
 
-			var dependencies = assetDependencies.GetAssetDependencies();
+            var selectedAssetDependencies = dependencies[rootAsset];
+            var selectedAssetUsers        = selectedAssetDependencies.Users;
 
-			if (!dependencies.ContainsKey(rootAsset))
-			{
-				return;
-			}
+            if (selectedAssetUsers.Count <= 0)
+                // asset isn't used by any other asset
+                return;
 
-			var selectedAssetDependencies = dependencies[rootAsset];
-			var selectedAssetUsers = selectedAssetDependencies.Users;
+            var usersFlattened = selectedAssetDependencies.UsersFlattened;
 
-			if (selectedAssetUsers.Count <= 0)
-			{
-				// asset isn't used by any other asset
-				return;
-			}
+            if (usersFlattened.Count <= 0)
+                // asset has no flattened users list
+                return;
 
-			var usersFlattened = selectedAssetDependencies.UsersFlattened;
+            // ----------------
+            // find first scene
 
-			if (usersFlattened.Count <= 0)
-			{
-				// asset has no flattened users list
-				return;
-			}
+            for (int n = 0, len = usersFlattened.Count; n < len; ++n)
+            {
+                if (usersFlattened[n].AssetPath.IsSceneFile())
+                {
+                    this._selectedAssetUserIdx = n;
+                    SetAssetUsageAncestry(this._assetUsageAncestry, usersFlattened, n, rootAsset);
+                    this._assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene =
+                        DoesAssetUsageAncestryHaveFbxUsingDefaultMaterialUsedInScene(this._assetUsageAncestry);
+                    return;
+                }
+            }
 
+            // ----------------
+            // no scene found, now check if a Resources asset uses it
 
-			// ----------------
-			// find first scene
+            for (int n = 0, len = usersFlattened.Count; n < len; ++n)
+            {
+                if (usersFlattened[n].AssetPath.IsInResourcesFolder())
+                {
+                    this._selectedAssetUserIdx = n;
+                    SetAssetUsageAncestry(this._assetUsageAncestry, usersFlattened, n, rootAsset);
+                    this._assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene = false;
+                    return;
+                }
+            }
 
-			for (int n = 0, len = usersFlattened.Count; n < len; ++n)
-			{
-				if (usersFlattened[n].AssetPath.IsSceneFile())
-				{
-					_selectedAssetUserIdx = n;
-					SetAssetUsageAncestry(_assetUsageAncestry, usersFlattened, n, rootAsset);
-					_assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene =
-						DoesAssetUsageAncestryHaveFbxUsingDefaultMaterialUsedInScene(_assetUsageAncestry);
-					return;
-				}
-			}
+            // ----------------
+            // no end user found, just select the first user
 
-			// ----------------
-			// no scene found, now check if a Resources asset uses it
+            this._selectedAssetUserIdx = 0;
+            SetAssetUsageAncestry(this._assetUsageAncestry, usersFlattened, 0, rootAsset);
+            this._assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene = false;
+        }
 
-			for (int n = 0, len = usersFlattened.Count; n < len; ++n)
-			{
-				if (usersFlattened[n].AssetPath.IsInResourcesFolder())
-				{
-					_selectedAssetUserIdx = n;
-					SetAssetUsageAncestry(_assetUsageAncestry, usersFlattened, n, rootAsset);
-					_assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene = false;
-					return;
-				}
-			}
+        /// <summary>
+        /// Check special case when a scene is using an fbx directly (did not save it as a prefab first).
+        /// In this case, it's impossible to tell whether the fbx in that scene is using its
+        /// default material, or if it's overriden to use no material. So, without opening the scene
+        /// and checking directly, we cannot be sure of the Asset Usage Ancestry in this situation.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private static bool DoesAssetUsageAncestryHaveFbxUsingDefaultMaterialUsedInScene(List<AssetUsageAncestry> list)
+        {
+            if (list.Count >= 3 && list[list.Count - 1].AssetPath.IsSceneFile() && list[list.Count - 2].AssetPath.IsMeshFile() && list[list.Count - 3].AssetPath.IsMaterialFile())
+                return true;
+            else
+                return false;
+        }
 
-			// ----------------
-			// no end user found, just select the first user
+        /// <summary>
+        /// Trace the ancestry of asset usage gor a given asset, and assign it to the destination List.
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <param name="source">Entire asset usage chain</param>
+        /// <param name="idxChosenFromSource"></param>
+        /// <param name="rootAsset">the asset whose usage we are inspecting</param>
+        private static void SetAssetUsageAncestry(
+            List<AssetUsageAncestry> destination,
+            List<AssetUserFlattened> source,
+            int                      idxChosenFromSource,
+            string                   rootAsset
+        )
+        {
+            destination.Clear();
 
-			_selectedAssetUserIdx = 0;
-			SetAssetUsageAncestry(_assetUsageAncestry, usersFlattened, 0, rootAsset);
-			_assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene = false;
-		}
+            // --------------------------------------
 
+            AssetUsageAncestry lastEntry;
+            lastEntry.AssetPath        = source[idxChosenFromSource].AssetPath;
+            lastEntry.CyclicDependency = source[idxChosenFromSource].CyclicDependency;
+            lastEntry.Label =
+                new(
+                    lastEntry.AssetPath.GetFileNameOnly(),
+                    AssetDatabase.GetCachedIcon(lastEntry.AssetPath));
 
-		/// <summary>
-		/// Check special case when a scene is using an fbx directly (did not save it as a prefab first).
-		/// In this case, it's impossible to tell whether the fbx in that scene is using its
-		/// default material, or if it's overriden to use no material. So, without opening the scene
-		/// and checking directly, we cannot be sure of the Asset Usage Ancestry in this situation.
-		/// </summary>
-		/// <param name="list"></param>
-		/// <returns></returns>
-		static bool DoesAssetUsageAncestryHaveFbxUsingDefaultMaterialUsedInScene(List<AssetUsageAncestry> list)
-		{
-			if (list.Count >= 3 &&
-			    list[list.Count - 1].AssetPath.IsSceneFile() &&
-			    list[list.Count - 2].AssetPath.IsMeshFile() &&
-			    list[list.Count - 3].AssetPath.IsMaterialFile())
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+            destination.Add(lastEntry);
 
-		/// <summary>
-		/// Trace the ancestry of asset usage gor a given asset, and assign it to the destination List.
-		/// </summary>
-		/// <param name="destination"></param>
-		/// <param name="source">Entire asset usage chain</param>
-		/// <param name="idxChosenFromSource"></param>
-		/// <param name="rootAsset">the asset whose usage we are inspecting</param>
-		static void SetAssetUsageAncestry(List<AssetUsageAncestry> destination, List<AssetUserFlattened> source,
-			int idxChosenFromSource, string rootAsset)
-		{
-			destination.Clear();
+            // --------------------------------------
 
-			// --------------------------------------
+            var currentIndentLevel = source[idxChosenFromSource].IndentLevel;
 
-			AssetUsageAncestry lastEntry;
-			lastEntry.AssetPath = source[idxChosenFromSource].AssetPath;
-			lastEntry.CyclicDependency = source[idxChosenFromSource].CyclicDependency;
-			lastEntry.Label =
-				new GUIContent(
-					lastEntry.AssetPath.GetFileNameOnly(),
-					AssetDatabase.GetCachedIcon(lastEntry.AssetPath));
+            // go backwards and insert each one in front of the destination list
+            for (var traceN = idxChosenFromSource - 1; traceN >= 0; --traceN)
+            {
+                // we need only the entries that move to upper indent levels each time
+                if (source[traceN].IndentLevel >= currentIndentLevel) continue;
 
-			destination.Add(lastEntry);
+                currentIndentLevel = source[traceN].IndentLevel;
 
-			// --------------------------------------
+                AssetUsageAncestry newEntry;
+                newEntry.AssetPath        = source[traceN].AssetPath;
+                newEntry.CyclicDependency = source[traceN].CyclicDependency;
+                newEntry.Label =
+                    new(
+                        newEntry.AssetPath.GetFileNameOnly(),
+                        AssetDatabase.GetCachedIcon(newEntry.AssetPath));
 
-			var currentIndentLevel = source[idxChosenFromSource].IndentLevel;
+                destination.Insert(0, newEntry);
+            }
 
-			// go backwards and insert each one in front of the destination list
-			for (int traceN = idxChosenFromSource - 1; traceN >= 0; --traceN)
-			{
-				// we need only the entries that move to upper indent levels each time
-				if (source[traceN].IndentLevel >= currentIndentLevel)
-				{
-					continue;
-				}
+            // --------------------------------------
 
-				currentIndentLevel = source[traceN].IndentLevel;
-
-				AssetUsageAncestry newEntry;
-				newEntry.AssetPath = source[traceN].AssetPath;
-				newEntry.CyclicDependency = source[traceN].CyclicDependency;
-				newEntry.Label =
-					new GUIContent(
-						newEntry.AssetPath.GetFileNameOnly(),
-						AssetDatabase.GetCachedIcon(newEntry.AssetPath));
-
-				destination.Insert(0, newEntry);
-			}
-
-			// --------------------------------------
-
-			AssetUsageAncestry firstEntry;
-			firstEntry.AssetPath = rootAsset;
-			firstEntry.CyclicDependency = false;
-			firstEntry.Label =
-				new GUIContent(
-					firstEntry.AssetPath.GetFileNameOnly(),
-					AssetDatabase.GetCachedIcon(firstEntry.AssetPath));
-			destination.Insert(0, firstEntry);
-		}
-	}
+            AssetUsageAncestry firstEntry;
+            firstEntry.AssetPath        = rootAsset;
+            firstEntry.CyclicDependency = false;
+            firstEntry.Label =
+                new(
+                    firstEntry.AssetPath.GetFileNameOnly(),
+                    AssetDatabase.GetCachedIcon(firstEntry.AssetPath));
+            destination.Insert(0, firstEntry);
+        }
+    }
 }

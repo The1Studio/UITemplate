@@ -11,42 +11,25 @@ namespace HeurekaGames.AssetHunterPRO
     public class AH_BuildInfoManager : ScriptableObject
     {
         public delegate void BuildInfoSelectionChangedDelegate();
+
         public BuildInfoSelectionChangedDelegate OnBuildInfoSelectionChanged;
 
-        [SerializeField] private bool hasTreeviewSelection = false;
-        [SerializeField] private string chosenFilePath;
+        [SerializeField] private bool                   hasTreeviewSelection = false;
+        [SerializeField] private string                 chosenFilePath;
         [SerializeField] private AH_SerializedBuildInfo chosenBuildInfo;
-        [SerializeField] AH_BuildInfoTreeView treeView;
-        [SerializeField] private bool projectDirty;
-        [SerializeField] private bool projectIsClean;
+        [SerializeField] private AH_BuildInfoTreeView   treeView;
+        [SerializeField] private bool                   projectDirty;
+        [SerializeField] private bool                   projectIsClean;
 
-        public AH_BuildInfoTreeView TreeView
-        {
-            get
-            {
-                return treeView;
-            }
-        }
+        public AH_BuildInfoTreeView TreeView => this.treeView;
 
-        public bool HasSelection
-        {
-            get
-            {
-                return hasTreeviewSelection;
-            }
-        }
+        public bool HasSelection => this.hasTreeviewSelection;
 
-        public bool ProjectDirty { 
-            get => projectDirty;
-            set
-            { 
-                projectDirty = value;
-            } 
-        }
+        public bool ProjectDirty { get => this.projectDirty; set => this.projectDirty = value; }
 
         public void OnEnable()
         {
-            hideFlags = HideFlags.HideAndDontSave;
+            this.hideFlags = HideFlags.HideAndDontSave;
         }
 
         private void UpdateBuildInfoFilePaths()
@@ -57,8 +40,8 @@ namespace HeurekaGames.AssetHunterPRO
 
         public IList<AH_TreeviewElement> GetTreeViewData()
         {
-            if (treeView != null && treeView.treeElements != null && treeView.treeElements.Count > 0)
-                return treeView.treeElements;
+            if (this.treeView != null && this.treeView.treeElements != null && this.treeView.treeElements.Count > 0)
+                return this.treeView.treeElements;
             else
                 Debug.LogError("Missing Data!!!");
 
@@ -67,36 +50,27 @@ namespace HeurekaGames.AssetHunterPRO
 
         internal void SelectBuildInfo(string filePath)
         {
-            hasTreeviewSelection = false;
-            chosenFilePath = filePath;
-            chosenBuildInfo = AH_SerializationHelper.LoadBuildReport(filePath);
+            this.hasTreeviewSelection = false;
+            this.chosenFilePath       = filePath;
+            this.chosenBuildInfo      = AH_SerializationHelper.LoadBuildReport(filePath);
 
             Version reportVersion;
-            if (Version.TryParse(chosenBuildInfo.versionNumber, out reportVersion))
-            {
-                if (reportVersion.CompareTo(new Version("2.2.0")) < 0) //If report is older than 2.2.0 (tweaked datamodel in 2.2.0 from saving 'Paths' to saving 'guids')
-                {
+            if (Version.TryParse(this.chosenBuildInfo.versionNumber, out reportVersion))
+                if (reportVersion.CompareTo(new("2.2.0")) < 0) //If report is older than 2.2.0 (tweaked datamodel in 2.2.0 from saving 'Paths' to saving 'guids')
                     //Change paths to guids
-                    foreach (var item in chosenBuildInfo.AssetListUnSorted)
-                    {
+                    foreach (var item in this.chosenBuildInfo.AssetListUnSorted)
                         item.ChangePathToGUID();
-                    }
-                }
-            }
 
-            if (chosenBuildInfo == null)
-                return;
-
+            if (this.chosenBuildInfo == null) return;
 
             //Make sure JSON is valid
-            if (populateBuildReport())
+            if (this.populateBuildReport())
             {
-                hasTreeviewSelection = true;
+                this.hasTreeviewSelection = true;
 
-                if (OnBuildInfoSelectionChanged != null)
-                    OnBuildInfoSelectionChanged();
+                if (this.OnBuildInfoSelectionChanged != null) this.OnBuildInfoSelectionChanged();
             }
-            else if(!projectIsClean)
+            else if (!this.projectIsClean)
             {
                 EditorUtility.DisplayDialog(
                     "JSON Parse error",
@@ -107,55 +81,55 @@ namespace HeurekaGames.AssetHunterPRO
 
         private bool populateBuildReport()
         {
-            treeView = ScriptableObject.CreateInstance<AH_BuildInfoTreeView>();
-            bool success = treeView.PopulateTreeView(chosenBuildInfo);
+            this.treeView = CreateInstance<AH_BuildInfoTreeView>();
+            var success = this.treeView.PopulateTreeView(this.chosenBuildInfo);
 
-            projectIsClean = !treeView.HasUnused();
+            this.projectIsClean = !this.treeView.HasUnused();
 
             return success;
         }
 
         internal bool IsMergedReport()
         {
-            return chosenBuildInfo.IsMergedReport();
+            return this.chosenBuildInfo.IsMergedReport();
         }
 
         internal void RefreshBuildInfo()
         {
-            SelectBuildInfo(chosenFilePath);
+            this.SelectBuildInfo(this.chosenFilePath);
         }
 
         internal string GetSelectedBuildSize()
         {
-            return AH_Utils.GetSizeAsString((long)chosenBuildInfo.TotalSize);
+            return AH_Utils.GetSizeAsString((long)this.chosenBuildInfo.TotalSize);
         }
 
         internal string GetSelectedBuildDate()
         {
-            return chosenBuildInfo.dateTime;
+            return this.chosenBuildInfo.dateTime;
         }
 
         internal string GetSelectedBuildTarget()
         {
-            return chosenBuildInfo.buildTargetInfo;
+            return this.chosenBuildInfo.buildTargetInfo;
         }
 
         //Only avaliable in 2018
-#if UNITY_2018_1_OR_NEWER
+        #if UNITY_2018_1_OR_NEWER
         internal List<AH_BuildReportFileInfo> GetReportInfoInfo()
         {
-            return chosenBuildInfo.BuildReportInfoList;
+            return this.chosenBuildInfo.BuildReportInfoList;
         }
-#endif
+        #endif
 
         internal AH_SerializedBuildInfo GetSerializedBuildInfo()
         {
-            return chosenBuildInfo;
+            return this.chosenBuildInfo;
         }
 
         internal bool IsProjectClean()
         {
-            return projectIsClean;
+            return this.projectIsClean;
         }
     }
 }

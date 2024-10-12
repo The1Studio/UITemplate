@@ -17,7 +17,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private readonly IGameAssets gameAssets;
 
         [Preserve]
-        public UITemplateVFXSpawnService(SignalBus signalBus, IGameAssets gameAssets) { this.gameAssets = gameAssets; }
+        public UITemplateVFXSpawnService(SignalBus signalBus, IGameAssets gameAssets)
+        {
+            this.gameAssets = gameAssets;
+        }
 
         public async void SpawnVFX(Transform target, List<string> listVFXKey, bool randomRotate = true, bool isFloat = true)
         {
@@ -39,8 +42,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             vfxObj.Recycle();
         }
 
-        public void SpawnEncourageVFX(Transform target) { this.SpawnVFX(target, this.ListEncourageVFX); }
+        public void SpawnEncourageVFX(Transform target)
+        {
+            this.SpawnVFX(target, this.ListEncourageVFX);
+        }
 
-        public void SpawnComboVFX(Transform target) { this.SpawnVFX(target, this.ListComboVFX); }
+        public void SpawnComboVFX(Transform target)
+        {
+            this.SpawnVFX(target, this.ListComboVFX);
+        }
     }
 }

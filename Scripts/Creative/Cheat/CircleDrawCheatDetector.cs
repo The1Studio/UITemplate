@@ -40,18 +40,14 @@
                 }
             }
 
-            if (Input.GetMouseButtonUp(0))
-            {
-                this.isDrawing = false;
-            }
+            if (Input.GetMouseButtonUp(0)) this.isDrawing = false;
 
             return false;
         }
 
         private bool CheckCircleCompletion(List<Vector2> checkPoints)
         {
-            if (checkPoints.Count < 3)
-                return false;
+            if (checkPoints.Count < 3) return false;
 
             var center          = this.GetCentroid(checkPoints);
             var radius          = Vector2.Distance(center, checkPoints[0]);
@@ -78,11 +74,8 @@
 
         private Vector2 GetCentroid(List<Vector2> points)
         {
-            Vector2 centroid = Vector2.zero;
-            foreach (Vector2 point in points)
-            {
-                centroid += point;
-            }
+            var centroid                           = Vector2.zero;
+            foreach (var point in points) centroid += point;
 
             return centroid / points.Count;
         }

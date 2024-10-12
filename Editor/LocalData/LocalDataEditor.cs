@@ -18,9 +18,10 @@ namespace UITemplate.Editor
     {
         private const string LocalDataPrefix = BaseHandleUserDataServices.UserDataPrefix;
 
-        private static readonly JsonSerializerSettings JsonSetting =  BaseHandleUserDataServices.JsonSetting;
+        private static readonly JsonSerializerSettings JsonSetting = BaseHandleUserDataServices.JsonSetting;
 
-        [OdinSerialize, HideLabel]
+        [OdinSerialize]
+        [HideLabel]
         [ListDrawerSettings(Expanded = true, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]
         private List<ILocalData> localData;
 
@@ -39,7 +40,7 @@ namespace UITemplate.Editor
 
             var handleUserDataServices = this.GetCurrentContainer().Resolve<IHandleUserDataServices>();
             var cacheFieldInfo = handleUserDataServices.GetType()
-                                                        .GetField("localDataCaches", BindingFlags.Instance | BindingFlags.NonPublic);
+                .GetField("localDataCaches", BindingFlags.Instance | BindingFlags.NonPublic);
             var localDataCaches = cacheFieldInfo?.GetValue(handleUserDataServices) as Dictionary<string, object>;
             this.localData = localDataCaches?.Select(e => e.Value).Cast<ILocalData>().ToList();
         }
@@ -96,8 +97,7 @@ namespace UITemplate.Editor
                 if (!PlayerPrefs.HasKey(key)) continue;
                 var json = PlayerPrefs.GetString(key);
 
-                if (JsonConvert.DeserializeObject(json, type, JsonSetting) is ILocalData data)
-                    result.Add(data);
+                if (JsonConvert.DeserializeObject(json, type, JsonSetting) is ILocalData data) result.Add(data);
             }
 
             return result;

@@ -18,10 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             var noThankDelay  = 2;
             var scaleDuration = 0.5f;
-            foreach (var tween in this.tweens)
-            {
-                tween.Kill();
-            }
+            foreach (var tween in this.tweens) tween.Kill();
 
             this.tweens.Clear();
             this.cancellationTokenSource?.Cancel();

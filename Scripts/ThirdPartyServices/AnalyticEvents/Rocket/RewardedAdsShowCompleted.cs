@@ -6,7 +6,7 @@
     {
         public string placement;
         public string result;
-        
+
         public RewardedAdsShowCompleted(string placement, string result)
         {
             this.placement = placement;

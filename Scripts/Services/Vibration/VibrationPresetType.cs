@@ -11,6 +11,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Vibration
         HeavyImpact  = 6,
         RigidImpact  = 7,
         SoftImpact   = 8,
-        None         = -1
+        None         = -1,
     }
 }

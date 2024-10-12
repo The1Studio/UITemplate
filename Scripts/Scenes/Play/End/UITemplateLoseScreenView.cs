@@ -56,33 +56,18 @@
         {
             base.OnViewReady();
 
-            if (this.View.SkipButton != null)
-            {
-                this.View.SkipButton.OnViewReady(this.adService);
-            }
+            if (this.View.SkipButton != null) this.View.SkipButton.OnViewReady(this.adService);
 
-            if (this.View.HomeButton != null)
-            {
-                this.View.HomeButton.onClick.AddListener(this.OnClickHome);
-            }
+            if (this.View.HomeButton != null) this.View.HomeButton.onClick.AddListener(this.OnClickHome);
 
-            if (this.View.ReplayButton != null)
-            {
-                this.View.ReplayButton.onClick.AddListener(this.OnClickReplay);
-            }
+            if (this.View.ReplayButton != null) this.View.ReplayButton.onClick.AddListener(this.OnClickReplay);
 
-            if (this.View.SkipButton != null)
-            {
-                this.View.SkipButton.onClick.AddListener(this.OnClickSkip);
-            }
+            if (this.View.SkipButton != null) this.View.SkipButton.onClick.AddListener(this.OnClickSkip);
         }
 
         public override UniTask BindData()
         {
-            if (this.View.SkipButton != null)
-            {
-                this.View.SkipButton.BindData(this.AdPlacement);
-            }
+            if (this.View.SkipButton != null) this.View.SkipButton.BindData(this.AdPlacement);
 
             this.soundServices.PlaySoundLose();
             return UniTask.CompletedTask;
@@ -91,10 +76,7 @@
         public override void Dispose()
         {
             base.Dispose();
-            if (this.View.SkipButton != null)
-            {
-                this.View.SkipButton.Dispose();
-            }
+            if (this.View.SkipButton != null) this.View.SkipButton.Dispose();
         }
 
         protected virtual void OnClickHome()

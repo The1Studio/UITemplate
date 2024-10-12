@@ -10,14 +10,11 @@ namespace TheOneStudio.HyperCasual.Runtime.Common
     [ExecuteInEditMode]
     public class UITemplateChoiceSlider : MonoBehaviour
     {
-        [SerializeField]
-        private Slider slider;
+        [SerializeField] private Slider slider;
 
-        [SerializeField]
-        private HorizontalLayoutGroup layoutGroup;
+        [SerializeField] private HorizontalLayoutGroup layoutGroup;
 
-        [SerializeField]
-        private float speed = 1f;
+        [SerializeField] private float speed = 1f;
 
         private int     lastChoiceIndex = -1;
         private Tweener tween;
@@ -28,19 +25,19 @@ namespace TheOneStudio.HyperCasual.Runtime.Common
         {
             // tween the slider from 0 to 1 and back to 0 looping forever
             this.tween = DOTween.To(() => this.slider.value, value => this.slider.value = value, 1f, this.speed)
-                                .SetEase(Ease.Linear)
-                                .SetLoops(-1, LoopType.Yoyo);
+                .SetEase(Ease.Linear)
+                .SetLoops(-1, LoopType.Yoyo);
         }
 
         private void LateUpdate()
         {
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             var rect = this.slider.GetComponent<RectTransform>();
-            rect.offsetMin = new Vector2(this.layoutGroup.padding.left, rect.offsetMin.y);
-            rect.offsetMax = new Vector2(-this.layoutGroup.padding.right, rect.offsetMax.y);
-#endif
+            rect.offsetMin = new(this.layoutGroup.padding.left, rect.offsetMin.y);
+            rect.offsetMax = new(-this.layoutGroup.padding.right, rect.offsetMax.y);
+            #endif
             // Call OnChoiceChanged event when the slider value changes
-            if (this.OnChoiceChanged is not null)
+            if (this.OnChoiceChanged is { })
             {
                 var currentChoiceIndex = this.GetCurrentChoiceIndex();
 
@@ -80,10 +77,7 @@ namespace TheOneStudio.HyperCasual.Runtime.Common
                 choiceTransforms.Add(rectTransform);
             }
 
-            if (totalWidth == 0)
-            {
-                return -1;
-            }
+            if (totalWidth == 0) return -1;
 
             totalWidth -= this.layoutGroup.spacing;
 
@@ -92,10 +86,7 @@ namespace TheOneStudio.HyperCasual.Runtime.Common
             {
                 currentWidth += choiceTransforms[i].rect.width + this.layoutGroup.spacing;
 
-                if (currentWidth >= totalWidth * this.slider.value)
-                {
-                    return i;
-                }
+                if (currentWidth >= totalWidth * this.slider.value) return i;
             }
 
             return -1;

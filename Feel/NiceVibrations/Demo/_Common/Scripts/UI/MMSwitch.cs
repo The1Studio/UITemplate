@@ -17,22 +17,30 @@ namespace Lofelt.NiceVibrations
         [Header("Switch")]
         /// a SpriteReplace to represent the switch knob
         public Image SwitchKnob;
+
         /// the possible states of the switch
-        public enum SwitchStates { Off, On }
+        public enum SwitchStates
+        {
+            Off,
+            On,
+        }
+
         /// the current state of the switch
         public SwitchStates CurrentSwitchState { get; set; }
 
         [Header("Knob")]
         /// the state the switch should start in
         public SwitchStates InitialState = SwitchStates.Off;
-        public Transform OffPosition;
-        public Transform OnPosition;
-        public AnimationCurve KnobMovementCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        public float KnobMovementDuration = 0.2f;
+
+        public Transform      OffPosition;
+        public Transform      OnPosition;
+        public AnimationCurve KnobMovementCurve    = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+        public float          KnobMovementDuration = 0.2f;
 
         [Header("Binding")]
         /// the methods to call when the switch is turned on
         public UnityEvent SwitchOn;
+
         /// the methods to call when the switch is turned off
         public UnityEvent SwitchOff;
 
@@ -44,46 +52,36 @@ namespace Lofelt.NiceVibrations
         protected override void Initialization()
         {
             base.Initialization();
-            CurrentSwitchState = InitialState;
-            InitializeState();
+            this.CurrentSwitchState = this.InitialState;
+            this.InitializeState();
         }
 
         public virtual void InitializeState()
         {
-            if (CurrentSwitchState == SwitchStates.Off)
+            if (this.CurrentSwitchState == SwitchStates.Off)
             {
-                if (_animator != null)
-                {
-                    _animator.Play("RollLeft");
-                }
-                SwitchKnob.transform.position = OffPosition.transform.position;
+                if (this._animator != null) this._animator.Play("RollLeft");
+                this.SwitchKnob.transform.position = this.OffPosition.transform.position;
             }
             else
             {
-                if (_animator != null)
-                {
-                    _animator.Play("RollRight");
-                }
-                SwitchKnob.transform.position = OnPosition.transform.position;
+                if (this._animator != null) this._animator.Play("RollRight");
+                this.SwitchKnob.transform.position = this.OnPosition.transform.position;
             }
         }
 
         protected override void Update()
         {
             base.Update();
-            if (Time.time - _knobMovementStartedAt < KnobMovementDuration)
+            if (Time.time - this._knobMovementStartedAt < this.KnobMovementDuration)
             {
-                float time = Remap(Time.time - _knobMovementStartedAt, 0f, KnobMovementDuration, 0f, 1f);
-                float value = KnobMovementCurve.Evaluate(time);
+                var time  = this.Remap(Time.time - this._knobMovementStartedAt, 0f, this.KnobMovementDuration, 0f, 1f);
+                var value = this.KnobMovementCurve.Evaluate(time);
 
-                if (CurrentSwitchState == SwitchStates.Off)
-                {
-                    SwitchKnob.transform.position = Vector3.Lerp(OnPosition.transform.position, OffPosition.transform.position, value);
-                }
+                if (this.CurrentSwitchState == SwitchStates.Off)
+                    this.SwitchKnob.transform.position = Vector3.Lerp(this.OnPosition.transform.position, this.OffPosition.transform.position, value);
                 else
-                {
-                    SwitchKnob.transform.position = Vector3.Lerp(OffPosition.transform.position, OnPosition.transform.position, value);
-                }
+                    this.SwitchKnob.transform.position = Vector3.Lerp(this.OffPosition.transform.position, this.OnPosition.transform.position, value);
             }
         }
 
@@ -92,30 +90,18 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void SwitchState()
         {
-            _knobMovementStartedAt = Time.time;
-            if (CurrentSwitchState == SwitchStates.Off)
+            this._knobMovementStartedAt = Time.time;
+            if (this.CurrentSwitchState == SwitchStates.Off)
             {
-                CurrentSwitchState = SwitchStates.On;
-                if (_animator != null)
-                {
-                    _animator?.SetTrigger("Right");
-                }
-                if (SwitchOn != null)
-                {
-                    SwitchOn.Invoke();
-                }
+                this.CurrentSwitchState = SwitchStates.On;
+                if (this._animator != null) this._animator?.SetTrigger("Right");
+                if (this.SwitchOn != null) this.SwitchOn.Invoke();
             }
             else
             {
-                CurrentSwitchState = SwitchStates.Off;
-                if (_animator != null)
-                {
-                    _animator?.SetTrigger("Left");
-                }
-                if (SwitchOff != null)
-                {
-                    SwitchOff.Invoke();
-                }
+                this.CurrentSwitchState = SwitchStates.Off;
+                if (this._animator != null) this._animator?.SetTrigger("Left");
+                if (this.SwitchOff != null) this.SwitchOff.Invoke();
             }
         }
     }

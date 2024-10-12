@@ -98,7 +98,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             tempObjGetBoxCollider.transform.position                      = startPointRect.position;
             tempObjGetBoxCollider.GetComponent<RectTransform>().sizeDelta = startPointRect.sizeDelta;
-            tempObjGetBoxCollider.size                                    = new Vector2(startPointRect.rect.width, startPointRect.rect.height);
+            tempObjGetBoxCollider.size                                    = new(startPointRect.rect.width, startPointRect.rect.height);
 
             return tempObjGetBoxCollider;
         }

@@ -34,15 +34,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
             this.btnRequestTracking.interactable = false;
             if (!AttHelper.IsRequestTrackingComplete())
             {
-#if UNITY_IOS
+                #if UNITY_IOS
                 Unity.Advertisement.IosSupport.ATTrackingStatusBinding.RequestAuthorizationTracking();
                 await Cysharp.Threading.Tasks.UniTask.WaitUntil(AttHelper.IsRequestTrackingComplete);
-#endif
+                #endif
             }
 
             LoadLoadingScene();
         }
 
-        private static void LoadLoadingScene() { SceneManager.LoadScene("0.LoadingScene"); }
+        private static void LoadLoadingScene()
+        {
+            SceneManager.LoadScene("0.LoadingScene");
+        }
     }
 }

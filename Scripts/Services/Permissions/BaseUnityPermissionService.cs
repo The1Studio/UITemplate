@@ -23,12 +23,12 @@
             bool isGranted;
             if (request is PermissionRequest.Notification)
             {
-#if THEONE_NOTIFICATION
+                #if THEONE_NOTIFICATION
                 isGranted = await this.InternalRequestNotificationPermission();
-#else
+                #else
                 this.LOGService.Log($"oneLog: You must add THEONE_NOTIFICATION symbol to request notification permission!");
                 isGranted = false;
-#endif
+                #endif
             }
             else
             {

@@ -44,392 +44,332 @@ using UnityEngine;
 
 namespace BuildReportTool
 {
-	public static class UnityBuildSettingsUtility
-	{
-		// ================================================================================================
+    public static class UnityBuildSettingsUtility
+    {
+        // ================================================================================================
 
-		public static GUIContent[] GetBuildSettingsCategoryListForDropdownBox()
-		{
-			// WARNING! changing contents here will require changing code in:
-			//
-			//  GetIdxFromBuildReportValues
-			//  GetSettingsCategoryFromIdx
-			//
-			// as they rely on the array indices
-			//
-			return new[]
-			{
-				/* 0 */ new GUIContent("Windows"),
-				/* 1 */ new GUIContent("Mac"),
-				/* 2 */ new GUIContent("Linux"),
+        public static GUIContent[] GetBuildSettingsCategoryListForDropdownBox()
+        {
+            // WARNING! changing contents here will require changing code in:
+            //
+            //  GetIdxFromBuildReportValues
+            //  GetSettingsCategoryFromIdx
+            //
+            // as they rely on the array indices
+            //
+            return new[]
+            {
+                /* 0 */ new GUIContent("Windows"),
+                /* 1 */ new GUIContent("Mac"),
+                /* 2 */ new GUIContent("Linux"),
 
-				/* 3 */ new GUIContent("Web"),
-				/*  4 */ new GUIContent("Web GL"),
+                /* 3 */ new GUIContent("Web"),
+                /*  4 */ new GUIContent("Web GL"),
 
-				/*  5 */ new GUIContent("iOS"),
-				/*  6 */ new GUIContent("Android"),
-				/*  7 */ new GUIContent("Blackberry"),
+                /*  5 */ new GUIContent("iOS"),
+                /*  6 */ new GUIContent("Android"),
+                /*  7 */ new GUIContent("Blackberry"),
 
-				/*  8 */ new GUIContent("Xbox 360"),
-				/*  9 */ new GUIContent("Xbox One"),
-				/* 10 */ new GUIContent("Playstation 3"),
-				/* 11 */ new GUIContent("Playstation 4"),
+                /*  8 */ new GUIContent("Xbox 360"),
+                /*  9 */ new GUIContent("Xbox One"),
+                /* 10 */ new GUIContent("Playstation 3"),
+                /* 11 */ new GUIContent("Playstation 4"),
 
-				/* 12 */ new GUIContent("Playstation Vita (Native)"),
+                /* 12 */ new GUIContent("Playstation Vita (Native)"),
 
-				/* 13 */ new GUIContent("Samsung TV"),
-			};
-		}
+                /* 13 */ new GUIContent("Samsung TV"),
+            };
+        }
 
+        public static int GetIdxFromBuildReportValues(BuildInfo buildReportToDisplay)
+        {
+            var b = ReportGenerator.GetBuildSettingCategoryFromBuildValues(buildReportToDisplay);
 
-		public static int GetIdxFromBuildReportValues(BuildInfo buildReportToDisplay)
-		{
-			BuildSettingCategory b = ReportGenerator.GetBuildSettingCategoryFromBuildValues(buildReportToDisplay);
+            switch (b)
+            {
+                case BuildSettingCategory.WindowsDesktopStandalone: return 0;
+                case BuildSettingCategory.MacStandalone:            return 1;
+                case BuildSettingCategory.LinuxStandalone:          return 2;
 
-			switch (b)
-			{
-				case BuildSettingCategory.WindowsDesktopStandalone:
-					return 0;
-				case BuildSettingCategory.MacStandalone:
-					return 1;
-				case BuildSettingCategory.LinuxStandalone:
-					return 2;
+                case BuildSettingCategory.WebPlayer: return 3;
+                case BuildSettingCategory.WebGL:     return 4;
 
-				case BuildSettingCategory.WebPlayer:
-					return 3;
-				case BuildSettingCategory.WebGL:
-					return 4;
+                case BuildSettingCategory.iOS:        return 5;
+                case BuildSettingCategory.Android:    return 6;
+                case BuildSettingCategory.Blackberry: return 7;
 
-				case BuildSettingCategory.iOS:
-					return 5;
-				case BuildSettingCategory.Android:
-					return 6;
-				case BuildSettingCategory.Blackberry:
-					return 7;
+                case BuildSettingCategory.Xbox360: return 8;
+                case BuildSettingCategory.XboxOne: return 9;
+                case BuildSettingCategory.PS3:     return 10;
+                case BuildSettingCategory.PS4:     return 11;
 
-				case BuildSettingCategory.Xbox360:
-					return 8;
-				case BuildSettingCategory.XboxOne:
-					return 9;
-				case BuildSettingCategory.PS3:
-					return 10;
-				case BuildSettingCategory.PS4:
-					return 11;
+                case BuildSettingCategory.PSVita: return 12;
 
-				case BuildSettingCategory.PSVita:
-					return 12;
+                case BuildSettingCategory.SamsungTV: return 13;
+            }
 
-				case BuildSettingCategory.SamsungTV:
-					return 13;
-			}
+            return -1;
+        }
 
-			return -1;
-		}
+        public static BuildSettingCategory GetSettingsCategoryFromIdx(int idx)
+        {
+            switch (idx)
+            {
+                case 0: return BuildSettingCategory.WindowsDesktopStandalone;
+                case 1: return BuildSettingCategory.MacStandalone;
+                case 2: return BuildSettingCategory.LinuxStandalone;
 
-		public static BuildSettingCategory GetSettingsCategoryFromIdx(int idx)
-		{
-			switch (idx)
-			{
-				case 0:
-					return BuildSettingCategory.WindowsDesktopStandalone;
-				case 1:
-					return BuildSettingCategory.MacStandalone;
-				case 2:
-					return BuildSettingCategory.LinuxStandalone;
+                case 3: return BuildSettingCategory.WebPlayer;
+                case 4: return BuildSettingCategory.WebGL;
 
-				case 3:
-					return BuildSettingCategory.WebPlayer;
-				case 4:
-					return BuildSettingCategory.WebGL;
+                case 5: return BuildSettingCategory.iOS;
+                case 6: return BuildSettingCategory.Android;
+                case 7: return BuildSettingCategory.Blackberry;
 
-				case 5:
-					return BuildSettingCategory.iOS;
-				case 6:
-					return BuildSettingCategory.Android;
-				case 7:
-					return BuildSettingCategory.Blackberry;
+                case 8:  return BuildSettingCategory.Xbox360;
+                case 9:  return BuildSettingCategory.XboxOne;
+                case 10: return BuildSettingCategory.PS3;
+                case 11: return BuildSettingCategory.PS4;
 
-				case 8:
-					return BuildSettingCategory.Xbox360;
-				case 9:
-					return BuildSettingCategory.XboxOne;
-				case 10:
-					return BuildSettingCategory.PS3;
-				case 11:
-					return BuildSettingCategory.PS4;
+                case 12: return BuildSettingCategory.PSVita;
 
-				case 12:
-					return BuildSettingCategory.PSVita;
+                case 13: return BuildSettingCategory.SamsungTV;
+            }
 
-				case 13:
-					return BuildSettingCategory.SamsungTV;
-			}
+            return BuildSettingCategory.None;
+        }
 
-			return BuildSettingCategory.None;
-		}
+        public static string GetReadableBuildSettingCategory(BuildSettingCategory b)
+        {
+            switch (b)
+            {
+                case BuildSettingCategory.WindowsDesktopStandalone: return "Windows";
 
-		public static string GetReadableBuildSettingCategory(BuildSettingCategory b)
-		{
-			switch (b)
-			{
-				case BuildSettingCategory.WindowsDesktopStandalone:
-					return "Windows";
+                case BuildSettingCategory.WindowsStoreApp: return "Windows Store App";
 
-				case BuildSettingCategory.WindowsStoreApp:
-					return "Windows Store App";
+                case BuildSettingCategory.WindowsPhone8: return "Windows Phone 8";
 
-				case BuildSettingCategory.WindowsPhone8:
-					return "Windows Phone 8";
+                case BuildSettingCategory.MacStandalone: return "Mac";
 
-				case BuildSettingCategory.MacStandalone:
-					return "Mac";
+                case BuildSettingCategory.LinuxStandalone: return "Linux";
 
-				case BuildSettingCategory.LinuxStandalone:
-					return "Linux";
+                case BuildSettingCategory.WebPlayer: return "Web Player";
 
+                case BuildSettingCategory.Xbox360: return "Xbox 360";
+                case BuildSettingCategory.XboxOne: return "Xbox One";
 
-				case BuildSettingCategory.WebPlayer:
-					return "Web Player";
+                case BuildSettingCategory.PS3: return "Playstation 3";
+                case BuildSettingCategory.PS4: return "Playstation 4";
 
+                case BuildSettingCategory.PSVita: return "Playstation Vita (Native)";
 
-				case BuildSettingCategory.Xbox360:
-					return "Xbox 360";
-				case BuildSettingCategory.XboxOne:
-					return "Xbox One";
+                case BuildSettingCategory.PSM: return "Playstation Mobile";
 
-				case BuildSettingCategory.PS3:
-					return "Playstation 3";
-				case BuildSettingCategory.PS4:
-					return "Playstation 4";
+                case BuildSettingCategory.WebGL: return "Web GL";
+            }
 
-				case BuildSettingCategory.PSVita:
-					return "Playstation Vita (Native)";
+            return b.ToString();
+        }
 
-				case BuildSettingCategory.PSM:
-					return "Playstation Mobile";
+        public static string GetReadableWebGLOptimizationLevel(string optimizationLevelCode)
+        {
+            switch (optimizationLevelCode)
+            {
+                case "1": return "1: Slow (fast builds)";
+                case "2": return "2: Fast";
+                case "3": return "3: Fastest (very slow builds)";
+            }
 
-				case BuildSettingCategory.WebGL:
-					return "Web GL";
-			}
+            return optimizationLevelCode;
+        }
 
-			return b.ToString();
-		}
+        public static string GetReadableStackTraceType(string stackTraceType)
+        {
+            switch (stackTraceType)
+            {
+                case "ScriptOnly": return "Show stack trace of scripts only (no native code)";
+                case "Full":       return "Show stack trace of native code + scripts";
+                default:           return stackTraceType;
+            }
+        }
 
+        // ================================================================================================
 
-		public static string GetReadableWebGLOptimizationLevel(string optimizationLevelCode)
-		{
-			switch (optimizationLevelCode)
-			{
-				case "1":
-					return "1: Slow (fast builds)";
-				case "2":
-					return "2: Fast";
-				case "3":
-					return "3: Fastest (very slow builds)";
-			}
+        public static void Populate(UnityBuildSettings settings)
+        {
+            PopulateGeneralSettings(settings);
+            PopulateWebSettings(settings);
+            PopulateStandaloneSettings(settings);
+            PopulateMobileSettings(settings);
+            PopulateTvDeviceSettings(settings);
+            PopulateBigConsoleGen07Settings(settings);
+            PopulateBigConsoleGen08Settings(settings);
+            PopulatePackageSettings(settings);
+        }
 
-			return optimizationLevelCode;
-		}
+        public static void PopulateGeneralSettings(UnityBuildSettings settings)
+        {
+            settings.CompanyName = PlayerSettings.companyName;
+            settings.ProductName = PlayerSettings.productName;
 
-		public static string GetReadableStackTraceType(string stackTraceType)
-		{
-			switch (stackTraceType)
-			{
-				case "ScriptOnly":
-					return "Show stack trace of scripts only (no native code)";
-				case "Full":
-					return "Show stack trace of native code + scripts";
-				default:
-					return stackTraceType;
-			}
-		}
+            settings.UsingAdvancedLicense = PlayerSettings.advancedLicense;
 
-		// ================================================================================================
+            // debug settings
+            // ---------------------------------------------------------------
+            settings.EnableDevelopmentBuild = EditorUserBuildSettings.development;
+            settings.EnableDebugLog         = PlayerSettings.usePlayerLog;
+            settings.EnableSourceDebugging  = EditorUserBuildSettings.allowDebugging;
+            #if UNITY_2019_3_OR_NEWER
+            settings.WaitForManagedDebugger = EditorUserBuildSettings.waitForManagedDebugger;
+            #endif
+            settings.EnableExplicitNullChecks = EditorUserBuildSettings.explicitNullChecks;
 
-		public static void Populate(UnityBuildSettings settings)
-		{
-			PopulateGeneralSettings(settings);
-			PopulateWebSettings(settings);
-			PopulateStandaloneSettings(settings);
-			PopulateMobileSettings(settings);
-			PopulateTvDeviceSettings(settings);
-			PopulateBigConsoleGen07Settings(settings);
-			PopulateBigConsoleGen08Settings(settings);
-			PopulatePackageSettings(settings);
-		}
-
-
-		public static void PopulateGeneralSettings(UnityBuildSettings settings)
-		{
-			settings.CompanyName = PlayerSettings.companyName;
-			settings.ProductName = PlayerSettings.productName;
-
-			settings.UsingAdvancedLicense = PlayerSettings.advancedLicense;
-
-			// debug settings
-			// ---------------------------------------------------------------
-			settings.EnableDevelopmentBuild = EditorUserBuildSettings.development;
-			settings.EnableDebugLog = PlayerSettings.usePlayerLog;
-			settings.EnableSourceDebugging = EditorUserBuildSettings.allowDebugging;
-#if UNITY_2019_3_OR_NEWER
-			settings.WaitForManagedDebugger = EditorUserBuildSettings.waitForManagedDebugger;
-#endif
-			settings.EnableExplicitNullChecks = EditorUserBuildSettings.explicitNullChecks;
-
-#if UNITY_EDITOR_WIN
-#if UNITY_5_6_OR_NEWER
-			settings.WinIncludeNativePdbFilesInBuild = UnityEditor.WindowsStandalone.UserBuildSettings.copyPDBFiles;
-#else
+            #if UNITY_EDITOR_WIN
+            #if UNITY_5_6_OR_NEWER
+            settings.WinIncludeNativePdbFilesInBuild = UnityEditor.WindowsStandalone.UserBuildSettings.copyPDBFiles;
+            #else
 			settings.WinIncludeNativePdbFilesInBuild = false;
-#endif
-#if UNITY_2017_1_OR_NEWER
-			settings.WinCreateVisualStudioSolution = UnityEditor.WindowsStandalone.UserBuildSettings.createSolution;
-#else
+            #endif
+            #if UNITY_2017_1_OR_NEWER
+            settings.WinCreateVisualStudioSolution = UnityEditor.WindowsStandalone.UserBuildSettings.createSolution;
+            #else
 			settings.WinCreateVisualStudioSolution = false;
-#endif
-#endif
+            #endif
+            #endif
 
-#if !UNITY_5_3_AND_LESSER
-			settings.EnableExplicitDivideByZeroChecks = EditorUserBuildSettings.explicitDivideByZeroChecks;
-#endif
+            #if !UNITY_5_3_AND_LESSER
+            settings.EnableExplicitDivideByZeroChecks = EditorUserBuildSettings.explicitDivideByZeroChecks;
+            #endif
 
-#if !UNITY_4
-			settings.EnableCrashReportApi = PlayerSettings.enableCrashReportAPI;
-			settings.EnableInternalProfiler = PlayerSettings.enableInternalProfiler;
-			settings.ActionOnDotNetUnhandledException = PlayerSettings.actionOnDotNetUnhandledException.ToString();
-#endif
+            #if !UNITY_4
+            settings.EnableCrashReportApi             = PlayerSettings.enableCrashReportAPI;
+            settings.EnableInternalProfiler           = PlayerSettings.enableInternalProfiler;
+            settings.ActionOnDotNetUnhandledException = PlayerSettings.actionOnDotNetUnhandledException.ToString();
+            #endif
 
-			settings.ConnectProfiler = EditorUserBuildSettings.connectProfiler;
+            settings.ConnectProfiler = EditorUserBuildSettings.connectProfiler;
 
-#if UNITY_5_3_AND_GREATER
+            #if UNITY_5_3_AND_GREATER
 			// this setting actually started appearing in Unity 5.2.2 (it is not present in 5.2.1)
 			// but our script compilation defines can't detect the patch number in the version,
 			// so we have no choice but to restrict this to 5.3
 			settings.ForceOptimizeScriptCompilation = EditorUserBuildSettings.forceOptimizeScriptCompilation;
-#endif
+            #endif
 
-#if UNITY_5_4_OR_NEWER
-			settings.StackTraceForError = PlayerSettings.GetStackTraceLogType(LogType.Error).ToString();
-			settings.StackTraceForAssert = PlayerSettings.GetStackTraceLogType(LogType.Assert).ToString();
-			settings.StackTraceForWarning = PlayerSettings.GetStackTraceLogType(LogType.Warning).ToString();
-			settings.StackTraceForLog = PlayerSettings.GetStackTraceLogType(LogType.Log).ToString();
-			settings.StackTraceForException = PlayerSettings.GetStackTraceLogType(LogType.Exception).ToString();
-#endif
+            #if UNITY_5_4_OR_NEWER
+            settings.StackTraceForError     = PlayerSettings.GetStackTraceLogType(LogType.Error).ToString();
+            settings.StackTraceForAssert    = PlayerSettings.GetStackTraceLogType(LogType.Assert).ToString();
+            settings.StackTraceForWarning   = PlayerSettings.GetStackTraceLogType(LogType.Warning).ToString();
+            settings.StackTraceForLog       = PlayerSettings.GetStackTraceLogType(LogType.Log).ToString();
+            settings.StackTraceForException = PlayerSettings.GetStackTraceLogType(LogType.Exception).ToString();
+            #endif
 
-
-			// build settings
-			// ---------------------------------------------------------------
-#if UNITY_2021_2_OR_NEWER
-			settings.EnableHeadlessMode = EditorUserBuildSettings.standaloneBuildSubtarget == StandaloneBuildSubtarget.Server;
-#else
+            // build settings
+            // ---------------------------------------------------------------
+            #if UNITY_2021_2_OR_NEWER
+            settings.EnableHeadlessMode = EditorUserBuildSettings.standaloneBuildSubtarget == StandaloneBuildSubtarget.Server;
+            #else
 			settings.EnableHeadlessMode = EditorUserBuildSettings.enableHeadlessMode;
-#endif
-			settings.InstallInBuildFolder = EditorUserBuildSettings.installInBuildFolder;
-#if !UNITY_4
-			settings.ForceInstallation = EditorUserBuildSettings.forceInstallation;
-			settings.BuildScriptsOnly = EditorUserBuildSettings.buildScriptsOnly;
-			settings.BakeCollisionMeshes = PlayerSettings.bakeCollisionMeshes;
-#endif
+            #endif
+            settings.InstallInBuildFolder = EditorUserBuildSettings.installInBuildFolder;
+            #if !UNITY_4
+            settings.ForceInstallation   = EditorUserBuildSettings.forceInstallation;
+            settings.BuildScriptsOnly    = EditorUserBuildSettings.buildScriptsOnly;
+            settings.BakeCollisionMeshes = PlayerSettings.bakeCollisionMeshes;
+            #endif
 
-#if UNITY_4
+            #if UNITY_4
 			settings.StripPhysicsCode = PlayerSettings.stripPhysics;
-#endif
-			settings.StripUnusedMeshComponents = PlayerSettings.stripUnusedMeshComponents;
+            #endif
+            settings.StripUnusedMeshComponents = PlayerSettings.stripUnusedMeshComponents;
 
-#if !UNITY_5_1_AND_LESSER // 5.2 and greater
-			settings.StripEngineCode = PlayerSettings.stripEngineCode;
-#endif
+            #if !UNITY_5_1_AND_LESSER // 5.2 and greater
+            settings.StripEngineCode = PlayerSettings.stripEngineCode;
+            #endif
 
+            // code settings
+            // ---------------------------------------------------------------
 
-			// code settings
-			// ---------------------------------------------------------------
+            var customDefines = DldUtil.GetRspDefines.GetDefines();
 
-			Dictionary<string, DldUtil.GetRspDefines.Entry> customDefines = DldUtil.GetRspDefines.GetDefines();
+            var defines = new List<string>();
+            defines.AddRange(EditorUserBuildSettings.activeScriptCompilationDefines);
 
-			List<string> defines = new List<string>();
-			defines.AddRange(EditorUserBuildSettings.activeScriptCompilationDefines);
+            foreach (var customDefine in customDefines)
+                if (customDefine.Value.TimesDefinedInBuiltIn == 0)
+                    defines.Add(customDefine.Key);
 
+            settings.CompileDefines = defines.ToArray();
 
-			foreach (KeyValuePair<string, DldUtil.GetRspDefines.Entry> customDefine in customDefines)
-			{
-				if (customDefine.Value.TimesDefinedInBuiltIn == 0)
-				{
-					defines.Add(customDefine.Key);
-				}
-			}
-
-			settings.CompileDefines = defines.ToArray();
-
-#if UNITY_2023_1_OR_NEWER
+            #if UNITY_2023_1_OR_NEWER
 			BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
 			BuildTargetGroup targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
 			var namedBuildTarget = UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(targetGroup);
-#endif
+            #endif
 
-#if UNITY_2023_1_OR_NEWER
+            #if UNITY_2023_1_OR_NEWER
 			settings.StrippingLevelUsed = PlayerSettings
 			                              .GetManagedStrippingLevel(namedBuildTarget)
 			                              .ToString();
-#elif UNITY_2018_3_OR_NEWER
-			settings.StrippingLevelUsed = PlayerSettings
-			                              .GetManagedStrippingLevel(EditorUserBuildSettings.selectedBuildTargetGroup)
-			                              .ToString();
-#else
+            #elif UNITY_2018_3_OR_NEWER
+            settings.StrippingLevelUsed = PlayerSettings
+                .GetManagedStrippingLevel(EditorUserBuildSettings.selectedBuildTargetGroup)
+                .ToString();
+            #else
 			settings.StrippingLevelUsed = PlayerSettings.strippingLevel.ToString();
-#endif
+            #endif
 
-#if UNITY_2023_1_OR_NEWER
+            #if UNITY_2023_1_OR_NEWER
 			settings.NETApiCompatibilityLevel = PlayerSettings
 			                                    .GetApiCompatibilityLevel(namedBuildTarget)
 			                                    .ToString();
-#elif UNITY_5_6_OR_NEWER
-			settings.NETApiCompatibilityLevel = PlayerSettings
-			                                    .GetApiCompatibilityLevel(EditorUserBuildSettings.selectedBuildTargetGroup)
-			                                    .ToString();
-#else
+            #elif UNITY_5_6_OR_NEWER
+            settings.NETApiCompatibilityLevel = PlayerSettings
+                .GetApiCompatibilityLevel(EditorUserBuildSettings.selectedBuildTargetGroup)
+                .ToString();
+            #else
 			settings.NETApiCompatibilityLevel = PlayerSettings.apiCompatibilityLevel.ToString();
-#endif
+            #endif
 
-			settings.AOTOptions = PlayerSettings.aotOptions;
+            settings.AOTOptions = PlayerSettings.aotOptions;
 
-#if UNITY_5_5_OR_NEWER
-			settings.LocationUsageDescription = PlayerSettings.iOS.locationUsageDescription;
-#else
+            #if UNITY_5_5_OR_NEWER
+            settings.LocationUsageDescription = PlayerSettings.iOS.locationUsageDescription;
+            #else
 			settings.LocationUsageDescription = PlayerSettings.locationUsageDescription;
-#endif
+            #endif
 
+            // rendering settings
+            // ---------------------------------------------------------------
+            settings.ColorSpaceUsed            = PlayerSettings.colorSpace.ToString();
+            settings.UseMultithreadedRendering = PlayerSettings.MTRendering;
+            settings.UseGPUSkinning            = PlayerSettings.gpuSkinning;
+            settings.VisibleInBackground       = PlayerSettings.visibleInBackground;
 
-			// rendering settings
-			// ---------------------------------------------------------------
-			settings.ColorSpaceUsed = PlayerSettings.colorSpace.ToString();
-			settings.UseMultithreadedRendering = PlayerSettings.MTRendering;
-			settings.UseGPUSkinning = PlayerSettings.gpuSkinning;
-			settings.VisibleInBackground = PlayerSettings.visibleInBackground;
+            #if UNITY_5_4_OR_NEWER
+            settings.UseGraphicsJobs = PlayerSettings.graphicsJobs;
+            #endif
+            #if UNITY_5_5_OR_NEWER
+            settings.GraphicsJobsType = PlayerSettings.graphicsJobMode.ToString();
+            #endif
 
-#if UNITY_5_4_OR_NEWER
-			settings.UseGraphicsJobs = PlayerSettings.graphicsJobs;
-#endif
-#if UNITY_5_5_OR_NEWER
-			settings.GraphicsJobsType = PlayerSettings.graphicsJobMode.ToString();
-#endif
-
-#if (UNITY_EDITOR_WIN || UNITY_EDITOR_OSX)
-#if UNITY_5_5_OR_NEWER
-			settings.RenderingPathUsed = UnityEditor.Rendering.EditorGraphicsSettings
-			                                        .GetTierSettings(EditorUserBuildSettings.selectedBuildTargetGroup,
-				                                        Graphics.activeTier).renderingPath.ToString();
-#else
+            #if (UNITY_EDITOR_WIN || UNITY_EDITOR_OSX)
+            #if UNITY_5_5_OR_NEWER
+            settings.RenderingPathUsed = UnityEditor.Rendering.EditorGraphicsSettings
+                .GetTierSettings(EditorUserBuildSettings.selectedBuildTargetGroup,
+                    Graphics.activeTier).renderingPath.ToString();
+            #else
 			settings.RenderingPathUsed = PlayerSettings.renderingPath.ToString();
-#endif
-#endif
+            #endif
+            #endif
 
-#if !UNITY_5_1_AND_LESSER && !UNITY_2019_3_OR_NEWER // 5.2 to 2019.2
+            #if !UNITY_5_1_AND_LESSER && !UNITY_2019_3_OR_NEWER // 5.2 to 2019.2
 			settings.EnableVirtualRealitySupport = PlayerSettings.virtualRealitySupported;
-#elif UNITY_2019_3_OR_NEWER
-			settings.EnableVirtualRealitySupport = UnityEngine.XR.XRSettings.enabled;
-#endif
+            #elif UNITY_2019_3_OR_NEWER
+            settings.EnableVirtualRealitySupport = UnityEngine.XR.XRSettings.enabled;
+            #endif
 
-#if !UNITY_2022_2_OR_NEWER
+            #if !UNITY_2022_2_OR_NEWER
 			// collect all aspect ratios
 			UnityEditor.AspectRatio[] aspectRatios =
 			{
@@ -454,270 +394,261 @@ namespace BuildReportTool
 			}
 
 			settings.AspectRatiosAllowed = aspectRatiosList.ToArray();
-#else
-			settings.AspectRatiosAllowed = new string[]{"N/A"}; // AspectRatio enum removed in Unity 2022.2
-#endif
+            #else
+            settings.AspectRatiosAllowed = new string[] { "N/A" }; // AspectRatio enum removed in Unity 2022.2
+            #endif
 
-#if !UNITY_5_1_AND_LESSER // 5.2 and greater
-			settings.GraphicsAPIsUsed = PlayerSettings.GetGraphicsAPIs(EditorUserBuildSettings.activeBuildTarget)
-			                                          .Select(type => type.ToString()).ToArray();
-#endif
+            #if !UNITY_5_1_AND_LESSER // 5.2 and greater
+            settings.GraphicsAPIsUsed = PlayerSettings.GetGraphicsAPIs(EditorUserBuildSettings.activeBuildTarget)
+                .Select(type => type.ToString()).ToArray();
+            #endif
 
+            // shared settings
+            // ---------------------------------------------------------------
 
-			// shared settings
-			// ---------------------------------------------------------------
+            // shared between web and standalone
+            settings.RunInBackground = PlayerSettings.runInBackground;
+        }
 
-			// shared between web and standalone
-			settings.RunInBackground = PlayerSettings.runInBackground;
-		}
+        public static void PopulateWebSettings(UnityBuildSettings settings)
+        {
+            // web player settings
+            // ---------------------------------------------------------------
+            #if UNITY_5_6_OR_NEWER
+            settings.WebPlayerDefaultScreenWidth  = 0;
+            settings.WebPlayerDefaultScreenHeight = 0;
 
-		public static void PopulateWebSettings(UnityBuildSettings settings)
-		{
-			// web player settings
-			// ---------------------------------------------------------------
-#if UNITY_5_6_OR_NEWER
-			settings.WebPlayerDefaultScreenWidth = 0;
-			settings.WebPlayerDefaultScreenHeight = 0;
-
-			settings.WebPlayerEnableStreaming = false;
-			settings.WebPlayerDeployOffline = false;
-#else
+            settings.WebPlayerEnableStreaming = false;
+            settings.WebPlayerDeployOffline   = false;
+            #else
 			settings.WebPlayerDefaultScreenWidth = PlayerSettings.defaultWebScreenWidth;
 			settings.WebPlayerDefaultScreenHeight = PlayerSettings.defaultWebScreenHeight;
 
 			settings.WebPlayerEnableStreaming = EditorUserBuildSettings.webPlayerStreamed;
 			settings.WebPlayerDeployOffline = EditorUserBuildSettings.webPlayerOfflineDeployment;
-#endif
+            #endif
 
-#if UNITY_5_2_AND_LESSER
+            #if UNITY_5_2_AND_LESSER
 			settings.WebPlayerFirstStreamedLevelWithResources = PlayerSettings.firstStreamedLevelWithResources;
-#else
-			settings.WebPlayerFirstStreamedLevelWithResources = 0;
-#endif
+            #else
+            settings.WebPlayerFirstStreamedLevelWithResources = 0;
+            #endif
 
-			// Web GL settings
-			// ---------------------------------------------------------------
+            // Web GL settings
+            // ---------------------------------------------------------------
 
-#if UNITY_5_3_AND_LESSER
+            #if UNITY_5_3_AND_LESSER
 			settings.WebGLOptimizationLevel = EditorUserBuildSettings.webGLOptimizationLevel.ToString();
-#endif
-#if UNITY_5_4_OR_NEWER && !UNITY_2019_1_OR_NEWER
+            #endif
+            #if UNITY_5_4_OR_NEWER && !UNITY_2019_1_OR_NEWER
 			settings.WebGLUsePreBuiltUnityEngine = EditorUserBuildSettings.webGLUsePreBuiltUnityEngine;
-#endif
-#if UNITY_5_5_OR_NEWER
-			settings.WebGLCompressionFormat = PlayerSettings.WebGL.compressionFormat.ToString();
-			settings.WebGLAutoCacheAssetsData = PlayerSettings.WebGL.dataCaching;
-#if UNITY_2021_2_OR_NEWER
-			settings.WebGLDebugSymbolMode = PlayerSettings.WebGL.debugSymbolMode.ToString();
-			settings.WebGLCreateDebugSymbolsFile = PlayerSettings.WebGL.debugSymbolMode != WebGLDebugSymbolMode.Off;
-#else
+            #endif
+            #if UNITY_5_5_OR_NEWER
+            settings.WebGLCompressionFormat   = PlayerSettings.WebGL.compressionFormat.ToString();
+            settings.WebGLAutoCacheAssetsData = PlayerSettings.WebGL.dataCaching;
+            #if UNITY_2021_2_OR_NEWER
+            settings.WebGLDebugSymbolMode        = PlayerSettings.WebGL.debugSymbolMode.ToString();
+            settings.WebGLCreateDebugSymbolsFile = PlayerSettings.WebGL.debugSymbolMode != WebGLDebugSymbolMode.Off;
+            #else
 			settings.WebGLDebugSymbolMode = null;
 			settings.WebGLCreateDebugSymbolsFile = PlayerSettings.WebGL.debugSymbols;
-#endif
-			settings.WebGLExceptionSupportType = PlayerSettings.WebGL.exceptionSupport.ToString();
-			settings.WebGLMemorySize = PlayerSettings.WebGL.memorySize;
-			settings.WebGLTemplatePath = PlayerSettings.WebGL.template;
-#endif
-		}
+            #endif
+            settings.WebGLExceptionSupportType = PlayerSettings.WebGL.exceptionSupport.ToString();
+            settings.WebGLMemorySize           = PlayerSettings.WebGL.memorySize;
+            settings.WebGLTemplatePath         = PlayerSettings.WebGL.template;
+            #endif
+        }
 
-		public static void PopulateStandaloneSettings(UnityBuildSettings settings)
-		{
-			// standalone (windows/mac/linux) build settings
-			// ---------------------------------------------------------------
-#if !UNITY_2019_1_OR_NEWER
+        public static void PopulateStandaloneSettings(UnityBuildSettings settings)
+        {
+            // standalone (windows/mac/linux) build settings
+            // ---------------------------------------------------------------
+            #if !UNITY_2019_1_OR_NEWER
 		settings.StandaloneResolutionDialogSettingUsed = PlayerSettings.displayResolutionDialog.ToString();
-#endif
-#if UNITY_2018_AND_NEWER
-			settings.StandaloneFullScreenModeUsed = PlayerSettings.fullScreenMode.ToString();
-#endif
+            #endif
+            #if UNITY_2018_AND_NEWER
+            settings.StandaloneFullScreenModeUsed = PlayerSettings.fullScreenMode.ToString();
+            #endif
 
-			settings.StandaloneDefaultScreenWidth = PlayerSettings.defaultScreenWidth;
-			settings.StandaloneDefaultScreenHeight = PlayerSettings.defaultScreenHeight;
+            settings.StandaloneDefaultScreenWidth  = PlayerSettings.defaultScreenWidth;
+            settings.StandaloneDefaultScreenHeight = PlayerSettings.defaultScreenHeight;
 
-#if UNITY_2017_AND_LESSER && !UNITY_2019_1_OR_NEWER
+            #if UNITY_2017_AND_LESSER && !UNITY_2019_1_OR_NEWER
 		settings.StandaloneFullScreenByDefault = PlayerSettings.defaultIsFullScreen;
-#endif
-#if !UNITY_5_2_AND_LESSER
-			settings.StandaloneAllowFullScreenSwitch = PlayerSettings.allowFullscreenSwitch;
-#endif
+            #endif
+            #if !UNITY_5_2_AND_LESSER
+            settings.StandaloneAllowFullScreenSwitch = PlayerSettings.allowFullscreenSwitch;
+            #endif
 
-			settings.StandaloneCaptureSingleScreen = PlayerSettings.captureSingleScreen;
+            settings.StandaloneCaptureSingleScreen = PlayerSettings.captureSingleScreen;
 
-			settings.StandaloneForceSingleInstance = PlayerSettings.forceSingleInstance;
-			settings.StandaloneEnableResizableWindow = PlayerSettings.resizableWindow;
+            settings.StandaloneForceSingleInstance   = PlayerSettings.forceSingleInstance;
+            settings.StandaloneEnableResizableWindow = PlayerSettings.resizableWindow;
 
-
-			// windows only build settings
-			// ---------------------------------------------------------------
-#if UNITY_5_1_AND_LESSER
+            // windows only build settings
+            // ---------------------------------------------------------------
+            #if UNITY_5_1_AND_LESSER
 		settings.WinUseDirect3D11IfAvailable = PlayerSettings.useDirect3D11;
-#endif
+            #endif
 
-#if !UNITY_2017_3_OR_NEWER
+            #if !UNITY_2017_3_OR_NEWER
 		settings.WinDirect3D9FullscreenModeUsed = PlayerSettings.d3d9FullscreenMode.ToString();
-#endif
+            #endif
 
-#if !UNITY_4 && UNITY_2017_AND_LESSER && !UNITY_2019_1_OR_NEWER
+            #if !UNITY_4 && UNITY_2017_AND_LESSER && !UNITY_2019_1_OR_NEWER
 		settings.WinDirect3D11FullscreenModeUsed = PlayerSettings.d3d11FullscreenMode.ToString();
-#endif
+            #endif
 
-#if UNITY_5_3_AND_LESSER
+            #if UNITY_5_3_AND_LESSER
 		settings.StandaloneUseStereoscopic3d = PlayerSettings.stereoscopic3D;
-#endif
+            #endif
 
-
-			// Windows Store App only build settings
-			// ---------------------------------------------------------------
-#if !UNITY_4 && !UNITY_2019_1_OR_NEWER
+            // Windows Store App only build settings
+            // ---------------------------------------------------------------
+            #if !UNITY_4 && !UNITY_2019_1_OR_NEWER
 		settings.WSAGenerateReferenceProjects = EditorUserBuildSettings.wsaGenerateReferenceProjects;
-#endif
-#if UNITY_5_2_AND_GREATER
+            #endif
+            #if UNITY_5_2_AND_GREATER
 		settings.WSASDK = EditorUserBuildSettings.wsaSDK.ToString();
-#endif
+            #endif
 
-
-			// mac only build settings
-			// ---------------------------------------------------------------
-			settings.MacUseAppStoreValidation = PlayerSettings.useMacAppStoreValidation;
-#if UNITY_2017_AND_LESSER && !UNITY_2019_1_OR_NEWER
+            // mac only build settings
+            // ---------------------------------------------------------------
+            settings.MacUseAppStoreValidation = PlayerSettings.useMacAppStoreValidation;
+            #if UNITY_2017_AND_LESSER && !UNITY_2019_1_OR_NEWER
 		settings.MacFullscreenModeUsed = PlayerSettings.macFullscreenMode.ToString();
-#endif
-		}
+            #endif
+        }
 
+        public static void PopulateMobileSettings(UnityBuildSettings settings)
+        {
+            // Mobile build settings
+            // ---------------------------------------------------------------
 
-		public static void PopulateMobileSettings(UnityBuildSettings settings)
-		{
-			// Mobile build settings
-			// ---------------------------------------------------------------
-
-
-#if UNITY_5_5_AND_LESSER
+            #if UNITY_5_5_AND_LESSER
 		settings.MobileBundleIdentifier =
  PlayerSettings.bundleIdentifier; // ("Bundle Identifier" in iOS, "Package Identifier" in Android)
-#else
-			settings.MobileBundleIdentifier =
-				PlayerSettings.applicationIdentifier; // ("Bundle Identifier" in iOS, "Package Identifier" in Android)
-#endif
+            #else
+            settings.MobileBundleIdentifier =
+                PlayerSettings.applicationIdentifier; // ("Bundle Identifier" in iOS, "Package Identifier" in Android)
+            #endif
 
-			settings.MobileBundleVersion =
-				PlayerSettings.bundleVersion; // ("Bundle Version" in iOS, "Version Name" in Android)
-			settings.MobileHideStatusBar = PlayerSettings.statusBarHidden;
+            settings.MobileBundleVersion =
+                PlayerSettings.bundleVersion; // ("Bundle Version" in iOS, "Version Name" in Android)
+            settings.MobileHideStatusBar = PlayerSettings.statusBarHidden;
 
-			settings.MobileAccelerometerFrequency = PlayerSettings.accelerometerFrequency;
+            settings.MobileAccelerometerFrequency = PlayerSettings.accelerometerFrequency;
 
-			settings.MobileDefaultOrientationUsed = PlayerSettings.defaultInterfaceOrientation.ToString();
-			settings.MobileEnableAutorotateToPortrait = PlayerSettings.allowedAutorotateToPortrait;
-			settings.MobileEnableAutorotateToReversePortrait = PlayerSettings.allowedAutorotateToPortraitUpsideDown;
-			settings.MobileEnableAutorotateToLandscapeLeft = PlayerSettings.allowedAutorotateToLandscapeLeft;
-			settings.MobileEnableAutorotateToLandscapeRight = PlayerSettings.allowedAutorotateToLandscapeRight;
-			settings.MobileEnableOSAutorotation = PlayerSettings.useAnimatedAutorotation;
+            settings.MobileDefaultOrientationUsed            = PlayerSettings.defaultInterfaceOrientation.ToString();
+            settings.MobileEnableAutorotateToPortrait        = PlayerSettings.allowedAutorotateToPortrait;
+            settings.MobileEnableAutorotateToReversePortrait = PlayerSettings.allowedAutorotateToPortraitUpsideDown;
+            settings.MobileEnableAutorotateToLandscapeLeft   = PlayerSettings.allowedAutorotateToLandscapeLeft;
+            settings.MobileEnableAutorotateToLandscapeRight  = PlayerSettings.allowedAutorotateToLandscapeRight;
+            settings.MobileEnableOSAutorotation              = PlayerSettings.useAnimatedAutorotation;
 
-			settings.Use32BitDisplayBuffer = PlayerSettings.use32BitDisplayBuffer;
+            settings.Use32BitDisplayBuffer = PlayerSettings.use32BitDisplayBuffer;
 
+            // iOS only build settings
+            // ---------------------------------------------------------------
 
-			// iOS only build settings
-			// ---------------------------------------------------------------
-
-			// Unity 5: EditorUserBuildSettings.appendProject is removed
-#if UNITY_4
+            // Unity 5: EditorUserBuildSettings.appendProject is removed
+            #if UNITY_4
 			settings.iOSAppendedToProject = EditorUserBuildSettings.appendProject;
-#endif
+            #endif
 
-#if UNITY_5_5_OR_NEWER
-			settings.iOSTargetOSVersion = PlayerSettings.iOS.targetOSVersionString;
-#else
+            #if UNITY_5_5_OR_NEWER
+            settings.iOSTargetOSVersion = PlayerSettings.iOS.targetOSVersionString;
+            #else
 			settings.iOSTargetOSVersion = PlayerSettings.iOS.targetOSVersion.ToString();
-#endif
-#if UNITY_2021_2_OR_NEWER
-			settings.iOSSymlinkLibraries = EditorUserBuildSettings.symlinkSources;
-#else
+            #endif
+            #if UNITY_2021_2_OR_NEWER
+            settings.iOSSymlinkLibraries = EditorUserBuildSettings.symlinkSources;
+            #else
 			settings.iOSSymlinkLibraries = EditorUserBuildSettings.symlinkLibraries;
-#endif
-			settings.iOSAppDisplayName = PlayerSettings.iOS.applicationDisplayName;
-			settings.iOSScriptCallOptimizationUsed = PlayerSettings.iOS.scriptCallOptimization.ToString();
-			settings.iOSSDKVersionUsed = PlayerSettings.iOS.sdkVersion.ToString();
-			settings.iOSTargetDevice = PlayerSettings.iOS.targetDevice.ToString();
+            #endif
+            settings.iOSAppDisplayName             = PlayerSettings.iOS.applicationDisplayName;
+            settings.iOSScriptCallOptimizationUsed = PlayerSettings.iOS.scriptCallOptimization.ToString();
+            settings.iOSSDKVersionUsed             = PlayerSettings.iOS.sdkVersion.ToString();
+            settings.iOSTargetDevice               = PlayerSettings.iOS.targetDevice.ToString();
 
-#if UNITY_5_2_AND_LESSER
+            #if UNITY_5_2_AND_LESSER
 			settings.iOSTargetResolution = PlayerSettings.iOS.targetResolution.ToString();
-#else
-			// not sure what the equivalent is for PlayerSettings.iOS.targetResolution in Unity 5.3
-			// Unity 5.3 has a Screen.resolutions but I don't know which of those in the array would be the iOS target resolution
-#endif
+            #else
+            // not sure what the equivalent is for PlayerSettings.iOS.targetResolution in Unity 5.3
+            // Unity 5.3 has a Screen.resolutions but I don't know which of those in the array would be the iOS target resolution
+            #endif
 
-			settings.iOSIsIconPrerendered = PlayerSettings.iOS.prerenderedIcon;
-			settings.iOSRequiresPersistentWiFi = PlayerSettings.iOS.requiresPersistentWiFi.ToString();
-			settings.iOSStatusBarStyle = PlayerSettings.iOS.statusBarStyle.ToString();
+            settings.iOSIsIconPrerendered      = PlayerSettings.iOS.prerenderedIcon;
+            settings.iOSRequiresPersistentWiFi = PlayerSettings.iOS.requiresPersistentWiFi.ToString();
+            settings.iOSStatusBarStyle         = PlayerSettings.iOS.statusBarStyle.ToString();
 
-#if UNITY_4
+            #if UNITY_4
 			settings.iOSExitOnSuspend = PlayerSettings.iOS.exitOnSuspend;
-#else
-			settings.iOSAppInBackgroundBehavior = PlayerSettings.iOS.appInBackgroundBehavior.ToString();
-#endif
+            #else
+            settings.iOSAppInBackgroundBehavior = PlayerSettings.iOS.appInBackgroundBehavior.ToString();
+            #endif
 
-			settings.iOSShowProgressBarInLoadingScreen = PlayerSettings.iOS.showActivityIndicatorOnLoading.ToString();
+            settings.iOSShowProgressBarInLoadingScreen = PlayerSettings.iOS.showActivityIndicatorOnLoading.ToString();
 
-#if !UNITY_4
-			settings.iOSLogObjCUncaughtExceptions = PlayerSettings.logObjCUncaughtExceptions;
-#endif
+            #if !UNITY_4
+            settings.iOSLogObjCUncaughtExceptions = PlayerSettings.logObjCUncaughtExceptions;
+            #endif
 
-#if UNITY_5_1_AND_LESSER
+            #if UNITY_5_1_AND_LESSER
 			settings.iOSTargetGraphics = PlayerSettings.targetIOSGraphics.ToString();
-#else
-			settings.iOSTargetGraphics = string.Join(",",
-				PlayerSettings.GetGraphicsAPIs(BuildTarget.iOS).Select(type => type.ToString()).ToArray());
-#endif
+            #else
+            settings.iOSTargetGraphics = string.Join(",",
+                PlayerSettings.GetGraphicsAPIs(BuildTarget.iOS).Select(type => type.ToString()).ToArray());
+            #endif
 
-			// Android only build settings
-			// ---------------------------------------------------------------
+            // Android only build settings
+            // ---------------------------------------------------------------
 
-			settings.AndroidBuildSubtarget = EditorUserBuildSettings.androidBuildSubtarget.ToString();
+            settings.AndroidBuildSubtarget = EditorUserBuildSettings.androidBuildSubtarget.ToString();
 
-#if UNITY_2023_1_OR_NEWER
+            #if UNITY_2023_1_OR_NEWER
 			settings.AndroidUseAPKExpansionFiles = PlayerSettings.Android.splitApplicationBinary;
-#else
-			settings.AndroidUseAPKExpansionFiles = PlayerSettings.Android.useAPKExpansionFiles;
-#endif
+            #else
+            settings.AndroidUseAPKExpansionFiles = PlayerSettings.Android.useAPKExpansionFiles;
+            #endif
 
-#if !UNITY_4
-			settings.AndroidAsAndroidProject = EditorUserBuildSettings.exportAsGoogleAndroidProject;
-			settings.AndroidIsGame = PlayerSettings.Android.androidIsGame;
-			settings.AndroidTvCompatible = PlayerSettings.Android.androidTVCompatibility;
-#endif
+            #if !UNITY_4
+            settings.AndroidAsAndroidProject = EditorUserBuildSettings.exportAsGoogleAndroidProject;
+            settings.AndroidIsGame           = PlayerSettings.Android.androidIsGame;
+            settings.AndroidTvCompatible     = PlayerSettings.Android.androidTVCompatibility;
+            #endif
 
-			settings.AndroidUseLicenseVerification = PlayerSettings.Android.licenseVerification;
+            settings.AndroidUseLicenseVerification = PlayerSettings.Android.licenseVerification;
 
-
-#if UNITY_4
+            #if UNITY_4
 			settings.AndroidUse24BitDepthBuffer = PlayerSettings.Android.use24BitDepthBuffer;
-#else
-			settings.AndroidDisableDepthAndStencilBuffers = PlayerSettings.Android.disableDepthAndStencilBuffers;
-#endif
+            #else
+            settings.AndroidDisableDepthAndStencilBuffers = PlayerSettings.Android.disableDepthAndStencilBuffers;
+            #endif
 
-			settings.AndroidVersionCode = PlayerSettings.Android.bundleVersionCode;
+            settings.AndroidVersionCode = PlayerSettings.Android.bundleVersionCode;
 
-			settings.AndroidMinSDKVersion = PlayerSettings.Android.minSdkVersion.ToString();
-#if UNITY_2018_AND_NEWER
-			settings.AndroidTargetDevice = PlayerSettings.Android.targetArchitectures.ToString();
-#else
+            settings.AndroidMinSDKVersion = PlayerSettings.Android.minSdkVersion.ToString();
+            #if UNITY_2018_AND_NEWER
+            settings.AndroidTargetDevice = PlayerSettings.Android.targetArchitectures.ToString();
+            #else
 			settings.AndroidTargetDevice = PlayerSettings.Android.targetDevice.ToString();
-#endif
+            #endif
 
-			settings.AndroidSplashScreenScaleMode = PlayerSettings.Android.splashScreenScale.ToString();
+            settings.AndroidSplashScreenScaleMode = PlayerSettings.Android.splashScreenScale.ToString();
 
-			settings.AndroidPreferredInstallLocation = PlayerSettings.Android.preferredInstallLocation.ToString();
+            settings.AndroidPreferredInstallLocation = PlayerSettings.Android.preferredInstallLocation.ToString();
 
-			settings.AndroidForceInternetPermission = PlayerSettings.Android.forceInternetPermission;
-			settings.AndroidForceSDCardPermission = PlayerSettings.Android.forceSDCardPermission;
+            settings.AndroidForceInternetPermission = PlayerSettings.Android.forceInternetPermission;
+            settings.AndroidForceSDCardPermission   = PlayerSettings.Android.forceSDCardPermission;
 
-			settings.AndroidShowProgressBarInLoadingScreen =
-				PlayerSettings.Android.showActivityIndicatorOnLoading.ToString();
+            settings.AndroidShowProgressBarInLoadingScreen =
+                PlayerSettings.Android.showActivityIndicatorOnLoading.ToString();
 
-			settings.AndroidKeyAliasName = PlayerSettings.Android.keyaliasName;
-			settings.AndroidKeystoreName = PlayerSettings.Android.keystoreName;
+            settings.AndroidKeyAliasName = PlayerSettings.Android.keyaliasName;
+            settings.AndroidKeystoreName = PlayerSettings.Android.keystoreName;
 
-
-#if UNITY_5_3_AND_LESSER // blackberry build option no longer in Unity 5.4
+            #if UNITY_5_3_AND_LESSER // blackberry build option no longer in Unity 5.4
 			// BlackBerry only build settings
 			// ---------------------------------------------------------------
 
@@ -740,15 +671,14 @@ namespace BuildReportTool
 			settings.BlackBerryHasGpsPermissions = PlayerSettings.BlackBerry.HasGPSPermissions();
 			settings.BlackBerryHasIdPermissions = PlayerSettings.BlackBerry.HasIdentificationPermissions();
 			settings.BlackBerryHasSharedPermissions = PlayerSettings.BlackBerry.HasSharedPermissions();
-#endif
-		}
+            #endif
+        }
 
+        public static void PopulateTvDeviceSettings(UnityBuildSettings settings)
+        {
+            // no more Samsung TV in Unity 2017.3 or greater
 
-		public static void PopulateTvDeviceSettings(UnityBuildSettings settings)
-		{
-			// no more Samsung TV in Unity 2017.3 or greater
-
-#if UNITY_4 || UNITY_5 || (UNITY_2017 && !UNITY_2017_3_OR_NEWER)
+            #if UNITY_4 || UNITY_5 || (UNITY_2017 && !UNITY_2017_3_OR_NEWER)
 			settings.SamsungTVDeviceAddress = PlayerSettings.SamsungTV.deviceAddress;
 #if !UNITY_4
 			settings.SamsungTVAuthor = PlayerSettings.SamsungTV.productAuthor;
@@ -757,19 +687,18 @@ namespace BuildReportTool
 			settings.SamsungTVCategory = PlayerSettings.SamsungTV.productCategory.ToString();
 			settings.SamsungTVDescription = PlayerSettings.SamsungTV.productDescription;
 #endif
-#endif
-		}
+            #endif
+        }
 
+        public static void PopulateBigConsoleGen07Settings(UnityBuildSettings settings)
+        {
+            // XBox 360 build settings
+            // ---------------------------------------------------------------
 
-		public static void PopulateBigConsoleGen07Settings(UnityBuildSettings settings)
-		{
-			// XBox 360 build settings
-			// ---------------------------------------------------------------
-
-#if UNITY_5_5_OR_NEWER
-			// In Unity 5.5, API for Xbox 360 is still there but build options
-			// do not allow Xbox 360 anymore, so we don't bother with it
-#else
+            #if UNITY_5_5_OR_NEWER
+            // In Unity 5.5, API for Xbox 360 is still there but build options
+            // do not allow Xbox 360 anymore, so we don't bother with it
+            #else
 			settings.Xbox360BuildSubtarget = EditorUserBuildSettings.xboxBuildSubtarget.ToString();
 			settings.Xbox360RunMethod = EditorUserBuildSettings.xboxRunMethod.ToString();
 
@@ -790,35 +719,34 @@ namespace BuildReportTool
 			settings.Xbox360DeployKinectResources = PlayerSettings.xboxDeployKinectResources;
 			settings.Xbox360DeployKinectHeadOrientation = PlayerSettings.xboxDeployKinectHeadOrientation;
 			settings.Xbox360DeployKinectHeadPosition = PlayerSettings.xboxDeployKinectHeadPosition;
-#endif
+            #endif
 
+            // Playstation devices build settings
+            // ---------------------------------------------------------------
 
-			// Playstation devices build settings
-			// ---------------------------------------------------------------
-
-#if UNITY_5_5_OR_NEWER
-			// In Unity 5.5, EditorUserBuildSettings.sceBuildSubtarget is removed
-#else
+            #if UNITY_5_5_OR_NEWER
+            // In Unity 5.5, EditorUserBuildSettings.sceBuildSubtarget is removed
+            #else
 			settings.SCEBuildSubtarget = EditorUserBuildSettings.sceBuildSubtarget.ToString();
-#endif
+            #endif
 
-#if !UNITY_4
-#if UNITY_2021_2_OR_NEWER
-			settings.CompressBuildWithPsArc = false;
-#else
+            #if !UNITY_4
+            #if UNITY_2021_2_OR_NEWER
+            settings.CompressBuildWithPsArc = false;
+            #else
 			settings.CompressBuildWithPsArc = EditorUserBuildSettings.compressWithPsArc;
-#endif
-			settings.NeedSubmissionMaterials = EditorUserBuildSettings.needSubmissionMaterials;
-#endif
+            #endif
+            settings.NeedSubmissionMaterials = EditorUserBuildSettings.needSubmissionMaterials;
+            #endif
 
-			// PS3 build settings
-			// ---------------------------------------------------------------
+            // PS3 build settings
+            // ---------------------------------------------------------------
 
-			// paths
-#if UNITY_5_5_OR_NEWER
-			// no more PS3 support in Unity 5.5 and greater
+            // paths
+            #if UNITY_5_5_OR_NEWER
+            // no more PS3 support in Unity 5.5 and greater
 
-#elif !UNITY_5
+            #elif !UNITY_5
 			settings.PS3TitleConfigFilePath = PlayerSettings.ps3TitleConfigPath;
 			settings.PS3DLCConfigFilePath = PlayerSettings.ps3DLCConfigPath;
 			settings.PS3ThumbnailFilePath = PlayerSettings.ps3ThumbnailPath;
@@ -835,7 +763,7 @@ namespace BuildReportTool
 			settings.PS3NpCommsId = PlayerSettings.ps3TrophyCommId;
 			settings.PS3NpCommsSig = PlayerSettings.ps3TrophyCommSig;
 			settings.PS3VideoMemoryForVertexBuffers = PlayerSettings.PS3.videoMemoryForVertexBuffers;
-#else
+            #else
 			settings.PS3TitleConfigFilePath = PlayerSettings.PS3.titleConfigPath;
 			settings.PS3DLCConfigFilePath = PlayerSettings.PS3.dlcConfigPath;
 			settings.PS3ThumbnailFilePath = PlayerSettings.PS3.thumbnailPath;
@@ -858,13 +786,12 @@ namespace BuildReportTool
 			settings.PS3SaveGameSlots = PlayerSettings.PS3.saveGameSlots;
 			settings.PS3NpAgeRating = PlayerSettings.PS3.npAgeRating;
 			settings.PS3VideoMemoryForVertexBuffers = PlayerSettings.PS3.videoMemoryForVertexBuffers;
-#endif
+            #endif
 
+            // PS Vita build settings
+            // ---------------------------------------------------------------
 
-			// PS Vita build settings
-			// ---------------------------------------------------------------
-
-#if !UNITY_2018_3_OR_NEWER // PS Vita removed in 2018.3
+            #if !UNITY_2018_3_OR_NEWER // PS Vita removed in 2018.3
 #if UNITY_4
 			settings.PSVTrophyPackagePath = PlayerSettings.psp2NPTrophyPackPath;
 			settings.PSVParamSfxPath = PlayerSettings.psp2ParamSfxPath;
@@ -925,13 +852,13 @@ namespace BuildReportTool
 
 			settings.PSVManualPath = PlayerSettings.PSVita.manualPath;
 #endif
-#endif
-		}
+            #endif
+        }
 
-		public static void PopulateBigConsoleGen08Settings(UnityBuildSettings settings)
-		{
-#if !UNITY_4
-#if !UNITY_2021_1_OR_NEWER
+        public static void PopulateBigConsoleGen08Settings(UnityBuildSettings settings)
+        {
+            #if !UNITY_4
+            #if !UNITY_2021_1_OR_NEWER
 			// Xbox One build settings
 			// ---------------------------------------------------------------
 			settings.XboxOneDeployMethod = EditorUserBuildSettings.xboxOneDeployMethod.ToString();
@@ -963,506 +890,411 @@ namespace BuildReportTool
 			settings.XboxOneGameOsOverridePath = PlayerSettings.XboxOne.GameOsOverridePath;
 			settings.XboxOneAppManifestOverridePath = PlayerSettings.XboxOne.AppManifestOverridePath;
 			settings.XboxOnePackagingOverridePath = PlayerSettings.XboxOne.PackagingOverridePath;
-#endif
+            #endif
 
+            // PS4 build settings
+            // ---------------------------------------------------------------
+            settings.PS4BuildSubtarget = EditorUserBuildSettings.ps4BuildSubtarget.ToString();
 
-			// PS4 build settings
-			// ---------------------------------------------------------------
-			settings.PS4BuildSubtarget = EditorUserBuildSettings.ps4BuildSubtarget.ToString();
+            settings.PS4AppParameter1 = PlayerSettings.PS4.applicationParameter1;
+            settings.PS4AppParameter2 = PlayerSettings.PS4.applicationParameter2;
+            settings.PS4AppParameter3 = PlayerSettings.PS4.applicationParameter3;
+            settings.PS4AppParameter4 = PlayerSettings.PS4.applicationParameter4;
 
-			settings.PS4AppParameter1 = PlayerSettings.PS4.applicationParameter1;
-			settings.PS4AppParameter2 = PlayerSettings.PS4.applicationParameter2;
-			settings.PS4AppParameter3 = PlayerSettings.PS4.applicationParameter3;
-			settings.PS4AppParameter4 = PlayerSettings.PS4.applicationParameter4;
+            settings.PS4AppType       = PlayerSettings.PS4.appType;
+            settings.PS4AppVersion    = PlayerSettings.PS4.appVersion;
+            settings.PS4Category      = PlayerSettings.PS4.category.ToString();
+            settings.PS4ContentId     = PlayerSettings.PS4.contentID;
+            settings.PS4MasterVersion = PlayerSettings.PS4.masterVersion;
 
-			settings.PS4AppType = PlayerSettings.PS4.appType;
-			settings.PS4AppVersion = PlayerSettings.PS4.appVersion;
-			settings.PS4Category = PlayerSettings.PS4.category.ToString();
-			settings.PS4ContentId = PlayerSettings.PS4.contentID;
-			settings.PS4MasterVersion = PlayerSettings.PS4.masterVersion;
+            settings.PS4EnterButtonAssignment   = PlayerSettings.PS4.enterButtonAssignment.ToString();
+            settings.PS4RemotePlayKeyAssignment = PlayerSettings.PS4.remotePlayKeyAssignment.ToString();
 
-			settings.PS4EnterButtonAssignment = PlayerSettings.PS4.enterButtonAssignment.ToString();
-			settings.PS4RemotePlayKeyAssignment = PlayerSettings.PS4.remotePlayKeyAssignment.ToString();
-
-			settings.PS4VideoOutPixelFormat = PlayerSettings.PS4.videoOutPixelFormat.ToString();
-#if UNITY_5_5_OR_NEWER
-			settings.PS4VideoOutResolution = string.Format("Width: {0} ReprojectionRate: {1}",
-				PlayerSettings.PS4.videoOutInitialWidth, PlayerSettings.PS4.videoOutReprojectionRate);
-#else
+            settings.PS4VideoOutPixelFormat = PlayerSettings.PS4.videoOutPixelFormat.ToString();
+            #if UNITY_5_5_OR_NEWER
+            settings.PS4VideoOutResolution = string.Format("Width: {0} ReprojectionRate: {1}",
+                PlayerSettings.PS4.videoOutInitialWidth,
+                PlayerSettings.PS4.videoOutReprojectionRate);
+            #else
 			settings.PS4VideoOutResolution = PlayerSettings.PS4.videoOutResolution.ToString();
-#endif
+            #endif
 
-			settings.PS4MonoEnvVars = PlayerSettings.PS4.monoEnv;
+            settings.PS4MonoEnvVars = PlayerSettings.PS4.monoEnv;
 
-			settings.PS4NpAgeRating = PlayerSettings.PS4.npAgeRating.ToString();
-			settings.PS4ParentalLevel = PlayerSettings.PS4.parentalLevel.ToString();
+            settings.PS4NpAgeRating   = PlayerSettings.PS4.npAgeRating.ToString();
+            settings.PS4ParentalLevel = PlayerSettings.PS4.parentalLevel.ToString();
 
-			settings.PS4EnablePlayerPrefsSupport = PlayerSettings.PS4.playerPrefsSupport;
+            settings.PS4EnablePlayerPrefsSupport = PlayerSettings.PS4.playerPrefsSupport;
 
-			settings.PS4EnableFriendPushNotifications = PlayerSettings.PS4.pnFriends;
-			settings.PS4EnablePresencePushNotifications = PlayerSettings.PS4.pnPresence;
-			settings.PS4EnableSessionPushNotifications = PlayerSettings.PS4.pnSessions;
-			settings.PS4EnableGameCustomDataPushNotifications = PlayerSettings.PS4.pnGameCustomData;
+            settings.PS4EnableFriendPushNotifications         = PlayerSettings.PS4.pnFriends;
+            settings.PS4EnablePresencePushNotifications       = PlayerSettings.PS4.pnPresence;
+            settings.PS4EnableSessionPushNotifications        = PlayerSettings.PS4.pnSessions;
+            settings.PS4EnableGameCustomDataPushNotifications = PlayerSettings.PS4.pnGameCustomData;
 
-			// paths
-			settings.PS4BgImagePath = PlayerSettings.PS4.BackgroundImagePath;
-			settings.PS4BgMusicPath = PlayerSettings.PS4.BGMPath;
-			settings.PS4StartupImagePath = PlayerSettings.PS4.StartupImagePath;
-			settings.PS4ParamSfxPath = PlayerSettings.PS4.paramSfxPath;
-			settings.PS4NpTitleDatPath = PlayerSettings.PS4.NPtitleDatPath;
-			settings.PS4NpTrophyPackagePath = PlayerSettings.PS4.npTrophyPackPath;
-			settings.PS4PronunciationSigPath = PlayerSettings.PS4.PronunciationSIGPath;
-			settings.PS4PronunciationXmlPath = PlayerSettings.PS4.PronunciationXMLPath;
-			settings.PS4SaveDataImagePath = PlayerSettings.PS4.SaveDataImagePath;
-			settings.PS4ShareFilePath = PlayerSettings.PS4.ShareFilePath;
-#endif
-		}
+            // paths
+            settings.PS4BgImagePath          = PlayerSettings.PS4.BackgroundImagePath;
+            settings.PS4BgMusicPath          = PlayerSettings.PS4.BGMPath;
+            settings.PS4StartupImagePath     = PlayerSettings.PS4.StartupImagePath;
+            settings.PS4ParamSfxPath         = PlayerSettings.PS4.paramSfxPath;
+            settings.PS4NpTitleDatPath       = PlayerSettings.PS4.NPtitleDatPath;
+            settings.PS4NpTrophyPackagePath  = PlayerSettings.PS4.npTrophyPackPath;
+            settings.PS4PronunciationSigPath = PlayerSettings.PS4.PronunciationSIGPath;
+            settings.PS4PronunciationXmlPath = PlayerSettings.PS4.PronunciationXMLPath;
+            settings.PS4SaveDataImagePath    = PlayerSettings.PS4.SaveDataImagePath;
+            settings.PS4ShareFilePath        = PlayerSettings.PS4.ShareFilePath;
+            #endif
+        }
 
-		static void PopulatePackageSettings(UnityBuildSettings settings)
-		{
-			var packageList = settings.PackageEntries;
-			packageList.Clear();
+        private static void PopulatePackageSettings(UnityBuildSettings settings)
+        {
+            var packageList = settings.PackageEntries;
+            packageList.Clear();
 
-			var builtInPackageList = settings.BuiltInPackageEntries;
-			builtInPackageList.Clear();
+            var builtInPackageList = settings.BuiltInPackageEntries;
+            builtInPackageList.Clear();
 
-			string projectPath = Application.dataPath;
+            var projectPath = Application.dataPath;
 
-			// remove the "Assets" so that we go to the parent folder
-			projectPath = projectPath.Substring(0, projectPath.Length - 6);
+            // remove the "Assets" so that we go to the parent folder
+            projectPath = projectPath.Substring(0, projectPath.Length - 6);
 
-			string manifestJsonPath = string.Format("{0}Packages/manifest.json", projectPath);
-			if (!System.IO.File.Exists(manifestJsonPath))
-			{
-				// no manifest.json in project
-				return;
-			}
-			string manifestJsonText = System.IO.File.ReadAllText(manifestJsonPath);
+            var manifestJsonPath = string.Format("{0}Packages/manifest.json", projectPath);
+            if (!System.IO.File.Exists(manifestJsonPath))
+                // no manifest.json in project
+                return;
+            var manifestJsonText = System.IO.File.ReadAllText(manifestJsonPath);
 
-			string packagesLockJsonText;
-			string packagesLockJsonPath = string.Format("{0}Packages/packages-lock.json", projectPath);
-			if (System.IO.File.Exists(packagesLockJsonPath))
-			{
-				packagesLockJsonText = System.IO.File.ReadAllText(packagesLockJsonPath);
-			}
-			else
-			{
-				packagesLockJsonText = null;
-			}
+            string packagesLockJsonText;
+            var    packagesLockJsonPath = string.Format("{0}Packages/packages-lock.json", projectPath);
+            if (System.IO.File.Exists(packagesLockJsonPath))
+                packagesLockJsonText = System.IO.File.ReadAllText(packagesLockJsonPath);
+            else
+                packagesLockJsonText = null;
 
-			PopulatePackageList(manifestJsonText, packagesLockJsonText, packageList, builtInPackageList);
-		}
+            PopulatePackageList(manifestJsonText, packagesLockJsonText, packageList, builtInPackageList);
+        }
 
-		public const string DEFAULT_REGISTRY_URL = "https://packages.unity.com";
+        public const string DEFAULT_REGISTRY_URL = "https://packages.unity.com";
 
-		static void PopulatePackageList(string manifestJsonText, string packagesLockJsonText,
-			List<BuildReportTool.UnityBuildSettings.PackageEntry> packageList, List<BuildReportTool.UnityBuildSettings.BuiltInPackageEntry> builtInPackageList)
-		{
-			//Debug.Log($"Exists: {manifestJsonPath}");
-			var manifest = MiniJSON.Json.Deserialize(manifestJsonText) as Dictionary<string, object>;
-			if (manifest == null)
-			{
-				return;
-			}
+        private static void PopulatePackageList(
+            string                                       manifestJsonText,
+            string                                       packagesLockJsonText,
+            List<UnityBuildSettings.PackageEntry>        packageList,
+            List<UnityBuildSettings.BuiltInPackageEntry> builtInPackageList
+        )
+        {
+            //Debug.Log($"Exists: {manifestJsonPath}");
+            var manifest = MiniJSON.Json.Deserialize(manifestJsonText) as Dictionary<string, object>;
+            if (manifest == null) return;
 
-			string mainRegistry;
-			if (manifest.ContainsKey("registry"))
-			{
-				mainRegistry = manifest["registry"] as string;
-			}
-			else
-			{
-				// this is the default value when no registry is specified
-				mainRegistry = DEFAULT_REGISTRY_URL;
-			}
+            string mainRegistry;
+            if (manifest.ContainsKey("registry"))
+                mainRegistry = manifest["registry"] as string;
+            else
+                // this is the default value when no registry is specified
+                mainRegistry = DEFAULT_REGISTRY_URL;
 
-			List<object> scopedRegistries;
-			if (manifest.ContainsKey("scopedRegistries"))
-			{
-				scopedRegistries = manifest["scopedRegistries"] as List<object>;
-			}
-			else
-			{
-				scopedRegistries = null;
-			}
+            List<object> scopedRegistries;
+            if (manifest.ContainsKey("scopedRegistries"))
+                scopedRegistries = manifest["scopedRegistries"] as List<object>;
+            else
+                scopedRegistries = null;
 
-			Dictionary<string, object> externalLock;
-			if (!string.IsNullOrEmpty(packagesLockJsonText))
-			{
-				var locks = MiniJSON.Json.Deserialize(packagesLockJsonText) as Dictionary<string, object>;
-				if (locks != null && locks.ContainsKey("dependencies"))
-				{
-					externalLock = locks["dependencies"] as Dictionary<string, object>;
-				}
-				else
-				{
-					externalLock = null;
-				}
-			}
-			else
-			{
-				externalLock = null;
-			}
+            Dictionary<string, object> externalLock;
+            if (!string.IsNullOrEmpty(packagesLockJsonText))
+            {
+                var locks = MiniJSON.Json.Deserialize(packagesLockJsonText) as Dictionary<string, object>;
+                if (locks != null && locks.ContainsKey("dependencies"))
+                    externalLock = locks["dependencies"] as Dictionary<string, object>;
+                else
+                    externalLock = null;
+            }
+            else
+            {
+                externalLock = null;
+            }
 
-			if (manifest.ContainsKey("dependencies"))
-			{
-				Dictionary<string, object> embeddedLockUsed;
-				if (manifest.ContainsKey("lock"))
-				{
-					embeddedLockUsed = manifest["lock"] as Dictionary<string, object>;
-				}
-				else
-				{
-					embeddedLockUsed = null;
-				}
+            if (manifest.ContainsKey("dependencies"))
+            {
+                Dictionary<string, object> embeddedLockUsed;
+                if (manifest.ContainsKey("lock"))
+                    embeddedLockUsed = manifest["lock"] as Dictionary<string, object>;
+                else
+                    embeddedLockUsed = null;
 
-				var dependencies = manifest["dependencies"] as Dictionary<string, object>;
-				if (dependencies != null)
-				{
+                var dependencies = manifest["dependencies"] as Dictionary<string, object>;
+                if (dependencies != null)
+                {
+                    var projectPackagesCachePath = Application.dataPath;
+                    projectPackagesCachePath = projectPackagesCachePath.Substring(0, projectPackagesCachePath.Length - 6);
+                    projectPackagesCachePath = string.Format("{0}Library/PackageCache/", projectPackagesCachePath);
 
-					var projectPackagesCachePath = Application.dataPath;
-					projectPackagesCachePath = projectPackagesCachePath.Substring(0, projectPackagesCachePath.Length - 6);
-					projectPackagesCachePath = string.Format("{0}Library/PackageCache/", projectPackagesCachePath);
+                    foreach (var pair in dependencies)
+                    {
+                        //Debug.Log($"package name: {pair.Key} version: {pair.Value}");
+                        if (string.IsNullOrEmpty(pair.Key)) continue;
 
-					foreach (var pair in dependencies)
-					{
-						//Debug.Log($"package name: {pair.Key} version: {pair.Value}");
-						if (string.IsNullOrEmpty(pair.Key))
-						{
-							continue;
-						}
+                        if (pair.Key.StartsWith("com.unity.modules."))
+                        {
+                            UnityBuildSettings.BuiltInPackageEntry newBuiltInEntry;
+                            newBuiltInEntry.PackageName = pair.Key;
+                            newBuiltInEntry.DisplayName = null;
+                            builtInPackageList.Add(newBuiltInEntry);
+                            continue;
+                        }
 
-						if (pair.Key.StartsWith("com.unity.modules."))
-						{
-							BuildReportTool.UnityBuildSettings.BuiltInPackageEntry newBuiltInEntry;
-							newBuiltInEntry.PackageName = pair.Key;
-							newBuiltInEntry.DisplayName = null;
-							builtInPackageList.Add(newBuiltInEntry);
-							continue;
-						}
+                        UnityBuildSettings.PackageEntry newEntry;
+                        newEntry.PackageName = pair.Key;
+                        newEntry.DisplayName = null;
+                        newEntry.VersionUsed = null;
+                        newEntry.LocalPath   = null;
 
-						BuildReportTool.UnityBuildSettings.PackageEntry newEntry;
-						newEntry.PackageName = pair.Key;
-						newEntry.DisplayName = null;
-						newEntry.VersionUsed = null;
-						newEntry.LocalPath = null;
+                        var gotValue = pair.Value as string;
+                        if (embeddedLockUsed != null && embeddedLockUsed.ContainsKey(newEntry.PackageName))
+                        {
+                            // if this is a git package, it should have an entry in the manifest's lock
 
-						var gotValue = pair.Value as string;
-						if (embeddedLockUsed != null && embeddedLockUsed.ContainsKey(newEntry.PackageName))
-						{
-							// if this is a git package, it should have an entry in the manifest's lock
+                            newEntry.Location = gotValue;
+                            var lockEntry = embeddedLockUsed[newEntry.PackageName] as Dictionary<string, object>;
+                            if (lockEntry != null && lockEntry.ContainsKey("hash"))
+                            {
+                                var rev                               = lockEntry["hash"] as string;
+                                if (rev != null) newEntry.VersionUsed = rev;
+                            }
+                        }
+                        else if (externalLock != null && externalLock.ContainsKey(newEntry.PackageName))
+                        {
+                            var lockEntry = externalLock[newEntry.PackageName] as Dictionary<string, object>;
+                            if (lockEntry != null && lockEntry.ContainsKey("source"))
+                            {
+                                var source = lockEntry["source"] as string;
+                                if (source == "git" && lockEntry.ContainsKey("hash"))
+                                {
+                                    var rev                               = lockEntry["hash"] as string;
+                                    if (rev != null) newEntry.VersionUsed = rev;
 
-							newEntry.Location = gotValue;
-							var lockEntry = embeddedLockUsed[newEntry.PackageName] as Dictionary<string, object>;
-							if (lockEntry != null && lockEntry.ContainsKey("hash"))
-							{
-								string rev = lockEntry["hash"] as string;
-								if (rev != null)
-								{
-									newEntry.VersionUsed = rev;
-								}
-							}
-						}
-						else if (externalLock != null && externalLock.ContainsKey(newEntry.PackageName))
-						{
-							var lockEntry = externalLock[newEntry.PackageName] as Dictionary<string, object>;
-							if (lockEntry != null && lockEntry.ContainsKey("source"))
-							{
-								string source = lockEntry["source"] as string;
-								if (source == "git" && lockEntry.ContainsKey("hash"))
-								{
-									string rev = lockEntry["hash"] as string;
-									if (rev != null)
-									{
-										newEntry.VersionUsed = rev;
-									}
+                                    // for git packages, the git url is the value in the manifest
+                                    newEntry.Location = gotValue;
+                                }
+                                else if (source == "registry" && lockEntry.ContainsKey("url"))
+                                {
+                                    var packageUrl = lockEntry["url"] as string;
+                                    if (packageUrl != null)
+                                        newEntry.Location = packageUrl;
+                                    else
+                                        newEntry.Location = null;
+                                }
+                                else
+                                {
+                                    newEntry.Location = null;
+                                }
+                            }
+                            else
+                            {
+                                newEntry.Location = null;
+                            }
+                        }
+                        else
+                        {
+                            newEntry.Location = null;
+                        }
 
-									// for git packages, the git url is the value in the manifest
-									newEntry.Location = gotValue;
-								}
-								else if (source == "registry" && lockEntry.ContainsKey("url"))
-								{
-									string packageUrl = lockEntry["url"] as string;
-									if (packageUrl != null)
-									{
-										newEntry.Location = packageUrl;
-									}
-									else
-									{
-										newEntry.Location = null;
-									}
-								}
-								else
-								{
-									newEntry.Location = null;
-								}
-							}
-							else
-							{
-								newEntry.Location = null;
-							}
-						}
-						else
-						{
-							newEntry.Location = null;
-						}
+                        if (string.IsNullOrEmpty(newEntry.VersionUsed))
+                        {
+                            if (gotValue != null && (gotValue.StartsWith("file://") || gotValue.StartsWith("https://") || gotValue.StartsWith("git://") || gotValue.StartsWith("ssh://") || gotValue.StartsWith("git+https://") || gotValue.StartsWith("git+ssh://") || gotValue.StartsWith("git+file://")))
+                            {
+                                // git package, but no entry in the manifest's lock
 
-						if (string.IsNullOrEmpty(newEntry.VersionUsed))
-						{
-							if (gotValue != null &&
-							    (gotValue.StartsWith("file://") ||
-							     gotValue.StartsWith("https://") ||
-							     gotValue.StartsWith("git://") ||
-							     gotValue.StartsWith("ssh://") ||
-							     gotValue.StartsWith("git+https://") ||
-							     gotValue.StartsWith("git+ssh://") ||
-							     gotValue.StartsWith("git+file://")))
-							{
-								// git package, but no entry in the manifest's lock
+                                // check if commit hash is specified in the url
+                                var lastHash = gotValue.LastIndexOf('#');
+                                if (lastHash > -1)
+                                {
+                                    var afterHash = gotValue.Substring(lastHash);
+                                    newEntry.VersionUsed = afterHash;
+                                    newEntry.Location    = gotValue.Substring(0, lastHash);
+                                }
+                                else
+                                {
+                                    // no commit hash specified
+                                    newEntry.VersionUsed = null;
+                                    newEntry.Location    = gotValue;
+                                }
+                            }
+                            else if (gotValue != null && gotValue.StartsWith("file:") && !gotValue.StartsWith("file://"))
+                            {
+                                // local package
+                                newEntry.VersionUsed = null;
+                                newEntry.Location    = gotValue;
+                            }
+                            else
+                            {
+                                // regular package
+                                newEntry.VersionUsed = gotValue;
+                                if (scopedRegistries != null) newEntry.Location = GetMatchingRegistry(newEntry.PackageName, scopedRegistries);
 
-								// check if commit hash is specified in the url
-								var lastHash = gotValue.LastIndexOf('#');
-								if (lastHash > -1)
-								{
-									var afterHash = gotValue.Substring(lastHash);
-									newEntry.VersionUsed = afterHash;
-									newEntry.Location = gotValue.Substring(0, lastHash);
-								}
-								else
-								{
-									// no commit hash specified
-									newEntry.VersionUsed = null;
-									newEntry.Location = gotValue;
-								}
-							}
-							else if (gotValue != null && gotValue.StartsWith("file:") && !gotValue.StartsWith("file://"))
-							{
-								// local package
-								newEntry.VersionUsed = null;
-								newEntry.Location = gotValue;
-							}
-							else
-							{
-								// regular package
-								newEntry.VersionUsed = gotValue;
-								if (scopedRegistries != null)
-								{
-									newEntry.Location = GetMatchingRegistry(newEntry.PackageName, scopedRegistries);
-								}
+                                if (string.IsNullOrEmpty(newEntry.Location)) newEntry.Location = mainRegistry;
+                            }
+                        }
 
-								if (string.IsNullOrEmpty(newEntry.Location))
-								{
-									newEntry.Location = mainRegistry;
-								}
-							}
-						}
+                        // attempt to get the package's display name by loading its package.json file
 
-						// attempt to get the package's display name by loading its package.json file
+                        // we need the VersionUsed since that's used as part of the folder name
+                        if (!string.IsNullOrEmpty(newEntry.VersionUsed))
+                        {
+                            newEntry.LocalPath = GetPackageCachePath(newEntry, projectPackagesCachePath);
 
-						// we need the VersionUsed since that's used as part of the folder name
-						if (!string.IsNullOrEmpty(newEntry.VersionUsed))
-						{
-							newEntry.LocalPath = GetPackageCachePath(newEntry, projectPackagesCachePath);
+                            if (!string.IsNullOrEmpty(newEntry.LocalPath))
+                            {
+                                var packageManifestPath = string.Format("{0}package.json", newEntry.LocalPath);
+                                if (System.IO.File.Exists(packageManifestPath))
+                                {
+                                    var packageManifest = MiniJSON.Json.Deserialize(System.IO.File.ReadAllText(packageManifestPath)) as Dictionary<string, object>;
+                                    if (packageManifest != null && packageManifest.ContainsKey("displayName"))
+                                    {
+                                        newEntry.DisplayName = packageManifest["displayName"] as string;
+                                    }
+                                    else
+                                    {
+                                        // no package.json, or package.json has no displayName
+                                        // we can hardcode some detections here
+                                        if (newEntry.PackageName == "com.unity.ads") newEntry.DisplayName = "Advertisement";
+                                    }
+                                }
+                            }
+                        }
 
-							if (!string.IsNullOrEmpty(newEntry.LocalPath))
-							{
-								string packageManifestPath = string.Format("{0}package.json", newEntry.LocalPath);
-								if (System.IO.File.Exists(packageManifestPath))
-								{
-									var packageManifest = MiniJSON.Json.Deserialize(System.IO.File.ReadAllText(packageManifestPath)) as Dictionary<string, object>;
-									if (packageManifest != null && packageManifest.ContainsKey("displayName"))
-									{
-										newEntry.DisplayName = packageManifest["displayName"] as string;
-									}
-									else
-									{
-										// no package.json, or package.json has no displayName
-										// we can hardcode some detections here
-										if (newEntry.PackageName == "com.unity.ads")
-										{
-											newEntry.DisplayName = "Advertisement";
-										}
-									}
-								}
-							}
-						}
+                        packageList.Add(newEntry);
+                    }
+                }
+            }
 
-						packageList.Add(newEntry);
-					}
-				}
-			}
-
-#if BRT_PACKAGE_PARSE_DEBUG
+            #if BRT_PACKAGE_PARSE_DEBUG
 			for (int n = 0, len = packageList.Count; n < len; ++n)
 			{
 				Debug.Log($"{packageList[n].PackageName} {packageList[n].VersionUsed}\n{packageList[n].DisplayName}\n{packageList[n].Location}");
 			}
-#endif
-		}
+            #endif
+        }
 
-		const int DEFAULT_SHORT_HASH_LENGTH = 10;
+        private const int DEFAULT_SHORT_HASH_LENGTH = 10;
 
-		static string GetPackageCachePath(BuildReportTool.UnityBuildSettings.PackageEntry entry, string projectPackagesCachePath)
-		{
-			string packageCachePath = string.Format("{0}{1}@{2}/", projectPackagesCachePath, entry.PackageName, entry.VersionUsed);
-			if (System.IO.Directory.Exists(packageCachePath))
-			{
-				return packageCachePath;
-			}
+        private static string GetPackageCachePath(UnityBuildSettings.PackageEntry entry, string projectPackagesCachePath)
+        {
+            var packageCachePath = string.Format("{0}{1}@{2}/", projectPackagesCachePath, entry.PackageName, entry.VersionUsed);
+            if (System.IO.Directory.Exists(packageCachePath)) return packageCachePath;
 
-			if (entry.VersionUsed.Length > DEFAULT_SHORT_HASH_LENGTH)
-			{
-				// in Unity 2019+, git packages now only use the first 10 characters of the commit hash, so try that
-				// in case this is a git package
-				packageCachePath = string.Format("{0}{1}@{2}/",
-					projectPackagesCachePath, entry.PackageName,
-					entry.VersionUsed.Substring(0, DEFAULT_SHORT_HASH_LENGTH));
+            if (entry.VersionUsed.Length > DEFAULT_SHORT_HASH_LENGTH)
+            {
+                // in Unity 2019+, git packages now only use the first 10 characters of the commit hash, so try that
+                // in case this is a git package
+                packageCachePath = string.Format("{0}{1}@{2}/",
+                    projectPackagesCachePath,
+                    entry.PackageName,
+                    entry.VersionUsed.Substring(0, DEFAULT_SHORT_HASH_LENGTH));
 
-				if (System.IO.Directory.Exists(packageCachePath))
-				{
-					return packageCachePath;
-				}
-			}
+                if (System.IO.Directory.Exists(packageCachePath)) return packageCachePath;
+            }
 
-			// Not found in project's packageCache. Now Try finding from user's AppData
+            // Not found in project's packageCache. Now Try finding from user's AppData
 
-			if (string.IsNullOrEmpty(entry.Location))
-			{
-				// we need the url found in Location since that's used as the folder name
-				// if we don't have it, we can't determine the package cache path
-				return null;
-			}
+            if (string.IsNullOrEmpty(entry.Location))
+                // we need the url found in Location since that's used as the folder name
+                // if we don't have it, we can't determine the package cache path
+                return null;
 
-			// get the registry url and remove the url, that will be the folder name
-			string registryName;
-			int registrySlashIdx = entry.Location.LastIndexOf("//", StringComparison.Ordinal);
-			if (registrySlashIdx > -1)
-			{
-				registryName = entry.Location.Substring(registrySlashIdx+2);
-			}
-			else
-			{
-				return null;
-			}
+            // get the registry url and remove the url, that will be the folder name
+            string registryName;
+            var    registrySlashIdx = entry.Location.LastIndexOf("//", StringComparison.Ordinal);
+            if (registrySlashIdx > -1)
+                registryName = entry.Location.Substring(registrySlashIdx + 2);
+            else
+                return null;
 
-			if (string.IsNullOrEmpty(registryName))
-			{
-				return null;
-			}
+            if (string.IsNullOrEmpty(registryName)) return null;
 
-#if UNITY_EDITOR_WIN
-			string localAppDataVar = System.Environment.GetEnvironmentVariable("LOCALAPPDATA");
-			if (string.IsNullOrEmpty(localAppDataVar))
-			{
-				return null;
-			}
+            #if UNITY_EDITOR_WIN
+            var localAppDataVar = Environment.GetEnvironmentVariable("LOCALAPPDATA");
+            if (string.IsNullOrEmpty(localAppDataVar)) return null;
 
-			localAppDataVar = localAppDataVar.Replace("\\", "/");
-#else
+            localAppDataVar = localAppDataVar.Replace("\\", "/");
+            #else
 			string localAppDataVar = "~/Users/Library";
-#endif
+            #endif
 
-			packageCachePath = string.Format("{0}/Unity/cache/packages/{1}/{2}@{3}/",
-				localAppDataVar, registryName, entry.PackageName, entry.VersionUsed);
+            packageCachePath = string.Format("{0}/Unity/cache/packages/{1}/{2}@{3}/",
+                localAppDataVar,
+                registryName,
+                entry.PackageName,
+                entry.VersionUsed);
 
-			if (System.IO.Directory.Exists(packageCachePath))
-			{
-				return packageCachePath;
-			}
+            if (System.IO.Directory.Exists(packageCachePath)) return packageCachePath;
 
-			if (entry.VersionUsed.Length > DEFAULT_SHORT_HASH_LENGTH)
-			{
-				// in Unity 2019+, git packages now only use the first 10 characters of the commit hash, so try that
-				// in case this is a git package
-				packageCachePath = string.Format("{0}/Unity/cache/packages/{1}/{2}@{3}/",
-					localAppDataVar, registryName, entry.PackageName,
-					entry.VersionUsed.Substring(0, DEFAULT_SHORT_HASH_LENGTH));
+            if (entry.VersionUsed.Length > DEFAULT_SHORT_HASH_LENGTH)
+            {
+                // in Unity 2019+, git packages now only use the first 10 characters of the commit hash, so try that
+                // in case this is a git package
+                packageCachePath = string.Format("{0}/Unity/cache/packages/{1}/{2}@{3}/",
+                    localAppDataVar,
+                    registryName,
+                    entry.PackageName,
+                    entry.VersionUsed.Substring(0, DEFAULT_SHORT_HASH_LENGTH));
 
-				if (System.IO.Directory.Exists(packageCachePath))
-				{
-					return packageCachePath;
-				}
-			}
+                if (System.IO.Directory.Exists(packageCachePath)) return packageCachePath;
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		static string GetMatchingRegistry(string packageName, List<object> scopedRegistries)
-		{
-			if (string.IsNullOrEmpty(packageName))
-			{
-				return null;
-			}
+        private static string GetMatchingRegistry(string packageName, List<object> scopedRegistries)
+        {
+            if (string.IsNullOrEmpty(packageName)) return null;
 
-			if (scopedRegistries == null)
-			{
-				return null;
-			}
+            if (scopedRegistries == null) return null;
 
-			int closestMatchScore = 0;
-			string closestMatch = null;
+            var    closestMatchScore = 0;
+            string closestMatch      = null;
 
-			for (int r = 0, rLen = scopedRegistries.Count; r < rLen; ++r)
-			{
-				if (scopedRegistries[r] == null)
-				{
-					continue;
-				}
+            for (int r = 0, rLen = scopedRegistries.Count; r < rLen; ++r)
+            {
+                if (scopedRegistries[r] == null) continue;
 
-				var scopedRegistry = scopedRegistries[r] as Dictionary<string, object>;
-				if (scopedRegistry == null)
-				{
-					continue;
-				}
+                var scopedRegistry = scopedRegistries[r] as Dictionary<string, object>;
+                if (scopedRegistry == null) continue;
 
-				if (!scopedRegistry.ContainsKey("scopes"))
-				{
-					continue;
-				}
+                if (!scopedRegistry.ContainsKey("scopes")) continue;
 
-				if (!scopedRegistry.ContainsKey("url"))
-				{
-					continue;
-				}
+                if (!scopedRegistry.ContainsKey("url")) continue;
 
-				var registryUrl = scopedRegistry["url"] as string;
+                var registryUrl = scopedRegistry["url"] as string;
 
-				var scopes = scopedRegistry["scopes"] as List<object>;
-				if (scopes == null)
-				{
-					continue;
-				}
+                var scopes = scopedRegistry["scopes"] as List<object>;
+                if (scopes == null) continue;
 
-				for (int s = 0, sLen = scopes.Count; s < sLen; ++s)
-				{
-					var scope = scopes[s] as string;
-					if (string.IsNullOrEmpty(scope))
-					{
-						continue;
-					}
+                for (int s = 0, sLen = scopes.Count; s < sLen; ++s)
+                {
+                    var scope = scopes[s] as string;
+                    if (string.IsNullOrEmpty(scope)) continue;
 
-					if (packageName.Equals(scope, StringComparison.OrdinalIgnoreCase))
-					{
-						// exact match, use it right away
-						return registryUrl;
-					}
+                    if (packageName.Equals(scope, StringComparison.OrdinalIgnoreCase))
+                        // exact match, use it right away
+                        return registryUrl;
 
-					if (packageName.StartsWith(scope))
-					{
-						var currentScopeMatchScore = scope.Length;
-						if (currentScopeMatchScore > closestMatchScore)
-						{
-							closestMatch = registryUrl;
-							closestMatchScore = currentScopeMatchScore;
-						}
-					}
-				}
-			}
+                    if (packageName.StartsWith(scope))
+                    {
+                        var currentScopeMatchScore = scope.Length;
+                        if (currentScopeMatchScore > closestMatchScore)
+                        {
+                            closestMatch      = registryUrl;
+                            closestMatchScore = currentScopeMatchScore;
+                        }
+                    }
+                }
+            }
 
-			return closestMatch;
-		}
+            return closestMatch;
+        }
 
-#if BRT_PACKAGE_PARSE_DEBUG
+        #if BRT_PACKAGE_PARSE_DEBUG
 		[MenuItem("Window/TestPopulatePackageList1")]
 		public static void TestPopulatePackageList1()
 		{
@@ -1941,6 +1773,6 @@ namespace BuildReportTool
 			var builtInPackageList = new List<BuildReportTool.UnityBuildSettings.BuiltInPackageEntry>();
 			PopulatePackageList(TEST_MANIFEST_TEXT, TEST_PACKAGES_LOCK_TEXT, packageList, builtInPackageList);
 		}
-#endif
-	}
+        #endif
+    }
 }

@@ -11,38 +11,38 @@ namespace Lofelt.NiceVibrations
     {
         public float Amplitude;
         public float Frequency;
-        public bool Shaking = false;
+        public bool  Shaking = false;
 
-        protected Vector3 _initialPosition;
-        protected Vector3 _shakePosition;
+        protected Vector3       _initialPosition;
+        protected Vector3       _shakePosition;
         protected RectTransform _rectTransform;
 
         protected virtual void Start()
         {
-            _rectTransform = this.gameObject.GetComponent<RectTransform>();
-            _initialPosition = _rectTransform.localPosition;
+            this._rectTransform   = this.gameObject.GetComponent<RectTransform>();
+            this._initialPosition = this._rectTransform.localPosition;
         }
 
         public virtual IEnumerator Shake(float duration)
         {
-            Shaking = true;
+            this.Shaking = true;
             yield return new WaitForSeconds(duration);
-            Shaking = false;
+            this.Shaking = false;
         }
 
         protected virtual void Update()
         {
-            if (!Shaking)
+            if (!this.Shaking)
             {
-                _rectTransform.localPosition = _initialPosition;
+                this._rectTransform.localPosition = this._initialPosition;
                 return;
             }
             else
             {
-                _shakePosition.x = Mathf.PerlinNoise(-(Time.time) * Frequency, Time.time * Frequency) * Amplitude - Amplitude / 2f;
-                _shakePosition.y = Mathf.PerlinNoise(-(Time.time + 0.25f) * Frequency, Time.time * Frequency) * Amplitude - Amplitude / 2f;
-                _shakePosition.z = Mathf.PerlinNoise(-(Time.time + 0.5f) * Frequency, Time.time * Frequency) * Amplitude - Amplitude / 2f;
-                _rectTransform.localPosition = _initialPosition + _shakePosition;
+                this._shakePosition.x             = Mathf.PerlinNoise(-Time.time * this.Frequency, Time.time * this.Frequency) * this.Amplitude - this.Amplitude / 2f;
+                this._shakePosition.y             = Mathf.PerlinNoise(-(Time.time + 0.25f) * this.Frequency, Time.time * this.Frequency) * this.Amplitude - this.Amplitude / 2f;
+                this._shakePosition.z             = Mathf.PerlinNoise(-(Time.time + 0.5f) * this.Frequency, Time.time * this.Frequency) * this.Amplitude - this.Amplitude / 2f;
+                this._rectTransform.localPosition = this._initialPosition + this._shakePosition;
             }
         }
     }

@@ -11,258 +11,244 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.DependencyGraph
     [Serializable]
     public class AH_DependencyGraphManager : ScriptableSingleton<AH_DependencyGraphManager>, ISerializationCallbackReceiver
     {
-        [SerializeField] public bool IsDirty = true;
-        [SerializeField] private TreeViewState treeViewStateFrom;
-        [SerializeField] private TreeViewState treeViewStateTo;
-        [SerializeField] private MultiColumnHeaderState multiColumnHeaderStateFrom;
-        [SerializeField] private MultiColumnHeaderState multiColumnHeaderStateTo;
-        [SerializeField] private AH_DepGraphTreeviewWithModel TreeViewModelFrom;
-        [SerializeField] private AH_DepGraphTreeviewWithModel TreeViewModelTo;
-        [SerializeField] private Dictionary<string, List<string>> referencedFrom = new Dictionary<string, List<string>>();
-        [SerializeField] private Dictionary<string, List<string>> referenceTo = new Dictionary<string, List<string>>();
+        [SerializeField] public  bool                             IsDirty = true;
+        [SerializeField] private TreeViewState                    treeViewStateFrom;
+        [SerializeField] private TreeViewState                    treeViewStateTo;
+        [SerializeField] private MultiColumnHeaderState           multiColumnHeaderStateFrom;
+        [SerializeField] private MultiColumnHeaderState           multiColumnHeaderStateTo;
+        [SerializeField] private AH_DepGraphTreeviewWithModel     TreeViewModelFrom;
+        [SerializeField] private AH_DepGraphTreeviewWithModel     TreeViewModelTo;
+        [SerializeField] private Dictionary<string, List<string>> referencedFrom = new();
+        [SerializeField] private Dictionary<string, List<string>> referenceTo    = new();
 
         #region serializationHelpers
-        [SerializeField] private List<string> _keysFrom = new List<string>();
-        [SerializeField] private List<AH_WrapperList> _wrapperValuesFrom = new List<AH_WrapperList>();
 
-        [SerializeField] private List<string> _keysTo = new List<string>();
-        [SerializeField] private List<AH_WrapperList> _wrapperValuesTo = new List<AH_WrapperList>();
+        [SerializeField] private List<string>         _keysFrom          = new();
+        [SerializeField] private List<AH_WrapperList> _wrapperValuesFrom = new();
+
+        [SerializeField] private List<string>         _keysTo          = new();
+        [SerializeField] private List<AH_WrapperList> _wrapperValuesTo = new();
+
         #endregion
 
-        [SerializeField] private string selectedAssetGUID = "";
-        [SerializeField] private string selectedAssetObjectName = "";
+        [SerializeField] private string             selectedAssetGUID       = "";
+        [SerializeField] private string             selectedAssetObjectName = "";
         [SerializeField] private UnityEngine.Object selectedAssetObject;
 
-        [SerializeField] private List<string> selectionHistory = new List<string>();
-        [SerializeField] private int selectionHistoryIndex = 0;
+        [SerializeField] private List<string> selectionHistory      = new();
+        [SerializeField] private int          selectionHistoryIndex = 0;
 
         private bool lockedSelection;
+
         public bool LockedSelection
         {
-            get { return lockedSelection; }
+            get => this.lockedSelection;
             set
             {
-                lockedSelection = value;
+                this.lockedSelection = value;
 
                 //Update currently selected
-                if (lockedSelection == false)
+                if (this.lockedSelection == false)
                 {
-                    requiresRefresh = true;
-                    UpdateSelectedAsset(Selection.activeObject);
+                    this.requiresRefresh = true;
+                    this.UpdateSelectedAsset(Selection.activeObject);
                 }
             }
         }
+
         public bool TraversingHistory { get; set; }
 
         //Force window to refresh selection
         private bool requiresRefresh;
 
-
         //We clear history when project changes, as there are problems in identifying if history points to deleted assets
         internal void ResetHistory()
         {
-            var obsoleteAssets = selectionHistory.FindAll(x => AssetDatabase.LoadMainAssetAtPath(x) == null);
+            var obsoleteAssets = this.selectionHistory.FindAll(x => AssetDatabase.LoadMainAssetAtPath(x) == null);
             //Remove the objets that are no longer in asset db
-            selectionHistory.RemoveAll(x => obsoleteAssets.Contains(x));
+            this.selectionHistory.RemoveAll(x => obsoleteAssets.Contains(x));
 
             var duplicateCount = obsoleteAssets.Count;
-            for (int i = selectionHistory.Count - 1; i >= 0; i--)
-            {
+            for (var i = this.selectionHistory.Count - 1; i >= 0; i--)
                 //Find identical IDs directly after each other
-                if (i > 0 && selectionHistory[i] == selectionHistory[i - 1])
+            {
+                if (i > 0 && this.selectionHistory[i] == this.selectionHistory[i - 1])
                 {
-                    selectionHistory.RemoveAt(i);
+                    this.selectionHistory.RemoveAt(i);
                     duplicateCount++;
                 }
             }
             //Reset history index to match new history
-            selectionHistoryIndex -= duplicateCount;
+            this.selectionHistoryIndex -= duplicateCount;
         }
 
         public string SearchString
         {
-            get
-            {
-                return treeViewStateFrom.searchString;
-            }
+            get => this.treeViewStateFrom.searchString;
             set
             {
-                var tmp = treeViewStateFrom.searchString;
+                var tmp = this.treeViewStateFrom.searchString;
 
-                treeViewStateFrom.searchString = treeViewStateTo.searchString = value;
+                this.treeViewStateFrom.searchString = this.treeViewStateTo.searchString = value;
                 if (tmp != value)
                 {
-                    TreeViewModelTo.Reload();
-                    TreeViewModelFrom.Reload();
+                    this.TreeViewModelTo.Reload();
+                    this.TreeViewModelFrom.Reload();
                 }
             }
         }
 
         //Return selected asset
-        public UnityEngine.Object SelectedAsset { get { return selectedAssetObject; } }
+        public UnityEngine.Object SelectedAsset => this.selectedAssetObject;
 
         public void OnEnable()
         {
-            hideFlags = HideFlags.HideAndDontSave;
+            this.hideFlags = HideFlags.HideAndDontSave;
         }
 
         public void Initialize(SearchField searchField, Rect multiColumnTreeViewRect)
         {
-            int referenceID = 0;
-            initTreeview(ref treeViewStateFrom, ref multiColumnHeaderStateFrom, multiColumnTreeViewRect, ref TreeViewModelFrom, searchField, referencedFrom, selectedAssetGUID, ref referenceID);
-            initTreeview(ref treeViewStateTo, ref multiColumnHeaderStateTo, multiColumnTreeViewRect, ref TreeViewModelTo, searchField, referenceTo, selectedAssetGUID, ref referenceID);
+            var referenceID = 0;
+            this.initTreeview(ref this.treeViewStateFrom, ref this.multiColumnHeaderStateFrom, multiColumnTreeViewRect, ref this.TreeViewModelFrom, searchField, this.referencedFrom, this.selectedAssetGUID, ref referenceID);
+            this.initTreeview(ref this.treeViewStateTo, ref this.multiColumnHeaderStateTo, multiColumnTreeViewRect, ref this.TreeViewModelTo, searchField, this.referenceTo, this.selectedAssetGUID, ref referenceID);
 
-            requiresRefresh = false;
+            this.requiresRefresh = false;
         }
 
         public void RefreshReferenceGraph()
         {
-            referenceTo = new Dictionary<string, List<string>>();
-            referencedFrom = new Dictionary<string, List<string>>();
+            this.referenceTo    = new();
+            this.referencedFrom = new();
 
-            var paths = AssetDatabase.GetAllAssetPaths();
+            var paths     = AssetDatabase.GetAllAssetPaths();
             var pathCount = paths.Length;
 
-            for (int i = 0; i < pathCount; i++)
+            for (var i = 0; i < pathCount; i++)
             {
                 var path = paths[i];
                 if (AssetDatabase.IsValidFolder(path) || !path.StartsWith("Assets")) //Slow, could be done recusively
                     continue;
 
-                if (EditorUtility.DisplayCancelableProgressBar("Creating Reference Graph", path, ((float)i / (float)pathCount)))
+                if (EditorUtility.DisplayCancelableProgressBar("Creating Reference Graph", path, (float)i / (float)pathCount))
                 {
-                    referenceTo = new Dictionary<string, List<string>>();
-                    referencedFrom = new Dictionary<string, List<string>>();
+                    this.referenceTo    = new();
+                    this.referencedFrom = new();
                     break;
                 }
 
-                var allRefs = AssetDatabase.GetDependencies(path, false);
-                string assetPathGuid = AssetDatabase.AssetPathToGUID(path);
+                var allRefs       = AssetDatabase.GetDependencies(path, false);
+                var assetPathGuid = AssetDatabase.AssetPathToGUID(path);
 
-                List<string> newList = allRefs.Where(val => val != path).Select(val => AssetDatabase.AssetPathToGUID(val)).ToList();
+                var newList = allRefs.Where(val => val != path).Select(val => AssetDatabase.AssetPathToGUID(val)).ToList();
 
                 //Store everything reference by this asset
-                if (newList.Count > 0)
-                    referenceTo.Add(assetPathGuid, newList);
+                if (newList.Count > 0) this.referenceTo.Add(assetPathGuid, newList);
 
                 //Foreach asset refenced by this asset, store the connection
                 foreach (var reference in allRefs)
                 {
-                    string refGuid = AssetDatabase.AssetPathToGUID(reference);
+                    var refGuid = AssetDatabase.AssetPathToGUID(reference);
 
-                    if (!referencedFrom.ContainsKey(refGuid))
-                        referencedFrom.Add(refGuid, new List<string>());
+                    if (!this.referencedFrom.ContainsKey(refGuid)) this.referencedFrom.Add(refGuid, new());
 
-                    referencedFrom[refGuid].Add(assetPathGuid);
+                    this.referencedFrom[refGuid].Add(assetPathGuid);
                 }
             }
 
-            IsDirty = false;
+            this.IsDirty = false;
             EditorUtility.ClearProgressBar();
         }
 
         private void initTreeview(ref TreeViewState _treeViewState, ref MultiColumnHeaderState _headerState, Rect _rect, ref AH_DepGraphTreeviewWithModel _treeView, SearchField _searchField, Dictionary<string, List<string>> referenceDict, string assetGUID, ref int referenceID)
         {
             bool hasValidReferences;
-            var treeModel = new TreeModel<AH_DepGraphElement>(getTreeViewData(referenceDict, assetGUID, out hasValidReferences, ref referenceID));
+            var  treeModel = new TreeModel<AH_DepGraphElement>(this.getTreeViewData(referenceDict, assetGUID, out hasValidReferences, ref referenceID));
 
             // Check if it already exists (deserialized from window layout file or scriptable object)
-            if (_treeViewState == null)
-                _treeViewState = new TreeViewState();
+            if (_treeViewState == null) _treeViewState = new();
 
-            bool firstInit = _headerState == null;
+            var firstInit   = _headerState == null;
             var headerState = AH_DepGraphTreeviewWithModel.CreateDefaultMultiColumnHeaderState(_rect.width);
-            if (MultiColumnHeaderState.CanOverwriteSerializedFields(_headerState, headerState))
-                MultiColumnHeaderState.OverwriteSerializedFields(_headerState, headerState);
+            if (MultiColumnHeaderState.CanOverwriteSerializedFields(_headerState, headerState)) MultiColumnHeaderState.OverwriteSerializedFields(_headerState, headerState);
             _headerState = headerState;
 
             var multiColumnHeader = new AH_DepGraphHeader(_headerState);
             //if (firstInit)
             multiColumnHeader.ResizeToFit();
 
-            _treeView = new AH_DepGraphTreeviewWithModel(_treeViewState, multiColumnHeader, treeModel);
+            _treeView                            =  new(_treeViewState, multiColumnHeader, treeModel);
             _searchField.downOrUpArrowKeyPressed += _treeView.SetFocusAndEnsureSelectedItem;
         }
 
         internal void UpdateTreeData(ref AH_DepGraphTreeviewWithModel _treeView, Dictionary<string, List<string>> referenceDict, string assetGUID, ref int referenceID)
         {
             bool hasValidReferences;
-            _treeView.treeModel.SetData(getTreeViewData(referenceDict, assetGUID, out hasValidReferences, ref referenceID));
+            _treeView.treeModel.SetData(this.getTreeViewData(referenceDict, assetGUID, out hasValidReferences, ref referenceID));
         }
 
         internal bool HasCache()
         {
-            return referencedFrom.Count > 0 && referenceTo.Count > 0;
+            return this.referencedFrom.Count > 0 && this.referenceTo.Count > 0;
         }
 
         internal bool HasHistory(int direction, out string tooltip)
         {
-            int testIndex = selectionHistoryIndex + direction;
-            bool validIndex = (testIndex >= 0 && testIndex < selectionHistory.Count);
-            tooltip = validIndex ? (AssetDatabase.LoadMainAssetAtPath(selectionHistory[testIndex])?.name) : String.Empty;
+            var testIndex  = this.selectionHistoryIndex + direction;
+            var validIndex = testIndex >= 0 && testIndex < this.selectionHistory.Count;
+            tooltip = validIndex ? AssetDatabase.LoadMainAssetAtPath(this.selectionHistory[testIndex])?.name : string.Empty;
             //Validate that history contains that index
-            return (testIndex >= 0 && testIndex < selectionHistory.Count);
+            return testIndex >= 0 && testIndex < this.selectionHistory.Count;
         }
 
-        public bool HasSelection
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(selectedAssetGUID);
-            }
-        }
+        public bool HasSelection => !string.IsNullOrEmpty(this.selectedAssetGUID);
 
         internal bool RequiresRefresh()
         {
-            return requiresRefresh;
+            return this.requiresRefresh;
         }
 
         internal AH_DepGraphTreeviewWithModel GetTreeViewTo()
         {
-            return TreeViewModelTo;
+            return this.TreeViewModelTo;
         }
 
         internal AH_DepGraphTreeviewWithModel GetTreeViewFrom()
         {
-            return TreeViewModelFrom;
+            return this.TreeViewModelFrom;
         }
 
         internal Dictionary<string, List<string>> GetReferencesTo()
         {
-            return referenceTo;
+            return this.referenceTo;
         }
 
         internal string GetSelectedName()
         {
-            return selectedAssetObjectName;
+            return this.selectedAssetObjectName;
         }
 
         internal Dictionary<string, List<string>> GetReferencesFrom()
         {
-            return referencedFrom;
+            return this.referencedFrom;
         }
 
         public IList<AH_DepGraphElement> getTreeViewData(Dictionary<string, List<string>> referenceDict, string assetGUID, out bool success, ref int referenceID)
         {
             var treeElements = new List<AH_DepGraphElement>();
 
-            int depth = -1;
+            var depth = -1;
 
             var root = new AH_DepGraphElement("Root", depth, -1, "");
             treeElements.Add(root);
 
-            Stack<string> referenceQueue = new Stack<string>(); //Since we are creating a tree we want the same asset to be referenced in any branch, but we do NOT want circular references
+            var referenceQueue = new Stack<string>(); //Since we are creating a tree we want the same asset to be referenced in any branch, but we do NOT want circular references
 
             var references = referenceDict.ContainsKey(assetGUID) ? referenceDict[assetGUID] : null;
             if (references != null)
-            {
                 foreach (var item in references)
-                {
-                    addElement(treeElements, referenceDict, item, ref depth, ref referenceID, ref referenceQueue);
-                }
-            }
+                    this.addElement(treeElements, referenceDict, item, ref depth, ref referenceID, ref referenceQueue);
 
-            success = treeElements.Count > 2;//Did we find any references (Contains more thatn 'root' and 'self')
+            success = treeElements.Count > 2; //Did we find any references (Contains more thatn 'root' and 'self')
             TreeElementUtility.ListToTree(treeElements);
 
             EditorUtility.ClearProgressBar();
@@ -271,23 +257,20 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.DependencyGraph
 
         private void addElement(List<AH_DepGraphElement> treeElements, Dictionary<string, List<string>> referenceDict, string assetGUID, ref int depth, ref int id, ref Stack<string> referenceStack)
         {
-            var path = AssetDatabase.GUIDToAssetPath(assetGUID);
+            var path      = AssetDatabase.GUIDToAssetPath(assetGUID);
             var pathSplit = path.Split('/');
 
-            if (referenceStack.Contains(path))
-                return;
+            if (referenceStack.Contains(path)) return;
 
             depth++;
 
-            treeElements.Add(new AH_DepGraphElement(/*path*/pathSplit.Last(), depth, id++, path));
+            treeElements.Add(new( /*path*/pathSplit.Last(), depth, id++, path));
             referenceStack.Push(path); //Add to stack to keep track of circular refs in branch
 
             var references = referenceDict.ContainsKey(assetGUID) ? referenceDict[assetGUID] : null;
             if (references != null)
                 foreach (var item in references)
-                {
-                    addElement(treeElements, referenceDict, item, ref depth, ref id, ref referenceStack);
-                }
+                    this.addElement(treeElements, referenceDict, item, ref depth, ref id, ref referenceStack);
             depth--;
 
             referenceStack.Pop();
@@ -295,20 +278,20 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.DependencyGraph
 
         public void SelectPreviousFromHistory()
         {
-            selectionHistoryIndex--;
-            SelectFromHistory(selectionHistoryIndex);
+            this.selectionHistoryIndex--;
+            this.SelectFromHistory(this.selectionHistoryIndex);
         }
 
         public void SelectNextFromHistory()
         {
-            selectionHistoryIndex++;
-            SelectFromHistory(selectionHistoryIndex);
+            this.selectionHistoryIndex++;
+            this.SelectFromHistory(this.selectionHistoryIndex);
         }
 
         private void SelectFromHistory(int index)
         {
-            TraversingHistory = true;
-            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(selectionHistory[selectionHistoryIndex]);
+            this.TraversingHistory = true;
+            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(this.selectionHistory[this.selectionHistoryIndex]);
         }
 
         internal void UpdateSelectedAsset(UnityEngine.Object activeObject)
@@ -317,69 +300,63 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.DependencyGraph
 
             if (invalid)
             {
-                selectedAssetGUID = selectedAssetObjectName = String.Empty;
-                selectedAssetObject = null;
+                this.selectedAssetGUID   = this.selectedAssetObjectName = string.Empty;
+                this.selectedAssetObject = null;
             }
             else
             {
-                selectedAssetGUID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(activeObject));
-                selectedAssetObjectName = activeObject.name;
-                selectedAssetObject = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(selectedAssetGUID));
+                this.selectedAssetGUID       = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(activeObject));
+                this.selectedAssetObjectName = activeObject.name;
+                this.selectedAssetObject     = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(this.selectedAssetGUID));
 
-                if (!TraversingHistory)
-                    addToHistory();
+                if (!this.TraversingHistory) this.addToHistory();
             }
 
-            TraversingHistory = false;
+            this.TraversingHistory = false;
         }
 
         private void addToHistory()
         {
             //Remove the part of the history branch that are no longer needed
-            if (selectionHistory.Count - 1 > selectionHistoryIndex)
-            {
-                selectionHistory.RemoveRange(selectionHistoryIndex, selectionHistory.Count - selectionHistoryIndex);
-            }
+            if (this.selectionHistory.Count - 1 > this.selectionHistoryIndex) this.selectionHistory.RemoveRange(this.selectionHistoryIndex, this.selectionHistory.Count - this.selectionHistoryIndex);
 
-            var path = AssetDatabase.GUIDToAssetPath(selectedAssetGUID);
+            var path = AssetDatabase.GUIDToAssetPath(this.selectedAssetGUID);
 
-            if (selectionHistory.Count == 0 || path != selectionHistory.Last())
+            if (this.selectionHistory.Count == 0 || path != this.selectionHistory.Last())
             {
-                selectionHistory.Add(AssetDatabase.GUIDToAssetPath(selectedAssetGUID));
-                selectionHistoryIndex = selectionHistory.Count - 1;
+                this.selectionHistory.Add(AssetDatabase.GUIDToAssetPath(this.selectedAssetGUID));
+                this.selectionHistoryIndex = this.selectionHistory.Count - 1;
             }
         }
 
         public void OnBeforeSerialize()
         {
-            _keysFrom.Clear();
-            _wrapperValuesFrom.Clear();
+            this._keysFrom.Clear();
+            this._wrapperValuesFrom.Clear();
 
-            foreach (var kvp in referencedFrom)
+            foreach (var kvp in this.referencedFrom)
             {
-                _keysFrom.Add(kvp.Key);
-                _wrapperValuesFrom.Add(new AH_WrapperList(kvp.Value));
+                this._keysFrom.Add(kvp.Key);
+                this._wrapperValuesFrom.Add(new(kvp.Value));
             }
 
-            _keysTo.Clear();
-            _wrapperValuesTo.Clear();
+            this._keysTo.Clear();
+            this._wrapperValuesTo.Clear();
 
-            foreach (var kvp in referenceTo)
+            foreach (var kvp in this.referenceTo)
             {
-                _keysTo.Add(kvp.Key);
-                _wrapperValuesTo.Add(new AH_WrapperList(kvp.Value));
+                this._keysTo.Add(kvp.Key);
+                this._wrapperValuesTo.Add(new(kvp.Value));
             }
         }
 
         public void OnAfterDeserialize()
         {
-            referencedFrom = new Dictionary<string, List<string>>();
-            for (int i = 0; i != Math.Min(_keysFrom.Count, _wrapperValuesFrom.Count); i++)
-                referencedFrom.Add(_keysFrom[i], _wrapperValuesFrom[i].list);
+            this.referencedFrom = new();
+            for (var i = 0; i != Math.Min(this._keysFrom.Count, this._wrapperValuesFrom.Count); i++) this.referencedFrom.Add(this._keysFrom[i], this._wrapperValuesFrom[i].list);
 
-            referenceTo = new Dictionary<string, List<string>>();
-            for (int i = 0; i != Math.Min(_keysTo.Count, _wrapperValuesTo.Count); i++)
-                referenceTo.Add(_keysTo[i], _wrapperValuesTo[i].list);
+            this.referenceTo = new();
+            for (var i = 0; i != Math.Min(this._keysTo.Count, this._wrapperValuesTo.Count); i++) this.referenceTo.Add(this._keysTo[i], this._wrapperValuesTo[i].list);
         }
     }
 }

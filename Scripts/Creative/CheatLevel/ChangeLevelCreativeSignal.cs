@@ -4,6 +4,9 @@
     {
         public int Level { get; }
 
-        public ChangeLevelCreativeSignal(int level) { this.Level = level; }
+        public ChangeLevelCreativeSignal(int level)
+        {
+            this.Level = level;
+        }
     }
 }

@@ -14,13 +14,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
         private const string StoreRatingLocalDataKey = "LD_StoreRating";
 
         [Preserve]
-        public UITemplateStoreRatingHandler(IStoreRatingService storeRatingService) { this.storeRatingService = storeRatingService; }
+        public UITemplateStoreRatingHandler(IStoreRatingService storeRatingService)
+        {
+            this.storeRatingService = storeRatingService;
+        }
 
         public void LaunchStoreRating()
         {
             this.storeRatingService.LaunchStoreRating();
             PlayerPrefs.SetString(StoreRatingLocalDataKey, "TRUE");
         }
-        public bool IsRated  => PlayerPrefs.HasKey(StoreRatingLocalDataKey);
+
+        public bool IsRated => PlayerPrefs.HasKey(StoreRatingLocalDataKey);
     }
 }

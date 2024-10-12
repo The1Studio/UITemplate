@@ -62,7 +62,10 @@
             this.badgeToConditionFuncTemp.Add(badgeId, condition);
         }
 
-        private void RegisterBadgeAdapterCondition(string badgeId, Func<bool> condition) { this.badgeToAdapterBadgeItem.TryAdd(badgeId, condition); }
+        private void RegisterBadgeAdapterCondition(string badgeId, Func<bool> condition)
+        {
+            this.badgeToAdapterBadgeItem.TryAdd(badgeId, condition);
+        }
 
         private void RegisParentScreen(UITemplateBadgeNotifyView badgeNotifyView, Type parentScreenType)
         {
@@ -81,10 +84,7 @@
 
         private bool GetBadgeStatusFromBadgeView(UITemplateBadgeNotifyView badgeNotifyView)
         {
-            if (this.badgeToConditionFunc.TryGetValue(badgeNotifyView, out var conditionFunc))
-            {
-                return conditionFunc.Invoke();
-            }
+            if (this.badgeToConditionFunc.TryGetValue(badgeNotifyView, out var conditionFunc)) return conditionFunc.Invoke();
 
             return this.screenTypeToBadges.TryGetValue(this.badgeToNextScreenType[badgeNotifyView], out var badgeViews)
                 ? badgeViews.Any(this.GetBadgeStatusFromBadgeView)
@@ -93,10 +93,7 @@
 
         private bool GetBadgeStatusFromBadgeId(string badgeId)
         {
-            if (this.badgeToConditionFuncTemp.TryGetValue(badgeId, out var conditionFuncTemp))
-            {
-                return conditionFuncTemp.Invoke();
-            }
+            if (this.badgeToConditionFuncTemp.TryGetValue(badgeId, out var conditionFuncTemp)) return conditionFuncTemp.Invoke();
 
             return this.badgeToAdapterBadgeItem[badgeId].Invoke();
         }
@@ -120,13 +117,25 @@
             this.RegisterBadgeCondition(badgeView, parentScreenPresenter, condition, badgeId);
         }
 
-        public void RegisterBadge(Type parentScreenType, Func<bool> condition, string badgeId = null) { this.RegisterBadgeConditionTemp(parentScreenType, condition, badgeId); }
+        public void RegisterBadge(Type parentScreenType, Func<bool> condition, string badgeId = null)
+        {
+            this.RegisterBadgeConditionTemp(parentScreenType, condition, badgeId);
+        }
 
-        public void RegisterBadgeAdapter(string badgeId, Func<bool> condition) { this.RegisterBadgeAdapterCondition(badgeId, condition); }
+        public void RegisterBadgeAdapter(string badgeId, Func<bool> condition)
+        {
+            this.RegisterBadgeAdapterCondition(badgeId, condition);
+        }
 
-        private void RefreshBadgeStatus(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatusFromBadgeView(badgeView)); }
+        private void RefreshBadgeStatus(UITemplateBadgeNotifyView badgeView)
+        {
+            badgeView.badge.SetActive(this.GetBadgeStatusFromBadgeView(badgeView));
+        }
 
-        public void RefreshBadgeStatusForAdapter(UITemplateBadgeNotifyView badgeView) { badgeView.badge.SetActive(this.GetBadgeStatusFromBadgeId(badgeView.badgeId)); }
+        public void RefreshBadgeStatusForAdapter(UITemplateBadgeNotifyView badgeView)
+        {
+            badgeView.badge.SetActive(this.GetBadgeStatusFromBadgeId(badgeView.badgeId));
+        }
 
         #endregion
 
@@ -143,7 +152,10 @@
             badgeNotifyButtonViews.ForEach(this.RefreshBadgeStatus);
         }
 
-        private void CheckAllBadgeNotifyStatusWhenScreenStatusChange() => this.CheckAllBadgeNotifyStatus(false);
+        private void CheckAllBadgeNotifyStatusWhenScreenStatusChange()
+        {
+            this.CheckAllBadgeNotifyStatus(false);
+        }
 
         public void Initialize()
         {

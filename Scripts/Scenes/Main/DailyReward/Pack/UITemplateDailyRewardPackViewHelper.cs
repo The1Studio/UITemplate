@@ -34,10 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
             view.ObjClaimed.SetActive(model.RewardStatus == RewardStatus.Claimed);
             view.OnClickClaimButton = () => model.OnClick?.Invoke(presenter);
 
-            if (view.ObjClaimByAds != null)
-            {
-                view.ObjClaimByAds.SetActive(model.RewardStatus == RewardStatus.Locked && model.IsGetWithAds);
-            }
+            if (view.ObjClaimByAds != null) view.ObjClaimByAds.SetActive(model.RewardStatus == RewardStatus.Locked && model.IsGetWithAds);
 
             //Only play if the items were not claimed
             if (!view.ObjClaimed.activeSelf)
@@ -49,14 +46,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
                 await UniTask.Delay(TimeSpan.FromSeconds(duration));
             }
 
-            if (view.PackImg != null)
-            {
-                view.PackImg.sprite = this.GameAssets.ForceLoadAsset<Sprite>(model.DailyRewardRecord.PackImage);
-            }
+            if (view.PackImg != null) view.PackImg.sprite = this.GameAssets.ForceLoadAsset<Sprite>(model.DailyRewardRecord.PackImage);
         }
 
-        public virtual void DisposeItem(UITemplateDailyRewardPackPresenter presenter) { }
+        public virtual void DisposeItem(UITemplateDailyRewardPackPresenter presenter)
+        {
+        }
 
-        public virtual void OnClaimReward(UITemplateDailyRewardPackPresenter presenter) { }
+        public virtual void OnClaimReward(UITemplateDailyRewardPackPresenter presenter)
+        {
+        }
     }
 }

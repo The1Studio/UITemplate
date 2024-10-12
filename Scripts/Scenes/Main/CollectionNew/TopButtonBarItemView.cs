@@ -51,22 +51,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         public override async void BindData(TopButtonItemModel param)
         {
-            if (this.View.txtTittle != null)
-            {
-                this.View.txtTittle.text = param.Title;
-            }
+            if (this.View.txtTittle != null) this.View.txtTittle.text = param.Title;
 
-            if (this.View.imgIcon != null)
-            {
-                this.View.imgIcon.sprite = param.Icon;
-            }
+            if (this.View.imgIcon != null) this.View.imgIcon.sprite = param.Icon;
 
             this.View.btnChoose.gameObject.SetActive(param.Index == param.SelectedIndex);
             this.View.btnNormal.gameObject.SetActive(param.Index != param.SelectedIndex);
 
-            this.View.OnButtonClick = () => { param.OnSelected?.Invoke(param); };
+            this.View.OnButtonClick = () =>
+            {
+                param.OnSelected?.Invoke(param);
+            };
         }
 
-        public override void Dispose() { base.Dispose(); }
+        public override void Dispose()
+        {
+            base.Dispose();
+        }
     }
 }

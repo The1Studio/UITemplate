@@ -20,7 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public DateTime FirstInstallDate => this.gameSessionData.FirstInstallDate;
-        public int OpenTime => this.gameSessionData.OpenTime;
+        public int      OpenTime         => this.gameSessionData.OpenTime;
 
         public void Initialize()
         {

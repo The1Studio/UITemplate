@@ -6,7 +6,7 @@ using System.Linq;
 
 //If this fails, its because you have an assembly definition file in your project that is not set to allow unit tests
 //Solution, either allow assembly definition to run test, of comment out the top line
-#if runtest 
+#if runtest
 using NUnit.Framework;
 #endif
 
@@ -22,90 +22,77 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
 
     public class TreeModel<T> where T : TreeElement
     {
-        IList<T> m_Data;
-        T m_Root;
-        int m_MaxID;
+        private IList<T> m_Data;
+        private T        m_Root;
+        private int      m_MaxID;
 
-        public T root { get { return m_Root; } set { m_Root = value; } }
+        public T            root { get => this.m_Root; set => this.m_Root = value; }
         public event Action modelChanged;
-        public int numberOfDataElements
-        {
-            get { return m_Data.Count; }
-        }
+        public int          numberOfDataElements => this.m_Data.Count;
 
         public TreeModel(IList<T> data)
         {
-            SetData(data);
+            this.SetData(data);
         }
 
         public T Find(int id)
         {
-            return m_Data.FirstOrDefault(element => element.id == id);
+            return this.m_Data.FirstOrDefault(element => element.id == id);
         }
 
         public void SetData(IList<T> data)
         {
-            Init(data);
+            this.Init(data);
         }
 
-        void Init(IList<T> data)
+        private void Init(IList<T> data)
         {
-            if (data == null)
-                throw new ArgumentNullException("data", "Input data is null. Ensure input is a non-null list.");
+            if (data == null) throw new ArgumentNullException("data", "Input data is null. Ensure input is a non-null list.");
 
-            m_Data = data;
-            if (m_Data.Count > 0)
-                m_Root = TreeElementUtility.ListToTree(data);
+            this.m_Data = data;
+            if (this.m_Data.Count > 0) this.m_Root = TreeElementUtility.ListToTree(data);
 
-            m_MaxID = m_Data.Max(e => e.id);
+            this.m_MaxID = this.m_Data.Max(e => e.id);
         }
 
         public int GenerateUniqueID()
         {
-            return ++m_MaxID;
+            return ++this.m_MaxID;
         }
 
         public IList<int> GetAncestors(int id)
         {
-            var parents = new List<int>();
-            TreeElement T = Find(id);
+            var         parents = new List<int>();
+            TreeElement T       = this.Find(id);
             if (T != null)
-            {
                 while (T.parent != null)
                 {
                     parents.Add(T.parent.id);
                     T = T.parent;
                 }
-            }
             return parents;
         }
 
         public IList<int> GetDescendantsThatHaveChildren(int id)
         {
-            T searchFromThis = Find(id);
-            if (searchFromThis != null)
-            {
-                return GetParentsBelowStackBased(searchFromThis);
-            }
+            var searchFromThis = this.Find(id);
+            if (searchFromThis != null) return this.GetParentsBelowStackBased(searchFromThis);
             return new List<int>();
         }
 
-        IList<int> GetParentsBelowStackBased(TreeElement searchFromThis)
+        private IList<int> GetParentsBelowStackBased(TreeElement searchFromThis)
         {
-            Stack<TreeElement> stack = new Stack<TreeElement>();
+            var stack = new Stack<TreeElement>();
             stack.Push(searchFromThis);
 
             var parentsBelow = new List<int>();
             while (stack.Count > 0)
             {
-                TreeElement current = stack.Pop();
+                var current = stack.Pop();
                 if (current.hasChildren)
                 {
                     parentsBelow.Add(current.id);
-                    foreach (var T in current.children)
-                    {
-                        stack.Push(T);
-                    }
+                    foreach (var T in current.children) stack.Push(T);
                 }
             }
 
@@ -114,14 +101,14 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
 
         public void RemoveElements(IList<int> elementIDs)
         {
-            IList<T> elements = m_Data.Where(element => elementIDs.Contains(element.id)).ToArray();
-            RemoveElements(elements);
+            IList<T> elements = this.m_Data.Where(element => elementIDs.Contains(element.id)).ToArray();
+            this.RemoveElements(elements);
         }
 
         public void RemoveElements(IList<T> elements)
         {
             foreach (var element in elements)
-                if (element == m_Root)
+                if (element == this.m_Root)
                     throw new ArgumentException("It is not allowed to remove the root element");
 
             var commonAncestors = TreeElementUtility.FindCommonAncestorsWithinList(elements);
@@ -132,112 +119,96 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
                 element.parent = null;
             }
 
-            TreeElementUtility.TreeToList(m_Root, m_Data);
+            TreeElementUtility.TreeToList(this.m_Root, this.m_Data);
 
-            Changed();
+            this.Changed();
         }
 
         public void AddElements(IList<T> elements, TreeElement parent, int insertPosition)
         {
-            if (elements == null)
-                throw new ArgumentNullException("elements", "elements is null");
-            if (elements.Count == 0)
-                throw new ArgumentNullException("elements", "elements Count is 0: nothing to add");
-            if (parent == null)
-                throw new ArgumentNullException("parent", "parent is null");
+            if (elements == null) throw new ArgumentNullException("elements", "elements is null");
+            if (elements.Count == 0) throw new ArgumentNullException("elements", "elements Count is 0: nothing to add");
+            if (parent == null) throw new ArgumentNullException("parent", "parent is null");
 
-            if (parent.children == null)
-                parent.children = new List<TreeElement>();
+            if (parent.children == null) parent.children = new();
 
             parent.children.InsertRange(insertPosition, elements.Cast<TreeElement>());
             foreach (var element in elements)
             {
                 element.parent = parent;
-                element.depth = parent.depth + 1;
+                element.depth  = parent.depth + 1;
                 TreeElementUtility.UpdateDepthValues(element);
             }
 
-            TreeElementUtility.TreeToList(m_Root, m_Data);
+            TreeElementUtility.TreeToList(this.m_Root, this.m_Data);
 
-            Changed();
+            this.Changed();
         }
 
         public void AddRoot(T root)
         {
-            if (root == null)
-                throw new ArgumentNullException("root", "root is null");
+            if (root == null) throw new ArgumentNullException("root", "root is null");
 
-            if (m_Data == null)
-                throw new InvalidOperationException("Internal Error: data list is null");
+            if (this.m_Data == null) throw new InvalidOperationException("Internal Error: data list is null");
 
-            if (m_Data.Count != 0)
-                throw new InvalidOperationException("AddRoot is only allowed on empty data list");
+            if (this.m_Data.Count != 0) throw new InvalidOperationException("AddRoot is only allowed on empty data list");
 
-            root.id = GenerateUniqueID();
+            root.id    = this.GenerateUniqueID();
             root.depth = -1;
-            m_Data.Add(root);
+            this.m_Data.Add(root);
         }
 
         public void AddElement(T element, TreeElement parent, int insertPosition)
         {
-            if (element == null)
-                throw new ArgumentNullException("element", "element is null");
-            if (parent == null)
-                throw new ArgumentNullException("parent", "parent is null");
+            if (element == null) throw new ArgumentNullException("element", "element is null");
+            if (parent == null) throw new ArgumentNullException("parent", "parent is null");
 
-            if (parent.children == null)
-                parent.children = new List<TreeElement>();
+            if (parent.children == null) parent.children = new();
 
             parent.children.Insert(insertPosition, element);
             element.parent = parent;
 
             TreeElementUtility.UpdateDepthValues(parent);
-            TreeElementUtility.TreeToList(m_Root, m_Data);
+            TreeElementUtility.TreeToList(this.m_Root, this.m_Data);
 
-            Changed();
+            this.Changed();
         }
 
         public void MoveElements(TreeElement parentElement, int insertionIndex, List<TreeElement> elements)
         {
-            if (insertionIndex < 0)
-                throw new ArgumentException("Invalid input: insertionIndex is -1, client needs to decide what index elements should be reparented at");
+            if (insertionIndex < 0) throw new ArgumentException("Invalid input: insertionIndex is -1, client needs to decide what index elements should be reparented at");
 
             // Invalid reparenting input
-            if (parentElement == null)
-                return;
+            if (parentElement == null) return;
 
             // We are moving items so we adjust the insertion index to accomodate that any items above the insertion index is removed before inserting
-            if (insertionIndex > 0)
-                insertionIndex -= parentElement.children.GetRange(0, insertionIndex).Count(elements.Contains);
+            if (insertionIndex > 0) insertionIndex -= parentElement.children.GetRange(0, insertionIndex).Count(elements.Contains);
 
             // Remove draggedItems from their parents
             foreach (var draggedItem in elements)
             {
-                draggedItem.parent.children.Remove(draggedItem);    // remove from old parent
-                draggedItem.parent = parentElement;                 // set new parent
+                draggedItem.parent.children.Remove(draggedItem); // remove from old parent
+                draggedItem.parent = parentElement;              // set new parent
             }
 
-            if (parentElement.children == null)
-                parentElement.children = new List<TreeElement>();
+            if (parentElement.children == null) parentElement.children = new();
 
             // Insert dragged items under new parent
             parentElement.children.InsertRange(insertionIndex, elements);
 
-            TreeElementUtility.UpdateDepthValues(root);
-            TreeElementUtility.TreeToList(m_Root, m_Data);
+            TreeElementUtility.UpdateDepthValues(this.root);
+            TreeElementUtility.TreeToList(this.m_Root, this.m_Data);
 
-            Changed();
+            this.Changed();
         }
 
-        void Changed()
+        private void Changed()
         {
-            if (modelChanged != null)
-                modelChanged();
+            if (this.modelChanged != null) this.modelChanged();
         }
     }
 
-
-#if runtest 
+    #if runtest
     #region Tests
     class TreeModelTests
     {
@@ -291,5 +262,5 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
     }
 
     #endregion
-#endif
+    #endif
 }

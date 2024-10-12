@@ -9,21 +9,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using UnityEngine.Scripting;
 
     [Preserve]
-    public class UITemplateInventoryData : ILocalData,IUITemplateLocalData
+    public class UITemplateInventoryData : ILocalData, IUITemplateLocalData
     {
-        [OdinSerialize]
-        public readonly Dictionary<string, string> CategoryToChosenItem = new();
+        [OdinSerialize] public readonly Dictionary<string, string> CategoryToChosenItem = new();
 
-        [OdinSerialize]
-        public Dictionary<string, UITemplateItemData> IDToItemData { get; private set; } = new();
+        [OdinSerialize] public Dictionary<string, UITemplateItemData> IDToItemData { get; private set; } = new();
 
-        [OdinSerialize]
-        public Dictionary<string, UITemplateCurrencyData> IDToCurrencyData { get; private set; } = new();
+        [OdinSerialize] public Dictionary<string, UITemplateCurrencyData> IDToCurrencyData { get; private set; } = new();
 
         public Type ControllerType => typeof(UITemplateInventoryDataController);
+
         public void Init()
         {
         }
-
     }
 }

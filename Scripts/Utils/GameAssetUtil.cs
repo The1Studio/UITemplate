@@ -14,10 +14,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
         #endregion
 
         [Preserve]
-        public GameAssetUtil(IGameAssets gameAssets) { this.gameAssets = gameAssets; }
+        public GameAssetUtil(IGameAssets gameAssets)
+        {
+            this.gameAssets = gameAssets;
+        }
 
-        public string GetItemIconName(string itemId) => $"{itemId}Icon";
+        public string GetItemIconName(string itemId)
+        {
+            return $"{itemId}Icon";
+        }
 
-        public async UniTask<Sprite> GetItemIconSprite(string itemId) => await this.gameAssets.LoadAssetAsync<Sprite>(this.GetItemIconName(itemId));
+        public async UniTask<Sprite> GetItemIconSprite(string itemId)
+        {
+            return await this.gameAssets.LoadAssetAsync<Sprite>(this.GetItemIconName(itemId));
+        }
     }
 }

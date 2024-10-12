@@ -19,17 +19,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
             this.signalBus   = signalBus;
         }
 
-        public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+        }
 
         private void OnScreenShow(ScreenShowSignal obj)
         {
             foreach (var s in this.screenShows)
-            {
                 if (obj.ScreenPresenter.GetType().Name.Equals(s.ScreenPresenter.Name))
-                {
                     s.OnProcessScreenShow();
-                }
-            }
         }
     }
 }

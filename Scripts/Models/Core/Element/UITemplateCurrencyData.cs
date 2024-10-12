@@ -4,8 +4,7 @@
 
     public class UITemplateCurrencyData
     {
-
-                        public string Id          { get; private set; }
+        public                 string Id          { get; private set; }
         [OdinSerialize] public int    Value       { get; internal set; }
         [OdinSerialize] public int    TotalEarned { get; internal set; }
         [OdinSerialize] public int    MaxValue    { get; set; }
@@ -16,7 +15,6 @@
             this.Value       = value;
             this.TotalEarned = totalEarned;
             this.MaxValue    = maxValue;
-
         }
     }
 }

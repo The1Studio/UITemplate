@@ -27,7 +27,10 @@
         private bool isInternetAvailable = true;
 
         [Preserve]
-        public InternetService(ILogService logService) { this.logService = logService; }
+        public InternetService(ILogService logService)
+        {
+            this.logService = logService;
+        }
 
         public async UniTask<bool> IsDifferentDay(DateTime timeCompare)
         {
@@ -50,7 +53,10 @@
             return day >= 1 ? (int)day : 0;
         }
 
-        public void Initialize() { this.CheckInternetInterval().Forget(); }
+        public void Initialize()
+        {
+            this.CheckInternetInterval().Forget();
+        }
 
         private async UniTaskVoid CheckInternetInterval()
         {
@@ -65,10 +71,7 @@
             var request = UnityWebRequest.Get(url);
             await request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.ConnectionError)
-            {
-                this.logService.Error("No internet!");
-            }
+            if (request.result == UnityWebRequest.Result.ConnectionError) this.logService.Error("No internet!");
 
             return JsonConvert.DeserializeObject<WorldTimeAPIResponse>(request.downloadHandler.text);
         }
@@ -103,7 +106,10 @@
 
         public bool IsInternetAvailable => this.isInternetAvailable;
 
-        private void CheckInternet() { this.isInternetAvailable = Application.internetReachability != NetworkReachability.NotReachable; }
+        private void CheckInternet()
+        {
+            this.isInternetAvailable = Application.internetReachability != NetworkReachability.NotReachable;
+        }
 
         public class WorldTimeAPIResponse
         {
@@ -112,20 +118,14 @@
 
             public DateTime? GetDateTime()
             {
-                if (DateTime.TryParse(this.Datetime, out var time))
-                {
-                    return time;
-                }
+                if (DateTime.TryParse(this.Datetime, out var time)) return time;
 
                 return null;
             }
 
             public DateTime? GetUTCDateTime()
             {
-                if (DateTime.TryParse(this.UtcDatetime, out var time))
-                {
-                    return time;
-                }
+                if (DateTime.TryParse(this.UtcDatetime, out var time)) return time;
 
                 return null;
             }

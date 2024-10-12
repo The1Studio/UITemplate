@@ -14,12 +14,11 @@ namespace TheOne.Tool.Optimization
                 Debug.LogWarning("Skipping migration due to compilation errors or isCompiling.");
                 return;
             }
-            
+
             if (!SessionState.GetBool("AutoOptimizeRan", false))
             {
-                SessionState.SetBool("AutoOptimizeRan", true);            
+                SessionState.SetBool("AutoOptimizeRan", true);
                 BuildInScreenFinderOdin.AutoOptimize();
-
             }
         }
     }

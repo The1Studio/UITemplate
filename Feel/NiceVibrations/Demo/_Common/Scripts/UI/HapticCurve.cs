@@ -11,22 +11,18 @@ namespace Lofelt.NiceVibrations
 {
     public class HapticCurve : MonoBehaviour
     {
-        [Range(0f, 1f)]
-        public float Amplitude = 1f;
-        [Range(0f, 1f)]
-        public float Frequency = 0f;
-        public int PointsCount = 50;
-        public float AmplitudeFactor = 3;
-        [Range(1f, 4f)]
-        private float Period = 1;
-        public RectTransform StartPoint;
-        public RectTransform EndPoint;
+        [Range(0f, 1f)] public  float         Amplitude       = 1f;
+        [Range(0f, 1f)] public  float         Frequency       = 0f;
+        public                  int           PointsCount     = 50;
+        public                  float         AmplitudeFactor = 3;
+        [Range(1f, 4f)] private float         Period          = 1;
+        public                  RectTransform StartPoint;
+        public                  RectTransform EndPoint;
 
-        [Header("Movement")]
-        public bool Move = false;
-        public float MovementSpeed = 1f;
+        [Header("Movement")] public bool  Move          = false;
+        public                      float MovementSpeed = 1f;
 
-        protected LineRenderer _targetLineRenderer;
+        protected LineRenderer  _targetLineRenderer;
         protected List<Vector3> Points;
 
         protected Canvas _canvas;
@@ -38,58 +34,55 @@ namespace Lofelt.NiceVibrations
 
         protected virtual void Awake()
         {
-            Initialization();
+            this.Initialization();
         }
 
         protected virtual void Initialization()
         {
-            Points = new List<Vector3>();
-            _canvas = this.gameObject.GetComponentInParent<Canvas>();
-            _targetLineRenderer = this.gameObject.GetComponent<LineRenderer>();
-            _camera = _canvas.worldCamera;
-            DrawCurve();
+            this.Points              = new();
+            this._canvas             = this.gameObject.GetComponentInParent<Canvas>();
+            this._targetLineRenderer = this.gameObject.GetComponent<LineRenderer>();
+            this._camera             = this._canvas.worldCamera;
+            this.DrawCurve();
         }
 
         protected virtual void DrawCurve()
         {
-            _startPosition = StartPoint.transform.position;
-            _startPosition.z -= 0.1f;
-            _endPosition = EndPoint.transform.position;
-            _endPosition.z -= 0.1f;
+            this._startPosition   =  this.StartPoint.transform.position;
+            this._startPosition.z -= 0.1f;
+            this._endPosition     =  this.EndPoint.transform.position;
+            this._endPosition.z   -= 0.1f;
 
-            Points.Clear();
+            this.Points.Clear();
 
-            for (int i = 0; i < PointsCount; i++)
+            for (var i = 0; i < this.PointsCount; i++)
             {
-                float t = NiceVibrationsDemoHelpers.Remap(i, 0, PointsCount, 0f, 1f);
-                float sinValue = MMSignal.GetValue(t, MMSignal.SignalType.Sine, 1f, AmplitudeFactor, Period, 0f, false);
+                var t        = NiceVibrationsDemoHelpers.Remap(i, 0, this.PointsCount, 0f, 1f);
+                var sinValue = MMSignal.GetValue(t, MMSignal.SignalType.Sine, 1f, this.AmplitudeFactor, this.Period, 0f, false);
 
-                if (Move)
-                {
-                    sinValue = MMSignal.GetValue(t + Time.time * MovementSpeed, MMSignal.SignalType.Sine, 1f, AmplitudeFactor, Period, 0f, false);
-                }
+                if (this.Move) sinValue = MMSignal.GetValue(t + Time.time * this.MovementSpeed, MMSignal.SignalType.Sine, 1f, this.AmplitudeFactor, this.Period, 0f, false);
 
-                _workPoint.x = Mathf.Lerp(_startPosition.x, _endPosition.x, t);
-                _workPoint.y = sinValue * Amplitude + _startPosition.y;
-                _workPoint.z = _startPosition.z;
-                Points.Add(_workPoint);
+                this._workPoint.x = Mathf.Lerp(this._startPosition.x, this._endPosition.x, t);
+                this._workPoint.y = sinValue * this.Amplitude + this._startPosition.y;
+                this._workPoint.z = this._startPosition.z;
+                this.Points.Add(this._workPoint);
             }
 
-            _targetLineRenderer.positionCount = PointsCount;
-            _targetLineRenderer.SetPositions(Points.ToArray());
+            this._targetLineRenderer.positionCount = this.PointsCount;
+            this._targetLineRenderer.SetPositions(this.Points.ToArray());
         }
 
         protected virtual void Update()
         {
-            UpdateCurve(Amplitude, Frequency);
+            this.UpdateCurve(this.Amplitude, this.Frequency);
         }
 
         public virtual void UpdateCurve(float amplitude, float frequency)
         {
-            Amplitude = amplitude;
-            Frequency = frequency;
-            Period = NiceVibrationsDemoHelpers.Remap(frequency, 0f, 1f, 1f, 4f);
-            DrawCurve();
+            this.Amplitude = amplitude;
+            this.Frequency = frequency;
+            this.Period    = NiceVibrationsDemoHelpers.Remap(frequency, 0f, 1f, 1f, 4f);
+            this.DrawCurve();
         }
     }
 }

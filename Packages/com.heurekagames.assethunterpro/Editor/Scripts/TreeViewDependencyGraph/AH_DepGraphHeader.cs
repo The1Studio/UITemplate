@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -8,36 +7,34 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.DependencyGraph
 {
     internal class AH_DepGraphHeader : MultiColumnHeader
     {
-        Mode m_Mode;
+        private Mode m_Mode;
+
         public enum Mode
         {
             Treeview,
-            SortedList
+            SortedList,
         }
 
         public AH_DepGraphHeader(MultiColumnHeaderState state) : base(state)
         {
-            mode = Mode.Treeview;
+            this.mode = Mode.Treeview;
         }
 
         public Mode mode
         {
-            get
-            {
-                return m_Mode;
-            }
+            get => this.m_Mode;
             set
             {
-                m_Mode = value;
-                switch (m_Mode)
+                this.m_Mode = value;
+                switch (this.m_Mode)
                 {
                     case Mode.Treeview:
-                        canSort = true;
-                        height = DefaultGUI.minimumHeight;
+                        this.canSort = true;
+                        this.height  = DefaultGUI.minimumHeight;
                         break;
                     case Mode.SortedList:
-                        canSort = true;
-                        height = DefaultGUI.defaultHeight;
+                        this.canSort = true;
+                        this.height  = DefaultGUI.defaultHeight;
                         break;
                 }
             }
@@ -45,10 +42,7 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.DependencyGraph
 
         protected override void ColumnHeaderClicked(MultiColumnHeaderState.Column column, int columnIndex)
         {
-            if (mode == Mode.Treeview)
-            {
-                mode = Mode.SortedList;
-            }
+            if (this.mode == Mode.Treeview) this.mode = Mode.SortedList;
 
             base.ColumnHeaderClicked(column, columnIndex);
         }

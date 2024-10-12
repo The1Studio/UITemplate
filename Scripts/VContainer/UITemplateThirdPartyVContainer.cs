@@ -19,6 +19,7 @@ namespace TheOneStudio.UITemplate
     #if APPSFLYER
     using ServiceImplementation.AppsflyerAnalyticTracker;
     #endif
+
     #if BYTEBREW && !UNITY_EDITOR
     using ServiceImplementation.ByteBrewAnalyticTracker;
     #endif

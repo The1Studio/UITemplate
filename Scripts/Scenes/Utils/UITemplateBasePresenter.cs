@@ -33,12 +33,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
         public static void Init()
         {
-            Instance ??= new UITemplateBaseScreenUtils();
+            Instance ??= new();
         }
 
         public static void ReInit()
         {
-            Instance = new UITemplateBaseScreenUtils();
+            Instance = new();
         }
 
         private void OnClickButton(string screenName, Button button)
@@ -169,7 +169,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
                 var baseClassFieldInfos = GetAllFieldInfosIncludeBaseClass(type.BaseType);
                 var thisClassFieldInfos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                var fieldInfosSet       = new HashSet<FieldInfo>(baseClassFieldInfos, new FieldInfoComparer());
+                var fieldInfosSet = new HashSet<FieldInfo>(baseClassFieldInfos, new FieldInfoComparer());
                 fieldInfosSet.UnionWith(thisClassFieldInfos);
                 return fieldInfosSet;
             }
@@ -180,10 +180,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         {
             public bool Equals(FieldInfo x, FieldInfo y)
             {
-                if (x is null || y is null)
-                {
-                    return false;
-                }
+                if (x is null || y is null) return false;
 
                 return x.Name == y.Name && x.DeclaringType == y.DeclaringType;
             }

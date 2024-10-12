@@ -54,13 +54,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             if (this.IsAbleToCheck)
             {
                 if (this.CheckInternet())
-                {
                     this.continuousNoInternetChecked = 0;
-                }
                 else
-                {
                     this.continuousNoInternetChecked++;
-                }
 
                 if (this.continuousNoInternetChecked >= this.gameFeaturesSetting.NoInternetConfig.ContinuesFailToShow)
                 {
@@ -73,20 +69,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.CheckInternetInterval().Forget();
         }
 
-        private bool CheckInternet() { return Application.internetReachability != NetworkReachability.NotReachable; }
+        private bool CheckInternet()
+        {
+            return Application.internetReachability != NetworkReachability.NotReachable;
+        }
 
         #endregion
 
         private void OnScreenShow(ScreenShowSignal obj)
         {
             if (this.gameFeaturesSetting.NoInternetConfig.isCustomScreenTrigger)
-            {
                 this.isScreenValid = this.gameFeaturesSetting.NoInternetConfig.screenTriggerIds.Contains(obj.ScreenPresenter.GetType().Name);
-            }
             else
-            {
                 this.isScreenValid = obj.ScreenPresenter.GetType().Name != "UITemplateConnectErrorPresenter";
-            }
         }
     }
 }

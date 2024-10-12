@@ -70,10 +70,8 @@
         private void OnClickStar(int count)
         {
             this.lastStarCount = count;
-            for (var i = 0; i < count; i++)
-                this.StarAnimation(i);
-            for (var i = count; i < this.View.StarButtons.Count; i++)
-                this.StarAnimation(i, false);
+            for (var i = 0; i < count; i++) this.StarAnimation(i);
+            for (var i = count; i < this.View.StarButtons.Count; i++) this.StarAnimation(i, false);
         }
 
         private void YesButtonAnimation()
@@ -94,14 +92,15 @@
             star.transform.DOScale(targetScale, duration).SetLoops(1, LoopType.Yoyo).SetEase(easeType);
         }
 
-        protected virtual void OnClickLater() { this.CloseView(); }
+        protected virtual void OnClickLater()
+        {
+            this.CloseView();
+        }
 
         protected virtual void OnClickYes()
         {
             if (this.lastStarCount == this.View.StarButtons.Count) // max rating
-            {
                 this.storeRatingHandler.LaunchStoreRating();
-            }
             this.CloseView();
         }
 

@@ -9,10 +9,11 @@ namespace Lofelt.NiceVibrations
     /// <summary>
     /// Add this component to any object and it'll set the target frame rate and vsync count. Note that vsync count must be 0 for the target FPS to work.
     /// </summary>
-	public class MMFPSUnlock : MonoBehaviour
+    public class MMFPSUnlock : MonoBehaviour
     {
         /// the target FPS you want the game to run at
         public int TargetFPS;
+
         [Range(0, 2)]
         /// whether vsync should be enabled or not (on a 60Hz screen, 1 : 60fps, 2 : 30fps, 0 : don't wait for vsync)
         public int VSyncCount = 0;
@@ -20,9 +21,9 @@ namespace Lofelt.NiceVibrations
         /// <summary>
         /// On start we change our target fps and vsync settings
         /// </summary>
-		protected virtual void Start()
+        protected virtual void Start()
         {
-            UpdateSettings();
+            this.UpdateSettings();
         }
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void OnValidate()
         {
-            UpdateSettings();
+            this.UpdateSettings();
         }
 
         /// <summary>
@@ -38,8 +39,8 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void UpdateSettings()
         {
-            QualitySettings.vSyncCount = VSyncCount;
-            Application.targetFrameRate = TargetFPS;
+            QualitySettings.vSyncCount  = this.VSyncCount;
+            Application.targetFrameRate = this.TargetFPS;
         }
     }
 }

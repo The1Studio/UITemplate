@@ -14,18 +14,17 @@ namespace HeurekaGames.Upgrade
     public class Upgrader
     {
         private static readonly string[] oldGuids = new string[2]
-            {
-                "dd1f2d14319abfa48923399a4d37e604", //Heureka old top level folder
-                "6da6390a6dfe6354c959ff13c8212b0f" //AFP Top folder
-            };
+        {
+            "dd1f2d14319abfa48923399a4d37e604", //Heureka old top level folder
+            "6da6390a6dfe6354c959ff13c8212b0f", //AFP Top folder
+        };
 
         private static readonly string[] heurekaPackages = new string[3]
-           {
-                "com.heurekagames.assethunterpro",
-                "com.heurekagames.assetfinderpro",
-                "com.heurekagames.smartbuilder"
-           };
-
+        {
+            "com.heurekagames.assethunterpro",
+            "com.heurekagames.assetfinderpro",
+            "com.heurekagames.smartbuilder",
+        };
 
         static Upgrader()
         {
@@ -40,28 +39,24 @@ namespace HeurekaGames.Upgrade
 
         private static void TryUpgrade(bool force)
         {
-            List<string> markedForDelete = new List<string>();
+            var markedForDelete = new List<string>();
             foreach (var guid in oldGuids)
             {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var path     = AssetDatabase.GUIDToAssetPath(guid);
                 var oldAsset = AssetDatabase.LoadMainAssetAtPath(path);
-                if (oldAsset != null)
-                {
-                    markedForDelete.Add(path);
-                }
+                if (oldAsset != null) markedForDelete.Add(path);
             }
 
-            string heurekaPath = "Assets/Heureka";
-            if (AssetDatabase.IsValidFolder(heurekaPath))
-                markedForDelete.Add(heurekaPath);
+            var heurekaPath = "Assets/Heureka";
+            if (AssetDatabase.IsValidFolder(heurekaPath)) markedForDelete.Add(heurekaPath);
 
             if (markedForDelete.Count > 0 || force)
             {
                 if (EditorUtility.DisplayDialog("Heureka Upgrade detected", "Please remove old Heureka Folder and import again through PackageManager (my Assets)", "Ok", DialogOptOutDecisionType.ForThisMachine, "HeurekaUpgradeDontAsk"))
                 {
-#if UNITY_2019_4_OR_NEWER
+                    #if UNITY_2019_4_OR_NEWER
                     UnityEditor.PackageManager.UI.Window.Open("");
-#endif
+                    #endif
                 }
                 Debug.LogWarning($"HeurekaGames: Old HeurekaGames assets found");
                 Debug.LogWarning($"If you experience problems, plaese manually remove the Heureka assets in project, and reimport using Package Manager");
@@ -85,13 +80,10 @@ namespace HeurekaGames.Upgrade
 
         private static async void resolvePackages()
         {
-            var Request = Client.List();    // List packages installed for the project
-            while (!Request.IsCompleted)
-            {
-                await Task.Delay(100);
-            }
+            var Request = Client.List(); // List packages installed for the project
+            while (!Request.IsCompleted) await Task.Delay(100);
 
-            List<AddRequest> addRequests = new List<AddRequest>();
+            var addRequests = new List<AddRequest>();
             foreach (var item in Request.Result)
             {
                 if (heurekaPackages.Any(x => x.Equals(item.name)))
@@ -101,10 +93,7 @@ namespace HeurekaGames.Upgrade
                 }
             }
 
-            while (!addRequests.All(x => x.IsCompleted))
-            {
-                await Task.Delay(100);
-            }
+            while (!addRequests.All(x => x.IsCompleted)) await Task.Delay(100);
 
             ProcessUpgrade();
         }
@@ -117,21 +106,21 @@ namespace HeurekaGames.Upgrade
 
             if (EditorUtility.DisplayDialog("Upgrade detected", "Trying to automatically upgrade. If you experience problems, please remove old install and import again through PackageManager", "Ok"))
             {
-#if UNITY_2019_4_OR_NEWER
+                #if UNITY_2019_4_OR_NEWER
                 UnityEditor.PackageManager.UI.Window.Open("");
-#endif
+                #endif
             }
-#if UNITY_2020_1_OR_NEWER
+            #if UNITY_2020_1_OR_NEWER
             Client.Resolve();
-#endif
+            #endif
         }
 
         private static void ClearConsole()
         {
-            Assembly assembly = Assembly.GetAssembly(typeof(SceneView));
-            Type logEntries = assembly.GetType("UnityEditor.LogEntries");
+            var assembly           = Assembly.GetAssembly(typeof(SceneView));
+            var logEntries         = assembly.GetType("UnityEditor.LogEntries");
             var clearConsoleMethod = logEntries.GetMethod("Clear");
-            clearConsoleMethod?.Invoke(new object(), null);
+            clearConsoleMethod?.Invoke(new(), null);
         }
     }
 }

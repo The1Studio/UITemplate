@@ -1,5 +1,4 @@
 #if ADONE
-
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.AdOne
 {
     using System;
@@ -27,7 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         public AdOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController) : base(
             signalBus, analyticServices)
         {
-            this.internetService               = internetService;
+            this.internetService = internetService;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 

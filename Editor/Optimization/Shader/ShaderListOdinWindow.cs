@@ -8,25 +8,31 @@ namespace TheOne.Tool.Optimization.Shader
     using UnityEditor.AddressableAssets;
     using UnityEditor.SceneManagement;
     using UnityEngine;
+    using UnityEngine.SceneManagement;
 
     public class ShaderListOdinWindow : OdinEditorWindow
     {
         [Button("Refresh Shaders andMaterials")]
         [GUIColor(0.3f, 0.8f, 0.3f)]
-        public void RefreshShadersAndMaterials() { this.shaderInfos = this.FindAllShadersAndMaterials(); }
+        public void RefreshShadersAndMaterials()
+        {
+            this.shaderInfos = this.FindAllShadersAndMaterials();
+        }
 
-        [ListDrawerSettings(Expanded = true)] [TableList] [ShowInInspector]
-        private List<ShaderMaterialInfo> shaderInfos = new List<ShaderMaterialInfo>();
+        [ListDrawerSettings(Expanded = true)] [TableList] [ShowInInspector] private List<ShaderMaterialInfo> shaderInfos = new();
 
         [MenuItem("TheOne/List And Optimize/Shader List")]
-        private static void OpenWindow() { GetWindow<ShaderListOdinWindow>().Show(); }
-    
+        private static void OpenWindow()
+        {
+            GetWindow<ShaderListOdinWindow>().Show();
+        }
+
         private List<ShaderMaterialInfo> FindAllShadersAndMaterials()
         {
             var shaderDict = new Dictionary<string, ShaderMaterialInfo>();
 
             // Store the original scene path so we can return to it later.
-            var originalScenePath = EditorSceneManager.GetActiveScene().path;
+            var originalScenePath = SceneManager.GetActiveScene().path;
 
             var scenes      = EditorBuildSettings.scenes;
             var totalSteps  = scenes.Length + 1; // +1 for addressables processing.
@@ -37,7 +43,8 @@ namespace TheOne.Tool.Optimization.Shader
             {
                 currentStep++;
                 EditorUtility.DisplayProgressBar("Refreshing Shaders and Materials",
-                    $"Processing Scene {currentStep} out of {totalSteps}", currentStep / (float)totalSteps);
+                    $"Processing Scene {currentStep} out of {totalSteps}",
+                    currentStep / (float)totalSteps);
 
                 if (!sceneInBuild.enabled) continue;
 
@@ -49,17 +56,15 @@ namespace TheOne.Tool.Optimization.Shader
 
                 EditorSceneManager.OpenScene(sceneInBuild.path, OpenSceneMode.Single);
 
-                var renderers = GameObject.FindObjectsOfType<Renderer>();
+                var renderers = FindObjectsOfType<Renderer>();
                 foreach (var renderer in renderers)
+                foreach (var mat in renderer.sharedMaterials)
                 {
-                    foreach (var mat in renderer.sharedMaterials)
-                    {
-                        if (!mat || !mat.shader) continue;
-                        
-                        shaderDict.TryAdd(mat.shader.name, new ShaderMaterialInfo { OriginalShader = mat.shader });
+                    if (!mat || !mat.shader) continue;
 
-                        shaderDict[mat.shader.name].AddUniqueMaterial(mat, renderer.gameObject);
-                    }
+                    shaderDict.TryAdd(mat.shader.name, new() { OriginalShader = mat.shader });
+
+                    shaderDict[mat.shader.name].AddUniqueMaterial(mat, renderer.gameObject);
                 }
             }
 
@@ -67,45 +72,37 @@ namespace TheOne.Tool.Optimization.Shader
             EditorUtility.DisplayProgressBar("Refreshing Shaders and Materials", "Processing Addressables", currentStep / (float)totalSteps);
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             if (settings)
-            {
                 foreach (var group in settings.groups)
+                foreach (var entry in group.entries)
                 {
-                    foreach (var entry in group.entries)
+                    var path       = AssetDatabase.GUIDToAssetPath(entry.guid);
+                    var mainObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+
+                    var dependencies = this.GetAllDependencies(path);
+                    foreach (var mat in dependencies.Select(depPath => AssetDatabase.LoadAssetAtPath<Material>(depPath)).Where(mat => mat))
                     {
-                        var     path       = AssetDatabase.GUIDToAssetPath(entry.guid);
-                        var mainObject = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                        shaderDict.TryAdd(mat.shader.name, new() { OriginalShader = mat.shader });
 
-                        var dependencies = this.GetAllDependencies(path);
-                        foreach (var mat in dependencies.Select(depPath => AssetDatabase.LoadAssetAtPath<Material>(depPath)).Where(mat => mat))
-                        {
-                            shaderDict.TryAdd(mat.shader.name, new ShaderMaterialInfo { OriginalShader = mat.shader });
-
-                            var info = shaderDict[mat.shader.name];
-                            info.AddUniqueMaterial(mat, mainObject); // Assume the mainObject is using the material.
-                        }
+                        var info = shaderDict[mat.shader.name];
+                        info.AddUniqueMaterial(mat, mainObject); // Assume the mainObject is using the material.
                     }
                 }
-            }
 
             // Return to the original scene:
             if (!string.IsNullOrEmpty(originalScenePath))
-            {
                 EditorSceneManager.OpenScene(originalScenePath);
-            }
             else
-            {
                 Debug.LogWarning("Original scene path is null or empty. Cannot revert to the original scene.");
-            }
 
             // Clear progress bar after completion:
             EditorUtility.ClearProgressBar();
 
-            return new List<ShaderMaterialInfo>(shaderDict.Values);
+            return new(shaderDict.Values);
         }
 
         private List<string> GetAllDependencies(string assetPath)
         {
-            return new List<string>(AssetDatabase.GetDependencies(assetPath, true));
+            return new(AssetDatabase.GetDependencies(assetPath, true));
         }
 
         public static ValueDropdownList<Shader> GetAllShadersInProject()
@@ -126,28 +123,26 @@ namespace TheOne.Tool.Optimization.Shader
     [System.Serializable]
     public class ShaderMaterialInfo
     {
-        [InlineProperty]
-        [Title("Original Shader", TitleAlignment = TitleAlignments.Centered)]
-        [ReadOnly]
-        public Shader OriginalShader;
+        [InlineProperty] [Title("Original Shader", TitleAlignment = TitleAlignments.Centered)] [ReadOnly] public Shader OriginalShader;
 
-        [Title("Replacement", TitleAlignment = TitleAlignments.Centered)]
-        [ValueDropdown("GetAllShadersForDropdown")]
-        public Shader ReplacementShader;
+        [Title("Replacement", TitleAlignment = TitleAlignments.Centered)] [ValueDropdown("GetAllShadersForDropdown")] public Shader ReplacementShader;
 
-        [ShowInInspector] [HideLabel] [TableList] [Title("Materials", TitleAlignment = TitleAlignments.Centered)]
-        [TableColumnWidth(200)]
-        private List<MaterialInfo> Materials = new List<MaterialInfo>();
+        [ShowInInspector] [HideLabel] [TableList] [Title("Materials", TitleAlignment = TitleAlignments.Centered)] [TableColumnWidth(200)] private List<MaterialInfo> Materials = new();
 
         private ValueDropdownList<Shader> GetAllShadersForDropdown()
         {
             return ShaderListOdinWindow.GetAllShadersInProject();
         }
 
-        public bool CanReplaceShader() { return this.ReplacementShader != null && this.ReplacementShader != this.OriginalShader; }
+        public bool CanReplaceShader()
+        {
+            return this.ReplacementShader != null && this.ReplacementShader != this.OriginalShader;
+        }
 
-
-        private bool ContainsMaterial(Material material) { return this.Materials.Exists(m => m.Material == material); }
+        private bool ContainsMaterial(Material material)
+        {
+            return this.Materials.Exists(m => m.Material == material);
+        }
 
         public void AddUniqueMaterial(Material material, GameObject obj)
         {
@@ -161,13 +156,9 @@ namespace TheOne.Tool.Optimization.Shader
             }
             else
             {
-                if (!existingInfo.UsingObjects.Contains(obj))
-                {
-                    existingInfo.UsingObjects.Add(obj);
-                }
+                if (!existingInfo.UsingObjects.Contains(obj)) existingInfo.UsingObjects.Add(obj);
             }
         }
-
 
         [ButtonGroup("Action")]
         [Button("Replace Shader", ButtonSizes.Medium)]
@@ -178,12 +169,8 @@ namespace TheOne.Tool.Optimization.Shader
             if (this.ReplacementShader != null)
             {
                 foreach (var materialInfo in this.Materials)
-                {
                     if (materialInfo.ShouldReplace)
-                    {
                         materialInfo.Material.shader = this.ReplacementShader;
-                    }
-                }
 
                 AssetDatabase.SaveAssets();
             }
@@ -196,16 +183,13 @@ namespace TheOne.Tool.Optimization.Shader
                 window.Repaint();
             }
         }
-        
+
         [ButtonGroup("Action")]
         [Button("Select All", ButtonSizes.Medium)]
         [GUIColor(0.6f, 0.8f, 1f)]
         public void SelectAllMaterials()
         {
-            foreach (var materialInfo in this.Materials)
-            {
-                materialInfo.ShouldReplace = true;
-            }
+            foreach (var materialInfo in this.Materials) materialInfo.ShouldReplace = true;
         }
 
         [ButtonGroup("Action")]
@@ -213,39 +197,33 @@ namespace TheOne.Tool.Optimization.Shader
         [GUIColor(1f, 0.6f, 0.6f)]
         public void DeselectAllMaterials()
         {
-            foreach (var materialInfo in this.Materials)
-            {
-                materialInfo.ShouldReplace = false;
-            }
+            foreach (var materialInfo in this.Materials) materialInfo.ShouldReplace = false;
         }
     }
 
     [System.Serializable]
     public class MaterialInfo
     {
-        [ReadOnly]
-        public Material Material;
-        [ReadOnly]
-        public List<GameObject> UsingObjects = new();
-        private bool isImportedAsset;
+        [ReadOnly] public Material         Material;
+        [ReadOnly] public List<GameObject> UsingObjects = new();
+        private           bool             isImportedAsset;
 
         [ShowInInspector]
-        public bool ShouldReplace 
+        public bool ShouldReplace
         {
             get
             {
                 // If the asset is imported (like materials in FBX), always return false.
-                if (this.isImportedAsset)
-                    return false;
+                if (this.isImportedAsset) return false;
                 return this._shouldReplace;
             }
             set
             {
-                if (!this.isImportedAsset)
-                    this._shouldReplace = value;
+                if (!this.isImportedAsset) this._shouldReplace = value;
             }
         }
-        private bool _shouldReplace = true; 
+
+        private bool _shouldReplace = true;
 
         public MaterialInfo()
         {

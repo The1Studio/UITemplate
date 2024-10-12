@@ -7,21 +7,20 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
     public static class ProguardMigration
     {
         private const string ProguardUserFilePath = "Assets/Plugins/Android/proguard-user.txt";
-        
+
         private static readonly string[] RequiredProguardLines =
         {
             "-keep class com.bytebrew.** {*; }",
-            "-keep class com.google.unity.ads.**{ *; }"
+            "-keep class com.google.unity.ads.**{ *; }",
             // Add more lines as needed
         };
-
 
         public static void CheckAndUpdateProguardFile()
         {
             if (File.Exists(ProguardUserFilePath))
             {
-                var  existingLines = File.ReadAllLines(ProguardUserFilePath).ToList();
-                bool updated       = false;
+                var existingLines = File.ReadAllLines(ProguardUserFilePath).ToList();
+                var updated       = false;
 
                 foreach (var line in RequiredProguardLines)
                 {

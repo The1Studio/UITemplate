@@ -17,13 +17,14 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public float UpdateInterval = 0.3f;
 
-        protected float _framesAccumulated = 0f;
+        protected float _framesAccumulated        = 0f;
         protected float _framesDrawnInTheInterval = 0f;
         protected float _timeLeft;
-        protected Text _text;
-        protected int _currentFPS;
+        protected Text  _text;
+        protected int   _currentFPS;
 
-        static string[] _stringsFrom00To300 = {
+        private static string[] _stringsFrom00To300 =
+        {
             "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
             "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
             "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
@@ -54,7 +55,7 @@ namespace Lofelt.NiceVibrations
             "270", "271", "272", "273", "274", "275", "276", "277", "278", "279",
             "280", "281", "282", "283", "284", "285", "286", "287", "288", "289",
             "290", "291", "292", "293", "294", "295", "296", "297", "298", "299",
-            "300"
+            "300",
         };
 
         /// <summary>
@@ -62,13 +63,13 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void Start()
         {
-            if (GetComponent<Text>() == null)
+            if (this.GetComponent<Text>() == null)
             {
                 Debug.LogWarning("FPSCounter requires a GUIText component.");
                 return;
             }
-            _text = GetComponent<Text>();
-            _timeLeft = UpdateInterval;
+            this._text     = this.GetComponent<Text>();
+            this._timeLeft = this.UpdateInterval;
         }
 
         /// <summary>
@@ -77,20 +78,17 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void Update()
         {
-            _framesDrawnInTheInterval++;
-            _framesAccumulated = _framesAccumulated + Time.timeScale / Time.deltaTime;
-            _timeLeft = _timeLeft - Time.deltaTime;
+            this._framesDrawnInTheInterval++;
+            this._framesAccumulated = this._framesAccumulated + Time.timeScale / Time.deltaTime;
+            this._timeLeft          = this._timeLeft - Time.deltaTime;
 
-            if (_timeLeft <= 0.0)
+            if (this._timeLeft <= 0.0)
             {
-                _currentFPS = (int)Mathf.Clamp(_framesAccumulated / _framesDrawnInTheInterval, 0, 300);
-                if (_currentFPS >= 0 && _currentFPS <= 300)
-                {
-                    _text.text = _stringsFrom00To300[_currentFPS];
-                }
-                _framesDrawnInTheInterval = 0;
-                _framesAccumulated = 0f;
-                _timeLeft = UpdateInterval;
+                this._currentFPS = (int)Mathf.Clamp(this._framesAccumulated / this._framesDrawnInTheInterval, 0, 300);
+                if (this._currentFPS >= 0 && this._currentFPS <= 300) this._text.text = _stringsFrom00To300[this._currentFPS];
+                this._framesDrawnInTheInterval = 0;
+                this._framesAccumulated        = 0f;
+                this._timeLeft                 = this.UpdateInterval;
             }
         }
     }

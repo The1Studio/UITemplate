@@ -13,10 +13,7 @@
 
             public abstract UniTask Handle();
 
-            IRedirectTarget IRedirectTarget.IHandler.RedirectTarget
-            {
-                set => this.RedirectTarget = (T)value;
-            }
+            IRedirectTarget IRedirectTarget.IHandler.RedirectTarget { set => this.RedirectTarget = (T)value; }
         }
     }
 }

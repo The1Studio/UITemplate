@@ -8,7 +8,7 @@
 
         public BannerLoadFail(string errormsg)
         {
-            this.errormsg  = errormsg;
+            this.errormsg = errormsg;
         }
     }
 }

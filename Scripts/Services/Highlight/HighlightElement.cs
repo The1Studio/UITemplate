@@ -11,20 +11,17 @@
     {
         private const string CanvasSortingLayerName = "UI";
 
-        private Canvas                  canvas;
-        private GraphicRaycaster        graphicRaycaster;
-        public  Action                  OnPositionChange;
-        private bool                    isActive;
+        private Canvas           canvas;
+        private GraphicRaycaster graphicRaycaster;
+        public  Action           OnPositionChange;
+        private bool             isActive;
 
         public void Setup()
         {
             this.canvas                 = this.gameObject.AddComponent<Canvas>();
             this.canvas.overrideSorting = true;
             this.canvas.sortingOrder    = 1;
-            if (!this.DoesSortingLayerExist(CanvasSortingLayerName))
-            {
-                throw new Exception("You need to create new sorting layer with name: " + CanvasSortingLayerName + " in Edit -> Project Settings -> Tags and Layers");
-            }
+            if (!this.DoesSortingLayerExist(CanvasSortingLayerName)) throw new("You need to create new sorting layer with name: " + CanvasSortingLayerName + " in Edit -> Project Settings -> Tags and Layers");
 
             this.canvas.sortingLayerName = CanvasSortingLayerName;
             this.graphicRaycaster        = this.gameObject.AddComponent<GraphicRaycaster>();
@@ -37,10 +34,9 @@
             this.OnPositionChange?.Invoke();
         }
 
-
         public void Despawn()
         {
-            this.isActive      = false;
+            this.isActive         = false;
             this.OnPositionChange = null;
             Destroy(this.graphicRaycaster);
             Destroy(this.canvas);

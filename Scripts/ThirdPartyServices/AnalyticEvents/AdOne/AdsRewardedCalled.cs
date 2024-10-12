@@ -6,6 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     {
         public string Placement;
 
-        public AdsRewardedCalled(string placement) { this.Placement = placement; }
+        public AdsRewardedCalled(string placement)
+        {
+            this.Placement = placement;
+        }
     }
 }

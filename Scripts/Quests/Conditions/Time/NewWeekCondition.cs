@@ -8,7 +8,10 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
     [Preserve]
     public sealed class NewWeekCondition : BaseCondition
     {
-        protected override ICondition.IProgress SetupProgress() => new Progress();
+        protected override ICondition.IProgress SetupProgress()
+        {
+            return new Progress();
+        }
 
         [Preserve]
         private sealed class Progress : BaseProgress

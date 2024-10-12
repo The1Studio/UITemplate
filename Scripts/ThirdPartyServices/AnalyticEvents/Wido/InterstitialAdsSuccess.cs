@@ -5,6 +5,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.W
     public class InterstitialAdsSuccess : IEvent
     {
         public string placement;
-        public InterstitialAdsSuccess(string placement) { this.placement = placement; }
+
+        public InterstitialAdsSuccess(string placement)
+        {
+            this.placement = placement;
+        }
     }
 }

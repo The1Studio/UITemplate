@@ -18,16 +18,17 @@
             this.templateFtueData        = templateFtueData;
             this.uiTemplateFtueBlueprint = uiTemplateFtueBlueprint;
         }
-        public bool IsFinishedStep(string stepId) => this.templateFtueData.FinishedStep.Contains(stepId);
+
+        public bool IsFinishedStep(string stepId)
+        {
+            return this.templateFtueData.FinishedStep.Contains(stepId);
+        }
 
         public void CompleteStep(string stepId)
         {
             if (this.templateFtueData.FinishedStep.Contains(stepId)) return;
             this.templateFtueData.FinishedStep.Add(stepId);
-            foreach (var previousStep in this.uiTemplateFtueBlueprint.GetDataById(stepId).PreviousSteps)
-            {
-                this.CompleteStep(previousStep);
-            }
+            foreach (var previousStep in this.uiTemplateFtueBlueprint.GetDataById(stepId).PreviousSteps) this.CompleteStep(previousStep);
         }
     }
 }

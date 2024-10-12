@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace MoreMountains.FeedbacksForThirdParty
 {
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
     /// <summary>
     /// This class lets you specify (in code, by editing it) symbols that will be added to the build settings' define symbols list automatically
     /// </summary>
@@ -18,9 +18,9 @@ namespace MoreMountains.FeedbacksForThirdParty
         /// <summary>
         /// A list of all the symbols you want added to the build settings
         /// </summary>
-        public static readonly string[] Symbols = new string[] 
+        public static readonly string[] Symbols = new string[]
         {
-            "MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED"
+            "MOREMOUNTAINS_NICEVIBRATIONS_INSTALLED",
         };
 
         /// <summary>
@@ -28,11 +28,11 @@ namespace MoreMountains.FeedbacksForThirdParty
         /// </summary>
         static NiceVibrationsDefineSymbols()
         {
-            string scriptingDefinesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup); 
-            List<string> scriptingDefinesStringList = scriptingDefinesString.Split(';').ToList();
+            var scriptingDefinesString     = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+            var scriptingDefinesStringList = scriptingDefinesString.Split(';').ToList();
             scriptingDefinesStringList.AddRange(Symbols.Except(scriptingDefinesStringList));
             PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, string.Join(";", scriptingDefinesStringList.ToArray()));
         }
     }
-#endif
+    #endif
 }

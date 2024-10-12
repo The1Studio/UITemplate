@@ -1,9 +1,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
-#if WIDO
+    #if WIDO
     using System.Collections.Generic;
-#endif
+    #endif
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -57,8 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             this.analyticEventFactory.ForceUpdateAllProperties();
 
-            if (trackEvent is CustomEvent customEvent && string.IsNullOrEmpty(customEvent.EventName))
-                return;
+            if (trackEvent is CustomEvent customEvent && string.IsNullOrEmpty(customEvent.EventName)) return;
 
             this.analyticServices.Track(trackEvent);
         }
@@ -328,7 +327,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
-        private void PopupShowedHandler(PopupShowedSignal obj) { }
+        private void PopupShowedHandler(PopupShowedSignal obj)
+        {
+        }
 
         private void LevelSkippedHandler(LevelSkippedSignal obj)
         {
@@ -346,10 +347,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount)
             );
 
-            if (obj.IsWin && levelData.WinCount == 1)
-            {
-                this.Track(this.analyticEventFactory.FirstWin(obj.Level, obj.Time));
-            }
+            if (obj.IsWin && levelData.WinCount == 1) this.Track(this.analyticEventFactory.FirstWin(obj.Level, obj.Time));
         }
 
         private void TutorialCompletionHandler(TutorialCompletionSignal obj)
@@ -389,7 +387,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void TotalDaysPlayedChange()
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.RetentionDayProperty] = (int)(DateTime.Now.Date - this.uiTemplateDailyRewardController.GetFirstTimeOpenedDate.Date).TotalDays;
-            this.analyticServices.UserProperties[this.analyticEventFactory.DaysPlayedProperty] = this.uITemplateGameSessionDataController.OpenTime;
+            this.analyticServices.UserProperties[this.analyticEventFactory.DaysPlayedProperty]   = this.uITemplateGameSessionDataController.OpenTime;
         }
 
         private void OnIAPPurchaseSuccess(OnIAPPurchaseSuccessSignal signal)

@@ -4,132 +4,126 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 namespace Lofelt.NiceVibrations
 {
     public class V2DemoManager : MonoBehaviour
     {
         public List<RectTransform> Pages;
-        public int CurrentPage = 0;
-        public float PageTransitionDuration = 1f;
-        public AnimationCurve TransitionCurve;
-        public Color ActiveColor;
-        public Color InactiveColor;
-        public bool SoundActive = true;
+        public int                 CurrentPage            = 0;
+        public float               PageTransitionDuration = 1f;
+        public AnimationCurve      TransitionCurve;
+        public Color               ActiveColor;
+        public Color               InactiveColor;
+        public bool                SoundActive = true;
 
-        protected Vector3 _position;
+        protected Vector3          _position;
         protected List<Pagination> _paginations;
-        protected Coroutine _transitionCoroutine;
-
+        protected Coroutine        _transitionCoroutine;
 
         protected virtual void Start()
         {
-            Initialization();
+            this.Initialization();
         }
 
         protected virtual void Initialization()
         {
             Application.targetFrameRate = 60;
-            _paginations = new List<Pagination>();
-            foreach (RectTransform page in Pages)
+            this._paginations           = new();
+            foreach (var page in this.Pages)
             {
-                _paginations.Add(page.GetComponentInChildren<Pagination>());
+                this._paginations.Add(page.GetComponentInChildren<Pagination>());
                 page.gameObject.SetActive(false);
             }
-            foreach (Pagination pagination in _paginations)
+            foreach (var pagination in this._paginations)
             {
-                pagination.InitializePagination(Pages.Count);
-                pagination.ActiveColor = ActiveColor;
-                pagination.InactiveColor = InactiveColor;
-                pagination.SetCurrentPage(Pages.Count, 0);
+                pagination.InitializePagination(this.Pages.Count);
+                pagination.ActiveColor   = this.ActiveColor;
+                pagination.InactiveColor = this.InactiveColor;
+                pagination.SetCurrentPage(this.Pages.Count, 0);
             }
-            Pages[0].gameObject.SetActive(true);
-            if (SoundActive)
+            this.Pages[0].gameObject.SetActive(true);
+            if (this.SoundActive)
             {
                 AudioListener.volume = 1f;
-                SoundActive = true;
+                this.SoundActive     = true;
             }
             else
             {
                 AudioListener.volume = 0f;
-                SoundActive = false;
+                this.SoundActive     = false;
             }
         }
 
         public virtual void PreviousPage()
         {
-            if (CurrentPage > 0)
+            if (this.CurrentPage > 0)
             {
-                CurrentPage--;
-                Transition(CurrentPage + 1, CurrentPage, false);
-                SetCurrentPage();
+                this.CurrentPage--;
+                this.Transition(this.CurrentPage + 1, this.CurrentPage, false);
+                this.SetCurrentPage();
             }
         }
 
         public virtual void NextPage()
         {
-            if (CurrentPage < Pages.Count - 1)
+            if (this.CurrentPage < this.Pages.Count - 1)
             {
-                CurrentPage++;
-                Transition(CurrentPage - 1, CurrentPage, true);
-                SetCurrentPage();
+                this.CurrentPage++;
+                this.Transition(this.CurrentPage - 1, this.CurrentPage, true);
+                this.SetCurrentPage();
             }
         }
 
         protected virtual void SetCurrentPage()
         {
-            foreach (Pagination pagination in _paginations)
-            {
-                pagination.SetCurrentPage(Pages.Count, CurrentPage);
-            }
+            foreach (var pagination in this._paginations) pagination.SetCurrentPage(this.Pages.Count, this.CurrentPage);
         }
 
         protected virtual void Transition(int previous, int next, bool goingRight)
         {
             HapticController.Reset();
 
-            if (_transitionCoroutine != null)
-            {
-                StopCoroutine(_transitionCoroutine);
-            }
-            _transitionCoroutine = StartCoroutine(TransitionCoroutine(previous, next, goingRight));
+            if (this._transitionCoroutine != null) this.StopCoroutine(this._transitionCoroutine);
+            this._transitionCoroutine = this.StartCoroutine(this.TransitionCoroutine(previous, next, goingRight));
         }
 
         protected virtual IEnumerator TransitionCoroutine(int previous, int next, bool goingRight)
         {
-            _position.y = Pages[previous].localPosition.y;
-            _position.z = Pages[previous].localPosition.z;
+            this._position.y = this.Pages[previous].localPosition.y;
+            this._position.z = this.Pages[previous].localPosition.z;
 
-            foreach (RectTransform page in Pages)
+            foreach (var page in this.Pages)
             {
-                _position.x = 1200f;
-                page.localPosition = _position;
+                this._position.x   = 1200f;
+                page.localPosition = this._position;
             }
 
-            Pages[next].gameObject.SetActive(true);
+            this.Pages[next].gameObject.SetActive(true);
 
-            float timeSpent = 0f;
-            while (timeSpent < PageTransitionDuration)
+            var timeSpent = 0f;
+            while (timeSpent < this.PageTransitionDuration)
             {
                 if (goingRight)
                 {
-                    _position.x = Mathf.Lerp(0f, -1200f, TransitionCurve.Evaluate(NiceVibrationsDemoHelpers.Remap(timeSpent, 0f, PageTransitionDuration, 0f, 1f)));
-                    Pages[previous].localPosition = _position;
-                    _position.x = Mathf.Lerp(1200f, 0f, TransitionCurve.Evaluate(NiceVibrationsDemoHelpers.Remap(timeSpent, 0f, PageTransitionDuration, 0f, 1f)));
-                    Pages[next].localPosition = _position;
+                    this._position.x                   = Mathf.Lerp(0f, -1200f, this.TransitionCurve.Evaluate(NiceVibrationsDemoHelpers.Remap(timeSpent, 0f, this.PageTransitionDuration, 0f, 1f)));
+                    this.Pages[previous].localPosition = this._position;
+                    this._position.x                   = Mathf.Lerp(1200f, 0f, this.TransitionCurve.Evaluate(NiceVibrationsDemoHelpers.Remap(timeSpent, 0f, this.PageTransitionDuration, 0f, 1f)));
+                    this.Pages[next].localPosition     = this._position;
                 }
                 else
                 {
-                    _position.x = Mathf.Lerp(0f, 1200f, TransitionCurve.Evaluate(NiceVibrationsDemoHelpers.Remap(timeSpent, 0f, PageTransitionDuration, 0f, 1f)));
-                    Pages[previous].localPosition = _position;
-                    _position.x = Mathf.Lerp(-1200f, 0f, TransitionCurve.Evaluate(NiceVibrationsDemoHelpers.Remap(timeSpent, 0f, PageTransitionDuration, 0f, 1f)));
-                    Pages[next].localPosition = _position;
+                    this._position.x                   = Mathf.Lerp(0f, 1200f, this.TransitionCurve.Evaluate(NiceVibrationsDemoHelpers.Remap(timeSpent, 0f, this.PageTransitionDuration, 0f, 1f)));
+                    this.Pages[previous].localPosition = this._position;
+                    this._position.x                   = Mathf.Lerp(-1200f, 0f, this.TransitionCurve.Evaluate(NiceVibrationsDemoHelpers.Remap(timeSpent, 0f, this.PageTransitionDuration, 0f, 1f)));
+                    this.Pages[next].localPosition     = this._position;
                 }
 
                 timeSpent += Time.deltaTime;
                 yield return null;
             }
 
-            Pages[previous].gameObject.SetActive(false);
+            this.Pages[previous].gameObject.SetActive(false);
         }
 
         public virtual void TurnHapticsOn()
@@ -145,14 +139,14 @@ namespace Lofelt.NiceVibrations
         public virtual void TurnSoundsOn()
         {
             AudioListener.volume = 1f;
-            SoundActive = true;
+            this.SoundActive     = true;
             HapticPatterns.PlayPreset(HapticPatterns.PresetType.Success);
         }
 
         public virtual void TurnSoundsOff()
         {
             AudioListener.volume = 0f;
-            SoundActive = false;
+            this.SoundActive     = false;
             HapticPatterns.PlayPreset(HapticPatterns.PresetType.Warning);
         }
     }

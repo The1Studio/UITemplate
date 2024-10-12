@@ -6,14 +6,14 @@
     {
         public static async UniTask<string> GetLocalizationString(string tableName, string entryKey)
         {
-#if THEONE_LOCALIZATION
+            #if THEONE_LOCALIZATION
             var table = await UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTableAsync(tableName);
             if (table != null)
             {
                 var entry = table.GetEntry(entryKey);
                 if (entry != null) return entry.GetLocalizedString();
             }
-#endif
+            #endif
             return entryKey;
         }
     }

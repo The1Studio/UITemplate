@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     {
         public int level;
         public int time_spent;
+
         public LevelFailed(int level, int timeSpent)
         {
             this.level      = level;

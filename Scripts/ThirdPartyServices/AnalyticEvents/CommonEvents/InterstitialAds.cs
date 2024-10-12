@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     {
         public string placememt;
         public long   loadingMilis;
+
         public InterstitialAdDownloaded(string placememt, long loadingMilis)
         {
             this.placememt    = placememt;
@@ -18,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
         public string placememt;
         public string message;
         public long   loadingMilis;
+
         public InterstitialAdLoadFailed(string placememt, string message, long loadingMilis)
         {
             this.placememt    = placememt;
@@ -29,13 +31,18 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class InterstitialAdClicked : IEvent
     {
         public string placememt;
-        public InterstitialAdClicked(string placememt) { this.placememt = placememt; }
+
+        public InterstitialAdClicked(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 
     public class InterstitialAdDisplayed : IEvent
     {
         public string placememt;
         public int    level;
+
         public InterstitialAdDisplayed(int level, string placememt)
         {
             this.placememt = placememt;
@@ -46,24 +53,40 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class InterstitialAdDisplayedFailed : IEvent
     {
         public string placememt;
-        public InterstitialAdDisplayedFailed(string placememt) { this.placememt = placememt; }
+
+        public InterstitialAdDisplayedFailed(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 
     public class InterstitialAdClosed : IEvent
     {
         public string placememt;
-        public InterstitialAdClosed(string placememt) { this.placememt = placememt; }
+
+        public InterstitialAdClosed(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 
     public class InterstitialAdCalled : IEvent
     {
         public string placememt;
-        public InterstitialAdCalled(string placememt) { this.placememt = placememt; }
+
+        public InterstitialAdCalled(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 
     public class InterstitialAdEligible : IEvent
     {
         public string placememt;
-        public InterstitialAdEligible(string placememt) { this.placememt = placememt; }
+
+        public InterstitialAdEligible(string placememt)
+        {
+            this.placememt = placememt;
+        }
     }
 }

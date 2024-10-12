@@ -3,7 +3,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
     using UnityEngine;
     using UnityEngine.EventSystems;
 
-    [DisallowMultipleComponent, RequireComponent(typeof(RectTransform)), RequireComponent(typeof(BoxCollider))]
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(RectTransform))]
+    [RequireComponent(typeof(BoxCollider))]
     public class AdjustSizeBoxCollider3DWithRectTransform : UIBehaviour
     {
         [SerializeField] private RectTransform rectTransform;
@@ -16,13 +18,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
             this.AdjustSize();
         }
 
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
             this.ValidateRef();
         }
-#endif
+        #endif
 
         protected override void OnRectTransformDimensionsChange()
         {
@@ -40,8 +42,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
         {
             var sizeRect  = new Vector2(this.rectTransform.rect.width, this.rectTransform.rect.height);
             var pivotRect = this.rectTransform.pivot;
-            this.boxCollider.size   = new Vector3(sizeRect.x,                        sizeRect.y, 1);
-            this.boxCollider.center = new Vector3(sizeRect.x * (0.5f - pivotRect.x), sizeRect.y * (0.5f - pivotRect.y));
+            this.boxCollider.size   = new(sizeRect.x, sizeRect.y, 1);
+            this.boxCollider.center = new(sizeRect.x * (0.5f - pivotRect.x), sizeRect.y * (0.5f - pivotRect.y));
         }
     }
 }

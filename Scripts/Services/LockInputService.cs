@@ -22,7 +22,6 @@
 
         #endregion
 
-
         public void Initialize()
         {
             this.signalBus.Subscribe<InterstitialAdCalledSignal>(() => this.SetLockInput(false));

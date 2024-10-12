@@ -53,6 +53,9 @@
             this.screenManager.OpenScreen<UITemplateRemoveAdPopupPresenter>().Forget();
         }
 
-        private void OnRemoveAdsSucceedHandler() { this.removeAdsObj.SetActive(false); }
+        private void OnRemoveAdsSucceedHandler()
+        {
+            this.removeAdsObj.SetActive(false);
+        }
     }
 }

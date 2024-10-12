@@ -36,8 +36,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
         public Sprite OtherSpriteBg;
         public Sprite YourSpriteBg;
 
-        public void SetRank(int rank) { this.RankText.text = $"#{rank}"; }
-        public void SetRankUp(int rankUp) { this.RankUpText.text = rankUp.ToString(); }
+        public void SetRank(int rank)
+        {
+            this.RankText.text = $"#{rank}";
+        }
+
+        public void SetRankUp(int rankUp)
+        {
+            this.RankUpText.text = rankUp.ToString();
+        }
+
         public void ShowRankUP()
         {
             this.RankUpObject.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
@@ -47,7 +55,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Leaderboard
     public class UITemplateLeaderboardItemPresenter : BaseUIItemPresenter<UITemplateLeaderboardItemView, UITemplateLeaderboardItemModel>
     {
         [Preserve]
-        public UITemplateLeaderboardItemPresenter(IGameAssets gameAssets) : base(gameAssets) { }
+        public UITemplateLeaderboardItemPresenter(IGameAssets gameAssets) : base(gameAssets)
+        {
+        }
 
         public override void BindData(UITemplateLeaderboardItemModel param)
         {

@@ -4,6 +4,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
     {
         public string Url { get; set; }
 
-        public OnDeepLinkActiveSignal(string url) { this.Url = url; }
+        public OnDeepLinkActiveSignal(string url)
+        {
+            this.Url = url;
+        }
     }
 }

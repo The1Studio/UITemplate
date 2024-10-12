@@ -3,9 +3,15 @@ using System.Collections;
 
 public class ReporterGUI : MonoBehaviour
 {
-    Reporter reporter;
+    private Reporter reporter;
 
-    void Awake() { reporter = gameObject.GetComponent<Reporter>(); }
+    private void Awake()
+    {
+        this.reporter = this.gameObject.GetComponent<Reporter>();
+    }
 
-    void OnGUI() { reporter.OnGUIDraw(); }
+    private void OnGUI()
+    {
+        this.reporter.OnGUIDraw();
+    }
 }

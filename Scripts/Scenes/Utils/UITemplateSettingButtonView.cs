@@ -79,7 +79,7 @@
         private void InitDropdown()
         {
             this.IsDropped     = false;
-            this.BG.localScale = new Vector3(1, 0, 1);
+            this.BG.localScale = new(1, 0, 1);
             foreach (var rectTransform in this.ButtonList) rectTransform.localScale = Vector3.zero;
         }
 
@@ -116,9 +116,7 @@
                 this.IsDropped = !this.IsDropped;
             }
             else
-            {
                 this.screenManager.OpenScreen<UITemplateSettingPopupPresenter>();
-            }
         }
     }
 }

@@ -14,7 +14,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.Services
         private readonly ILogService logger;
         public abstract  Type        ScreenPresenter { get; }
 
-        protected UITemplateBaseScreenShow(ILogService logger) { this.logger = logger; }
+        protected UITemplateBaseScreenShow(ILogService logger)
+        {
+            this.logger = logger;
+        }
 
         public abstract void OnProcessScreenShow();
     }

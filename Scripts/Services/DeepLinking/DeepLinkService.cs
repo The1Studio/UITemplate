@@ -12,7 +12,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
         private readonly SignalBus signalBus;
 
         [Preserve]
-        public DeepLinkService(SignalBus signalBus) { this.signalBus = signalBus; }
+        public DeepLinkService(SignalBus signalBus)
+        {
+            this.signalBus = signalBus;
+        }
 
         #endregion
 
@@ -22,10 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.DeepLinking
             Application.deepLinkActivated += this.OnDeepLinkActivated;
 
             // if application not installs and opened from deep link
-            if (!string.IsNullOrEmpty(Application.absoluteURL))
-            {
-                this.OnDeepLinkActivated(Application.absoluteURL);
-            }
+            if (!string.IsNullOrEmpty(Application.absoluteURL)) this.OnDeepLinkActivated(Application.absoluteURL);
         }
 
         private void OnDeepLinkActivated(string url)

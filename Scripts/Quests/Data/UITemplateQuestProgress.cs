@@ -10,9 +10,11 @@ namespace TheOneStudio.UITemplate.Quests.Data
     [Preserve]
     public sealed class UITemplateQuestProgress : ILocalData
     {
-        public Dictionary<string, Quest> Storage { get; } = new Dictionary<string, Quest>();
+        public Dictionary<string, Quest> Storage { get; } = new();
 
-        void ILocalData.Init() { }
+        void ILocalData.Init()
+        {
+        }
 
         public sealed class Quest
         {
@@ -38,14 +40,8 @@ namespace TheOneStudio.UITemplate.Quests.Data
                 this.ShowProgress     = record.ShowConditions.Select(condition => condition.SetupProgress()).ToList();
                 this.CompleteProgress = record.CompleteConditions.Select(condition => condition.SetupProgress()).ToList();
                 this.ResetProgress    = record.ResetConditions.Select(condition => condition.SetupProgress()).ToList();
-                if (this.StartProgress.Count is 0)
-                {
-                    this.Status |= QuestStatus.Started;
-                }
-                if (this.ShowProgress.Count is 0)
-                {
-                    this.Status |= QuestStatus.Shown;
-                }
+                if (this.StartProgress.Count is 0) this.Status |= QuestStatus.Started;
+                if (this.ShowProgress.Count is 0) this.Status  |= QuestStatus.Shown;
             }
         }
     }

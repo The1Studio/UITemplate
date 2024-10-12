@@ -16,7 +16,10 @@
         private static readonly List<string> ListPreferCountry   = new() { "us", "kr", "vn", "jp", "in", "sa", "es", "pt", "tr", "pl", "th", "ru" };
         private const           int          RATE_PREFER_COUNTRY = 85;
 
-        private void Awake() { this.InitialResources(); }
+        private void Awake()
+        {
+            this.InitialResources();
+        }
 
         public void InitialResources()
         {
@@ -52,9 +55,15 @@
         //
         // Summary:
         //     Get random the sprite country flags
-        public Sprite GetRandomFlag() { return this.dictFlags.TryGetValue(this.RandomCountryCode(), out var spriteReturn) ? spriteReturn : this.spFlagDefault; }
+        public Sprite GetRandomFlag()
+        {
+            return this.dictFlags.TryGetValue(this.RandomCountryCode(), out var spriteReturn) ? spriteReturn : this.spFlagDefault;
+        }
 
-        public string RandomCountryCode() { return this.listCountryCode[Random.Range(0, this.listCountryCode.Count)]; }
+        public string RandomCountryCode()
+        {
+            return this.listCountryCode[Random.Range(0, this.listCountryCode.Count)];
+        }
 
         //
         // Summary:
@@ -76,7 +85,7 @@
             var height     = width * 0.75f; // 3/4 is standard ratio flag
 
             imgTarget.sprite     = spFlag;
-            rectTarget.sizeDelta = new Vector2(width, height);
+            rectTarget.sizeDelta = new(width, height);
         }
     }
 }

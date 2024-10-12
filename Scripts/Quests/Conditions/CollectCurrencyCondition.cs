@@ -12,7 +12,10 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
         [JsonProperty] private string CurrencyId { get; [Preserve] set; }
         [JsonProperty] private int    Count      { get; [Preserve] set; }
 
-        protected override ICondition.IProgress SetupProgress() => new Progress();
+        protected override ICondition.IProgress SetupProgress()
+        {
+            return new Progress();
+        }
 
         [Preserve]
         private sealed class Progress : BaseProgress

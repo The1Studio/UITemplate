@@ -14,7 +14,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
         #endregion
 
         [Preserve]
-        public DummyStoreRatingService(ILogService logService) { this.logService = logService; }
+        public DummyStoreRatingService(ILogService logService)
+        {
+            this.logService = logService;
+        }
 
         public UniTask LaunchStoreRating()
         {

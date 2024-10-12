@@ -8,6 +8,6 @@
         FineLocation,
         CoarseLocation,
         ExternalStorageRead,
-        ExternalStorageWrite
+        ExternalStorageWrite,
     }
 }

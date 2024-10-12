@@ -4,7 +4,7 @@
     using GameFoundation.Scripts.Interfaces;
     using UnityEngine.Scripting;
 
-#if FALCON
+    #if FALCON
     [Preserve]
     public class FalconLocalData : ILocalData
     {
@@ -12,5 +12,5 @@
 
         public HashSet<int> PassedLevels { get; set; } = new();
     }
-#endif
+    #endif
 }

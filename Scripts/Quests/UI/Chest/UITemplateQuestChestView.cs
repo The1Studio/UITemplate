@@ -51,9 +51,7 @@
                 itemView.BindData();
             });
             if (this.Model.Quests.All(quest => quest.Progress.Status.HasFlag(QuestStatus.Completed)))
-            {
                 this.sld.value = 1;
-            }
             else
             {
                 var progressHandler = this.Model.Quests.Last().GetCompleteProgressHandlers().Last();

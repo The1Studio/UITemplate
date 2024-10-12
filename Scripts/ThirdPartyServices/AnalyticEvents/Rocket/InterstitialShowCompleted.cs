@@ -5,6 +5,10 @@
     public class InterstitialShowCompleted : IEvent
     {
         public string placement;
-        public InterstitialShowCompleted(string placement) { this.placement = placement; }
+
+        public InterstitialShowCompleted(string placement)
+        {
+            this.placement = placement;
+        }
     }
 }

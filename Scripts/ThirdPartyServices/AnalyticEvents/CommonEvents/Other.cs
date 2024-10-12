@@ -17,7 +17,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class BuildingUnlock : IEvent
     {
         public bool success;
-        
-        public BuildingUnlock(bool success) { this.success = success; }
+
+        public BuildingUnlock(bool success)
+        {
+            this.success = success;
+        }
     }
 }

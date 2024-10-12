@@ -36,6 +36,8 @@
             view.ObjLock.SetActive(!view.ObjReward.activeSelf);
         }
 
-        public virtual void DisposeItem(UITemplateDailyRewardItemPresenter presenter) { }
+        public virtual void DisposeItem(UITemplateDailyRewardItemPresenter presenter)
+        {
+        }
     }
 }

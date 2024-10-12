@@ -53,7 +53,8 @@
         private void OnRemoveAdsClicked()
         {
             this.uiTemplateIapServices.BuyProduct(
-                this.View.btnRemoveAds.gameObject, this.ProductId,
+                this.View.btnRemoveAds.gameObject,
+                this.ProductId,
                 _ =>
                 {
                     this.adServiceWrapper.RemoveAds();

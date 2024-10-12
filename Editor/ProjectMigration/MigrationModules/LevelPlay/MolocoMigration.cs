@@ -17,10 +17,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.LevelPlay
 
             if (!LevelPlayMigration.IsIOSHasAdapters(MolocoIpodName))
             {
-                if (File.Exists(embedPath))
-                {
-                    File.Delete(embedPath);
-                }
+                if (File.Exists(embedPath)) File.Delete(embedPath);
 
                 var macosXEmbedPath = Path.Combine(macosxPath, "._embedMoloco.cs");
                 if (Directory.Exists(macosxPath) && File.Exists(macosXEmbedPath))
@@ -31,17 +28,12 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.LevelPlay
                         File.Delete($"{macosxPath}.meta");
                     }
                     else
-                    {
                         File.Delete(macosXEmbedPath);
-                    }
                 }
             }
             else
             {
-                if (File.Exists(embedPath))
-                {
-                    return;
-                }
+                if (File.Exists(embedPath)) return;
 
                 UnityPackageHelper.DownloadThenUnZip("https://cdn.builds.the1studio.org/SDK/LevelPlay/EmbedMoloco.cs_.zip", "EmbedMoloco", levelplayEditor).Forget();
             }

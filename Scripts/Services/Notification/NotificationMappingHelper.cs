@@ -18,10 +18,7 @@
             var regex  = new Regex(Pattern);
             var result = await LocalizationHelper.GetLocalizationString(LocalizationTableCollection, input);
 
-            foreach (Match item in regex.Matches(result))
-            {
-                result = result.Replace(item.Value, this.GetReplacement(item.Value));
-            }
+            foreach (Match item in regex.Matches(result)) result = result.Replace(item.Value, this.GetReplacement(item.Value));
 
             return result;
         }

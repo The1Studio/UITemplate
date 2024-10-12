@@ -22,12 +22,10 @@ namespace TheOne.Tool.Core
             var totalSteps  = settings.groups.Sum(group => group.entries.Count);
             var currentStep = 0;
             foreach (var group in settings.groups)
+            foreach (var entry in group.entries)
             {
-                foreach (var entry in group.entries)
-                {
-                    EditorUtility.DisplayProgressBar("Queries all asset", "Processing Addressables", currentStep++ / (float)totalSteps);
-                    ProcessEntry<TType>(entry, allAssetInAddressable);
-                }
+                EditorUtility.DisplayProgressBar("Queries all asset", "Processing Addressables", currentStep++ / (float)totalSteps);
+                ProcessEntry<TType>(entry, allAssetInAddressable);
             }
 
             EditorUtility.ClearProgressBar();
@@ -38,10 +36,7 @@ namespace TheOne.Tool.Core
         {
             var path       = AssetDatabase.GUIDToAssetPath(entry.guid);
             var mainObject = AssetDatabase.LoadAssetAtPath<Object>(path);
-            if (mainObject is TType mainObjectTType)
-            {
-                allAssetInAddressable.GetOrAdd(mainObjectTType, () => new HashSet<Object>()).Add(mainObject);
-            }
+            if (mainObject is TType mainObjectTType) allAssetInAddressable.GetOrAdd(mainObjectTType, () => new HashSet<Object>()).Add(mainObject);
 
             GetAllDependencies<TType>(path).ForEach(type => allAssetInAddressable.GetOrAdd(type, () => new HashSet<Object>()).Add(mainObject));
         }
@@ -64,17 +59,21 @@ namespace TheOne.Tool.Core
         public static List<Object> GetAllAssetsInGroup(string groupName)
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            if (settings == null) return new List<Object>();
+            if (settings == null) return new();
 
             return settings.groups
-                .FirstOrDefault(g => g.Name == groupName)?.entries
-                .Select(e => AssetDatabase.GUIDToAssetPath(e.guid))
-                .Select(AssetDatabase.LoadAssetAtPath<Object>)
-                .Where(asset => asset != null)
-                .ToList() ?? new List<Object>();
+                    .FirstOrDefault(g => g.Name == groupName)?.entries
+                    .Select(e => AssetDatabase.GUIDToAssetPath(e.guid))
+                    .Select(AssetDatabase.LoadAssetAtPath<Object>)
+                    .Where(asset => asset != null)
+                    .ToList()
+                ?? new List<Object>();
         }
 
-        public static bool IsAssetAddressable(Object obj, out AddressableAssetGroup addressableGroup) { return IsAssetAddressable(AssetDatabase.GetAssetPath(obj), out addressableGroup); }
+        public static bool IsAssetAddressable(Object obj, out AddressableAssetGroup addressableGroup)
+        {
+            return IsAssetAddressable(AssetDatabase.GetAssetPath(obj), out addressableGroup);
+        }
 
         public static bool IsAssetAddressable(string assetPath, out AddressableAssetGroup addressableGroup)
         {
@@ -88,17 +87,14 @@ namespace TheOne.Tool.Core
 
         public static List<T> GetAllAssetsOfType<T>() where T : Object
         {
-            List<T>  assets = new List<T>();
-            string[] guids  = AssetDatabase.FindAssets("t:" + typeof(T).Name);
+            var assets = new List<T>();
+            var guids  = AssetDatabase.FindAssets("t:" + typeof(T).Name);
 
-            foreach (string guid in guids)
+            foreach (var guid in guids)
             {
-                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                T      asset     = AssetDatabase.LoadAssetAtPath<T>(assetPath);
-                if (asset != null)
-                {
-                    assets.Add(asset);
-                }
+                var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                var asset     = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                if (asset != null) assets.Add(asset);
             }
 
             return assets;
@@ -106,7 +102,7 @@ namespace TheOne.Tool.Core
 
         public static void MoveAssetToGroup(Object asset, string targetGroupName)
         {
-            string assetPath = AssetDatabase.GetAssetPath(asset);
+            var assetPath = AssetDatabase.GetAssetPath(asset);
             if (string.IsNullOrEmpty(assetPath))
             {
                 Debug.LogError("Asset path could not be found.");
@@ -147,6 +143,7 @@ namespace TheOne.Tool.Core
             // Save changes
             settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
         }
+
         public static bool CreateFolderIfNotExist(string directoryPath)
         {
             if (!Directory.Exists(directoryPath))
@@ -157,17 +154,14 @@ namespace TheOne.Tool.Core
 
             return false;
         }
-        
+
         //Move targetObject to assetsSpritesBuildinui directory
         public static void MoveToNewFolder(Object targetObject, string assetsSpritesBuildinui)
         {
             var assetPath = AssetDatabase.GetAssetPath(targetObject);
             var newPath   = Path.Combine(assetsSpritesBuildinui, Path.GetFileName(assetPath));
             var moveError = AssetDatabase.MoveAsset(assetPath, newPath);
-            if (!moveError.IsNullOrEmpty())
-            {
-                Debug.LogError(moveError);
-            }
+            if (!moveError.IsNullOrEmpty()) Debug.LogError(moveError);
         }
     }
 }

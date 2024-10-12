@@ -51,7 +51,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
 
         private void Awake()
         {
-            this.uiEffect      = this.GetComponent<UIEffect>();
+            this.uiEffect = this.GetComponent<UIEffect>();
             this.uiHsvModifier = this.GetComponent<UIHsvModifier>();
             
             if (this.uiEffect != null)
@@ -97,9 +97,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
         [Serializable]
         public class Option
         {
-            public float    Duration  = 1f;
-            public Ease     Ease      = Ease.Linear;
-            public LoopType LoopType  = LoopType.Restart;
+            public float    Duration = 1f;
+            public Ease     Ease = Ease.Linear;
+            public LoopType LoopType = LoopType.Restart;
             public int      LoopTimes = -1;
             public float    ValueFrom;
             public float    ValueTo;
@@ -107,7 +107,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
             public Option(float valueFrom, float valueTo)
             {
                 this.ValueFrom = valueFrom;
-                this.ValueTo   = valueTo;
+                this.ValueTo = valueTo;
             }
         }
     }

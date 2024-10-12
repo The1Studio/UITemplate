@@ -2,7 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 {
     using Core.AnalyticServices.Data;
 
-    public class SpendVirtualCurrency: IEvent
+    public class SpendVirtualCurrency : IEvent
     {
         public string VirtualCurrencyName;
         public long   Value;

@@ -71,55 +71,44 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Play
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            if (this.View.BtnSkip != null)
-            {
-                this.View.BtnSkip.OnViewReady(this.adService);
-            }
+            if (this.View.BtnSkip != null) this.View.BtnSkip.OnViewReady(this.adService);
 
-            if (this.View.BtnHome != null)
-            {
-                this.View.BtnHome.onClick.AddListener(this.OnOpenHome);
-            }
+            if (this.View.BtnHome != null) this.View.BtnHome.onClick.AddListener(this.OnOpenHome);
 
-            if (this.View.BtnReplay != null)
-            {
-                this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
-            }
+            if (this.View.BtnReplay != null) this.View.BtnReplay.onClick.AddListener(this.OnClickReplay);
 
-            if (this.View.BtnSkip != null)
-            {
-                this.View.BtnSkip.onClick.AddListener(this.OnClickSkip);
-            }
+            if (this.View.BtnSkip != null) this.View.BtnSkip.onClick.AddListener(this.OnClickSkip);
         }
 
         public override UniTask BindData()
         {
-            if (this.View.BtnSkip != null)
-            {
-                this.View.BtnSkip.BindData(this.AdPlacement);
-            }
+            if (this.View.BtnSkip != null) this.View.BtnSkip.BindData(this.AdPlacement);
 
-            if (this.View.LevelText != null)
-            {
-                this.View.LevelText.text = "Level " + levelDataController.GetCurrentLevelData.Level;
-            }
+            if (this.View.LevelText != null) this.View.LevelText.text = "Level " + this.levelDataController.GetCurrentLevelData.Level;
             return UniTask.CompletedTask;
         }
 
         public override void Dispose()
         {
-            if (this.View.BtnSkip != null)
-            {
-                this.View.BtnSkip.Dispose();
-            }
+            if (this.View.BtnSkip != null) this.View.BtnSkip.Dispose();
         }
 
-        protected virtual async void OnOpenHome() { await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>(); }
+        protected virtual async void OnOpenHome()
+        {
+            await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
+        }
 
-        protected virtual void OnClickReplay() { }
+        protected virtual void OnClickReplay()
+        {
+        }
 
-        protected virtual void OnClickSkip() { }
+        protected virtual void OnClickSkip()
+        {
+        }
 
-        protected virtual void OpenNextScene() { this.SceneDirector.LoadSingleSceneAsync(this.NextSceneToLoad); }
+        protected virtual void OpenNextScene()
+        {
+            this.SceneDirector.LoadSingleSceneAsync(this.NextSceneToLoad);
+        }
     }
 }

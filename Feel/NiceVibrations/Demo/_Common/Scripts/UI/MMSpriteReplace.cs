@@ -12,11 +12,10 @@ namespace Lofelt.NiceVibrations
     /// </summary>
     public class MMSpriteReplace : MonoBehaviour
     {
-
         [Header("Sprites")]
-
         /// the sprite to use when in the "on" state
         public Sprite OnSprite;
+
         /// the sprite to use when in the "off" state
         public Sprite OffSprite;
 
@@ -25,18 +24,18 @@ namespace Lofelt.NiceVibrations
         public bool StartsOn = true;
 
         /// the current state of the button
-        public bool CurrentValue { get { return (_image.sprite == OnSprite); } }
+        public bool CurrentValue => this._image.sprite == this.OnSprite;
 
-        protected Image _image;
+        protected Image          _image;
         protected SpriteRenderer _spriteRenderer;
-        protected MMTouchButton _mmTouchButton;
+        protected MMTouchButton  _mmTouchButton;
 
         /// <summary>
         /// On Start we initialize our button
         /// </summary>
         protected virtual void Start()
         {
-            Initialization();
+            this.Initialization();
         }
 
         /// <summary>
@@ -45,44 +44,30 @@ namespace Lofelt.NiceVibrations
         protected virtual void Initialization()
         {
             // grabs components
-            _image = GetComponent<Image>();
-            _spriteRenderer = GetComponent<SpriteRenderer>();
+            this._image          = this.GetComponent<Image>();
+            this._spriteRenderer = this.GetComponent<SpriteRenderer>();
 
             // grabs button
-            _mmTouchButton = GetComponent<MMTouchButton>();
-            if (_mmTouchButton != null)
-            {
-                _mmTouchButton.ReturnToInitialSpriteAutomatically = false;
-            }
+            this._mmTouchButton = this.GetComponent<MMTouchButton>();
+            if (this._mmTouchButton != null) this._mmTouchButton.ReturnToInitialSpriteAutomatically = false;
 
             // handles start
-            if ((OnSprite == null) || (OffSprite == null))
+            if (this.OnSprite == null || this.OffSprite == null) return;
+
+            if (this._image != null)
             {
-                return;
+                if (this.StartsOn)
+                    this._image.sprite = this.OnSprite;
+                else
+                    this._image.sprite = this.OffSprite;
             }
 
-            if (_image != null)
+            if (this._spriteRenderer != null)
             {
-                if (StartsOn)
-                {
-                    _image.sprite = OnSprite;
-                }
+                if (this.StartsOn)
+                    this._spriteRenderer.sprite = this.OnSprite;
                 else
-                {
-                    _image.sprite = OffSprite;
-                }
-            }
-
-            if (_spriteRenderer != null)
-            {
-                if (StartsOn)
-                {
-                    _spriteRenderer.sprite = OnSprite;
-                }
-                else
-                {
-                    _spriteRenderer.sprite = OffSprite;
-                }
+                    this._spriteRenderer.sprite = this.OffSprite;
             }
         }
 
@@ -91,28 +76,20 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void Swap()
         {
-            if (_image != null)
+            if (this._image != null)
             {
-                if (_image.sprite != OnSprite)
-                {
-                    SwitchToOnSprite();
-                }
+                if (this._image.sprite != this.OnSprite)
+                    this.SwitchToOnSprite();
                 else
-                {
-                    SwitchToOffSprite();
-                }
+                    this.SwitchToOffSprite();
             }
 
-            if (_spriteRenderer != null)
+            if (this._spriteRenderer != null)
             {
-                if (_spriteRenderer.sprite != OnSprite)
-                {
-                    SwitchToOnSprite();
-                }
+                if (this._spriteRenderer.sprite != this.OnSprite)
+                    this.SwitchToOnSprite();
                 else
-                {
-                    SwitchToOffSprite();
-                }
+                    this.SwitchToOffSprite();
             }
         }
 
@@ -121,16 +98,10 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void SwitchToOffSprite()
         {
-            if ((_image == null) && (_spriteRenderer == null))
-            {
-                return;
-            }
-            if (OffSprite == null)
-            {
-                return;
-            }
+            if (this._image == null && this._spriteRenderer == null) return;
+            if (this.OffSprite == null) return;
 
-            SpriteOff();
+            this.SpriteOff();
         }
 
         /// <summary>
@@ -138,14 +109,8 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void SpriteOff()
         {
-            if (_image != null)
-            {
-                _image.sprite = OffSprite;
-            }
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.sprite = OffSprite;
-            }
+            if (this._image != null) this._image.sprite                   = this.OffSprite;
+            if (this._spriteRenderer != null) this._spriteRenderer.sprite = this.OffSprite;
         }
 
         /// <summary>
@@ -153,16 +118,10 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void SwitchToOnSprite()
         {
-            if ((_image == null) && (_spriteRenderer == null))
-            {
-                return;
-            }
-            if (OnSprite == null)
-            {
-                return;
-            }
+            if (this._image == null && this._spriteRenderer == null) return;
+            if (this.OnSprite == null) return;
 
-            SpriteOn();
+            this.SpriteOn();
         }
 
         /// <summary>
@@ -170,15 +129,8 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void SpriteOn()
         {
-
-            if (_image != null)
-            {
-                _image.sprite = OnSprite;
-            }
-            if (_spriteRenderer != null)
-            {
-                _spriteRenderer.sprite = OnSprite;
-            }
+            if (this._image != null) this._image.sprite                   = this.OnSprite;
+            if (this._spriteRenderer != null) this._spriteRenderer.sprite = this.OnSprite;
         }
     }
 }

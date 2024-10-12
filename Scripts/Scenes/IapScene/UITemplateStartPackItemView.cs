@@ -25,14 +25,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         private readonly LoadImageHelper loadImageHelper;
 
         [Preserve]
-        public UITemplateStartPackItemPresenter(IGameAssets gameAssets, LoadImageHelper loadImageHelper) : base(gameAssets) { this.loadImageHelper = loadImageHelper; }
+        public UITemplateStartPackItemPresenter(IGameAssets gameAssets, LoadImageHelper loadImageHelper) : base(gameAssets)
+        {
+            this.loadImageHelper = loadImageHelper;
+        }
 
         public override async void BindData(UITemplateStartPackItemModel param)
         {
-            if (!param.IconAddress.IsNullOrEmpty())
-            {
-                this.View.imgIcon.sprite = await this.loadImageHelper.LoadLocalSprite(param.IconAddress);
-            }
+            if (!param.IconAddress.IsNullOrEmpty()) this.View.imgIcon.sprite = await this.loadImageHelper.LoadLocalSprite(param.IconAddress);
 
             this.View.txtValue.text = $"{param.Value}";
         }

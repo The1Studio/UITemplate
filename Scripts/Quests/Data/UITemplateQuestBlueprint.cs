@@ -88,6 +88,9 @@ namespace TheOneStudio.UITemplate.Quests.Data
         public List<ICondition>      ResetConditions    { get; [Preserve] private set; }
         public List<IRedirectTarget> Target             { get; [Preserve] private set; }
 
-        public bool HasTag(string tag) => this.Tags.Contains(tag);
+        public bool HasTag(string tag)
+        {
+            return this.Tags.Contains(tag);
+        }
     }
 }

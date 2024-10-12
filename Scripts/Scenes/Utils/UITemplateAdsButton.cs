@@ -10,11 +10,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
         private UITemplateAdServiceWrapper adServices;
         private CancellationTokenSource    cts;
 
-        public void OnViewReady(UITemplateAdServiceWrapper adService) { this.adServices = adService; }
+        public void OnViewReady(UITemplateAdServiceWrapper adService)
+        {
+            this.adServices = adService;
+        }
 
         public void BindData(string place)
         {
-            this.cts          = new CancellationTokenSource();
+            this.cts          = new();
             this.interactable = false;
             UniTask.WaitUntil(() => this.adServices.IsRewardedAdReady(place), cancellationToken: this.cts.Token).ContinueWith(() => this.interactable = true);
         }

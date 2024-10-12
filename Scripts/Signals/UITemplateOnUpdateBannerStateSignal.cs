@@ -3,7 +3,7 @@
     public class UITemplateOnUpdateBannerStateSignal
     {
         public bool IsActive;
-        
+
         public UITemplateOnUpdateBannerStateSignal(bool isActive)
         {
             this.IsActive = isActive;

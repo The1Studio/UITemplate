@@ -4,6 +4,5 @@
 
     public class FirstOpenEvent : IEvent
     {
-        
     }
 }

@@ -4,7 +4,10 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
 
     public abstract class BaseCondition : ICondition
     {
-        ICondition.IProgress ICondition.SetupProgress() => this.SetupProgress();
+        ICondition.IProgress ICondition.SetupProgress()
+        {
+            return this.SetupProgress();
+        }
 
         protected abstract ICondition.IProgress SetupProgress();
 
@@ -24,8 +27,15 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
                 float ICondition.IProgress.IHandler.CurrentProgress => this.CurrentProgress;
                 float ICondition.IProgress.IHandler.MaxProgress     => this.MaxProgress;
 
-                void ICondition.IProgress.IHandler.Initialize() => this.Initialize();
-                void ICondition.IProgress.IHandler.Dispose()    => this.Dispose();
+                void ICondition.IProgress.IHandler.Initialize()
+                {
+                    this.Initialize();
+                }
+
+                void ICondition.IProgress.IHandler.Dispose()
+                {
+                    this.Dispose();
+                }
 
                 protected TCondition Condition { get; private set; }
                 protected TProgress  Progress  { get; private set; }
@@ -33,8 +43,13 @@ namespace TheOneStudio.UITemplate.Quests.Conditions
                 protected abstract float CurrentProgress { get; }
                 protected abstract float MaxProgress     { get; }
 
-                protected virtual void Initialize() { }
-                protected virtual void Dispose()    { }
+                protected virtual void Initialize()
+                {
+                }
+
+                protected virtual void Dispose()
+                {
+                }
             }
         }
     }

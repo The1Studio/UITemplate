@@ -25,7 +25,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             "org.nuget",
             "com.github-glitchenzo",
             "jp.hadashikick.vcontainer",
-            "com.theone"
+            "com.theone",
         };
 
         [NonSerialized]
@@ -50,13 +50,13 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         {
             { "com.google.ads.mobile", "9.2.0" },
             { "com.unity.purchasing", "4.12.2" },
-            { "com.cysharp.unitask", "2.5.10" }
+            { "com.cysharp.unitask", "2.5.10" },
         };
 
         [NonSerialized]
         private static readonly Dictionary<(string, string), string> NameToUnityPackageToImport = new()
         {
-            { ("BuildScripts", "Assets/BuildScripts"), "https://cdn.builds.the1studio.org/packages/GameVersionRuntime.unitypackage" }
+            { ("BuildScripts", "Assets/BuildScripts"), "https://cdn.builds.the1studio.org/packages/GameVersionRuntime.unitypackage" },
         };
 
         [NonSerialized]
@@ -78,45 +78,36 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         {
             if (manifest["dependencies"] is not JObject dependencies)
             {
-                dependencies             = new JObject();
+                dependencies             = new();
                 manifest["dependencies"] = dependencies;
             }
 
             var updated = false;
             // Add the new packages
             foreach (var package in PackagesToAdd)
-            {
                 if (!dependencies.ContainsKey(package.Key) || !dependencies[package.Key]!.ToString().Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;
                 }
-            }
 
             // Remove the packages
             foreach (var package in PackagesToRemove)
-            {
                 if (dependencies.ContainsKey(package))
                 {
                     dependencies.Remove(package);
                     updated = true;
                 }
-            }
 
             // Change package version
             foreach (var package in PackagesVersionToUse)
-            {
                 if (dependencies.ContainsKey(package.Key) && !dependencies[package.Key]!.ToString().Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;
                 }
-            }
 
-            if (updated)
-            {
-                Debug.Log("Updated manifest.json with new packages and removed old packages.");
-            }
+            if (updated) Debug.Log("Updated manifest.json with new packages and removed old packages.");
 
             return updated;
         }
@@ -138,18 +129,18 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         {
             if (manifest["scopedRegistries"] is not JArray scopedRegistries)
             {
-                scopedRegistries             = new JArray();
+                scopedRegistries             = new();
                 manifest["scopedRegistries"] = scopedRegistries;
             }
 
             var openUpmRegistry = scopedRegistries.FirstOrDefault(r => r["name"]?.ToString() == OpenUpmRegistryName) as JObject;
             if (openUpmRegistry == null)
             {
-                openUpmRegistry = new JObject
+                openUpmRegistry = new()
                 {
                     ["name"]   = OpenUpmRegistryName,
                     ["url"]    = OpenUpmRegistryUrl,
-                    ["scopes"] = new JArray()
+                    ["scopes"] = new JArray(),
                 };
                 scopedRegistries.Add(openUpmRegistry);
             }
@@ -157,11 +148,11 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             var scopes = openUpmRegistry["scopes"] as JArray;
             if (scopes == null)
             {
-                scopes                    = new JArray();
+                scopes                    = new();
                 openUpmRegistry["scopes"] = scopes;
             }
 
-            bool updated = false;
+            var updated = false;
             foreach (var scope in RequiredScopes)
             {
                 var trimmedScope = scope.Trim().ToLower();
@@ -172,10 +163,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                 }
             }
 
-            if (updated)
-            {
-                Debug.Log("Updated manifest.json with new packages and missing OpenUPM scopes.");
-            }
+            if (updated) Debug.Log("Updated manifest.json with new packages and missing OpenUPM scopes.");
 
             return updated;
         }

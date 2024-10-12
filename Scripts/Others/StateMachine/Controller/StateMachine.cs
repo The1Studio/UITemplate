@@ -22,8 +22,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
 
         protected StateMachine(
             List<IState> listState,
-            ILogService logService,
-            SignalBus signalBus
+            ILogService  logService,
+            SignalBus    signalBus
         )
         {
             this.LogService  = logService;
@@ -33,7 +33,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
 
         public IState CurrentState { get; private set; }
 
-        public void TransitionTo<T>() where T : class, IState { this.TransitionTo(typeof(T)); }
+        public void TransitionTo<T>() where T : class, IState
+        {
+            this.TransitionTo(typeof(T));
+        }
 
         public void TransitionTo<TState, TModel>(TModel model) where TState : class, IState<TModel>
         {

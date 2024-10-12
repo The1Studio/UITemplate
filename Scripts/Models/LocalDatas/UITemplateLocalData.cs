@@ -8,7 +8,10 @@
     {
         Type IUITemplateLocalData.ControllerType => typeof(TController);
 
-        void ILocalData.Init() => this.Init();
+        void ILocalData.Init()
+        {
+            this.Init();
+        }
 
         protected virtual void Init()
         {

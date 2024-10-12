@@ -38,14 +38,38 @@
 
         private void Awake()
         {
-            this.btnBuyCoin.onClick.AddListener(() => { this.OnBuyCoin?.Invoke(); });
-            this.btnBuyAds.onClick.AddListener(() => { this.OnBuyAds?.Invoke(); });
-            this.btnBuyIap.onClick.AddListener(() => { this.OnBuyIap?.Invoke(); });
-            this.btnSelect.onClick.AddListener(() => { this.OnSelect?.Invoke(); });
-            this.btnUse.onClick.AddListener(() => { this.OnUse?.Invoke(); });
-            this.btnDailyReward.onClick.AddListener(() => { this.OnBuyDailyReward?.Invoke(); });
-            this.btnLuckySpin.onClick.AddListener(() => { this.OnBuyLuckySpin?.Invoke(); });
-            this.btnStartPack.onClick.AddListener(() => { this.OnBuyStartPack?.Invoke(); });
+            this.btnBuyCoin.onClick.AddListener(() =>
+            {
+                this.OnBuyCoin?.Invoke();
+            });
+            this.btnBuyAds.onClick.AddListener(() =>
+            {
+                this.OnBuyAds?.Invoke();
+            });
+            this.btnBuyIap.onClick.AddListener(() =>
+            {
+                this.OnBuyIap?.Invoke();
+            });
+            this.btnSelect.onClick.AddListener(() =>
+            {
+                this.OnSelect?.Invoke();
+            });
+            this.btnUse.onClick.AddListener(() =>
+            {
+                this.OnUse?.Invoke();
+            });
+            this.btnDailyReward.onClick.AddListener(() =>
+            {
+                this.OnBuyDailyReward?.Invoke();
+            });
+            this.btnLuckySpin.onClick.AddListener(() =>
+            {
+                this.OnBuyLuckySpin?.Invoke();
+            });
+            this.btnStartPack.onClick.AddListener(() =>
+            {
+                this.OnBuyStartPack?.Invoke();
+            });
         }
     }
 
@@ -54,8 +78,11 @@
         private readonly UITemplateCollectionItemViewHelper uiTemplateCollectionItemViewHelper;
 
         [Preserve]
-        public ItemCollectionItemPresenter(IGameAssets gameAssets, UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateCollectionItemViewHelper uiTemplateCollectionItemViewHelper) : base(gameAssets)
+        public ItemCollectionItemPresenter(
+            IGameAssets                        gameAssets,
+            UITemplateInventoryDataController  uiTemplateInventoryDataController,
+            UITemplateCollectionItemViewHelper uiTemplateCollectionItemViewHelper
+        ) : base(gameAssets)
         {
             this.uiTemplateCollectionItemViewHelper = uiTemplateCollectionItemViewHelper;
         }

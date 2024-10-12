@@ -6,36 +6,36 @@ using UnityEditor;
 
 namespace HeurekaGames.Utils
 {
-    [System.Serializable]
+    [Serializable]
     public class Heureka_PackageData : ScriptableObject
     {
-        public Texture Icon;
-        public int PackageShowPrio;
-        public string AssetName;
-        public string Subheader;
-        public string AssetIdentifier;
-        public string Description;
-        public List<PackageLinks> Links = new List<PackageLinks>();
+        public Texture            Icon;
+        public int                PackageShowPrio;
+        public string             AssetName;
+        public string             Subheader;
+        public string             AssetIdentifier;
+        public string             Description;
+        public List<PackageLinks> Links = new();
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct PackageLinks
     {
-        public bool ActiveLink;
+        public bool   ActiveLink;
         public string Name;
         public string Link;
 
         public PackageLinks(string Name, string Link)
         {
-            this.Name = Name;
-            this.Link = Link;
+            this.Name       = Name;
+            this.Link       = Link;
             this.ActiveLink = true;
         }
 
         public PackageLinks(string Name, string Link, bool LinkActive)
         {
-            this.Name = Name;
-            this.Link = Link;
+            this.Name       = Name;
+            this.Link       = Link;
             this.ActiveLink = LinkActive;
         }
     }

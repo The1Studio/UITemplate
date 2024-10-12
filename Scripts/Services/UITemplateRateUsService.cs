@@ -57,10 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             if (this.storeRatingHandler.IsRated) return false;
 
             if (this.uiTemplateGameSessionDataController.OpenTime < this.gameFeaturesSetting.RateUsConfig.SessionToShow) return false;
-            if (this.gameFeaturesSetting.RateUsConfig.isCustomScreenTrigger)
-            {
-                return this.gameFeaturesSetting.RateUsConfig.screenTriggerIds.Contains(screenPresenter.GetType().Name);
-            }
+            if (this.gameFeaturesSetting.RateUsConfig.isCustomScreenTrigger) return this.gameFeaturesSetting.RateUsConfig.screenTriggerIds.Contains(screenPresenter.GetType().Name);
 
             return true; // Show everywhere
         }

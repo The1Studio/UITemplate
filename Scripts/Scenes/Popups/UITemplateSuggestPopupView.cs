@@ -15,29 +15,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 
     public class UITemplateSuggestPopupView : BaseView
     {
-        [SerializeField]
-        private TMP_Text textItemName;
+        [SerializeField] private TMP_Text textItemName;
 
-        [SerializeField]
-        private Image imageItemIcon;
+        [SerializeField] private Image imageItemIcon;
 
-        [SerializeField]
-        private Button buttonClaim;
+        [SerializeField] private Button buttonClaim;
 
-        [SerializeField]
-        private Button buttonClose;
+        [SerializeField] private Button buttonClose;
 
-        public string ItemName
-        {
-            get => this.textItemName.text;
-            set => this.textItemName.text = value;
-        }
+        public string ItemName { get => this.textItemName.text; set => this.textItemName.text = value; }
 
-        public Sprite ItemIcon
-        {
-            get => this.imageItemIcon.sprite;
-            set => this.imageItemIcon.sprite = value;
-        }
+        public Sprite ItemIcon { get => this.imageItemIcon.sprite; set => this.imageItemIcon.sprite = value; }
 
         public Button ButtonClaim => this.buttonClaim;
 
@@ -51,7 +39,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
         public string ItemName { get; set; }
     }
 
-
     [PopupInfo(nameof(UITemplateSuggestPopupView))]
     public class UITemplateSuggestPopupPresenter : UITemplateBasePopupPresenter<UITemplateSuggestPopupView, UITemplateSuggestPopupModel>
     {
@@ -61,10 +48,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
         private readonly UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
 
         [Preserve]
-        public UITemplateSuggestPopupPresenter(SignalBus                  signalBus,
-                                               ILogService                logger,
-                                               IGameAssets                gameAssets,
-                                               UITemplateAdServiceWrapper uiTemplateAdServiceWrapper)
+        public UITemplateSuggestPopupPresenter(
+            SignalBus                  signalBus,
+            ILogService                logger,
+            IGameAssets                gameAssets,
+            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper
+        )
             : base(signalBus, logger)
         {
             this.gameAssets                 = gameAssets;

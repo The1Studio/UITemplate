@@ -16,8 +16,15 @@
 
         #endregion
 
-        public static void GachaItemWithTimer<T>(this List<T> items, IDisposable randomTimerDispose, Action<T> onComplete, Action<T> everyCycle, float currentCooldownTime = 1f,
-            float currentCycle = 0.5f, int finalItemIndex = -1)
+        public static void GachaItemWithTimer<T>(
+            this List<T> items,
+            IDisposable  randomTimerDispose,
+            Action<T>    onComplete,
+            Action<T>    everyCycle,
+            float        currentCooldownTime = 1f,
+            float        currentCycle        = 0.5f,
+            int          finalItemIndex      = -1
+        )
         {
             randomTimerDispose = Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(currentCycle)).Subscribe(_ =>
             {
@@ -35,12 +42,12 @@
                 currentCooldownTime -= currentCycle;
             });
         }
-        
+
         public static T RandomGachaWithWeight<T>(this IDictionary<T, int> dictionary, int defaultElementIndex = 0)
         {
             return dictionary.Keys.ToList().RandomGachaWithWeight(dictionary.Values.Select(weight => weight * 1f).ToList());
         }
-        
+
         public static T RandomGachaWithWeight<T>(this IDictionary<T, float> dictionary, int defaultElementIndex = 0)
         {
             return dictionary.Keys.ToList().RandomGachaWithWeight(dictionary.Values.ToList());
@@ -49,10 +56,7 @@
         public static T RandomGachaWithWeight<T>(this IList<T> elements, IList<float> weights, int defaultElementIndex = 0)
         {
             // Validate input
-            if (elements == null || weights == null || elements.Count != weights.Count || elements.Count == 0)
-            {
-                throw new ArgumentException("Invalid input");
-            }
+            if (elements == null || weights == null || elements.Count != weights.Count || elements.Count == 0) throw new ArgumentException("Invalid input");
 
             // Normalize weights
             var sum               = weights.Sum();
@@ -65,10 +69,7 @@
             // Select element based on weights
             for (var i = 0; i < elements.Count; i++)
             {
-                if (randomNumber < normalizedWeights[i])
-                {
-                    return elements[i];
-                }
+                if (randomNumber < normalizedWeights[i]) return elements[i];
 
                 randomNumber -= normalizedWeights[i];
             }
@@ -76,11 +77,14 @@
             return elements[defaultElementIndex];
         }
 
-        public static bool IsNullOrEmpty(this string str) { return string.IsNullOrEmpty(str); }
+        public static bool IsNullOrEmpty(this string str)
+        {
+            return string.IsNullOrEmpty(str);
+        }
 
         public static Vector3 RandomPointInBounds(this Bounds bounds)
         {
-            return new Vector3(
+            return new(
                 Random.Range(bounds.min.x, bounds.max.x),
                 Random.Range(bounds.min.y, bounds.max.y),
                 Random.Range(bounds.min.z, bounds.max.z)
@@ -89,7 +93,7 @@
 
         public static Vector2 Random2DPointInBounds(this Bounds bounds)
         {
-            return new Vector2(
+            return new(
                 Random.Range(bounds.min.x, bounds.max.x),
                 Random.Range(bounds.min.y, bounds.max.y)
             );
@@ -136,12 +140,14 @@
             var z     = angle.z;
 
             if (Vector3.Dot(transform.up, Vector3.up) >= 0f)
-            {
-                x = angle.x switch { >= 0f and <= 90f => angle.x, >= 270f and <= 360f => angle.x - 360f, _ => x };
-            }
+                x = angle.x switch
+                {
+                    >= 0f and <= 90f    => angle.x,
+                    >= 270f and <= 360f => angle.x - 360f,
+                    _                   => x,
+                };
 
             if (Vector3.Dot(transform.up, Vector3.up) < 0f)
-            {
                 switch (angle.x)
                 {
                     case >= 0f and <= 90f:
@@ -150,19 +156,12 @@
 
                         break;
                 }
-            }
 
-            if (angle.y > 180)
-            {
-                y = angle.y - 360f;
-            }
+            if (angle.y > 180) y = angle.y - 360f;
 
-            if (angle.z > 180)
-            {
-                z = angle.z - 360f;
-            }
+            if (angle.z > 180) z = angle.z - 360f;
 
-            return new Vector3(x, y, z);
+            return new(x, y, z);
         }
     }
 }

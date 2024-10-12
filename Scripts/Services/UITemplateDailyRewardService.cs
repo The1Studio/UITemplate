@@ -51,9 +51,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.gameFeaturesSetting             = gameFeaturesSetting;
         }
 
-        public void Initialize() { this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+        }
 
-        private bool IsFirstOpenGame() { return this.sessionDataController.OpenTime == 1; }
+        private bool IsFirstOpenGame()
+        {
+            return this.sessionDataController.OpenTime == 1;
+        }
 
         public UniTask ShowDailyRewardPopupAsync(bool force = false)
         {
@@ -65,22 +71,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             if (!force)
             {
-                if (!this.canShowReward)
-                    return;
+                if (!this.canShowReward) return;
 
-                if (!this.gameFeaturesSetting.DailyRewardConfig.showOnFirstOpen &&
-                    this.IsFirstOpenGame())
+                if (!this.gameFeaturesSetting.DailyRewardConfig.showOnFirstOpen && this.IsFirstOpenGame())
                 {
                     this.canShowReward = false;
                     return;
                 }
 
-                if (!this.uiTemplateDailyRewardController.CanClaimReward)
-                    return;
+                if (!this.uiTemplateDailyRewardController.CanClaimReward) return;
             }
 
             this.notificationServices.SetupCustomNotification(this.gameFeaturesSetting.DailyRewardConfig.notificationId);
-            this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new UITemplateDailyRewardPopupModel());
+            this.gameQueueActionContext.AddScreenToQueueAction<UITemplateDailyRewardPopupPresenter, UITemplateDailyRewardPopupModel>(new());
         }
 
         private async void OnScreenShow(ScreenShowSignal obj)
@@ -95,10 +98,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private bool IsScreenCanShowDailyReward(IScreenPresenter screenPresenter)
         {
-            if (this.gameFeaturesSetting.DailyRewardConfig.isCustomScreenTrigger)
-            {
-                return this.gameFeaturesSetting.DailyRewardConfig.screenTriggerIds.Contains(screenPresenter.GetType().Name);
-            }
+            if (this.gameFeaturesSetting.DailyRewardConfig.isCustomScreenTrigger) return this.gameFeaturesSetting.DailyRewardConfig.screenTriggerIds.Contains(screenPresenter.GetType().Name);
 
             return screenPresenter is UITemplateHomeSimpleScreenPresenter or UITemplateHomeTapToPlayScreenPresenter;
         }

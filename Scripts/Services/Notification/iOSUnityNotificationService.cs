@@ -1,5 +1,4 @@
 ﻿#if THEONE_NOTIFICATION && UNITY_IOS
-
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using Core.AnalyticServices;
@@ -39,8 +38,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             var notification = new iOSNotification()
             {
-                Title   = title,
-                Body    = body,
+                Title = title,
+                Body = body,
                 Trigger = new iOSNotificationTimeIntervalTrigger() { TimeInterval = delayTime }
             };
             iOSNotificationCenter.ScheduleNotification(notification);

@@ -18,13 +18,11 @@ namespace TheOne.Tool.Optimization.Texture.MenuItems
         {
             var filePaths = new List<string>();
             foreach (var obj in Selection.objects)
-            {
                 if (obj is Texture)
                 {
                     var path = AssetDatabase.GetAssetPath(obj);
                     filePaths.Add(path);
                 }
-            }
             TinyPngCompressor.CompressTextures(filePaths).Forget();
         }
     }

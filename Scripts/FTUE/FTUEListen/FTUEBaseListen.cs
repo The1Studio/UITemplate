@@ -10,13 +10,17 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
         protected readonly SignalBus               SignalBus;
         protected readonly UITemplateFTUEBlueprint FtueBlueprint;
 
-        protected FTUEBaseListen(SignalBus signalBus,UITemplateFTUEBlueprint ftueBlueprint)
+        protected FTUEBaseListen(SignalBus signalBus, UITemplateFTUEBlueprint ftueBlueprint)
         {
             this.SignalBus     = signalBus;
             this.FtueBlueprint = ftueBlueprint;
         }
 
-        public             void Initialize() { this.InitInternal(); }
+        public void Initialize()
+        {
+            this.InitInternal();
+        }
+
         protected abstract void InitInternal();
 
         protected void FireFtueTriggerSignal(string ftueId)

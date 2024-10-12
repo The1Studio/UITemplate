@@ -8,7 +8,7 @@
     using UnityEngine.Scripting;
 
     [Preserve]
-    public class UITemplateDailyRewardData : ILocalData,IUITemplateLocalData
+    public class UITemplateDailyRewardData : ILocalData, IUITemplateLocalData
     {
         [OdinSerialize] public List<RewardStatus> RewardStatus        { get; set; } = new();
         [OdinSerialize] public DateTime           LastRewardedDate    { get; set; }

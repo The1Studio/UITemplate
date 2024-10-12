@@ -103,37 +103,47 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         protected virtual void OnClickUnlockRandomButton()
         {
-            this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () =>
-            {
-                this.eventSystem.enabled = false;
-                var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
-
-                var collectionModel = this.itemCollectionItemModels
-                    .Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory) && !this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id)).ToList();
-
-                foreach (var model in this.itemCollectionItemModels) model.IndexItemSelected = -1;
-
-                var maxTime = collectionModel.Count == 1 ? 0.3f : 3;
-
-                collectionModel.GachaItemWithTimer(this.randomTimerDispose, model =>
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement,
+                () =>
                 {
-                    foreach (var itemCollectionItemModel in collectionModel) itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+                    this.eventSystem.enabled = false;
+                    var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
 
-                    this.OnRandomItemComplete(model);
-                    this.BuyItemCompleted(model);
-                    this.eventSystem.enabled = true;
-                }, model =>
-                {
-                    foreach (var itemCollectionItemModel in collectionModel) itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+                    var collectionModel = this.itemCollectionItemModels
+                        .Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory) && !this.uiTemplateInventoryDataController.HasItem(x.ItemData.Id)).ToList();
 
-                    this.View.itemCollectionGridAdapter.Refresh();
-                }, maxTime, 0.1f);
-            });
+                    foreach (var model in this.itemCollectionItemModels) model.IndexItemSelected = -1;
+
+                    var maxTime = collectionModel.Count == 1 ? 0.3f : 3;
+
+                    collectionModel.GachaItemWithTimer(this.randomTimerDispose,
+                        model =>
+                        {
+                            foreach (var itemCollectionItemModel in collectionModel) itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+
+                            this.OnRandomItemComplete(model);
+                            this.BuyItemCompleted(model);
+                            this.eventSystem.enabled = true;
+                        },
+                        model =>
+                        {
+                            foreach (var itemCollectionItemModel in collectionModel) itemCollectionItemModel.IndexItemSelected = model.ItemIndex;
+
+                            this.View.itemCollectionGridAdapter.Refresh();
+                        },
+                        maxTime,
+                        0.1f);
+                });
         }
 
-        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model) { }
+        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model)
+        {
+        }
 
-        protected virtual async void OnClickHomeButton() { await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>(); }
+        protected virtual async void OnClickHomeButton()
+        {
+            await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
+        }
 
         private void PrePareModel()
         {
@@ -149,7 +159,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
                 var model = new ItemCollectionItemModel
                 {
-                    OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, OnUseItem = this.OnUseItem, ItemData = itemData
+                    OnBuyItem = this.OnBuyItem, OnSelectItem = this.OnSelectItem, OnUseItem = this.OnUseItem, ItemData = itemData,
                 };
 
                 this.itemCollectionItemModels.Add(model);
@@ -168,7 +178,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             {
                 var icon = await this.gameAssets.LoadAssetAsync<Sprite>(record.Icon);
 
-                this.topButtonItemModels.Add(new TopButtonItemModel { Title = record.Title, Icon = icon, OnSelected = this.OnButtonCategorySelected, SelectedIndex = this.currentSelectedCategoryIndex, Index = index });
+                this.topButtonItemModels.Add(new() { Title = record.Title, Icon = icon, OnSelected = this.OnButtonCategorySelected, SelectedIndex = this.currentSelectedCategoryIndex, Index = index });
 
                 index++;
             }
@@ -232,7 +242,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.itemCollectionGridAdapter.Refresh();
         }
 
-        protected virtual void OnUsedItem(UITemplateItemData itemData) { }
+        protected virtual void OnUsedItem(UITemplateItemData itemData)
+        {
+        }
 
         private void OnSelectItem(ItemCollectionItemModel obj)
         {
@@ -247,7 +259,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.itemCollectionGridAdapter.Refresh();
         }
 
-        protected virtual void OnSelectedItem(UITemplateItemData itemData) { }
+        protected virtual void OnSelectedItem(UITemplateItemData itemData)
+        {
+        }
 
         private void OnBuyItem(ItemCollectionItemModel obj)
         {
@@ -261,8 +275,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                     this.BuyWithSoftCurrency(obj);
 
                     break;
-                case UITemplateItemData.UnlockType.None:
-                    break;
+                case UITemplateItemData.UnlockType.None: break;
                 case UITemplateItemData.UnlockType.IAP:
                     this.BuyWithIAP(obj);
 
@@ -272,10 +285,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
                     break;
 
-                case UITemplateItemData.UnlockType.Progression:
-                    break;
-                case UITemplateItemData.UnlockType.Gift:
-                    break;
+                case UITemplateItemData.UnlockType.Progression: break;
+                case UITemplateItemData.UnlockType.Gift:        break;
                 case UITemplateItemData.UnlockType.DailyReward:
                     this.BuyWithDailyReward(obj);
 
@@ -284,22 +295,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                     this.BuyWithLuckySpin(obj);
 
                     break;
-                case UITemplateItemData.UnlockType.All:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                case UITemplateItemData.UnlockType.All: break;
+                default:                                throw new ArgumentOutOfRangeException();
             }
         }
 
         private void BuyWithStartedPack(ItemCollectionItemModel itemCollectionItemModel)
         {
-            this.ScreenManager.OpenScreen<UITemplateStartPackScreenPresenter, UITemplateStaterPackModel>(new UITemplateStaterPackModel()
+            this.ScreenManager.OpenScreen<UITemplateStartPackScreenPresenter, UITemplateStaterPackModel>(new()
             {
-                OnComplete = this.OnBuyStartedPackComplete
+                OnComplete = this.OnBuyStartedPackComplete,
             });
         }
 
-        protected virtual void OnBuyStartedPackComplete(string packId) { }
+        protected virtual void OnBuyStartedPackComplete(string packId)
+        {
+        }
 
         public override void Dispose()
         {
@@ -348,18 +359,29 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.BuyItemCompleted(obj);
         }
 
-        private void BuyWithAds(ItemCollectionItemModel obj) { this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement, () => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithAds(ItemCollectionItemModel obj)
+        {
+            this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement,
+                () =>
+                {
+                    this.BuyItemCompleted(obj);
+                });
+        }
 
-        private void BuyWithIAP(ItemCollectionItemModel obj) { this.iapServices.BuyProductID(obj.ShopBlueprintRecord.Id, x => { this.BuyItemCompleted(obj); }); }
+        private void BuyWithIAP(ItemCollectionItemModel obj)
+        {
+            this.iapServices.BuyProductID(obj.ShopBlueprintRecord.Id,
+                x =>
+                {
+                    this.BuyItemCompleted(obj);
+                });
+        }
 
         private void BuyItemCompleted(ItemCollectionItemModel obj)
         {
             obj.ItemData.RemainingAdsProgress--;
 
-            if (obj.ItemData.RemainingAdsProgress > 0)
-            {
-                return;
-            }
+            if (obj.ItemData.RemainingAdsProgress > 0) return;
             this.uiTemplateInventoryDataController.SetOwnedItemData(obj.ItemData, true);
             this.OnUseItem(obj);
         }

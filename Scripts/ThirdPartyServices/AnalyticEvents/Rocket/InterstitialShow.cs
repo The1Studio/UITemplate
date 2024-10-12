@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
     {
         public int    level;
         public string placement;
+
         public InterstitialShow(int level, string placement)
         {
             this.level     = level;

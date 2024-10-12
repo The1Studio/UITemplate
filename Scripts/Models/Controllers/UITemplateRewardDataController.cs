@@ -12,7 +12,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateRewardData uiTemplateRewardData;
 
         [Preserve]
-        public UITemplateRewardDataController(UITemplateRewardData uiTemplateRewardData) { this.uiTemplateRewardData = uiTemplateRewardData; }
+        public UITemplateRewardDataController(UITemplateRewardData uiTemplateRewardData)
+        {
+            this.uiTemplateRewardData = uiTemplateRewardData;
+        }
 
         public void AddRepeatedReward(string packID, Dictionary<string, UITemplateRewardItemData> rewardIdToData)
         {
@@ -24,9 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 if (rewardData.Repeat <= 0) continue;
 
                 if (storedRewardIdToData.TryGetValue(rewardId, out var currentRewardData))
-                {
                     currentRewardData.RewardValue += rewardData.RewardValue;
-                }
                 else
                 {
                     rewardData.LastTimeReceive = DateTime.Now;

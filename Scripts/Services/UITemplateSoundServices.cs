@@ -12,15 +12,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public string CurrentPlayList { get; private set; }
 
-        public virtual void PlaySoundWin() => this.PlaySound(this.KeySoundWin);
+        public virtual void PlaySoundWin()
+        {
+            this.PlaySound(this.KeySoundWin);
+        }
 
-        public virtual void PlaySoundLose() => this.PlaySound(this.KeySoundLose);
+        public virtual void PlaySoundLose()
+        {
+            this.PlaySound(this.KeySoundLose);
+        }
 
-        public virtual void PlaySoundClick() => this.PlaySound(this.KeySoundClick);
+        public virtual void PlaySoundClick()
+        {
+            this.PlaySound(this.KeySoundClick);
+        }
 
-        public void PlaySound(string key) { AudioService.Instance.PlaySound(key); }
+        public void PlaySound(string key)
+        {
+            AudioService.Instance.PlaySound(key);
+        }
 
-        public void StopSound(string key) { AudioService.Instance.StopAllSound(); }
+        public void StopSound(string key)
+        {
+            AudioService.Instance.StopAllSound();
+        }
 
         public void PlayMusic(string playList)
         {

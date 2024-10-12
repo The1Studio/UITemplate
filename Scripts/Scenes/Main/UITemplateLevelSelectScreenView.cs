@@ -44,7 +44,10 @@
             this.View.HomeButton.onClick.AddListener(this.OnClickHome);
         }
 
-        protected virtual void OnClickHome() { this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>(); }
+        protected virtual void OnClickHome()
+        {
+            this.screenManager.OpenScreen<UITemplateHomeSimpleScreenPresenter>();
+        }
 
         public override async UniTask BindData()
         {
@@ -54,7 +57,10 @@
             this.View.LevelGridAdapter.SmoothScrollTo(currentLevel, 1);
         }
 
-        private List<LevelData> getLevelList() { return this.uiTemplateLevelDataController.GetAllLevels(); }
+        private List<LevelData> getLevelList()
+        {
+            return this.uiTemplateLevelDataController.GetAllLevels();
+        }
 
         #region inject
 

@@ -2,7 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 {
     using Core.AnalyticServices.Data;
 
-    public class AdsRewardShow: IEvent
+    public class AdsRewardShow : IEvent
     {
         public string Placement;
 

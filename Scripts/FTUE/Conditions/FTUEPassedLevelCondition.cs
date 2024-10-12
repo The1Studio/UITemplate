@@ -22,6 +22,9 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 
         public override string Id => "passed_level";
 
-        protected override bool IsPassedCondition(FTUEPassedLevelConditionModel data) => this.uiTemplateLevelDataController.CurrentLevel >= data.Level;
+        protected override bool IsPassedCondition(FTUEPassedLevelConditionModel data)
+        {
+            return this.uiTemplateLevelDataController.CurrentLevel >= data.Level;
+        }
     }
 }

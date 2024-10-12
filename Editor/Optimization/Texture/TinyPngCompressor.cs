@@ -16,9 +16,9 @@ namespace TheOne.Tool.Optimization.Texture
         // Method to start the compression process for a list of textures
         public static async UniTaskVoid CompressTextures(List<string> filePaths)
         {
-            var           skippedCount     = 0;
-            var           compressedCount  = 0;
-            List<UniTask> compressionTasks = new List<UniTask>();
+            var skippedCount     = 0;
+            var compressedCount  = 0;
+            var compressionTasks = new List<UniTask>();
 
             foreach (var filePath in filePaths)
             {
@@ -67,17 +67,13 @@ namespace TheOne.Tool.Optimization.Texture
                 await DownloadCompressedImage(url, savePath);
             }
             else
-            {
                 Debug.LogError("Error compressing " + filePath + ": " + request.error);
-            }
         }
 
         private static byte[] ImageToByteArray(string filePath)
         {
             if (File.Exists(filePath))
-            {
                 return File.ReadAllBytes(filePath);
-            }
             else
             {
                 Debug.LogError("File does not exist: " + filePath);
@@ -97,9 +93,7 @@ namespace TheOne.Tool.Optimization.Texture
                 Debug.Log("Compressed image saved to " + savePath);
             }
             else
-            {
                 Debug.LogError("Failed to download compressed image: " + request.error);
-            }
         }
 
         private static string ExtractUrlFromResponse(string jsonResponse)

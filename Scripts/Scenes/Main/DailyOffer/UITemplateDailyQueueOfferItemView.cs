@@ -73,7 +73,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
         )
             : base(gameAssets)
         {
-            this.adServiceWrapper              = adServiceWrapper;
+            this.adServiceWrapper = adServiceWrapper;
             this.dailyQueueOfferDataController = dailyQueueOfferDataController;
         }
 
@@ -86,13 +86,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
 
         public override void BindData(UITemplateDailyQueueOfferItemModel param)
         {
-            this.View.ClickClaim    = this.OnClickClaim;
+            this.View.ClickClaim = this.OnClickClaim;
             this.View.ClickAdsClaim = this.OnClickAdsClaim;
 
-            this.model                     = param;
+            this.model = param;
             this.dailyQueueOfferItemRecord = this.dailyQueueOfferDataController.GetCurrentDailyQueueOfferRecord().OfferItems[this.model.OfferId];
-            this.View.ItemText.text        = $"x{this.dailyQueueOfferItemRecord.Value}";
-            this.View.ItemImage.sprite     = this.GameAssets.ForceLoadAsset<Sprite>(this.dailyQueueOfferItemRecord.ImageId);
+            this.View.ItemText.text = $"x{this.dailyQueueOfferItemRecord.Value}";
+            this.View.ItemImage.sprite = this.GameAssets.ForceLoadAsset<Sprite>(this.dailyQueueOfferItemRecord.ImageId);
             this.OnUpdateOfferItemByStatus();
             this.BindDataToClaimButton();
             this.BindDataToAdsClaimButton();
@@ -144,12 +144,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyOffer
             }
 
             var remainTimeToNextDay = this.dailyQueueOfferDataController.GetRemainTimeToNextDay();
-            var remainHours         = remainTimeToNextDay.Hours;
-            var remainMinutes       = remainTimeToNextDay.Minutes;
-            var remainSeconds       = remainTimeToNextDay.Seconds;
+            var remainHours = remainTimeToNextDay.Hours;
+            var remainMinutes = remainTimeToNextDay.Minutes;
+            var remainSeconds = remainTimeToNextDay.Seconds;
             if (status == RewardStatus.Claimed)
             {
-                var textRemainHours   = remainHours > 0 ? $"{remainHours}h " : "";
+                var textRemainHours = remainHours > 0 ? $"{remainHours}h " : "";
                 var textRemainMinutes = $"{remainMinutes}m";
                 var textRemainSeconds = remainHours > 0 ? "" : $"{remainSeconds}s";
                 this.View.ButtonText.text = $"{textRemainHours}{textRemainMinutes}{textRemainSeconds}";

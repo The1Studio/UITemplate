@@ -20,45 +20,51 @@ namespace Lofelt.NiceVibrations
         /// The different possible states for the button :
         /// Off (default idle state), ButtonDown (button pressed for the first time), ButtonPressed (button being pressed), ButtonUp (button being released), Disabled (unclickable but still present on screen)
         /// ButtonDown and ButtonUp will only last one frame, the others will last however long you press them / disable them / do nothing
-        public enum ButtonStates { Off, ButtonDown, ButtonPressed, ButtonUp, Disabled }
+        public enum ButtonStates
+        {
+            Off,
+            ButtonDown,
+            ButtonPressed,
+            ButtonUp,
+            Disabled,
+        }
+
         [Header("Binding")]
         /// The method(s) to call when the button gets pressed down
         public UnityEvent ButtonPressedFirstTime;
+
         /// The method(s) to call when the button gets released
         public UnityEvent ButtonReleased;
+
         /// The method(s) to call while the button is being pressed
         public UnityEvent ButtonPressed;
 
-        [Header("Sprite Swap")]
-        public Sprite DisabledSprite;
-        public Sprite PressedSprite;
-        public Sprite HighlightedSprite;
+        [Header("Sprite Swap")] public Sprite DisabledSprite;
+        public                         Sprite PressedSprite;
+        public                         Sprite HighlightedSprite;
 
-        [Header("Color Changes")]
-        public bool PressedChangeColor = false;
-        public Color PressedColor = Color.white;
-        public bool LerpColor = true;
-        public float LerpColorDuration = 0.2f;
-        public AnimationCurve LerpColorCurve;
+        [Header("Color Changes")] public bool           PressedChangeColor = false;
+        public                           Color          PressedColor       = Color.white;
+        public                           bool           LerpColor          = true;
+        public                           float          LerpColorDuration  = 0.2f;
+        public                           AnimationCurve LerpColorCurve;
 
         [Header("Opacity")]
         /// the new opacity to apply to the canvas group when the button is pressed
         public float PressedOpacity = 1f;
-        public float IdleOpacity = 1f;
+
+        public float IdleOpacity     = 1f;
         public float DisabledOpacity = 1f;
 
-        [Header("Delays")]
-        public float PressedFirstTimeDelay = 0f;
-        public float ReleasedDelay = 0f;
+        [Header("Delays")] public float PressedFirstTimeDelay = 0f;
+        public                    float ReleasedDelay         = 0f;
 
-        [Header("Buffer")]
-        public float BufferDuration = 0f;
+        [Header("Buffer")] public float BufferDuration = 0f;
 
-        [Header("Animation")]
-        public Animator Animator;
-        public string IdleAnimationParameterName = "Idle";
-        public string DisabledAnimationParameterName = "Disabled";
-        public string PressedAnimationParameterName = "Pressed";
+        [Header("Animation")] public Animator Animator;
+        public                       string   IdleAnimationParameterName     = "Idle";
+        public                       string   DisabledAnimationParameterName = "Disabled";
+        public                       string   PressedAnimationParameterName  = "Pressed";
 
         [Header("Mouse Mode")]
         /// If you set this to true, you'll need to actually press the button for it to be triggered, otherwise a simple hover will trigger it (better for touch input).
@@ -69,16 +75,16 @@ namespace Lofelt.NiceVibrations
         /// the current state of the button (off, down, pressed or up)
         public ButtonStates CurrentState { get; protected set; }
 
-        protected bool _zonePressed = false;
+        protected bool        _zonePressed = false;
         protected CanvasGroup _canvasGroup;
-        protected float _initialOpacity;
-        protected Animator _animator;
-        protected Image _image;
-        protected Sprite _initialSprite;
-        protected Color _initialColor;
-        protected float _lastClickTimestamp = 0f;
-        protected Selectable _selectable;
-        protected float _lastStateChangeAt = -50f;
+        protected float       _initialOpacity;
+        protected Animator    _animator;
+        protected Image       _image;
+        protected Sprite      _initialSprite;
+        protected Color       _initialColor;
+        protected float       _lastClickTimestamp = 0f;
+        protected Selectable  _selectable;
+        protected float       _lastStateChangeAt = -50f;
 
         protected Color _imageColor;
         protected Color _fromColor;
@@ -89,36 +95,33 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void Awake()
         {
-            Initialization();
+            this.Initialization();
         }
 
         protected virtual void Initialization()
         {
-            ReturnToInitialSpriteAutomatically = true;
+            this.ReturnToInitialSpriteAutomatically = true;
 
-            _selectable = GetComponent<Selectable>();
+            this._selectable = this.GetComponent<Selectable>();
 
-            _image = GetComponent<Image>();
-            if (_image != null)
+            this._image = this.GetComponent<Image>();
+            if (this._image != null)
             {
-                _initialColor = _image.color;
-                _initialSprite = _image.sprite;
+                this._initialColor  = this._image.color;
+                this._initialSprite = this._image.sprite;
             }
 
-            _animator = GetComponent<Animator>();
-            if (Animator != null)
-            {
-                _animator = Animator;
-            }
+            this._animator = this.GetComponent<Animator>();
+            if (this.Animator != null) this._animator = this.Animator;
 
-            _canvasGroup = GetComponent<CanvasGroup>();
-            if (_canvasGroup != null)
+            this._canvasGroup = this.GetComponent<CanvasGroup>();
+            if (this._canvasGroup != null)
             {
-                _initialOpacity = IdleOpacity;
-                _canvasGroup.alpha = _initialOpacity;
-                _initialOpacity = _canvasGroup.alpha;
+                this._initialOpacity    = this.IdleOpacity;
+                this._canvasGroup.alpha = this._initialOpacity;
+                this._initialOpacity    = this._canvasGroup.alpha;
             }
-            ResetButton();
+            this.ResetButton();
         }
 
         /// <summary>
@@ -126,77 +129,51 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void Update()
         {
-            switch (CurrentState)
+            switch (this.CurrentState)
             {
                 case ButtonStates.Off:
-                    SetOpacity(IdleOpacity);
-                    if ((_image != null) && (ReturnToInitialSpriteAutomatically))
+                    this.SetOpacity(this.IdleOpacity);
+                    if (this._image != null && this.ReturnToInitialSpriteAutomatically) this._image.sprite = this._initialSprite;
+                    if (this._selectable != null)
                     {
-                        _image.sprite = _initialSprite;
-                    }
-                    if (_selectable != null)
-                    {
-                        _selectable.interactable = true;
+                        this._selectable.interactable = true;
                         if (EventSystem.current.currentSelectedGameObject == this.gameObject)
-                        {
-                            if (HighlightedSprite != null)
-                            {
-                                _image.sprite = HighlightedSprite;
-                            }
-                        }
+                            if (this.HighlightedSprite != null)
+                                this._image.sprite = this.HighlightedSprite;
                     }
                     break;
 
                 case ButtonStates.Disabled:
-                    SetOpacity(DisabledOpacity);
-                    if (_image != null)
-                    {
-                        if (DisabledSprite != null)
-                        {
-                            _image.sprite = DisabledSprite;
-                        }
-                    }
-                    if (_selectable != null)
-                    {
-                        _selectable.interactable = false;
-                    }
+                    this.SetOpacity(this.DisabledOpacity);
+                    if (this._image != null)
+                        if (this.DisabledSprite != null)
+                            this._image.sprite = this.DisabledSprite;
+                    if (this._selectable != null) this._selectable.interactable = false;
                     break;
 
-                case ButtonStates.ButtonDown:
-
-                    break;
+                case ButtonStates.ButtonDown: break;
 
                 case ButtonStates.ButtonPressed:
-                    SetOpacity(PressedOpacity);
-                    OnPointerPressed();
-                    if (_image != null)
+                    this.SetOpacity(this.PressedOpacity);
+                    this.OnPointerPressed();
+                    if (this._image != null)
                     {
-                        if (PressedSprite != null)
-                        {
-                            _image.sprite = PressedSprite;
-                        }
-                        if (PressedChangeColor)
-                        {
-                            _image.color = PressedColor;
-                        }
+                        if (this.PressedSprite != null) this._image.sprite = this.PressedSprite;
+                        if (this.PressedChangeColor) this._image.color     = this.PressedColor;
                     }
                     break;
 
-                case ButtonStates.ButtonUp:
-
-                    break;
+                case ButtonStates.ButtonUp: break;
             }
 
-            if ((_image != null) && (PressedChangeColor))
-            {
-                if (Time.time - _lastStateChangeAt < LerpColorDuration)
+            if (this._image != null && this.PressedChangeColor)
+                if (Time.time - this._lastStateChangeAt < this.LerpColorDuration)
                 {
-                    float t = LerpColorCurve.Evaluate(Remap(Time.time - _lastStateChangeAt, 0f, LerpColorDuration, 0f, 1f));
-                    _image.color = Color.Lerp(_fromColor, _toColor, t);
+                    var t = this.LerpColorCurve.Evaluate(this.Remap(Time.time - this._lastStateChangeAt, 0f, this.LerpColorDuration, 0f, 1f));
+                    this._image.color = Color.Lerp(this._fromColor, this._toColor, t);
                 }
-            }
 
-            UpdateAnimatorStates();
+            this.UpdateAnimatorStates();
         }
 
         /// <summary>
@@ -204,19 +181,19 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void LateUpdate()
         {
-            if (CurrentState == ButtonStates.ButtonUp)
+            if (this.CurrentState == ButtonStates.ButtonUp)
             {
-                _lastStateChangeAt = Time.time;
-                _fromColor = PressedColor;
-                _toColor = _initialColor;
-                CurrentState = ButtonStates.Off;
+                this._lastStateChangeAt = Time.time;
+                this._fromColor         = this.PressedColor;
+                this._toColor           = this._initialColor;
+                this.CurrentState       = ButtonStates.Off;
             }
-            if (CurrentState == ButtonStates.ButtonDown)
+            if (this.CurrentState == ButtonStates.ButtonDown)
             {
-                _lastStateChangeAt = Time.time;
-                _fromColor = _initialColor;
-                _toColor = PressedColor;
-                CurrentState = ButtonStates.ButtonPressed;
+                this._lastStateChangeAt = Time.time;
+                this._fromColor         = this._initialColor;
+                this._toColor           = this.PressedColor;
+                this.CurrentState       = ButtonStates.ButtonPressed;
             }
         }
 
@@ -225,33 +202,20 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void OnPointerDown(PointerEventData data)
         {
-            if (Time.time - _lastClickTimestamp < BufferDuration)
-            {
-                return;
-            }
+            if (Time.time - this._lastClickTimestamp < this.BufferDuration) return;
 
-            if (CurrentState != ButtonStates.Off)
-            {
-                return;
-            }
-            CurrentState = ButtonStates.ButtonDown;
-            _lastClickTimestamp = Time.time;
-            if ((Time.timeScale != 0) && (PressedFirstTimeDelay > 0))
-            {
-                Invoke("InvokePressedFirstTime", PressedFirstTimeDelay);
-            }
+            if (this.CurrentState != ButtonStates.Off) return;
+            this.CurrentState        = ButtonStates.ButtonDown;
+            this._lastClickTimestamp = Time.time;
+            if (Time.timeScale != 0 && this.PressedFirstTimeDelay > 0)
+                this.Invoke("InvokePressedFirstTime", this.PressedFirstTimeDelay);
             else
-            {
-                ButtonPressedFirstTime.Invoke();
-            }
+                this.ButtonPressedFirstTime.Invoke();
         }
 
         protected virtual void InvokePressedFirstTime()
         {
-            if (ButtonPressedFirstTime != null)
-            {
-                ButtonPressedFirstTime.Invoke();
-            }
+            if (this.ButtonPressedFirstTime != null) this.ButtonPressedFirstTime.Invoke();
         }
 
         /// <summary>
@@ -259,28 +223,18 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void OnPointerUp(PointerEventData data)
         {
-            if (CurrentState != ButtonStates.ButtonPressed && CurrentState != ButtonStates.ButtonDown)
-            {
-                return;
-            }
+            if (this.CurrentState != ButtonStates.ButtonPressed && this.CurrentState != ButtonStates.ButtonDown) return;
 
-            CurrentState = ButtonStates.ButtonUp;
-            if ((Time.timeScale != 0) && (ReleasedDelay > 0))
-            {
-                Invoke("InvokeReleased", ReleasedDelay);
-            }
+            this.CurrentState = ButtonStates.ButtonUp;
+            if (Time.timeScale != 0 && this.ReleasedDelay > 0)
+                this.Invoke("InvokeReleased", this.ReleasedDelay);
             else
-            {
-                ButtonReleased.Invoke();
-            }
+                this.ButtonReleased.Invoke();
         }
 
         protected virtual void InvokeReleased()
         {
-            if (ButtonReleased != null)
-            {
-                ButtonReleased.Invoke();
-            }
+            if (this.ButtonReleased != null) this.ButtonReleased.Invoke();
         }
 
         /// <summary>
@@ -288,11 +242,8 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void OnPointerPressed()
         {
-            CurrentState = ButtonStates.ButtonPressed;
-            if (ButtonPressed != null)
-            {
-                ButtonPressed.Invoke();
-            }
+            this.CurrentState = ButtonStates.ButtonPressed;
+            if (this.ButtonPressed != null) this.ButtonPressed.Invoke();
         }
 
         /// <summary>
@@ -300,8 +251,8 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         protected virtual void ResetButton()
         {
-            SetOpacity(_initialOpacity);
-            CurrentState = ButtonStates.Off;
+            this.SetOpacity(this._initialOpacity);
+            this.CurrentState = ButtonStates.Off;
         }
 
         /// <summary>
@@ -309,10 +260,7 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void OnPointerEnter(PointerEventData data)
         {
-            if (!MouseMode)
-            {
-                OnPointerDown(data);
-            }
+            if (!this.MouseMode) this.OnPointerDown(data);
         }
 
         /// <summary>
@@ -320,75 +268,49 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void OnPointerExit(PointerEventData data)
         {
-            if (!MouseMode)
-            {
-                OnPointerUp(data);
-            }
+            if (!this.MouseMode) this.OnPointerUp(data);
         }
+
         /// <summary>
         /// OnEnable, we reset our button state
         /// </summary>
         protected virtual void OnEnable()
         {
-            ResetButton();
+            this.ResetButton();
         }
 
         public virtual void DisableButton()
         {
-            CurrentState = ButtonStates.Disabled;
+            this.CurrentState = ButtonStates.Disabled;
         }
 
         public virtual void EnableButton()
         {
-            if (CurrentState == ButtonStates.Disabled)
-            {
-                CurrentState = ButtonStates.Off;
-            }
+            if (this.CurrentState == ButtonStates.Disabled) this.CurrentState = ButtonStates.Off;
         }
 
         protected virtual void SetOpacity(float newOpacity)
         {
-            if (_canvasGroup != null)
-            {
-                _canvasGroup.alpha = newOpacity;
-            }
+            if (this._canvasGroup != null) this._canvasGroup.alpha = newOpacity;
         }
 
         protected virtual void UpdateAnimatorStates()
         {
-            if (_animator == null)
-            {
-                return;
-            }
-            if (DisabledAnimationParameterName != null)
-            {
-                _animator.SetBool(DisabledAnimationParameterName, (CurrentState == ButtonStates.Disabled));
-            }
-            if (PressedAnimationParameterName != null)
-            {
-                _animator.SetBool(PressedAnimationParameterName, (CurrentState == ButtonStates.ButtonPressed));
-            }
-            if (IdleAnimationParameterName != null)
-            {
-                _animator.SetBool(IdleAnimationParameterName, (CurrentState == ButtonStates.Off));
-            }
+            if (this._animator == null) return;
+            if (this.DisabledAnimationParameterName != null) this._animator.SetBool(this.DisabledAnimationParameterName, this.CurrentState == ButtonStates.Disabled);
+            if (this.PressedAnimationParameterName != null) this._animator.SetBool(this.PressedAnimationParameterName, this.CurrentState == ButtonStates.ButtonPressed);
+            if (this.IdleAnimationParameterName != null) this._animator.SetBool(this.IdleAnimationParameterName, this.CurrentState == ButtonStates.Off);
         }
 
         public virtual void OnSubmit(BaseEventData eventData)
         {
-            if (ButtonPressedFirstTime != null)
-            {
-                ButtonPressedFirstTime.Invoke();
-            }
-            if (ButtonReleased != null)
-            {
-                ButtonReleased.Invoke();
-            }
+            if (this.ButtonPressedFirstTime != null) this.ButtonPressedFirstTime.Invoke();
+            if (this.ButtonReleased != null) this.ButtonReleased.Invoke();
         }
 
         protected virtual float Remap(float x, float A, float B, float C, float D)
         {
-            float remappedValue = C + (x - A) / (B - A) * (D - C);
+            var remappedValue = C + (x - A) / (B - A) * (D - C);
             return remappedValue;
         }
     }

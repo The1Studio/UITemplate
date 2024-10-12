@@ -4,9 +4,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Applovin
     using System.Collections.Generic;
     using System.IO;
     using System.Xml;
-#if APPLOVIN
+    #if APPLOVIN
     using AppLovinMax.Scripts.IntegrationManager.Editor;
-#endif
+    #endif
     using Cysharp.Threading.Tasks;
     using UnityEditor;
     using UnityEngine;
@@ -22,12 +22,12 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Applovin
         /// </summary>
         public static async void DoMigrate()
         {
-#if APPLOVIN
+            #if APPLOVIN
             // URL to fetch the latest version information of the AppLovin SDK
             var url = $"https://unity.applovin.com/max/1.0/integration_manager_info?plugin_version={MaxSdk.Version}";
 
             // Send a GET request to the URL
-            using var www       = UnityWebRequest.Get(url);
+            using var www = UnityWebRequest.Get(url);
             var       operation = www.SendWebRequest();
 
             // Wait for the request to complete
@@ -88,7 +88,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Applovin
             // Change the version of the iosPods in all Dependencies.xml files according to the predefined dictionary
             ChangeIosPodVersionInAllFiles();
 
-#endif
+            #endif
         }
 
         // Define a global dictionary to store the iosPodName and newVersion pairs
@@ -114,14 +114,10 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Applovin
 
                 if (iosPodNodes != null)
                     foreach (XmlNode iosPodNode in iosPodNodes)
-                    {
                         // Check if the name attribute of the iosPod node is in the dictionary
                         if (iosPodNode.Attributes != null && IOSPodVersions.ContainsKey(iosPodNode.Attributes["name"].Value))
-                        {
                             // Change the version attribute to the new version from the dictionary
                             iosPodNode.Attributes["version"].Value = IOSPodVersions[iosPodNode.Attributes["name"].Value];
-                        }
-                    }
 
                 doc.Save(filePath);
             }

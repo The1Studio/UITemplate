@@ -61,16 +61,10 @@
         {
             this.uiTemplateFtueDataController.CompleteStep(obj.StepId);
             var disableObjectSet = this.StepIdToDisableGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
-            foreach (var gameObject in disableObjectSet)
-            {
-                gameObject.SetActive(false);
-            }
+            foreach (var gameObject in disableObjectSet) gameObject.SetActive(false);
             this.uiTemplateFtueController.DoDeactiveFTUE(obj.StepId);
             var nextStepId = this.uiTemplateFtueBlueprint[obj.StepId].NextStepId;
-            if (!nextStepId.IsNullOrEmpty())
-            {
-                this.OnTriggerFTUE(new FTUETriggerSignal(nextStepId));
-            }
+            if (!nextStepId.IsNullOrEmpty()) this.OnTriggerFTUE(new(nextStepId));
         }
 
         public void RegisterEnableObjectToStepId(GameObject gameObject, string stepId)
@@ -98,18 +92,12 @@
             var enableObjectSet = this.StepIdToEnableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             if (!this.IsFTUEActiveAble(stepId))
             {
-                foreach (var gameObject in enableObjectSet)
-                {
-                    gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId));
-                }
+                foreach (var gameObject in enableObjectSet) gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId));
 
                 return;
             }
 
-            foreach (var gameObject in enableObjectSet)
-            {
-                gameObject.SetActive(true);
-            }
+            foreach (var gameObject in enableObjectSet) gameObject.SetActive(true);
 
             var disableObjectSet = this.StepIdToDisableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             this.uiTemplateFtueController.DoActiveFTUE(stepId, disableObjectSet);
@@ -130,7 +118,10 @@
             return true;
         }
 
-        public bool IsAnyFtueActive() => this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);
+        public bool IsAnyFtueActive()
+        {
+            return this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);
+        }
 
         public bool IsAnyFtueActive(IScreenPresenter screenPresenter)
         {

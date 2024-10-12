@@ -7,7 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
         public string virtualCurrencyName;
         public long   value;
         public string source;
-        
+
         public EarnVirtualCurrency(string virtualCurrencyName, long value, string source)
         {
             this.virtualCurrencyName = virtualCurrencyName;
@@ -15,18 +15,18 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
             this.source              = source;
         }
     }
-    
+
     public class SpendVirtualCurrency : IEvent
     {
         public string virtualCurrencyName;
         public long   value;
         public string itemName;
-        
+
         public SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName)
         {
             this.virtualCurrencyName = virtualCurrencyName;
             this.value               = value;
-            this.itemName              = itemName;
+            this.itemName            = itemName;
         }
     }
 }

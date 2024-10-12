@@ -2,7 +2,7 @@
 {
     using Core.AnalyticServices.Data;
 
-    public class AdInterFail: IEvent
+    public class AdInterFail : IEvent
     {
         public string errormsg;
 

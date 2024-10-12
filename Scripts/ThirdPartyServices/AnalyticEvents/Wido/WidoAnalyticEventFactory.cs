@@ -26,7 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         public WidoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController) : base(
             signalBus, analyticServices)
         {
-            this.internetService               = internetService;
+            this.internetService = internetService;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 

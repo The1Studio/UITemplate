@@ -64,7 +64,7 @@ namespace TheOneStudio.UITemplate.Quests
             this.signalBus.Subscribe<QuestStatusChangedSignal>(this.OnQuestStatusChanged);
         }
 
-        private readonly Queue<Action> actionQueue = new Queue<Action>();
+        private readonly Queue<Action> actionQueue = new();
 
         private Tween tween;
 
@@ -77,13 +77,9 @@ namespace TheOneStudio.UITemplate.Quests
             if (status is not QuestStatus.NotCompleted and not QuestStatus.NotCollected) return;
 
             if (this.tween.IsActive())
-            {
                 this.actionQueue.Enqueue(Action);
-            }
             else
-            {
                 Action();
-            }
 
             return;
 

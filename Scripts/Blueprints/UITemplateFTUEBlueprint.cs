@@ -30,7 +30,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public Vector3      HandRotation           { get; [Preserve] private set; }
         public Vector2      HandSizeDelta          { get; [Preserve] private set; }
 
-        public List<RequireCondition> GetRequireCondition() => JsonConvert.DeserializeObject<List<RequireCondition>>(this.RequireCondition);
+        public List<RequireCondition> GetRequireCondition()
+        {
+            return JsonConvert.DeserializeObject<List<RequireCondition>>(this.RequireCondition);
+        }
     }
 
     [Preserve]

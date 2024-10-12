@@ -21,16 +21,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         [OdinSerialize] public int LastUnlockRewardLevel;
 
-        public void SetLevelStatusByLevel(int level, LevelData.Status status) { this.LevelToLevelData[level].LevelStatus = status; }
+        public void SetLevelStatusByLevel(int level, LevelData.Status status)
+        {
+            this.LevelToLevelData[level].LevelStatus = status;
+        }
 
         public void Init()
         {
-#if CREATIVE
+            #if CREATIVE
             foreach (var levelData in this.LevelToLevelData.Values.ToList())
             {
                 levelData.LevelStatus = LevelData.Status.Passed;
             }
-#endif
+            #endif
         }
 
         public Type ControllerType => typeof(UITemplateLevelDataController);

@@ -22,10 +22,7 @@ namespace TheOne.Tool.Optimization.Texture.MenuItems
             foreach (var selectedObject in Selection.objects)
             {
                 var path = AssetDatabase.GetAssetPath(selectedObject);
-                if (AssetDatabase.IsValidFolder(path))
-                {
-                    CreateAtlasForFolder(path, selectedObject);
-                }
+                if (AssetDatabase.IsValidFolder(path)) CreateAtlasForFolder(path, selectedObject);
             }
         }
 
@@ -39,26 +36,26 @@ namespace TheOne.Tool.Optimization.Texture.MenuItems
             var parentFolderPath = string.Join("/", pathSegments.Take(pathSegments.Length - 1));
             var atlasName        = Path.GetFileName(folderPath) + "Atlas";
             var atlasPath        = Path.Combine(parentFolderPath, atlasName + ".spriteatlasv2");
-        
+
             UnityEditorInternal.InternalEditorUtility.SaveToSerializedFileAndForget(new Object[] { atlas }, atlasPath, true);
             AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-        
+
             var importer = AssetImporter.GetAtPath(atlasPath) as SpriteAtlasImporter;
-        
+
             // Configure the atlas settings to not allow rotation and disable crunch compression
             var packingSettings = new SpriteAtlasPackingSettings()
             {
                 enableRotation     = false, // Prevent rotation
                 enableTightPacking = false, // Example setting, adjust as needed
-                padding            = 4, // Example setting, adjust as needed
+                padding            = 4,     // Example setting, adjust as needed
             };
             importer.packingSettings = packingSettings;
-        
+
             var textureImporterPlatformSettings = new TextureImporterPlatformSettings()
             {
                 maxTextureSize      = 2048,
                 format              = TextureImporterFormat.Automatic,
-                crunchedCompression = true
+                crunchedCompression = true,
             };
             importer.SetPlatformSettings(textureImporterPlatformSettings);
             importer.SaveAndReimport();

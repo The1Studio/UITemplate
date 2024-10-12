@@ -4,12 +4,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
     using System.Collections.Generic;
     using Sirenix.OdinInspector;
 
-    [Serializable] public class NoInternetConfig
+    [Serializable]
+    public class NoInternetConfig
     {
         public bool isCustomScreenTrigger;
 
-        [ShowIf(nameof(isCustomScreenTrigger))]
-        public List<string> screenTriggerIds;
+        [ShowIf(nameof(isCustomScreenTrigger))] public List<string> screenTriggerIds;
 
         public int   SessionToShow       = 2;
         public int   ContinuesFailToShow = 3;

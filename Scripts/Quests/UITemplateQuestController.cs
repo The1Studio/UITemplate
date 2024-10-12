@@ -34,15 +34,15 @@
             this.container               = container;
             this.signalBus               = signalBus;
             this.inventoryDataController = inventoryDataController;
-            this.changedSignal           = new QuestStatusChangedSignal(this);
-            this.progressHandlers        = new Dictionary<ICondition.IProgress, ICondition.IProgress.IHandler>();
+            this.changedSignal           = new(this);
+            this.progressHandlers        = new();
         }
 
         #endregion
 
         public         QuestRecord                                           Record   { get; internal set; }
         public         UITemplateQuestProgress.Quest                         Progress { get; internal set; }
-        private static Dictionary<IRedirectTarget, IRedirectTarget.IHandler> handleTargets = new Dictionary<IRedirectTarget, IRedirectTarget.IHandler>();
+        private static Dictionary<IRedirectTarget, IRedirectTarget.IHandler> handleTargets = new();
 
         public async UniTask CollectReward(RectTransform startAnimRectTransform = null)
         {
@@ -65,10 +65,7 @@
         public async UniTask HandleRedirect()
         {
             if (this.Record.Target.Count is 0) return;
-            foreach (var targetHandler in this.Record.Target.Select(this.AddRedirectTargetHandler))
-            {
-                await targetHandler.Handle();
-            }
+            foreach (var targetHandler in this.Record.Target.Select(this.AddRedirectTargetHandler)) await targetHandler.Handle();
         }
 
         #region Internal
@@ -76,18 +73,9 @@
         internal void Initialize()
         {
             this.AddProgressHandlers(this.Record.ResetConditions, this.Progress.ResetProgress);
-            if (!this.Progress.Status.HasFlag(QuestStatus.Started))
-            {
-                this.AddProgressHandlers(this.Record.StartConditions, this.Progress.StartProgress);
-            }
-            if (!this.Progress.Status.HasFlag(QuestStatus.Shown))
-            {
-                this.AddProgressHandlers(this.Record.ShowConditions, this.Progress.ShowProgress);
-            }
-            if (this.Progress.Status.HasFlag(QuestStatus.Started) && !this.Progress.Status.HasFlag(QuestStatus.Collected))
-            {
-                this.AddProgressHandlers(this.Record.CompleteConditions, this.Progress.CompleteProgress);
-            }
+            if (!this.Progress.Status.HasFlag(QuestStatus.Started)) this.AddProgressHandlers(this.Record.StartConditions, this.Progress.StartProgress);
+            if (!this.Progress.Status.HasFlag(QuestStatus.Shown)) this.AddProgressHandlers(this.Record.ShowConditions, this.Progress.ShowProgress);
+            if (this.Progress.Status.HasFlag(QuestStatus.Started) && !this.Progress.Status.HasFlag(QuestStatus.Collected)) this.AddProgressHandlers(this.Record.CompleteConditions, this.Progress.CompleteProgress);
         }
 
         internal void UpdateStatus()

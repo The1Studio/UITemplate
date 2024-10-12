@@ -8,8 +8,14 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
     public class FTUEListenScreenShow : FTUEBaseListen
     {
         [Preserve]
-        public FTUEListenScreenShow(SignalBus signalBus, UITemplateFTUEBlueprint ftueBlueprint) : base(signalBus, ftueBlueprint) { }
-        protected override void InitInternal() { this.SignalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow); }
+        public FTUEListenScreenShow(SignalBus signalBus, UITemplateFTUEBlueprint ftueBlueprint) : base(signalBus, ftueBlueprint)
+        {
+        }
+
+        protected override void InitInternal()
+        {
+            this.SignalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
+        }
 
         private void OnScreenShow(ScreenShowSignal obj)
         {
@@ -21,10 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
             {
                 if (!ftue.EnableTrigger) continue;
 
-                if (currentScreen.GetType().Name.Equals(ftue.ScreenLocation))
-                {
-                    this.FireFtueTriggerSignal(ftue.Id);
-                }
+                if (currentScreen.GetType().Name.Equals(ftue.ScreenLocation)) this.FireFtueTriggerSignal(ftue.Id);
             }
         }
     }

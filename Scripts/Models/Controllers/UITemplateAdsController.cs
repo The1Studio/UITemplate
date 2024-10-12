@@ -16,7 +16,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public int WatchRewardedAds     => this.uiTemplateAdsData.WatchedRewardedAds;
         public int WatchedAdsCount      => this.uiTemplateAdsData.WatchedInterstitialAds + this.uiTemplateAdsData.WatchedRewardedAds;
 
-        public void UpdateWatchedInterstitialAds() { this.uiTemplateAdsData.WatchedInterstitialAds++; }
-        public void UpdateWatchedRewardedAds()     { this.uiTemplateAdsData.WatchedRewardedAds++; }
+        public void UpdateWatchedInterstitialAds()
+        {
+            this.uiTemplateAdsData.WatchedInterstitialAds++;
+        }
+
+        public void UpdateWatchedRewardedAds()
+        {
+            this.uiTemplateAdsData.WatchedRewardedAds++;
+        }
     }
 }

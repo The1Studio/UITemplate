@@ -13,7 +13,7 @@ namespace HeurekaGames.AssetHunterPRO
     {
         public string Path;
         public string Role;
-        public ulong Size;
+        public ulong  Size;
 
         public AH_BuildReportFileInfo(BuildFile file)
         {

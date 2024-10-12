@@ -16,6 +16,8 @@ namespace TheOneStudio.UITemplate
             #if !THEONE_PLAYABLE_ADS
             #if BRAVESTARS
             builder.Register<BraveStarsAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
+            #elif APERO
+            builder.Register<AperoAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #else
             builder.Register<UITemplateAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif

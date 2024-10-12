@@ -1,5 +1,5 @@
-#if THEONE
-namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.TheOne
+﻿#if SUPERSONIC
+namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Supersonic
 {
     using System;
     using System.Collections.Generic;
@@ -9,17 +9,19 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.T
     using GameFoundation.Signals;
     using UnityEngine.Scripting;
 
-    public class TheOneAnalyticEventFactory : BaseAnalyticEventFactory
+    public class SupersonicAnalyticEventFactory : BaseAnalyticEventFactory
     {
         [Preserve]
-        public TheOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
+        public SupersonicAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
+            : base(signalBus, analyticServices)
         {
         }
-        
+
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IgnoreEvents = new HashSet<Type>()
             {
+                typeof(GameStarted)
             },
             CustomEventKeys = new Dictionary<string, string>()
             {

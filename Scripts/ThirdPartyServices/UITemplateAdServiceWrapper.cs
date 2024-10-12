@@ -16,6 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using R3;
+    using ServiceImplementation;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
@@ -172,7 +173,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     var useNewGuid = this.IsRefreshingCollapsible
                         ? this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled
-                        : (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval;
+                        : (DateTime.Now - this.LastCollapsibleBannerChangeGuid).TotalSeconds >= this.adServicesConfig.InterstitialAdInterval;
                     if (useNewGuid)
                     {
                         this.LastCollapsibleBannerChangeGuid = DateTime.Now;
@@ -201,10 +202,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.RefreshCollapsibleCts?.Cancel();
             this.RefreshCollapsibleCts?.Dispose();
             this.RefreshCollapsibleCts = null;
-            if (this.adServicesConfig.CollapsibleBannerADInterval <= 0) return;
+            if (this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval <= 0) return;
             if (!this.adServicesConfig.CollapsibleBannerAutoRefreshEnabled) return;
             UniTask.WaitForSeconds(
-                this.adServicesConfig.CollapsibleBannerADInterval,
+                this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval,
                 ignoreTimeScale: true,
                 cancellationToken: (this.RefreshCollapsibleCts = new()).Token
             ).ContinueWith(() =>
@@ -308,7 +309,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        public double LoadingTimeToShowAOA => this.thirdPartiesConfig.AdSettings.AOAThreshHold;
+        public double LoadingTimeToShowAOA => this.adServicesConfig.AOALoadingThreshold;
 
         private void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true)
         {
@@ -477,7 +478,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             void InternalShowInterstitial()
             {
                 this.totalNoAdsPlayingTime = 0;
-                var adInfo = new AdInfo(adService.AdPlatform, place, "Interstitial");
+                var adInfo = new AdInfo(adService.AdPlatform, place, AdFormatConstants.Interstitial);
                 this.signalBus.Fire(new InterstitialAdCalledSignal(place, adInfo));
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
                 this.IsResumedFromAnotherServices = true;
@@ -512,7 +513,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             this.logService.Log($"onelog: ShowRewardedAd {place} - {adService.GetType().Name}");
 
-            var adInfo = new AdInfo(adService.AdPlatform, place, "Rewarded");
+            var adInfo = new AdInfo(adService.AdPlatform, place, AdFormatConstants.Rewarded);
             this.signalBus.Fire(new RewardedAdCalledSignal(place, adInfo));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAnotherServices = true;

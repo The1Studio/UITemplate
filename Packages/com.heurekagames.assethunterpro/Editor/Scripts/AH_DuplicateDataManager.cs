@@ -22,7 +22,9 @@ namespace HeurekaGames.AssetHunterPRO
                 get
                 {
                     if (this.preview != null)
+                    {
                         return this.preview;
+                    }
                     else
                     {
                         var loadedObj = AssetDatabase.LoadMainAssetAtPath(this.Paths[0]);
@@ -141,7 +143,9 @@ namespace HeurekaGames.AssetHunterPRO
                                         {
                                             lineCounter++;
                                             if (lineCounter >= maxReadCount)
+                                            {
                                                 appendString += sr.ReadToEnd();
+                                            }
                                             else
                                             {
                                                 line      = sr.ReadLine();
@@ -157,7 +161,9 @@ namespace HeurekaGames.AssetHunterPRO
                                     hash = BitConverter.ToString(System.Text.Encoding.Unicode.GetBytes(appendString));
                                 }
                                 else
+                                {
                                     hash = BitConverter.ToString(md5.ComputeHash(stream));
+                                }
 
                                 if (!hashDict.ContainsKey(hash))
                                     hashDict.Add(hash, new() { assetPathGuid });

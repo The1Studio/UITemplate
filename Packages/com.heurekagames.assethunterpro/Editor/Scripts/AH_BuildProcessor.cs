@@ -63,7 +63,9 @@ namespace HeurekaGames.AssetHunterPRO
                 buildInfo = new();
             }
             else
+            {
                 Debug.Log("AH: Build logging not automatically started. Open Asset Hunter preferences if you want it to run");
+            }
         }
 
         private void finalizeBuildReport(BuildTarget target)

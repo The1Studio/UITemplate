@@ -150,11 +150,13 @@
             void NextDayPreReceiveReward()
             {
                 foreach (var model in this.listRewardModel)
+                {
                     if (model.RewardStatus == RewardStatus.Locked)
                     {
                         model.IsGetWithAds = true;
                         break;
                     }
+                }
             }
 
             void CustomPreReceiveReward()
@@ -193,11 +195,13 @@
             var claimedPresenter = new List<UITemplateDailyRewardPackPresenter>();
 
             for (var i = 0; i < this.listRewardModel.Count; i++)
+            {
                 if (this.listRewardModel[i].RewardStatus == RewardStatus.Unlocked)
                 {
                     claimedPresenter.Add(this.View.dailyRewardPackAdapter.GetPresenterAtIndex(i));
                     this.listRewardModel[i].RewardStatus = RewardStatus.Claimed;
                 }
+            }
 
             await this.dailyRewardAnimationHelper.PlayPostClaimRewardAnimation(this);
 

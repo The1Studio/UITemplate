@@ -231,7 +231,9 @@ namespace BuildReportTool
                 buildType = buildPlatform.ToString();
             }
             else
+            {
                 buildType = gotBuildType;
+            }
 
             var br = new UnityBuildReport();
             br.ProjectName = GetProjectName(Application.dataPath);
@@ -301,7 +303,9 @@ namespace BuildReportTool
             }
             else
                 // less than 1 second
+            {
                 return timeSpan.TotalMilliseconds.ToString("0.000ms", CultureInfo.InvariantCulture);
+            }
         }
 
         public static void DebugLogBuildReport(UnityBuildReport report)
@@ -347,7 +351,9 @@ namespace BuildReportTool
                 if (totalSeconds >= 1.0)
                 {
                     if (totalSeconds >= 60)
+                    {
                         sb.Append(report.BuildProcessSteps[i].Duration.ToString());
+                    }
                     else
                     {
                         // less than 1 minute
@@ -523,7 +529,9 @@ namespace BuildReportTool
                 //Debug.Log("folderName: " + folderName);
 
                 if (folderName == desiredFolderName)
+                {
                     return folderEntries[n];
+                }
                 else
                 {
                     var recursed           = FindAssetFolder(folderEntries[n], desiredFolderName);
@@ -595,11 +603,13 @@ namespace BuildReportTool
 
             double obbSize = 0;
             foreach (var file in DldUtil.TraverseDirectory.Do(eclipseProjectPath))
+            {
                 if (IsFileOfType(file, ".main.obb"))
                 {
                     obbSize += GetFileSizeInBytes(file);
                     break;
                 }
+            }
 
             return obbSize;
         }
@@ -800,11 +810,13 @@ namespace BuildReportTool
 
             string line;
             while ((line = sr.ReadLine()) != null)
+            {
                 if (line.IndexOf(contents, StringComparison.OrdinalIgnoreCase) != -1)
                 {
                     ret = true;
                     break;
                 }
+            }
 
             fs.Close();
             return ret;
@@ -857,7 +869,9 @@ namespace BuildReportTool
             }
             else
                 // AssetDatabase.MoveAssetToTrash also deletes .meta file if it exists
+            {
                 AssetDatabase.MoveAssetToTrash(file);
+            }
         }
 
         private static void SystemDeleteFile(string file)
@@ -1245,7 +1259,9 @@ namespace BuildReportTool
                     if (showRecoverableMsg) cancelMsg += string.Format(" Those files can be recovered from your {0}.", NameOfOSTrashFolder);
                 }
                 else
+                {
                     cancelMsg = "No files deleted.";
+                }
 
                 EditorApplication.Beep();
                 EditorUtility.DisplayDialog(cancelTitle, cancelMsg, "OK");
@@ -1359,9 +1375,13 @@ namespace BuildReportTool
         public static void OpenInFileBrowser(string path)
         {
             if (IsInWinOS)
+            {
                 OpenInWinFileBrowser(path);
+            }
             else if (IsInMacOS)
+            {
                 OpenInMacFileBrowser(path);
+            }
             else // couldn't determine OS
             {
                 OpenInWinFileBrowser(path);
@@ -1509,13 +1529,19 @@ namespace BuildReportTool
                 //
                 // .app is really just a folder.
                 //
+            {
                 buildFolder += "/Contents/Data/Managed";
+            }
             else if (System.IO.Directory.Exists(buildFolder + "/Data/Managed/")) // iOS
+            {
                 buildFolder += "/Data/Managed";
+            }
             else if (!System.IO.Directory.Exists(buildFolder))
                 // happens with users who use custom build scripts
                 //Debug.LogWarning("Folder \"" + buildFolder + "\" does not exist.");
+            {
                 return "";
+            }
 
             buildFolder += "/";
 
@@ -1578,13 +1604,19 @@ namespace BuildReportTool
                 //
                 // .app is really just a folder.
                 //
+            {
                 buildFolder += "/Contents/Data";
+            }
             else if (System.IO.Directory.Exists(buildFolder + "/Data")) // iOS
+            {
                 buildFolder += "/Data";
+            }
             else if (!System.IO.Directory.Exists(buildFolder))
                 // happens with users who use custom builders
                 //Debug.LogWarning("Folder \"" + buildFolder + "\" does not exist.");
+            {
                 return string.Empty;
+            }
 
             buildFolder += "/";
 
@@ -1877,12 +1909,14 @@ namespace BuildReportTool
                 else
                     // no corrections in the xml file
                     // proceed to open the file normally
+                {
                     using (var fs = new System.IO.FileStream(serializedBuildInfoFilePath, System.IO.FileMode.Open))
                     {
                         System.Xml.XmlReader reader = new System.Xml.XmlTextReader(fs);
                         ret = (BuildInfo)x.Deserialize(reader);
                         fs.Close();
                     }
+                }
             }
             catch (Exception e)
             {
@@ -1897,7 +1931,9 @@ namespace BuildReportTool
                     ret.SetSavedPath(serializedBuildInfoFilePath);
                 }
                 else
+                {
                     Debug.LogError("Build Report Tool: Invalid data in build info file: " + serializedBuildInfoFilePath);
+                }
             }
 
             return ret;
@@ -2035,7 +2071,9 @@ namespace BuildReportTool
                     filePath = string.Format("{0}/{1}", folderPathToSaveTo, data.GetDefaultFilename());
             }
             else
+            {
                 filePath = data.GetDefaultFilename();
+            }
 
             Serialize(data, filePath);
 

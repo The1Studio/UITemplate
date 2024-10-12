@@ -107,6 +107,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var playAnimTask = UniTask.CompletedTask;
 
             for (var i = 0; i < this.uiTemplateDailyRewardData.RewardStatus.Count; i++)
+            {
                 if (this.uiTemplateDailyRewardData.RewardStatus[i] == RewardStatus.Unlocked)
                 {
                     this.uiTemplateDailyRewardData.RewardStatus[i] = RewardStatus.Claimed;
@@ -115,6 +116,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                     foreach (var (key, item) in reward.Reward) this.uiTemplateInventoryDataController.AddGenericReward(item.RewardId, item.RewardValue, dayToView[reward.Day], claimSoundKey).Forget();
                 }
+            }
 
             await UniTask.WhenAny(playAnimTask);
         }

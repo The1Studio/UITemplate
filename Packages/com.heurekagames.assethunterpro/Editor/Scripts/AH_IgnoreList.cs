@@ -49,11 +49,15 @@ namespace HeurekaGames.AssetHunterPRO
         {
             //We already have a list of Ignores
             if (this.CombinedIgnored.Ignored.Count >= 1)
+            {
                 return this.CombinedIgnored.Ignored;
+            }
             //We have no list, so read the defaults
             else if (EditorPrefs.HasKey(this.playerPrefKey))
                 //Populates this class from prefs
+            {
                 this.CombinedIgnored = this.LoadFromPrefs();
+            }
             else
             {
                 //Save the default values into prefs
@@ -159,7 +163,10 @@ namespace HeurekaGames.AssetHunterPRO
                 if (GUILayout.Button("Un-Ignore", EditorStyles.miniButton, GUILayout.Width(ButtonSpacer))) this.markForDeletion(identifier);
             }
             //Hidden button to help align, probably not the most elegant solution, but Ill fix later
-            else if (this.DefaultIgnored.Count != this.GetIgnored().Count) GUILayout.Button("", GUIStyle.none, GUILayout.Width(ButtonSpacer + 4));
+            else if (this.DefaultIgnored.Count != this.GetIgnored().Count)
+            {
+                GUILayout.Button("", GUIStyle.none, GUILayout.Width(ButtonSpacer + 4));
+            }
 
             var curWidth = EditorGUIUtility.labelWidth;
             EditorGUILayout.LabelField(this.getLabelContent(legible), GUILayout.MaxWidth(1024));

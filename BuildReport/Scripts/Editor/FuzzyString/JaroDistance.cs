@@ -12,7 +12,9 @@ namespace FuzzyString
             var m = source.Intersect(target).Count();
 
             if (m == 0)
+            {
                 return 0;
+            }
             else
             {
                 var sourceTargetIntersetAsString                                              = "";

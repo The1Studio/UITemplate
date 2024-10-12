@@ -39,10 +39,12 @@ namespace FuzzyString
             if (source.Length <= 4 || target.Length <= 4) maximumPrefixLength = Math.Min(source.Length, target.Length);
 
             for (var i = 0; i < maximumPrefixLength; i++)
+            {
                 if (source[i].Equals(target[i]))
                     commonPrefixLength++;
                 else
                     return commonPrefixLength;
+            }
 
             return commonPrefixLength;
         }

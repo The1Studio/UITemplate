@@ -71,11 +71,13 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.DependencyGraph
             var duplicateCount = obsoleteAssets.Count;
             for (var i = this.selectionHistory.Count - 1; i >= 0; i--)
                 //Find identical IDs directly after each other
+            {
                 if (i > 0 && this.selectionHistory[i] == this.selectionHistory[i - 1])
                 {
                     this.selectionHistory.RemoveAt(i);
                     duplicateCount++;
                 }
+            }
             //Reset history index to match new history
             this.selectionHistoryIndex -= duplicateCount;
         }

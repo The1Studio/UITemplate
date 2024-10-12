@@ -374,7 +374,9 @@ namespace Lofelt.NiceVibrations
                 // that happens in HandleFinishedPlayback().
                 // A playback duration of 0 happens in the Unity editor, when loading the clip
                 // failed or when seeking to the end of a clip.
+            {
                 HandleFinishedPlayback();
+            }
         }
 
         /// <summary>

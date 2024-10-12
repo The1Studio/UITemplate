@@ -50,7 +50,9 @@ namespace HeurekaGames.AssetHunterPRO
                     Selection.objects = selectedObjects;
                 }
                 else
+                {
                     Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(this.selection[0].RelativePath);
+                }
 
                 AH_Utils.PingObjectAtPath(this.selection[this.selection.Count - 1].RelativePath, false);
             }
@@ -62,10 +64,12 @@ namespace HeurekaGames.AssetHunterPRO
             //TODO MAKE SURE WE DONT DO ALL OF THIS EACH FRAME, BUT CACHE THE SELECTION DATA
 
             using (new EditorGUILayout.HorizontalScope())
+            {
                 if (this.selection.Count == 1)
                     this.drawSingle();
                 else
                     this.drawMulti();
+            }
             GUILayout.EndArea();
         }
 
@@ -153,7 +157,9 @@ namespace HeurekaGames.AssetHunterPRO
             EditorGUILayout.EndVertical();
 
             if (!containsNested)
+            {
                 this.drawDeleteAssetsButton();
+            }
             else
             {
                 GUILayout.FlexibleSpace();
@@ -171,10 +177,12 @@ namespace HeurekaGames.AssetHunterPRO
 
             long combinedSize = 0;
             foreach (var item in this.selection)
+            {
                 if (item.IsFolder)
                     combinedSize += item.GetFileSizeRecursively(AH_MultiColumnHeader.AssetShowMode.Unused);
                 else
                     combinedSize += item.FileSize;
+            }
             if (GUILayout.Button("Delete " + AH_Utils.GetSizeAsString(combinedSize), GUILayout.Width(160), GUILayout.Height(32))) this.deleteUnusedAssets();
         }
 
@@ -204,7 +212,10 @@ namespace HeurekaGames.AssetHunterPRO
                 content = new(preview);
             }
             //Draw Folder icon
-            else if (bDraw) content = EditorGUIUtility.IconContent("Folder Icon");
+            else if (bDraw)
+            {
+                content = EditorGUIUtility.IconContent("Folder Icon");
+            }
 
             GUILayout.Label(content, GUILayout.Width(Height), GUILayout.Height(Height));
         }
@@ -217,19 +228,23 @@ namespace HeurekaGames.AssetHunterPRO
             if (choice == 0) //Delete
             {
                 foreach (var item in this.selection)
+                {
                     if (item.IsFolder)
                         affectedAssets.AddRange(item.GetUnusedPathsRecursively());
                     else
                         affectedAssets.Add(item.RelativePath);
+                }
                 this.deleteMultipleAssets(affectedAssets);
             }
             else if (choice == 2) //Backup
             {
                 foreach (var item in this.selection)
+                {
                     if (item.IsFolder)
                         affectedAssets.AddRange(item.GetUnusedPathsRecursively());
                     else
                         affectedAssets.Add(item.RelativePath);
+                }
                 this.exportAssetsToPackage("Backup as unitypackage", affectedAssets);
             }
         }

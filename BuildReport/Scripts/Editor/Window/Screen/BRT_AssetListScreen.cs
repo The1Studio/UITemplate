@@ -887,7 +887,9 @@ namespace BuildReportTool.Window.Screen
                 this._mouseIsPreviouslyInWindow = false;
             }
             else
+            {
                 this._mouseIsPreviouslyInWindow = true;
+            }
 
             // if mouse is too far below, above, or to the right for showing tooltip
             // in main asset list, then prevent tooltip from showing in that situation
@@ -910,7 +912,9 @@ namespace BuildReportTool.Window.Screen
             else
                 // no thumbnail currently shown. ensure the controls that
                 // need to be reset to initial state are reset
+            {
                 BRT_BuildReportWindow.ResetThumbnailControls();
+            }
 
             if (!zoomInChanged && !Event.current.alt && !BRT_BuildReportWindow.MouseMovedNow && !BRT_BuildReportWindow.LastMouseMoved)
                 // mouse hasn't moved, and no request to zoom-in thumbnail or toggle thumbnail alpha
@@ -998,13 +1002,19 @@ namespace BuildReportTool.Window.Screen
                 }
                 else if (shouldShowThumbnailTooltipNow && shouldShowAssetEndUsersTooltipNow && !this._mouseIsOnOverlayControl)
                     // draw thumbnail and end users below it
+                {
                     BRT_BuildReportWindow.DrawThumbnailEndUsersTooltip(position, assetDependencies, textureData);
+                }
                 else if (shouldShowAssetEndUsersTooltipNow && !this._mouseIsOnOverlayControl)
                     // draw only end users in tooltip
+                {
                     BRT_BuildReportWindow.DrawEndUsersTooltip(position, assetDependencies);
+                }
                 else if (shouldShowThumbnailTooltipNow && !this._mouseIsOnOverlayControl)
                     // draw only thumbnail in tooltip
+                {
                     BRT_BuildReportWindow.DrawThumbnailTooltip(position, textureData);
+                }
                 else if (this._hoveredTextureDataId != TextureData.DataId.None || this._hoveredMeshDataId != MeshData.DataId.None)
                 {
                     if (this._hoveredTextureDataId != TextureData.DataId.None)
@@ -1067,7 +1077,9 @@ namespace BuildReportTool.Window.Screen
                 // already in this sort type
                 // now toggle the sort order
                 if (this._currentSortOrder == BuildReportTool.AssetList.SortOrder.Descending)
+                {
                     this._currentSortOrder = BuildReportTool.AssetList.SortOrder.Ascending;
+                }
                 else if (this._currentSortOrder == BuildReportTool.AssetList.SortOrder.Ascending)
                 {
                     if (this._searchResults != null)
@@ -1078,7 +1090,9 @@ namespace BuildReportTool.Window.Screen
                         this._currentSortOrder = BuildReportTool.AssetList.SortOrder.None;
                     }
                     else
+                    {
                         this._currentSortOrder = BuildReportTool.AssetList.SortOrder.Descending;
+                    }
                 }
             }
 
@@ -1092,7 +1106,9 @@ namespace BuildReportTool.Window.Screen
                     AssetListUtility.SortAssetList(this._searchResults, this._currentSortType, this._currentSortOrder);
             }
             else
+            {
                 assetList.Sort(this._currentSortType, this._currentSortOrder, fileFilters);
+            }
         }
 
         private void ToggleSort(
@@ -1113,7 +1129,9 @@ namespace BuildReportTool.Window.Screen
                 // already in this sort type
                 // now toggle the sort order
                 if (this._currentSortOrder == BuildReportTool.AssetList.SortOrder.Descending)
+                {
                     this._currentSortOrder = BuildReportTool.AssetList.SortOrder.Ascending;
+                }
                 else if (this._currentSortOrder == BuildReportTool.AssetList.SortOrder.Ascending)
                 {
                     if (this._searchResults != null)
@@ -1125,7 +1143,9 @@ namespace BuildReportTool.Window.Screen
                         this._currentTextureDataSortType = TextureData.DataId.None;
                     }
                     else
+                    {
                         this._currentSortOrder = BuildReportTool.AssetList.SortOrder.Descending;
+                    }
                 }
             }
 
@@ -1139,7 +1159,9 @@ namespace BuildReportTool.Window.Screen
                     AssetListUtility.SortAssetList(this._searchResults, textureData, this._currentTextureDataSortType, this._currentSortOrder);
             }
             else
+            {
                 assetList.Sort(textureData, this._currentTextureDataSortType, this._currentSortOrder, fileFilters);
+            }
         }
 
         private void ToggleSort(
@@ -1160,7 +1182,9 @@ namespace BuildReportTool.Window.Screen
                 // already in this sort type
                 // now toggle the sort order
                 if (this._currentSortOrder == BuildReportTool.AssetList.SortOrder.Descending)
+                {
                     this._currentSortOrder = BuildReportTool.AssetList.SortOrder.Ascending;
+                }
                 else if (this._currentSortOrder == BuildReportTool.AssetList.SortOrder.Ascending)
                 {
                     if (this._searchResults != null)
@@ -1172,7 +1196,9 @@ namespace BuildReportTool.Window.Screen
                         this._currentMeshDataSortType = MeshData.DataId.None;
                     }
                     else
+                    {
                         this._currentSortOrder = BuildReportTool.AssetList.SortOrder.Descending;
+                    }
                 }
             }
 
@@ -1186,7 +1212,9 @@ namespace BuildReportTool.Window.Screen
                     AssetListUtility.SortAssetList(this._searchResults, meshData, this._currentMeshDataSortType, this._currentSortOrder);
             }
             else
+            {
                 assetList.Sort(meshData, this._currentMeshDataSortType, this._currentSortOrder, fileFilters);
+            }
         }
 
         private void RefreshConfiguredFileFilters()
@@ -1669,7 +1697,9 @@ namespace BuildReportTool.Window.Screen
                     else
                         // add spacing where the ping button would be,
                         // so that this entry aligns with the rest
+                    {
                         GUILayout.Space(38);
+                    }
                 }
 
                 this._assetListEntry.image = AssetDatabase.GetCachedIcon(b.Name);
@@ -1731,7 +1761,9 @@ namespace BuildReportTool.Window.Screen
                                     list.AddToSumSelection(assetListToUse[addToSelectIdx]);
                         }
                         else
+                        {
                             list.AddToSumSelection(b);
+                        }
 
                         this._assetListEntryLastClickedIdx = n;
                     }
@@ -1786,7 +1818,10 @@ namespace BuildReportTool.Window.Screen
                                 this._assetUsageAncestry.Clear();
                                 this.SetAssetUsageHistoryToFirstEndUser(b.Name, assetDependencies);
                             }
-                            else if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_DIRECT) this.ChangeAssetUserCrumbRootIfNeeded(b.Name);
+                            else if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_DIRECT)
+                            {
+                                this.ChangeAssetUserCrumbRootIfNeeded(b.Name);
+                            }
                         }
 
                         this._assetListEntryLastClickedTime = EditorApplication.timeSinceStartup;
@@ -2474,10 +2509,17 @@ namespace BuildReportTool.Window.Screen
                 this.ToggleSort(list, sortType, filter);
             }
             else if (pressedSizeBeforeBuildSortBtn)
+            {
                 this.ToggleSort(list, BuildReportTool.AssetList.SortType.SizeBeforeBuild, filter);
+            }
             else if (pressedImpSizeSortBtn)
+            {
                 this.ToggleSort(list, BuildReportTool.AssetList.SortType.ImportedSize, filter);
-            else if (pressedPercentSortBtn) this.ToggleSort(list, BuildReportTool.AssetList.SortType.PercentSize, filter);
+            }
+            else if (pressedPercentSortBtn)
+            {
+                this.ToggleSort(list, BuildReportTool.AssetList.SortType.PercentSize, filter);
+            }
 
             #endregion
 

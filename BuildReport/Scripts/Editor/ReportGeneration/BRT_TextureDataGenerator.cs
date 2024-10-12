@@ -59,7 +59,9 @@ namespace BuildReportTool
                 if (textureDataEntries.ContainsKey(assets[n].Name))
                 {
                     if (!overwriteExistingEntries)
+                    {
                         continue;
+                    }
                     else
                     {
                         var newEntry = CreateEntry(assets[n].Name, platformString, debugLog);
@@ -301,7 +303,9 @@ namespace BuildReportTool
                     result.NPotScale = TextureData.NPOT_SCALE_NONE_NOT_POT;
             }
             else
+            {
                 result.NPotScale = textureImporter.npotScale.ToString();
+            }
 
             var gotDimensions = GetImageRealWidthAndHeight(assetPath, textureImporter, debugLog);
             result.RealWidth  = gotDimensions.Width;

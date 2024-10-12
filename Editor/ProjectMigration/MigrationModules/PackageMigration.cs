@@ -85,27 +85,33 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             var updated = false;
             // Add the new packages
             foreach (var package in PackagesToAdd)
+            {
                 if (!dependencies.ContainsKey(package.Key) || !dependencies[package.Key]!.ToString().Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;
                 }
+            }
 
             // Remove the packages
             foreach (var package in PackagesToRemove)
+            {
                 if (dependencies.ContainsKey(package))
                 {
                     dependencies.Remove(package);
                     updated = true;
                 }
+            }
 
             // Change package version
             foreach (var package in PackagesVersionToUse)
+            {
                 if (dependencies.ContainsKey(package.Key) && !dependencies[package.Key]!.ToString().Equals(package.Value))
                 {
                     dependencies[package.Key] = package.Value;
                     updated                   = true;
                 }
+            }
 
             if (updated) Debug.Log("Updated manifest.json with new packages and removed old packages.");
 

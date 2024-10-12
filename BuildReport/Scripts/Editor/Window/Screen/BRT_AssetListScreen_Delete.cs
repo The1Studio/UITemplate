@@ -45,7 +45,10 @@ namespace BuildReportTool.Window.Screen
                         --numOfFilesToDelete;
                         ++brtFilesSelectedForDelete;
                     }
-                    else if (Util.HaveToUseSystemForDelete(b.Name)) ++systemDeletionFileCount;
+                    else if (Util.HaveToUseSystemForDelete(b.Name))
+                    {
+                        ++systemDeletionFileCount;
+                    }
                 }
             }
 
@@ -92,7 +95,9 @@ namespace BuildReportTool.Window.Screen
                     "\n\nThis is a limitation in Unity and .NET code. To ensure deleting will move the files to the " + Util.NameOfOSTrashFolder + " instead, delete your files the usual way using your project view.";
             }
             else
+            {
                 message += "\n\nThe deleted file" + plural + " can be recovered from your " + Util.NameOfOSTrashFolder + ".";
+            }
 
             message +=
                 "\n\nDeleting a large number of files may take a long time as Unity will rebuild the project's Library folder.\n\nProceed with deleting?";
@@ -217,7 +222,9 @@ namespace BuildReportTool.Window.Screen
                 }
                 else
                     //Debug.Log("added " + b.Name + " to new list");
+                {
                     newAll.Add(b);
+                }
             }
 
             EditorUtility.ClearProgressBar();

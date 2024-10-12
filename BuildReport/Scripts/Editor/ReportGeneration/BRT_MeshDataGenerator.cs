@@ -52,7 +52,9 @@ namespace BuildReportTool
                 if (meshDataEntries.ContainsKey(assets[n].Name))
                 {
                     if (!overwriteExistingEntries)
+                    {
                         continue;
+                    }
                     else
                     {
                         var newEntry = CreateEntry(assets[n].Name, debugLog);

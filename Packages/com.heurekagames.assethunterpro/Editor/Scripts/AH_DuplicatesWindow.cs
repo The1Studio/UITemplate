@@ -72,7 +72,9 @@ namespace HeurekaGames.AssetHunterPRO
                         GUILayout.FlexibleSpace();
                     }
                     else
+                    {
                         this.doBody();
+                    }
                 }
             }
             this.doFooter();
@@ -168,7 +170,9 @@ namespace HeurekaGames.AssetHunterPRO
 
                         //EditorGUILayout.LabelField(kvPair.Key);
                         using (var vScope = new EditorGUILayout.VerticalScope("box"))
+                        {
                             foreach (var path in kvPair.Value.Paths)
+                            {
                                 using (new EditorGUI.DisabledGroupScope(Selection.objects.Any(x => AssetDatabase.GetAssetPath(x) == path)))
                                 {
                                     var charCount = (int)vScope.rect.width / 7;
@@ -177,6 +181,8 @@ namespace HeurekaGames.AssetHunterPRO
 
                                     if (GUILayout.Button(this.labelBtnContent, this.labelBtnStyle)) Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(path);
                                 }
+                            }
+                        }
                         if (this.duplicateDataManager.RequiresScrollviewRebuild && Event.current.type == EventType.Repaint) this.scrollviewPositionList.Add(hScope.rect.y); //Store Y position of guielement rect
                     }
                 }

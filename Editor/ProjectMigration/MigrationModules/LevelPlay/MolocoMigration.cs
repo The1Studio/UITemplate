@@ -28,7 +28,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.LevelPlay
                         File.Delete($"{macosxPath}.meta");
                     }
                     else
+                    {
                         File.Delete(macosXEmbedPath);
+                    }
                 }
             }
             else

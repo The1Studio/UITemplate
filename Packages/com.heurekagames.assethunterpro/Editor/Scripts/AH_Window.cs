@@ -143,7 +143,9 @@ namespace HeurekaGames.AssetHunterPRO
 
             //This might be called excessively
             if (AH_SettingsManager.Instance.AutoRefreshLog)
+            {
                 this.RefreshBuildLog();
+            }
             else
             {
                 if (EditorUtility.DisplayDialog("Refresh Asset Hunter Log", "Do you want to refresh the loaded log", "Yes", "No")) this.RefreshBuildLog();

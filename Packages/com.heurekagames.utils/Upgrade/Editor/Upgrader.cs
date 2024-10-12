@@ -85,11 +85,13 @@ namespace HeurekaGames.Upgrade
 
             var addRequests = new List<AddRequest>();
             foreach (var item in Request.Result)
+            {
                 if (heurekaPackages.Any(x => x.Equals(item.name)))
                 {
                     Debug.Log("Heureka Adding: " + item.name);
                     addRequests.Add(Client.Add(item.name));
                 }
+            }
 
             while (!addRequests.All(x => x.IsCompleted)) await Task.Delay(100);
 

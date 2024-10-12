@@ -380,10 +380,14 @@ public static class NVJOBNameGen
                 nameFinal = name1[r1] + name2[r2] + name3[r3] + name4[r4] + name5[r5];
             }
             else
+            {
                 nameFinal = "Base will be updated";
+            }
         }
         else
+        {
             nameFinal = "No Name";
+        }
 
         //--------------
 

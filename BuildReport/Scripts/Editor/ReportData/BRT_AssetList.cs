@@ -186,7 +186,9 @@ namespace BuildReportTool
                     {
                     }
                     else
+                    {
                         AssetListUtility.SortAssetList(this._all, this._lastSortType, this._lastSortOrder);
+                    }
                 }
                 else
                 {
@@ -197,7 +199,9 @@ namespace BuildReportTool
                     {
                     }
                     else
+                    {
                         AssetListUtility.SortAssetList(this._perCategory[fileFilters.SelectedFilterIdx], this._lastSortType, this._lastSortOrder);
+                    }
                 }
 
                 this._hasListBeenSorted.Add(fileFilters.SelectedFilterIdx);
@@ -332,16 +336,20 @@ namespace BuildReportTool
 
             if (this._all != null)
                 for (int n = 0, len = this._all.Length; n < len; ++n)
+                {
                     this._all[n].Percentage =
                         Math.Round(this._all[n].UsableSize / totalSize * 100, 2, MidpointRounding.AwayFromZero);
+                }
             //Debug.Log("Percentage for: " + n + " " + _all[n].Name + " = " + _all[n].Percentage + " = " + _all[n].UsableSize + " / " + totalSize);
             if (this._perCategory != null)
                 for (int catIdx = 0, catLen = this._perCategory.Length; catIdx < catLen; ++catIdx)
                 for (int n = 0, len = this._perCategory[catIdx].Length; n < len; ++n)
+                {
                     this._perCategory[catIdx][n].Percentage =
                         Math.Round(this._perCategory[catIdx][n].UsableSize / totalSize * 100,
                             2,
                             MidpointRounding.AwayFromZero);
+                }
 
             //Debug.Log("Recalculate Percentage End");
         }
@@ -437,9 +445,11 @@ namespace BuildReportTool
         {
             double total = 0;
             foreach (var pair in this._selectedForSum)
+            {
                 if (pair.Value.Percentage > 0)
                     if (pair.Value.Percentage > 0)
                         total += pair.Value.Percentage;
+            }
 
             return total;
         }

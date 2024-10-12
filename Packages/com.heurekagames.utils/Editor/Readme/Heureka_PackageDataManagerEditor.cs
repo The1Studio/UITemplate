@@ -75,14 +75,19 @@ namespace HeurekaGames.Utils
             var listUniqueEntries = new List<Heureka_PackageData>();
             foreach (var item in this.readmeManager.sections)
                 //If we dont have this asset identifier in list already
+            {
                 if (!listUniqueEntries.Any(val => val.AssetIdentifier == item.AssetIdentifier))
+                {
                     listUniqueEntries.Add(item);
+                }
                 //If it IS in list already find the one that is NOT a promo, and put that in list
                 else
                 {
                     //If the one we look at right now is a promo, just ignore
                     if (item.GetType() == typeof(Heureka_PackageDataPromo))
+                    {
                         continue;
+                    }
                     else
                     {
                         //Remove the promo from list and insert the new one with similar identifier (Which should be a readme)
@@ -90,6 +95,7 @@ namespace HeurekaGames.Utils
                         listUniqueEntries.Add(item);
                     }
                 }
+            }
             this.readmeManager.sections = listUniqueEntries.ToArray();
         }
 

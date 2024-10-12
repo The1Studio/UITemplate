@@ -214,7 +214,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
             else
                 // if there is no animation, just update the currency
+            {
                 this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));
+            }
 
             return true;
         }
@@ -353,9 +355,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public bool IsAlreadyContainedItem(Dictionary<string, int> reward)
         {
             foreach (var (rewardKey, _) in reward)
+            {
                 if (this.uiTemplateItemBlueprint.TryGetValue(rewardKey, out _))
                     if (this.uiTemplateInventoryData.IDToItemData[rewardKey].CurrentStatus == UITemplateItemData.Status.Owned)
                         return true;
+            }
 
             return false;
         }

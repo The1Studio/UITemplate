@@ -113,7 +113,9 @@ namespace BuildReportTool.Window.Screen
             PrettyAssetLabel entry;
 
             if (this._prettyAssetLabels.ContainsKey(assetPath))
+            {
                 entry = this._prettyAssetLabels[assetPath];
+            }
             else
             {
                 var path     = Util.GetAssetPath(assetPath);
@@ -142,7 +144,9 @@ namespace BuildReportTool.Window.Screen
                     return entry.AssetPath;
             }
             else
+            {
                 return entry.AssetName;
+            }
         }
 
         private string GetPrettyAssetPath(string assetPath, int number, bool showAssetPath, bool selected)
@@ -150,7 +154,9 @@ namespace BuildReportTool.Window.Screen
             PrettyAssetLabelWithNumber entry;
 
             if (this._prettyAssetLabelsWithNumber.ContainsKey(assetPath))
+            {
                 entry = this._prettyAssetLabelsWithNumber[assetPath];
+            }
             else
             {
                 entry.AssetPath             = null;
@@ -440,7 +446,9 @@ namespace BuildReportTool.Window.Screen
                     assetInfoPanelStyle = GUI.skin.FindStyle("AssetInfoPanelToolbarTop");
             }
             else
+            {
                 assetInfoPanelStyle = GUI.skin.FindStyle("AssetInfoPanel");
+            }
             if (assetInfoPanelStyle == null) assetInfoPanelStyle = GUI.skin.box;
 
             var labelSingleLineStyle                               = GUI.skin.FindStyle("LabelSingleLine");
@@ -501,7 +509,9 @@ namespace BuildReportTool.Window.Screen
                             // which is the resources asset that's selected
                             // so if the mouse isn't on it, then we're sure it's not on any
                             // other asset usage ancestry entry
+                        {
                             this._assetUsageAncestryHoveredIdx = -1;
+                        }
                     }
 
                     GUILayout.Label(AssetUsageIsAResourcesAssetLabel, labelSingleLineStyle, BRT_BuildReportWindow.LayoutNone);
@@ -512,7 +522,9 @@ namespace BuildReportTool.Window.Screen
                     GUILayout.EndArea();
                 }
                 else
+                {
                     this._assetUsageRect.height = 0;
+                }
 
                 return;
             }
@@ -1025,6 +1037,7 @@ namespace BuildReportTool.Window.Screen
 
                         var alreadyInBreadcrumbHistory = false;
                         for (int n = 0, len = this._assetUserCrumbs.Count; n < len; ++n)
+                        {
                             if (this._assetUserCrumbs[n].AssetPath.Equals(assetPath, StringComparison.OrdinalIgnoreCase))
                             {
                                 // asset is already in breadcrumb history. this is most likely a cyclic dependency
@@ -1035,6 +1048,7 @@ namespace BuildReportTool.Window.Screen
                                 alreadyInBreadcrumbHistory = true;
                                 break;
                             }
+                        }
 
                         if (!alreadyInBreadcrumbHistory)
                         {
@@ -1609,7 +1623,9 @@ namespace BuildReportTool.Window.Screen
         )
         {
             if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_ALL)
+            {
                 this.DrawAssetUsageAncestry(position, availableWidth, buildReportToDisplay, assetDependencies);
+            }
             else if (this._selectedAssetUsageDisplayIdx == ASSET_USAGE_DISPLAY_DIRECT)
             {
                 GUILayout.BeginHorizontal(BRT_BuildReportWindow.LayoutNone);
@@ -1669,7 +1685,9 @@ namespace BuildReportTool.Window.Screen
                 ASSET_INFO_TOOLBAR_HEIGHT);
 
             if (this._showAssetUsagesList)
+            {
                 bgRect.y = this._assetUsageRect.y + 2;
+            }
             else
             {
                 bgRect.y      =  position.height - ASSET_INFO_TOOLBAR_HEIGHT;
@@ -1782,7 +1800,9 @@ namespace BuildReportTool.Window.Screen
             if (assetLabelInBetweenStyle == null) assetLabelInBetweenStyle = GUI.skin.label;
             Texture2D assetUsageArrow;
             if (assetUsageArrowStyle != null)
+            {
                 assetUsageArrow = assetUsageArrowStyle.normal.background;
+            }
             else
             {
                 assetUsageArrow      = null;
@@ -1916,8 +1936,9 @@ namespace BuildReportTool.Window.Screen
                         widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
                 }
                 else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnMinimal)
-                    if (n < len - 1)
-                        widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                {
+                    if (n < len - 1) widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                }
 
                 #if BRT_ASSET_LIST_SCREEN_DEBUG
 				_debugText.AppendFormat("Actual Item {0} in-between width: {1}\n",
@@ -2030,6 +2051,7 @@ namespace BuildReportTool.Window.Screen
                 }
                 else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnMinimal)
                     // don't draw arrow after last asset
+                {
                     if (n < len - 1)
                     {
                         var needWidth = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
@@ -2051,6 +2073,7 @@ namespace BuildReportTool.Window.Screen
                             GUI.DrawTexture(arrowRect, assetUsageArrow);
                         }
                     }
+                }
 
                 // --------------------------
             } // end of for-loop on asset usage ancestry
@@ -2073,7 +2096,9 @@ namespace BuildReportTool.Window.Screen
             if (assetLabelInBetweenStyle == null) assetLabelInBetweenStyle = GUI.skin.label;
             Texture2D assetUsageArrow;
             if (assetUsageArrowStyle != null)
+            {
                 assetUsageArrow = assetUsageArrowStyle.normal.background;
+            }
             else
             {
                 assetUsageArrow      = null;
@@ -2162,8 +2187,9 @@ namespace BuildReportTool.Window.Screen
                         widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
                 }
                 else if (BuildReportTool.Options.IsAssetUsageLabelTypeOnMinimal)
-                    if (n < len - 1)
-                        widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                {
+                    if (n < len - 1) widthToAdd = assetUsageArrow.width + assetUsageArrowStyle.padding.horizontal;
+                }
 
                 #if BRT_ASSET_LIST_SCREEN_DEBUG
 				_debugText.AppendFormat("Item {0} in-between label width: {1}\n",
@@ -2226,6 +2252,7 @@ namespace BuildReportTool.Window.Screen
             // find first scene
 
             for (int n = 0, len = usersFlattened.Count; n < len; ++n)
+            {
                 if (usersFlattened[n].AssetPath.IsSceneFile())
                 {
                     this._selectedAssetUserIdx = n;
@@ -2234,11 +2261,13 @@ namespace BuildReportTool.Window.Screen
                         DoesAssetUsageAncestryHaveFbxUsingDefaultMaterialUsedInScene(this._assetUsageAncestry);
                     return;
                 }
+            }
 
             // ----------------
             // no scene found, now check if a Resources asset uses it
 
             for (int n = 0, len = usersFlattened.Count; n < len; ++n)
+            {
                 if (usersFlattened[n].AssetPath.IsInResourcesFolder())
                 {
                     this._selectedAssetUserIdx = n;
@@ -2246,6 +2275,7 @@ namespace BuildReportTool.Window.Screen
                     this._assetUsageAncestryHasFbxUsingDefaultMaterialUsedInScene = false;
                     return;
                 }
+            }
 
             // ----------------
             // no end user found, just select the first user

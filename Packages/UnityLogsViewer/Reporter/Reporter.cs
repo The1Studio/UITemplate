@@ -670,7 +670,9 @@ public class Reporter : MonoBehaviour
                     if (log.condition.ToLower().Contains(_filterText)) this.currentLog.Add(log);
                 }
                 else
+                {
                     this.currentLog.Add(log);
+                }
             }
         else
             for (var i = 0; i < this.logs.Count; i++)
@@ -687,7 +689,9 @@ public class Reporter : MonoBehaviour
                     if (log.condition.ToLower().Contains(_filterText)) this.currentLog.Add(log);
                 }
                 else
+                {
                     this.currentLog.Add(log);
+                }
             }
 
         if (this.selectedLog != null)
@@ -700,7 +704,9 @@ public class Reporter : MonoBehaviour
                 if (newSelectedIndex != -1) this.scrollPosition.y = newSelectedIndex * this.size.y;
             }
             else
+            {
                 this.scrollPosition.y = newSelectedIndex * this.size.y;
+            }
         }
     }
 
@@ -1216,7 +1222,9 @@ public class Reporter : MonoBehaviour
             var currentLogStyle = (this.startIndex + index) % 2 == 0 ? this.evenLogStyle : this.oddLogStyle;
             if (log == this.selectedLog)
                 //selectedLog = log ;
+            {
                 currentLogStyle = this.selectedLogStyle;
+            }
             else
             {
             }
@@ -1593,7 +1601,9 @@ public class Reporter : MonoBehaviour
         this.detailRect.height = this.size.y * 3;
 
         if (this.currentView == ReportView.Info)
+        {
             this.DrawInfo();
+        }
         else if (this.currentView == ReportView.Logs)
         {
             this.drawToolBar();
@@ -1618,7 +1628,9 @@ public class Reporter : MonoBehaviour
             else
             {
                 if (Input.touches[0].phase == TouchPhase.Canceled || Input.touches[0].phase == TouchPhase.Ended)
+                {
                     this.gestureDetector.Clear();
+                }
                 else if (Input.touches[0].phase == TouchPhase.Moved)
                 {
                     var p = Input.touches[0].position;
@@ -1685,20 +1697,26 @@ public class Reporter : MonoBehaviour
         if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
             if (Input.touches.Length != 1)
+            {
                 this.lastClickTime = -1;
+            }
             else
             {
                 if (Input.touches[0].phase == TouchPhase.Began)
                 {
                     if (this.lastClickTime == -1)
+                    {
                         this.lastClickTime = Time.realtimeSinceStartup;
+                    }
                     else if (Time.realtimeSinceStartup - this.lastClickTime < 0.2f)
                     {
                         this.lastClickTime = -1;
                         return true;
                     }
                     else
+                    {
                         this.lastClickTime = Time.realtimeSinceStartup;
+                    }
                 }
             }
         }
@@ -1707,14 +1725,18 @@ public class Reporter : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 if (this.lastClickTime == -1)
+                {
                     this.lastClickTime = Time.realtimeSinceStartup;
+                }
                 else if (Time.realtimeSinceStartup - this.lastClickTime < 0.2f)
                 {
                     this.lastClickTime = -1;
                     return true;
                 }
                 else
+                {
                     this.lastClickTime = Time.realtimeSinceStartup;
+                }
             }
         }
 
@@ -1768,7 +1790,9 @@ public class Reporter : MonoBehaviour
                 return this.mousePosition - this.downPos;
             }
             else
+            {
                 return Vector2.zero;
+            }
         }
     }
 
@@ -1875,7 +1899,9 @@ public class Reporter : MonoBehaviour
         var memUsage   = 0f;
         var _condition = "";
         if (this.cachedString.ContainsKey(condition))
+        {
             _condition = this.cachedString[condition];
+        }
         else
         {
             _condition = condition;
@@ -1886,7 +1912,9 @@ public class Reporter : MonoBehaviour
 
         var _stacktrace = "";
         if (this.cachedString.ContainsKey(stacktrace))
+        {
             _stacktrace = this.cachedString[stacktrace];
+        }
         else
         {
             _stacktrace = stacktrace;
@@ -2063,7 +2091,9 @@ public class Reporter : MonoBehaviour
         #endif
 
         if (!string.IsNullOrEmpty(www.error))
+        {
             Debug.LogError(www.error);
+        }
         else
         {
             #if UNITY_CHANGE4

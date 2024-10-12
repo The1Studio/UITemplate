@@ -50,7 +50,9 @@ namespace HeurekaGames.Utils
 
             //If this icon resides in "packages"
             if (exists)
+            {
                 return path;
+            }
             //Else we need to find the directory it lives in
             else
             {

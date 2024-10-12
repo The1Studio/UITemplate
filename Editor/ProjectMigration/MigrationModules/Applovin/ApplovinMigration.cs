@@ -115,9 +115,11 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Applovin
                 if (iosPodNodes != null)
                     foreach (XmlNode iosPodNode in iosPodNodes)
                         // Check if the name attribute of the iosPod node is in the dictionary
+                    {
                         if (iosPodNode.Attributes != null && IOSPodVersions.ContainsKey(iosPodNode.Attributes["name"].Value))
                             // Change the version attribute to the new version from the dictionary
                             iosPodNode.Attributes["version"].Value = IOSPodVersions[iosPodNode.Attributes["name"].Value];
+                    }
 
                 doc.Save(filePath);
             }

@@ -225,7 +225,9 @@ namespace BuildReportTool.Window.Screen
                 this.DrawSetting("Version code:", settings.AndroidVersionCode);
             }
             else if (this.IsShowingXbox360Settings)
+            {
                 this.DrawSetting("Title ID:", settings.Xbox360TitleId);
+            }
             else if (this.IsShowingXboxOneSettings)
             {
                 this.DrawSetting("Title ID:", settings.XboxOneTitleId);
@@ -267,7 +269,9 @@ namespace BuildReportTool.Window.Screen
             // --------------------------------------------------
             // build settings
             if (this.IsShowingStandaloneSettings)
+            {
                 this.DrawSetting("Headless (server) build:", settings.EnableHeadlessMode);
+            }
             else if (this.IsShowingWindowsStoreAppSettings)
             {
                 this.DrawSetting("Generate reference projects:", settings.WSAGenerateReferenceProjects);
@@ -736,7 +740,9 @@ namespace BuildReportTool.Window.Screen
             this.DrawSetting("Location usage description:", settings.LocationUsageDescription);
 
             if (this.IsShowingiOSSettings)
+            {
                 this.DrawSetting("Script call optimized:", settings.iOSScriptCallOptimizationUsed);
+            }
             //GUILayout.Space(SETTINGS_GROUP_MINOR_SPACING);
             else if (this.IsShowingPS4Settings)
             {
@@ -815,11 +821,13 @@ namespace BuildReportTool.Window.Screen
                 }
                 else if (this.IsShowingMacSettings)
                     // removed in 2018
+                {
                     if (buildReportToDisplay.IsUnityVersionAtLeast(2017, 0, 0))
                     {
                         this.DrawSetting("Fullscreen mode:", settings.MacFullscreenModeUsed);
                         GUILayout.Space(SETTINGS_GROUP_MINOR_SPACING);
                     }
+                }
 
                 this.DrawSetting("Allow OS switching between full-screen and window mode:",
                     settings.StandaloneAllowFullScreenSwitch);
@@ -973,7 +981,9 @@ namespace BuildReportTool.Window.Screen
                     }
                     else
                         // no display name
+                    {
                         GUILayout.Label(builtInPackageList[n].PackageName, nameStyle);
+                    }
 
                     GUILayout.Space(5);
                 }

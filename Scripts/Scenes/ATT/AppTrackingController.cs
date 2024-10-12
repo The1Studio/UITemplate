@@ -24,7 +24,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
                 LoadLoadingScene();
             }
             else
+            {
                 this.attView.gameObject.SetActive(true);
+            }
         }
 
         private async void OnClickRequestTracking()

@@ -19,7 +19,9 @@ namespace BuildReportTool
                 var shouldBeAllLowerCase = true;
 
                 if ((filters[n].StartsWith("/") || filters[n].StartsWith("Assets/", StringComparison.OrdinalIgnoreCase)) && filters[n].EndsWith("/"))
+                {
                     this._usesFolderFilter = true;
+                }
                 else if (filters[n].StartsWith(BUILT_IN_ASSET_KEYWORD, StringComparison.OrdinalIgnoreCase))
                 {
                     this._usesFolderFilter = true;
@@ -29,7 +31,10 @@ namespace BuildReportTool
 
                     //Debug.Log("uses built-in: " + label + ", " + filters[n]);
                 }
-                else if (filters[n].StartsWith("\"") && filters[n].EndsWith("\"")) this._usesExactFileMatching = true;
+                else if (filters[n].StartsWith("\"") && filters[n].EndsWith("\""))
+                {
+                    this._usesExactFileMatching = true;
+                }
 
                 if (shouldBeAllLowerCase) filters[n] = filters[n].ToLower();
             }
@@ -69,14 +74,19 @@ namespace BuildReportTool
                     var shouldBeAllLowerCase = true;
 
                     if ((this._filtersList[n].StartsWith("/") || this._filtersList[n].StartsWith("Assets/", StringComparison.OrdinalIgnoreCase)) && this._filtersList[n].EndsWith("/"))
+                    {
                         this._usesFolderFilter = true;
+                    }
                     else if (this._filtersList[n].StartsWith(BUILT_IN_ASSET_KEYWORD, StringComparison.OrdinalIgnoreCase))
                     {
                         this._usesFolderFilter = true;
                         shouldBeAllLowerCase   = false;
                         //Debug.Log("uses built-in: " + _label + ", " + _filtersList[n]);
                     }
-                    else if (this._filtersList[n].StartsWith("\"") && this._filtersList[n].EndsWith("\"")) this._usesExactFileMatching = true;
+                    else if (this._filtersList[n].StartsWith("\"") && this._filtersList[n].EndsWith("\""))
+                    {
+                        this._usesExactFileMatching = true;
+                    }
 
                     if (shouldBeAllLowerCase) this._filtersList[n] = this._filtersList[n].ToLower();
                 }
@@ -117,6 +127,7 @@ namespace BuildReportTool
 
                 for (int n = 0, len = this._filtersList.Length; n < len; ++n)
                     //Debug.Log("in quotes: " + _filtersList[n] + " " + (_filtersList[n].StartsWith("\"") && _filtersList[n].EndsWith("\"")));
+                {
                     if (this._filtersList[n].StartsWith("\"") && this._filtersList[n].EndsWith("\""))
                     {
                         var fileWithQuotes = string.Format("\"{0}\"", fileNameOnly);
@@ -124,6 +135,7 @@ namespace BuildReportTool
                         //Debug.Log("match? " + _filtersList[n] + " == " + fileWithQuotes);
                         if (this._filtersList[n].Equals(fileWithQuotes)) return true;
                     }
+                }
             }
 
             // -------------------------------------------------

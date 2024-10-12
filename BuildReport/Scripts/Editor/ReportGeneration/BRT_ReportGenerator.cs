@@ -444,8 +444,10 @@ namespace BuildReportTool
 
             foreach (var scene in EditorBuildSettings.scenes)
                 //Debug.Log(S.path);
+            {
                 if (scene != null && !string.IsNullOrEmpty(scene.path) && scene.enabled) // is checkbox for this scene in build settings checked?
                     AddAllPrefabsUsedInScene(scene.path);
+            }
         }
 
         private static void CommitAdditionalInfoToCache()
@@ -563,7 +565,9 @@ namespace BuildReportTool
                 if (match.Success) gotSize = match.Groups[0].Value.ToUpper();
                 //Debug.LogFormat("    got size: {0}", gotSize);
                 if (HasInvalidPercentValue(b))
+                {
                     gotPercent = "0";
+                }
                 //Debug.LogFormat("    got percent (inf): {0}", gotPercent);
                 else
                 {
@@ -575,7 +579,9 @@ namespace BuildReportTool
                         //Debug.LogFormat("    got percent: {0}", gotPercent);
                     }
                     else
+                    {
                         gotPercent = "0";
+                    }
                 }
 
                 var inPart = new SizePart();
@@ -691,7 +697,9 @@ namespace BuildReportTool
                         Debug.Log("didn't find size for :" + input);
 
                     if (HasInvalidPercentValue(input))
+                    {
                         gotPercent = "0";
+                    }
                     else
                     {
                         match = Regex.Match(input, @"[0-9.]+%", RegexOptions.IgnoreCase);
@@ -702,7 +710,9 @@ namespace BuildReportTool
                             //Debug.Log("    percent? " + gotPercent);
                         }
                         else
+                        {
                             Debug.Log("didn't find percent for :" + input);
+                        }
                     }
                     //Debug.LogFormat("got: {0} size: {1} percent: {2}", gotName, gotSize, gotPercent);
 
@@ -739,7 +749,9 @@ namespace BuildReportTool
                     }
                 }
                 else
+                {
                     break;
+                }
             }
 
             // Additional Step:
@@ -779,11 +791,13 @@ namespace BuildReportTool
 
                 var foundAtLeastOneMatch = false;
                 for (int n = 0, len = filters.Count; n < len; ++n)
+                {
                     if (filters[n].IsFileInFilter(assetSizesAll[idxAll].Name))
                     {
                         foundAtLeastOneMatch = true;
                         ret[n].Add(assetSizesAll[idxAll]);
                     }
+                }
 
                 if (!foundAtLeastOneMatch) ret[ret.Count - 1].Add(assetSizesAll[idxAll]);
             }
@@ -867,7 +881,9 @@ namespace BuildReportTool
                 else
                     // no assets found. this only happens when we tried to move to next batch but it turns out to be the last
                     // so we move back
+                {
                     buildInfo.MoveUnusedAssetsBatchNumToPrev();
+                }
 
                 BRT_BuildReportWindow.GetValueMessage = "";
 
@@ -1012,6 +1028,7 @@ namespace BuildReportTool
 
                     // is current asset found in the script/managed DLLs list?
                     for (var mdllIdx = 0; mdllIdx < scriptDLLs.Length; ++mdllIdx)
+                    {
                         if (scriptDLLs[mdllIdx].Name == assetFilenameOnly)
                         {
                             // it's a managed DLL. Managed DLLs are always included in the build.
@@ -1033,6 +1050,7 @@ namespace BuildReportTool
 
                             break;
                         }
+                    }
 
                     if (foundMatch)
                         // this DLL file has been taken into account since it was detected to be a managed DLL
@@ -1348,6 +1366,7 @@ namespace BuildReportTool
             SizePart inPart;
 
             if (!string.IsNullOrEmpty(buildManagedDLLsFolder) && Directory.Exists(buildManagedDLLsFolder))
+            {
                 foreach (var filepath in TraverseDirectory.Do(buildManagedDLLsFolder))
                 {
                     var filename = filepath.GetFileNameOnly();
@@ -1366,6 +1385,7 @@ namespace BuildReportTool
                             scriptDLLsList.Add(inPart);
                     }
                 }
+            }
             else
             {
                 // folder inside the Unity installation where mono system dlls are
@@ -1414,7 +1434,9 @@ namespace BuildReportTool
 
                     string filepath;
                     if (Util.IsAScriptDLL(filename))
+                    {
                         filepath = buildScriptDLLsFolder + filename;
+                    }
                     //Debug.LogWarning("Script \"" + filepath + "\".");
                     else
                     {
@@ -1654,9 +1676,11 @@ namespace BuildReportTool
 
                 if (potentialBuildExeFiles.Length > 0)
                     for (int n = 0, len = potentialBuildExeFiles.Length; n < len; ++n)
+                    {
                         if (IsUnityExecutableFile(potentialBuildExeFiles[n]))
                             //Debug.LogFormat("found unity .exe file: {0}", potentialBuildExeFiles[n]);
                             return GetStandaloneBuildWithDataFolderSize(potentialBuildExeFiles[n], unityVersion);
+                    }
 
                 // --------------------------
 
@@ -1665,9 +1689,11 @@ namespace BuildReportTool
 
                 if (potentialBuildLinux32BitFiles.Length > 0)
                     for (int n = 0, len = potentialBuildLinux32BitFiles.Length; n < len; ++n)
+                    {
                         if (IsUnityExecutableFile(potentialBuildLinux32BitFiles[n]))
                             //Debug.Log("found unity .x86 file: " + potentialBuildLinux32BitFiles[n]);
                             return GetStandaloneBuildWithDataFolderSize(potentialBuildLinux32BitFiles[n], unityVersion);
+                    }
 
                 // --------------------------
 
@@ -1676,9 +1702,11 @@ namespace BuildReportTool
 
                 if (potentialBuildLinux64BitFiles.Length > 0)
                     for (int n = 0, len = potentialBuildLinux64BitFiles.Length; n < len; ++n)
+                    {
                         if (IsUnityExecutableFile(potentialBuildLinux64BitFiles[n]))
                             //Debug.Log("found unity .x86_64 file: " + potentialBuildLinux64BitFiles[n]);
                             return GetStandaloneBuildWithDataFolderSize(potentialBuildLinux64BitFiles[n], unityVersion);
+                    }
 
                 // just return size of whole folder.
                 //Debug.LogFormat("Getting size of whole folder: {0}", buildFilePath);
@@ -1873,11 +1901,13 @@ namespace BuildReportTool
                 _unityHasNoLogArgument = false;
                 for (var i = 0; i < args.Length; i++)
                     //Debug.Log(args[i]);
+                {
                     if (args[i] == "-nolog")
                     {
                         _unityHasNoLogArgument = true;
                         break;
                     }
+                }
 
                 _gotCommandLineArguments = true;
             }
@@ -1980,11 +2010,13 @@ namespace BuildReportTool
             buildInfo.UsedTotalSize = "";
 
             foreach (var b in buildInfo.BuildSizes)
+            {
                 if (b.IsTotal)
                 {
                     buildInfo.UsedTotalSize = b.Size;
                     break;
                 }
+            }
 
             // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             // getting streaming assets size (uncompressed)
@@ -1997,12 +2029,14 @@ namespace BuildReportTool
                 buildInfo.StreamingAssetsSize = Util.GetFolderSizeReadable(streamingAssetsPath);
 
             foreach (var b in buildInfo.BuildSizes)
+            {
                 if (b.IsStreamingAssets)
                 {
                     b.DerivedSize = Util.GetFolderSizeInBytes(streamingAssetsPath);
                     b.Size        = Util.GetBytesReadable(b.DerivedSize);
                     break;
                 }
+            }
 
             // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             // getting compressed total build size
@@ -2019,7 +2053,9 @@ namespace BuildReportTool
 
                 if (buildPlatform == BuildPlatform.Flash)
                     // in Flash builds, `buildFilePath` is the .swf file
+                {
                     buildInfo.TotalBuildSize = Util.GetPathSizeReadable(buildFilePath);
+                }
                 else if (buildPlatform == BuildPlatform.Android)
                 {
                     //Debug.Log("trying to get size of: " + buildFilePath);
@@ -2031,7 +2067,9 @@ namespace BuildReportTool
 
                     if (!buildInfo.AndroidCreateProject && !buildInfo.AndroidUseAPKExpansionFiles)
                         // .apk without an .obb
+                    {
                         buildInfo.TotalBuildSize = Util.GetPathSizeReadable(buildFilePath);
+                    }
                     else if (!buildInfo.AndroidCreateProject && buildInfo.AndroidUseAPKExpansionFiles)
                     {
                         // .apk with .obb
@@ -2059,7 +2097,9 @@ namespace BuildReportTool
                     }
                     else
                         // ???
+                    {
                         buildInfo.TotalBuildSize = Util.GetPathSizeReadable(buildFilePath);
+                    }
                 }
                 else if (buildPlatform == BuildPlatform.Web)
                 {
@@ -2084,25 +2124,33 @@ namespace BuildReportTool
                     //	buildFilePath);
                     // in Windows/Linux builds, `buildFilePath` is only the executable file (.exe, .x86, or .x86_64 file).
                     // we still need to get the size of the Data folder
+                {
                     buildInfo.TotalBuildSize =
                         Util.GetBytesReadable(GetStandaloneBuildSize(buildFilePath, buildInfo.UnityVersion));
+                }
                 else if (
                         buildPlatform == BuildPlatform.MacOSX32 || buildPlatform == BuildPlatform.MacOSX64 || buildPlatform == BuildPlatform.MacOSXUniversal)
                     //Debug.LogFormat(
                     //	"BuildReportTool.ReportGenerator: Getting Total Build Size: Detected Mac OS X buildFilePath: {0}",
                     //	buildFilePath);
                     // in Mac builds, `buildFilePath` is the .app file (which is really just a folder)
+                {
                     buildInfo.TotalBuildSize = Util.GetPathSizeReadable(buildFilePath);
+                }
                 else if (buildPlatform == BuildPlatform.iOS)
                     // in iOS builds, `buildFilePath` is the Xcode project folder
+                {
                     buildInfo.TotalBuildSize = Util.GetPathSizeReadable(buildFilePath);
+                }
                 else
                     //Debug.LogFormat(
                     //	"BuildReportTool.ReportGenerator: Getting Total Build Size: Unknown build platform: {0}",
                     //	buildFilePath);
                     // in console builds, `buildFilePath` is ???
                     // last resort for unknown build platforms
+                {
                     buildInfo.TotalBuildSize = Util.GetPathSizeReadable(buildFilePath);
+                }
             }
 
             // for debug
@@ -2406,7 +2454,9 @@ namespace BuildReportTool
                 thread.Start();
             }
             else
+            {
                 CreateBuildReport(buildInfo);
+            }
         }
 
         /// <summary>

@@ -77,6 +77,7 @@ namespace Lofelt.NiceVibrations
             GamepadRumble rumble       = default;
             var           nativeRumble = nv_plugin_convert_haptic_to_gamepad_rumble(jsonBytes, jsonBytes.Length);
             if (nativeRumble != IntPtr.Zero)
+            {
                 try
                 {
                     var length = (uint)nv_plugin_get_length(nativeRumble);
@@ -96,6 +97,7 @@ namespace Lofelt.NiceVibrations
                 {
                     nv_plugin_destroy(nativeRumble);
                 }
+            }
             else
             {
                 var lastErrorPtr    = nv_plugin_get_last_error();

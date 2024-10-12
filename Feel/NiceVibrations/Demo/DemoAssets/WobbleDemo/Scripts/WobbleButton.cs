@@ -80,7 +80,9 @@ namespace Lofelt.NiceVibrations
                 return this._canvas.transform.TransformPoint(this._workPosition);
             }
             else
+            {
                 return testPosition;
+            }
         }
 
         protected virtual void Update()

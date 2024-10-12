@@ -21,6 +21,7 @@ namespace DldUtil
                 if (line == null) break;
 
                 for (var seekTextIdx = 0; seekTextIdx < seekText.Length; ++seekTextIdx)
+                {
                     if (line.IndexOf(seekText[seekTextIdx], StringComparison.Ordinal) >= 0)
                     {
                         sr.Close();
@@ -29,6 +30,7 @@ namespace DldUtil
 
                         return true;
                     }
+                }
             }
 
             sr.Close();
@@ -87,6 +89,7 @@ namespace DldUtil
                 if (line == null) break;
 
                 for (var seekTextIdx = 0; seekTextIdx < seekText.Length; ++seekTextIdx)
+                {
                     if (line.IndexOf(seekText[seekTextIdx], StringComparison.Ordinal) >= 0)
                     {
                         FoundText newFoundText;
@@ -94,6 +97,7 @@ namespace DldUtil
                         newFoundText.Text       = line;
                         returnValue.Add(newFoundText);
                     }
+                }
             }
 
             return returnValue;
@@ -130,11 +134,13 @@ namespace DldUtil
 
                     var atLeastOneSeekTextFound = false;
                     for (var seekTextIdx = 0; seekTextIdx < seekText.Length; ++seekTextIdx)
+                    {
                         if (line.IndexOf(seekText[seekTextIdx], StringComparison.Ordinal) >= 0)
                         {
                             atLeastOneSeekTextFound = true;
                             break;
                         }
+                    }
 
                     // if seekText not found yet, continue search
                     if (!atLeastOneSeekTextFound) continue;
@@ -169,6 +175,7 @@ namespace DldUtil
                 }
             }
             else
+            {
                 while (true)
                 {
                     line = sr.ReadLine();
@@ -177,6 +184,7 @@ namespace DldUtil
 
                     yield return line;
                 }
+            }
 
             sr.Close();
             bs.Close();

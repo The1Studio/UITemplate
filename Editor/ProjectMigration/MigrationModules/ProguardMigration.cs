@@ -23,11 +23,13 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                 var updated       = false;
 
                 foreach (var line in RequiredProguardLines)
+                {
                     if (!existingLines.Contains(line))
                     {
                         existingLines.Add(line);
                         updated = true;
                     }
+                }
 
                 if (updated)
                 {
@@ -36,7 +38,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                 }
             }
             else
+            {
                 Debug.LogWarning("proguard-user.txt not found at path: " + ProguardUserFilePath);
+            }
         }
     }
 }

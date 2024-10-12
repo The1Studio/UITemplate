@@ -280,12 +280,14 @@ public class BRT_BuildReportWindow : EditorWindow
     {
         var foundSceneInBuild = false;
         for (int sceneN = 0, sceneLen = scenesInBuild.Length; sceneN < sceneLen; ++sceneN)
+        {
             if (scenesInBuild[sceneN].Path.Equals(scenePath, StringComparison.OrdinalIgnoreCase))
             {
                 destination.text  = string.Format(SCENE_IN_BUILD_LABEL_WITH_INDEX_FORMAT, sceneN.ToString());
                 foundSceneInBuild = true;
                 break;
             }
+        }
 
         if (!foundSceneInBuild)
             // This doesn't make sense though. If we're showing used assets,
@@ -581,7 +583,9 @@ public class BRT_BuildReportWindow : EditorWindow
                     typeof(GUISkin)) as GUISkin;
             }
             else
+            {
                 Debug.LogError(Options.BUILD_REPORT_PACKAGE_MISSING_MSG);
+            }
 
             //Debug.Log("_usedSkin " + (_usedSkin != null));
         }
@@ -951,7 +955,9 @@ public class BRT_BuildReportWindow : EditorWindow
             this._lastOpenedBuildInfoFilePath = filepath;
         }
         else
+        {
             Debug.LogError(string.Format("Build Report Tool: Invalid data in build info file: {0}", filepath));
+        }
 
         var assetDependenciesFilePath = Util.GetAssetDependenciesFilenameFromBuildInfo(filepath);
         if (System.IO.File.Exists(assetDependenciesFilePath))
@@ -960,7 +966,9 @@ public class BRT_BuildReportWindow : EditorWindow
             if (loadedAssetDependencies != null) _assetDependencies = loadedAssetDependencies;
         }
         else
+        {
             _assetDependencies = null;
+        }
 
         var textureDataFilePath = Util.GetTextureDataFilenameFromBuildInfo(filepath);
         if (System.IO.File.Exists(textureDataFilePath))
@@ -969,7 +977,9 @@ public class BRT_BuildReportWindow : EditorWindow
             if (loadedTextureData != null) _textureData = loadedTextureData;
         }
         else
+        {
             _textureData = null;
+        }
 
         var meshDataFilePath = Util.GetMeshDataFilenameFromBuildInfo(filepath);
         if (System.IO.File.Exists(meshDataFilePath))
@@ -978,7 +988,9 @@ public class BRT_BuildReportWindow : EditorWindow
             if (loadedMeshData != null) _meshData = loadedMeshData;
         }
         else
+        {
             _meshData = null;
+        }
 
         var unityBuildReportFilePath = Util.GetUnityBuildReportFilenameFromBuildInfo(filepath);
         if (System.IO.File.Exists(unityBuildReportFilePath))
@@ -1068,7 +1080,9 @@ public class BRT_BuildReportWindow : EditorWindow
         }
 
         if (!Options.UseThreadedFileLoading)
+        {
             this._OpenBuildInfo(filepath);
+        }
         else
         {
             if (this._currentBuildReportFileLoadThread != null && this._currentBuildReportFileLoadThread.ThreadState == ThreadState.Running) this.ForceStopFileLoadThread();
@@ -1252,7 +1266,9 @@ public class BRT_BuildReportWindow : EditorWindow
                 this._helpScreen.DrawGUI(this.position, _buildInfo, _assetDependencies, _textureData, _meshData, _unityBuildReport, _extraData, out requestRepaint);
             }
             else if (this.IsWaitingForBuildCompletionToGenerateBuildReport)
+            {
                 this.DrawCentralMessage(Labels.WAITING_FOR_BUILD_TO_COMPLETE_MSG);
+            }
             else
             {
                 this.DrawCentralMessage(Labels.NO_BUILD_INFO_FOUND_MSG);
@@ -1321,7 +1337,9 @@ public class BRT_BuildReportWindow : EditorWindow
 
         if (oldSelectedCategoryIdx != OPTIONS_IDX && this._selectedCategoryIdx == OPTIONS_IDX)
             // moving into the options screen
+        {
             this._fileFilterGroupToUseOnOpeningOptionsWindow = Options.FilterToUseInt;
+        }
         else if (oldSelectedCategoryIdx == OPTIONS_IDX && this._selectedCategoryIdx != OPTIONS_IDX)
         {
             // moving away from the options screen
@@ -1604,10 +1622,12 @@ public class BRT_BuildReportWindow : EditorWindow
                         data[assetPath].ToDisplayedValue(TextureData.DataId.RealWidthAndHeight));
             }
             else
+            {
                 TextureDataTooltipLabel.text = string.Format("{0} ({1}) {2}",
                     data[assetPath].TextureType,
                     data[assetPath].GetShownTextureFormat(),
                     data[assetPath].ToDisplayedValue(TextureData.DataId.ImportedWidthAndHeight));
+            }
 
             var labelStyle                     = GUI.skin.FindStyle("TooltipText");
             if (labelStyle == null) labelStyle = GUI.skin.box;

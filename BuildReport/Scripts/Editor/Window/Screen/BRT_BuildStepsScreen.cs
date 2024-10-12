@@ -236,7 +236,9 @@ namespace BuildReportTool.Window.Screen
                     if (GUILayout.Button(steps[i].WarnLogCount.ToString(), styleToUse, BRT_BuildReportWindow.LayoutListHeight)) this.SelectStep(i, steps);
                 }
                 else
+                {
                     GUILayout.Label(GUIContent.none, styleToUse, BRT_BuildReportWindow.LayoutListHeight);
+                }
                 useAlt = !useAlt;
             }
             GUILayout.EndScrollView();
@@ -263,7 +265,9 @@ namespace BuildReportTool.Window.Screen
                     if (GUILayout.Button(steps[i].ErrorLogCount.ToString(), styleToUse, BRT_BuildReportWindow.LayoutListHeight)) this.SelectStep(i, steps);
                 }
                 else
+                {
                     GUILayout.Label(GUIContent.none, styleToUse, BRT_BuildReportWindow.LayoutListHeight);
+                }
                 useAlt = !useAlt;
             }
             GUILayout.EndScrollView();
@@ -723,6 +727,7 @@ namespace BuildReportTool.Window.Screen
                 this._collapsedErrorMessageCount = steps[this._selectedStepIdx].CollapsedErrorLogCount;
             }
             else
+            {
                 for (var i = 0; i < steps.Length; ++i)
                 {
                     this._infoMessageCount  += steps[i].InfoLogCount;
@@ -733,6 +738,7 @@ namespace BuildReportTool.Window.Screen
                     this._collapsedWarnMessageCount  += steps[i].CollapsedWarnLogCount;
                     this._collapsedErrorMessageCount += steps[i].CollapsedErrorLogCount;
                 }
+            }
 
             this.RefreshTotalVisibleMessageCount();
 

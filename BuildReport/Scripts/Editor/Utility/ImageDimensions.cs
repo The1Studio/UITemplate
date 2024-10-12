@@ -86,10 +86,12 @@ namespace ImageUtility
                 _magicBytes[i] = binaryReader.ReadByte();
 
                 foreach (var kvPair in ImageFormatDecoders)
+                {
                     if (_magicBytes.StartsWith(kvPair.Key))
                         // The bytes have been recognized as one of our known image types,
                         // now we use the Decode method assigned for that image type.
                         return kvPair.Value(binaryReader);
+                }
             }
 
             return Dimensions.ErrorValue;
@@ -178,7 +180,9 @@ namespace ImageUtility
                     binaryReader.ReadBytes(uChunkLength - 2);
                 }
                 else
+                {
                     binaryReader.ReadBytes(chunkLength - 2);
+                }
             }
 
             return Dimensions.ErrorValue;

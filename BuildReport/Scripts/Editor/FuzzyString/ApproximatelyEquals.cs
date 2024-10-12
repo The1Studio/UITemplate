@@ -88,7 +88,9 @@ namespace FuzzyString
                     return false;
             }
             else
+            {
                 return false;
+            }
         }
     }
 }

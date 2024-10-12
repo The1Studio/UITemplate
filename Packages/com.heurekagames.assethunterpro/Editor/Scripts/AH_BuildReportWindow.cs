@@ -106,11 +106,13 @@ namespace HeurekaGames.AssetHunterPRO
                 this.roleInfoList = new();
                 foreach (var item in buildInfo.BuildReportInfoList)
                     //Check if role exists already
+                {
                     if (this.roleInfoList.Exists(val => val.roleName.Equals(item.Role)))
                         this.roleInfoList.First(val => val.roleName.Equals(item.Role)).AddToRoleInfo(item);
                     //If not, add new roleentry
                     else
                         this.roleInfoList.Add(new(item));
+                }
 
                 //Sort roles
                 IEnumerable<AH_BuildReportWindowRoleInfo> tmp = this.roleInfoList.OrderByDescending(val => val.combinedRoleSize);

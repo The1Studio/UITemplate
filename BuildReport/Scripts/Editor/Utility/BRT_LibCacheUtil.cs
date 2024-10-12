@@ -36,7 +36,9 @@ public static class BRT_LibCacheUtil
                 Path.GetFullPath(Application.dataPath + "../../Library/cache/" + guid.Substring(0, 2) + "/" + guid);
 
             if (File.Exists(assetImportedPath))
+            {
                 result = BuildReportTool.Util.GetFileSizeInBytes(assetImportedPath);
+            }
             else
             {
                 //Debug.Log(assetPath + " not found: " + assetImportedPath);

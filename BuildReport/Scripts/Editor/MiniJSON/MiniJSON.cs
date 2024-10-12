@@ -149,6 +149,7 @@ namespace MiniJSON
 
                 // {
                 while (true)
+                {
                     switch (this.NextToken)
                     {
                         case TOKEN.NONE:        return null;
@@ -173,6 +174,7 @@ namespace MiniJSON
                             break;
                         default: return null;
                     }
+                }
             }
 
             private List<object> ParseArray()
@@ -530,7 +532,9 @@ namespace MiniJSON
                         default:
                             var codepoint = Convert.ToInt32(c);
                             if (codepoint >= 32 && codepoint <= 126)
+                            {
                                 this.builder.Append(c);
+                            }
                             else
                             {
                                 this.builder.Append("\\u");
@@ -564,7 +568,9 @@ namespace MiniJSON
                     || value is short
                     || value is ushort
                     || value is ulong)
+                {
                     this.builder.Append(value);
+                }
                 else if (value is double
                     || value is decimal)
                 {

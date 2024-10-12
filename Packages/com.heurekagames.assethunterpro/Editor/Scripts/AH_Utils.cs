@@ -253,6 +253,7 @@ namespace HeurekaGames.AssetHunterPRO
 
                     foreach (PlayerSettings.WSAImageType imageType in Enum.GetValues(typeof(PlayerSettings.WSAImageType)))
                     foreach (PlayerSettings.WSAImageScale imageScale in Enum.GetValues(typeof(PlayerSettings.WSAImageScale)))
+                    {
                         try
                         {
                             var imagePath = PlayerSettings.WSA.GetVisualAssetsImage(imageType, imageScale);
@@ -263,6 +264,7 @@ namespace HeurekaGames.AssetHunterPRO
                             exceptionScales.Add(imageScale);
                             //If that scale doesn't apply to the given WSA image type
                         }
+                    }
 
                     if (exceptionScales.Count >= 1)
                     {

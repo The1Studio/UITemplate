@@ -299,9 +299,11 @@ namespace BuildReportTool
             //Debug.LogFormat("BuildSizes total: {0}", totalSize);
 
             for (int n = 0, len = this.BuildSizes.Length; n < len; ++n)
+            {
                 this.BuildSizes[n].Percentage = System.Math.Round(this.BuildSizes[n].UsableSize / totalSize * 100,
                     2,
                     System.MidpointRounding.AwayFromZero);
+            }
 
             // note: only Used Assets are shown the percentages so we
             // don't bother recalculating percentage for Unused Assets

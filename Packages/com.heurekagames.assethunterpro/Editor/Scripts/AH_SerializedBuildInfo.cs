@@ -89,6 +89,7 @@ namespace HeurekaGames.AssetHunterPRO
                 Debug.Log("AH: Merging with " + fullName);
                 foreach (var newItem in newBuildInfo.AssetListUnSorted)
                     //If asset ID already exists
+                {
                     if (this.AssetListUnSorted.Any(val => val.ID == newItem.ID))
                     {
                         var OrigItem = this.AssetListUnSorted.Find(val => val.ID == newItem.ID);
@@ -103,10 +104,15 @@ namespace HeurekaGames.AssetHunterPRO
                         }
                     }
                     else
+                    {
                         this.AssetListUnSorted.Add(newItem);
+                    }
+                }
             }
             else
+            {
                 Debug.Log("AH: Merging failed: " + fullName);
+            }
         }
 
         internal bool IsMergedReport()
@@ -227,7 +233,9 @@ namespace HeurekaGames.AssetHunterPRO
             if (!this.assetDict.ContainsKey(assetPath)) this.assetDict.Add(assetPath, new());
 
             if (!string.IsNullOrEmpty(scenePath))
+            {
                 this.assetDict[assetPath].Add(scenePath);
+            }
             //This is not a scene asset so it must be in resources/streaming ressources so we need to manage dependencies manually
             else
             {

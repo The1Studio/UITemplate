@@ -18,8 +18,11 @@ namespace FuzzyString
 
             for (var i = 0; i < source.Length; i++)
             for (var j = 0; j < target.Length; j++)
+            {
                 if (source[i] != target[j])
+                {
                     L[i, j] = 0;
+                }
                 else
                 {
                     if (i == 0 || j == 0)
@@ -33,7 +36,9 @@ namespace FuzzyString
                         var thisSubsBegin = i - L[i, j] + 1;
                         if (lastSubsBegin == thisSubsBegin)
                             //if the current LCS is the same as the last time this block ran
+                        {
                             stringBuilder.Append(source[i]);
+                        }
                         else //this block resets the string builder if a different LCS is found
                         {
                             lastSubsBegin        = thisSubsBegin;
@@ -42,6 +47,7 @@ namespace FuzzyString
                         }
                     }
                 }
+            }
 
             return stringBuilder.ToString();
         }

@@ -51,7 +51,9 @@ namespace Lofelt.NiceVibrations
                 return;
             }
             else
+            {
                 this._image.color = this.ActiveColor;
+            }
 
             if (!this.Dragging) return;
 
@@ -110,7 +112,9 @@ namespace Lofelt.NiceVibrations
                 return this._canvas.transform.TransformPoint(this._workPosition);
             }
             else
+            {
                 return testPosition;
+            }
         }
     }
 }

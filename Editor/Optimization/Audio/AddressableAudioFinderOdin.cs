@@ -122,7 +122,9 @@
                         };
 
                         if (this.IsWrongCompression(importer, item, normalize))
+                        {
                             this.wrongCompressionAudioInfoList.Add(meshInfo);
+                        }
                         else
                         {
                             if (this.IsLongSound(item))

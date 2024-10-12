@@ -230,12 +230,14 @@ namespace BuildReportTool
             // search for the previous indent level
             // that's the asset using this one
             for (var n = idx - 1; n >= 0; --n)
+            {
                 if (list[n].IndentLevel == list[idx].IndentLevel - 1)
                 {
                     idxOfPrevious = n;
                     return
                         list[n].AssetPath.EndsWith(fileTypeInPrevious, StringComparison.OrdinalIgnoreCase);
                 }
+            }
 
             idxOfPrevious = -1;
             return false;
@@ -452,7 +454,9 @@ namespace BuildReportTool
 
                 DependencyEntry assetsUsed;
                 if (assetDependencies.ContainsKey(newAssetToInspect))
+                {
                     assetsUsed = assetDependencies[newAssetToInspect];
+                }
                 else
                 {
                     assetsUsed = new();
@@ -551,7 +555,9 @@ namespace BuildReportTool
                     // now record that dependency as being used by `newAssetToInspect`
                     DependencyEntry assetsUsedByEdit;
                     if (assetDependencies.ContainsKey(foundDependencies[n]))
+                    {
                         assetsUsedByEdit = assetDependencies[foundDependencies[n]];
+                    }
                     else
                     {
                         assetsUsedByEdit = new();
@@ -729,6 +735,7 @@ namespace BuildReportTool
 
                         if (!noNeedToAddUsersOfUser)
                             for (var n = usersFlattened.Count - 2; n >= 0; --n)
+                            {
                                 if (usersFlattened[n].AssetPath == userAsset.AssetPath)
                                 {
                                     // users of this user has already been shown in earlier entries
@@ -743,6 +750,7 @@ namespace BuildReportTool
 
                                     break;
                                 }
+                            }
 
                         int idxOfPrevious;
                         if (!noNeedToAddUsersOfUser
@@ -836,6 +844,7 @@ namespace BuildReportTool
                                 #endif
                             }
                             else if (userAsset.AssetPath.EndsWith(".unity", StringComparison.OrdinalIgnoreCase))
+                            {
                                 if (usersOfUser[n].EndsWith("LightingData.asset", StringComparison.OrdinalIgnoreCase))
                                 {
                                     // Scenes that have baked lighting use a LightingData.asset (each scene has one).
@@ -847,6 +856,7 @@ namespace BuildReportTool
 
                                     continue;
                                 }
+                            }
 
                             openFlattenedSet.Add(newEntry);
                         }

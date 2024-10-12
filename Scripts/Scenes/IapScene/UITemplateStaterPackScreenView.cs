@@ -124,11 +124,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
                 var model = new List<UITemplateStartPackItemModel>();
 
                 foreach (var rewardBlueprintData in shopPackRecord.RewardIdToRewardDatas)
+                {
                     model.Add(new()
                     {
                         IconAddress = rewardBlueprintData.Value.RewardIcon,
                         Value       = rewardBlueprintData.Value.RewardContent,
                     });
+                }
 
                 this.View.adapter.InitItemAdapter(model).Forget();
             }

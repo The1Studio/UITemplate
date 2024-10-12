@@ -53,7 +53,9 @@ namespace FuzzyString
             var nGrams = new List<string>();
 
             if (n > source.Length)
+            {
                 return null;
+            }
             else if (n == source.Length)
             {
                 nGrams.Add(source);

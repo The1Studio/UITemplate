@@ -317,7 +317,9 @@ namespace BuildReportTool.Window.Screen
                 }
             }
             else
+            {
                 this.DrawScriptDLLsList(buildReportToDisplay, buildPlatform);
+            }
 
             GUILayout.Space(20);
             GUILayout.EndVertical();

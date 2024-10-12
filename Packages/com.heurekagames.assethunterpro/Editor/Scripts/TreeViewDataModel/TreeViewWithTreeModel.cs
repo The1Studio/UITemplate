@@ -64,7 +64,9 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
             this.m_Rows.Clear();
 
             if (this.RequiresSorting()) //TODO MAYBE JUST CHECK HERE IS WE ARE SORTING OR NOT, IF SORTING JUST USE THE SEARCH
+            {
                 this.Search(this.m_TreeModel.root, this.searchString, this.m_Rows, this.IsValidElement);
+            }
             else
             {
                 if (this.m_TreeModel.root.hasChildren) this.AddChildrenRecursive(this.m_TreeModel.root, 0, this.m_Rows);

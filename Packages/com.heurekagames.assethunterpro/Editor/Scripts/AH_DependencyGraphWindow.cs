@@ -192,7 +192,9 @@ namespace HeurekaGames.AssetHunterPRO
                     }
                 }
                 else
+                {
                     Heureka_WindowStyler.DrawCenteredMessage(window, AH_EditorData.Icons.RefFromWhite, 240f, 110f, "No selection" + Environment.NewLine + "Select asset in project view");
+                }
             }
             this.doFooter();
             //Make sure this window has focus to update contents

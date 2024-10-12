@@ -394,7 +394,9 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.AssetTreeView
                         DefaultGUI.Label(cellRect, value, args.selected, args.focused);
                     }
                     else
+                    {
                         DefaultGUI.LabelRightAligned(cellRect, value, args.selected, args.focused);
+                    }
                 }
                     break;
                 case MyColumns.UsedInBuild:
@@ -426,7 +428,9 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.AssetTreeView
                                 }
                             }
                             else
+                            {
                                 DefaultGUI.LabelRightAligned(cellRect, cellString, args.selected, args.focused);
+                            }
                         }
                 }
                     break;

@@ -36,10 +36,12 @@ namespace Lofelt.NiceVibrations
         public virtual void SetCurrentPage(int numberOfPages, int currentPage)
         {
             for (var i = 0; i < numberOfPages; i++)
+            {
                 if (i == currentPage)
                     this._images[i].color = this.ActiveColor;
                 else
                     this._images[i].color = this.InactiveColor;
+            }
         }
     }
 }

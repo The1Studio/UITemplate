@@ -49,7 +49,9 @@ namespace Lofelt.NiceVibrations
                 return this._canvas.transform.TransformPoint(this._workPosition);
             }
             else
+            {
                 return testPosition;
+            }
         }
 
         public virtual void OnPointerEnter(PointerEventData data)

@@ -31,7 +31,9 @@
                 }
             }
             else
+            {
                 this.tapCheckCount = 1;
+            }
 
             this.lastTimeCheck = Time.unscaledTime;
         }

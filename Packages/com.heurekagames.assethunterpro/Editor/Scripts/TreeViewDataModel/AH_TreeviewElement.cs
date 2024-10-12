@@ -82,7 +82,9 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.AssetTreeView
                         return -1;
                 }
                 else
+                {
                     return this.assetSize;
+                }
             }
         }
 
@@ -94,7 +96,9 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.AssetTreeView
             get
             {
                 if (this.fileSize != 0)
+                {
                     return this.fileSize;
+                }
                 else
                 {
                     var fileInfo = new System.IO.FileInfo(this.absPath);
@@ -195,12 +199,14 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.AssetTreeView
 
             //Check if a valid child exit somewhere in this branch
             foreach (AH_TreeviewElement child in this.children)
+            {
                 if (child.AssetMatchesState(showMode))
                     return true;
                 else if (child.HasChildrenThatMatchesState(showMode))
                     return true;
                 else
                     continue;
+            }
             return false;
         }
 
@@ -211,10 +217,12 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.AssetTreeView
             //Combine the size of all the children
             if (this.hasChildren)
                 foreach (AH_TreeviewElement item in this.children)
+                {
                     if (item.isFolder)
                         unusedAssetsInFolder.AddRange(item.GetUnusedPathsRecursively());
                     //Loop thropugh folders and assets thats used not in build
                     else if (!item.usedInBuild) unusedAssetsInFolder.Add(item.RelativePath);
+                }
             return unusedAssetsInFolder;
         }
 

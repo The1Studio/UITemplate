@@ -31,7 +31,9 @@
                 #endif
             }
             else
+            {
                 isGranted = await this.InternalRequestPermission(request);
+            }
 
             this.SignalBus.Fire(new OnRequestPermissionCompleteSignal { IsGranted = isGranted });
             this.LOGService.Log($"onelog: CheckPermission Complete: {request} - isGranted: {isGranted}");

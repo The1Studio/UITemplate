@@ -19,7 +19,9 @@ namespace FuzzyString
                 return distance;
             }
             else
+            {
                 return 99999;
+            }
         }
     }
 }

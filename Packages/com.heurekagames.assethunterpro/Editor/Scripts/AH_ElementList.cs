@@ -67,8 +67,9 @@ namespace HeurekaGames.AssetHunterPRO
         private static void populateDumpListRecursively(AH_TreeviewElement element, AH_MultiColumnHeader.AssetShowMode showmode, ref List<AssetDumpData> elements)
         {
             if (element.HasChildrenThatMatchesState(showmode))
-                foreach (var child in element.children)
-                    populateDumpListRecursively((AH_TreeviewElement)child, showmode, ref elements);
+            {
+                foreach (var child in element.children) populateDumpListRecursively((AH_TreeviewElement)child, showmode, ref elements);
+            }
             else if (element.AssetMatchesState(showmode))
             {
                 OnListDumpElementProcessed?.Invoke(null, element.GUID);

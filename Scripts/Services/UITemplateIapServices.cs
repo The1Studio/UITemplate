@@ -52,12 +52,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             var dicData = new Dictionary<string, IAPModel>();
 
             foreach (var record in this.uiTemplateShopPackBlueprint.GetPack())
+            {
                 dicData.Add(record.Id,
                     new()
                     {
                         Id          = record.Id,
                         ProductType = record.ProductType,
                     });
+            }
 
             this.iapServices.InitIapServices(dicData);
         }

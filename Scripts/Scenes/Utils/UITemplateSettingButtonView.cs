@@ -116,7 +116,9 @@
                 this.IsDropped = !this.IsDropped;
             }
             else
+            {
                 this.screenManager.OpenScreen<UITemplateSettingPopupPresenter>();
+            }
         }
     }
 }

@@ -71,10 +71,12 @@ namespace HeurekaGames.AssetHunterPRO
                 if (this.OnBuildInfoSelectionChanged != null) this.OnBuildInfoSelectionChanged();
             }
             else if (!this.projectIsClean)
+            {
                 EditorUtility.DisplayDialog(
                     "JSON Parse error",
                     "The selected file could not be parsed",
                     "Ok");
+            }
         }
 
         private bool populateBuildReport()

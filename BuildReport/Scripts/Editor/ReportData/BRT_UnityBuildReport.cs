@@ -84,7 +84,9 @@ namespace BuildReportTool
             }
             else
                 // output path doesn't exist
+            {
                 outputPathLength = 0;
+            }
 
             this.BuildOptions = buildReport.summary.options;
 
@@ -155,6 +157,7 @@ namespace BuildReportTool
 
                         var alreadyIn = false;
                         for (var c = 0; c < collapsedMessages.Count; ++c)
+                        {
                             if (collapsedMessages[c].Message == messages[m].content)
                             {
                                 var entryToModify = collapsedMessages[c];
@@ -163,6 +166,7 @@ namespace BuildReportTool
                                 alreadyIn            = true;
                                 break;
                             }
+                        }
 
                         if (alreadyIn) continue;
 
@@ -234,6 +238,7 @@ namespace BuildReportTool
 
                         var alreadyIn = false;
                         for (var c = 0; c < collapsedMessages.Count; ++c)
+                        {
                             if (collapsedMessages[c].Message == messages[m].Message)
                             {
                                 var entryToModify = collapsedMessages[c];
@@ -242,6 +247,7 @@ namespace BuildReportTool
                                 alreadyIn            = true;
                                 break;
                             }
+                        }
 
                         if (alreadyIn) continue;
 

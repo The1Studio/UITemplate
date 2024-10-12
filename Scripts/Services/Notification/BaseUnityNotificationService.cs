@@ -191,14 +191,18 @@
                 if (itemRandom != null) title = await this.NotificationMappingHelper.GetFormatString(itemRandom.Title);
             }
             else
+            {
                 title = await this.NotificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Title].Title);
+            }
 
             if (record.Body.Equals("Random"))
             {
                 if (itemRandom != null) body = await this.NotificationMappingHelper.GetFormatString(itemRandom.Body);
             }
             else
+            {
                 body = await this.NotificationMappingHelper.GetFormatString(this.UITemplateNotificationDataBlueprint[record.Body].Body);
+            }
 
             return new(title, body);
         }

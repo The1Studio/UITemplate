@@ -27,7 +27,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 if (rewardData.Repeat <= 0) continue;
 
                 if (storedRewardIdToData.TryGetValue(rewardId, out var currentRewardData))
+                {
                     currentRewardData.RewardValue += rewardData.RewardValue;
+                }
                 else
                 {
                     rewardData.LastTimeReceive = DateTime.Now;

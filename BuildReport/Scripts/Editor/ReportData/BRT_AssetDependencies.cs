@@ -201,25 +201,30 @@ namespace BuildReportTool
             var availableExistingIdx = 0;
 
             for (int n = 0, len = usersFlattened.Count; n < len; ++n)
+            {
                 if (usersFlattened[n].AssetPath.IsSceneFile() || usersFlattened[n].AssetPath.IsInResourcesFolder())
                 {
                     var assetFilename = usersFlattened[n].AssetPath.GetFileNameOnly();
 
                     var alreadyInList = false;
                     for (int alreadyN = 0, alreadyLen = availableExistingIdx; alreadyN < alreadyLen; ++alreadyN)
+                    {
                         if (destination[alreadyN].text.Equals(assetFilename, StringComparison.OrdinalIgnoreCase))
                         {
                             alreadyInList = true;
                             break;
                         }
+                    }
 
                     if (alreadyInList) continue;
 
                     if (destination.Count <= availableExistingIdx)
+                    {
                         destination.Add(new(
                             assetFilename,
                             AssetDatabase.GetCachedIcon(usersFlattened[n].AssetPath),
                             usersFlattened[n].AssetPath));
+                    }
                     else
                     {
                         destination[availableExistingIdx].text    = assetFilename;
@@ -229,6 +234,7 @@ namespace BuildReportTool
 
                     ++availableExistingIdx;
                 }
+            }
 
             while (destination.Count > availableExistingIdx) destination.RemoveAt(destination.Count - 1);
         }

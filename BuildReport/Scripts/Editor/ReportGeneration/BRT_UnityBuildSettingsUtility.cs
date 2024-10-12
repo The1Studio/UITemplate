@@ -1010,7 +1010,9 @@ namespace BuildReportTool
                     externalLock = null;
             }
             else
+            {
                 externalLock = null;
+            }
 
             if (manifest.ContainsKey("dependencies"))
             {
@@ -1083,13 +1085,19 @@ namespace BuildReportTool
                                         newEntry.Location = null;
                                 }
                                 else
+                                {
                                     newEntry.Location = null;
+                                }
                             }
                             else
+                            {
                                 newEntry.Location = null;
+                            }
                         }
                         else
+                        {
                             newEntry.Location = null;
+                        }
 
                         if (string.IsNullOrEmpty(newEntry.VersionUsed))
                         {
@@ -1142,7 +1150,9 @@ namespace BuildReportTool
                                 {
                                     var packageManifest = MiniJSON.Json.Deserialize(System.IO.File.ReadAllText(packageManifestPath)) as Dictionary<string, object>;
                                     if (packageManifest != null && packageManifest.ContainsKey("displayName"))
+                                    {
                                         newEntry.DisplayName = packageManifest["displayName"] as string;
+                                    }
                                     else
                                     {
                                         // no package.json, or package.json has no displayName

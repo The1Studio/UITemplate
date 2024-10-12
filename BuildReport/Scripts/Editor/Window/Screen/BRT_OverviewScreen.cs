@@ -276,7 +276,9 @@ namespace BuildReportTool.Window.Screen
             else
                 // no thumbnail currently shown. ensure the controls that
                 // need to be reset to initial state are reset
+            {
                 BRT_BuildReportWindow.ResetThumbnailControls();
+            }
 
             if (!zoomInChanged && !Event.current.alt && !BRT_BuildReportWindow.MouseMovedNow && !BRT_BuildReportWindow.LastMouseMoved)
                 // mouse hasn't moved, and no request to zoom-in thumbnail or toggle thumbnail alpha
@@ -512,7 +514,9 @@ namespace BuildReportTool.Window.Screen
                 // icon
                 if (icon == null)
                     //GUILayout.Space(22);
+                {
                     GUILayout.Label(string.Empty, iconStyleToUse, BRT_BuildReportWindow.Layout28x30);
+                }
                 else
                 {
                     if (!scenesInBuild[n].Enabled) GUI.contentColor = new(1.0f, 1.0f, 1.0f, 0.4f);
@@ -527,13 +531,17 @@ namespace BuildReportTool.Window.Screen
                     if (GUILayout.Button(usedIdx.ToString(), styleToUse, BRT_BuildReportWindow.Layout20x30)) Utility.PingAssetInProject(scenesInBuild[n].Path);
                 }
                 else
+                {
                     GUILayout.Label(string.Empty, iconStyleToUse, BRT_BuildReportWindow.Layout20x30);
+                }
 
                 // path
                 string prettyName;
                 if (string.IsNullOrEmpty(scenesInBuild[n].Path))
+                {
                     prettyName = string.Format("<color=#{0}><i>Missing</i></color>",
                         AssetList.GetPathColor(false));
+                }
                 else
                 {
                     var pathName = Util.GetAssetPath(scenesInBuild[n].Path);

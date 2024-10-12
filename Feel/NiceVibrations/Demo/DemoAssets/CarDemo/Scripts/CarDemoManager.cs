@@ -157,11 +157,13 @@ namespace Lofelt.NiceVibrations
 
                 // other dents
                 foreach (var f in this.Dents)
+                {
                     if ((this._knobValue >= f && this._knobValueLastFrame < f) || (this._knobValue <= f && this._knobValueLastFrame > f))
                     {
                         this._lastDentAt = Time.time;
                         break;
                     }
+                }
                 if (Time.time - this._lastDentAt < this.DentDuration)
                 {
                     var elapsedTime = this.StartClickCurve.Evaluate((Time.time - this._lastDentAt) * (1 / this.DentDuration));
@@ -175,16 +177,19 @@ namespace Lofelt.NiceVibrations
 
             // power bars
             if (this.CarSpeed <= 0.1f)
-                for (var i = 0; i < this.SpeedBars.Count; i++)
-                    this.SpeedBars[i].SetActive(false);
+            {
+                for (var i = 0; i < this.SpeedBars.Count; i++) this.SpeedBars[i].SetActive(false);
+            }
             else
             {
                 var barsAmount = (int)(this.CarSpeed * 5f);
                 for (var i = 0; i < this.SpeedBars.Count; i++)
+                {
                     if (i <= barsAmount)
                         this.SpeedBars[i].SetActive(true);
                     else
                         this.SpeedBars[i].SetActive(false);
+                }
             }
         }
     }

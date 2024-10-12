@@ -38,7 +38,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                         this.tweens.Add(noThankButton.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack));
                     }
                     else
+                    {
                         noThankButton.transform.localScale = Vector3.zero;
+                    }
                 }
                 else
                 {

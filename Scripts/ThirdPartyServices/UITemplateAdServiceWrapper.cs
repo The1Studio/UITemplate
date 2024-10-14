@@ -554,7 +554,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             // Solution: Time.unscaledDeltaTime is count from the last frame to current frame, so if the time between 2 frames is too long, we will not increase the capping time
             // If EnableInterCappingTimeFocus is set to false, we will keep the existing capping time behavior
             // If EnableInterCappingTimeFocus is set to true, we will not increase the capping time while application is not focused
-            if (!this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus || Time.unscaledDeltaTime < 1) this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
+            if (!this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus || Time.unscaledDeltaTime < 1)
+            {
+                if (Time.timeScale != 0) this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
+            }
 
             if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession) this.CheckShowFirstOpen();
         }

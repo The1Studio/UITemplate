@@ -1,7 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.Signals;
@@ -9,7 +8,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Cysharp.Threading.Tasks;
-    using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -38,38 +36,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         [SerializeField] private Slider          LoadingSlider;
         [SerializeField] private TextMeshProUGUI loadingProgressTxt;
 
-        internal string loadingText;
+        public float  Progress    { get; set; }
+        public string LoadingText { get; set; }
 
-        private Tween tween;
-        private float trueProgress;
+        private float visibleProgress;
 
-        private void Start()
+        private void Update()
         {
-            this.LoadingSlider.value = 0f;
-        }
-
-        public void SetProgress(float progress)
-        {
-            if (!this.LoadingSlider) return;
-            if (progress <= this.trueProgress) return;
-            this.tween.Kill();
-            this.tween = DOTween.To(
-                () => this.LoadingSlider.value,
-                value =>
-                {
-                    this.LoadingSlider.value = value;
-                    if (this.loadingProgressTxt != null) this.loadingProgressTxt.text = string.Format(this.loadingText, (int)(value * 100));
-                },
-                this.trueProgress = progress,
-                0.5f
-            ).SetUpdate(true);
+            this.visibleProgress = Mathf.Lerp(this.visibleProgress, this.Progress, Time.deltaTime * 5f);
+            if (this.LoadingSlider is { })
+            {
+                this.LoadingSlider.value = this.visibleProgress;
+            }
+            if (this.loadingProgressTxt is { } && this.LoadingText is { })
+            {
+                this.loadingProgressTxt.text = string.Format(this.LoadingText, Mathf.RoundToInt(this.visibleProgress * 100));
+            }
         }
 
         public UniTask CompleteLoading()
         {
-            this.SetProgress(1f);
-
-            return this.tween.AsyncWaitForCompletion().AsUniTask();
+            this.Progress = 1f;
+            return UniTask.WaitUntil(() => this.visibleProgress >= .999f);
         }
     }
 
@@ -132,7 +120,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             set
             {
                 this._loadingProgress = value;
-                this.View.SetProgress(value / this.loadingSteps);
+                if (value / this.loadingSteps <= this.View.Progress) return;
+                this.View.Progress = value / this.loadingSteps;
             }
         }
 
@@ -141,7 +130,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         protected override void OnViewReady()
         {
             base.OnViewReady();
-            this.View.loadingText = this.GetLoadingText();
+            this.View.LoadingText = this.GetLoadingText();
             this.OpenViewAsync().Forget();
         }
 

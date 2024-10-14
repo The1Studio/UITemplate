@@ -514,13 +514,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void ShowMREC<TPresenter>(AdViewPosition adViewPosition) where TPresenter : IScreenPresenter
         {
+            this.ShowMREC(typeof(TPresenter), adViewPosition);
+        }
+
+        public virtual void ShowMREC(Type type, AdViewPosition adViewPosition)
+        {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
 
             var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(adViewPosition));
 
             if (mrecAdService != null)
             {
-                this.AddScreenCanShowMREC(typeof(TPresenter));
+                this.AddScreenCanShowMREC(type);
                 mrecAdService.ShowMREC(adViewPosition);
                 this.IsShowMRECAd = true;
                 this.logService.Log($"onelog: ShowMREC {adViewPosition}");

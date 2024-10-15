@@ -335,7 +335,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Toast Content
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0b1f9897ebe8f854499b261223ad4dd3, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 355072334792139725, guid: 0b1f9897ebe8f854499b261223ad4dd3,
     type: 2}
   m_fontSharedMaterials: []

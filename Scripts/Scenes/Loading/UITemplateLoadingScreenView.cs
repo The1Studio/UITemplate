@@ -43,7 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         private void Update()
         {
-            this.visibleProgress = Mathf.Lerp(this.visibleProgress, this.Progress, Time.deltaTime * 5f);
+            this.visibleProgress = Mathf.Lerp(this.visibleProgress, this.Progress, Time.unscaledDeltaTime * 5f);
             if (this.LoadingSlider is { })
             {
                 this.LoadingSlider.value = this.visibleProgress;

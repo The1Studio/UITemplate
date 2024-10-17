@@ -141,11 +141,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             //Permission
             this.signalBus.Subscribe<OnRequestPermissionStartSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
-
-            //MREC
-            this.signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
-            this.signalBus.Subscribe<ScreenCloseSignal>(this.OnScreenClose);
-            this.signalBus.Subscribe<MRecAdLoadedSignal>(this.OnMRECLoaded);
         }
 
         #region banner
@@ -512,12 +507,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        public virtual void ShowMREC<TPresenter>(AdViewPosition adViewPosition) where TPresenter : IScreenPresenter
-        {
-            this.ShowMREC(typeof(TPresenter), adViewPosition);
-        }
-
-        public virtual void ShowMREC(Type type, AdViewPosition adViewPosition)
+        public virtual void ShowMREC(AdViewPosition adViewPosition)
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
 
@@ -525,7 +515,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (mrecAdService != null)
             {
-                this.AddScreenCanShowMREC(type);
                 mrecAdService.ShowMREC(adViewPosition);
                 this.IsShowMRECAd = true;
                 this.logService.Log($"onelog: ShowMREC {adViewPosition}");
@@ -545,8 +534,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnRemoveAdsComplete()
         {
-            this.HideAllMREC();
-
+            foreach (var mrecAdService in this.mrecAdServices)
+            {
+                mrecAdService.HideAllMREC();
+            }
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
             this.bannerAdService.DestroyBannerAd();
         }
@@ -563,64 +554,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession) this.CheckShowFirstOpen();
         }
-
-        #region Auto Hide MREC
-
-        private HashSet<Type> screenCanShowMREC = new();
-
-        private void OnScreenShow(ScreenShowSignal signal)
-        {
-            // Work around to dont show banner 2 time in loading screen (we already show by the banner strategy in loading screen)
-            if (!this.IsCheckFirstScreenShow)
-            {
-                this.IsCheckFirstScreenShow = true;
-                return;
-            }
-
-            if (this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType())) return;
-
-            this.HideAllMREC();
-        }
-
-        private void OnScreenClose(ScreenCloseSignal signal)
-        {
-            if (!this.screenCanShowMREC.Contains(signal.ScreenPresenter.GetType())) return;
-
-            this.HideAllMREC();
-        }
-
-        private void OnMRECLoaded()
-        {
-            if (!this.IsCurrentScreenCanShowMREC()) this.HideAllMREC();
-        }
-
-        private void AddScreenCanShowMREC(Type screenType)
-        {
-            if (this.screenCanShowMREC.Contains(screenType))
-            {
-                this.logService.LogWithColor($"Screen: {screenType.Name} contained, can't add to collection!", Color.red);
-                return;
-            }
-
-            this.screenCanShowMREC.Add(screenType);
-        }
-
-        private void HideAllMREC()
-        {
-            if (!this.IsShowMRECAd) return;
-            foreach (var mrecAdService in this.mrecAdServices)
-            {
-                mrecAdService.HideAllMREC();
-                this.IsShowMRECAd = false;
-            }
-        }
-
-        private bool IsCurrentScreenCanShowMREC()
-        {
-            return this.screenManager?.CurrentActiveScreen?.Value != null && this.screenCanShowMREC.Contains(this.screenManager.CurrentActiveScreen.Value.GetType());
-        }
-
-        #endregion
 
         public void RemoveAds()
         {

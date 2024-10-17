@@ -39,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         public override UniTask BindData()
         {
             base.BindData();
-            this.UITemplateAdService.ShowMREC<UITemPlateWinOp2ScreenPresenter>(AdViewPosition.Centered);
+            this.UITemplateAdService.ShowMREC(AdViewPosition.Centered);
             this.SoundServices.PlaySoundWin();
             this.UITemplateAdService.HideBannerAd();
             return UniTask.CompletedTask;

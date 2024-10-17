@@ -40,7 +40,7 @@ namespace TheOneStudio.UITemplate
             builder.RegisterResource<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath, Lifetime.Singleton);
             builder.RegisterResource<GameFeaturesSetting>(GameFeaturesSetting.ResourcePath, Lifetime.Singleton);
 
-            builder.Register(typeof(IAnalyticEventFactory).GetDerivedTypes().Single(), Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register(typeof(IAnalyticEventFactory).GetSingleDerivedType(), Lifetime.Singleton).AsImplementedInterfaces();
 
             builder.Register<FirebaseAnalyticTracker>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(container => container.Resolve<IAnalyticEventFactory>().FireBaseAnalyticsEventCustomizationConfig);
             #if APPSFLYER

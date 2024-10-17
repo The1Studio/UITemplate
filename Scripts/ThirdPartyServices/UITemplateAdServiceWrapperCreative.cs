@@ -82,7 +82,7 @@
             return true;
         }
 
-        public override void ShowMREC<TPresenter>(AdViewPosition adViewPosition)
+        public override void ShowMREC(AdViewPosition adViewPosition)
         {
         }
 

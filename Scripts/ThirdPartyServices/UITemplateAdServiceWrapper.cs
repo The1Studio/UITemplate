@@ -508,14 +508,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #endregion
         
         // test mrec
-        public void ShowMrec(string placement, AdScreenPosition position)
+        public void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
 
             var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(placement, position));
             if (mrecAdService != null)
             {
-                mrecAdService.ShowMREC(placement, position);
+                mrecAdService.ShowMREC(placement, position, offset);
                 this.IsShowMRECAd = true;
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
             }

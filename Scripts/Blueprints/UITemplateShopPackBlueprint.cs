@@ -33,6 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public string                                                Name                  { get; [Preserve] private set; }
         public string                                                Description           { get; [Preserve] private set; }
         public string                                                DefaultPrice          { get; [Preserve] private set; }
+        public List<string>                                          Tags                  { get; [Preserve] private set; }
         public BlueprintByRow<string, UITemplateRewardBlueprintData> RewardIdToRewardDatas { get; [Preserve] private set; }
     }
 

@@ -6,7 +6,7 @@ namespace HeurekaGames.AssetHunterPRO
     [Serializable]
     public class AH_WrapperList
     {
-        public List<string> list = new();
+        public List<string> list = new List<string>();
 
         public AH_WrapperList(List<string> value)
         {

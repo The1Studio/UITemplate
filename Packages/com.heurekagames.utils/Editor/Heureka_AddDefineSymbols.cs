@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,10 @@ namespace HeurekaGames.Utils
             #if UNITY_2023_1_OR_NEWER
                 string definesString = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup));
             #else
-            var definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+                string definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);        
             #endif
-
-            var allDefines = definesString.Split(';').ToList();
+            
+            List<string> allDefines = definesString.Split(';').ToList();
 
             var newDefines = Symbols.Except(allDefines);
             if (newDefines.Count() > 0)
@@ -27,17 +28,17 @@ namespace HeurekaGames.Utils
                 Debug.Log($"Adding Compile Symbols {string.Join("; ", newDefines.ToArray())}");
                 allDefines.AddRange(newDefines);
 
-                #if UNITY_2023_1_OR_NEWER
+            #if UNITY_2023_1_OR_NEWER
                     PlayerSettings.SetScriptingDefineSymbols(
                     UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup),
                     string.Join(";", allDefines.ToArray()));
-                #else
-                {
+            #else
+            {
                     PlayerSettings.SetScriptingDefineSymbolsForGroup(
-                        EditorUserBuildSettings.selectedBuildTargetGroup,
-                        string.Join(";", allDefines.ToArray()));
-                }
-                #endif
+                    EditorUserBuildSettings.selectedBuildTargetGroup,
+                    string.Join(";", allDefines.ToArray()));       
+            }
+            #endif
             }
         }
     }

@@ -2,22 +2,28 @@ fileFormatVersion: 2
 guid: 21790ef8523e44ebc8e5c7b53f1cb9ec
 AudioImporter:
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 6
   defaultSettings:
-    serializedVersion: 2
     loadType: 0
     sampleRateSetting: 0
     sampleRateOverride: 44100
     compressionFormat: 1
-    quality: 0.2
+    quality: 1
     conversionMode: 0
-    preloadAudioData: 1
   platformSettingOverrides: {}
-  forceToMono: 1
-  normalize: 0
-  loadInBackground: 1
+  forceToMono: 0
+  normalize: 1
+  preloadAudioData: 1
+  loadInBackground: 0
   ambisonic: 0
   3D: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183370
+  packageName: Feel
+  packageVersion: 4.3
+  assetPath: Assets/UITemplate/Feel/NiceVibrations/HapticSamples/Nature/CatPurr1.wav
+  uploadId: 689191

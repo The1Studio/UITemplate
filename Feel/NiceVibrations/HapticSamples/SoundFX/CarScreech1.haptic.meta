@@ -8,3 +8,10 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: dc84fb4fa9e67485a972c887d976d004, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183370
+  packageName: Feel
+  packageVersion: 4.3
+  assetPath: Assets/UITemplate/Feel/NiceVibrations/HapticSamples/SoundFX/CarScreech1.haptic
+  uploadId: 689191

@@ -77,7 +77,12 @@ namespace Lofelt.NiceVibrations
         /// <returns>Whether the GamepadRumble is valid</returns>
         public bool IsValid()
         {
-            return this.durationsMs != null && this.lowFrequencyMotorSpeeds != null && this.highFrequencyMotorSpeeds != null && this.durationsMs.Length == this.lowFrequencyMotorSpeeds.Length && this.durationsMs.Length == this.highFrequencyMotorSpeeds.Length && this.durationsMs.Length > 0;
+            return durationsMs != null &&
+                   lowFrequencyMotorSpeeds != null &&
+                   highFrequencyMotorSpeeds != null &&
+                   durationsMs.Length == lowFrequencyMotorSpeeds.Length &&
+                   durationsMs.Length == highFrequencyMotorSpeeds.Length &&
+                   durationsMs.Length > 0;
         }
     }
 
@@ -93,7 +98,7 @@ namespace Lofelt.NiceVibrations
     /// classes support gamepads by using GamepadRumbler internally.
     public static class GamepadRumbler
     {
-        #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
         static GamepadRumble loadedRumble;
 
         static bool rumbleLoaded = false;
@@ -139,7 +144,7 @@ namespace Lofelt.NiceVibrations
 
         static int currentGamepadID = -1;
 
-        #endif
+#endif
 
         /// <summary>
         /// Initializes the GamepadRumbler.
@@ -150,7 +155,7 @@ namespace Lofelt.NiceVibrations
         /// different thread, and an explicit Init() method gives us more control over this.
         public static void Init()
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             // Initialize rumbleTimer, so that ProcessNextRumble() will be called on the main thread
             // when the timer is triggered.
             var syncContext = System.Threading.SynchronizationContext.Current;
@@ -161,7 +166,7 @@ namespace Lofelt.NiceVibrations
                     ProcessNextRumble();
                 }, null);
             };
-            #endif
+#endif
         }
 
         /// <summary>
@@ -174,14 +179,14 @@ namespace Lofelt.NiceVibrations
         /// <returns>Whether a vibration can be triggered on a gamepad</returns>
         public static bool CanPlay()
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             return IsConnected() && rumbleLoaded && loadedRumble.IsValid();
-            #else
+#else
             return false;
-            #endif
+#endif
         }
 
-        #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
         /// <summary>
         /// Gets the Gamepad object corresponding to the specified gamepad ID.
         /// </summary>
@@ -206,7 +211,7 @@ namespace Lofelt.NiceVibrations
             }
             return UnityEngine.InputSystem.Gamepad.current;
         }
-        #endif
+#endif
 
         /// <summary>
         /// Set the current gamepad for haptics playback by ID.
@@ -226,12 +231,12 @@ namespace Lofelt.NiceVibrations
         /// <param name="gamepadID">The ID of the gamepad</param>
         public static void SetCurrentGamepad(int gamepadID)
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             if (gamepadID < UnityEngine.InputSystem.Gamepad.all.Count)
             {
                 currentGamepadID = gamepadID;
             }
-            #endif
+#endif
         }
 
         /// <summary>
@@ -247,11 +252,11 @@ namespace Lofelt.NiceVibrations
         /// <returns>Whether a gamepad is connected</returns>
         public static bool IsConnected()
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             return GetGamepad(currentGamepadID) != null;
-            #else
+#else
             return false;
-            #endif
+#endif
         }
 
         /// <summary>
@@ -261,7 +266,7 @@ namespace Lofelt.NiceVibrations
         /// <param name="rumble">The rumble pattern to load</param>
         public static void Load(GamepadRumble rumble)
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             if (rumble.IsValid())
             {
                 loadedRumble = rumble;
@@ -273,7 +278,7 @@ namespace Lofelt.NiceVibrations
             {
                 Unload();
             }
-            #endif
+#endif
         }
 
         /// <summary>
@@ -284,7 +289,7 @@ namespace Lofelt.NiceVibrations
         /// nothing.
         public static void Play()
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             if (CanPlay())
             {
                 rumbleIndex = 0;
@@ -292,7 +297,7 @@ namespace Lofelt.NiceVibrations
                 playbackWatch.Restart();
                 ProcessNextRumble();
             }
-            #endif
+#endif
         }
 
         /// <summary>
@@ -300,7 +305,7 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public static void Stop()
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             if (GetGamepad(currentGamepadID) != null)
             {
                 GetGamepad(currentGamepadID).ResetHaptics();
@@ -309,7 +314,7 @@ namespace Lofelt.NiceVibrations
             rumbleIndex = -1;
             rumblePositionMs = 0;
             playbackWatch.Stop();
-            #endif
+#endif
         }
 
         /// <summary>
@@ -317,13 +322,13 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public static void Unload()
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             loadedRumble.highFrequencyMotorSpeeds = null;
             loadedRumble.lowFrequencyMotorSpeeds = null;
             loadedRumble.durationsMs = null;
             rumbleLoaded = false;
             Stop();
-            #endif
+#endif
         }
 
         // Advances the position in the GamepadRumble by one.
@@ -331,7 +336,7 @@ namespace Lofelt.NiceVibrations
         // If the end of the rumble has been reached, playback is stopped and false is returned.
         private static bool IncreaseRumbleIndex()
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             rumblePositionMs += loadedRumble.durationsMs[rumbleIndex];
             rumbleIndex++;
             if (rumbleIndex == loadedRumble.durationsMs.Length)
@@ -341,9 +346,9 @@ namespace Lofelt.NiceVibrations
             }
 
             return true;
-            #else
+#else
             return false;
-            #endif
+#endif
         }
 
         // Processes the next entry in loadedRumble by setting the gamepad's motor speeds to the
@@ -353,7 +358,7 @@ namespace Lofelt.NiceVibrations
         // in entry of loadedRumble.
         private static void ProcessNextRumble()
         {
-            #if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
+#if ((!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR) && NICE_VIBRATIONS_INPUTSYSTEM_INSTALLED && ENABLE_INPUT_SYSTEM && !NICE_VIBRATIONS_DISABLE_GAMEPAD_SUPPORT
             // rumbleIndex can be -1 after Stop() has been called after the call to
             // ProcessNextRumble() has already been queued up via SynchronizationContext.
             if (rumbleIndex == -1)
@@ -424,7 +429,7 @@ namespace Lofelt.NiceVibrations
             rumbleTimer.Interval = durationToWait;
             rumbleTimer.AutoReset = false;
             rumbleTimer.Enabled = true;
-            #endif
+#endif
         }
     }
 }

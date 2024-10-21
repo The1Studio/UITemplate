@@ -7,32 +7,62 @@ using UnityEngine.Profiling;
 
 namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.DependencyGraph
 {
-    [Serializable]
+    [System.Serializable]
     public class AH_DepGraphElement : TreeElement, ISerializationCallbackReceiver
     {
         #region Fields
-
-        [SerializeField] private string relativePath;
-
+        [SerializeField]
+        private string relativePath;
         /*[SerializeField]
         private string assetName;*/
-        [SerializeField] private Type    assetType;
-        private                  Texture icon;
-        [SerializeField] private string  assetTypeSerialized;
-
+        [SerializeField]
+        private Type assetType;
+        private Texture icon;
+        [SerializeField]
+        private string assetTypeSerialized;
         #endregion
 
         #region Properties
 
-        public string RelativePath => this.relativePath;
+        public string RelativePath
+        {
+            get
+            {
+                return relativePath;
+            }
+        }
 
-        public string AssetName => this.m_Name;
+        public string AssetName
+        {
+            get
+            {
+                return m_Name;
+            }
+        }
 
-        public Type AssetType => this.assetType;
+        public Type AssetType
+        {
+            get
+            {
+                return assetType;
+            }
+        }
 
-        public Texture Icon => this.icon;
+        public Texture Icon
+        {
+            get
+            {
+                return icon;
+            }
+        }
 
-        public string AssetTypeSerialized => this.assetTypeSerialized;
+        public string AssetTypeSerialized
+        {
+            get
+            {
+                return assetTypeSerialized;
+            }
+        }
 
         #endregion
 
@@ -42,26 +72,30 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.DependencyGraph
             var stringSplit = relativepath.Split('/');
             //this.assetName = stringSplit.Last();
             this.assetType = UnityEditor.AssetDatabase.GetMainAssetTypeAtPath(relativepath);
-            if (this.assetType != null) this.assetTypeSerialized = Heureka_Serializer.SerializeType(this.assetType);
-            this.icon = UnityEditor.EditorGUIUtility.ObjectContent(null, this.assetType).image;
+            if (this.assetType != null)
+                this.assetTypeSerialized = Heureka_Serializer.SerializeType(assetType);
+            this.icon = UnityEditor.EditorGUIUtility.ObjectContent(null, assetType).image;
         }
 
         #region Serialization callbacks
-
         //TODO Maybe we can store type infos in BuildInfoTreeView instead of on each individual element, might be performance heavy
 
         //Store serializable string so we can retrieve type after serialization
         public void OnBeforeSerialize()
         {
-            if (this.assetType != null) this.assetTypeSerialized = Heureka_Serializer.SerializeType(this.assetType);
+            if (assetType != null)
+                assetTypeSerialized = Heureka_Serializer.SerializeType(assetType);
         }
 
         //Set type from serialized property
         public void OnAfterDeserialize()
         {
-            if (!string.IsNullOrEmpty(this.AssetTypeSerialized)) this.assetType = Heureka_Serializer.DeSerializeType(this.AssetTypeSerialized);
+            if (!string.IsNullOrEmpty(AssetTypeSerialized))
+            {
+                this.assetType = Heureka_Serializer.DeSerializeType(AssetTypeSerialized);
+            }
         }
-
         #endregion
+
     }
 }

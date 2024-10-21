@@ -5,3 +5,10 @@ AssemblyDefinitionImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 135296
+  packageName: Asset Hunter PRO
+  packageVersion: 2.2.22
+  assetPath: Assets/UITemplate/Packages/com.heurekagames.utils/Editor/Heureka_GlobalAssemblyDefinition.asmdef
+  uploadId: 675959

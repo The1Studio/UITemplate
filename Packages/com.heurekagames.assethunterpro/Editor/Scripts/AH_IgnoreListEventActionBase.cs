@@ -8,33 +8,33 @@ namespace HeurekaGames.AssetHunterPRO
 {
     public class AH_ignoredListEventActionBase
     {
-        public event EventHandler<IgnoreListEventArgs> IgnoredAddedEvent;
+        public event System.EventHandler<IgnoreListEventArgs> IgnoredAddedEvent;
 
-        public virtual string Header         { get; protected set; }
+        public virtual string Header { get; protected set; }
         public virtual string FoldOutContent { get; protected set; }
 
-        [SerializeField] private int         ignoredListIndex;
+        [SerializeField] private int ignoredListIndex;
         [SerializeField] private Action<int> buttonDownCallBack;
 
         public AH_ignoredListEventActionBase(int ignoredListIndex, Action<int> buttonDownCallBack)
         {
-            this.ignoredListIndex   = ignoredListIndex;
+            this.ignoredListIndex = ignoredListIndex;
             this.buttonDownCallBack = buttonDownCallBack;
         }
 
         protected void getObjectInfo(out string path, out bool isMain, out bool isFolder)
         {
-            path     = AssetDatabase.GetAssetPath(Selection.activeObject);
-            isMain   = AssetDatabase.IsMainAsset(Selection.activeObject);
+            path = AssetDatabase.GetAssetPath(Selection.activeObject);
+            isMain = AssetDatabase.IsMainAsset(Selection.activeObject);
             isFolder = AssetDatabase.IsValidFolder(path);
         }
 
         public void IgnoreCallback(UnityEngine.Object obj, string identifier)
         {
-            this.IgnoredAddedEvent(obj, new(identifier));
+            IgnoredAddedEvent(obj, new IgnoreListEventArgs(identifier));
 
             //Notify the list was changed
-            this.buttonDownCallBack(this.ignoredListIndex);
+            buttonDownCallBack(ignoredListIndex);
         }
 
         /// <summary>
@@ -46,19 +46,25 @@ namespace HeurekaGames.AssetHunterPRO
         /// <param name="optionalLegibleIdentifier">Humanly legible identifier</param>
         protected void drawButton(bool validSelected, string buttonText, AH_IgnoreList ignoredList, string identifier, string optionalLegibleIdentifier = "")
         {
-            var btnUsable = validSelected && !ignoredList.ExistsInList(identifier);
+            bool btnUsable = validSelected && !ignoredList.ExistsInList(identifier);
 
             EditorGUILayout.BeginHorizontal();
 
             EditorGUI.BeginDisabledGroup(!btnUsable);
-            if (GUILayout.Button(buttonText, GUILayout.Width(150)) && btnUsable) this.IgnoreCallback(Selection.activeObject, identifier);
+            if (GUILayout.Button(buttonText, GUILayout.Width(150)) && btnUsable)
+            {
+                IgnoreCallback(Selection.activeObject, identifier);
+            }
             EditorGUI.EndDisabledGroup();
 
             //Select the proper string to write on label
-            var label = !btnUsable                                ? validSelected ? "Already Ignored" : "Invalid selection"
-                : string.IsNullOrEmpty(optionalLegibleIdentifier) ? identifier : optionalLegibleIdentifier;
+            string label = (!btnUsable) ?
+                ((validSelected) ?
+                    "Already Ignored" : "Invalid selection")
+                : (string.IsNullOrEmpty(optionalLegibleIdentifier) ?
+                    identifier : optionalLegibleIdentifier);
 
-            var content = new GUIContent(label, EditorGUIUtility.IconContent(!btnUsable ? validSelected ? "d_lightOff" : "d_orangeLight" : "d_greenLight").image);
+            GUIContent content = new GUIContent(label, EditorGUIUtility.IconContent((!btnUsable) ? ((validSelected) ? "d_lightOff" : "d_orangeLight") : "d_greenLight").image);
 
             GUILayout.Label(content, GUILayout.MaxHeight(16));
             GUILayout.FlexibleSpace();
@@ -67,7 +73,7 @@ namespace HeurekaGames.AssetHunterPRO
 
         protected bool hasValidSelectionObject()
         {
-            return Selection.activeObject != null && Selection.objects.Length == 1;
+            return (Selection.activeObject != null && Selection.objects.Length == 1);
         }
 
         public virtual string GetFormattedItem(string identifier)
@@ -77,12 +83,12 @@ namespace HeurekaGames.AssetHunterPRO
 
         public virtual string GetFormattedItemShort(string identifier)
         {
-            return this.GetFormattedItem(identifier);
+            return GetFormattedItem(identifier);
         }
 
         public virtual string GetLabelFormattedItem(string identifier)
         {
-            return this.GetFormattedItem(identifier);
+            return GetFormattedItem(identifier);
         }
     }
 
@@ -90,14 +96,14 @@ namespace HeurekaGames.AssetHunterPRO
     {
         public IgnoredEventActionExtension(int ignoredListIndex, Action<int> buttonDownCallBack) : base(ignoredListIndex, buttonDownCallBack)
         {
-            this.Header         = "File extensions ignored from search";
-            this.FoldOutContent = "See ignored file extensions";
+            Header = "File extensions ignored from search";
+            FoldOutContent = "See ignored file extensions";
         }
 
         public bool ContainsElement(List<string> ignoredList, string path, string assetId)
         {
             string element;
-            this.pathContainsValidElement(path, out element);
+            pathContainsValidElement(path, out element);
 
             return ignoredList.Contains(element.ToLower());
         }
@@ -105,8 +111,9 @@ namespace HeurekaGames.AssetHunterPRO
         private bool pathContainsValidElement(string path, out string extension)
         {
             extension = "";
-            var hasExtension            = System.IO.Path.HasExtension(path);
-            if (hasExtension) extension = System.IO.Path.GetExtension(path).ToLower();
+            bool hasExtension = System.IO.Path.HasExtension(path);
+            if (hasExtension)
+                extension = System.IO.Path.GetExtension(path).ToLower();
 
             return hasExtension;
         }
@@ -114,19 +121,20 @@ namespace HeurekaGames.AssetHunterPRO
         //Check if the currectly selected asset if excludable as file extension
         public void DrawIgnored(AH_IgnoreList ignoredList)
         {
-            if (!this.hasValidSelectionObject()) return;
+            if (!hasValidSelectionObject())
+                return;
 
             string path;
-            bool   isMain;
-            bool   isFolder;
-            this.getObjectInfo(out path, out isMain, out isFolder);
+            bool isMain;
+            bool isFolder;
+            getObjectInfo(out path, out isMain, out isFolder);
 
             //if (isMain)
             {
                 string extension;
-                var    validElement = this.pathContainsValidElement(path, out extension);
+                bool validElement = (pathContainsValidElement(path, out extension));
 
-                this.drawButton(isMain && validElement, "Ignore file extension", ignoredList, extension);
+                drawButton(isMain && validElement, "Ignore file extension", ignoredList, extension);
             }
         }
     }
@@ -135,34 +143,36 @@ namespace HeurekaGames.AssetHunterPRO
     {
         public IgnoredEventActionPathEndsWith(int ignoredListIndex, Action<int> buttonDownCallBack) : base(ignoredListIndex, buttonDownCallBack)
         {
-            this.Header         = "Folder paths with the following ending are ignored";
-            this.FoldOutContent = "See ignored folder endings";
+            Header = "Folder paths with the following ending are ignored";
+            FoldOutContent = "See ignored folder endings";
         }
 
         public bool ContainsElement(List<string> ignoredList, string path, string assetId)
         {
-            return ignoredList.Contains(this.getIdentifier(path));
+            return ignoredList.Contains(getIdentifier(path));
         }
 
         private string getIdentifier(string path)
         {
-            if (string.IsNullOrEmpty(path)) return "";
+            if (string.IsNullOrEmpty(path))
+                return "";
 
-            var fullPath = System.IO.Path.GetFullPath(path).TrimEnd(System.IO.Path.DirectorySeparatorChar);
+            string fullPath = System.IO.Path.GetFullPath(path).TrimEnd(System.IO.Path.DirectorySeparatorChar);
             return System.IO.Path.DirectorySeparatorChar + System.IO.Path.GetFileName(fullPath).ToLower();
         }
 
         //Check if the currectly selected asset if excludable as path ending
         public void DrawIgnored(AH_IgnoreList ignoredList)
         {
-            if (!this.hasValidSelectionObject()) return;
+            if (!hasValidSelectionObject())
+                return;
 
             string path;
-            bool   isMain;
-            bool   isFolder;
-            this.getObjectInfo(out path, out isMain, out isFolder);
+            bool isMain;
+            bool isFolder;
+            getObjectInfo(out path, out isMain, out isFolder);
 
-            this.drawButton(isMain && isFolder, "Ignore folder ending", ignoredList, this.getIdentifier(path));
+            drawButton((isMain && isFolder), "Ignore folder ending", ignoredList, getIdentifier(path));
         }
     }
 
@@ -170,14 +180,14 @@ namespace HeurekaGames.AssetHunterPRO
     {
         public IgnoredEventActionType(int ignoredListIndex, Action<int> buttonDownCallBack) : base(ignoredListIndex, buttonDownCallBack)
         {
-            this.Header         = "Asset types ignored";
-            this.FoldOutContent = "See ignored types";
+            Header = "Asset types ignored";
+            FoldOutContent = "See ignored types";
         }
 
         public bool ContainsElement(List<string> ignoredList, string path, string assetId)
         {
             Type assetType;
-            return ignoredList.Contains(this.getIdentifier(path, out assetType));
+            return ignoredList.Contains(getIdentifier(path, out assetType));
         }
 
         private string getIdentifier(string path, out Type assetType)
@@ -192,15 +202,16 @@ namespace HeurekaGames.AssetHunterPRO
         //Check if the currectly selected asset if excludable as type
         public void DrawIgnored(AH_IgnoreList ignoredList)
         {
-            if (!this.hasValidSelectionObject()) return;
+            if (!hasValidSelectionObject())
+                return;
 
             string path;
-            bool   isMain;
-            bool   isFolder;
-            this.getObjectInfo(out path, out isMain, out isFolder);
+            bool isMain;
+            bool isFolder;
+            getObjectInfo(out path, out isMain, out isFolder);
 
             Type assetType;
-            this.drawButton(isMain && !isFolder, "Ignore Type", ignoredList, this.getIdentifier(path, out assetType), assetType != null ? assetType.ToString() : "");
+            drawButton((isMain && !isFolder), "Ignore Type", ignoredList, getIdentifier(path, out assetType), assetType != null ? assetType.ToString() : "");
         }
     }
 
@@ -208,8 +219,8 @@ namespace HeurekaGames.AssetHunterPRO
     {
         public IgnoredEventActionFile(int ignoredListIndex, Action<int> buttonDownCallBack) : base(ignoredListIndex, buttonDownCallBack)
         {
-            this.Header         = "Specific files ignored";
-            this.FoldOutContent = "See ignored files";
+            Header = "Specific files ignored";
+            FoldOutContent = "See ignored files";
         }
 
         public bool ContainsElement(List<string> ignoredList, string path, string assetId)
@@ -217,7 +228,7 @@ namespace HeurekaGames.AssetHunterPRO
             if (!string.IsNullOrEmpty(assetId))
                 return ignoredList.Contains(assetId);
             else
-                return ignoredList.Contains(this.getIdentifier(path));
+                return ignoredList.Contains(getIdentifier(path));
         }
 
         private string getIdentifier(string path)
@@ -228,15 +239,16 @@ namespace HeurekaGames.AssetHunterPRO
         //Check if the currectly selected asset if excludable as file
         public void DrawIgnored(AH_IgnoreList ignoredList)
         {
-            if (!this.hasValidSelectionObject()) return;
+            if (!hasValidSelectionObject())
+                return;
 
             string path;
-            bool   isMain;
-            bool   isFolder;
-            this.getObjectInfo(out path, out isMain, out isFolder);
+            bool isMain;
+            bool isFolder;
+            getObjectInfo(out path, out isMain, out isFolder);
 
-            var assetGUID = this.getIdentifier(path);
-            this.drawButton(isMain && !isFolder, "Ignore file", ignoredList, assetGUID, this.GetFormattedItemShort(assetGUID, 45));
+            string assetGUID = getIdentifier(path);
+            drawButton((isMain && !isFolder), "Ignore file", ignoredList, assetGUID, GetFormattedItemShort(assetGUID, 45));
         }
 
         public override string GetFormattedItem(string identifier)
@@ -246,17 +258,17 @@ namespace HeurekaGames.AssetHunterPRO
 
         public string GetFormattedItemShort(string identifier, int charCount)
         {
-            return AH_Utils.ShrinkPathEnd(this.GetFormattedItem(identifier), charCount);
+            return AH_Utils.ShrinkPathEnd(GetFormattedItem(identifier), charCount);
         }
 
         public override string GetFormattedItemShort(string identifier)
         {
-            return this.GetFormattedItemShort(identifier, 50);
+            return GetFormattedItemShort(identifier, 50);
         }
 
         public override string GetLabelFormattedItem(string identifier)
         {
-            return this.GetFormattedItemShort(identifier, 60);
+            return GetFormattedItemShort(identifier, 60);
         }
     }
 
@@ -264,8 +276,8 @@ namespace HeurekaGames.AssetHunterPRO
     {
         public IgnoredEventActionFolder(int ignoredListIndex, Action<int> buttonDownCallBack) : base(ignoredListIndex, buttonDownCallBack)
         {
-            this.Header         = "Specific folders ignored";
-            this.FoldOutContent = "See ignored folders";
+            Header = "Specific folders ignored";
+            FoldOutContent = "See ignored folders";
         }
 
         public bool ContainsElement(List<string> ignoredList, string path, string assetId)
@@ -273,7 +285,7 @@ namespace HeurekaGames.AssetHunterPRO
             if (!string.IsNullOrEmpty(assetId))
                 return ignoredList.Contains(assetId);
             else
-                return ignoredList.Contains(this.getIdentifier(path));
+                return ignoredList.Contains(getIdentifier(path));
         }
 
         private string getIdentifier(string path)
@@ -284,25 +296,26 @@ namespace HeurekaGames.AssetHunterPRO
         //Check if the currectly selected asset if excludable as folder
         public void DrawIgnored(AH_IgnoreList ignoredList)
         {
-            if (!this.hasValidSelectionObject()) return;
+            if (!hasValidSelectionObject())
+                return;
 
             string path;
-            bool   isMain;
-            bool   isFolder;
-            this.getObjectInfo(out path, out isMain, out isFolder);
+            bool isMain;
+            bool isFolder;
+            getObjectInfo(out path, out isMain, out isFolder);
 
-            var assetGUID = this.getIdentifier(path);
-            this.drawButton(isMain && isFolder, "Ignore folder", ignoredList, assetGUID, this.GetFormattedItemShort(assetGUID, 40));
+            string assetGUID = getIdentifier(path);
+            drawButton((isMain && isFolder), "Ignore folder", ignoredList, assetGUID, GetFormattedItemShort(assetGUID, 40));
         }
 
         public override string GetFormattedItemShort(string identifier)
         {
-            return this.GetFormattedItemShort(identifier, 50);
+            return GetFormattedItemShort(identifier, 50);
         }
 
         private string GetFormattedItemShort(string identifier, int charCount)
         {
-            return AH_Utils.ShrinkPathEnd(this.GetFormattedItem(identifier), charCount);
+            return AH_Utils.ShrinkPathEnd(GetFormattedItem(identifier), charCount);
         }
 
         public override string GetFormattedItem(string identifier)
@@ -312,7 +325,7 @@ namespace HeurekaGames.AssetHunterPRO
 
         public override string GetLabelFormattedItem(string identifier)
         {
-            return this.GetFormattedItemShort(identifier, 60);
+            return GetFormattedItemShort(identifier, 60);
         }
     }
 }

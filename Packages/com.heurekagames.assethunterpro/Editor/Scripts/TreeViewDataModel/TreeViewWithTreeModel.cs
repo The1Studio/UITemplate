@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
 {
+
     internal class TreeViewItem<T> : TreeViewItem where T : TreeElement
     {
         //Data storage
@@ -20,69 +21,74 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
 
     internal class TreeViewWithTreeModel<T> : TreeView where T : TreeElement
     {
-        private            TreeModel<T>       m_TreeModel;
-        protected readonly List<TreeViewItem> m_Rows = new(100);
-        public event Action                   treeChanged;
+        TreeModel<T> m_TreeModel;
+        protected readonly List<TreeViewItem> m_Rows = new List<TreeViewItem>(100);
+        public event Action treeChanged;
 
-        public TreeModel<T>                      treeModel => this.m_TreeModel;
+        public TreeModel<T> treeModel { get { return m_TreeModel; } }
         public event Action<IList<TreeViewItem>> beforeDroppingDraggedItems;
 
         public TreeViewWithTreeModel(TreeViewState state, TreeModel<T> model) : base(state)
         {
-            this.Init(model);
+            Init(model);
         }
 
         public TreeViewWithTreeModel(TreeViewState state, MultiColumnHeader multiColumnHeader, TreeModel<T> model)
             : base(state, multiColumnHeader)
         {
-            this.Init(model);
+            Init(model);
         }
 
-        private void Init(TreeModel<T> model)
+        void Init(TreeModel<T> model)
         {
-            this.m_TreeModel              =  model;
-            this.m_TreeModel.modelChanged += this.ModelChanged;
+            m_TreeModel = model;
+            m_TreeModel.modelChanged += ModelChanged;
         }
 
         protected void ModelChanged()
         {
-            if (this.treeChanged != null) this.treeChanged();
+            if (treeChanged != null)
+                treeChanged();
 
-            this.Reload();
+            Reload();
         }
 
         protected override TreeViewItem BuildRoot()
         {
-            var depthForHiddenRoot = -1;
-            return new TreeViewItem<T>(this.m_TreeModel.root.id, depthForHiddenRoot, this.m_TreeModel.root.Name, this.m_TreeModel.root);
+            int depthForHiddenRoot = -1;
+            return new TreeViewItem<T>(m_TreeModel.root.id, depthForHiddenRoot, m_TreeModel.root.Name, m_TreeModel.root);
         }
 
         protected override IList<TreeViewItem> BuildRows(TreeViewItem root)
         {
-            if (this.m_TreeModel.root == null) Debug.LogError("tree model root is null. did you call SetData()?");
-
-            this.m_Rows.Clear();
-
-            if (this.RequiresSorting()) //TODO MAYBE JUST CHECK HERE IS WE ARE SORTING OR NOT, IF SORTING JUST USE THE SEARCH
+            if (m_TreeModel.root == null)
             {
-                this.Search(this.m_TreeModel.root, this.searchString, this.m_Rows, this.IsValidElement);
+                Debug.LogError("tree model root is null. did you call SetData()?");
+            }
+
+            m_Rows.Clear();
+
+            if (RequiresSorting()) //TODO MAYBE JUST CHECK HERE IS WE ARE SORTING OR NOT, IF SORTING JUST USE THE SEARCH
+            {
+                Search(m_TreeModel.root, searchString, m_Rows, IsValidElement);
             }
             else
             {
-                if (this.m_TreeModel.root.hasChildren) this.AddChildrenRecursive(this.m_TreeModel.root, 0, this.m_Rows);
+                if (m_TreeModel.root.hasChildren)
+                    AddChildrenRecursive(m_TreeModel.root, 0, m_Rows);
             }
 
             // We still need to setup the child parent information for the rows since this 
             // information is used by the TreeView internal logic (navigation, dragging etc)
-            SetupParentsAndChildrenFromDepths(root, this.m_Rows);
+            SetupParentsAndChildrenFromDepths(root, m_Rows);
 
-            return this.m_Rows;
+            return m_Rows;
         }
 
         //Override if we need to show lists instead of tree
         protected virtual bool RequiresSorting()
         {
-            return !string.IsNullOrEmpty(this.searchString);
+            return !string.IsNullOrEmpty(searchString);
         }
 
         protected virtual void AddChildrenRecursive(T parent, int depth, IList<TreeViewItem> newRows)
@@ -94,10 +100,14 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
 
                 if (child.hasChildren)
                 {
-                    if (this.IsExpanded(child.id))
-                        this.AddChildrenRecursive(child, depth + 1, newRows);
+                    if (IsExpanded(child.id))
+                    {
+                        AddChildrenRecursive(child, depth + 1, newRows);
+                    }
                     else
+                    {
                         item.children = CreateChildListForCollapsedParent();
+                    }
                 }
             }
         }
@@ -105,30 +115,39 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
         //Override this to add additional requirements
         protected virtual bool IsValidElement(TreeElement element, string searchString)
         {
-            return string.IsNullOrEmpty(searchString) || element.Name.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0;
+            return (string.IsNullOrEmpty(searchString) || element.Name.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
         protected virtual void Search(T searchFromThis, string search, List<TreeViewItem> result, Func<T, string, bool> IsValidElement)
         {
             const int kItemDepth = 0; // tree is flattened when searching
 
-            var stack = new Stack<T>();
+            Stack<T> stack = new Stack<T>();
 
             if (searchFromThis?.children != null)
+            {
                 foreach (var element in searchFromThis.children)
                     stack.Push((T)element);
+            }
 
             while (stack.Count > 0)
             {
-                var current = stack.Pop();
+                T current = stack.Pop();
                 // Matches search?
-                if (IsValidElement(current, search)) result.Add(new TreeViewItem<T>(current.id, kItemDepth, current.Name, current));
+                if (IsValidElement(current, search))
+                {
+                    result.Add(new TreeViewItem<T>(current.id, kItemDepth, current.Name, current));
+                }
 
                 if (current.children != null && current.children.Count > 0)
+                {
                     foreach (var element in current.children)
+                    {
                         stack.Push((T)element);
+                    }
+                }
             }
-            this.SortSearchResult(result);
+            SortSearchResult(result);
         }
 
         protected virtual void SortSearchResult(List<TreeViewItem> rows)
@@ -138,18 +157,18 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
 
         protected override IList<int> GetAncestors(int id)
         {
-            return this.m_TreeModel.GetAncestors(id);
+            return m_TreeModel.GetAncestors(id);
         }
 
         protected override IList<int> GetDescendantsThatHaveChildren(int id)
         {
-            return this.m_TreeModel.GetDescendantsThatHaveChildren(id);
+            return m_TreeModel.GetDescendantsThatHaveChildren(id);
         }
 
         // Dragging
         //-----------
 
-        private const string k_GenericDragID = "GenericDragColumnDragging";
+        const string k_GenericDragID = "GenericDragColumnDragging";
 
         protected override bool CanStartDrag(CanStartDragArgs args)
         {
@@ -158,13 +177,14 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
 
         protected override void SetupDragAndDrop(SetupDragAndDropArgs args)
         {
-            if (this.hasSearch) return;
+            if (hasSearch)
+                return;
 
             DragAndDrop.PrepareStartDrag();
-            var draggedRows = this.GetRows().Where(item => args.draggedItemIDs.Contains(item.id)).ToList();
+            var draggedRows = GetRows().Where(item => args.draggedItemIDs.Contains(item.id)).ToList();
             DragAndDrop.SetGenericData(k_GenericDragID, draggedRows);
             DragAndDrop.objectReferences = new UnityEngine.Object[] { }; // this IS required for dragging to work
-            var title = draggedRows.Count == 1 ? draggedRows[0].displayName : "< Multiple >";
+            string title = draggedRows.Count == 1 ? draggedRows[0].displayName : "< Multiple >";
             DragAndDrop.StartDrag(title);
         }
 
@@ -172,29 +192,31 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
         {
             // Check if we can handle the current drag data (could be dragged in from other areas/windows in the editor)
             var draggedRows = DragAndDrop.GetGenericData(k_GenericDragID) as List<TreeViewItem>;
-            if (draggedRows == null) return DragAndDropVisualMode.None;
+            if (draggedRows == null)
+                return DragAndDropVisualMode.None;
 
             // Parent item is null when dragging outside any tree view items.
             switch (args.dragAndDropPosition)
             {
                 case DragAndDropPosition.UponItem:
                 case DragAndDropPosition.BetweenItems:
-                {
-                    var validDrag = this.ValidDrag(args.parentItem, draggedRows);
-                    if (args.performDrop && validDrag)
                     {
-                        var parentData = ((TreeViewItem<T>)args.parentItem).data;
-                        this.OnDropDraggedElementsAtIndex(draggedRows, parentData, args.insertAtIndex == -1 ? 0 : args.insertAtIndex);
+                        bool validDrag = ValidDrag(args.parentItem, draggedRows);
+                        if (args.performDrop && validDrag)
+                        {
+                            T parentData = ((TreeViewItem<T>)args.parentItem).data;
+                            OnDropDraggedElementsAtIndex(draggedRows, parentData, args.insertAtIndex == -1 ? 0 : args.insertAtIndex);
+                        }
+                        return validDrag ? DragAndDropVisualMode.Move : DragAndDropVisualMode.None;
                     }
-                    return validDrag ? DragAndDropVisualMode.Move : DragAndDropVisualMode.None;
-                }
 
                 case DragAndDropPosition.OutsideItems:
-                {
-                    if (args.performDrop) this.OnDropDraggedElementsAtIndex(draggedRows, this.m_TreeModel.root, this.m_TreeModel.root.children.Count);
+                    {
+                        if (args.performDrop)
+                            OnDropDraggedElementsAtIndex(draggedRows, m_TreeModel.root, m_TreeModel.root.children.Count);
 
-                    return DragAndDropVisualMode.Move;
-                }
+                        return DragAndDropVisualMode.Move;
+                    }
                 default:
                     Debug.LogError("Unhandled enum " + args.dragAndDropPosition);
                     return DragAndDropVisualMode.None;
@@ -203,22 +225,25 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl
 
         public virtual void OnDropDraggedElementsAtIndex(List<TreeViewItem> draggedRows, T parent, int insertIndex)
         {
-            if (this.beforeDroppingDraggedItems != null) this.beforeDroppingDraggedItems(draggedRows);
+            if (beforeDroppingDraggedItems != null)
+                beforeDroppingDraggedItems(draggedRows);
 
             var draggedElements = new List<TreeElement>();
-            foreach (var x in draggedRows) draggedElements.Add(((TreeViewItem<T>)x).data);
+            foreach (var x in draggedRows)
+                draggedElements.Add(((TreeViewItem<T>)x).data);
 
             var selectedIDs = draggedElements.Select(x => x.id).ToArray();
-            this.m_TreeModel.MoveElements(parent, insertIndex, draggedElements);
-            this.SetSelection(selectedIDs, TreeViewSelectionOptions.RevealAndFrame);
+            m_TreeModel.MoveElements(parent, insertIndex, draggedElements);
+            SetSelection(selectedIDs, TreeViewSelectionOptions.RevealAndFrame);
         }
 
-        private bool ValidDrag(TreeViewItem parent, List<TreeViewItem> draggedItems)
+        bool ValidDrag(TreeViewItem parent, List<TreeViewItem> draggedItems)
         {
-            var currentParent = parent;
+            TreeViewItem currentParent = parent;
             while (currentParent != null)
             {
-                if (draggedItems.Contains(currentParent)) return false;
+                if (draggedItems.Contains(currentParent))
+                    return false;
                 currentParent = currentParent.parent;
             }
             return true;

@@ -20,3 +20,10 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 183370
+  packageName: Feel
+  packageVersion: 4.3
+  assetPath: Assets/UITemplate/Feel/NiceVibrations/HapticSamples/Footsteps/FootstepGrass3.wav
+  uploadId: 689191

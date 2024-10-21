@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -7,54 +8,68 @@ namespace HeurekaGames.AssetHunterPRO.BaseTreeviewImpl.AssetTreeView
 {
     internal class AH_MultiColumnHeader : MultiColumnHeader
     {
-        private AssetShowMode m_showMode;
-
+        AssetShowMode m_showMode;
         public enum AssetShowMode
         {
             Unused,
             Used,
-            All,
+            All
         }
 
-        private Mode m_Mode;
-
+        Mode m_Mode;
         public enum Mode
         {
             //LargeHeader,
             Treeview,
-            SortedList,
+            SortedList
         }
 
         public AH_MultiColumnHeader(MultiColumnHeaderState state) : base(state)
         {
-            this.mode = Mode.Treeview;
+            mode = Mode.Treeview;
         }
 
         public Mode mode
         {
-            get => this.m_Mode;
+            get
+            {
+                return m_Mode;
+            }
             set
             {
-                this.m_Mode = value;
-                switch (this.m_Mode)
+                m_Mode = value;
+                switch (m_Mode)
                 {
                     case Mode.Treeview:
-                        this.canSort = true;
-                        this.height  = DefaultGUI.minimumHeight;
+                        canSort = true;
+                        height = DefaultGUI.minimumHeight;
                         break;
                     case Mode.SortedList:
-                        this.canSort = true;
-                        this.height  = DefaultGUI.defaultHeight;
+                        canSort = true;
+                        height = DefaultGUI.defaultHeight;
                         break;
                 }
             }
         }
 
-        public AssetShowMode ShowMode { get => this.m_showMode; set => this.m_showMode = value; }
+        public AssetShowMode ShowMode
+        {
+            get
+            {
+                return m_showMode;
+            }
+            set
+            {
+                m_showMode = value;
+            }
+        }
 
         protected override void ColumnHeaderClicked(MultiColumnHeaderState.Column column, int columnIndex)
         {
-            if (this.mode == Mode.Treeview) this.mode = Mode.SortedList;
+            if (mode == Mode.Treeview)
+            {
+                mode = Mode.SortedList;
+            }
 
             base.ColumnHeaderClicked(column, columnIndex);
         }

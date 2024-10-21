@@ -13,22 +13,19 @@ namespace HeurekaGames.AssetHunterPRO
         [Serializable]
         public class DuplicateAssetData
         {
-            public  List<string> Guids;
+            public List<string> Guids;
             private List<string> paths;
-            private Texture2D    preview;
-
+            private Texture2D preview;
             public Texture2D Preview
             {
                 get
                 {
-                    if (this.preview != null)
-                    {
-                        return this.preview;
-                    }
+                    if (preview != null)
+                        return preview;
                     else
                     {
-                        var loadedObj = AssetDatabase.LoadMainAssetAtPath(this.Paths[0]);
-                        return this.preview = AssetPreview.GetAssetPreview(loadedObj);
+                        var loadedObj = AssetDatabase.LoadMainAssetAtPath(Paths[0]);
+                        return preview = AssetPreview.GetAssetPreview(loadedObj);
                     }
                 }
             }
@@ -37,8 +34,8 @@ namespace HeurekaGames.AssetHunterPRO
             {
                 get
                 {
-                    if (this.paths != null)
-                        return this.paths;
+                    if (paths != null)
+                        return paths;
                     else
                         return this.paths = this.Guids.Select(x => AssetDatabase.GUIDToAssetPath(x)).ToList();
                 }
@@ -53,112 +50,112 @@ namespace HeurekaGames.AssetHunterPRO
         [SerializeField] public bool IsDirty = true;
 
         public bool RequiresScrollviewRebuild { get; internal set; }
-        public bool HasCache                  { get; private set; }
+        public bool HasCache { get; private set; }
 
-        [SerializeField] private Dictionary<string, DuplicateAssetData> duplicateDict = new();
+        [SerializeField] private Dictionary<string, DuplicateAssetData> duplicateDict = new Dictionary<string, DuplicateAssetData>();
 
         #region serializationHelpers
+        [SerializeField] private List<string> _duplicateDictKeys = new List<string>();
+        [SerializeField] private List<DuplicateAssetData> _duplicateDictValues = new List<DuplicateAssetData>();
 
-        [SerializeField] private List<string>             _duplicateDictKeys   = new();
-        [SerializeField] private List<DuplicateAssetData> _duplicateDictValues = new();
-
-        public Dictionary<string, DuplicateAssetData> Entries => this.duplicateDict;
-
+        public Dictionary<string, DuplicateAssetData> Entries { get {return duplicateDict; } }
         #endregion
 
         internal bool HasDuplicates()
         {
-            return this.duplicateDict.Count > 0;
+            return duplicateDict.Count > 0;
         }
 
         public void OnBeforeSerialize()
         {
-            this._duplicateDictKeys.Clear();
-            this._duplicateDictValues.Clear();
+            _duplicateDictKeys.Clear();
+            _duplicateDictValues.Clear();
 
-            foreach (var kvp in this.duplicateDict)
+            foreach (var kvp in duplicateDict)
             {
-                this._duplicateDictKeys.Add(kvp.Key);
-                this._duplicateDictValues.Add(kvp.Value);
+                _duplicateDictKeys.Add(kvp.Key);
+                _duplicateDictValues.Add(kvp.Value);
             }
         }
 
         public void OnAfterDeserialize()
         {
-            this.duplicateDict = new();
-            for (var i = 0; i != Math.Min(this._duplicateDictKeys.Count, this._duplicateDictValues.Count); i++) this.duplicateDict.Add(this._duplicateDictKeys[i], new(this._duplicateDictValues[i].Guids));
+           duplicateDict = new Dictionary<string, DuplicateAssetData>();
+            for (int i = 0; i != Math.Min(_duplicateDictKeys.Count, _duplicateDictValues.Count); i++)
+                duplicateDict.Add(_duplicateDictKeys[i], new DuplicateAssetData(_duplicateDictValues[i].Guids));
         }
 
         internal void RefreshData()
         {
             //We need to analyze the scrollview to optimize how we draw it           
-            this.RequiresScrollviewRebuild = true;
+            RequiresScrollviewRebuild = true;
 
-            this.duplicateDict = new();
+            duplicateDict = new Dictionary<string, DuplicateAssetData>();
             var hashDict = new Dictionary<string, List<string>>();
 
-            var paths     = AssetDatabase.GetAllAssetPaths();
+            var paths = AssetDatabase.GetAllAssetPaths();
             var pathCount = paths.Length;
 
-            using (var md5 = System.Security.Cryptography.MD5.Create())
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
             {
-                string             assetPathGuid;
-                string             hash;
+                string assetPathGuid;
+                string hash;
                 UnityEngine.Object LoadedObj;
 
-                var maxReadCount = 30; //We dont need to read every line using streamreader. We only need the m_name property, and that comes early in the file
-                var lineCounter  = 0;
+                int maxReadCount = 30;//We dont need to read every line using streamreader. We only need the m_name property, and that comes early in the file
+                int lineCounter = 0;
 
-                for (var i = 0; i < pathCount; i++)
+                for (int i = 0; i < pathCount; i++)
                 {
                     var path = paths[i];
                     if (AssetDatabase.IsValidFolder(path) || !path.StartsWith("Assets")) //Slow, could be done recusively
                         continue;
 
-                    if (EditorUtility.DisplayCancelableProgressBar("Finding duplicates", path, (float)i / (float)pathCount))
+                    if (EditorUtility.DisplayCancelableProgressBar("Finding duplicates", path, ((float)i / (float)pathCount)))
                     {
-                        this.duplicateDict = new();
+                        duplicateDict = new Dictionary<string, DuplicateAssetData>();
                         break;
                     }
 
                     assetPathGuid = AssetDatabase.AssetPathToGUID(path);
-                    LoadedObj     = AssetDatabase.LoadMainAssetAtPath(path);
-                    var line      = "";
-                    var foundName = false;
+                    LoadedObj = AssetDatabase.LoadMainAssetAtPath(path);
+                    string line = "";
+                    bool foundName = false;
 
                     if (LoadedObj != null)
+                    {
                         try
                         {
-                            using (var stream = File.OpenRead(path))
+                            using (FileStream stream = File.OpenRead(path))
                             {
                                 //We need to loop through certain native types (such as materials) to remove name from metadata - if we dont they wont have same hash
                                 if (AssetDatabase.IsNativeAsset(LoadedObj) && !LoadedObj.GetType().IsSubclassOf(typeof(ScriptableObject)))
                                 {
-                                    var appendString = "";
-                                    using (var sr = new StreamReader(stream))
+                                    string appendString = "";
+                                    using (StreamReader sr = new StreamReader(stream))
                                     {
                                         //bool foundFileName = false;
-                                        lineCounter = 0;
+                                            lineCounter = 0;
                                         while (!sr.EndOfStream)
                                         {
                                             lineCounter++;
                                             if (lineCounter >= maxReadCount)
-                                            {
                                                 appendString += sr.ReadToEnd();
-                                            }
                                             else
-                                            {
-                                                line      = sr.ReadLine();
+                                            { 
+                                                line = sr.ReadLine();
                                                 foundName = line.Contains(LoadedObj.name);
 
-                                                if (!foundName) //we want to ignore the m_name property, since that modifies the hashvalue
+                                                if (!foundName)//we want to ignore the m_name property, since that modifies the hashvalue
                                                     appendString += line;
                                                 else
-                                                    appendString += sr.ReadToEnd();
+                                                { 
+                                                    appendString += sr.ReadToEnd();                                          
+                                                }
                                             }
                                         }
                                     }
-                                    hash = BitConverter.ToString(System.Text.Encoding.Unicode.GetBytes(appendString));
+                                    hash = BitConverter.ToString(System.Text.UnicodeEncoding.Unicode.GetBytes(appendString));
                                 }
                                 else
                                 {
@@ -166,23 +163,29 @@ namespace HeurekaGames.AssetHunterPRO
                                 }
 
                                 if (!hashDict.ContainsKey(hash))
-                                    hashDict.Add(hash, new() { assetPathGuid });
+                                    hashDict.Add(hash, new List<string>() { assetPathGuid });
                                 else
                                     hashDict[hash].Add(assetPathGuid);
+
                             }
                         }
                         catch (Exception e)
                         {
                             Debug.LogError(e);
                         }
+                    }
                 }
 
                 foreach (var pair in hashDict)
+                {
                     if (pair.Value.Count > 1)
-                        this.duplicateDict.Add(pair.Key, new(pair.Value));
+                    {
+                        duplicateDict.Add(pair.Key, new DuplicateAssetData(pair.Value));
+                    }
+                }
 
-                this.IsDirty  = false;
-                this.HasCache = true;
+                IsDirty = false;
+                HasCache = true;
                 EditorUtility.ClearProgressBar();
             }
         }

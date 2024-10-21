@@ -31,7 +31,7 @@ namespace Lofelt.NiceVibrations
     [AddComponentMenu("Nice Vibrations/Haptic Source")]
     public class HapticSource : MonoBehaviour
     {
-        private const int DEFAULT_PRIORITY = 128;
+        const int DEFAULT_PRIORITY = 128;
 
         /// The HapticClip this HapticSource loads and plays.
         public HapticClip clip;
@@ -52,17 +52,23 @@ namespace Lofelt.NiceVibrations
         ///
         /// Initially set to 0.0 seconds.
         /// This value can only be set when using Seek().
-        private float seekTime = 0.0f;
+        float seekTime = 0.0f;
 
-        [SerializeField] private HapticPatterns.PresetType _fallbackPreset = HapticPatterns.PresetType.None;
+        [SerializeField]
+        HapticPatterns.PresetType _fallbackPreset = HapticPatterns.PresetType.None;
 
         /// <summary>
         /// The haptic preset to be played when it's not possible to play a haptic clip
         /// </summary>
         [System.ComponentModel.DefaultValue(HapticPatterns.PresetType.None)]
-        public HapticPatterns.PresetType fallbackPreset { get => this._fallbackPreset; set => this._fallbackPreset = value; }
+        public HapticPatterns.PresetType fallbackPreset
+        {
+            get { return _fallbackPreset; }
+            set { _fallbackPreset = value; }
+        }
 
-        [SerializeField] private bool _loop = false;
+        [SerializeField]
+        bool _loop = false;
 
         /// <summary>
         /// Set the haptic source to loop playback of the haptic clip.
@@ -72,9 +78,14 @@ namespace Lofelt.NiceVibrations
         ///
         /// See HapticController::Loop() for further details.
         [System.ComponentModel.DefaultValue(false)]
-        public bool loop { get => this._loop; set => this._loop = value; }
+        public bool loop
+        {
+            get { return _loop; }
+            set { _loop = value; }
+        }
 
-        [SerializeField] private float _level = 1.0f;
+        [SerializeField]
+        float _level = 1.0f;
 
         /// <summary>
         /// The level of the haptic source
@@ -88,16 +99,20 @@ namespace Lofelt.NiceVibrations
         [System.ComponentModel.DefaultValue(1.0)]
         public float level
         {
-            get => this._level;
+            get { return _level; }
             set
             {
-                this._level = value;
+                _level = value;
 
-                if (this.IsLoaded()) HapticController.clipLevel = this._level;
+                if (IsLoaded())
+                {
+                    HapticController.clipLevel = _level;
+                }
             }
         }
 
-        [SerializeField] private float _frequencyShift = 0.0f;
+        [SerializeField]
+        float _frequencyShift = 0.0f;
 
         /// <summary>
         /// This shift is added to the frequency of every breakpoint in the clip, including the
@@ -108,26 +123,29 @@ namespace Lofelt.NiceVibrations
         [System.ComponentModel.DefaultValue(0.0)]
         public float frequencyShift
         {
-            get => this._frequencyShift;
+            get { return _frequencyShift; }
             set
             {
-                this._frequencyShift = value;
+                _frequencyShift = value;
 
-                if (this.IsLoaded()) HapticController.clipFrequencyShift = this._frequencyShift;
+                if (IsLoaded())
+                {
+                    HapticController.clipFrequencyShift = _frequencyShift;
+                }
             }
         }
 
         /// The HapticSource that is currently loaded into HapticController.
         /// This can be null if nothing was ever loaded, or if HapticController::Load()
         /// was called directly, bypassing HapticSource.
-        private static HapticSource loadedHapticSource = null;
+        static HapticSource loadedHapticSource = null;
 
         /// The HapticSource that was last played.
         /// This can be null if nothing was ever player, or if HapticController::Play()
         /// was called directly, bypassing HapticSource.
         /// The lastPlayedHapticSource isn't necessarily playing now, lastPlayedHapticSource
         /// will remain set even if playback has finished or was stopped.
-        private static HapticSource lastPlayedHapticSource = null;
+        static HapticSource lastPlayedHapticSource = null;
 
         static HapticSource()
         {
@@ -159,28 +177,31 @@ namespace Lofelt.NiceVibrations
         /// It will loop playback in case \ref loop is <c>true</c>.
         public void Play()
         {
-            if (this.CanPlay())
+            if (CanPlay())
             {
                 //
                 // Load
                 //
-                HapticController.Load(this.clip);
+                HapticController.Load(clip);
                 loadedHapticSource = this;
 
                 //
                 // Apply properties like loop, modulation and seek position
                 //
-                HapticController.Loop(this.loop);
+                HapticController.Loop(loop);
 
-                HapticController.clipLevel          = this.level;
-                HapticController.clipFrequencyShift = this.frequencyShift;
+                HapticController.clipLevel = level;
+                HapticController.clipFrequencyShift = frequencyShift;
 
-                if (this.seekTime != 0.0f && !this.loop) HapticController.Seek(this.seekTime);
+                if (seekTime != 0.0f && !loop)
+                {
+                    HapticController.Seek(seekTime);
+                }
 
                 //
                 // Play
                 //
-                HapticController.fallbackPreset = this.fallbackPreset;
+                HapticController.fallbackPreset = fallbackPreset;
                 HapticController.Play();
                 lastPlayedHapticSource = this;
             }
@@ -188,7 +209,8 @@ namespace Lofelt.NiceVibrations
 
         private bool CanPlay()
         {
-            return !HapticController.IsPlaying() || (lastPlayedHapticSource != null && this.priority <= lastPlayedHapticSource.priority);
+            return (!HapticController.IsPlaying() ||
+                   (lastPlayedHapticSource != null && priority <= lastPlayedHapticSource.priority));
         }
 
         /// <summary>
@@ -199,7 +221,7 @@ namespace Lofelt.NiceVibrations
         /// another HapticSource is loaded.
         private bool IsLoaded()
         {
-            return ReferenceEquals(this, loadedHapticSource);
+            return Object.ReferenceEquals(this, loadedHapticSource);
         }
 
         /// <summary>
@@ -207,7 +229,10 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public void Stop()
         {
-            if (this.IsLoaded()) HapticController.Stop();
+            if (IsLoaded())
+            {
+                HapticController.Stop();
+            }
         }
 
         /// <summary>
@@ -228,7 +253,10 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public void OnDisable()
         {
-            if (HapticController.IsPlaying() && this.IsLoaded()) this.Stop();
+            if (HapticController.IsPlaying() && IsLoaded())
+            {
+                this.Stop();
+            }
         }
     }
 }

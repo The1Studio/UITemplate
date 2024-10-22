@@ -524,20 +524,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        public virtual void ShowMREC(AdViewPosition adViewPosition)
-        {
-            if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
-
-            var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(adViewPosition));
-
-            if (mrecAdService != null)
-            {
-                mrecAdService.ShowMREC(adViewPosition);
-                this.IsShowMRECAd = true;
-                this.logService.Log($"onelog: ShowMREC {adViewPosition}");
-            }
-        }
-
         public virtual void HideMREC(string placement, AdScreenPosition position)
         {
             var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position)).ToList();
@@ -546,17 +532,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(placement, position);
                 this.logService.Log($"onelog: HideMREC, placement: {placement}");
-            }
-        }
-
-        public virtual void HideMREC(AdViewPosition adViewPosition)
-        {
-            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(adViewPosition)).ToList();
-
-            if (mrecAdServices.Count > 0)
-            {
-                foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(adViewPosition);
-                this.logService.Log($"onelog: HideMREC {adViewPosition}");
             }
         }
 

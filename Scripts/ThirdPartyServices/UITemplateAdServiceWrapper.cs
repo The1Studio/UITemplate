@@ -290,7 +290,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (totalLoadingTime <= this.LoadingTimeToShowAOA)
             {
-                this.ShowAOAAdsIfAvailable(false);
+                this.ShowAOAAdsIfAvailable(true);
             }
             else
             {
@@ -301,12 +301,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public double LoadingTimeToShowAOA => this.adServicesConfig.AOALoadingThreshold;
 
-        private void ShowAOAAdsIfAvailable(bool isFireEligibleSignal = true)
+        private void ShowAOAAdsIfAvailable(bool isFirstOpen)
         {
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
 
-            if (isFireEligibleSignal) this.signalBus.Fire(new AppOpenEligibleSignal(""));
+            if (!isFirstOpen) this.signalBus.Fire(new AppOpenEligibleSignal(""));
+
+            if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
+            {
+                this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: IsIntersInsteadAoaResume");
+                return;
+            }
 
             var typeToAvailable = string.Join(" | ", this.aoaAdServices.Select(aoa => aoa.GetType().Name + " isReady: " + aoa.IsAOAReady()));
             this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: useAdmob: {this.adServicesConfig.UseAoaAdmob} | {typeToAvailable}");
@@ -341,7 +347,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.IsResumedFromAnotherServices) return;
 
-            this.ShowAOAAdsIfAvailable();
+            this.ShowAOAAdsIfAvailable(false);
         }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)

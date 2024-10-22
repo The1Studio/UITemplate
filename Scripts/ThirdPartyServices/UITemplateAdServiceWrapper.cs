@@ -520,7 +520,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
             else
             {
-                this.logService.Log("onlog: MREC no available!");
+                this.logService.Log("onelog: ShowMREC, MREC no available!");
             }
         }
 
@@ -535,6 +535,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 mrecAdService.ShowMREC(adViewPosition);
                 this.IsShowMRECAd = true;
                 this.logService.Log($"onelog: ShowMREC {adViewPosition}");
+            }
+        }
+
+        public virtual void HideMREC(string placement, AdScreenPosition position)
+        {
+            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position)).ToList();
+
+            if (mrecAdServices.Count > 0)
+            {
+                foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(placement, position);
+                this.logService.Log($"onelog: HideMREC, placement: {placement}");
             }
         }
 

@@ -306,12 +306,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
 
-            if (!isFirstOpen) this.signalBus.Fire(new AppOpenEligibleSignal(""));
-
-            if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
+            if (!isFirstOpen)
             {
-                this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: IsIntersInsteadAoaResume");
-                return;
+                this.signalBus.Fire(new AppOpenEligibleSignal(""));
+                if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
+                {
+                    this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: IsIntersInsteadAoaResume");
+                    return;
+                }
             }
 
             var typeToAvailable = string.Join(" | ", this.aoaAdServices.Select(aoa => aoa.GetType().Name + " isReady: " + aoa.IsAOAReady()));

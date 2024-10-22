@@ -94,7 +94,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Applovin
         // Define a global dictionary to store the iosPodName and newVersion pairs
         private static readonly Dictionary<string, string> IOSPodVersions = new()
         {
-            { "AppLovinMediationGoogleAdManagerAdapter", "11.11.0.0" },
+            { "AppLovinMediationGoogleAdManagerAdapter", "11.10.0.0" },
             // Add other iosPodName and newVersion pairs as needed
         };
 

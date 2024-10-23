@@ -3,9 +3,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine.Scripting;

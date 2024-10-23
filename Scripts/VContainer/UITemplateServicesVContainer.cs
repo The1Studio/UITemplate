@@ -2,8 +2,7 @@
 #nullable enable
 namespace TheOneStudio.UITemplate
 {
-    using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Helpers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;

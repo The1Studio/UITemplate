@@ -3,8 +3,7 @@
 namespace TheOneStudio.UITemplate
 {
     using System.Linq;
-    using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.DeepLinking;
     using TheOneStudio.Notification;
     using TheOneStudio.Permission;

@@ -6,8 +6,8 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
+    using TheOne.Extensions;
     using UnityEngine.Scripting;
 
     [Preserve]
@@ -33,7 +33,7 @@
 
             public override async UniTask Handle()
             {
-                var screen = ReflectionUtils.GetAllDerivedTypes<IScreenPresenter>().Single(screen => screen.Name == this.RedirectTarget.PresenterName);
+                var screen = typeof(IScreenPresenter).GetDerivedTypes().Single(screen => screen.Name == this.RedirectTarget.PresenterName);
                 var task = this.openScreenMethod.MakeGenericMethod(screen)
                     .Invoke(this.screenManager, null);
                 await (UniTask)task.GetType().GetMethod("AsUniTask")!.Invoke(task, null);

@@ -5,10 +5,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Linq;
     using System.Threading;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.Scripting;
@@ -125,7 +124,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             this.uiTemplateDailyRewardData.RewardStatus = new();
 
-            for (var i = 0; i < this.uiTemplateDailyRewardBlueprint.Values.Count; i++) this.uiTemplateDailyRewardData.RewardStatus.Add(RewardStatus.Locked);
+            for (var i = 0; i < this.uiTemplateDailyRewardBlueprint.Count; i++) this.uiTemplateDailyRewardData.RewardStatus.Add(RewardStatus.Locked);
 
             this.uiTemplateDailyRewardData.RewardStatus[0]  = RewardStatus.Unlocked;
             this.uiTemplateDailyRewardData.LastRewardedDate = currentTime;

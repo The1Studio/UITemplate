@@ -5,12 +5,12 @@ namespace UITemplate.Editor
     using System.Reflection;
     using GameFoundation.DI;
     using GameFoundation.Scripts.Interfaces;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
     using Newtonsoft.Json;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
     using Sirenix.Serialization;
+    using TheOne.Extensions;
     using UnityEditor;
     using UnityEngine;
 
@@ -88,9 +88,7 @@ namespace UITemplate.Editor
         {
             var result = new List<ILocalData>();
 
-            var localDataTypes = ReflectionUtils.GetAllDerivedTypes<ILocalData>();
-
-            foreach (var type in localDataTypes)
+            foreach (var type in typeof(ILocalData).GetDerivedTypes())
             {
                 var key = $"{LocalDataPrefix}{type.Name}";
 

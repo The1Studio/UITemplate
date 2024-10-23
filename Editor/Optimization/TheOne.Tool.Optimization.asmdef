@@ -3,6 +3,7 @@
   "rootNamespace": "TheOne.Tool.Optimization",
   "references": [
     "GameFoundation.Utilities",
+    "TheOne.Extensions",
     "Unity.Addressables.Editor",
     "UniTask",
     "TheOne.Tool.Core"

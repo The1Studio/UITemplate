@@ -2,9 +2,8 @@
 #nullable enable
 namespace TheOneStudio.UITemplate
 {
-    using GameFoundation.DI;
     using GameFoundation.Scripts.Interfaces;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.UserData;
     using VContainer;

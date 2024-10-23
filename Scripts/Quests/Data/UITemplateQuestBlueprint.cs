@@ -4,10 +4,9 @@ namespace TheOneStudio.UITemplate.Quests.Data
     using System.Collections.Generic;
     using System.Linq;
     using BlueprintFlow.BlueprintReader;
-    using BlueprintFlow.BlueprintReader.Converter;
-    using BlueprintFlow.BlueprintReader.Converter.TypeConversion;
-    using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
+    using TheOne.Data.Conversion;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Rewards;
     using TheOneStudio.UITemplate.Quests.TargetHandler;
@@ -17,56 +16,41 @@ namespace TheOneStudio.UITemplate.Quests.Data
     [BlueprintReader("UITemplateQuest")]
     public sealed class UITemplateQuestBlueprint : GenericBlueprintReaderByRow<string, QuestRecord>
     {
-        static UITemplateQuestBlueprint()
+        public sealed class JsonConverter : Converter
         {
-            CsvHelper.RegisterTypeConverter(typeof(IReward), new JsonConverter<IReward>());
-            CsvHelper.RegisterTypeConverter(typeof(ICondition), new JsonConverter<ICondition>());
-            CsvHelper.RegisterTypeConverter(typeof(IRedirectTarget), new JsonConverter<IRedirectTarget>());
-            CsvHelper.RegisterTypeConverter(typeof(List<IReward>), new ListGenericConverter(';'));
-            CsvHelper.RegisterTypeConverter(typeof(List<ICondition>), new ListGenericConverter(';'));
-            CsvHelper.RegisterTypeConverter(typeof(List<IRedirectTarget>), new ListGenericConverter(';'));
-            CsvHelper.RegisterTypeConverter(typeof(HashSet<string>), new HashSetConverter());
-        }
+            private static readonly HashSet<Type> SupportedTypes = new() { typeof(IReward), typeof(ICondition), typeof(IRedirectTarget) };
 
-        private sealed class JsonConverter<T> : ITypeConverter
-        {
-            private readonly Dictionary<string, Type> typeMap;
+            private readonly Dictionary<Type, IReadOnlyDictionary<string, Type>> typeMap = new();
 
-            public JsonConverter()
-            {
-                var postFix = typeof(T).Name[1..];
-                this.typeMap = ReflectionUtils.GetAllDerivedTypes<T>()
-                    .ToDictionary(type =>
-                        type.Name.EndsWith(postFix)
-                            ? type.Name[..^postFix.Length]
-                            : type.Name
-                    );
-            }
+            protected override bool CanConvert(Type type) => SupportedTypes.Contains(type);
 
-            object ITypeConverter.ConvertFromString(string str, Type _)
+            protected override object ConvertFromString(string str, Type baseType)
             {
                 var index = str.IndexOf(":", StringComparison.Ordinal);
-                var type  = this.typeMap[str[..index]];
-                return JsonConvert.DeserializeObject(str[(index + 1)..], type);
+                var type  = this.GetTypeMap(baseType)[str[..index]];
+                return JsonConvert.DeserializeObject(str[(index + 1)..], type)!;
             }
 
-            string ITypeConverter.ConvertToString(object obj, Type type)
+            protected override string ConvertToString(object obj, Type baseType)
             {
-                var typeStr = this.typeMap.First(kv => kv.Value == type).Key;
+                var typeStr = this.GetTypeMap(baseType).First(kv => kv.Value == obj.GetType()).Key;
                 return $"{typeStr}:{JsonConvert.SerializeObject(obj)}";
             }
-        }
 
-        private sealed class HashSetConverter : ITypeConverter
-        {
-            object ITypeConverter.ConvertFromString(string str, Type _)
+            private IReadOnlyDictionary<string, Type> GetTypeMap(Type baseType)
             {
-                return new HashSet<string>(str.Split(';'));
-            }
-
-            string ITypeConverter.ConvertToString(object obj, Type type)
-            {
-                return string.Join(';', (HashSet<string>)obj);
+                return this.typeMap.GetOrAdd(
+                    baseType,
+                    () =>
+                    {
+                        var postFix = baseType.Name[1..];
+                        return baseType.GetDerivedTypes().ToDictionary(type =>
+                            type.Name.EndsWith(postFix)
+                                ? type.Name[..^postFix.Length]
+                                : type.Name
+                        );
+                    }
+                );
             }
         }
     }

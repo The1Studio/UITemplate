@@ -10,10 +10,10 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
     using R3;
     using R3.Triggers;
+    using TheOne.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
 
@@ -135,13 +135,11 @@
                         tfs = this.screenManager.RootUICanvas.GetComponentsInChildren<HighlightElement>().Select(ele => ele.transform).ToList();
                         break;
                     default:
-                        var screens = ReflectionUtils.GetAllDerivedTypes<IScreenPresenter>();
                         try
                         {
-                            var screenType = screens.First(screen => screen.Name == objNames[0]);
-                            if (screenType != null)
-                                tfs = (this.GetCurrentContainer().Resolve(screenType) as IScreenPresenter)?.CurrentTransform
-                                    .GetComponentsInChildren<HighlightElement>().Select(ele => ele.transform).ToList();
+                            var screenType = typeof(IScreenPresenter).GetDerivedTypes().First(screen => screen.Name == objNames[0]);
+                            tfs = (this.GetCurrentContainer().Resolve(screenType) as IScreenPresenter)?.CurrentTransform
+                                .GetComponentsInChildren<HighlightElement>().Select(ele => ele.transform).ToList();
                         }
                         catch
                         {

@@ -3,13 +3,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
     using System;
     using System.Collections.Generic;
     using DG.Tweening;
-    using GameFoundation.Scripts.Utilities.Extension;
-    using ServiceImplementation.Configs.CustomTypes;
+    using TheOne.Extensions;
     using TMPro;
     using UnityEngine.UI;
 
     [Serializable]
-    public class StringToTextDictionary : SerializableDictionary<string, TMP_Text>
+    public class StringToTextDictionary : ServiceImplementation.Configs.CustomTypes.SerializableDictionary<string, TMP_Text>
     {
         private Dictionary<string, int> currencyIdToRewardValue = new();
 

@@ -3,8 +3,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using System.Linq;
-    using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
     using TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen;
     using VContainer;

@@ -5,14 +5,13 @@ namespace TheOneStudio.UITemplate
     using System.Linq;
     using Core.AnalyticServices;
     using Core.AnalyticServices.Data;
-    using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
     using ServiceImplementation.Configs;
     using ServiceImplementation.FirebaseAnalyticTracker;
     using ServiceImplementation.FireBaseRemoteConfig;
     using ServiceImplementation.IAPServices;
     using ServiceImplementation.RemoteConfig;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using VContainer;

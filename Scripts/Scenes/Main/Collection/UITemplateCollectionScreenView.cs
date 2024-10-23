@@ -75,7 +75,7 @@
         private void GetItemDataList(List<ItemCollectionItemModel> source)
         {
             source.Clear();
-            for (var i = 0; i < this.shopBlueprint.Values.Count; i++)
+            for (var i = 0; i < this.shopBlueprint.Count; i++)
             {
                 var shopRecord = this.shopBlueprint.Values.ElementAt(i);
                 var itemRecord = this.itemBlueprint.GetDataById(shopRecord.Id);

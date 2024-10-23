@@ -52,7 +52,9 @@
     "UnityLogsViewer",
     "FalconSDK",
     "3rd.ServiceImplementation.Adjust",
-    "3rd.RemoteConfig.DI"
+    "3rd.RemoteConfig.DI",
+    "TheOne.Extensions",
+    "TheOne.Data"
   ],
   "precompiledReferences": [
     "DOTween.dll",

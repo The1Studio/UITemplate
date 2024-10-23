@@ -3,15 +3,16 @@
   "rootNamespace": "TheOne.Tool.LocalData",
   "references": [
     "GameFoundation.Utilities",
+    "GameFoundation.Models",
+    "GameFoundation.DI",
+    "TheOne.Extensions",
     "Unity.Addressables.Editor",
-    "UniTask",
-    "TheOne.Tool.Core",
     "Unity.Localization",
     "Unity.TextMeshPro",
     "Unity.ResourceManager",
-    "UITemplate.Scripts",
-    "GameFoundation.Models",
-    "GameFoundation.DI"
+    "UniTask",
+    "TheOne.Tool.Core",
+    "UITemplate.Scripts"
   ],
   "includePlatforms": [
     "Editor"

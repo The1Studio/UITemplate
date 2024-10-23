@@ -3,8 +3,7 @@ namespace TheOne.Tool.Core
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using DG.DemiEditor;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using UnityEditor;
     using UnityEditor.AddressableAssets;
     using UnityEditor.AddressableAssets.Settings;

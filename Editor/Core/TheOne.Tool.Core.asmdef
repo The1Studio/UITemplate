@@ -4,12 +4,13 @@
   "references": [
     "GameFoundation.Utilities",
     "GameFoundation.Models",
+    "GameFoundation.DI",
+    "TheOne.Extensions",
     "3rd.Configs",
     "Unity.Addressables.Editor",
     "UITemplate.Scripts",
     "3rdCore.Analytic",
     "UniTask",
-    "GameFoundation.DI",
     "MaxSdk.Scripts.IntegrationManager.Editor",
     "MaxSdk.Scripts"
   ],

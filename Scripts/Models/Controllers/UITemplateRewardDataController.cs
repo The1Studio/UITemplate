@@ -3,7 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine.Scripting;
 

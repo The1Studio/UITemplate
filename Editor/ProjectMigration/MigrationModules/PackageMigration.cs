@@ -33,6 +33,10 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
+            // { "com.theone.extensions", "https://github.com/The1Studio/TheOne.Extensions.git#48d7777bcd6a60eb707f198f3d324f43381bbc53" },
+            // { "com.theone.logging", "https://github.com/The1Studio/TheOne.Logging.git#904c141bdf0ab65603c5ca427fb26fcfeec2f903" },
+            // { "com.theone.resourcemanagement", "https://github.com/The1Studio/TheOne.ResourceManagement.git#d0f3dd6c7814d8cd114669bd9faaad07324d3a52" },
+            // { "com.theone.data", "https://github.com/The1Studio/TheOne.Data.git#2bdb2ed4934ab7b291debaf515f8d70b251f697d" },
             { "com.google.external-dependency-manager", "1.2.183" },
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
             #if APPSFLYER

@@ -21,9 +21,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
         #endregion
 
         protected StateMachine(
-            List<IState> listState,
-            ILogService  logService,
-            SignalBus    signalBus
+            IEnumerable<IState> listState,
+            ILogService         logService,
+            SignalBus           signalBus
         )
         {
             this.LogService  = logService;

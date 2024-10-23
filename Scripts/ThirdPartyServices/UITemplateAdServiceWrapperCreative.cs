@@ -81,13 +81,5 @@
         {
             return true;
         }
-
-        public override void ShowMREC(AdViewPosition adViewPosition)
-        {
-        }
-
-        public override void HideMREC(AdViewPosition adViewPosition)
-        {
-        }
     }
 }

@@ -514,29 +514,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         #endregion
-
-        public virtual void ShowMREC(AdViewPosition adViewPosition)
+        
+        public void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
 
-            var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(adViewPosition));
-
+            var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(placement, position));
             if (mrecAdService != null)
             {
-                mrecAdService.ShowMREC(adViewPosition);
+                mrecAdService.ShowMREC(placement, position, offset);
                 this.IsShowMRECAd = true;
-                this.logService.Log($"onelog: ShowMREC {adViewPosition}");
+                this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
+            }
+            else
+            {
+                this.logService.Log("onelog: ShowMREC, MREC no available!");
             }
         }
 
-        public virtual void HideMREC(AdViewPosition adViewPosition)
+        public virtual void HideMREC(string placement, AdScreenPosition position)
         {
-            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(adViewPosition)).ToList();
+            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position)).ToList();
 
             if (mrecAdServices.Count > 0)
             {
-                foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(adViewPosition);
-                this.logService.Log($"onelog: HideMREC {adViewPosition}");
+                foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(placement, position);
+                this.logService.Log($"onelog: HideMREC, placement: {placement}");
             }
         }
 

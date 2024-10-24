@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Signals;
     using R3;
     using ServiceImplementation;
+    using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
@@ -305,6 +306,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
+            if (!AttHelper.IsRequestTrackingComplete()) return;
 
             if (!isFirstOpen)
             {

@@ -13,19 +13,52 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 
     public static class PackageMigration
     {
-        private const string OpenUpmRegistryName = "OpenUPM";
-        private const string OpenUpmRegistryUrl  = "https://package.openupm.com";
-
-        [NonSerialized]
-        private static readonly string[] RequiredScopes =
+        private readonly struct Registry
         {
-            "com.google",
-            "com.cysharp",
-            "com.coffee",
-            "org.nuget",
-            "com.github-glitchenzo",
-            "jp.hadashikick.vcontainer",
-            "com.theone",
+            public readonly string   name;
+            public readonly string   url;
+            public readonly string[] scopes;
+            public readonly string[] bannedScopes;
+
+            public Registry(string name, string url, string[] scopes, string[] bannedScopes)
+            {
+                this.name         = name;
+                this.url          = url;
+                this.scopes       = scopes;
+                this.bannedScopes = bannedScopes;
+            }
+        }
+
+        private static readonly Registry[] Registries =
+        {
+            new(
+                name: "OpenUPM",
+                url: "https://package.openupm.com",
+                scopes: new[]
+                {
+                    "com.google",
+                    "com.cysharp",
+                    "com.coffee",
+                    "org.nuget",
+                    "com.github-glitchenzo",
+                    "jp.hadashikick.vcontainer",
+                },
+                bannedScopes: new[]
+                {
+                    "com.theone",
+                }
+            ),
+            new(
+                name: "TheOne",
+                url: "https://upm.the1studio.org/",
+                scopes: new[]
+                {
+                    "com.theone",
+                },
+                bannedScopes: new string[]
+                {
+                }
+            ),
         };
 
         [NonSerialized]
@@ -33,10 +66,6 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
-            // { "com.theone.extensions", "https://github.com/The1Studio/TheOne.Extensions.git#48d7777bcd6a60eb707f198f3d324f43381bbc53" },
-            // { "com.theone.logging", "https://github.com/The1Studio/TheOne.Logging.git#904c141bdf0ab65603c5ca427fb26fcfeec2f903" },
-            // { "com.theone.resourcemanagement", "https://github.com/The1Studio/TheOne.ResourceManagement.git#d0f3dd6c7814d8cd114669bd9faaad07324d3a52" },
-            // { "com.theone.data", "https://github.com/The1Studio/TheOne.Data.git#2bdb2ed4934ab7b291debaf515f8d70b251f697d" },
             { "com.google.external-dependency-manager", "1.2.183" },
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
             #if APPSFLYER
@@ -143,33 +172,27 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                 manifest["scopedRegistries"] = scopedRegistries;
             }
 
-            var openUpmRegistry = scopedRegistries.FirstOrDefault(r => r["name"]?.ToString() == OpenUpmRegistryName) as JObject;
-            if (openUpmRegistry == null)
-            {
-                openUpmRegistry = new()
-                {
-                    ["name"]   = OpenUpmRegistryName,
-                    ["url"]    = OpenUpmRegistryUrl,
-                    ["scopes"] = new JArray(),
-                };
-                scopedRegistries.Add(openUpmRegistry);
-            }
-
-            var scopes = openUpmRegistry["scopes"] as JArray;
-            if (scopes == null)
-            {
-                scopes                    = new();
-                openUpmRegistry["scopes"] = scopes;
-            }
-
             var updated = false;
-            foreach (var scope in RequiredScopes)
+
+            foreach (var registry in Registries)
             {
-                var trimmedScope = scope.Trim().ToLower();
-                if (!scopes.Values<string>().Select(s => s.Trim().ToLower()).Contains(trimmedScope))
+                if (scopedRegistries.FirstOrDefault(jRegistry => jRegistry["name"]?.ToString() == registry.name) is not JObject jRegistry)
                 {
-                    scopes.Add(scope);
+                    scopedRegistries.Add(JObject.FromObject(registry));
                     updated = true;
+                    continue;
+                }
+                if (jRegistry["url"]?.ToString() != registry.url)
+                {
+                    jRegistry["url"] = registry.url;
+                    updated          = true;
+                }
+                var oldScopes = jRegistry["scopes"]?.Values<string>().Select(scope => scope.Trim().ToLower()).ToArray() ?? Array.Empty<string>();
+                var newScopes = oldScopes.Union(registry.scopes).Except(registry.bannedScopes).ToArray();
+                if (oldScopes.Except(newScopes).Union(newScopes.Except(oldScopes)).Any())
+                {
+                    jRegistry["scopes"] = JArray.FromObject(newScopes);
+                    updated             = true;
                 }
             }
 

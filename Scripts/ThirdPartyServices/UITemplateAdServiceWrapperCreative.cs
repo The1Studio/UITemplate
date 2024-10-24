@@ -48,7 +48,7 @@
         {
         }
 
-        public override void ShowBannerAd(int width = 320, int height = 50)
+        public override void ShowBannerAd(int width = 320, int height = 50, bool forceShowMediation = false)
         {
         }
 

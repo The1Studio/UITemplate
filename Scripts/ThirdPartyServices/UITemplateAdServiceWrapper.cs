@@ -320,15 +320,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: useAdmob: {this.adServicesConfig.UseAoaAdmob} | {typeToAvailable}");
             foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
             {
-                if (this.adServicesConfig.UseAoaAdmob
-                    || !this.adServicesConfig.UseAoaAdmob)
-                {
-                    this.signalBus.Fire(new AppOpenCalledSignal(""));
-                    aoa.ShowAOAAds();
-                    this.IsCheckedShowFirstOpen = true;
-                    this.IsOpenedAOAFirstOpen   = true;
-                    return;
-                }
+                #if ADMOB
+                if (this.adServicesConfig.UseAoaAdmob != aoa is AdMobWrapper) continue;
+                #endif
+
+                this.signalBus.Fire(new AppOpenCalledSignal(""));
+                aoa.ShowAOAAds();
+                this.IsCheckedShowFirstOpen = true;
+                this.IsOpenedAOAFirstOpen   = true;
+                return;
             }
         }
 

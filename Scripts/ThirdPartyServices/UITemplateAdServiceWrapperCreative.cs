@@ -81,5 +81,13 @@
         {
             return true;
         }
+
+        public override void HideMREC(string placement, AdScreenPosition position)
+        {
+        }
+
+        public override void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
+        {
+        }
     }
 }

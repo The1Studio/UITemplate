@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.Quests.Data
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using BlueprintFlow.BlueprintReader;
@@ -16,25 +17,39 @@ namespace TheOneStudio.UITemplate.Quests.Data
     [BlueprintReader("UITemplateQuest")]
     public sealed class UITemplateQuestBlueprint : GenericBlueprintReaderByRow<string, QuestRecord>
     {
-        public sealed class JsonConverter : Converter
+        public sealed class ListConverter : Converter
         {
-            private static readonly HashSet<Type> SupportedTypes = new() { typeof(IReward), typeof(ICondition), typeof(IRedirectTarget) };
+            private static readonly HashSet<Type> SupportedTypes = new() { typeof(List<IReward>), typeof(List<ICondition>), typeof(List<IRedirectTarget>) };
 
             private readonly Dictionary<Type, IReadOnlyDictionary<string, Type>> typeMap = new();
 
             protected override bool CanConvert(Type type) => SupportedTypes.Contains(type);
 
-            protected override object ConvertFromString(string str, Type baseType)
+            protected override object GetDefaultValue(Type type)
             {
-                var index = str.IndexOf(":", StringComparison.Ordinal);
-                var type  = this.GetTypeMap(baseType)[str[..index]];
-                return JsonConvert.DeserializeObject(str[(index + 1)..], type)!;
+                return Activator.CreateInstance(type, 0);
             }
 
-            protected override string ConvertToString(object obj, Type baseType)
+            protected override object ConvertFromString(string list, Type listType)
             {
-                var typeStr = this.GetTypeMap(baseType).First(kv => kv.Value == obj.GetType()).Key;
-                return $"{typeStr}:{JsonConvert.SerializeObject(obj)}";
+                var result  = (IList)Activator.CreateInstance(listType);
+                var typeMap = this.GetTypeMap(listType.GetGenericArguments()[0]);
+                foreach (var str in list.Split(";"))
+                {
+                    var index = str.IndexOf(":", StringComparison.Ordinal);
+                    result.Add(JsonConvert.DeserializeObject(str[(index + 1)..], typeMap[str[..index]]));
+                }
+                return result;
+            }
+
+            protected override string ConvertToString(object list, Type listType)
+            {
+                var typeMap = this.GetTypeMap(listType.GetGenericArguments()[0]);
+                return string.Join(";", ((IEnumerable)list).Cast<object>().Select(obj =>
+                {
+                    var typeStr = typeMap.First(kv => kv.Value == obj.GetType()).Key;
+                    return $"{typeStr}:{JsonConvert.SerializeObject(obj)}";
+                }));
             }
 
             private IReadOnlyDictionary<string, Type> GetTypeMap(Type baseType)

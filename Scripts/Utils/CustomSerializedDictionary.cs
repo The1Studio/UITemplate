@@ -36,12 +36,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
     }
 
     [Serializable]
-    public class StringToButtonDictionary : SerializableDictionary<string, Button>
+    public class StringToButtonDictionary : ServiceImplementation.Configs.CustomTypes.SerializableDictionary<string, Button>
     {
     }
 
     [Serializable]
-    public class StringToIntDictionary : SerializableDictionary<string, int>
+    public class StringToIntDictionary : ServiceImplementation.Configs.CustomTypes.SerializableDictionary<string, int>
     {
     }
 }

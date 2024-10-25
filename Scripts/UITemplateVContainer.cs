@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.Notification;
     using TheOneStudio.Permission;
     using TheOneStudio.StoreRating;
+    using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
@@ -37,6 +38,8 @@ namespace TheOneStudio.UITemplate
             builder.RegisterStoreRatingService();
             builder.RegisterPermissionService();
             builder.RegisterDeepLinkService();
+
+            builder.Register<UITemplateQuestBlueprint.ListConverter>(Lifetime.Singleton).AsImplementedInterfaces();
 
             builder.DeclareUITemplateSignals();
 

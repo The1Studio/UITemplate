@@ -2,12 +2,12 @@
 #nullable enable
 namespace TheOneStudio.UITemplate.Quests
 {
-    using GameFoundation.DI;
+    using VContainer;
+    #if THEONE_QUEST_SYSTEM
     using GameFoundation.Signals;
-    using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
-    using VContainer;
+    #endif
 
     public static class UITemplateQuestVContainer
     {
@@ -15,7 +15,6 @@ namespace TheOneStudio.UITemplate.Quests
         {
             #if THEONE_QUEST_SYSTEM
             builder.Register<UITemplateQuestManager>(Lifetime.Singleton).AsInterfacesAndSelf();
-            builder.Register<UITemplateQuestBlueprint.JsonConverter>(Lifetime.Singleton).AsImplementedInterfaces();
 
             builder.DeclareSignal<QuestStatusChangedSignal>();
             builder.DeclareSignal<ClaimAllQuestSignal>();

@@ -13,19 +13,43 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 
     public static class PackageMigration
     {
-        private const string OpenUpmRegistryName = "OpenUPM";
-        private const string OpenUpmRegistryUrl  = "https://package.openupm.com";
-
-        [NonSerialized]
-        private static readonly string[] RequiredScopes =
+        private readonly struct Registry
         {
-            "com.google",
-            "com.cysharp",
-            "com.coffee",
-            "org.nuget",
-            "com.github-glitchenzo",
-            "jp.hadashikick.vcontainer",
-            "com.theone",
+            public readonly string   name;
+            public readonly string   url;
+            public readonly string[] scopes;
+
+            public Registry(string name, string url, string[] scopes)
+            {
+                this.name         = name;
+                this.url          = url;
+                this.scopes       = scopes;
+            }
+        }
+
+        private static readonly Registry[] Registries =
+        {
+            new(
+                name: "OpenUPM",
+                url: "https://package.openupm.com",
+                scopes: new[]
+                {
+                    "com.google",
+                    "com.cysharp",
+                    "com.coffee",
+                    "org.nuget",
+                    "com.github-glitchenzo",
+                    "jp.hadashikick.vcontainer",
+                }
+            ),
+            new(
+                name: "TheOne",
+                url: "https://upm.the1studio.org/",
+                scopes: new[]
+                {
+                    "com.theone",
+                }
+            ),
         };
 
         [NonSerialized]
@@ -140,33 +164,28 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                 manifest["scopedRegistries"] = scopedRegistries;
             }
 
-            var openUpmRegistry = scopedRegistries.FirstOrDefault(r => r["name"]?.ToString() == OpenUpmRegistryName) as JObject;
-            if (openUpmRegistry == null)
-            {
-                openUpmRegistry = new()
-                {
-                    ["name"]   = OpenUpmRegistryName,
-                    ["url"]    = OpenUpmRegistryUrl,
-                    ["scopes"] = new JArray(),
-                };
-                scopedRegistries.Add(openUpmRegistry);
-            }
-
-            var scopes = openUpmRegistry["scopes"] as JArray;
-            if (scopes == null)
-            {
-                scopes                    = new();
-                openUpmRegistry["scopes"] = scopes;
-            }
-
             var updated = false;
-            foreach (var scope in RequiredScopes)
+
+            foreach (var registry in Registries)
             {
-                var trimmedScope = scope.Trim().ToLower();
-                if (!scopes.Values<string>().Select(s => s.Trim().ToLower()).Contains(trimmedScope))
+                if (scopedRegistries.FirstOrDefault(jRegistry => jRegistry["name"]?.ToString() == registry.name) is not JObject jRegistry)
                 {
-                    scopes.Add(scope);
+                    scopedRegistries.Add(JObject.FromObject(registry));
                     updated = true;
+                    continue;
+                }
+                if (jRegistry["url"]?.ToString() != registry.url)
+                {
+                    jRegistry["url"] = registry.url;
+                    updated          = true;
+                }
+                var otherRegistryScopes = Registries.Where(otherRegistry => otherRegistry.name != registry.name).SelectMany(otherRegistry => otherRegistry.scopes).ToArray();
+                var oldScopes           = jRegistry["scopes"]?.Values<string>().Select(scope => scope.Trim().ToLower()).ToArray() ?? Array.Empty<string>();
+                var newScopes           = oldScopes.Union(registry.scopes).Except(otherRegistryScopes).ToArray();
+                if (oldScopes.Except(newScopes).Union(newScopes.Except(oldScopes)).Any())
+                {
+                    jRegistry["scopes"] = JArray.FromObject(newScopes);
+                    updated             = true;
                 }
             }
 

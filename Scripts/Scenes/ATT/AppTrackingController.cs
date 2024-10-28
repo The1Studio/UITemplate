@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
 {
+    using GameFoundation.DI;
     using ServiceImplementation.AdsServices.ConsentInformation;
     using UnityEngine;
     using UnityEngine.SceneManagement;
@@ -34,10 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
             this.btnRequestTracking.interactable = false;
             if (!AttHelper.IsRequestTrackingComplete())
             {
-                #if UNITY_IOS
-                Unity.Advertisement.IosSupport.ATTrackingStatusBinding.RequestAuthorizationTracking();
-                await Cysharp.Threading.Tasks.UniTask.WaitUntil(AttHelper.IsRequestTrackingComplete);
-                #endif
+                await this.GetCurrentContainer().Resolve<AppTrackingServices>().RequestTracking();
             }
 
             LoadLoadingScene();

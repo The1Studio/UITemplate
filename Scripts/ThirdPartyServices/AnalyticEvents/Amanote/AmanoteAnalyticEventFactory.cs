@@ -9,14 +9,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
     using GameFoundation.Signals;
     using UnityEngine.Scripting;
 
+    [Preserve]
     public class AmanoteAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        [Preserve]
-        public AmanoteAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
-            : base(signalBus, analyticServices)
-        {
-        }
-
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IgnoreEvents = new HashSet<Type>()

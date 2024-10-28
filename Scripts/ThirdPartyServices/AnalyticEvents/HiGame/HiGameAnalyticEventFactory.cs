@@ -6,16 +6,17 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.H
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
 
     public class HiGameAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        private readonly IAnalyticServices analyticServices;
+        
         [Preserve]
-        public HiGameAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
-            : base(signalBus, analyticServices)
+        public HiGameAnalyticEventFactory(IAnalyticServices analyticServices)
         {
+            this.analyticServices = analyticServices;
         }
 
         public override string RetentionDayProperty              => "retent_type";

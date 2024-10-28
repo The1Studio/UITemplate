@@ -3,20 +3,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
 {
     using System;
     using System.Collections.Generic;
-    using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using GameFoundation.Signals;
     using UnityEngine.Scripting;
 
+    [Preserve]
     public class SupersonicAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        [Preserve]
-        public SupersonicAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
-            : base(signalBus, analyticServices)
-        {
-        }
-
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IgnoreEvents = new HashSet<Type>()

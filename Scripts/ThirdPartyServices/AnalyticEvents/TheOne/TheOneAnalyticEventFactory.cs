@@ -9,13 +9,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.T
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
 
+    [Preserve]
     public class TheOneAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        [Preserve]
-        public TheOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
-        {
-        }
-
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IgnoreEvents = new()

@@ -253,7 +253,7 @@ TextureImporter:
         width: 341.33334
         height: 341.33337
       alignment: 0
-      pivot: {x: 0.5, y: 0.49999982}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -521,10 +521,10 @@ TextureImporter:
       name: circle_half_fading_thick
       rect:
         serializedVersion: 2
-        x: 341
-        y: 1024.6666
-        width: 341.33337
-        height: 341.33337
+        x: 349
+        y: 1035
+        width: 326
+        height: 325
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -919,7 +919,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 3015176cb0775b44baca9a1bed9b55cb
     internalID: 0
     vertices: []
     indices: 

@@ -21,7 +21,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                 //check if the node has tools:replace attribute
                 if (serviceNode.Attributes?["tools:replace"] != null) continue;
                 //check if android:exported==true then continue
-                if (serviceNode.Attributes?["android:exported"]?.Value == "true") continue;
+                // if (serviceNode.Attributes?["android:exported"]?.Value == "true") continue;
                 var serviceElement = (XmlElement)serviceNode;
                 serviceElement.SetAttribute("replace", "http://schemas.android.com/tools", "android:exported");
             }

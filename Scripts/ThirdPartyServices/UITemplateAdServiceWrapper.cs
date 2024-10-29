@@ -158,7 +158,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual async void ShowBannerAd(int width = 320, int height = 50, bool forceShowMediation = false)
         {
             StackTrace stackTrace = new StackTrace();
-            Debug.Log($"Check ShowBannerAds: {stackTrace.ToString()}");
+            Debug.Log($"Check ShowBannerAds: {stackTrace.ToString()} ===== Force show mediation {forceShowMediation}");
             if (this.IsRemovedAds) return;
 
             this.IsShowBannerAd = true;
@@ -179,6 +179,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     if (useNewGuid) this.LastCollapsibleBannerChangeGuid = DateTime.Now;
 
                     this.InternalHideMediationBannerAd();
+                    Debug.Log("Show Collapsible Banner Ad");
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd(useNewGuid, this.thirdPartiesConfig.AdSettings.BannerPosition);
                     this.logService.Log($"onelog: ShowCollapsibleBannerAd refreshing: {this.IsRefreshingCollapsible}, expandOnRefresh: {this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled}, useNewGuid: {useNewGuid}");
                     this.IsRefreshingCollapsible = false;

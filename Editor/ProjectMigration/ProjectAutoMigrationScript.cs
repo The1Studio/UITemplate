@@ -14,6 +14,7 @@ namespace TheOne.Tool.Migration.ProjectMigration
             PackageMigration.CheckAndUpdatePackageManagerSettings();
             PackageMigration.ImportUnityPackage();
             AndroidManifestMigration.UpdateAndroidManifest();
+            GradlePropertiesMigration.CheckAndUpdateGradleProperties();
             ProguardMigration.CheckAndUpdateProguardFile();
             ProjectSettingMigration.APICompatibilityLevel();
             FolderMigration.RemoveUselessFolder();

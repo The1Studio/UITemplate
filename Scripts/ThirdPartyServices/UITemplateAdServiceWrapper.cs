@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using Core.AdsServices;
@@ -30,7 +31,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using UnityEngine.Scripting;
-    #if ADMOB
+    using Debug = UnityEngine.Debug;
+#if ADMOB
     using ServiceImplementation.AdsServices.EasyMobile;
     #endif
 
@@ -155,6 +157,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual async void ShowBannerAd(int width = 320, int height = 50, bool forceShowMediation = false)
         {
+            StackTrace stackTrace = new StackTrace();
+            Debug.Log($"Check ShowBannerAds: {stackTrace.ToString()}");
             if (this.IsRemovedAds) return;
 
             this.IsShowBannerAd = true;

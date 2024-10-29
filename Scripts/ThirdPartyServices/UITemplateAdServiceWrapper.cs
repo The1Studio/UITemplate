@@ -222,6 +222,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void HideBannerAd()
         {
+            StackTrace stackTrace = new StackTrace();
+            Debug.Log($"Check HideBannerAds: {stackTrace}");
             this.IsShowBannerAd = false;
             this.InternalHideCollapsibleBannerAd();
             this.InternalHideMediationBannerAd();

@@ -50,6 +50,16 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                     "com.theone",
                 }
             ),
+            new(
+                name: "AppLovin MAX Unity",
+                url: "https://unity.packages.applovin.com",
+                scopes: new[]
+                {
+                    "com.applovin.mediation.ads",
+                    "com.applovin.mediation.adapters",
+                    "com.applovin.mediation.dsp",
+                }
+            ),
         };
 
         [NonSerialized]

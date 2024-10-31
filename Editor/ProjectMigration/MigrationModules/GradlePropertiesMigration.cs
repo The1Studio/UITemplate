@@ -36,15 +36,19 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 
                     if (existingLineIndex >= 0)
                     {
-                        // Update the existing property value
-                        lines[existingLineIndex] = propertyLine;
+                        if (!lines[existingLineIndex].Equals(propertyLine))
+                        {
+                            // Update the existing property value
+                            lines[existingLineIndex] = propertyLine;
+                            updated                  = true;
+                        }
                     }
                     else
                     {
                         // Add the new property
                         lines.Add(propertyLine);
+                        updated = true;
                     }
-                    updated = true;
                 }
 
                 if (updated)

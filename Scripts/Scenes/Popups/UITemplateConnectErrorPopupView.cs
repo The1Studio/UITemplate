@@ -27,7 +27,7 @@
     {
         protected virtual double CheckTimeout        => 5;
         protected virtual string ConnectingMessage   => "Trying to reconnect...\nPlease wait...";
-        protected virtual string ConnectErrorMessage => "Your connection has been lost!\nCheck your internet connection and try again";
+        protected virtual string ConnectErrorMessage => "No internet connection";
 
         protected virtual string ReconnectButtonMessage    => "Reconnect";
         protected virtual string ReconnectingButtonMessage => "Reconnecting";

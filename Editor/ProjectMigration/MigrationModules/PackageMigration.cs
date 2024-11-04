@@ -37,9 +37,16 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                     "com.google",
                     "com.cysharp",
                     "com.coffee",
-                    "org.nuget",
                     "com.github-glitchenzo",
                     "jp.hadashikick.vcontainer",
+                }
+            ),
+            new(
+                name: "NuGet",
+                url: "https://unitynuget-registry.azurewebsites.net/",
+                scopes: new[]
+                {
+                    "org.nuget",
                 }
             ),
             new(

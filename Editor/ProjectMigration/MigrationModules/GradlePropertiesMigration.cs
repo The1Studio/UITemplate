@@ -13,7 +13,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         private static Dictionary<string, string> PropertyToValue = new()
         {
             {"org.gradle.daemon", "false"},
-            {"org.gradle.caching", "false"},
+            {"org.gradle.caching", "true"},
             {"org.gradle.build-scan", "true"},
             {"org.gradle.console", "plain"},
             {"org.gradle.logging.level", "info"},

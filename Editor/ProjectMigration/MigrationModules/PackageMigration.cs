@@ -77,7 +77,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.google.external-dependency-manager", "1.2.183" },
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
             #if APPSFLYER
-            { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" },
+            { "appsflyer-unity-plugin": "https://github.com/AppsFlyerSDK/appsflyer-unity-plugin.git#upm" },
             #endif
             #if BYTEBREW
             { "com.bytebrew.unitysdk", "https://github.com/The1Studio/ByteBrewUnitySDK.git?path=UPMPackage#" },
@@ -105,6 +105,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         public static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"
+            "com.theone.appsflyer-unity-plugin"
         };
 
         public static void ImportUnityPackage()

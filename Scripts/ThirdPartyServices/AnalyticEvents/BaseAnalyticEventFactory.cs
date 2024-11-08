@@ -124,14 +124,14 @@
         }
 
         //App open
-        public virtual IEvent AppOpenCalled()
+        public virtual IEvent AppOpenCalled(string place)
         {
-            return new AppOpenCalled();
+            return new AppOpenCalled(place);
         }
 
-        public virtual IEvent AppOpenEligible()
+        public virtual IEvent AppOpenEligible(string place)
         {
-            return new AppOpenEligible();
+            return new AppOpenEligible(place);
         }
 
         public virtual IEvent AppOpenLoadFailed()
@@ -144,24 +144,24 @@
             return new AppOpenLoaded();
         }
 
-        public virtual IEvent AppOpenFullScreenContentClosed()
+        public virtual IEvent AppOpenFullScreenContentClosed(string place)
         {
-            return new AppOpenFullScreenContentClosed();
+            return new AppOpenFullScreenContentClosed(place);
         }
 
-        public virtual IEvent AppOpenFullScreenContentFailed()
+        public virtual IEvent AppOpenFullScreenContentFailed(string place)
         {
-            return new AppOpenFullScreenContentFailed();
+            return new AppOpenFullScreenContentFailed(place);
         }
 
-        public virtual IEvent AppOpenFullScreenContentOpened()
+        public virtual IEvent AppOpenFullScreenContentOpened(string place)
         {
-            return new AppOpenFullScreenContentOpened();
+            return new AppOpenFullScreenContentOpened(place);
         }
 
-        public virtual IEvent AppOpenClicked()
+        public virtual IEvent AppOpenClicked(string place)
         {
-            return new AppOpenClicked();
+            return new AppOpenClicked(place);
         }
 
         //Level

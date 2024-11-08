@@ -162,17 +162,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void AppOpenClickedHandler(AppOpenClickedSignal obj)
         {
-            this.Track(this.analyticEventFactory.AppOpenClicked());
+            this.Track(this.analyticEventFactory.AppOpenClicked(obj.Placement));
         }
 
         private void AppOpenCalledHandler(AppOpenCalledSignal obj)
         {
-            this.Track(this.analyticEventFactory.AppOpenCalled());
+            this.Track(this.analyticEventFactory.AppOpenCalled(obj.Placement));
         }
 
         private void AppOpenEligibleHandler(AppOpenEligibleSignal obj)
         {
-            this.Track(this.analyticEventFactory.AppOpenEligible());
+            this.Track(this.analyticEventFactory.AppOpenEligible(obj.Placement));
         }
 
         private void AppOpenLoadFailedHandler(AppOpenLoadFailedSignal obj)
@@ -187,17 +187,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void AppOpenFullScreenContentClosedHandler(AppOpenFullScreenContentClosedSignal obj)
         {
-            this.Track(this.analyticEventFactory.AppOpenFullScreenContentClosed());
+            this.Track(this.analyticEventFactory.AppOpenFullScreenContentClosed(obj.Placement));
         }
 
         private void AppOpenFullScreenContentFailedHandler(AppOpenFullScreenContentFailedSignal obj)
         {
-            this.Track(this.analyticEventFactory.AppOpenFullScreenContentFailed());
+            this.Track(this.analyticEventFactory.AppOpenFullScreenContentFailed(obj.Placement));
         }
 
         private void AppOpenFullScreenContentOpenedHandler(AppOpenFullScreenContentOpenedSignal obj)
         {
-            this.Track(this.analyticEventFactory.AppOpenFullScreenContentOpened());
+            this.Track(this.analyticEventFactory.AppOpenFullScreenContentOpened(obj.Placement));
         }
 
         private void OnRewardedAdSkipped(RewardedSkippedSignal obj)

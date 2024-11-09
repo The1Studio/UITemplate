@@ -28,10 +28,10 @@ namespace MoreMountains.FeedbacksForThirdParty
         /// </summary>
         static NiceVibrationsDefineSymbols()
         {
-            string scriptingDefinesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup); 
+            string scriptingDefinesString =  PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup)); 
             List<string> scriptingDefinesStringList = scriptingDefinesString.Split(';').ToList();
             scriptingDefinesStringList.AddRange(Symbols.Except(scriptingDefinesStringList));
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, string.Join(";", scriptingDefinesStringList.ToArray()));
+            PlayerSettings.SetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup), string.Join(";", scriptingDefinesStringList.ToArray()));
         }
     }
 #endif

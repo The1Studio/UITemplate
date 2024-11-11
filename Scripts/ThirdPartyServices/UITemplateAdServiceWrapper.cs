@@ -549,13 +549,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void HideMREC(string placement, AdScreenPosition position)
         {
+            this.ResetMRECCts();
             var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position)).ToList();
-
+    
             if (mrecAdServices.Count > 0)
             {
                 foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(placement, position);
                 this.logService.Log($"onelog: HideMREC, placement: {placement}");
-                this.ResetMRECCts();
             }
         }
 

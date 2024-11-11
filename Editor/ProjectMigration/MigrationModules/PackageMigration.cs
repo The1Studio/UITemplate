@@ -21,9 +21,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 
             public Registry(string name, string url, string[] scopes)
             {
-                this.name         = name;
-                this.url          = url;
-                this.scopes       = scopes;
+                this.name   = name;
+                this.url    = url;
+                this.scopes = scopes;
             }
         }
 
@@ -32,27 +32,27 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             new(
                 name: "OpenUPM",
                 url: "https://package.openupm.com",
-                scopes: new[]
+                scopes: new string[]
                 {
                     "com.google",
                     "com.cysharp",
                     "com.coffee",
                     "com.github-glitchenzo",
                     "jp.hadashikick.vcontainer",
+                    "org.nuget",
                 }
             ),
             new(
                 name: "NuGet",
                 url: "https://unitynuget-registry.azurewebsites.net/",
-                scopes: new[]
+                scopes: new string[]
                 {
-                    "org.nuget",
                 }
             ),
             new(
                 name: "TheOne",
                 url: "https://upm.the1studio.org/",
-                scopes: new[]
+                scopes: new string[]
                 {
                     "com.theone",
                 }
@@ -60,7 +60,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             new(
                 name: "AppLovin MAX Unity",
                 url: "https://unity.packages.applovin.com",
-                scopes: new[]
+                scopes: new string[]
                 {
                     "com.applovin.mediation.ads",
                     "com.applovin.mediation.adapters",
@@ -188,6 +188,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             {
                 if (scopedRegistries.FirstOrDefault(jRegistry => jRegistry["name"]?.ToString() == registry.name) is not JObject jRegistry)
                 {
+                    if (registry.scopes.Length == 0) continue;
                     scopedRegistries.Add(JObject.FromObject(registry));
                     updated = true;
                     continue;
@@ -204,6 +205,11 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                 {
                     jRegistry["scopes"] = JArray.FromObject(newScopes);
                     updated             = true;
+                }
+                if (!jRegistry["scopes"]!.Any())
+                {
+                    jRegistry.Remove();
+                    updated = true;
                 }
             }
 

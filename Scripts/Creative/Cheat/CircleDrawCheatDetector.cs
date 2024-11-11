@@ -24,8 +24,7 @@
 
             if (this.isDrawing && Input.GetMouseButton(0) && Camera.main != null)
             {
-                Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                this.points.Add(point);
+                this.points.Add(new( Input.mousePosition.x / Screen.width, Input.mousePosition.y / Screen.height ));
 
                 if (this.points.Count > 3 && this.CheckCircleCompletion(this.points))
                 {

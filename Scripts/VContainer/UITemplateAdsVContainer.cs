@@ -21,7 +21,7 @@ namespace TheOneStudio.UITemplate
             #elif HIGAME
             builder.Register<HiGameAnalyticHandler>(Lifetime.Singleton).As<UITemplateAnalyticHandler>().AsInterfacesAndSelf();
             #else
-            builder.Register<UITemplateAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
+            // builder.Register<UITemplateAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 
             #if CREATIVE

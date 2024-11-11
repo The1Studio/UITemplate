@@ -521,6 +521,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
+        private string                  mrecPlacement;
+        private AdScreenPosition        mrecPosition;
+        private AdScreenPosition        mrecOffset;
+        private CancellationTokenSource RefreshMRECCts;
+        
         public virtual void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
@@ -531,6 +536,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 mrecAdService.ShowMREC(placement, position, offset);
                 this.IsShowMRECAd = true;
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
+                this.mrecPlacement = placement;
+                this.mrecPosition  = position;
+                this.mrecOffset    = offset;
+                this.ScheduleRefreshMREC();
             }
             else
             {
@@ -546,7 +555,38 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(placement, position);
                 this.logService.Log($"onelog: HideMREC, placement: {placement}");
+                this.ResetMRECCts();
             }
+        }
+
+        private void DestroyMREC(string placement, AdScreenPosition position)
+        {
+            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position)).ToList();
+            if (mrecAdServices.Count > 0)
+            {
+                foreach (var mrecAdService in mrecAdServices) mrecAdService.DestroyMREC(placement, position);
+                this.logService.Log($"onelog: DestroyMREC, placement: {placement}");
+                this.ResetMRECCts();
+            }
+        }
+
+        private void ScheduleRefreshMREC()
+        {
+            this.ResetMRECCts();
+            UniTask.WaitForSeconds(this.adServicesConfig.MrecRefreshInterval, true, cancellationToken: (this.RefreshMRECCts = new()).Token)
+               .ContinueWith(
+                             () =>
+                             {
+                                 this.DestroyMREC(this.mrecPlacement, this.mrecPosition);
+                                 this.ShowMREC(this.mrecPlacement, this.mrecPosition, this.mrecOffset);
+                             }).Forget();
+        }
+
+        private void ResetMRECCts()
+        {
+            this.RefreshMRECCts?.Cancel();
+            this.RefreshMRECCts?.Dispose();
+            this.RefreshMRECCts = null;
         }
 
         private void OnRemoveAdsComplete()

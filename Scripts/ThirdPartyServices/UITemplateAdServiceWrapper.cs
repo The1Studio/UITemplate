@@ -577,6 +577,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                .ContinueWith(
                              () =>
                              {
+                                 this.logService.Log($"onelog: ScheduleRefreshMREC");
                                  this.DestroyMREC(this.mrecPlacement, this.mrecPosition);
                                  this.ShowMREC(this.mrecPlacement, this.mrecPosition, this.mrecOffset);
                              }).Forget();

@@ -539,7 +539,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.mrecPlacement = placement;
                 this.mrecPosition  = position;
                 this.mrecOffset    = offset;
-                this.ScheduleRefreshMREC();
+                // this.ScheduleRefreshMREC();
             }
             else
             {
@@ -585,9 +585,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void ResetMRECCts()
         {
-            this.RefreshMRECCts?.Cancel();
-            this.RefreshMRECCts?.Dispose();
-            this.RefreshMRECCts = null;
+            // this.RefreshMRECCts?.Cancel();
+            // this.RefreshMRECCts?.Dispose();
+            // this.RefreshMRECCts = null;
         }
 
         private void OnRemoveAdsComplete()

@@ -530,7 +530,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
 
-            var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(placement, position));
+            var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(placement, position, offset));
             if (mrecAdService != null)
             {
                 mrecAdService.ShowMREC(placement, position, offset);
@@ -550,7 +550,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual void HideMREC(string placement, AdScreenPosition position)
         {
             this.ResetMRECCts();
-            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position)).ToList();
+            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position, default)).ToList();
     
             if (mrecAdServices.Count > 0)
             {
@@ -561,7 +561,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void DestroyMREC(string placement, AdScreenPosition position)
         {
-            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position)).ToList();
+            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position, default)).ToList();
             if (mrecAdServices.Count > 0)
             {
                 foreach (var mrecAdService in mrecAdServices) mrecAdService.DestroyMREC(placement, position);

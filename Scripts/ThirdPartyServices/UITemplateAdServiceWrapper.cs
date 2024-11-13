@@ -585,9 +585,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void ResetMRECCts()
         {
-            // this.RefreshMRECCts?.Cancel();
-            // this.RefreshMRECCts?.Dispose();
-            // this.RefreshMRECCts = null;
+            this.RefreshMRECCts?.Cancel();
+            this.RefreshMRECCts?.Dispose();
+            this.RefreshMRECCts = null;
         }
 
         private void OnRemoveAdsComplete()

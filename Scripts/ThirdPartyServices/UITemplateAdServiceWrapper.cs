@@ -539,7 +539,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.mrecPlacement = placement;
                 this.mrecPosition  = position;
                 this.mrecOffset    = offset;
-                // this.ScheduleRefreshMREC();
+                this.ScheduleRefreshMREC();
             }
             else
             {

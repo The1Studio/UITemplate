@@ -2,8 +2,9 @@
 {
     using System.Collections.Generic;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-    using UnityEngine;
+    using UnityEngine.Scripting;
 
+    [Preserve]
     public class MrecHandler
     {
         private readonly List<string> screenShowMrec = new(); 

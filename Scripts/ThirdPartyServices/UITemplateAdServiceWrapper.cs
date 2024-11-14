@@ -529,6 +529,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private AdScreenPosition        mrecPosition;
         private AdScreenPosition        mrecOffset;
         private CancellationTokenSource RefreshMRECCts;
+
+        public void ShowMREC<T>(string placement, AdScreenPosition position, AdScreenPosition offset = default) where T : IScreenPresenter
+        {
+            this.mrecHandler.RegisterScreenCanShowMrec<T>();
+            this.ShowMREC(placement, position, offset);
+        }
         
         public virtual void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {

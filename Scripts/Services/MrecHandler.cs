@@ -11,7 +11,6 @@
         public void RegisterScreenCanShowMrec<T>() where T : IScreenPresenter
         {
             var screenName = typeof(T).Name;
-            Debug.LogError(screenName);
             if (this.screenShowMrec.Contains(screenName)) return;
             this.screenShowMrec.Add(screenName);
         }

@@ -24,6 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Loading;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
@@ -48,6 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly ThirdPartiesConfig                  thirdPartiesConfig;
         private readonly IScreenManager                      screenManager;
         private readonly ICollapsibleBannerAd                collapsibleBannerAd;
+        private readonly MrecHandler                         mrecHandler;
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
@@ -93,7 +95,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
-            IEnumerable<AdServiceOrder>         adServiceOrders
+            IEnumerable<AdServiceOrder>         adServiceOrders,
+            MrecHandler                         mrecHandler
         )
         {
             this.adServices                = adServices.ToArray();
@@ -106,6 +109,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.thirdPartiesConfig        = thirdPartiesConfig;
             this.screenManager             = screenManager;
             this.collapsibleBannerAd       = collapsibleBannerAd;
+            this.mrecHandler               = mrecHandler;
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
@@ -529,6 +533,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
+            var currentScreen = this.screenManager.CurrentActiveScreen.Value.GetType().Name;
+            if (!this.mrecHandler.CanShowMrec(currentScreen)) return;
 
             var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(placement, position, offset));
             if (mrecAdService != null)

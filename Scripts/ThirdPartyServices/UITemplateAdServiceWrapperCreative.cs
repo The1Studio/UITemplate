@@ -10,6 +10,7 @@
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine.Scripting;
 
@@ -30,7 +31,8 @@
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
-            IEnumerable<AdServiceOrder>         adServiceOrders
+            IEnumerable<AdServiceOrder>         adServiceOrders,
+            MrecHandler                         mrecHandler
         ) : base(logService,
             adServicesConfig,
             signalBus,
@@ -44,7 +46,8 @@
             thirdPartiesConfig,
             screenManager,
             collapsibleBannerAd,
-            adServiceOrders)
+            adServiceOrders,
+            mrecHandler)
         {
         }
 

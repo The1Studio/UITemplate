@@ -83,4 +83,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
             this.timerStamp = timeStamp;
         }
     }
+
+    public class CompleteLevel1 : IEvent
+    {
+    }
+    public class CompleteLevel5 : IEvent
+    {
+    }
+    public class CompleteLevel10 : IEvent
+    {
+    }
 }

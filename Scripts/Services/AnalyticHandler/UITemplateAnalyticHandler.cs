@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
 
     public class UITemplateAnalyticHandler : IInitializable, IDisposable
@@ -347,7 +348,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount)
             );
 
-            if (obj.IsWin && levelData.WinCount == 1) this.Track(this.analyticEventFactory.FirstWin(obj.Level, obj.Time));
+            if (obj.IsWin)
+            {
+                switch (levelData.WinCount)
+                {
+                    case 1:
+                        this.Track(this.analyticEventFactory.FirstWin(obj.Level, obj.Time));
+                        this.Track(new CompleteLevel1());
+                        break;
+                    case 5:
+                        this.Track(new CompleteLevel5());
+                        break;
+                    case 10:
+                        this.Track(new CompleteLevel10());
+                        break;
+                }
+            }
         }
 
         private void TutorialCompletionHandler(TutorialCompletionSignal obj)

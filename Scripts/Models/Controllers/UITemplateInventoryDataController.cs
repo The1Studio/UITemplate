@@ -166,6 +166,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             foreach (var (currencyKey, currencyValue) in currency) this.AddCurrency(-currencyValue * time, currencyKey).Forget();
         }
 
+        public bool PayCurrency(int value, string id = DefaultSoftCurrencyID) => this.AddCurrency(-value, id).GetAwaiter().GetResult();
+
         /// <summary>
         /// minAnimAmount and maxAnimAmount is range amount of currency object that will be animated
         /// </summary>

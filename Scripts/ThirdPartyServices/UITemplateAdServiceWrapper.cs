@@ -538,13 +538,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.mrecHandler.RegisterScreenCanShowMrec<T>();
             this.ShowMREC(placement, position, offset);
         }
-        
+
         public virtual void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
-            var screen        = this.screenManager.CurrentActiveScreen;
-            if (screen == null) return;
-            if (!this.mrecHandler.CanShowMrec(screen.Value.GetType().Name)) return;
+            if (this.screenManager.CurrentActiveScreen.Value == null) return;
+            var screen        = this.screenManager.CurrentActiveScreen.Value.GetType().Name;
+            if (!this.mrecHandler.CanShowMrec(screen)) return;
 
             var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(placement, position, offset));
             if (mrecAdService != null)
@@ -567,7 +567,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             this.ResetMRECCts();
             var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position, default)).ToList();
-    
+
             if (mrecAdServices.Count > 0)
             {
                 foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(placement, position);

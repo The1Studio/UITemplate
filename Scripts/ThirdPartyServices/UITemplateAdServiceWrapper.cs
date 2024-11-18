@@ -29,6 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine;
     using UnityEngine.Scripting;
     #if ADMOB
@@ -318,9 +319,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
 
+            var placement = isFirstOpen ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
+
             if (!isFirstOpen)
             {
-                this.signalBus.Fire(new AppOpenEligibleSignal(""));
+                this.signalBus.Fire(new AppOpenEligibleSignal(placement));
                 if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
                 {
                     this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: ShowInterstitialAd instead of AOA");
@@ -336,8 +339,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 if (this.adServicesConfig.UseAoaAdmob != aoa is AdMobWrapper) continue;
                 #endif
 
-                this.signalBus.Fire(new AppOpenCalledSignal(""));
-                aoa.ShowAOAAds();
+                this.signalBus.Fire(new AppOpenCalledSignal(placement));
+                aoa.ShowAOAAds(placement);
                 this.IsCheckedShowFirstOpen = true;
                 this.IsOpenedAOAFirstOpen   = true;
                 return;

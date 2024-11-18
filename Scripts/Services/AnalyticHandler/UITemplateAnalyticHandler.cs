@@ -350,7 +350,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             if (obj.IsWin)
             {
-                switch (levelData.WinCount)
+                switch (obj.Level)
                 {
                     case 1:
                         this.Track(this.analyticEventFactory.FirstWin(obj.Level, obj.Time));

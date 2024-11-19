@@ -50,7 +50,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly ThirdPartiesConfig                  thirdPartiesConfig;
         private readonly IScreenManager                      screenManager;
         private readonly ICollapsibleBannerAd                collapsibleBannerAd;
-        private readonly MrecHandler                         mrecHandler;
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
@@ -96,8 +95,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
-            IEnumerable<AdServiceOrder>         adServiceOrders,
-            MrecHandler                         mrecHandler
+            IEnumerable<AdServiceOrder>         adServiceOrders
         )
         {
             this.adServices                = adServices.ToArray();
@@ -110,7 +108,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.thirdPartiesConfig        = thirdPartiesConfig;
             this.screenManager             = screenManager;
             this.collapsibleBannerAd       = collapsibleBannerAd;
-            this.mrecHandler               = mrecHandler;
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
@@ -533,18 +530,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private AdScreenPosition        mrecOffset;
         private CancellationTokenSource RefreshMRECCts;
 
-        public void ShowMREC<T>(string placement, AdScreenPosition position, AdScreenPosition offset = default) where T : IScreenPresenter
-        {
-            this.mrecHandler.RegisterScreenCanShowMrec<T>();
-            this.ShowMREC(placement, position, offset);
-        }
-
         public virtual void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
-            if (this.screenManager.CurrentActiveScreen.Value == null) return;
-            var screen        = this.screenManager.CurrentActiveScreen.Value.GetType().Name;
-            if (!this.mrecHandler.CanShowMrec(screen)) return;
 
             var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(placement, position, offset));
             if (mrecAdService != null)
@@ -588,7 +576,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void ScheduleRefreshMREC()
         {
-            this.ResetMRECCts();
             UniTask.WaitForSeconds(this.adServicesConfig.MrecRefreshInterval, true, cancellationToken: (this.RefreshMRECCts = new()).Token)
                .ContinueWith(
                              () =>

@@ -31,8 +31,7 @@
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
-            IEnumerable<AdServiceOrder>         adServiceOrders,
-            MrecHandler                         mrecHandler
+            IEnumerable<AdServiceOrder>         adServiceOrders
         ) : base(logService,
             adServicesConfig,
             signalBus,
@@ -46,8 +45,7 @@
             thirdPartiesConfig,
             screenManager,
             collapsibleBannerAd,
-            adServiceOrders,
-            mrecHandler)
+            adServiceOrders)
         {
         }
 

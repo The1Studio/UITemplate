@@ -24,8 +24,6 @@ namespace TheOneStudio.UITemplate
             builder.Register<UITemplateAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
 
-            builder.Register<MrecHandler>(Lifetime.Singleton);
-
             #if CREATIVE
             builder.Register<UITemplateAdServiceWrapper, UITemplateAdServiceWrapperCreative>(Lifetime.Singleton);
             #else

@@ -31,6 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine;
+    using UnityEngine.SceneManagement;
     using UnityEngine.Scripting;
     #if ADMOB
     using ServiceImplementation.AdsServices.EasyMobile;
@@ -167,6 +168,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             await UniTask.WaitUntil(() => this.bannerAdService.IsAdsInitialized());
 
             this.logService.Log($"onelog: ShowBannerAd this.adServicesConfig.EnableBannerAd {this.adServicesConfig.EnableBannerAd}");
+
             if (!this.adServicesConfig.EnableBannerAd) return;
             this.logService.Log($"onelog: ShowBannerAd IsShowBannerAd {this.IsShowBannerAd}");
             if (this.IsShowBannerAd)
@@ -202,17 +204,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.RefreshCollapsibleCts?.Cancel();
             this.RefreshCollapsibleCts?.Dispose();
             this.RefreshCollapsibleCts = null;
+
             if (this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval <= 0) return;
             if (!this.adServicesConfig.CollapsibleBannerAutoRefreshEnabled) return;
             UniTask.WaitForSeconds(
                 this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval,
                 true,
                 cancellationToken: (this.RefreshCollapsibleCts = new()).Token
-            ).ContinueWith(() =>
-            {
-                this.IsRefreshingCollapsible = true;
-                this.ShowBannerAd();
-            }).Forget();
+            ).ContinueWith(
+                () =>
+                {
+                    this.IsRefreshingCollapsible = true;
+                    this.ShowBannerAd();
+                }
+            ).Forget();
         }
 
         private void InternalShowMediationBannerAd(BannerAdsPosition bannerAdsPosition = BannerAdsPosition.Bottom, int width = 320, int height = 50)
@@ -315,6 +320,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void ShowAOAAdsIfAvailable(bool isFirstOpen)
         {
             this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isFirstOpen} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume}");
+
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
@@ -327,6 +333,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
                 {
                     this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: ShowInterstitialAd instead of AOA");
+
                     return;
                 }
             }
@@ -343,6 +350,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 aoa.ShowAOAAds(placement);
                 this.IsCheckedShowFirstOpen = true;
                 this.IsOpenedAOAFirstOpen   = true;
+
                 return;
             }
         }
@@ -352,6 +360,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (obj.PauseStatus)
             {
                 this.StartBackgroundTime = DateTime.Now;
+
                 return;
             }
 
@@ -359,6 +368,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (totalBackgroundSeconds < this.adServicesConfig.MinPauseSecondToShowAoaAd)
             {
                 this.logService.Log($"AOA background time: {totalBackgroundSeconds}");
+
                 return;
             }
 
@@ -398,12 +408,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             return this.adServices.Any(adService => adService.IsInterstitialAdReady(place));
         }
 
-        private int FirstInterstitialAdsDelayTime =>
-            this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
+        private int FirstInterstitialAdsDelayTime => this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
 
         private bool IsInterstitialAdEnable(string placement)
         {
             if (!this.adServicesConfig.EnableInterstitialAd) return false;
+
             return this.adServicesConfig.InterstitialAdActivePlacements.Contains("")
                 || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
         }
@@ -412,6 +422,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logService.Log($"onelog: ShowInterstitialAd1 {place} force {force} EnableInterstitialAd {isInterstitialAdEnable} CurrentLevel {this.levelDataController.CurrentLevel} InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");
+
             if (this.IsRemovedAds || !isInterstitialAdEnable || this.levelDataController.CurrentLevel < this.adServicesConfig.InterstitialAdStartLevel) return false;
 
             var interstitialAdInterval                                                                                                                                              = this.adServicesConfig.InterstitialAdInterval;
@@ -433,6 +444,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.CanShowInterstitialAd(place, force))
             {
                 onShowInterstitialFinished?.Invoke(false);
+
                 return false;
             }
 
@@ -444,6 +456,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.logService.Warning("onelog: ShowInterstitialAd - InterstitialAd was not loaded");
                 onShowInterstitialFinished?.Invoke(false);
+
                 return false;
             }
 
@@ -484,6 +497,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServicesConfig.EnableRewardedAd || this.adServicesConfig.RewardedAdFreePlacements.Contains(place))
             {
                 onComplete?.Invoke();
+
                 return;
             }
 
@@ -496,6 +510,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.logService.Warning("Rewarded was not loaded");
                 onFail?.Invoke();
                 this.toastController.ShowToast("There is no Ads!");
+
                 return;
             }
 
@@ -506,6 +521,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAnotherServices = true;
             adService.ShowRewardedAd(place, OnRewardedAdCompleted, onFail);
+
             return;
 
             void OnRewardedAdCompleted()
@@ -542,9 +558,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
-            if (this.screenManager.CurrentActiveScreen.Value == null) return;
-            var screen        = this.screenManager.CurrentActiveScreen.Value.GetType().Name;
-            if (!this.mrecHandler.CanShowMrec(screen)) return;
+            if (SceneManager.GetActiveScene().name != "2.SmashScene")
+            {
+                if (this.screenManager.CurrentActiveScreen.Value == null) return;
+                var screen = this.screenManager.CurrentActiveScreen.Value.GetType().Name;
+
+                if (!this.mrecHandler.CanShowMrec(screen)) return;
+            }
 
             var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(placement, position, offset));
             if (mrecAdService != null)
@@ -590,13 +610,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             this.ResetMRECCts();
             UniTask.WaitForSeconds(this.adServicesConfig.MrecRefreshInterval, true, cancellationToken: (this.RefreshMRECCts = new()).Token)
-               .ContinueWith(
-                             () =>
-                             {
-                                 this.logService.Log($"onelog: ScheduleRefreshMREC");
-                                 this.DestroyMREC(this.mrecPlacement, this.mrecPosition);
-                                 this.ShowMREC(this.mrecPlacement, this.mrecPosition, this.mrecOffset);
-                             }).Forget();
+                .ContinueWith(
+                    () =>
+                    {
+                        this.logService.Log($"onelog: ScheduleRefreshMREC");
+                        this.DestroyMREC(this.mrecPlacement, this.mrecPosition);
+                        this.ShowMREC(this.mrecPlacement, this.mrecPosition, this.mrecOffset);
+                    }
+                ).Forget();
         }
 
         private void ResetMRECCts()

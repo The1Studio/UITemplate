@@ -595,6 +595,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void OnRemoveAdsComplete()
         {
+            this.ResetMRECCts();
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();

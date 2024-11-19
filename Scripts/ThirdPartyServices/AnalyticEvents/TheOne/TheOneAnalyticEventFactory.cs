@@ -46,13 +46,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.T
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount)
         {
-            this.analyticServices.Track(new LevelEnd(level, "win", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+            this.analyticServices.Track(new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
             return base.LevelLose(level, timeSpent, loseCount);
         }
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount)
         {
-            this.analyticServices.Track(new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+            this.analyticServices.Track(new LevelEnd(level, "win", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
             return base.LevelWin(level, timeSpent, winCount);
         }
     }

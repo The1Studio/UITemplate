@@ -47,7 +47,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.T
             return base.LevelLose(level, timeSpent, loseCount);
         }
 
-
         public override IEvent LevelWin(int level, int timeSpent, int winCount)
         {
             this.analyticServices.Track(new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));

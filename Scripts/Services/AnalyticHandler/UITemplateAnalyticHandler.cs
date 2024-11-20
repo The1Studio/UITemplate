@@ -348,21 +348,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount)
             );
 
-            if (obj.IsWin)
+            if (obj.IsWin && levelData.WinCount == 1)
             {
-                switch (obj.Level)
-                {
-                    case 1:
-                        this.Track(this.analyticEventFactory.FirstWin(obj.Level, obj.Time));
-                        this.Track(new CompleteLevel1());
-                        break;
-                    case 5:
-                        this.Track(new CompleteLevel5());
-                        break;
-                    case 10:
-                        this.Track(new CompleteLevel10());
-                        break;
-                }
+                this.Track(this.analyticEventFactory.FirstWin(obj.Level, obj.Time));
+            }
+
+            switch (obj.Level)
+            {
+                case 1:
+                    this.Track(new CompleteLevel1());
+                    break;
+                case 5:
+                    this.Track(new CompleteLevel5());
+                    break;
+                case 10:
+                    this.Track(new CompleteLevel10());
+                    break;
             }
         }
 

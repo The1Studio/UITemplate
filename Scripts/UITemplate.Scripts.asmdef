@@ -43,6 +43,7 @@
     "Unity.Advertisement.IosSupport",
     "3rd.Configs.Editor",
     "UIEffect",
+    "Coffee.UIEffect",
     "PlayFab",
     "Falcon.Module",
     "TheOneStudio.HighScore",

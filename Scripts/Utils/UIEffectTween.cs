@@ -43,15 +43,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Utils
 
         #endregion
 
-        private UIEffect      uiEffect;
+        private UIEffectV4   uiEffect;
         private UIHsvModifier uiHsvModifier;
 
-        private bool HasUIEffectComponent()      => this.GetComponent<UIEffect>() != null;
+        private bool HasUIEffectComponent()      => this.GetComponent<UIEffectV4>() != null;
         private bool HasUIHsvModifierComponent() => this.GetComponent<UIHsvModifier>() != null;
 
         private void Awake()
         {
-            this.uiEffect = this.GetComponent<UIEffect>();
+            this.uiEffect      = this.GetComponent<UIEffectV4>();
             this.uiHsvModifier = this.GetComponent<UIHsvModifier>();
             
             if (this.uiEffect != null)

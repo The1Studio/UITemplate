@@ -90,6 +90,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
             { "jp.hadashikick.vcontainer", "1.16.5" },
+            { "com.coffee.ui-effect", "5.0.0"}
         };
 
         [NonSerialized]

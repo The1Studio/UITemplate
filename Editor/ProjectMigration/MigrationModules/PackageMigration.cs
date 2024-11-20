@@ -76,9 +76,6 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
             { "com.google.external-dependency-manager", "1.2.183" },
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
-            #if APPSFLYER
-            { "appsflyer-unity-plugin" , "https://github.com/AppsFlyerSDK/appsflyer-unity-plugin.git#upm" },
-            #endif
             #if BYTEBREW
             { "com.bytebrew.unitysdk", "https://github.com/The1Studio/ByteBrewUnitySDK.git?path=UPMPackage#" },
             #endif

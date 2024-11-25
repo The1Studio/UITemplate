@@ -6,13 +6,18 @@
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using ServiceImplementation.Configs;
+    using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TMPro;
     using UnityEngine;
     using UnityEngine.Scripting;
 
     public class BreakAdsPopupView : BaseView
     {
-        public RectTransform currencyTransform;
+        [BoxGroup("Reward Currency")] public RectTransform currencyTransform;
+        [BoxGroup("Reward Currency")] public GameObject    goRewardCurrency;
+        [BoxGroup("Reward Currency")] public TMP_Text      txtRewardCurrencyValue;
+        [BoxGroup("Reward Currency")] public string        currencyValuePattern = "+{0}";
     }
 
     [PopupInfo(nameof(BreakAdsPopupView), isOverlay: true)]
@@ -47,6 +52,7 @@
 
         public override UniTask BindData()
         {
+            this.SetupUI();
             return this.breakAdsViewHelper.BindData();
         }
 
@@ -54,6 +60,12 @@
         {
             await this.RewardAfterWatchedAds();
             await base.CloseViewAsync();
+        }
+
+        protected virtual void SetupUI()
+        {
+            this.View.goRewardCurrency.gameObject.SetActive(this.thirdPartiesConfig.AdSettings.IsBreakAdsRewardCurrency);
+            this.View.txtRewardCurrencyValue.text = string.Format(this.View.currencyValuePattern, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount);
         }
 
         protected virtual async UniTask RewardAfterWatchedAds()

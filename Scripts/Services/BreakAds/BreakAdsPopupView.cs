@@ -7,10 +7,12 @@
     using GameFoundation.Signals;
     using ServiceImplementation.Configs;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine;
     using UnityEngine.Scripting;
 
     public class BreakAdsPopupView : BaseView
     {
+        public RectTransform currencyTransform;
     }
 
     [PopupInfo(nameof(BreakAdsPopupView), isOverlay: true)]
@@ -57,7 +59,7 @@
         protected virtual async UniTask RewardAfterWatchedAds()
         {
             if (!this.thirdPartiesConfig.AdSettings.IsBreakAdsRewardCurrency) return;
-            await this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency);
+            await this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency, this.View.currencyTransform);
         }
 
         public override void Dispose()

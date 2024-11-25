@@ -76,9 +76,6 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
             { "com.google.external-dependency-manager", "1.2.183" },
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
-            #if APPSFLYER
-            { "appsflyer-unity-plugin" , "https://github.com/AppsFlyerSDK/appsflyer-unity-plugin.git#upm" },
-            #endif
             #if BYTEBREW
             { "com.bytebrew.unitysdk", "https://github.com/The1Studio/ByteBrewUnitySDK.git?path=UPMPackage#" },
             #endif
@@ -92,7 +89,8 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.google.ads.mobile", "9.3.0" },
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
-            { "jp.hadashikick.vcontainer", "1.16.4" },
+            { "jp.hadashikick.vcontainer", "1.16.5" },
+            { "com.coffee.ui-effect", "5.0.0"}
         };
 
         [NonSerialized]

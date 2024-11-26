@@ -12,9 +12,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Apero;
+    using UnityEngine.Scripting;
 
     public class AperoAnalyticHandler : UITemplateAnalyticHandler
     {
+        [Preserve]
         public AperoAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateLevelDataController uiTemplateLevelDataController,
                                     UITemplateInventoryDataController uITemplateInventoryDataController, UITemplateDailyRewardController uiTemplateDailyRewardController,
                                     UITemplateGameSessionDataController uITemplateGameSessionDataController) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController,

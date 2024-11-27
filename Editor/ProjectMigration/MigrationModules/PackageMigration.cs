@@ -13,20 +13,6 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 
     public static class PackageMigration
     {
-        private readonly struct Registry
-        {
-            public readonly string   name;
-            public readonly string   url;
-            public readonly string[] scopes;
-
-            public Registry(string name, string url, string[] scopes)
-            {
-                this.name   = name;
-                this.url    = url;
-                this.scopes = scopes;
-            }
-        }
-
         private static readonly Registry[] Registries =
         {
             new(
@@ -76,8 +62,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
             { "com.google.external-dependency-manager", "1.2.183" },
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
+            //need to use this method because of the purchase connector, if we can import the purchase connector through UPM then we can change it
             #if APPSFLYER
-            { "appsflyer-unity-plugin" , "https://github.com/AppsFlyerSDK/appsflyer-unity-plugin.git#upm" },
+            { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" },
             #endif
             #if BYTEBREW
             { "com.bytebrew.unitysdk", "https://github.com/The1Studio/ByteBrewUnitySDK.git?path=UPMPackage#" },
@@ -93,7 +80,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
             { "jp.hadashikick.vcontainer", "1.16.5" },
-            { "com.coffee.ui-effect", "5.0.0"}
+            { "com.coffee.ui-effect", "5.0.0" }
         };
 
         [NonSerialized]
@@ -106,7 +93,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         public static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"
-            "com.theone.appsflyer-unity-plugin"
+            "appsflyer-unity-plugin"
         };
 
         public static void ImportUnityPackage()
@@ -217,6 +204,20 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             if (updated) Debug.Log("Updated manifest.json with new packages and missing OpenUPM scopes.");
 
             return updated;
+        }
+
+        private readonly struct Registry
+        {
+            public readonly string   name;
+            public readonly string   url;
+            public readonly string[] scopes;
+
+            public Registry(string name, string url, string[] scopes)
+            {
+                this.name   = name;
+                this.url    = url;
+                this.scopes = scopes;
+            }
         }
     }
 }

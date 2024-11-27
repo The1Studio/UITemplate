@@ -64,9 +64,7 @@
 
         public virtual IEvent AppOpenLoadFailed() => new AppOpenLoadFailed();
         public virtual IEvent AppOpenLoaded() => new AppOpenLoaded();
-
-        public virtual IEvent AppOpenFullScreenContentClosed() => new AppOpenFullScreenContentClosed();
-
+        
         public virtual IEvent AppOpenFullScreenContentClosed(string place)
         {
             return new AppOpenFullScreenContentClosed(place);

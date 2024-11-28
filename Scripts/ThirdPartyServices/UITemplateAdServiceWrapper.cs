@@ -316,11 +316,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!AttHelper.IsRequestTrackingComplete()) return;
 
             var placement = isFirstOpen ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
+            this.signalBus.Fire(new AppOpenEligibleSignal(placement));
 
             if (!isFirstOpen)
             {
-                this.signalBus.Fire(new AppOpenEligibleSignal(placement));
-                if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
+                if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null, true))
                 {
                     this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: ShowInterstitialAd instead of AOA");
                     return;

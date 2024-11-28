@@ -130,6 +130,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.OnInterstitialAdDisplayedHandler);
             this.signalBus.Subscribe<RewardedAdDisplayedSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnStartDoingIAPSignal>(this.OnStartDoingIAPHandler);
+            this.signalBus.Subscribe<AppOpenFullScreenContentOpenedSignal>(this.OnOpenAOA);
 
             //Resume can show AOA
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
@@ -139,6 +140,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<RewardInterstitialAdClosedSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.CloseAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnIAPPurchaseFailedSignal>(this.CloseAdInDifferentProcessHandler);
+            this.signalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.CloseAdInDifferentProcessHandler);
             this.screenManager.CurrentActiveScreen.Subscribe(this.OnScreenChanged);
 
             //Att
@@ -148,6 +150,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             //Permission
             this.signalBus.Subscribe<OnRequestPermissionStartSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
+        }
+        
+        private void OnOpenAOA(AppOpenFullScreenContentOpenedSignal obj)
+        {
+            this.IsResumedFromAnotherServices = true;
         }
 
         #region banner

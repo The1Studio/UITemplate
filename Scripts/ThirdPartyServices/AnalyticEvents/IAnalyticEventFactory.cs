@@ -62,9 +62,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent LevelSkipped(int level, int timeSpent);
 
-        IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source);
+        IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string placement, int level);
 
-        IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName);
+        IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level);
 
         IEvent TutorialCompletion(bool success, string tutorialId);
 

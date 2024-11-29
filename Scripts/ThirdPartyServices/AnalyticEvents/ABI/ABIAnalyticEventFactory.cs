@@ -13,54 +13,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
     public class ABIAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        private readonly SignalBus         signalBus;
         private readonly IAnalyticServices analyticEvents;
+        private readonly SignalBus         signalBus;
 
         [Preserve]
         public ABIAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
-        public override IEvent InterstitialEligible(string place) => new AdsIntersEligible(place);
-
-        public override IEvent InterstitialShow(int level, string place) => new AdInterShow(place);
-
-        public override IEvent InterstitialShowFail(string place, string msg) => new AdInterFail(msg);
-
-        public override IEvent InterstitialClick(string place) => new AdInterClick(place);
-
-        public override IEvent InterstitialDownloaded(string place, long loadingMilis) => new AdInterDownloaded(place, loadingMilis);
-
-        public override IEvent InterstitialCalled(string place) => new AdInterCalled();
-
-        public override IEvent RewardedVideoEligible(string place) => new AdsRewardEligible(place);
-
-        public override IEvent RewardedVideoOffer(string place) => new AdsRewardOffer(place);
-
-        public override IEvent RewardedVideoDownloaded(string place, long loadingMilis) => new AdsRewardedDownloaded(place, loadingMilis);
-
-        public override IEvent RewardedVideoCalled(string place) => new AdsRewardedCalled();
-
-        public override IEvent RewardedVideoShow(int level, string place) => new AdsRewardShow(place);
-
-        public override IEvent RewardedVideoClick(string place) => new AdsRewardClick(place);
-
-        public override IEvent RewardedVideoShowFail(string place, string msg) => new AdsRewardFail(place, msg);
-
-        public override IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelFail(level, loseCount);
-
-        public override IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);
-
-        public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelComplete(level, timeSpent);
-
-        public override IEvent FirstWin(int level, int timeSpent) => new LevelAchieved(level, timeSpent);
-
-        public override IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
-
-        public override IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source) => new EarnVirtualCurrency(virtualCurrencyName, value, source);
-
-        public override IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName) => new SpendVirtualCurrency(virtualCurrencyName, value, itemName);
-
-        public override IEvent TutorialCompletion(bool success, string tutorialId) => new GameTutorialCompletion(success, tutorialId);
-
-        public override void ForceUpdateAllProperties() { }
 
         public override string LevelMaxProperty             => "level_max";
         public override string LastLevelProperty            => "last_level";
@@ -113,6 +70,46 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
                 { nameof(LevelAchieved), "checkpoint" },
             }
         };
+
+        public override IEvent InterstitialEligible(string place) => new AdsIntersEligible(place);
+
+        public override IEvent InterstitialShow(int level, string place) => new AdInterShow(place);
+
+        public override IEvent InterstitialShowFail(string place, string msg) => new AdInterFail(msg);
+
+        public override IEvent InterstitialClick(string place) => new AdInterClick(place);
+
+        public override IEvent InterstitialDownloaded(string place, long loadingMilis) => new AdInterDownloaded(place, loadingMilis);
+
+        public override IEvent InterstitialCalled(string place) => new AdInterCalled();
+
+        public override IEvent RewardedVideoEligible(string place) => new AdsRewardEligible(place);
+
+        public override IEvent RewardedVideoOffer(string place) => new AdsRewardOffer(place);
+
+        public override IEvent RewardedVideoDownloaded(string place, long loadingMilis) => new AdsRewardedDownloaded(place, loadingMilis);
+
+        public override IEvent RewardedVideoCalled(string place) => new AdsRewardedCalled();
+
+        public override IEvent RewardedVideoShow(int level, string place) => new AdsRewardShow(place);
+
+        public override IEvent RewardedVideoClick(string place) => new AdsRewardClick(place);
+
+        public override IEvent RewardedVideoShowFail(string place, string msg) => new AdsRewardFail(place, msg);
+
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelFail(level, loseCount);
+
+        public override IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);
+
+        public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelComplete(level, timeSpent);
+
+        public override IEvent FirstWin(int level, int timeSpent) => new LevelAchieved(level, timeSpent);
+
+        public override IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
+
+        public override IEvent TutorialCompletion(bool success, string tutorialId) => new GameTutorialCompletion(success, tutorialId);
+
+        public override void ForceUpdateAllProperties() { }
     }
 }
 #endif

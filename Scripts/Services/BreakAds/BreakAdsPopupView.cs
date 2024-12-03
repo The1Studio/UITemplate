@@ -64,6 +64,7 @@
 
         protected virtual void SetupUI()
         {
+            if (!this.thirdPartiesConfig.AdSettings.IsBreakAdsRewardCurrency) return;
             this.View.goRewardCurrency.gameObject.SetActive(this.thirdPartiesConfig.AdSettings.IsBreakAdsRewardCurrency);
             this.View.txtRewardCurrencyValue.text = string.Format(this.View.currencyValuePattern, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount);
         }

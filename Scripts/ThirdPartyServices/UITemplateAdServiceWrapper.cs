@@ -532,6 +532,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (mrecAdService != null)
             {
                 mrecAdService.ShowMREC(placement, position, offset);
+                this.InternalHideCollapsibleBannerAd();
                 this.IsShowMRECAd = true;
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
             }

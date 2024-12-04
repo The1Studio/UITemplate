@@ -336,7 +336,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 #endif
 
                 this.signalBus.Fire(new AppOpenCalledSignal(placement));
-                aoa.ShowAOAAds(placement);
+                if (this.adServicesConfig.UseAoaResume)
+                {
+                    aoa.ShowAOAAds(placement);
+                }
                 this.IsCheckedShowFirstOpen = true;
                 this.IsOpenedAOAFirstOpen   = true;
                 return;

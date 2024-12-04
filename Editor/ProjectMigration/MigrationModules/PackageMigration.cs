@@ -69,6 +69,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             #if BYTEBREW
             { "com.bytebrew.unitysdk", "https://github.com/The1Studio/ByteBrewUnitySDK.git?path=UPMPackage#" },
             #endif
+            #if UNITY_6000_0_OR_NEWER
+            { "com.unity.addressables.android", "1.0.4" },
+            #endif
             // add more packages as needed
         };
 
@@ -79,7 +82,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.google.ads.mobile", "9.4.0" },
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
-            { "jp.hadashikick.vcontainer", "1.16.5" },
+            { "jp.hadashikick.vcontainer", "1.16.6" },
             { "com.coffee.ui-effect", "5.0.0" }
         };
 

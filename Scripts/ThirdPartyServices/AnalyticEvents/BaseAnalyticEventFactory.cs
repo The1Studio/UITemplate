@@ -1,6 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 {
-    using System.Collections.Generic;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
@@ -189,15 +188,14 @@
         {
             return new LevelSkipped(level, timeSpent);
         }
-
-        public virtual IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string source)
+        public IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string placement, int level)
         {
-            return new EarnVirtualCurrency(virtualCurrencyName, value, source);
+            return new EarnVirtualCurrency(virtualCurrencyName, value, placement, level);
+
         }
-
-        public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string itemName)
+        public IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level)
         {
-            return this.SpendVirtualCurrency(virtualCurrencyName, value, itemName);
+            return new SpendVirtualCurrency(virtualCurrencyName, value, placement, level);
         }
 
         public virtual IEvent TutorialCompletion(bool success, string tutorialId)

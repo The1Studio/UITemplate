@@ -3,6 +3,7 @@
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
@@ -10,6 +11,16 @@
 
     public class BraveStarsAnalyticHandler : UITemplateAnalyticHandler
     {
+        protected override void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
+        {
+            base.InterstitialAdDisplayedHandler(obj);
+
+            #if BRAVESTARS
+            if(this.uiTemplateAdsController.WatchInterstitialAds > 20) return;
+            this.Track(new CustomEvent { EventName = $"af_inters_displayed_{this.uiTemplateAdsController.WatchInterstitialAds}_times" });
+            #endif
+        }
+
         #region Inject
 
         private readonly UITemplateAdsController uiTemplateAdsController;
@@ -23,22 +34,13 @@
             UITemplateInventoryDataController   uITemplateInventoryDataController,
             UITemplateDailyRewardController     uiTemplateDailyRewardController,
             UITemplateAdsController             uiTemplateAdsController,
-            UITemplateGameSessionDataController uITemplateGameSessionDataController
-        ) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController)
+            UITemplateGameSessionDataController uITemplateGameSessionDataController,
+            IScreenManager                      screenManager
+        ) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController, screenManager)
         {
             this.uiTemplateAdsController = uiTemplateAdsController;
         }
 
         #endregion
-
-        protected override void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
-        {
-            base.InterstitialAdDisplayedHandler(obj);
-
-            #if BRAVESTARS
-            if(this.uiTemplateAdsController.WatchInterstitialAds > 20) return;
-            this.Track(new CustomEvent { EventName = $"af_inters_displayed_{this.uiTemplateAdsController.WatchInterstitialAds}_times" });
-            #endif
-        }
     }
 }

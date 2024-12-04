@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
     using GameFoundation.DI;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Signals;
     using ServiceImplementation.IAPServices.Signals;
@@ -31,6 +32,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         protected readonly UITemplateInventoryDataController   uITemplateInventoryDataController;
         protected readonly UITemplateDailyRewardController     uiTemplateDailyRewardController;
         protected readonly UITemplateGameSessionDataController uITemplateGameSessionDataController;
+        protected readonly IScreenManager                      screenManager;
 
         #endregion
 
@@ -42,7 +44,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             UITemplateLevelDataController       uiTemplateLevelDataController,
             UITemplateInventoryDataController   uITemplateInventoryDataController,
             UITemplateDailyRewardController     uiTemplateDailyRewardController,
-            UITemplateGameSessionDataController uITemplateGameSessionDataController
+            UITemplateGameSessionDataController uITemplateGameSessionDataController,
+            IScreenManager                      screenManager
         )
         {
             this.signalBus                           = signalBus;
@@ -52,6 +55,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.uITemplateInventoryDataController   = uITemplateInventoryDataController;
             this.uiTemplateDailyRewardController     = uiTemplateDailyRewardController;
             this.uITemplateGameSessionDataController = uITemplateGameSessionDataController;
+            this.screenManager                       = screenManager;
         }
 
         public void Track(IEvent trackEvent)
@@ -74,6 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Subscribe<ScreenShowSignal>(this.ScreenShowHandler);
+            
             //Banner ads
             this.signalBus.Subscribe<BannerAdLoadedSignal>(this.BannerShowHandler);
             this.signalBus.Subscribe<BannerAdLoadedSignal>(this.BannerLoadHandler);
@@ -386,6 +391,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void UpdateCurrencyHandler(OnUpdateCurrencySignal obj)
         {
+            var valueScreenId = obj.Source ?? this.screenManager.CurrentActiveScreen.Value.ScreenId;
+            var level         = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
+            if (obj.Amount > 0)
+            {
+                this.Track(this.analyticEventFactory.EarnVirtualCurrency(obj.Id, obj.Amount, valueScreenId, level));
+            }
+            else if (obj.Amount < 0)
+            {
+                this.Track(this.analyticEventFactory.SpendVirtualCurrency(obj.Id, obj.Amount, valueScreenId, level));
+            }
             if (obj.Amount > 0)
                 this.analyticServices.UserProperties[this.analyticEventFactory.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned;
             else

@@ -318,7 +318,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void ShowAOAAdsIfAvailable(bool isOpenAppAOA)
         {
             this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume}");
-            if (!this.adServicesConfig.EnableAOAAd) return;
+            
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
             //add for Bravestar but look make sense so we will keep it
@@ -327,7 +327,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
 
-            if (!isOpenAppAOA)
+            if (!isOpenAppAOA && this.adServicesConfig.EnableAOAAd)
             {
                 if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null, true))
                 {
@@ -345,9 +345,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 #endif
 
                 this.signalBus.Fire(new AppOpenCalledSignal(placement));
-                if (this.adServicesConfig.UseAoaResume)
+                if (this.adServicesConfig.EnableAOAAd)
                 {
-                    aoa.ShowAOAAds(placement);
+                    if (this.adServicesConfig.UseAoaResume)
+                    {
+                        aoa.ShowAOAAds(placement);
+                    }
+                }
+                else
+                {
+                    if (this.adServicesConfig.UseAoaResume)
+                    {
+                        aoa.ShowAOAAds(placement);
+                    }
                 }
                 this.IsCheckedShowFirstOpen = true;
                 this.IsOpenedAOAFirstOpen   = true;

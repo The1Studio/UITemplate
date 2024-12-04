@@ -69,6 +69,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             #if BYTEBREW
             { "com.bytebrew.unitysdk", "https://github.com/The1Studio/ByteBrewUnitySDK.git?path=UPMPackage#" },
             #endif
+            #if UNITY_6000_0_OR_NEWER
+            { "com.unity.addressables.android", "1.0.4" },
+            #endif
             // add more packages as needed
         };
 

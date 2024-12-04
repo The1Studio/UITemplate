@@ -315,17 +315,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public double LoadingTimeToShowAOA => this.adServicesConfig.AOALoadingThreshold;
 
-        private void ShowAOAAdsIfAvailable(bool isFirstOpen)
+        private void ShowAOAAdsIfAvailable(bool isOpenAppAOA)
         {
-            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isFirstOpen} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume}");
+            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume}");
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
+            //add for Bravestar but look make sense so we will keep it
+            if (isOpenAppAOA && this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession) return;
 
-            var placement = isFirstOpen ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
+            var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
 
-            if (!isFirstOpen)
+            if (!isOpenAppAOA)
             {
                 if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null, true))
                 {

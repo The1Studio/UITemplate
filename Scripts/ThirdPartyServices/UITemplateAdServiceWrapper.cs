@@ -346,9 +346,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 #endif
 
                 this.signalBus.Fire(new AppOpenCalledSignal(placement));
-                if (isOpenAppAOA && this.adServicesConfig.EnableAOAAd )
+                if (isOpenAppAOA )
                 {
-                    aoa.ShowAOAAds(placement);
+                    if (this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1 && !this.IsCheckedShowFirstOpen)
+                    {
+                        aoa.ShowAOAAds(placement);
+                        return;
+                    }
+                    if (this.adServicesConfig.EnableAOAAd)
+                    {
+                        aoa.ShowAOAAds(placement);
+                    }
                 }
                 if (!isOpenAppAOA && this.adServicesConfig.UseAoaResume)
                 {
@@ -549,7 +557,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (mrecAdService != null)
             {
                 mrecAdService.ShowMREC(placement, position, offset);
-                this.InternalHideCollapsibleBannerAd();
+                this.collapsibleBannerAd.HideCollapsibleBannerAd();
                 this.IsShowMRECAd = true;
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
             }

@@ -252,6 +252,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             #if THEONE_COLLAPSIBLE_BANNER
             if (!this.thirdPartiesConfig.AdSettings.CollapsibleRefreshOnScreenShow) return;
+            this.logService.Log($"huglog : Collap ignore screen {screenPresenter.GetType().Name}  isContain:  {this.thirdPartiesConfig.AdSettings.CollapsibleIgnoreRefreshOnScreens.Contains(screenPresenter.GetType().Name)}!");
             if (this.thirdPartiesConfig.AdSettings.CollapsibleIgnoreRefreshOnScreens.Contains(screenPresenter.GetType().Name)) return;
             if (this.BannerLoadStrategy == BannerLoadStrategy.AfterLoading && screenPresenter is UITemplateLoadingScreenPresenter) return;
             this.ShowBannerAd();
@@ -317,11 +318,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void ShowAOAAdsIfAvailable(bool isOpenAppAOA)
         {
-            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume}");
-            
+            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume}");
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
-            //add for Bravestar but look make sense so we will keep it
             
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
@@ -329,7 +328,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (isOpenAppAOA && this.gameSessionDataController.OpenTime == 1)
             {
                 var aoaAvailable = string.Join(" | ", this.aoaAdServices.Select(aoa => aoa.GetType().Name + " isReady: " + aoa.IsAOAReady()));
-                this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAds firstopen: useAdmob: {this.adServicesConfig.UseAoaAdmob} | {aoaAvailable}");
+                this.logService.Log($"huglog: AdServiceWrapper: ShowAOAAds firstopen: useAdmob: {this.adServicesConfig.UseAoaAdmob} | {aoaAvailable}");
                 foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
                 {
                     #if ADMOB
@@ -346,6 +345,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 }
                 this.IsCheckedShowFirstOpen = true;
                 this.logService.Log($"huglog : return show first aoa ");
+                return;
             }
             if (isCheckCondition) return;
             if (!isOpenAppAOA)
@@ -574,7 +574,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 mrecAdService.ShowMREC(placement, position, offset);
                 this.IsShowMRECAd = true;
                 this.InternalHideCollapsibleBannerAd();
-                this.ShowBannerAd();
+                this.InternalShowMediationBannerAd();
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
             }
             else

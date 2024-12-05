@@ -242,7 +242,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.RefreshCollapsibleCts?.Cancel();
             this.RefreshCollapsibleCts?.Dispose();
             this.RefreshCollapsibleCts = null;
-            // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
+            this.collapsibleBannerAd.HideCollapsibleBannerAd();// TODO uncomment when update collapsible
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
         }
 
@@ -322,8 +322,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
             //add for Bravestar but look make sense so we will keep it
-            this.logService.Log($"onelog: AdServiceWrapper: can show firstopen {isOpenAppAOA} level {this.levelDataController.CurrentLevel} current session {this.gameSessionDataController.OpenTime}");
-            if (this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession)  return;
+            if (this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession && !this.adServicesConfig.AoaFirstOpen)  return;
 
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
@@ -348,12 +347,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.signalBus.Fire(new AppOpenCalledSignal(placement));
                 if (isOpenAppAOA )
                 {
-                    if (this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1 && !this.IsCheckedShowFirstOpen)
+                    this.logService.Log($"huglog : run_1{this.adServicesConfig.AoaFirstOpen} || {this.gameSessionDataController.OpenTime} || {this.IsOpenedAOAFirstOpen}");
+                    if (this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1 && !this.IsOpenedAOAFirstOpen)
                     {
                         aoa.ShowAOAAds(placement);
-                        return;
                     }
-                    if (this.adServicesConfig.EnableAOAAd)
+                    if (this.adServicesConfig.EnableAOAAd || this.adServicesConfig.EnableAds)
                     {
                         aoa.ShowAOAAds(placement);
                     }
@@ -362,8 +361,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 {
                     aoa.ShowAOAAds(placement);
                 }
-                this.IsCheckedShowFirstOpen = true;
                 this.IsOpenedAOAFirstOpen   = true;
+                this.IsCheckedShowFirstOpen = true;
                 return;
             }
         }
@@ -557,7 +556,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (mrecAdService != null)
             {
                 mrecAdService.ShowMREC(placement, position, offset);
-                this.collapsibleBannerAd.HideCollapsibleBannerAd();
+                this.InternalHideCollapsibleBannerAd();
                 this.IsShowMRECAd = true;
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
             }

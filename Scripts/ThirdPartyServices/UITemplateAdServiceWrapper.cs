@@ -332,20 +332,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     #if ADMOB
                     if (this.adServicesConfig.UseAoaAdmob != aoa is AdMobWrapper) continue;
                     #endif
-                    this.signalBus.Fire(new AppOpenCalledSignal(placement));
-                    if (this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1 && !this.IsOpenedAOAFirstOpen)
+
+                    this.logService.Log($"huglog : show first aoa {this.adServicesConfig.AoaFirstOpen} || {this.gameSessionDataController.OpenTime}");
+                    if (this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1)
                     {
                         this.logService.Log($"huglog : show first aoa ");
                         aoa.ShowAOAAds(placement);
-                    }
-                    else
-                    {
-                        this.IsOpenedAOAFirstOpen   = true;
-                        return;
+                        this.IsOpenedAOAFirstOpen = true;
                     }
                 }
-                this.IsOpenedAOAFirstOpen   = true;
                 this.IsCheckedShowFirstOpen = true;
+                this.logService.Log($"huglog : return show first aoa ");
                 return;
             }
             if (!isOpenAppAOA)
@@ -368,7 +365,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.signalBus.Fire(new AppOpenCalledSignal(placement));
                 if (isOpenAppAOA )
                 {
-                    this.logService.Log($"huglog : run_1 {this.adServicesConfig.EnableAOAAd} || {this.adServicesConfig.EnableAds}");
                     if (this.adServicesConfig.EnableAOAAd || this.adServicesConfig.EnableAds)
                     {
                         aoa.ShowAOAAds(placement);
@@ -376,7 +372,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 }
                 if (!isOpenAppAOA && this.adServicesConfig.UseAoaResume)
                 {
-                    this.logService.Log($"huglog : aoa ressume {this.adServicesConfig.UseAoaResume}");
                     aoa.ShowAOAAds(placement);
                 }
                 this.IsOpenedAOAFirstOpen   = true;

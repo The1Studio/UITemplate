@@ -344,7 +344,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     }
                 }
                 this.IsCheckedShowFirstOpen = true;
-                this.logService.Log($"huglog : return show first aoa ");
                 return;
             }
             if (isCheckCondition) return;
@@ -377,7 +376,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     aoa.ShowAOAAds(placement);
                     this.IsOpenedAOAFirstOpen = true;
                 }
-                this.logService.Log($"huglog : end aoa this {LoadingTimeToShowAOA} ");
                 this.IsCheckedShowFirstOpen = true;
                 return;
             }
@@ -574,7 +572,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 mrecAdService.ShowMREC(placement, position, offset);
                 this.IsShowMRECAd = true;
                 this.InternalHideCollapsibleBannerAd();
-                this.InternalShowMediationBannerAd();
+                this.ShowBannerAd();
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
             }
             else

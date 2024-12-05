@@ -327,6 +327,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
             if (this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession)
             {
+                var aoaAvailable = string.Join(" | ", this.aoaAdServices.Select(aoa => aoa.GetType().Name + " isReady: " + aoa.IsAOAReady()));
+                this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: useAdmob: {this.adServicesConfig.UseAoaAdmob} | {aoaAvailable}");
                 foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
                 {
                     #if ADMOB

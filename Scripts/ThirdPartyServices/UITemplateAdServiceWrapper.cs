@@ -243,7 +243,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.RefreshCollapsibleCts?.Dispose();
             this.RefreshCollapsibleCts = null;
             this.collapsibleBannerAd.HideCollapsibleBannerAd();// TODO uncomment when update collapsible
-            //this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
+            this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
         }
 
         private void OnScreenChanged(IScreenPresenter screenPresenter)

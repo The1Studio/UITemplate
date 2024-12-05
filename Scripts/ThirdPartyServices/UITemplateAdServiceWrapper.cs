@@ -334,7 +334,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     #if ADMOB
                     if (this.adServicesConfig.UseAoaAdmob != aoa is AdMobWrapper) continue;
                     #endif
-
+                    this.signalBus.Fire(new AppOpenCalledSignal(placement));
                     this.logService.Log($"huglog : show first aoa {this.adServicesConfig.AoaFirstOpen} || {this.gameSessionDataController.OpenTime}");
                     if (this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1)
                     {

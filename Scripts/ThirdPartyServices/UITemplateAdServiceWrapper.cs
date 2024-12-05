@@ -322,11 +322,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
             //add for Bravestar but look make sense so we will keep it
-            if (this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession && !this.adServicesConfig.AoaFirstOpen)  return;
-
+            
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
-
+            if (this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession)
+            {
+                foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
+                {
+                    #if ADMOB
+                    if (this.adServicesConfig.UseAoaAdmob != aoa is AdMobWrapper) continue;
+                    #endif
+                    this.signalBus.Fire(new AppOpenCalledSignal(placement));
+                    if (this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1 && !this.IsOpenedAOAFirstOpen)
+                    {
+                        this.logService.Log($"huglog : show first aoa ");
+                        aoa.ShowAOAAds(placement);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                this.IsOpenedAOAFirstOpen   = true;
+                this.IsCheckedShowFirstOpen = true;
+                return;
+            }
             if (!isOpenAppAOA)
             {
                 if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
@@ -347,11 +367,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.signalBus.Fire(new AppOpenCalledSignal(placement));
                 if (isOpenAppAOA )
                 {
-                    this.logService.Log($"huglog : run_1{this.adServicesConfig.AoaFirstOpen} || {this.gameSessionDataController.OpenTime} || {this.IsOpenedAOAFirstOpen}");
-                    if (this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1 && !this.IsOpenedAOAFirstOpen)
-                    {
-                        aoa.ShowAOAAds(placement);
-                    }
+                    this.logService.Log($"huglog : run_1 {this.adServicesConfig.EnableAOAAd} || {this.adServicesConfig.EnableAds}");
                     if (this.adServicesConfig.EnableAOAAd || this.adServicesConfig.EnableAds)
                     {
                         aoa.ShowAOAAds(placement);
@@ -359,6 +375,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 }
                 if (!isOpenAppAOA && this.adServicesConfig.UseAoaResume)
                 {
+                    this.logService.Log($"huglog : aoa ressume {this.adServicesConfig.UseAoaResume}");
                     aoa.ShowAOAAds(placement);
                 }
                 this.IsOpenedAOAFirstOpen   = true;
@@ -556,8 +573,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (mrecAdService != null)
             {
                 mrecAdService.ShowMREC(placement, position, offset);
-                this.InternalHideCollapsibleBannerAd();
                 this.IsShowMRECAd = true;
+                this.InternalHideCollapsibleBannerAd();
+                this.ShowBannerAd();
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
             }
             else

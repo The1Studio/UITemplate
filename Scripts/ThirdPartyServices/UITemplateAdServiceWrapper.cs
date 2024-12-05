@@ -76,8 +76,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private DateTime StartLoadingAOATime          { get; set; }
         private DateTime StartBackgroundTime          { get; set; }
         private bool     IsResumedFromAnotherServices { get; set; } // after Ads, IAP, permission, login, etc.
-        private bool     IsCheckedShowFirstOpen       { get; set; } = false;
-        public  bool     IsOpenedAOAFirstOpen         { get; private set; }
+        private bool     IsCheckedShowFirstOpen       { get; set; }         = false;
+        public  bool     IsOpenedAOAFirstOpen         { get; private set; } = false;
 
         [Preserve]
         public UITemplateAdServiceWrapper(
@@ -325,10 +325,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
-            if (this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession)
+            var isCheckCondition = this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession;
+            if (isOpenAppAOA && this.gameSessionDataController.OpenTime == 1)
             {
                 var aoaAvailable = string.Join(" | ", this.aoaAdServices.Select(aoa => aoa.GetType().Name + " isReady: " + aoa.IsAOAReady()));
-                this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: useAdmob: {this.adServicesConfig.UseAoaAdmob} | {aoaAvailable}");
+                this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAds firstopen: useAdmob: {this.adServicesConfig.UseAoaAdmob} | {aoaAvailable}");
                 foreach (var aoa in this.aoaAdServices.Where(aoaService => aoaService.IsAOAReady()))
                 {
                     #if ADMOB
@@ -345,8 +346,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 }
                 this.IsCheckedShowFirstOpen = true;
                 this.logService.Log($"huglog : return show first aoa ");
-                return;
             }
+            if (isCheckCondition) return;
             if (!isOpenAppAOA)
             {
                 if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
@@ -365,18 +366,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 #endif
 
                 this.signalBus.Fire(new AppOpenCalledSignal(placement));
-                if (isOpenAppAOA )
+
+                if (isOpenAppAOA && this.adServicesConfig.EnableAOAAd)
                 {
-                    if (this.adServicesConfig.EnableAOAAd || this.adServicesConfig.EnableAds)
-                    {
-                        aoa.ShowAOAAds(placement);
-                    }
+                    aoa.ShowAOAAds(placement);
+                    this.IsOpenedAOAFirstOpen = true;
                 }
                 if (!isOpenAppAOA && this.adServicesConfig.UseAoaResume)
                 {
                     aoa.ShowAOAAds(placement);
+                    this.IsOpenedAOAFirstOpen = true;
                 }
-                this.IsOpenedAOAFirstOpen   = true;
+                this.logService.Log($"huglog : end aoa this {LoadingTimeToShowAOA} ");
                 this.IsCheckedShowFirstOpen = true;
                 return;
             }

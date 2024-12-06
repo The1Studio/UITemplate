@@ -492,9 +492,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             async UniTaskVoid ShowDelayInter(Action action)
             {
-                await this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
                 this.InternalHideCollapsibleBannerAd();
-                this.ShowBannerAd(forceShowMediation: false);
+                await this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f), DelayType.UnscaledDeltaTime);
                 action.Invoke();
             }

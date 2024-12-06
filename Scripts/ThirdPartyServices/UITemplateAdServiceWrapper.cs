@@ -325,7 +325,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
             var isCheckCondition = this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession;
-            if (isOpenAppAOA && this.gameSessionDataController.OpenTime == 1) 
+            if (isOpenAppAOA && this.gameSessionDataController.OpenTime == 1)
             {
                 var aoaAvailable = string.Join(" | ", this.aoaAdServices.Select(aoa => aoa.GetType().Name + " isReady: " + aoa.IsAOAReady()));
                 this.logService.Log($"huglog: AdServiceWrapper: ShowAOAAds firstopen: useAdmob: {this.adServicesConfig.UseAoaAdmob} | {aoaAvailable}");
@@ -336,14 +336,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     #endif
                     this.signalBus.Fire(new AppOpenCalledSignal(placement));
                     this.logService.Log($"huglog : show first aoa {this.adServicesConfig.AoaFirstOpen} || {this.gameSessionDataController.OpenTime}");
-                    if (this.adServicesConfig.AoaFirstOpen)
+                    if (this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1)
                     {
                         this.logService.Log($"huglog : show first aoa ");
                         aoa.ShowAOAAds(placement);
-                        this.IsOpenedAOAFirstOpen   = true;
-                        this.IsCheckedShowFirstOpen = true;
+                        this.IsOpenedAOAFirstOpen = true;
                     }
                 }
+                this.IsCheckedShowFirstOpen = true;
                 return;
             }
             if (isCheckCondition) return;

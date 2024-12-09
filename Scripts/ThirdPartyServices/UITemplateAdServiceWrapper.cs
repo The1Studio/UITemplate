@@ -331,7 +331,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
 
-            if (!isOpenAppAOA && this.levelDataController.CurrentLevel >= this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAResumeAdStartSession)
+            if (!isOpenAppAOA && (this.levelDataController.CurrentLevel >= this.adServicesConfig.AOAResumeAdStartLevel || this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAResumeAdStartSession))
             {
                 if (this.adServicesConfig.IsIntersInsteadAoaResume && !this.adServicesConfig.UseAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null, true))
                 {

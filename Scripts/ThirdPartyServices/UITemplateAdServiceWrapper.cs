@@ -79,6 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     IsResumedFromAnotherServices { get; set; } // after Ads, IAP, permission, login, etc.
         private bool     IsCheckedShowFirstOpen       { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen         { get; private set; }
+        private bool     IsShowingAOA                 { get; set; }
 
         [Preserve]
         public UITemplateAdServiceWrapper(
@@ -307,7 +308,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (totalLoadingTime <= this.LoadingTimeToShowAOA)
             {
-                this.ShowAOAAdsIfAvailable(true);
+                this.ShowAOAAdsIfAvailable(true).Forget();
             }
             else
             {
@@ -318,18 +319,26 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public double LoadingTimeToShowAOA => this.adServicesConfig.AOALoadingThreshold;
 
-        private void ShowAOAAdsIfAvailable(bool isOpenAppAOA)
+        private async UniTaskVoid ShowAOAAdsIfAvailable(bool isOpenAppAOA)
         {
-            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume} ConsentCanRequestAds {this.consentInformation.CanRequestAds()}");
+            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume} ConsentCanRequestAds {this.consentInformation.CanRequestAds()} IsShowingAOA {this.IsShowingAOA}");
+            if (this.IsShowingAOA) return;
+            this.IsShowingAOA = true;
+
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
-            if (!this.consentInformation.CanRequestAds()) return;
             //add for Bravestar but look make sense so we will keep it
             if (isOpenAppAOA && this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession) return;
+            if (!this.consentInformation.CanRequestAds())
+            {
+                await UniTask.WaitUntil(() => !this.consentInformation.IsRequestingConsent());
+                if (!this.consentInformation.CanRequestAds()) return;
+            }
 
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
+            this.IsShowingAOA = false;
 
             if (!isOpenAppAOA)
             {
@@ -373,7 +382,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.IsResumedFromAnotherServices) return;
 
-            this.ShowAOAAdsIfAvailable(false);
+            this.ShowAOAAdsIfAvailable(false).Forget();
         }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)

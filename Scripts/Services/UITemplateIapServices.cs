@@ -98,10 +98,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.iapServices.RestorePurchases(onComplete);
         }
 
-        public bool IsProductOwned(string productId = "")
+        public bool IsProductOwned(string productId)
         {
-            //Todo check with pack ID
-            return this.uiTemplateShopPackBlueprint.Values.Where(x => x.RewardIdToRewardDatas.Count > 1).Any(shopPackRecord => this.uiTemplateIAPOwnerPackControllerData.IsOwnerPack(shopPackRecord.Id));
+            return this.uiTemplateShopPackBlueprint.Values.FirstOrDefault(x => x.Id.Equals(productId)) != null && this.uiTemplateIAPOwnerPackControllerData.IsOwnerPack(productId);
         }
 
         public ProductData GetProductData(string productId)

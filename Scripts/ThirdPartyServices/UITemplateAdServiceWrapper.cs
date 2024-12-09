@@ -320,21 +320,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void ShowAOAAdsIfAvailable(bool isOpenAppAOA)
         {
-            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume} ConsentCanRequestAds {this.consentInformation.CanRequestAds()}");
+            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume} ConsentCanRequestAds {this.consentInformation.CanRequestAds()} is aoaFirstTime {this.adServicesConfig.AoaFirstOpen}");
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (!this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1) return;
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
             if (!this.consentInformation.CanRequestAds()) return;
             //add for Bravestar but look make sense so we will keep it
-            if (isOpenAppAOA
-                && this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel 
-                && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession) return;
 
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
 
-            if (!isOpenAppAOA)
+            if (!isOpenAppAOA && this.levelDataController.CurrentLevel >= this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAResumeAdStartSession)
             {
                 if (this.adServicesConfig.IsIntersInsteadAoaResume && !this.adServicesConfig.UseAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null, true))
                 {

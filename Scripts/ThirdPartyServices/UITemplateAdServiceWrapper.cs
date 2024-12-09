@@ -335,10 +335,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.IsShowingAOA = true;
                 await UniTask.WaitUntil(() => !this.consentInformation.IsRequestingConsent());
                 this.IsShowingAOA = false;
-                if (!this.consentInformation.CanRequestAds())
-                {
-                    return;
-                }
+                if (!this.consentInformation.CanRequestAds()) return;
             }
 
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();

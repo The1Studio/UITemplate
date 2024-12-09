@@ -114,7 +114,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             UniTask.WhenAll(
                 this.CreateObjectPool(AudioService.AudioSourceKey, 3),
                 this.Preload(),
-                #if ADMOB || APPLOVIN
+                #if ADMOB || APPLOVIN || BYTEBREW
                 this.WaitForAoa(),
                 #endif
                 UniTask.WhenAll(

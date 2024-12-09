@@ -171,7 +171,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             await Resources.UnloadUnusedAssets().ToUniTask();
 
-            GCUtils.ForceGCWithLOH();
+            //GCUtils.ForceGCWithLOH();
 
             this.ShowFirstBannerAd(BannerLoadStrategy.AfterLoading);
             this.OnAfterLoading();

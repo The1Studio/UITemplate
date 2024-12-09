@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using GameFoundation.Signals;
+    using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -28,6 +29,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using UnityEngine.SceneManagement;
     using UnityEngine.Scripting;
     using UnityEngine.UI;
+    using Utilities.Utils;
     using Debug = UnityEngine.Debug;
     using Object = UnityEngine.Object;
 
@@ -36,10 +38,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         [SerializeField] private Slider          LoadingSlider;
         [SerializeField] private TextMeshProUGUI loadingProgressTxt;
 
+        private float visibleProgress;
+
         public float  Progress    { get; set; }
         public string LoadingText { get; set; }
-
-        private float visibleProgress;
 
         private void Update()
         {
@@ -64,55 +66,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
-        #region Inject
+        private float _loadingProgress;
+        private int   loadingSteps;
 
-        protected readonly UITemplateAdServiceWrapper adService;
-        protected readonly BlueprintReaderManager     blueprintManager;
-        protected readonly UserDataManager            userDataManager;
-        protected readonly IGameAssets                gameAssets;
-        private readonly   ObjectPoolManager          objectPoolManager;
-        private readonly   UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
-        private readonly   IAnalyticServices          analyticServices;
-
-        [Preserve]
-        protected UITemplateLoadingScreenPresenter(
-            SignalBus                  signalBus,
-            ILogService                logger,
-            UITemplateAdServiceWrapper adService,
-            BlueprintReaderManager     blueprintManager,
-            UserDataManager            userDataManager,
-            IGameAssets                gameAssets,
-            ObjectPoolManager          objectPoolManager,
-            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            IAnalyticServices          analyticServices
-        ) : base(signalBus, logger)
-        {
-            this.adService                  = adService;
-            this.blueprintManager           = blueprintManager;
-            this.userDataManager            = userDataManager;
-            this.gameAssets                 = gameAssets;
-            this.objectPoolManager          = objectPoolManager;
-            this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
-            this.analyticServices           = analyticServices;
-        }
-
-        #endregion
+        private GameObject objectPoolContainer;
 
         protected virtual string NextSceneName => "1.MainScene";
 
-        /// <summary>
-        /// Please fill loading text with format "Text {0}" where {0} is the value position."
-        /// </summary>
-        /// <param name="text"></param>
-        protected virtual string GetLoadingText()
-        {
-            return "Loading {0}%";
-        }
-
         private bool IsClosedFirstOpen { get; set; }
-
-        private float _loadingProgress;
-        private int   loadingSteps;
 
         private float LoadingProgress
         {
@@ -125,7 +86,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             }
         }
 
-        private GameObject objectPoolContainer;
+        /// <summary>
+        /// Please fill loading text with format "Text {0}" where {0} is the value position."
+        /// </summary>
+        /// <param name="text"></param>
+        protected virtual string GetLoadingText() { return "Loading {0}%"; }
 
         protected override void OnViewReady()
         {
@@ -179,10 +144,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Unsubscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
         }
 
-        private void OnAOAClosedHandler()
-        {
-            this.IsClosedFirstOpen = true;
-        }
+        private void OnAOAClosedHandler() { this.IsClosedFirstOpen = true; }
 
         protected virtual async UniTask LoadNextScene()
         {
@@ -207,7 +169,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 },
             });
 
-            Resources.UnloadUnusedAssets().ToUniTask().Forget();
+            await Resources.UnloadUnusedAssets().ToUniTask();
+
+            GCUtils.ForceGCWithLOH();
+
             this.ShowFirstBannerAd(BannerLoadStrategy.AfterLoading);
             this.OnAfterLoading();
         }
@@ -218,14 +183,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.adService.ShowBannerAd();
         }
 
-        protected virtual void OnAfterLoading()
-        {
-        }
+        protected virtual void OnAfterLoading() { }
 
-        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync()
-        {
-            return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false);
-        }
+        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 
         private UniTask LoadBlueprint()
         {
@@ -235,10 +195,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return this.blueprintManager.LoadBlueprint();
         }
 
-        private UniTask LoadUserData()
-        {
-            return this.TrackProgress(this.userDataManager.LoadUserData());
-        }
+        private UniTask LoadUserData() { return this.TrackProgress(this.userDataManager.LoadUserData()); }
 
         private UniTask WaitForAoa()
         {
@@ -246,35 +203,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             // sometimes AOA delay when shown, we need 0.5s to wait for it
             return this.TrackProgress(UniTask.WaitUntil(() =>
-                (this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && this.IsClosedFirstOpen)
-                || (!this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA))
+                    ((this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && this.IsClosedFirstOpen)
+                        || (!this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA))
+                    && !this.consentInformation.IsRequestingConsent()
+                )
             );
         }
 
-        protected virtual UniTask OnBlueprintLoaded()
-        {
-            return UniTask.CompletedTask;
-        }
+        protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
 
-        protected virtual UniTask OnUserDataLoaded()
-        {
-            return UniTask.CompletedTask;
-        }
+        protected virtual UniTask OnUserDataLoaded() { return UniTask.CompletedTask; }
 
-        protected virtual UniTask OnBlueprintAndUserDataLoaded()
-        {
-            return UniTask.CompletedTask;
-        }
+        protected virtual UniTask OnBlueprintAndUserDataLoaded() { return UniTask.CompletedTask; }
 
-        protected virtual UniTask OnLoadingCompleted()
-        {
-            return UniTask.CompletedTask;
-        }
+        protected virtual UniTask OnLoadingCompleted() { return UniTask.CompletedTask; }
 
-        protected virtual UniTask Preload()
-        {
-            return UniTask.CompletedTask;
-        }
+        protected virtual UniTask Preload() { return UniTask.CompletedTask; }
 
         protected UniTask PreloadAssets<T>(params object[] keys)
         {
@@ -329,5 +273,42 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 if (progress.Percent >= 1f) this.SignalBus.Unsubscribe<T>(UpdateProgress);
             }
         }
+
+        #region Inject
+
+        protected readonly UITemplateAdServiceWrapper adService;
+        protected readonly BlueprintReaderManager     blueprintManager;
+        protected readonly UserDataManager            userDataManager;
+        protected readonly IGameAssets                gameAssets;
+        private readonly   ObjectPoolManager          objectPoolManager;
+        private readonly   UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
+        private readonly   IAnalyticServices          analyticServices;
+        private readonly   IConsentInformation        consentInformation;
+
+        [Preserve]
+        protected UITemplateLoadingScreenPresenter(
+            SignalBus                  signalBus,
+            ILogService                logger,
+            UITemplateAdServiceWrapper adService,
+            BlueprintReaderManager     blueprintManager,
+            UserDataManager            userDataManager,
+            IGameAssets                gameAssets,
+            ObjectPoolManager          objectPoolManager,
+            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+            IAnalyticServices          analyticServices,
+            IConsentInformation        consentInformation
+        ) : base(signalBus, logger)
+        {
+            this.adService                  = adService;
+            this.blueprintManager           = blueprintManager;
+            this.userDataManager            = userDataManager;
+            this.gameAssets                 = gameAssets;
+            this.objectPoolManager          = objectPoolManager;
+            this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
+            this.analyticServices           = analyticServices;
+            this.consentInformation         = consentInformation;
+        }
+
+        #endregion
     }
 }

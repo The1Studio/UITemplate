@@ -325,8 +325,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.IsShowingAOA) return;
             if (!this.adServicesConfig.EnableAOAAd) return;
-            if (isOpenAppAOA && !this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1) return;
-            if (isOpenAppAOA && !this.adServicesConfig.AoaStartGame) return;
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
             
@@ -337,6 +335,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.IsShowingAOA = false;
                 if (!this.consentInformation.CanRequestAds()) return;
             }
+            if (isOpenAppAOA && !this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1) return;
+            if (isOpenAppAOA && !this.adServicesConfig.AoaStartGame) return;
 
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));

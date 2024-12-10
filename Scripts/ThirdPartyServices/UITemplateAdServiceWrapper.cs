@@ -325,11 +325,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.IsShowingAOA) return;
             if (!this.adServicesConfig.EnableAOAAd) return;
+            if (isOpenAppAOA && !this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1) return;
+            if (isOpenAppAOA && !this.adServicesConfig.AoaStartGame) return;
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
-            //add for Bravestar but look make sense so we will keep it
-            if (isOpenAppAOA && this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession) return;
-
+            
             if (!this.consentInformation.CanRequestAds())
             {
                 this.IsShowingAOA = true;
@@ -343,11 +343,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (!isOpenAppAOA)
             {
-                if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null, true))
+                if (this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession) return;
+                if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
                 {
                     this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: ShowInterstitialAd instead of AOA");
                     return;
                 }
+                if(!this.adServicesConfig.UseAoaResume) return;
             }
 
             var typeToAvailable = string.Join(" | ", this.aoaAdServices.Select(aoa => aoa.GetType().Name + " isReady: " + aoa.IsAOAReady()));

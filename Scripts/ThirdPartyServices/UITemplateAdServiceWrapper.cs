@@ -479,6 +479,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             async UniTaskVoid ShowDelayInter(Action action)
             {
+                this.InternalHideCollapsibleBannerAd();
                 await this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f), DelayType.UnscaledDeltaTime);
                 action.Invoke();
@@ -558,6 +559,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 mrecAdService.ShowMREC(placement, position, offset);
                 this.IsShowMRECAd = true;
+                this.ShowBannerAd(forceShowMediation: true);
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
             }
             else

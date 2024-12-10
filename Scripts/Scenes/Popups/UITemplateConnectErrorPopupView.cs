@@ -22,7 +22,7 @@
         public Image    ConnectingImage;
     }
 
-    [PopupInfo(nameof(UITemplateConnectErrorPopupView), true, false, true)]
+    [PopupInfo(nameof(UITemplateConnectErrorPopupView), true, false, isOverlay: true)]
     public class UITemplateConnectErrorPresenter : UITemplateBasePopupPresenter<UITemplateConnectErrorPopupView>
     {
         protected virtual double CheckTimeout        => 5;

@@ -7,6 +7,7 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -30,7 +31,8 @@
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
-            IEnumerable<AdServiceOrder>         adServiceOrders
+            IEnumerable<AdServiceOrder>         adServiceOrders,
+            IConsentInformation                 consentInformation
         ) : base(logService,
             adServicesConfig,
             signalBus,
@@ -44,7 +46,8 @@
             thirdPartiesConfig,
             screenManager,
             collapsibleBannerAd,
-            adServiceOrders)
+            adServiceOrders,
+            consentInformation)
         {
         }
 

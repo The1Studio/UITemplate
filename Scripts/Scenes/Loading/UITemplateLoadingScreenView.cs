@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using GameFoundation.Signals;
+    using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -202,8 +203,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             // sometimes AOA delay when shown, we need 0.5s to wait for it
             return this.TrackProgress(UniTask.WaitUntil(() =>
-                (this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && this.IsClosedFirstOpen)
-                || (!this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA))
+                    ((this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && this.IsClosedFirstOpen)
+                        || (!this.uiTemplateAdServiceWrapper.IsOpenedAOAFirstOpen && (DateTime.Now - startWaitingAoaTime).TotalSeconds > this.uiTemplateAdServiceWrapper.LoadingTimeToShowAOA))
+                    && !this.consentInformation.IsRequestingConsent()
+                )
             );
         }
 
@@ -280,6 +283,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         private readonly   ObjectPoolManager          objectPoolManager;
         private readonly   UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
         private readonly   IAnalyticServices          analyticServices;
+        private readonly   IConsentInformation        consentInformation;
 
         [Preserve]
         protected UITemplateLoadingScreenPresenter(
@@ -291,7 +295,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             IGameAssets                gameAssets,
             ObjectPoolManager          objectPoolManager,
             UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            IAnalyticServices          analyticServices
+            IAnalyticServices          analyticServices,
+            IConsentInformation        consentInformation
         ) : base(signalBus, logger)
         {
             this.adService                  = adService;
@@ -301,6 +306,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.objectPoolManager          = objectPoolManager;
             this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
             this.analyticServices           = analyticServices;
+            this.consentInformation         = consentInformation;
         }
 
         #endregion

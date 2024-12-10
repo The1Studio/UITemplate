@@ -49,6 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly ThirdPartiesConfig                  thirdPartiesConfig;
         private readonly IScreenManager                      screenManager;
         private readonly ICollapsibleBannerAd                collapsibleBannerAd;
+        private readonly IConsentInformation                 consentInformation;
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
@@ -78,6 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     IsResumedFromAnotherServices { get; set; } // after Ads, IAP, permission, login, etc.
         private bool     IsCheckedShowFirstOpen       { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen         { get; private set; }
+        private bool     IsShowingAOA                 { get; set; }
 
         [Preserve]
         public UITemplateAdServiceWrapper(
@@ -94,7 +96,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             ThirdPartiesConfig                  thirdPartiesConfig,
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
-            IEnumerable<AdServiceOrder>         adServiceOrders
+            IEnumerable<AdServiceOrder>         adServiceOrders,
+            IConsentInformation                 consentInformation
         )
         {
             this.adServices                = adServices.ToArray();
@@ -107,6 +110,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.thirdPartiesConfig        = thirdPartiesConfig;
             this.screenManager             = screenManager;
             this.collapsibleBannerAd       = collapsibleBannerAd;
+            this.consentInformation        = consentInformation;
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
@@ -151,7 +155,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<OnRequestPermissionStartSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
         }
-        
+
         private void OnOpenAOA(AppOpenFullScreenContentOpenedSignal obj)
         {
             this.IsResumedFromAnotherServices = true;
@@ -304,7 +308,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (totalLoadingTime <= this.LoadingTimeToShowAOA)
             {
-                this.ShowAOAAdsIfAvailable(true);
+                this.ShowAOAAdsIfAvailable(true).Forget();
             }
             else
             {
@@ -315,14 +319,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public double LoadingTimeToShowAOA => this.adServicesConfig.AOALoadingThreshold;
 
-        private void ShowAOAAdsIfAvailable(bool isOpenAppAOA)
+        private async UniTaskVoid ShowAOAAdsIfAvailable(bool isOpenAppAOA)
         {
-            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume}");
+            this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume} ConsentCanRequestAds {this.consentInformation.CanRequestAds()} IsShowingAOA {this.IsShowingAOA}");
+
+            if (this.IsShowingAOA) return;
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
             //add for Bravestar but look make sense so we will keep it
             if (isOpenAppAOA && this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession) return;
+
+            if (!this.consentInformation.CanRequestAds())
+            {
+                this.IsShowingAOA = true;
+                await UniTask.WaitUntil(() => !this.consentInformation.IsRequestingConsent());
+                this.IsShowingAOA = false;
+                if (!this.consentInformation.CanRequestAds()) return;
+            }
 
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
             this.signalBus.Fire(new AppOpenEligibleSignal(placement));
@@ -369,7 +383,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.IsResumedFromAnotherServices) return;
 
-            this.ShowAOAAdsIfAvailable(false);
+            this.ShowAOAAdsIfAvailable(false).Forget();
         }
 
         private void OnBannerAdPresented(BannerAdPresentedSignal obj)

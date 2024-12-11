@@ -4,6 +4,7 @@
     using System.Threading;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Signals;
     using UnityEngine.Scripting;
 
@@ -13,7 +14,9 @@
         protected BreakAdsPopupView       View;
         protected BreakAdsPopupPresenter  BreakAdsPopupPresenter;
         protected CancellationTokenSource Cts;
-
+        
+        public bool IsViewReady => BreakAdsPopupPresenter.ScreenStatus == ScreenStatus.Opened;
+        
         protected readonly SignalBus SignalBus;
 
         [Preserve]

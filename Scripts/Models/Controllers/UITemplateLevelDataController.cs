@@ -12,16 +12,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
     public class UITemplateLevelDataController : IUITemplateControllerData
     {
-        #region inject
-
-        private readonly UITemplateLevelBlueprint          uiTemplateLevelBlueprint;
-        private readonly UITemplateUserLevelData           uiTemplateUserLevelData;
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly SignalBus                         signalBus;
-        private readonly IHandleUserDataServices           handleUserDataServices;
-
-        #endregion
-
         [Preserve]
         public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices)
         {
@@ -34,38 +24,46 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public UITemplateItemData.UnlockType UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
 
-        public bool IsFeatureUnlocked(UITemplateItemData.UnlockType feature)
-        {
-            return (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0;
-        }
-
-        public void UnlockFeature(UITemplateItemData.UnlockType feature)
-        {
-            this.uiTemplateUserLevelData.UnlockedFeature |= feature;
-        }
-
         public int LastUnlockRewardLevel { get => this.uiTemplateUserLevelData.LastUnlockRewardLevel; set => this.uiTemplateUserLevelData.LastUnlockRewardLevel = value; }
 
-        public List<LevelData> GetAllLevels()
+        public int TotalLose => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.LoseCount);
+        public int TotalWin  => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.WinCount);
+
+        public LevelData GetCurrentLevelData => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);
+        public int       CurrentLevel        => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).Level;
+
+        public int MaxLevel
         {
-            return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList();
+            get
+            {
+                var levelDatas = this.uiTemplateUserLevelData.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus == LevelData.Status.Passed).ToList();
+
+                return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
+            }
         }
 
-        public IEnumerable<LevelData> GetAllLevelData()
+        public int TotalLevelSurpassed
         {
-            return this.uiTemplateUserLevelData.LevelToLevelData.Values;
+            get
+            {
+                var levelDatas = this.uiTemplateUserLevelData.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus != LevelData.Status.Locked).ToList();
+
+                return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
+            }
         }
 
-        public LevelData GetLevelData(int level)
-        {
-            return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new(level, LevelData.Status.Locked));
-        }
+        public bool IsFeatureUnlocked(UITemplateItemData.UnlockType feature) { return (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0; }
+
+        public void UnlockFeature(UITemplateItemData.UnlockType feature) { this.uiTemplateUserLevelData.UnlockedFeature |= feature; }
+
+        public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
+
+        public IEnumerable<LevelData> GetAllLevelData() { return this.uiTemplateUserLevelData.LevelToLevelData.Values; }
+
+        public LevelData GetLevelData(int level) { return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new(level, LevelData.Status.Locked)); }
 
         /// <summary>Have be called when level started</summary>
-        public void PlayCurrentLevel()
-        {
-            this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
-        }
+        public void PlayCurrentLevel() { this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel)); }
 
         /// <summary>
         /// Called when select a level in level selection screen
@@ -89,9 +87,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             this.handleUserDataServices.SaveAll();
         }
-
-        public int TotalLose => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.LoseCount);
-        public int TotalWin  => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.WinCount);
 
         /// <summary>
         /// Called when player win current level
@@ -121,28 +116,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.handleUserDataServices.SaveAll();
         }
 
-        public LevelData GetCurrentLevelData => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);
-        public int       CurrentLevel        => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).Level;
-
-        public int MaxLevel
-        {
-            get
-            {
-                var levelDatas = this.uiTemplateUserLevelData.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus == LevelData.Status.Passed).ToList();
-
-                return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
-            }
-        }
-
-        public int TotalLevelSurpassed
-        {
-            get
-            {
-                var levelDatas = this.uiTemplateUserLevelData.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus != LevelData.Status.Locked).ToList();
-
-                return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
-            }
-        }
+        public bool IsTouchedLevel(int level) { return this.MaxLevel + 1 >= level; }
 
         public bool CheckLevelIsUnlockedStatus(int level)
         {
@@ -204,5 +178,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             return 0;
         }
+
+        #region inject
+
+        private readonly UITemplateLevelBlueprint          uiTemplateLevelBlueprint;
+        private readonly UITemplateUserLevelData           uiTemplateUserLevelData;
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly SignalBus                         signalBus;
+        private readonly IHandleUserDataServices           handleUserDataServices;
+
+        #endregion
     }
 }

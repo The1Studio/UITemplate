@@ -5,6 +5,7 @@
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
     using GameFoundation.Signals;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.BraveStars;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
 
     public abstract class BaseAnalyticEventFactory : IAnalyticEventFactory
@@ -202,9 +203,13 @@
         {
             return new TutorialCompletion(success, tutorialId);
         }
-
         public virtual void ForceUpdateAllProperties()
         {
+        }
+        
+        public IEvent LevelAchieved(int level)
+        {
+            return new AchievedLevel(level);
         }
 
         public virtual string LevelMaxProperty                   => "level_max";

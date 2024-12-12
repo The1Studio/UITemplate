@@ -381,7 +381,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LastLevelProperty] = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
             this.Track(this.analyticEventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
-
+            this.Track(this.analyticEventFactory.LevelAchieved(obj.Level));
             if (obj.Level > 50) return;
             this.Track(new CustomEvent()
             {

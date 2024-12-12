@@ -67,6 +67,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level);
 
         IEvent TutorialCompletion(bool success, string tutorialId);
+        
+        IEvent LevelAchieved(int level);
 
         void ForceUpdateAllProperties();
 

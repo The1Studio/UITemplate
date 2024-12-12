@@ -21,30 +21,27 @@
             this.Track(new CustomEvent { EventName = $"af_inters_displayed_{this.uiTemplateAdsController.WatchInterstitialAds}_times" });
             #endif
         }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-            
-            this.signalBus.Subscribe<LevelStartedSignal>(this.AchievedLevelHandler);
-            this.signalBus.Subscribe<LevelEndedSignal>(this.LevelCompleteHandler);
-        }
         
-        private void AchievedLevelHandler()
+        protected override void LevelStartedHandler(LevelStartedSignal obj)
         {
+            base.LevelStartedHandler(obj);
+            
             this.analyticServices.Track(new CustomEvent
             {
                 EventName = "af_achieved_level"
             });
         }
-
-        private void LevelCompleteHandler(LevelEndedSignal obj)
+        
+        protected override void LevelEndedHandler(LevelEndedSignal obj)
         {
+            base.LevelEndedHandler(obj);
+            
             this.analyticServices.Track(new CustomEvent
             {
                 EventName = $"completed_level_{obj.Level}"
             });
         }
+        
 
         #region Inject
 

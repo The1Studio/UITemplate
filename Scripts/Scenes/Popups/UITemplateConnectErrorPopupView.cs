@@ -32,19 +32,16 @@
 
         protected virtual string        ReconnectButtonMessage    => "Reconnect";
         protected virtual string        ReconnectingButtonMessage => "Reconnecting";
-        private readonly  IRemoteConfig remoteConfig;
         [Preserve]
         public UITemplateConnectErrorPresenter(
             SignalBus        signalBus,
             ILogService      logger,
             IScreenManager   screenManager,
-            IInternetService internetService,
-            IRemoteConfig remoteConfig
+            IInternetService internetService
         ) : base(signalBus, logger)
         {
             this.screenManager   = screenManager;
             this.internetService = internetService;
-            this.remoteConfig    = remoteConfig;
         }
 
         public override UniTask BindData()
@@ -61,7 +58,6 @@
 
         protected virtual void OnConnectSuccess()
         {
-            this.remoteConfig.FetchDataAsync();
             this.CloseView();
         }
 

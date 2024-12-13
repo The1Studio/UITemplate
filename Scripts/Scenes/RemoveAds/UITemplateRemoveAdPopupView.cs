@@ -55,7 +55,7 @@
             this.uiTemplateIapServices.BuyProduct(
                 this.View.btnRemoveAds.gameObject,
                 this.ProductId,
-                _ =>
+                (_, _) =>
                 {
                     this.adServiceWrapper.RemoveAds();
                     this.CloseView();

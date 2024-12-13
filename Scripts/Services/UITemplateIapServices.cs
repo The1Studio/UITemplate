@@ -64,20 +64,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.iapServices.InitIapServices(dicData);
         }
 
-        public void BuyProduct(GameObject source, string productId, Action<string> onComplete = null, Action<string> onFail = null)
+        public void BuyProduct(GameObject source, string productId, Action<string, int> onComplete = null, Action<string> onFail = null)
         {
             this.logger.Warning($"BuyProduct {productId}");
 
             this.iapServices.BuyProductID(productId,
-                (x) =>
+                (x, quantity) =>
                 {
-                    this.OnPurchaseComplete(productId, source);
-                    onComplete?.Invoke(x);
+                    this.OnPurchaseComplete(productId, source, quantity);
+                    onComplete?.Invoke(x, quantity);
                 },
                 onFail);
         }
 
-        private void OnPurchaseComplete(string productId, GameObject source)
+        private void OnPurchaseComplete(string productId, GameObject source, int quantity)
         {
             var dataShopPackRecord = this.uiTemplateShopPackBlueprint[productId];
             this.uiTemplateIAPOwnerPackControllerData.AddPack(productId);
@@ -85,12 +85,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             var rewardItemData = dataShopPackRecord.RewardIdToRewardDatas.ToDictionary(keyPairValue => keyPairValue.Key,
                 keyPairValue => new UITemplateRewardItemData(keyPairValue.Value.RewardValue, keyPairValue.Value.Repeat, keyPairValue.Value.AddressableFlyingItem));
 
-            if (rewardItemData.Count > 0) this.uiTemplateRewardHandler.AddRewardsWithPackId(productId, rewardItemData, source);
+            if (rewardItemData.Count <= 0) return;
+            for (var i = 0; i < quantity; i++)
+            {
+                this.uiTemplateRewardHandler.AddRewardsWithPackId(productId, rewardItemData, source);
+            }
         }
 
         private void OnHandleRestorePurchase(OnRestorePurchaseCompleteSignal obj)
         {
-            this.OnPurchaseComplete(obj.ProductID, null);
+            this.OnPurchaseComplete(obj.ProductID, null, obj.Quantity);
         }
 
         public void RestorePurchase(Action onComplete = null)

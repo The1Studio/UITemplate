@@ -23,7 +23,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
 
     public class UITemplateStaterPackModel
     {
-        public Action<string> OnComplete { get; set; }
+        public Action<string, int> OnComplete { get; set; }
     }
 
     public class UITemplateStaterPackScreenView : BaseView
@@ -103,10 +103,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         {
             this.uiTemplateIapServices.BuyProduct(this.View.btnBuy.gameObject,
                 this.iapPack,
-                (x) =>
+                (x, quantity) =>
                 {
                     this.CloseView();
-                    this.Model.OnComplete?.Invoke(x);
+                    this.Model.OnComplete?.Invoke(x, quantity);
                 });
         }
 

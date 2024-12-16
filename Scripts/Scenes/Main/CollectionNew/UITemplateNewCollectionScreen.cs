@@ -308,7 +308,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             });
         }
 
-        protected virtual void OnBuyStartedPackComplete(string packId)
+        protected virtual void OnBuyStartedPackComplete(string packId, int quantity)
         {
         }
 
@@ -371,7 +371,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private void BuyWithIAP(ItemCollectionItemModel obj)
         {
             this.iapServices.BuyProductID(obj.ShopBlueprintRecord.Id,
-                x =>
+                (x, quantity) =>
                 {
                     this.BuyItemCompleted(obj);
                 });

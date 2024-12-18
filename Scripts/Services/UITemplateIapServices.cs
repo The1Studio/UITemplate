@@ -97,9 +97,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.OnPurchaseComplete(obj.ProductID, null, obj.Quantity);
         }
 
-        public void RestorePurchase(Action onComplete = null)
+        public void RestorePurchase(Action onComplete = null, Action onFail = null)
         {
-            this.iapServices.RestorePurchases(onComplete);
+            Action onCompleteCallback = () => this.uiTemplateIAPOwnerPackControllerData.SetRestoredPurchase();
+            onCompleteCallback += onComplete;
+            this.iapServices.RestorePurchases(onCompleteCallback, onFail);
         }
 
         public bool IsProductOwned(string productId)
@@ -116,6 +118,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             return this.iapServices.GetPriceById(productId, defaultPrice);
         }
+
+        public bool IsRestoredPurchase() => this.uiTemplateIAPOwnerPackControllerData.IsRestoredPurchase();
 
         public void Initialize()
         {

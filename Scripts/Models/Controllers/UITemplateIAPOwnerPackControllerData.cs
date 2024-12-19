@@ -23,5 +23,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             return this.uiTemplateIAPOwnerPackData.OwnedPacks.Contains(packId);
         }
+
+        public void SetRestoredPurchase() => this.uiTemplateIAPOwnerPackData.IsRestoredPurchase = true;
+
+        public bool IsRestoredPurchase() => this.uiTemplateIAPOwnerPackData.IsRestoredPurchase;
     }
 }

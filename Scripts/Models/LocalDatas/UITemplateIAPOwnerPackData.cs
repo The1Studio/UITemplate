@@ -11,6 +11,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     {
         public List<string> OwnedPacks { get; set; } = new();
 
+        public bool IsRestoredPurchase { get; set; }
+
         public void Init()
         {
         }

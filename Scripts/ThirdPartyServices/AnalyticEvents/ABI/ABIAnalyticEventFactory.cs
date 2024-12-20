@@ -6,18 +6,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using GameFoundation.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
-    using GameFoundation.Signals;
     using UnityEngine.Scripting;
 
     public class ABIAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        private readonly IAnalyticServices analyticEvents;
-        private readonly SignalBus         signalBus;
+        private readonly UITemplateGameSessionDataController sessionDataController;
 
         [Preserve]
-        public ABIAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
+        public ABIAnalyticEventFactory(
+            SignalBus                           signalBus,
+            IAnalyticServices                   analyticServices,
+            UITemplateGameSessionDataController sessionDataController
+        ) : base(signalBus, analyticServices)
+        {
+            this.sessionDataController = sessionDataController;
+        }
 
         public override string LevelMaxProperty             => "level_max";
         public override string LastLevelProperty            => "last_level";
@@ -99,9 +106,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelFail(level, loseCount);
 
-        public override IEvent LevelStart(int level, int gold) => new LevelStart(level, gold);
+        public override IEvent LevelStart(int level, int gold) => new LevelStart(level, gold, this.sessionDataController.OpenTime);
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelComplete(level, timeSpent);
+        public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelComplete(level, timeSpent, this.sessionDataController.OpenTime);
 
         public override IEvent FirstWin(int level, int timeSpent) => new LevelAchieved(level, timeSpent);
 

@@ -8,6 +8,7 @@
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
@@ -15,7 +16,7 @@
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using UnityEngine;
 
-    public abstract class BaseUnityNotificationService : INotificationService, IDisposable
+    public abstract class BaseUnityNotificationService : INotificationService, IInitializable, IDisposable
     {
         #region Inject
 
@@ -54,9 +55,9 @@
             this.Logger                              = logger;
             this.AnalyticServices                    = analyticServices;
             this.PermissionService                   = permissionService;
-
-            this.SignalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintComplete);
         }
+
+        public void Initialize() => this.SignalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintComplete);
 
         private async void OnLoadBlueprintComplete(LoadBlueprintDataSucceedSignal obj)
         {

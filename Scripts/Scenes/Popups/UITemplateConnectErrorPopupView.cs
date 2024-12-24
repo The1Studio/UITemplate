@@ -6,7 +6,6 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
-    using ServiceImplementation.FireBaseRemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
@@ -23,15 +22,16 @@
         public Image    ConnectingImage;
     }
 
-    [PopupInfo(nameof(UITemplateConnectErrorPopupView), true, false, isOverlay: true)]
+    [PopupInfo(nameof(UITemplateConnectErrorPopupView), true, false, true)]
     public class UITemplateConnectErrorPresenter : UITemplateBasePopupPresenter<UITemplateConnectErrorPopupView>
     {
         protected virtual double CheckTimeout        => 5;
         protected virtual string ConnectingMessage   => "Trying to reconnect...\nPlease wait...";
         protected virtual string ConnectErrorMessage => "Your connection has been lost!\nCheck your internet connection and try again";
 
-        protected virtual string        ReconnectButtonMessage    => "Reconnect";
-        protected virtual string        ReconnectingButtonMessage => "Reconnecting";
+        protected virtual string ReconnectButtonMessage    => "Reconnect";
+        protected virtual string ReconnectingButtonMessage => "Reconnecting";
+
         [Preserve]
         public UITemplateConnectErrorPresenter(
             SignalBus        signalBus,

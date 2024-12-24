@@ -79,11 +79,11 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         [NonSerialized]
         private static readonly Dictionary<string, string> PackagesVersionToUse = new()
         {
-            { "com.google.ads.mobile", "9.4.0" },
+            { "com.google.ads.mobile", "9.5.0" },
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
             { "jp.hadashikick.vcontainer", "1.16.6" },
-            { "com.coffee.ui-effect", "5.0.0" }
+            { "com.coffee.ui-effect", "5.0.1" }
         };
 
         [NonSerialized]

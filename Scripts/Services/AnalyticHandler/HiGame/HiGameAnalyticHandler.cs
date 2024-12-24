@@ -3,6 +3,7 @@
 #if HIGAME
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -24,9 +25,10 @@
                                      UITemplateDailyRewardController uiTemplateDailyRewardController,
                                      UITemplateAdsController uiTemplateAdsController,
                                      UITemplateGameSessionDataController uITemplateGameSessionDataController,
-                                     HiGameLocalData hiGameLocalData)
+                                     HiGameLocalData hiGameLocalData,
+                                     IScreenManager screenManager)
             : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController,
-                uiTemplateDailyRewardController, uITemplateGameSessionDataController)
+                uiTemplateDailyRewardController, uITemplateGameSessionDataController,screenManager)
         {
             this.hiGameLocalData = hiGameLocalData;
         }

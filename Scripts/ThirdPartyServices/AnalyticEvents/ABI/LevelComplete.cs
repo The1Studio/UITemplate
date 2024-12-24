@@ -6,11 +6,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
     {
         public int Level;
         public int TimeSpent;
+        public int Session;
 
-        public LevelComplete(int level, int timeSpent)
+        public LevelComplete(int level, int timeSpent, int session)
         {
             this.Level     = level;
             this.TimeSpent = timeSpent;
+            this.Session   = session;
         }
     }
 

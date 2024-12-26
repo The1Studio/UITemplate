@@ -56,9 +56,10 @@
 
         public override UniTask BindData()
         {
-            this.uITemplateAdServiceWrapper.HideBannerAd();
             this.uITemplateAdServiceWrapper.HideAllMRec();
+            if (!this.thirdPartiesConfig.AdSettings.IsEnableBreakAdsBanner) this.uITemplateAdServiceWrapper.HideBannerAd();
             this.SetupUI();
+
             return this.breakAdsViewHelper.BindData();
         }
 
@@ -83,6 +84,7 @@
 
         public override void Dispose()
         {
+            if (!this.thirdPartiesConfig.AdSettings.IsEnableBreakAdsBanner) this.uITemplateAdServiceWrapper.ShowBannerAd();
             this.breakAdsViewHelper.Dispose();
         }
     }

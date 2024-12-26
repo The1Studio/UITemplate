@@ -575,9 +575,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void HideMREC(string placement, AdScreenPosition position)
         {
-            this.ResetMRECCts();
-            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position, default)).ToList();
+            this.RefreshMRECCts?.Cancel();
+            this.RefreshMRECCts?.Dispose();
+            this.RefreshMRECCts = null;
 
+            var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position, default)).ToList();
             if (mrecAdServices.Count > 0)
             {
                 this.IsShowMRECAd = false;
@@ -608,13 +610,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                         this.DestroyMREC(this.mrecPlacement, this.mrecPosition);
                         this.ShowMREC(this.mrecPlacement, this.mrecPosition, this.mrecOffset);
                     }).Forget();
-        }
-        
-        private void ResetMRECCts()
-        {
-            this.RefreshMRECCts?.Cancel();
-            this.RefreshMRECCts?.Dispose();
-            this.RefreshMRECCts = null;
         }
 
         private void OnRemoveAdsComplete()

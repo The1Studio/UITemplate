@@ -22,6 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
+    using Sirenix.Utilities;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Loading;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
@@ -573,6 +574,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 foreach (var mrecAdService in mrecAdServices) mrecAdService.HideMREC(placement, position);
                 this.logService.Log($"onelog: HideMREC, placement: {placement}");
             }
+        }
+
+        public virtual void HideAllMRec()
+        {
+            this.mrecAdServices.ForEach(mrecAdService => mrecAdService.HideAllMREC());
+            this.logService.Log($"onelog: HideAllMREC");
         }
 
         private void OnRemoveAdsComplete()

@@ -8,6 +8,7 @@
     using ServiceImplementation.Configs;
     using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
     using UnityEngine;
     using UnityEngine.Scripting;
@@ -28,6 +29,7 @@
         private readonly BreakAdsViewHelper                breakAdsViewHelper;
         private readonly ThirdPartiesConfig                thirdPartiesConfig;
         private readonly UITemplateInventoryDataController inventoryDataController;
+        private readonly UITemplateAdServiceWrapper        uITemplateAdServiceWrapper;
 
         [Preserve]
         public BreakAdsPopupPresenter(
@@ -35,12 +37,14 @@
             ILogService                       logger,
             BreakAdsViewHelper                breakAdsViewHelper,
             ThirdPartiesConfig                thirdPartiesConfig,
-            UITemplateInventoryDataController inventoryDataController
+            UITemplateInventoryDataController inventoryDataController,
+            UITemplateAdServiceWrapper        uITemplateAdServiceWrapper
         ) : base(signalBus, logger)
         {
-            this.breakAdsViewHelper      = breakAdsViewHelper;
-            this.thirdPartiesConfig      = thirdPartiesConfig;
-            this.inventoryDataController = inventoryDataController;
+            this.breakAdsViewHelper         = breakAdsViewHelper;
+            this.thirdPartiesConfig         = thirdPartiesConfig;
+            this.inventoryDataController    = inventoryDataController;
+            this.uITemplateAdServiceWrapper = uITemplateAdServiceWrapper;
         }
 
         #endregion
@@ -52,6 +56,8 @@
 
         public override UniTask BindData()
         {
+            this.uITemplateAdServiceWrapper.HideBannerAd();
+            this.uITemplateAdServiceWrapper.HideAllMRec();
             this.SetupUI();
             return this.breakAdsViewHelper.BindData();
         }

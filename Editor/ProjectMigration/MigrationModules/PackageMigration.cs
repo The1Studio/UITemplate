@@ -82,7 +82,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.google.ads.mobile", "9.5.0" },
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
-            { "jp.hadashikick.vcontainer", "1.16.6" },
+            { "jp.hadashikick.vcontainer", "1.16.7" },
             { "com.coffee.ui-effect", "5.0.1" }
         };
 

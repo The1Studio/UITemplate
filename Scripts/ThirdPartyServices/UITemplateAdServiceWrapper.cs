@@ -605,6 +605,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus || Time.unscaledDeltaTime < 1)
             {
                 this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
+                Debug.LogError($"time interval {this.totalNoAdsPlayingTime}");
             }
         }
 

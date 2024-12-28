@@ -593,6 +593,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public void Tick()
         {
+            Debug.LogError($"EnableInterCappingTimeFocus1: {this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus}");
+            Debug.LogError($"ShowAOA {this.IsShowingAOA}");
             // Problem: Time.unscaledDeltaTime is still incrementing when the game is paused, so if we somehow pause the game, the capping time will be increased
             // Solution: Time.unscaledDeltaTime is count from the last frame to current frame, so if the time between 2 frames is too long, we will not increase the capping time
             // If EnableInterCappingTimeFocus is set to false, we will keep the existing capping time behavior
@@ -600,6 +602,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.IsShowingAOA && (!this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus || Time.unscaledDeltaTime < 1))
             {
                 this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
+                Debug.LogError($"EnableInterCappingTimeFocus2: {this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus}");
             }
 
             if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession) this.CheckShowFirstOpen();

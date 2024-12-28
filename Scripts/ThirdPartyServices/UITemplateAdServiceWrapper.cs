@@ -603,6 +603,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession) this.CheckShowFirstOpen();
+            Debug.LogError($"time interval: {this.totalNoAdsPlayingTime}");
         }
 
         public void RemoveAds()

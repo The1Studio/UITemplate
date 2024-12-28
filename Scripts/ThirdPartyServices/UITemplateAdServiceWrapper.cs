@@ -604,9 +604,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.IsAOAEnable && (!this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus || Time.unscaledDeltaTime < 1))
             {
                 this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
-                Debug.LogError($"EnableInterCappingTimeFocus2: {this.thirdPartiesConfig.AdSettings.EnableInterCappingTimeFocus}");
+                Debug.LogError($"time interval: {this.totalNoAdsPlayingTime}");
             }
-            Debug.LogError($"time interval: {this.totalNoAdsPlayingTime}");
         }
 
         public void RemoveAds()

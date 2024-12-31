@@ -130,8 +130,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1401844620283917471}
   - component: {fileID: 1401844620283917456}
-  - component: {fileID: 1401844620283917457}
   - component: {fileID: 1401844620283917470}
+  - component: {fileID: 7971938964214571211}
   m_Layer: 5
   m_Name: ToastController
   m_TagString: Untagged
@@ -184,29 +184,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 600
   m_TargetDisplay: 0
---- !u!114 &1401844620283917457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1401844620283917459}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1080, y: 1920}
-  m_ScreenMatchMode: 1
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!114 &1401844620283917470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,6 +201,28 @@ MonoBehaviour:
   centerObj: {fileID: 1401844621323349967}
   toastObj: {fileID: 1401844619362971878}
   txtToast: {fileID: 1401844621014999071}
+--- !u!114 &7971938964214571211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401844620283917459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
 --- !u!1 &1401844620379765769
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +334,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Toast Content
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 33983f9dd30580c4a97167de7b1dc8a3, type: 2}
   m_sharedMaterial: {fileID: 355072334792139725, guid: 0b1f9897ebe8f854499b261223ad4dd3,
     type: 2}
   m_fontSharedMaterials: []
@@ -402,7 +401,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &1401844621323349967

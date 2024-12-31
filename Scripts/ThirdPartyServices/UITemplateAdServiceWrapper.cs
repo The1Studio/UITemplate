@@ -327,7 +327,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
-            
+            //add for Bravestar but look make sense so we will keep it
+            if (!isOpenAppAOA && this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession) return;
+
             if (!this.consentInformation.CanRequestAds())
             {
                 this.IsShowingAOA = true;
@@ -335,21 +337,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.IsShowingAOA = false;
                 if (!this.consentInformation.CanRequestAds()) return;
             }
-            if (isOpenAppAOA && !this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1) return;
-            if (isOpenAppAOA && !this.adServicesConfig.AoaStartGame) return;
 
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
-            this.signalBus.Fire(new AppOpenEligibleSignal(placement));
 
             if (!isOpenAppAOA)
             {
-                if (this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession) return;
-                if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
+                this.signalBus.Fire(new AppOpenEligibleSignal(placement)); // fire here instead of outside because we already fire the eligible signal in CheckShowFirstOpen
+                if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null, true))
                 {
                     this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable: ShowInterstitialAd instead of AOA");
                     return;
                 }
-                if(!this.adServicesConfig.UseAoaResume) return;
             }
 
             var typeToAvailable = string.Join(" | ", this.aoaAdServices.Select(aoa => aoa.GetType().Name + " isReady: " + aoa.IsAOAReady()));
@@ -479,7 +477,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             async UniTaskVoid ShowDelayInter(Action action)
             {
-                this.InternalHideCollapsibleBannerAd();
                 await this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f), DelayType.UnscaledDeltaTime);
                 action.Invoke();
@@ -559,7 +556,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 mrecAdService.ShowMREC(placement, position, offset);
                 this.IsShowMRECAd = true;
-                this.ShowBannerAd(forceShowMediation: true);
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
             }
             else

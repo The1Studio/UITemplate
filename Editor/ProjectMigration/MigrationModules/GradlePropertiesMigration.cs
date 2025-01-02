@@ -14,7 +14,6 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         {
             {"org.gradle.daemon", "false"},
             {"org.gradle.caching", "true"},
-            {"org.gradle.build-scan", "true"},
             {"org.gradle.console", "plain"},
             {"org.gradle.logging.level", "info"},
             {"android.useAndroidX", "true"},

@@ -78,7 +78,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Subscribe<ScreenShowSignal>(this.ScreenShowHandler);
-            
+
             //Banner ads
             this.signalBus.Subscribe<BannerAdLoadedSignal>(this.BannerShowHandler);
             this.signalBus.Subscribe<BannerAdLoadedSignal>(this.BannerLoadHandler);
@@ -391,7 +391,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void UpdateCurrencyHandler(OnUpdateCurrencySignal obj)
         {
-            var valueScreenId = obj.Source ?? this.screenManager.CurrentActiveScreen.Value.ScreenId;
+            var valueScreenId = obj.Source ?? this.screenManager.CurrentActiveScreen.Value?.ScreenId;
             var level         = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
             if (obj.Amount > 0)
             {

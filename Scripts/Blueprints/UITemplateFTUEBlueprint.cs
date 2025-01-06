@@ -41,7 +41,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     [Preserve]
     public class RequireCondition
     {
-        public string RequireId       { get; [Preserve] set; }
-        public string ConditionDetail { get; [Preserve] set; }
+        [JsonProperty] public string RequireId       { get; [Preserve] private set; }
+        [JsonProperty] public string ConditionDetail { get; [Preserve] private set; }
     }
 }

@@ -6,23 +6,31 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services.Highlight;
     using UnityEngine;
     using UnityEngine.Scripting;
 
     public class UITemplateFTUEController
     {
-        private readonly HighlightController     highlightController;
-        private readonly UITemplateFTUEBlueprint uiTemplateFtueBlueprint;
-        private readonly SignalBus               signalBus;
-        private          string                  currentActiveStepId;
+        private readonly HighlightController               highlightController;
+        private readonly UITemplateFTUEBlueprint           uiTemplateFtueBlueprint;
+        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
+        private readonly SignalBus                         signalBus;
+        private          string                            currentActiveStepId;
 
         [Preserve]
-        public UITemplateFTUEController(HighlightController highlightController, UITemplateFTUEBlueprint uiTemplateFtueBlueprint, SignalBus signalBus)
+        public UITemplateFTUEController(
+            HighlightController               highlightController,
+            UITemplateFTUEBlueprint           uiTemplateFtueBlueprint,
+            UITemplateInventoryDataController uiTemplateInventoryDataController,
+            SignalBus                         signalBus
+        )
         {
-            this.highlightController     = highlightController;
-            this.uiTemplateFtueBlueprint = uiTemplateFtueBlueprint;
-            this.signalBus               = signalBus;
+            this.highlightController               = highlightController;
+            this.uiTemplateFtueBlueprint           = uiTemplateFtueBlueprint;
+            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
+            this.signalBus                         = signalBus;
         }
 
         public bool ThereIsFTUEActive()
@@ -58,6 +66,11 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
                     this.signalBus.Fire(new FTUEButtonClickSignal(stepId));
                 });
             this.highlightController.ConfigHand(TypeConfigHand.AllAppear, record.HandSizeDelta, record.Radius, record.HandAnchor, record.HandRotation);
+            var highLightObject = this.highlightController.GetHighlightedObject();
+            if (highLightObject != null)
+            {
+                this.signalBus.Fire(new FTUEShowTooltipSignal(stepId, highLightObject));
+            }
         }
     }
 }

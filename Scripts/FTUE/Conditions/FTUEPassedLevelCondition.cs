@@ -24,7 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 
         protected override bool IsPassedCondition(FTUEPassedLevelConditionModel data)
         {
-            return this.uiTemplateLevelDataController.CurrentLevel >= data.Level;
+            return this.uiTemplateLevelDataController.MaxLevel >= data.Level;
         }
     }
 }

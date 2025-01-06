@@ -100,6 +100,10 @@
             foreach (var gameObject in enableObjectSet) gameObject.SetActive(true);
 
             var disableObjectSet = this.StepIdToDisableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            if (!this.uiTemplateFtueDataController.IsRewardedStep(stepId))
+            {
+                this.uiTemplateFtueDataController.GiveReward(stepId);
+            }
             this.uiTemplateFtueController.DoActiveFTUE(stepId, disableObjectSet);
         }
 

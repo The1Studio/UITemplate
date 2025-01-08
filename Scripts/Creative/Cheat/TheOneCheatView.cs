@@ -1,13 +1,16 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
 {
+    using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
+    using DG.DemiEditor;
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Signals;
     using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
+    using TheOneStudio.UITemplate.UITemplate.Creative.ChangeBGColor;
     using TheOneStudio.UITemplate.UITemplate.Creative.CheatLevel;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -25,6 +28,11 @@
         [BoxGroup("Currency")] public Button                btnAddCurrency;
         [BoxGroup("Level")]    public TMP_InputField        inputLevel;
         [BoxGroup("Level")]    public Button                btnChangeLevel;
+
+        [BoxGroup("GameplayBGColor")] public TMP_InputField txtHexCode;
+        [BoxGroup("GameplayBGColor")] public Button         btnChangeColor;
+        [BoxGroup("GameplayBGColor")] public List<Slider>   listSlider;
+        [BoxGroup("GameplayBGColor")] public Image          backgroundTest;
 
         protected ICheatDetector cheatDetector;
 
@@ -53,6 +61,10 @@
             this.btnAddCurrency.onClick.AddListener(this.OnAddCurrencyClick);
             this.btnClose.onClick.AddListener(this.OnCloseView);
             this.btnChangeLevel.onClick.AddListener(this.OnChangeLevelClick);
+            
+            this.btnChangeColor.onClick.AddListener(this.ChangeGameplayBGColor);
+            this.listSlider.ForEach(slider => slider.onValueChanged.AddListener(this.OnSliderValueChanged));
+            this.txtHexCode.onValueChanged.AddListener(this.ChangeHexcimal);
 
             this.cheatDetector = this.gameFeaturesSetting.cheatActiveBy switch
             {
@@ -110,5 +122,29 @@
             this.ddCurrency.ClearOptions();
             this.ddCurrency.AddOptions(this.currencyBlueprint.Keys.ToList());
         }
+
+        protected void OnSliderValueChanged(float value)
+        {
+            var color = new Color(this.listSlider[0].value, this.listSlider[1].value, this.listSlider[2].value, this.listSlider[3].value);
+            this.backgroundTest.color = color;
+        }
+
+        protected void ChangeHexcimal(string text)
+        {
+            if (ColorUtility.TryParseHtmlString(text, out Color color))
+            {
+                if (this.backgroundTest != null)
+                {
+                    this.backgroundTest.color = color;
+                }
+                else
+                {
+                    Debug.LogError("Target image is not assigned.");
+                }
+            }
+        }
+
+        protected void ChangeGameplayBGColor()
+            => this.signalBus.Fire(new ChangeBGColorSignal(this.txtHexCode.text, this.listSlider[0].value, this.listSlider[1].value, this.listSlider[2].value, this.listSlider[3].value));
     }
 }

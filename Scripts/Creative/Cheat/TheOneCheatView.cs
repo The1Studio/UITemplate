@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using Cysharp.Threading.Tasks;
-    using DG.DemiEditor;
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Signals;
@@ -61,7 +60,7 @@
             this.btnAddCurrency.onClick.AddListener(this.OnAddCurrencyClick);
             this.btnClose.onClick.AddListener(this.OnCloseView);
             this.btnChangeLevel.onClick.AddListener(this.OnChangeLevelClick);
-            
+
             this.btnChangeColor.onClick.AddListener(this.ChangeGameplayBGColor);
             this.listSlider.ForEach(slider => slider.onValueChanged.AddListener(this.OnSliderValueChanged));
             this.txtHexCode.onValueChanged.AddListener(this.ChangeHexcimal);

@@ -110,7 +110,7 @@
 
         public GameObject GetHighlightedObject()
         {
-            return this.highlightObjects[0].gameObject;
+            return this.highlightObjects is { Count: > 0 } ? this.highlightObjects[0].gameObject : null;
         }
 
         public void TurnOffHighlight()

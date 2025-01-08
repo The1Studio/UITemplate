@@ -31,6 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         public Vector2                 HandSizeDelta          { get; [Preserve] private set; }
         public Dictionary<string, int> BonusOnStart           { get; [Preserve] private set; }
         public string                  TooltipText            { get; [Preserve] private set; }
+        public bool                    HideOnComplete         { get; [Preserve] private set; }
 
         public List<RequireCondition> GetRequireCondition()
         {

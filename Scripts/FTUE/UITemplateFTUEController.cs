@@ -13,25 +13,24 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
     public class UITemplateFTUEController
     {
-        private readonly HighlightController               highlightController;
-        private readonly UITemplateFTUEBlueprint           uiTemplateFtueBlueprint;
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly SignalBus                         signalBus;
-        private          string                            currentActiveStepId;
+        private readonly HighlightController     highlightController;
+        private readonly UITemplateFTUEBlueprint uiTemplateFtueBlueprint;
+        private readonly SignalBus               signalBus;
+        private          string                  currentActiveStepId;
 
         [Preserve]
         public UITemplateFTUEController(
-            HighlightController               highlightController,
-            UITemplateFTUEBlueprint           uiTemplateFtueBlueprint,
-            UITemplateInventoryDataController uiTemplateInventoryDataController,
-            SignalBus                         signalBus
+            HighlightController     highlightController,
+            UITemplateFTUEBlueprint uiTemplateFtueBlueprint,
+            SignalBus               signalBus
         )
         {
-            this.highlightController               = highlightController;
-            this.uiTemplateFtueBlueprint           = uiTemplateFtueBlueprint;
-            this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
-            this.signalBus                         = signalBus;
+            this.highlightController     = highlightController;
+            this.uiTemplateFtueBlueprint = uiTemplateFtueBlueprint;
+            this.signalBus               = signalBus;
         }
+
+        private GameObject highlightedObject;
 
         public bool ThereIsFTUEActive()
         {
@@ -46,6 +45,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
 
             if (string.IsNullOrEmpty(record.HighLightPath)) return;
+            if (this.uiTemplateFtueBlueprint[stepId].HideOnComplete)
+            {
+                this.highlightedObject.SetActive(false);
+            }
             this.highlightController.TurnOffHighlight();
         }
 
@@ -66,10 +69,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
                     this.signalBus.Fire(new FTUEButtonClickSignal(stepId));
                 });
             this.highlightController.ConfigHand(TypeConfigHand.AllAppear, record.HandSizeDelta, record.Radius, record.HandAnchor, record.HandRotation);
-            var highLightObject = this.highlightController.GetHighlightedObject();
-            if (highLightObject != null)
+            this.highlightedObject = this.highlightController.GetHighlightedObject();
+            if (this.highlightedObject != null)
             {
-                this.signalBus.Fire(new FTUEShowTooltipSignal(stepId, highLightObject));
+                this.signalBus.Fire(new FTUEShowTooltipSignal(stepId, this.highlightedObject));
             }
         }
     }

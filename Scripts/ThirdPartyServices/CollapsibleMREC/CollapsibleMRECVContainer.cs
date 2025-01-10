@@ -1,20 +1,20 @@
 ﻿#if GDK_VCONTAINER
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.CollapsibleMREC
 {
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using ServiceImplementation.Configs.Ads;
+    using GameFoundation.DI;
+    using GameFoundation.Scripts.AssetLibrary;
+    using UnityEngine;
     using VContainer;
     using VContainer.Unity;
 
     public static class CollapsibleMRECVContainer
     {
-        public static void RegisterCollapsibleMREC(this IContainerBuilder builder, CollapsibleMRECAd collapsibleMRECAd)
+        private static CollapsibleMRECAd collapsibleMRECAd;
+        
+        public static void RegisterCollapsibleMREC(this IContainerBuilder builder, Transform parent)
         {
-            builder.RegisterComponentInNewPrefab(collapsibleMRECAd, Lifetime.Singleton);
-            builder.RegisterBuildCallback(container =>
-                container.Resolve<CollapsibleMRECAd>().Inject(container.Resolve<IScreenManager>(),
-                    container.Resolve<UITemplateAdServiceWrapper>(),
-                    container.Resolve<AdServicesConfig>()));
+            builder.RegisterComponentInNewPrefabResource<CollapsibleMRECAd>(nameof(CollapsibleMRECAd), Lifetime.Singleton).UnderTransform(parent);
+            builder.AutoResolve<CollapsibleMRECAd>();
         }
     }
 }

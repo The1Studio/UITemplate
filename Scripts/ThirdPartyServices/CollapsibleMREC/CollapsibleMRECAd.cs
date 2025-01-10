@@ -3,7 +3,7 @@
     using System.Threading;
     using Core.AdsServices;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.DI;
     using ServiceImplementation.Configs.Ads;
     using UnityEngine;
     using UnityEngine.UI;
@@ -20,21 +20,14 @@
 
         #region Inject
 
-        private IScreenManager             screenManager;
-        private UITemplateAdServiceWrapper adServiceWrapper;
-        private AdServicesConfig           adServicesConfig;
+        [Inject] private UITemplateAdServiceWrapper adServiceWrapper;
+        [Inject] private AdServicesConfig           adServicesConfig;
 
-        public void Inject(
-            IScreenManager             screenManager,
-            UITemplateAdServiceWrapper adServiceWrapper,
-            AdServicesConfig           adServicesConfig
-        )
+        private void Awake()
         {
-            this.screenManager    = screenManager;
-            this.adServiceWrapper = adServiceWrapper;
-            this.adServicesConfig = adServicesConfig;
-
-            this.InitTransform();
+            this.bgTransform.sizeDelta = new Vector2(0, 250f * (Screen.dpi / 160f) + 200f); // Calculate size
+            this.bgTransform.gameObject.SetActive(false);
+            this.btnClose.onClick.AddListener(this.OnClickClose);
         }
 
         #endregion
@@ -94,22 +87,12 @@
             this.refreshMrecCts?.Dispose();
             this.refreshMrecCts = null;
         }
-        
+
         private void ResetMrecDisplayCts()
         {
             this.displayMrecCts?.Cancel();
             this.displayMrecCts?.Dispose();
             this.displayMrecCts = null;
-        }
-
-        private void InitTransform()
-        {
-            this.bgTransform.gameObject.SetActive(false);
-            this.btnClose.onClick.AddListener(this.OnClickClose);
-            this.transform.SetParent(this.screenManager.RootUICanvas.RootUIShowTransform.parent, false);
-            this.transform.SetAsLastSibling();
-
-            this.bgTransform.sizeDelta = new Vector2(0, 300f * (Screen.dpi / 160f)); // Calculate size
         }
     }
 }

@@ -176,13 +176,15 @@
                 if (!this.highlightObjects.Any(tf => highlightObject.IsChildOf(tf) && highlightObject != tf)) highlightObject.gameObject.GetComponent<HighlightElement>().Setup();
                 if (clickable)
                 {
-                    var button = highlightObject.GetComponentInChildren<Button>();
-                    if (button != null)
+                    var buttons = highlightObject.GetComponentsInChildren<Button>();
+                    foreach (var button in buttons)
+                    {
                         this.disposables.Add(button.OnPointerClickAsObservable().Subscribe(data =>
                         {
                             this.OnButtonClick();
                             onButtonDown?.Invoke();
                         }));
+                    }
                 }
             }
             this.btnCompleteStep.gameObject.SetActive(!clickable);

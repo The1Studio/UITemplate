@@ -109,7 +109,7 @@
             this.transform.SetParent(this.screenManager.RootUICanvas.RootUIShowTransform.parent, false);
             this.transform.SetAsLastSibling();
 
-            this.bgTransform.sizeDelta = new Vector2(0, 350f * (Screen.dpi / 160f)); // Calculate size
+            this.bgTransform.sizeDelta = new Vector2(0, 300f * (Screen.dpi / 160f)); // Calculate size
         }
     }
 }

@@ -83,9 +83,9 @@
         private void HideMREC()
         {
             Debug.Log("oneLog: HIDE collapsible mrec");
-            this.bgTransform.gameObject.SetActive(false);
             this.adServiceWrapper.ShowBannerAd();
             this.adServiceWrapper.HideMREC(MREC_PLACEMENT, AdScreenPosition.BottomCenter);
+            this.bgTransform.gameObject.SetActive(false);
         }
 
         private void ResetMrecRefreshCts()

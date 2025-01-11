@@ -73,6 +73,9 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             #if UNITY_6000_0_OR_NEWER
             { "com.unity.addressables.android", "1.0.4" },
             #endif
+            #if THEONE_LOCALIZATION
+            { "com.unity.localization", "1.5.3" },
+            #endif
             // add more packages as needed
         };
 

@@ -54,7 +54,8 @@
     "FalconSDK",
     "3rd.ServiceImplementation.Adjust",
     "3rd.RemoteConfig.DI",
-    "SupersonicWisdom"
+    "SupersonicWisdom",
+    "TheOne.Localization"
   ],
   "precompiledReferences": [
     "DOTween.dll",

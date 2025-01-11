@@ -1,20 +1,13 @@
 {
-    "name": "TheOne.Tool.Localization",
-    "rootNamespace": "TheOne.Tool.Localization",
+    "name": "TheOne.Localization",
+    "rootNamespace": "",
     "references": [
-        "GameFoundation.Utilities",
-        "Unity.Addressables.Editor",
         "UniTask",
-        "TheOne.Tool.Core",
         "Unity.Localization",
-        "Unity.TextMeshPro",
         "Unity.ResourceManager",
-        "UITemplate.Scripts",
-        "TheOne.Localization"
+        "UniTask.Addressables"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

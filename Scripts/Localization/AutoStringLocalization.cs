@@ -1,11 +1,11 @@
-#if THEONE_LOCALIZATION
+#if THEONE_LOCALIZATION && UNITY_LOCALIZATION
 namespace TheOneStudio.UITemplate.UITemplate
 {
     using UnityEngine;
     using UnityEngine.Localization.Components;
 
     [RequireComponent(typeof(LocalizeStringEvent))]
-    public class AutoLocalization : MonoBehaviour
+    public class AutoStringLocalization : MonoBehaviour
     {
     }
 }

@@ -1,4 +1,4 @@
-#if THEONE_LOCALIZATION
+#if THEONE_LOCALIZATION && UNITY_LOCALIZATION
 namespace TheOne.Tool.Localization
 {
     using System;
@@ -44,20 +44,17 @@ namespace TheOne.Tool.Localization
             this.dynamicLocalizedTextInfos.Clear();
             this.stringTable = LocalizationSettings.StringDatabase.GetTableAsync(Instance.StringTableName).Result;
 
-            var gameObjects = AssetSearcher.GetAllAssetInAddressable<GameObject>().Keys;
-            foreach (var obj in gameObjects)
+            var tmps = AssetSearcher.GetAllComponentInAddressable<TMP_Text>();
+            foreach (var tmp in tmps)
             {
-                var tmpComponents = obj.GetComponentsInChildren<TMP_Text>(true);
-                foreach (var tmp in tmpComponents)
-                {
-                    var info = new TMPTextInfo(tmp, obj)
+                    var info = new TMPTextInfo(tmp, tmp.gameObject)
                     {
                         TextType = TextMeshType.NoLocalized
                     };
 
-                    if (tmp.TryGetComponent<AutoLocalization>(out var component))
+                    if (tmp.TryGetComponent<AutoStringLocalization>(out var component))
                     {
-                        info.TextType = IsTMPReferencedInGameObject(tmp, obj, out _, out _) ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
+                        info.TextType = IsTMPReferencedInGameObject(tmp, tmp.gameObject, out _, out _) ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
                     }
 
                     switch (info.TextType)
@@ -74,7 +71,6 @@ namespace TheOne.Tool.Localization
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
-                }
             }
         }
 
@@ -202,9 +198,9 @@ namespace TheOne.Tool.Localization
             this.fieldName = fn;
             this.UpdatePrefab((tmpTextInInstance) =>
             {
-                if (!tmpTextInInstance.TryGetComponent<AutoLocalization>(out _))
+                if (!tmpTextInInstance.TryGetComponent<AutoStringLocalization>(out _))
                 {
-                    tmpTextInInstance.AddComponent<AutoLocalization>();
+                    tmpTextInInstance.AddComponent<AutoStringLocalization>();
                 }
             }, isTMPReferencedInGameObject ? TMPLocalization.Instance.DynamicLocalizedTextInfos : TMPLocalization.Instance.StaticLocalizedTextInfos);
         }

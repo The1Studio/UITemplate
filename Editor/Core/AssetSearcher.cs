@@ -31,6 +31,15 @@ namespace TheOne.Tool.Core
             EditorUtility.ClearProgressBar();
             return allAssetInAddressable;
         }
+        
+        public static HashSet<TType> GetAllComponentInAddressable<TType>() where TType : Object
+        {
+            var gameObjects               = GetAllAssetInAddressable<GameObject>().Keys;
+            var allComponentInAddressable = gameObjects.SelectMany(go => go.GetComponentsInChildren<TType>(true)).ToHashSet();
+            //check if them belong to a same prefab
+            allComponentInAddressable.GroupBy(PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot).SelectMany(group => group.GetEnumerator().ToEnumerable().GroupBy(component => component.game))
+            return allComponentInAddressable;
+        }
 
         private static void ProcessEntry<TType>(AddressableAssetEntry entry, Dictionary<TType, HashSet<Object>> allAssetInAddressable) where TType : Object
         {

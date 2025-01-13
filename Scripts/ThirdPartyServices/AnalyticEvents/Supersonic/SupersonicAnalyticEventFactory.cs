@@ -6,12 +6,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using GameFoundation.DI;
     using GameFoundation.Signals;
     using SupersonicWisdomSDK;
     using UnityEngine.Scripting;
 
-    public class SupersonicAnalyticEventFactory : BaseAnalyticEventFactory, IInitializable
+    public class SupersonicAnalyticEventFactory : BaseAnalyticEventFactory
     {
         [Preserve]
         public SupersonicAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
@@ -47,14 +46,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
                 { "Message", "errormsg" }
             }
         };
-
-        public void Initialize()
-        {
-            SupersonicWisdom.Api.Initialize();
-            SupersonicWisdom.Api.AddOnReadyListener(this.OnSupersonicWisdomReady);
-        }
-
-        public void OnSupersonicWisdomReady() { }
 
         public override IEvent LevelStart(int level, int gold)
         {

@@ -53,7 +53,8 @@
     "UnityLogsViewer",
     "FalconSDK",
     "3rd.ServiceImplementation.Adjust",
-    "3rd.RemoteConfig.DI"
+    "3rd.RemoteConfig.DI",
+    "SupersonicWisdom"
   ],
   "precompiledReferences": [
     "DOTween.dll",

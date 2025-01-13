@@ -4,6 +4,7 @@
     using Core.AnalyticServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using GameFoundation.Signals;
@@ -15,6 +16,7 @@
     using SupersonicWisdomSDK;
     #endif
 
+    [ScreenInfo("LoadingScreenView")]
     public class SupersonicLoadingScenePresenter : UITemplateLoadingScreenPresenter
     {
         protected SupersonicLoadingScenePresenter(

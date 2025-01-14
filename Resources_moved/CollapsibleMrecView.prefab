@@ -211,7 +211,7 @@ GameObject:
   - component: {fileID: 6201370068433462321}
   - component: {fileID: 8097284573938798103}
   m_Layer: 5
-  m_Name: CollapsibleMRECAd
+  m_Name: CollapsibleMrecView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -324,5 +324,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be258ec94cd14965995be9966aef5c58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgTransform: {fileID: 4156886130863077182}
-  btnClose: {fileID: 1239899932875989206}
+  BgTransform: {fileID: 4156886130863077182}
+  BtnClose: {fileID: 1239899932875989206}

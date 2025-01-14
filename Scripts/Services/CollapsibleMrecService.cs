@@ -1,44 +1,59 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.CollapsibleMREC
+﻿namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System.Threading;
     using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
+    using GameFoundation.Scripts.AssetLibrary;
     using ServiceImplementation.Configs.Ads;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.CollapsibleMREC;
     using UnityEngine;
-    using UnityEngine.UI;
 
-    public class CollapsibleMRECAd : MonoBehaviour
+    public class CollapsibleMrecService : IInitializable
     {
-        [SerializeField] private RectTransform bgTransform;
-        [SerializeField] private Button        btnClose;
+        private readonly Transform                  parent;
+        private readonly IGameAssets                gameAssets;
+        private readonly UITemplateAdServiceWrapper adServiceWrapper;
+        private readonly AdServicesConfig           adServicesConfig;
 
-        private const string MREC_PLACEMENT = "collapsible_mrec";
+        private       CollapsibleMrecView     View;
+        private const string                  MREC_PLACEMENT = "collapsible_mrec";
+        private       CancellationTokenSource refreshMrecCts;
+        private       CancellationTokenSource displayMrecCts;
 
-        private CancellationTokenSource refreshMrecCts;
-        private CancellationTokenSource displayMrecCts;
+        public bool IsShowCollapsibleMrec { get; private set; }
 
-        #region Inject
-
-        [Inject] private UITemplateAdServiceWrapper adServiceWrapper;
-        [Inject] private AdServicesConfig           adServicesConfig;
-
-        private void Awake()
+        public CollapsibleMrecService(
+            Transform                  parent,
+            IGameAssets                gameAssets,
+            UITemplateAdServiceWrapper adServiceWrapper,
+            AdServicesConfig           adServicesConfig
+        )
         {
-            this.bgTransform.sizeDelta = new Vector2(0, 250f * (Screen.dpi / 160f) + 200f); // Calculate size
-            this.bgTransform.gameObject.SetActive(false);
-            this.btnClose.onClick.AddListener(this.OnClickClose);
+            this.parent           = parent;
+            this.gameAssets       = gameAssets;
+            this.adServiceWrapper = adServiceWrapper;
+            this.adServicesConfig = adServicesConfig;
         }
 
-        #endregion
+        public async void Initialize()
+        {
+            Debug.LogError(this.parent.name);
+            var collapsibleMrecObj = await this.gameAssets.InstantiateAsync(nameof(CollapsibleMrecView), Vector3.zero, Quaternion.identity, this.parent);
+            this.View = collapsibleMrecObj.GetComponent<CollapsibleMrecView>();
+            this.View.BtnClose.onClick.AddListener(this.OnClickClose);
+        }
 
         #region Public Method
 
         public void Show()
         {
+            if (this.View == null) return;
             if (!this.adServicesConfig.EnableCollapsibleMrec) return;
+            this.IsShowCollapsibleMrec = true;
             Debug.Log("oneLog: SHOW collapsible mrec");
-            this.bgTransform.gameObject.SetActive(true);
+            this.View.BgTransform.gameObject.SetActive(true);
             this.adServiceWrapper.HideBannerAd();
             this.adServiceWrapper.ShowMREC(MREC_PLACEMENT, AdScreenPosition.BottomCenter);
             UniTask.WaitForSeconds(this.adServicesConfig.CollapsibleMrecDisplayTime, true, cancellationToken: (this.displayMrecCts = new()).Token)
@@ -52,6 +67,7 @@
 
         public void Hide()
         {
+            if (!this.IsShowCollapsibleMrec) return;
             if (!this.adServicesConfig.EnableCollapsibleMrec) return;
             this.ResetMrecDisplayCts();
             this.ResetMrecRefreshCts();
@@ -76,9 +92,10 @@
         private void HideMREC()
         {
             Debug.Log("oneLog: HIDE collapsible mrec");
+            this.IsShowCollapsibleMrec = false;
             this.adServiceWrapper.ShowBannerAd();
             this.adServiceWrapper.HideMREC(MREC_PLACEMENT, AdScreenPosition.BottomCenter);
-            this.bgTransform.gameObject.SetActive(false);
+            this.View.BgTransform.gameObject.SetActive(false);
         }
 
         private void ResetMrecRefreshCts()

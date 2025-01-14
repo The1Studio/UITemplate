@@ -598,24 +598,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.logService.Log($"onelog: DestroyMREC, placement: {placement}");
             }
         }
-
-        public virtual void ShowCollapsibleMREC(string placement)
-        {
-            if (!this.adServicesConfig.EnableCollapsibleMrec) return;
-            this.ShowMREC(placement, AdScreenPosition.BottomCenter);
-            if(!this.IsShowMRECAd) return;
-            this.HideBannerAd();
-            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(true, placement));
-        }
-
-        public virtual void HideCollapsibleMREC(string placement)
-        {
-            if (!this.adServicesConfig.EnableCollapsibleMrec) return;
-            if(!this.IsShowMRECAd) return;
-            this.HideMREC(placement, AdScreenPosition.BottomCenter);
-            this.ShowBannerAd();
-            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, placement));
-        }
         
         private void ScheduleRefreshMREC()
         {
@@ -630,8 +612,80 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     }).Forget();
         }
 
+        #region CollapsibleMREC
+        
+        private CancellationTokenSource refreshMrecCts;
+        private CancellationTokenSource displayMrecCts;
+
+        public virtual void ShowCollapsibleMREC(string placement)
+        {
+            if (this.IsRemovedAds || !this.adServicesConfig.EnableCollapsibleMrec) return;
+            this.ShowMREC(placement, AdScreenPosition.BottomCenter);
+            if(!this.IsShowMRECAd) return;
+            Debug.Log("oneLog: SHOW collapsible mrec");
+            this.HideBannerAd();
+            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(true, placement));
+            UniTask.WaitForSeconds(this.adServicesConfig.CollapsibleMrecDisplayTime, true, cancellationToken: (this.displayMrecCts = new()).Token)
+                .ContinueWith(
+                    () =>
+                    {
+                        this.InternalHideCollapsibleMREC(placement);
+                        this.InternalRefreshMrec(placement);
+                    }).Forget();
+        }
+
+        public virtual void HideCollapsibleMREC(string placement)
+        {
+            if (this.IsRemovedAds || !this.adServicesConfig.EnableCollapsibleMrec) return;
+            if(this.IsShowMRECAd) this.HideMREC(placement, AdScreenPosition.BottomCenter);
+            this.ResetMrecDisplayCts();
+            this.ResetMrecRefreshCts();
+            this.ShowBannerAd();
+            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, placement));
+        }
+        
+        private void InternalHideCollapsibleMREC(string placement)
+        {
+            Debug.Log("oneLog: HIDE collapsible mrec");
+            this.HideMREC(placement, AdScreenPosition.BottomCenter);
+            this.ShowBannerAd();
+        }
+        
+        private void InternalRefreshMrec(string placement)
+        {
+            UniTask.WaitForSeconds(this.adServicesConfig.CollapsibleMrecInterval, true, cancellationToken: (this.refreshMrecCts = new()).Token)
+                .ContinueWith(() =>
+                {
+                    this.ShowCollapsibleMREC(placement);
+                }).Forget();
+        }
+
+        public void InternalCloseCollapsibleMREC(string placement)
+        {
+            this.ResetMrecDisplayCts();
+            this.InternalHideCollapsibleMREC(placement);
+            this.InternalRefreshMrec(placement);
+        }
+        
+        private void ResetMrecRefreshCts()
+        {
+            this.refreshMrecCts?.Cancel();
+            this.refreshMrecCts?.Dispose();
+            this.refreshMrecCts = null;
+        }
+
+        private void ResetMrecDisplayCts()
+        {
+            this.displayMrecCts?.Cancel();
+            this.displayMrecCts?.Dispose();
+            this.displayMrecCts = null;
+        }
+
+        #endregion
+
         private void OnRemoveAdsComplete()
         {
+            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, ""));   
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();

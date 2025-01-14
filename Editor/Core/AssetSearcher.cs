@@ -37,7 +37,14 @@ namespace TheOne.Tool.Core
             var gameObjects               = GetAllAssetInAddressable<GameObject>().Keys;
             var allComponentInAddressable = gameObjects.SelectMany(go => go.GetComponentsInChildren<TType>(true)).ToHashSet();
             //check if them belong to a same prefab
-            allComponentInAddressable.GroupBy(PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot).SelectMany(group => group.GetEnumerator().ToEnumerable().GroupBy(component => component.game))
+            var prefabSet = allComponentInAddressable.Select(comp =>
+            {
+                var nearestPrefabInstanceRoot = PrefabUtility.GetNearestPrefabInstanceRoot(comp);
+                return nearestPrefabInstanceRoot == null ? null : PrefabUtility.GetCorrespondingObjectFromOriginalSource(nearestPrefabInstanceRoot);
+            }).Where(prefab => prefab != null).ToHashSet();
+            
+            allComponentInAddressable = prefabSet.SelectMany(prefab => prefab.GetComponentsInChildren<TType>(true).Where(comp => PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(comp) == PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(prefab))).ToHashSet();
+            
             return allComponentInAddressable;
         }
 

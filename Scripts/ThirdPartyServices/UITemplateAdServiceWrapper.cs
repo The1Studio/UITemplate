@@ -637,11 +637,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public virtual void HideCollapsibleMREC(string placement)
         {
             if (this.IsRemovedAds || !this.adServicesConfig.EnableCollapsibleMrec) return;
-            if(this.IsShowMRECAd) this.HideMREC(placement, AdScreenPosition.BottomCenter);
             this.ResetMrecDisplayCts();
             this.ResetMrecRefreshCts();
-            this.ShowBannerAd();
-            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, placement));
+            this.InternalHideCollapsibleMREC(placement);
         }
         
         private void InternalHideCollapsibleMREC(string placement)
@@ -649,6 +647,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             Debug.Log("oneLog: HIDE collapsible mrec");
             this.HideMREC(placement, AdScreenPosition.BottomCenter);
             this.ShowBannerAd();
+            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, placement));
         }
         
         private void InternalRefreshMrec(string placement)

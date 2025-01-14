@@ -10,7 +10,6 @@
         
         private void Awake()
         {
-            this.BgTransform.sizeDelta = new Vector2(0, 250f * (Screen.dpi / 160f) + 200f); // Calculate size
             this.BgTransform.gameObject.SetActive(false);
         }
     }

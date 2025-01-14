@@ -9,6 +9,7 @@
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.CollapsibleMREC;
     using UnityEngine;
+    using UnityEngine.Scripting;
 
     public class CollapsibleMrecService : IInitializable
     {
@@ -24,6 +25,7 @@
 
         public bool IsShowCollapsibleMrec { get; private set; }
 
+        [Preserve]
         public CollapsibleMrecService(
             Transform                  parent,
             IGameAssets                gameAssets,
@@ -39,7 +41,6 @@
 
         public async void Initialize()
         {
-            Debug.LogError(this.parent.name);
             var collapsibleMrecObj = await this.gameAssets.InstantiateAsync(nameof(CollapsibleMrecView), Vector3.zero, Quaternion.identity, this.parent);
             this.View = collapsibleMrecObj.GetComponent<CollapsibleMrecView>();
             this.View.BtnClose.onClick.AddListener(this.OnClickClose);

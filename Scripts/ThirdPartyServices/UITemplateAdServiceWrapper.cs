@@ -605,7 +605,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.ShowMREC(placement, AdScreenPosition.BottomCenter);
             if(!this.IsShowMRECAd) return;
             this.HideBannerAd();
-            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(true));
+            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(true, placement));
         }
 
         public virtual void HideCollapsibleMREC(string placement)
@@ -614,7 +614,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if(!this.IsShowMRECAd) return;
             this.HideMREC(placement, AdScreenPosition.BottomCenter);
             this.ShowBannerAd();
-            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false));
+            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, placement));
         }
         
         private void ScheduleRefreshMREC()

@@ -598,6 +598,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.logService.Log($"onelog: DestroyMREC, placement: {placement}");
             }
         }
+
+        public virtual void ShowCollapsibleMREC(string placement)
+        {
+            if (!this.adServicesConfig.EnableCollapsibleMrec) return;
+            this.ShowMREC(placement, AdScreenPosition.BottomCenter);
+            if(!this.IsShowMRECAd) return;
+            this.HideBannerAd();
+            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(true));
+        }
+
+        public virtual void HideCollapsibleMREC(string placement)
+        {
+            if (!this.adServicesConfig.EnableCollapsibleMrec) return;
+            if(!this.IsShowMRECAd) return;
+            this.HideMREC(placement, AdScreenPosition.BottomCenter);
+            this.ShowBannerAd();
+            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false));
+        }
         
         private void ScheduleRefreshMREC()
         {

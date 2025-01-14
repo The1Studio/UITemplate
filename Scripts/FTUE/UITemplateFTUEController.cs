@@ -52,10 +52,9 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.highlightController.TurnOffHighlight();
         }
 
-        public void DoActiveFTUE(string stepId, HashSet<GameObject> disableObjectSet)
+        public void DoActiveFTUE(string stepId)
         {
             this.currentActiveStepId = stepId;
-            foreach (var disableObject in disableObjectSet) disableObject.SetActive(true);
             this.SetHighlight(stepId).Forget();
         }
 

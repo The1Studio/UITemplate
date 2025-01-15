@@ -365,9 +365,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                     break;
                 case 5:
                     this.Track(new CompleteLevel5());
+                    if (obj.IsWin)
+                    {
+                        this.Track(new WinLevel5());
+                    }
                     break;
                 case 10:
                     this.Track(new CompleteLevel10());
+                    if (obj.IsWin)
+                    {
+                        this.Track(new WinLevel10());
+                    }
                     break;
             }
         }

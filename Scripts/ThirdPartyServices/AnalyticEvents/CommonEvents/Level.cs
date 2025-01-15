@@ -93,4 +93,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     public class CompleteLevel10 : IEvent
     {
     }
+    public class WinLevel5 : IEvent
+    {
+    }
+    public class WinLevel10 : IEvent
+    {
+    }
 }

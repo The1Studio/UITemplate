@@ -27,15 +27,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private readonly IScreenManager screenManager;
         private readonly IGameAssets    gameAssets;
-        private readonly IAudioService  audioService;
         private const    string         PrefabName = "UITemplateFlyingAnimationItem";
 
         [Preserve]
-        public UITemplateFlyingAnimationController(IScreenManager screenManager, IGameAssets gameAssets, IAudioService audioService)
+        public UITemplateFlyingAnimationController(IScreenManager screenManager, IGameAssets gameAssets)
         {
             this.screenManager = screenManager;
             this.gameAssets    = gameAssets;
-            this.audioService  = audioService;
         }
 
         #endregion

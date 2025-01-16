@@ -75,14 +75,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             await UniTask.Delay(TimeSpan.FromSeconds(this.FlyPunchTime / 2), DelayType.UnscaledDeltaTime);
 
-            var onCompleted = onCompleteEachItem;
+            var onCompletedItemFly = onCompleteEachItem;
 
             if (!string.IsNullOrEmpty(soundKey))
             {
-                onCompleted += () => this.audioService.PlaySound(soundKey);
+                onCompletedItemFly += () => this.audioService.PlaySound(soundKey);
             }
 
-            this.DoFlyingItems(listItem, this.DelayFlyTargetTimePerItem, endPosition.Value, timeAnim, onCompleted).Forget();
+            this.DoFlyingItems(listItem, this.DelayFlyTargetTimePerItem, endPosition.Value, timeAnim, onCompletedItemFly).Forget();
 
             await UniTask.Delay(TimeSpan.FromSeconds(this.DelayFlyTargetTimePerItem + timeAnim), DelayType.UnscaledDeltaTime);
         }

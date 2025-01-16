@@ -176,11 +176,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             string        id                         = DefaultSoftCurrencyID,
             RectTransform startAnimationRect         = null,
             string        claimSoundKey              = null,
-            string        flyCompleteSoundKey        = null,
             int           minAnimAmount              = 6,
             int           maxAnimAmount              = 10,
             float         timeAnimAnim               = 1f,
-            float         flyPunchPositionAnimFactor = 0.3f
+            float         flyPunchPositionAnimFactor = 0.3f,
+            Action        onCompleteEachItem         = null
         )
         {
             var lastValue = this.GetCurrencyValue(id);
@@ -211,10 +211,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                         target: currencyView.CurrencyIcon.transform as RectTransform,
                         prefabName: flyingObject,
                         flyPunchPositionFactor: flyPunchPositionAnimFactor,
-                        onCompleteEachItem: () =>
-                        {
-                            if (!string.IsNullOrEmpty(flyCompleteSoundKey)) this.audioService.PlaySound(flyCompleteSoundKey);
-                        });
+                        onCompleteEachItem: onCompleteEachItem);
 
                     lastValue = this.GetCurrencyValue(id); // get last value after animation because it can be changed by other animation
                     this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));

@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -26,18 +27,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private readonly IScreenManager screenManager;
         private readonly IGameAssets    gameAssets;
+        private readonly IAudioService  audioService;
         private const    string         PrefabName = "UITemplateFlyingAnimationItem";
 
         [Preserve]
-        public UITemplateFlyingAnimationController(IScreenManager screenManager, IGameAssets gameAssets)
+        public UITemplateFlyingAnimationController(IScreenManager screenManager, IGameAssets gameAssets, IAudioService audioService)
         {
             this.screenManager = screenManager;
             this.gameAssets    = gameAssets;
+            this.audioService  = audioService;
         }
 
         #endregion
 
-        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "", float flyPunchPositionFactor = 0.3f, Action onCompleteEachItem = null)
+        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "", float flyPunchPositionFactor = 0.3f, string soundKey = null, Action onCompleteEachItem = null)
             where T : UITemplateFlyingAnimationView
         {
             var endPosition = target != null
@@ -71,7 +74,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             Object.Destroy(box2D.gameObject);
 
             await UniTask.Delay(TimeSpan.FromSeconds(this.FlyPunchTime / 2), DelayType.UnscaledDeltaTime);
-            this.DoFlyingItems(listItem, this.DelayFlyTargetTimePerItem, endPosition.Value, timeAnim, onCompleteEachItem).Forget();
+
+            var onCompleted = onCompleteEachItem;
+
+            if (!string.IsNullOrEmpty(soundKey))
+            {
+                onCompleted += () => this.audioService.PlaySound(soundKey);
+            }
+
+            this.DoFlyingItems(listItem, this.DelayFlyTargetTimePerItem, endPosition.Value, timeAnim, onCompleted).Forget();
 
             await UniTask.Delay(TimeSpan.FromSeconds(this.DelayFlyTargetTimePerItem + timeAnim), DelayType.UnscaledDeltaTime);
         }

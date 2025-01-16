@@ -176,6 +176,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             string        id                         = DefaultSoftCurrencyID,
             RectTransform startAnimationRect         = null,
             string        claimSoundKey              = null,
+            string        flyCompleteSoundKey        = null,
             int           minAnimAmount              = 6,
             int           maxAnimAmount              = 10,
             float         timeAnimAnim               = 1f,
@@ -202,13 +203,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 if (currencyView != null)
                 {
                     if (!string.IsNullOrEmpty(claimSoundKey)) this.audioService.PlaySound(claimSoundKey);
-                    await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(startAnimationRect,
-                        minAnimAmount,
-                        maxAnimAmount,
-                        timeAnimAnim,
-                        currencyView.CurrencyIcon.transform as RectTransform,
-                        flyingObject,
-                        flyPunchPositionAnimFactor);
+                    await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(
+                        startPointRect: startAnimationRect,
+                        minAmount: minAnimAmount,
+                        maxAmount: maxAnimAmount,
+                        timeAnim: timeAnimAnim,
+                        target: currencyView.CurrencyIcon.transform as RectTransform,
+                        prefabName: flyingObject,
+                        flyPunchPositionFactor: flyPunchPositionAnimFactor,
+                        onCompleteEachItem: () =>
+                        {
+                            if (!string.IsNullOrEmpty(flyCompleteSoundKey)) this.audioService.PlaySound(flyCompleteSoundKey);
+                        });
 
                     lastValue = this.GetCurrencyValue(id); // get last value after animation because it can be changed by other animation
                     this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));

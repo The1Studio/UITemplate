@@ -40,7 +40,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
-        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "", float flyPunchPositionFactor = 0.3f, string soundKey = null, Action onCompleteEachItem = null)
+        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "", float flyPunchPositionFactor = 0.3f, Action onCompleteEachItem = null)
             where T : UITemplateFlyingAnimationView
         {
             var endPosition = target != null
@@ -75,14 +75,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             await UniTask.Delay(TimeSpan.FromSeconds(this.FlyPunchTime / 2), DelayType.UnscaledDeltaTime);
 
-            var onCompletedItemFly = onCompleteEachItem;
-
-            if (!string.IsNullOrEmpty(soundKey))
-            {
-                onCompletedItemFly += () => this.audioService.PlaySound(soundKey);
-            }
-
-            this.DoFlyingItems(listItem, this.DelayFlyTargetTimePerItem, endPosition.Value, timeAnim, onCompletedItemFly).Forget();
+            this.DoFlyingItems(listItem, this.DelayFlyTargetTimePerItem, endPosition.Value, timeAnim, onCompleteEachItem).Forget();
 
             await UniTask.Delay(TimeSpan.FromSeconds(this.DelayFlyTargetTimePerItem + timeAnim), DelayType.UnscaledDeltaTime);
         }

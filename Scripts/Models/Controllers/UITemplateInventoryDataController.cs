@@ -212,8 +212,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                         target: currencyView.CurrencyIcon.transform as RectTransform,
                         prefabName: flyingObject,
                         flyPunchPositionFactor: flyPunchPositionAnimFactor,
-                        soundKey: flyCompleteSoundKey,
-                        onCompleteEachItem: onCompleteEachItem);
+                        onCompleteEachItem: () =>
+                        {
+                            onCompleteEachItem?.Invoke();
+                            if(!string.IsNullOrEmpty(flyCompleteSoundKey)) this.audioService.PlaySound(flyCompleteSoundKey);
+                        });
 
                     lastValue = this.GetCurrencyValue(id); // get last value after animation because it can be changed by other animation
                     this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));

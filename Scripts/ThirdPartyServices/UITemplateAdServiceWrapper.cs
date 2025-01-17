@@ -624,7 +624,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.ShowMREC(placement, AdScreenPosition.BottomCenter);
             if(!this.IsShowMRECAd) return;
             this.HideBannerAd();
-            Debug.Log("oneLog: SHOW collapsible mrec");
+            Debug.Log($"oneLog: SHOW collapsible mrec, placement: {placement}");
             this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(true, placement));
             UniTask.WaitForSeconds(this.adServicesConfig.CollapsibleMrecDisplayTime, true, cancellationToken: (this.displayMrecCts = new()).Token)
                 .ContinueWith(
@@ -645,7 +645,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         
         private void InternalHideCollapsibleMREC(string placement)
         {
-            Debug.Log("oneLog: HIDE collapsible mrec");
+            Debug.Log($"oneLog: HIDE collapsible mrec, placement: {placement}");
             this.HideMREC(placement, AdScreenPosition.BottomCenter);
             if (!this.IsShowBannerAd)
             {

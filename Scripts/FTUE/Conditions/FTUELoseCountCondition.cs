@@ -1,10 +1,17 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 {
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
     public class FTUELoseCountModel
     {
-        public int Count;
+        public int Count { get; }
+
+        [Preserve]
+        public FTUELoseCountModel(int count)
+        {
+            this.Count = count;
+        }
     }
 
     public class FTUELoseCountCondition : FtueCondition<FTUELoseCountModel>
@@ -17,6 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 
         public override string Id => "lose_count";
 
+        [Preserve]
         public FTUELoseCountCondition(UITemplateLevelDataController uiTemplateLevelDataController)
         {
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;

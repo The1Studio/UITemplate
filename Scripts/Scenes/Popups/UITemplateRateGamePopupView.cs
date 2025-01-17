@@ -40,11 +40,11 @@
 
         #endregion
 
-        private int lastStarCount;
+        protected virtual int LastStarCount { get; set; }
 
         public override UniTask BindData()
         {
-            this.lastStarCount = 0;
+            this.LastStarCount = 0;
             this.View.yesButton.gameObject.SetActive(false);
             this.View.starImages.ForEach(star => star.transform.localScale = Vector3.zero);
 
@@ -73,7 +73,7 @@
 
         private void OnClickStar(int count)
         {
-            this.lastStarCount = count;
+            this.LastStarCount = count;
             for (var i = 0; i < count; i++) this.StarAnimation(i);
             for (var i = count; i < this.View.starButtons.Count; i++) this.StarAnimation(i, false);
         }
@@ -100,7 +100,7 @@
 
         protected virtual void OnClickYes()
         {
-            if (this.lastStarCount == this.View.starButtons.Count) // max rating
+            if (this.LastStarCount == this.View.starButtons.Count) // max rating
                 this.storeRatingHandler.LaunchStoreRating();
             this.CloseView();
         }

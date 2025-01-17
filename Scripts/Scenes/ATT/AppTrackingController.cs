@@ -9,17 +9,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
     public class AppTrackingController : MonoBehaviour
     {
         [SerializeField] private GameObject attView;
+        [SerializeField] private GameObject goLoadingScreen;
         [SerializeField] private Button     btnRequestTracking;
+
+        private AppTrackingServices appTrackingServices;
+        private AppTrackingServices AppTrackingServices => this.appTrackingServices ??= this.GetCurrentContainer().Resolve<AppTrackingServices>();
 
         private void Awake()
         {
+            this.SetActiveLoadingScreen(false);
             this.CheckRequestTracking();
             this.btnRequestTracking.onClick.AddListener(this.OnClickRequestTracking);
         }
 
         private void CheckRequestTracking()
         {
-            if (AttHelper.IsRequestTrackingComplete())
+            if (this.AppTrackingServices.IsRequestTrackingComplete())
             {
                 this.attView.gameObject.SetActive(false);
                 LoadLoadingScene();
@@ -33,12 +38,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
         private async void OnClickRequestTracking()
         {
             this.btnRequestTracking.interactable = false;
-            if (!AttHelper.IsRequestTrackingComplete())
+            if (!this.AppTrackingServices.IsRequestTrackingComplete())
             {
-                await this.GetCurrentContainer().Resolve<AppTrackingServices>().RequestTracking();
+                this.SetActiveLoadingScreen(true);
+                await this.AppTrackingServices.RequestTracking();
+                this.SetActiveLoadingScreen(false);
             }
 
             LoadLoadingScene();
+        }
+
+        private void SetActiveLoadingScreen(bool isActive)
+        {
+            if (this.goLoadingScreen) this.goLoadingScreen.SetActive(isActive);
         }
 
         private static void LoadLoadingScene()

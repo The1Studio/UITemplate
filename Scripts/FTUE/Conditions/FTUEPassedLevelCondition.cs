@@ -1,10 +1,17 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 {
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
     public class FTUEPassedLevelConditionModel
     {
-        public int Level;
+        public int Level { get; }
+
+        [Preserve]
+        public FTUEPassedLevelConditionModel(int level)
+        {
+            this.Level = level;
+        }
     }
 
     public class FTUEPassedLevelCondition : FtueCondition<FTUEPassedLevelConditionModel>
@@ -15,6 +22,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 
         #endregion
 
+        [Preserve]
         public FTUEPassedLevelCondition(UITemplateLevelDataController uiTemplateLevelDataController)
         {
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
@@ -24,7 +32,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 
         protected override bool IsPassedCondition(FTUEPassedLevelConditionModel data)
         {
-            return this.uiTemplateLevelDataController.CurrentLevel >= data.Level;
+            return this.uiTemplateLevelDataController.MaxLevel >= data.Level;
         }
     }
 }

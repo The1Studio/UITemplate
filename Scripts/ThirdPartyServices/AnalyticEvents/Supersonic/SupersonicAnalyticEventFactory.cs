@@ -8,6 +8,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
     using Core.AnalyticServices.Data;
     using GameFoundation.Signals;
     using UnityEngine.Scripting;
+    #if SUPERSONIC_WISDOM
+    using SupersonicWisdomSDK;
+    #endif
 
     public class SupersonicAnalyticEventFactory : BaseAnalyticEventFactory
     {
@@ -45,6 +48,26 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
                 { "Message", "errormsg" }
             }
         };
+
+        #if SUPERSONIC_WISDOM
+        public override IEvent LevelStart(int level, int gold)
+        {
+            SupersonicWisdom.Api.NotifyLevelStarted(ESwLevelType.Regular, level, null);
+            return base.LevelStart(level, gold);
+        }
+
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount)
+        {
+            SupersonicWisdom.Api.NotifyLevelFailed(ESwLevelType.Regular, level, null);
+            return base.LevelLose(level, timeSpent, loseCount);
+        }
+
+        public override IEvent LevelWin(int level, int timeSpent, int winCount)
+        {
+            SupersonicWisdom.Api.NotifyLevelCompleted(ESwLevelType.Regular, level, null);
+            return base.LevelWin(level, timeSpent, winCount);
+        }
+        #endif
     }
 }
 #endif

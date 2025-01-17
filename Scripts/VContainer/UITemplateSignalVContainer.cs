@@ -20,6 +20,7 @@ namespace TheOneStudio.UITemplate
             builder.DeclareSignal<FTUEButtonClickSignal>();
             builder.DeclareSignal<FTUEDoActionSignal>();
             builder.DeclareSignal<FTUETriggerSignal>();
+            builder.DeclareSignal<FTUEShowTooltipSignal>();
 
             //Signal
             builder.DeclareSignal<OnNotEnoughCurrencySignal>();
@@ -31,6 +32,7 @@ namespace TheOneStudio.UITemplate
             builder.DeclareSignal<RemoteConfigFetchedSucceededSignal>();
             builder.DeclareSignal<OnRemoveAdsSucceedSignal>();
             builder.DeclareSignal<UITemplateOnUpdateBannerStateSignal>();
+            builder.DeclareSignal<UITemplateOnUpdateCollapMrecStateSignal>();
 
             //State machine
             builder.DeclareSignal<OnStateEnterSignal>();

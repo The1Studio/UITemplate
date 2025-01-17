@@ -92,5 +92,14 @@
         public override void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
         }
+        
+        public override void ShowCollapsibleMREC(string placement)
+        {
+        }
+
+        public override void HideCollapsibleMREC(string placement)
+        {
+            
+        }
     }
 }

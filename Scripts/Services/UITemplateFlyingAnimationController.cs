@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -37,7 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
-        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "", float flyPunchPositionFactor = 0.3f)
+        public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "", float flyPunchPositionFactor = 0.3f, Action onCompleteEachItem = null)
             where T : UITemplateFlyingAnimationView
         {
             var endPosition = target != null
@@ -71,12 +72,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             Object.Destroy(box2D.gameObject);
 
             await UniTask.Delay(TimeSpan.FromSeconds(this.FlyPunchTime / 2), DelayType.UnscaledDeltaTime);
-            this.DoFlyingItems(listItem, this.DelayFlyTargetTimePerItem, endPosition.Value, timeAnim).Forget();
+
+            this.DoFlyingItems(listItem, this.DelayFlyTargetTimePerItem, endPosition.Value, timeAnim, onCompleteEachItem).Forget();
 
             await UniTask.Delay(TimeSpan.FromSeconds(this.DelayFlyTargetTimePerItem + timeAnim), DelayType.UnscaledDeltaTime);
         }
 
-        private async UniTask DoFlyingItems(List<GameObject> listItem, float delayFlyingTime, Vector3 endUiPos, float timeAnim)
+        private async UniTask DoFlyingItems(List<GameObject> listItem, float delayFlyingTime, Vector3 endUiPos, float timeAnim, Action onCompleteEachItem = null)
         {
             foreach (var item in listItem)
             {
@@ -85,7 +87,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 item.transform.DOMove(endUiPos, timeAnim)
                     .SetEase(Ease.InBack)
                     .SetUpdate(true)
-                    .OnComplete(item.Recycle);
+                    .OnComplete(() =>
+                    {
+                        item.Recycle();
+                        onCompleteEachItem?.Invoke();
+                    });
             }
         }
 

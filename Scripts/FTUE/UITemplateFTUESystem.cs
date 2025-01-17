@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.DI;
@@ -27,9 +28,10 @@
 
         #endregion
 
-        private Dictionary<string, IFtueCondition>      IDToFtueConditions         { get; }
-        private Dictionary<string, HashSet<GameObject>> StepIdToEnableGameObjects  { get; } = new(); //Use to enable the UI follow user's FTUE
-        private Dictionary<string, HashSet<GameObject>> StepIdToDisableGameObjects { get; } = new(); //Use to disable the UI follow user's FTUE
+        private Dictionary<string, IFtueCondition>      IDToFtueConditions                      { get; }
+        private Dictionary<string, HashSet<GameObject>> StepIdToEnableOnAndAfterFTUEGameObjects { get; } = new();
+        private Dictionary<string, HashSet<GameObject>> StepIdToShowOnFTUEGameObjects           { get; } = new();
+        private Dictionary<string, HashSet<GameObject>> StepIdToShowBeforeFTUEGameObjects       { get; } = new();
 
         [Preserve]
         public UITemplateFTUESystem(
@@ -60,25 +62,47 @@
         public void OnFTUEStepFinishedHandler(IHaveStepId obj)
         {
             this.uiTemplateFtueDataController.CompleteStep(obj.StepId);
-            var disableObjectSet = this.StepIdToDisableGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
+            var disableObjectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
             foreach (var gameObject in disableObjectSet) gameObject.SetActive(false);
             this.uiTemplateFtueController.DoDeactiveFTUE(obj.StepId);
             var nextStepId = this.uiTemplateFtueBlueprint[obj.StepId].NextStepId;
             if (!nextStepId.IsNullOrEmpty()) this.OnTriggerFTUE(new(nextStepId));
         }
 
+        [Obsolete("Use RegisterEnableOnAndAfterFTUEObjectToStepId instead")]
         public void RegisterEnableObjectToStepId(GameObject gameObject, string stepId)
         {
-            var objectSet = this.StepIdToEnableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            var objectSet = this.StepIdToEnableOnAndAfterFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             objectSet.Add(gameObject);
-            //In the case the game object in the initialized screen
             gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId) || this.IsFTUEActiveAble(stepId));
         }
 
+        public void RegisterEnableOnAndAfterFTUEObjectToStepId(GameObject gameObject, string stepId)
+        {
+            var objectSet = this.StepIdToEnableOnAndAfterFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            objectSet.Add(gameObject);
+            gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId) || this.IsFTUEActiveAble(stepId));
+        }
+
+        [Obsolete("Use RegisterOnlyShowOnFTUEObjectToStepId instead")]
         public void RegisterDisableObjectToStepId(GameObject gameObject, string stepId)
         {
             gameObject.SetActive(false);
-            var objectSet = this.StepIdToDisableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            var objectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            objectSet.Add(gameObject);
+        }
+
+        public void RegisterShowOnFTUEObjectToStepId(GameObject gameObject, string stepId)
+        {
+            gameObject.SetActive(false);
+            var objectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            objectSet.Add(gameObject);
+        }
+
+        public void RegisterShowBeforeFTUEObjectToStepId(GameObject gameObject, string stepId)
+        {
+            gameObject.SetActive(!(this.uiTemplateFtueDataController.IsFinishedStep(stepId) || this.IsFTUEActiveAble(stepId)));
+            var objectSet = this.StepIdToShowBeforeFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             objectSet.Add(gameObject);
         }
 
@@ -89,18 +113,26 @@
             if (stepId.IsNullOrEmpty()) return;
             if (this.uiTemplateFtueController.ThereIsFTUEActive()) return;
 
-            var enableObjectSet = this.StepIdToEnableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            var enableObjectSet = this.StepIdToEnableOnAndAfterFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             if (!this.IsFTUEActiveAble(stepId))
             {
                 foreach (var gameObject in enableObjectSet) gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId));
 
                 return;
             }
-
             foreach (var gameObject in enableObjectSet) gameObject.SetActive(true);
 
-            var disableObjectSet = this.StepIdToDisableGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
-            this.uiTemplateFtueController.DoActiveFTUE(stepId, disableObjectSet);
+            var disableObjectSet = this.StepIdToShowBeforeFTUEGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
+            foreach (var gameObject in disableObjectSet) gameObject.SetActive(false);
+
+            disableObjectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            foreach (var disableObject in disableObjectSet) disableObject.SetActive(true);
+
+            if (!this.uiTemplateFtueDataController.IsRewardedStep(stepId))
+            {
+                this.uiTemplateFtueDataController.GiveReward(stepId);
+            }
+            this.uiTemplateFtueController.DoActiveFTUE(stepId);
         }
 
         public bool IsFTUEActiveAble(string stepId)

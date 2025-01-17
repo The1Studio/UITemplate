@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
+    using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.CollapsibleMREC;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
@@ -70,6 +71,10 @@ namespace TheOneStudio.UITemplate
             #if THEONE_DEBUG && !PRODUCTION
             builder.RegisterComponentInNewPrefabResource<Reporter>("LogsViewer", Lifetime.Singleton).UnderTransform(rootTransform);
             builder.AutoResolve<Reporter>();
+            #endif
+            
+            #if THEONE_COLLAPSIBLE_MREC
+            builder.RegisterCollapsibleMREC(rootTransform);
             #endif
         }
     }

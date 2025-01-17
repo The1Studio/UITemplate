@@ -91,6 +91,7 @@
             }
 
             this.gameObject.SetActive(true);
+            this.transform.SetAsLastSibling();
             this.btnCompleteStep.onClick.RemoveAllListeners();
 
             this.disposables = new();
@@ -105,6 +106,11 @@
             if (rectMask is null || osa is null) return;
             var rectTf = rectMask.GetComponent<RectTransform>();
             this.ConfigAdapter(containHighlightObject.gameObject, rectTf, osa);
+        }
+
+        public GameObject GetHighlightedObject()
+        {
+            return this.highlightObjects is { Count: > 0 } ? this.highlightObjects[0].gameObject : null;
         }
 
         public void TurnOffHighlight()
@@ -131,9 +137,7 @@
                 if (objNames.Count == 0) return;
                 switch (objNames[0])
                 {
-                    case ROOT_UI_LOCATION:
-                        tfs = this.screenManager.RootUICanvas.GetComponentsInChildren<HighlightElement>().Select(ele => ele.transform).ToList();
-                        break;
+                    case ROOT_UI_LOCATION: tfs = this.screenManager.RootUICanvas.GetComponentsInChildren<HighlightElement>().Select(ele => ele.transform).ToList(); break;
                     default:
                         var screens = ReflectionUtils.GetAllDerivedTypes<IScreenPresenter>();
                         try
@@ -172,13 +176,15 @@
                 if (!this.highlightObjects.Any(tf => highlightObject.IsChildOf(tf) && highlightObject != tf)) highlightObject.gameObject.GetComponent<HighlightElement>().Setup();
                 if (clickable)
                 {
-                    var button = highlightObject.GetComponentInChildren<Button>();
-                    if (button != null)
+                    var buttons = highlightObject.GetComponentsInChildren<Button>();
+                    foreach (var button in buttons)
+                    {
                         this.disposables.Add(button.OnPointerClickAsObservable().Subscribe(data =>
                         {
                             this.OnButtonClick();
                             onButtonDown?.Invoke();
                         }));
+                    }
                 }
             }
             this.btnCompleteStep.gameObject.SetActive(!clickable);
@@ -233,8 +239,8 @@
             var rectTransform = hand.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = Vector2.zero;
             rectTransform.sizeDelta        = handSize;
-            hand.iconHand.anchoredPosition = Vector2.one + new Vector2(0, radius);
-            hand.iconHand.eulerAngles      = rotation;
+            hand.iconHand.anchoredPosition = new(0, radius);
+            hand.iconHand.localEulerAngles = rotation;
             var angle = anchor switch
             {
                 "Top"         => -180,
@@ -248,7 +254,6 @@
                 _             => 0f,
             };
             hand.rotateHand.localEulerAngles = new(0, 0, angle);
-            hand.iconHand.localEulerAngles   = Vector3.zero;
             return hand;
         }
 
@@ -263,15 +268,9 @@
         {
             switch (type)
             {
-                case TypeConfigHand.AllAppear:
-                    this.HandleAllAppear(handSize, radius, anchor, rotation);
-                    break;
-                case TypeConfigHand.AppearOneByOneWithDelay:
-                    this.HandleAppearOneByOneWithDelay(handSize, radius, anchor, rotation, (float)param[0]).Forget();
-                    break;
-                case TypeConfigHand.MoveOneByOneWithDelay:
-                    this.HandleMoveOneByOneWithDelay(handSize, radius, anchor, rotation, (float)param[0], (float)param[1]).Forget();
-                    break;
+                case TypeConfigHand.AllAppear:               this.HandleAllAppear(handSize, radius, anchor, rotation); break;
+                case TypeConfigHand.AppearOneByOneWithDelay: this.HandleAppearOneByOneWithDelay(handSize, radius, anchor, rotation, (float)param[0]).Forget(); break;
+                case TypeConfigHand.MoveOneByOneWithDelay:   this.HandleMoveOneByOneWithDelay(handSize, radius, anchor, rotation, (float)param[0], (float)param[1]).Forget(); break;
             }
         }
 

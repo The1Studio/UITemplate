@@ -12,6 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     public class UITemplateFTUEData : ILocalData, IUITemplateLocalData
     {
         [OdinSerialize] public List<string> FinishedStep { get; set; } = new();
+        [OdinSerialize] public List<string> RewardedStep { get; set; } = new();
 
         [OdinSerialize] public string CurrentStep { get; set; } = "";
 

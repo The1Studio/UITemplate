@@ -1,12 +1,21 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 {
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
     public class FTUEEnoughCurrencyContidionModel
     {
-        public string Condition;
-        public string Id;
-        public int    Value;
+        public string Condition { get; }
+        public string Id        { get; }
+        public int    Value     { get; }
+
+        [Preserve]
+        public FTUEEnoughCurrencyContidionModel(string condition, string id, int value)
+        {
+            this.Condition = condition;
+            this.Id        = id;
+            this.Value     = value;
+        }
     }
 
     public class FTUEEnoughCurrencyCondition : FtueCondition<FTUEEnoughCurrencyContidionModel>
@@ -18,6 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 
         #endregion
 
+        [Preserve]
         public FTUEEnoughCurrencyCondition(UITemplateInventoryDataController uiTemplateInventoryDataController, UITemplateFTUEHelper uiTemplateFtueHelper)
         {
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;

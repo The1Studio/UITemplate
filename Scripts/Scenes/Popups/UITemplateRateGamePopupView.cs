@@ -13,7 +13,7 @@
     using UnityEngine.Scripting;
     using UnityEngine.UI;
 
-    public class UITemplateRateUsPopupView : BaseView
+    public class UITemplateRateGamePopupView : BaseView
     {
         public List<Button> starButtons;
         public List<Image>  starImages;
@@ -21,8 +21,8 @@
         public Button       laterButton;
     }
 
-    [PopupInfo(nameof(UITemplateRateUsPopupView))]
-    public class UITemplateRateGamePopupPresenter : UITemplateBasePopupPresenter<UITemplateRateUsPopupView>
+    [PopupInfo(nameof(UITemplateRateGamePopupView))]
+    public class UITemplateRateGamePopupPresenter : UITemplateBasePopupPresenter<UITemplateRateGamePopupView>
     {
         #region inject
 

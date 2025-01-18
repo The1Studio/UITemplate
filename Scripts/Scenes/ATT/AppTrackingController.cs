@@ -24,7 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
 
         private void CheckRequestTracking()
         {
-            if (this.AppTrackingServices.IsRequestTrackingComplete())
+            if (this.AppTrackingServices.IsTrackingComplete())
             {
                 this.attView.gameObject.SetActive(false);
                 LoadLoadingScene();
@@ -38,10 +38,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
         private async void OnClickRequestTracking()
         {
             this.btnRequestTracking.interactable = false;
-            if (!this.AppTrackingServices.IsRequestTrackingComplete())
+            if (!this.AppTrackingServices.IsTrackingComplete())
             {
                 this.SetActiveLoadingScreen(true);
-                await this.AppTrackingServices.RequestTracking();
+                await this.AppTrackingServices.RequestConsentAndTracking();
                 this.SetActiveLoadingScreen(false);
             }
 

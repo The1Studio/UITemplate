@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
@@ -32,6 +34,7 @@
         private Dictionary<string, HashSet<GameObject>> StepIdToEnableOnAndAfterFTUEGameObjects { get; } = new();
         private Dictionary<string, HashSet<GameObject>> StepIdToShowOnFTUEGameObjects           { get; } = new();
         private Dictionary<string, HashSet<GameObject>> StepIdToShowBeforeFTUEGameObjects       { get; } = new();
+        private CancellationTokenSource                 cancellationTokenSource = new();
 
         [Preserve]
         public UITemplateFTUESystem(
@@ -61,6 +64,7 @@
         //TODO : need to refactor for contunious FTUE
         public void OnFTUEStepFinishedHandler(IHaveStepId obj)
         {
+            this.cancellationTokenSource.Cancel();
             this.uiTemplateFtueDataController.CompleteStep(obj.StepId);
             var disableObjectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
             foreach (var gameObject in disableObjectSet) gameObject.SetActive(false);
@@ -108,6 +112,7 @@
 
         private void OnTriggerFTUE(FTUETriggerSignal obj)
         {
+            this.cancellationTokenSource = new();
             var stepId = obj.StepId;
 
             if (stepId.IsNullOrEmpty()) return;
@@ -133,6 +138,16 @@
                 this.uiTemplateFtueDataController.GiveReward(stepId);
             }
             this.uiTemplateFtueController.DoActiveFTUE(stepId);
+            var duration = this.uiTemplateFtueBlueprint.GetDataById(stepId).TooltipDuration;
+            if (duration > 0)
+            {
+                UniTask.Delay(
+                    TimeSpan.FromSeconds(this.uiTemplateFtueBlueprint.GetDataById(stepId).TooltipDuration),
+                    cancellationToken: this.cancellationTokenSource.Token).ContinueWith(() =>
+                {
+                    this.signalBus.Fire(new FTUEDoActionSignal(stepId));
+                }).Forget();
+            }
         }
 
         public bool IsFTUEActiveAble(string stepId)

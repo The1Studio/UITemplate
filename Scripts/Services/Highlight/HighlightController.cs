@@ -174,21 +174,19 @@
             foreach (var highlightObject in this.highlightObjects)
             {
                 if (!this.highlightObjects.Any(tf => highlightObject.IsChildOf(tf) && highlightObject != tf)) highlightObject.gameObject.GetComponent<HighlightElement>().Setup();
-                if (clickable)
+
+                var buttons = highlightObject.GetComponentsInChildren<Button>();
+                foreach (var button in buttons)
                 {
-                    var buttons = highlightObject.GetComponentsInChildren<Button>();
-                    foreach (var button in buttons)
+                    this.disposables.Add(button.OnPointerClickAsObservable().Subscribe(data =>
                     {
-                        this.disposables.Add(button.OnPointerClickAsObservable().Subscribe(data =>
-                        {
-                            this.OnButtonClick();
-                            onButtonDown?.Invoke();
-                        }));
-                    }
+                        this.OnButtonClick();
+                        onButtonDown?.Invoke();
+                    }));
                 }
             }
-            this.btnCompleteStep.gameObject.SetActive(!clickable);
-            if (!clickable)
+            this.btnCompleteStep.gameObject.SetActive(clickable);
+            if (clickable)
                 this.btnCompleteStep.onClick.AddListener(() =>
                 {
                     this.OnButtonClick();

@@ -612,8 +612,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     }).Forget();
         }
 
-        #if THEONE_COLLAPSIBLE_MREC
         #region CollapsibleMREC
+        #if THEONE_COLLAPSIBLE_MREC
         
         private CancellationTokenSource refreshMrecCts;
         private CancellationTokenSource displayMrecCts;
@@ -684,8 +684,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.displayMrecCts = null;
         }
 
-        #endregion
         #endif
+        #endregion
 
         private void OnRemoveAdsComplete()
         {

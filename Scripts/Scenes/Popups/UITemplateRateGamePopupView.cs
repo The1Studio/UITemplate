@@ -5,7 +5,6 @@
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -16,37 +15,38 @@
 
     public class UITemplateRateGamePopupView : BaseView
     {
-        public List<Button> StarButtons;
-        public List<Image>  StarImages;
-        public Button       YesButton;
-        public Button       LaterButton;
+        public List<Button> starButtons;
+        public List<Image>  starImages;
+        public Button       yesButton;
+        public Button       laterButton;
     }
 
     [PopupInfo(nameof(UITemplateRateGamePopupView))]
     public class UITemplateRateGamePopupPresenter : UITemplateBasePopupPresenter<UITemplateRateGamePopupView>
     {
-        private int lastStarCount;
+        #region inject
+
+        private readonly UITemplateStoreRatingHandler storeRatingHandler;
 
         [Preserve]
         public UITemplateRateGamePopupPresenter(
             SignalBus                    signalBus,
             ILogService                  logger,
-            IScreenManager               screenManager,
             UITemplateStoreRatingHandler storeRatingHandler
         ) : base(signalBus, logger)
         {
-            this.screenManager      = screenManager;
             this.storeRatingHandler = storeRatingHandler;
         }
 
+        #endregion
+
+        protected virtual int LastStarCount { get; set; }
+
         public override UniTask BindData()
         {
-            this.lastStarCount = 0;
-            for (var i = 0; i < this.View.StarImages.Count; i++)
-            {
-                var star = this.View.StarImages[i];
-                star.transform.localScale = Vector3.zero;
-            }
+            this.LastStarCount = 0;
+            this.View.yesButton.gameObject.SetActive(false);
+            this.View.starImages.ForEach(star => star.transform.localScale = Vector3.zero);
 
             return UniTask.CompletedTask;
         }
@@ -55,13 +55,17 @@
         {
             base.OnViewReady();
 
-            this.View.YesButton.onClick.AddListener(this.OnClickYes);
-            this.View.LaterButton.onClick.AddListener(this.OnClickLater);
-            for (var i = 0; i < this.View.StarButtons.Count; i++)
+            this.View.yesButton.onClick.AddListener(this.OnClickYes);
+            this.View.laterButton.onClick.AddListener(this.OnClickLater);
+            for (var i = 0; i < this.View.starButtons.Count; i++)
             {
                 var closureIndex = i;
-                var star         = this.View.StarButtons[closureIndex];
-                star.onClick.AddListener(() => this.OnClickStar(closureIndex + 1));
+                var star         = this.View.starButtons[closureIndex];
+                star.onClick.AddListener(() =>
+                {
+                    this.View.yesButton.gameObject.SetActive(true);
+                    this.OnClickStar(closureIndex + 1);
+                });
             }
 
             this.YesButtonAnimation();
@@ -69,46 +73,36 @@
 
         private void OnClickStar(int count)
         {
-            this.lastStarCount = count;
+            this.LastStarCount = count;
             for (var i = 0; i < count; i++) this.StarAnimation(i);
-            for (var i = count; i < this.View.StarButtons.Count; i++) this.StarAnimation(i, false);
+            for (var i = count; i < this.View.starButtons.Count; i++) this.StarAnimation(i, false);
         }
 
         private void YesButtonAnimation()
         {
-            this.View.YesButton.transform.localScale = Vector3.one;
-            this.View.YesButton.transform.DOScale(Vector3.one * 1.1f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+            this.View.yesButton.transform.localScale = Vector3.one;
+            this.View.yesButton.transform.DOScale(Vector3.one * 1.1f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
         }
 
-        private void StarAnimation(int index, bool WillActive = true)
+        private void StarAnimation(int index, bool willActive = true)
         {
-            if (index >= this.View.StarButtons.Count || index < 0) return;
+            if (index >= this.View.starButtons.Count || index < 0) return;
 
-            var star        = this.View.StarImages[index];
-            var targetScale = WillActive ? Vector3.one : Vector3.zero;
-            var easeType    = WillActive ? Ease.OutElastic : Ease.OutCirc;
-            var duration    = WillActive ? 0.5f : 0.3f;
+            var star        = this.View.starImages[index];
+            var targetScale = willActive ? Vector3.one : Vector3.zero;
+            var easeType    = willActive ? Ease.OutElastic : Ease.OutCirc;
+            var duration    = willActive ? 0.5f : 0.3f;
 
             star.transform.DOScale(targetScale, duration).SetLoops(1, LoopType.Yoyo).SetEase(easeType);
         }
 
-        protected virtual void OnClickLater()
-        {
-            this.CloseView();
-        }
+        protected virtual void OnClickLater() { this.CloseView(); }
 
         protected virtual void OnClickYes()
         {
-            if (this.lastStarCount == this.View.StarButtons.Count) // max rating
+            if (this.LastStarCount == this.View.starButtons.Count) // max rating
                 this.storeRatingHandler.LaunchStoreRating();
             this.CloseView();
         }
-
-        #region inject
-
-        protected readonly IScreenManager               screenManager;
-        private readonly   UITemplateStoreRatingHandler storeRatingHandler;
-
-        #endregion
     }
 }

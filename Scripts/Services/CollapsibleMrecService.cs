@@ -51,7 +51,9 @@
         private void OnClickClose()
         {
             this.View.BgTransform.gameObject.SetActive(false);
+            #if THEONE_COLLAPSIBLE_MREC
             this.adServiceWrapper.InternalCloseCollapsibleMREC(this.placement);
+            #endif
         }
     }
 }

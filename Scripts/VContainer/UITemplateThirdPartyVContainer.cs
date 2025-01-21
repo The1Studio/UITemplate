@@ -15,6 +15,7 @@ namespace TheOneStudio.UITemplate
     using ServiceImplementation.RemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using UnityEngine;
     using VContainer;
     #if APPSFLYER
     using ServiceImplementation.AppsflyerAnalyticTracker;
@@ -50,6 +51,8 @@ namespace TheOneStudio.UITemplate
             builder.Register<ByteBrewTracker>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(container => container.Resolve<IAnalyticEventFactory>().ByteBrewAnalyticsEventCustomizationConfig);
             #endif
             #if ADJUST
+
+            Debug.Log($"dmplog: register AdjustTracker");
             builder.Register<AdjustTracker>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(container => container.ResolveOrDefault<AnalyticsEventCustomizationConfig>(new()));
             #endif
         }

@@ -92,7 +92,8 @@
         public override void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
         }
-        
+
+        #if THEONE_COLLAPSIBLE_MREC
         public override void ShowCollapsibleMREC(string placement)
         {
         }
@@ -101,5 +102,6 @@
         {
             
         }
+        #endif
     }
 }

@@ -335,14 +335,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.IsShowingAOA = false;
                 if (!this.consentInformation.CanRequestAds()) return;
             }
+            
+            #if BRAVESTARS //Condition can be used for all publishers
             if (isOpenAppAOA && !this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1) return;
             if (isOpenAppAOA && !this.adServicesConfig.AoaStartGame) return;
-
+            #endif
+            
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
 
-            this.signalBus.Fire(new AppOpenEligibleSignal(placement)); // fire here instead of outside because we already fire the eligible signal in CheckShowFirstOpen
             if (!isOpenAppAOA)
             {
+                this.signalBus.Fire(new AppOpenEligibleSignal(placement)); // fire here instead of outside because we already fire the eligible signal in CheckShowFirstOpen
                 if (this.levelDataController.CurrentLevel < this.adServicesConfig.AOAResumeAdStartLevel && this.gameSessionDataController.OpenTime < this.adServicesConfig.AOAResumeAdStartSession) return;
                 if (this.adServicesConfig.IsIntersInsteadAoaResume && this.ShowInterstitialAd(this.thirdPartiesConfig.AdSettings.IntersInsteadAoaResumePlacement, null))
                 {
@@ -564,7 +567,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 mrecAdService.ShowMREC(placement, position, offset);
                 this.IsShowMRECAd = true;
-                this.ShowBannerAd(forceShowMediation: true);
                 this.logService.Log($"onelog: ShowMREC, placement: {placement}, position: x-{position.x}, y-{position.y}");
                 this.mrecPlacement = placement;
                 this.mrecPosition  = position;

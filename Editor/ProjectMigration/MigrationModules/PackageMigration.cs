@@ -26,7 +26,6 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                     "com.github-glitchenzo",
                     "jp.hadashikick.vcontainer",
                     "org.nuget",
-                    "com.adjust",
                 }
             ),
             new(
@@ -83,9 +82,8 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.google.ads.mobile", "9.5.0" },
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
-            { "jp.hadashikick.vcontainer", "1.16.8" },
-            { "com.coffee.ui-effect", "5.2.0" },
-            { "com.adjust.sdk", "5.0.5" },
+            { "jp.hadashikick.vcontainer", "1.16.7" },
+            { "com.coffee.ui-effect", "5.0.1" }
         };
 
         [NonSerialized]

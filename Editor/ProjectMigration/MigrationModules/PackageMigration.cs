@@ -85,7 +85,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.cysharp.unitask", "2.5.10" },
             { "jp.hadashikick.vcontainer", "1.16.8" },
             { "com.coffee.ui-effect", "5.2.0" },
-            { "com.adjust.sdk", "5.0.6" },
+            { "com.adjust.sdk", "5.0.1" },
         };
 
         [NonSerialized]

@@ -327,13 +327,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServicesConfig.EnableAOAAd) return;
             if (this.IsRemovedAds) return;
             if (!AttHelper.IsRequestTrackingComplete()) return;
-            
-            if (!this.consentInformation.CanRequestAds())
+
+            if (!this.consentInformation.CanRequestAds() && isOpenAppAOA)
             {
                 this.IsShowingAOA = true;
                 await UniTask.WaitUntil(() => !this.consentInformation.IsRequestingConsent());
                 this.IsShowingAOA = false;
-                if (!this.consentInformation.CanRequestAds()) return;
+                if (!this.consentInformation.CanRequestAds() || this.screenManager.CurrentActiveScreen.Value is not UITemplateLoadingScreenPresenter) return;
             }
             
             #if BRAVESTARS

@@ -58,7 +58,7 @@
 
         public override async UniTask CloseViewAsync()
         {
-            await this.RewardAfterWatchedAds();
+            this.RewardAfterWatchedAds().Forget();
             await base.CloseViewAsync();
         }
 

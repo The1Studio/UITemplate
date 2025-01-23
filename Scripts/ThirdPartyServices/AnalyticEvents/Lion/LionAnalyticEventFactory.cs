@@ -1,4 +1,7 @@
 ﻿#if LION
+using MissionEventArgs = Events.Mission.EventArgs.MissionEventArgs;
+using MissionFailedEventArgs = Events.Mission.EventArgs.MissionFailedEventArgs;
+
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Lion
 {
     using Core.AnalyticServices;
@@ -158,6 +161,34 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.L
             LionAnalytics.RewardVideoShowFail(placement: place, additionalData: new() { { "msg", msg } });
 
             return base.RewardedVideoShowFail(place, msg);
+        }
+
+        public override IEvent LevelStart(int level, int gold)
+        {
+            LionAnalytics.MissionStarted(new() { MissionName = $"Level{level}" });
+
+            return base.LevelStart(level, gold);
+        }
+
+        public override IEvent LevelWin(int level, int timeSpent, int winCount)
+        {
+            LionAnalytics.MissionCompleted(new() { MissionName = $"Level{level}" });
+
+            return base.LevelWin(level, timeSpent, winCount);
+        }
+
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount)
+        {
+            LionAnalytics.MissionFailed(new MissionFailedEventArgs(new MissionEventArgs() { MissionName = $"Level{level}" }));
+
+            return base.LevelLose(level, timeSpent, loseCount);
+        }
+
+        public override IEvent LevelSkipped(int level, int timeSpent)
+        {
+            LionAnalytics.MissionAbandoned(new() { MissionName = $"Level{level}" });
+
+            return base.LevelSkipped(level, timeSpent);
         }
     }
 }

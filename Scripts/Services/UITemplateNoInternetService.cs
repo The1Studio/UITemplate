@@ -39,7 +39,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private bool isScreenValid;
 
         private int   continuousNoInternetChecked = 0;
-        private float CheckInterval => this.gameFeaturesSetting.NoInternetConfig.CheckInterval;
+        private bool  PauseGameByTimeScale => this.gameFeaturesSetting.NoInternetConfig.PauseGameByTimeScale;
+        private float CheckInterval        => this.gameFeaturesSetting.NoInternetConfig.CheckInterval;
 
         public void Initialize()
         {
@@ -61,7 +62,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 if (this.continuousNoInternetChecked >= this.gameFeaturesSetting.NoInternetConfig.ContinuesFailToShow)
                 {
                     this.continuousNoInternetChecked = 0;
-                    this.screenManager.OpenScreen<UITemplateConnectErrorPresenter>().Forget();
+                    this.NoInternetHandler();
                 }
             }
 
@@ -75,6 +76,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         }
 
         #endregion
+
+        private void NoInternetHandler()
+        {
+            var previousTimeScale = Time.timeScale;
+
+            this.screenManager.OpenScreen<UITemplateConnectErrorPresenter, UITemplateConnectErrorModel>(
+                new(() =>
+                    {
+                        if (this.PauseGameByTimeScale) Time.timeScale = 0;
+                    },
+                    () =>
+                    {
+                        if (this.PauseGameByTimeScale) Time.timeScale = previousTimeScale;
+                    }));
+        }
 
         private void OnScreenShow(ScreenShowSignal obj)
         {

@@ -9,9 +9,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.L
     using GameFoundation.Signals;
     using LionStudios.Suite.Analytics;
     using LionStudios.Suite.Analytics.Events.EventArgs;
+    using VContainer;
 
     public class LionAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        [Preserve]
         public LionAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
         {
         }

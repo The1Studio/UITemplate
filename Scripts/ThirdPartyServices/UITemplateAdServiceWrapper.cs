@@ -389,7 +389,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
 
             if (this.IsResumedFromAnotherServices) return;
-
+            
+            this.IsResumedFromAnotherServices = true;
             this.ShowAOAAdsIfAvailable(false).Forget();
         }
 

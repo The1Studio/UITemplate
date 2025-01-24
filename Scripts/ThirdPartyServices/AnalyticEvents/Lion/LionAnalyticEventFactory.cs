@@ -189,35 +189,35 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.L
 
         public override IEvent LevelStart(int level, int gold)
         {
-            LionAnalytics.MissionStarted(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose + 1 });
+            LionAnalytics.MissionStarted(new MissionEventArgs { MissionID = $"{level}", MissionAttempt = this.TotalWinLose + 1 });
 
             return base.LevelStart(level, gold);
         }
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount)
         {
-            LionAnalytics.MissionCompleted(new MissionCompletedEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose });
+            LionAnalytics.MissionCompleted(new MissionCompletedEventArgs { MissionID = $"{level}", MissionAttempt = this.TotalWinLose });
 
             return base.LevelWin(level, timeSpent, winCount);
         }
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount)
         {
-            LionAnalytics.MissionFailed(new MissionFailedEventArgs(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose }));
+            LionAnalytics.MissionFailed(new MissionFailedEventArgs(new MissionEventArgs { MissionID = $"{level}", MissionAttempt = this.TotalWinLose }));
 
             return base.LevelLose(level, timeSpent, loseCount);
         }
 
         public override IEvent LevelGiveUp(int level)
         {
-            LionAnalytics.MissionAbandoned(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose });
+            LionAnalytics.MissionAbandoned(new MissionEventArgs { MissionID = $"{level}", MissionAttempt = this.TotalWinLose });
 
             return base.LevelGiveUp(level);
         }
 
         public override IEvent LevelSkipped(int level, int timeSpent)
         {
-            LionAnalytics.MissionCompleted(new MissionCompletedEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose });
+            LionAnalytics.MissionCompleted(new MissionCompletedEventArgs { MissionID = $"{level}", MissionAttempt = this.TotalWinLose });
 
             return base.LevelSkipped(level, timeSpent);
         }

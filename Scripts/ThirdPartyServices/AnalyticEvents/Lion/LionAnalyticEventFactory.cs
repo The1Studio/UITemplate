@@ -189,7 +189,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.L
 
         public override IEvent LevelStart(int level, int gold)
         {
-            LionAnalytics.MissionStarted(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose + 1});
+            LionAnalytics.MissionStarted(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose + 1 });
 
             return base.LevelStart(level, gold);
         }
@@ -210,7 +210,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.L
 
         public override IEvent LevelGiveUp(int level)
         {
-            LionAnalytics.MissionAbandoned(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose});
+            LionAnalytics.MissionAbandoned(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose });
+
             return base.LevelGiveUp(level);
         }
 

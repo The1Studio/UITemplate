@@ -75,6 +75,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<TutorialCompletionSignal>(this.TutorialCompletionHandler);
             this.signalBus.Subscribe<LevelStartedSignal>(this.LevelStartedHandler);
             this.signalBus.Subscribe<LevelEndedSignal>(this.LevelEndedHandler);
+            this.signalBus.Subscribe<LevelGaveUpSignal>(this.LevelGaveUpHandler);
             this.signalBus.Subscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);
             this.signalBus.Subscribe<ScreenShowSignal>(this.ScreenShowHandler);
@@ -342,7 +343,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time));
         }
 
-        protected virtual void LevelEndedHandler(LevelEndedSignal obj)
+        private void LevelGaveUpHandler(LevelGaveUpSignal obj)
+        {
+            this.Track(this.analyticEventFactory.LevelGiveUp(obj.Level));
+        }
+
+        private void LevelEndedHandler(LevelEndedSignal obj)
         {
             var levelData = this.uiTemplateLevelDataController.GetLevelData(obj.Level);
 
@@ -452,6 +458,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         public void Dispose()
         {
             this.signalBus.Unsubscribe<LevelStartedSignal>(this.LevelStartedHandler);
+            this.signalBus.Unsubscribe<LevelGaveUpSignal>(this.LevelGaveUpHandler);
             this.signalBus.Unsubscribe<LevelEndedSignal>(this.LevelEndedHandler);
             this.signalBus.Unsubscribe<LevelSkippedSignal>(this.LevelSkippedHandler);
             this.signalBus.Unsubscribe<OnUpdateCurrencySignal>(this.UpdateCurrencyHandler);

@@ -27,6 +27,7 @@
         protected override void LevelEndedHandler(LevelEndedSignal obj)
         {
             base.LevelEndedHandler(obj);
+            if(!obj.IsWin) return;
             this.analyticServices.Track(new AchievedLevel(obj.Level));
             this.analyticServices.Track(new CustomEvent
             {

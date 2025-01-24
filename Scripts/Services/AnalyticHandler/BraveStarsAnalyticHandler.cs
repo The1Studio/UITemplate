@@ -27,12 +27,14 @@
         protected override void LevelEndedHandler(LevelEndedSignal obj)
         {
             base.LevelEndedHandler(obj);
-            if(!obj.IsWin) return;
-            this.analyticServices.Track(new AchievedLevel(obj.Level));
-            this.analyticServices.Track(new CustomEvent
+            if (obj.IsWin)
             {
-                EventName = $"completed_level_{obj.Level}",
-            });
+                this.analyticServices.Track(new AchievedLevel(obj.Level));
+                this.analyticServices.Track(new CustomEvent
+                {
+                    EventName = $"completed_level_{obj.Level}",
+                });
+            }
         }
 
         #region Inject

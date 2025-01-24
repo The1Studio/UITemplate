@@ -1,0 +1,4 @@
+{
+	"name": "UITemplate.Configs",
+	"references":[ "GUID:563749aea2450c64fb6d1e8f8ea88217", "GUID:a71249a67191af9498e0b3dafd410004", "GUID:756716c0f8de46540bf70ea99da539ab", "GUID:b80a29c316cbacd4894eac4d497bc250", "GUID:889e0127bba74690b02267ceb80204f7" ]
+}

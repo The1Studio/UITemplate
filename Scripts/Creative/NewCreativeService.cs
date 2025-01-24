@@ -42,7 +42,7 @@
         {
             if (!this.EnableTripleTap) return;
 
-            var rootUICanvas = Object.FindObjectOfType<RootUICanvas>();
+            var rootUICanvas = Object.FindFirstObjectByType<RootUICanvas>();
             if (rootUICanvas == null) return;
             var canvas = rootUICanvas.GetComponentInChildren<Canvas>();
             if (canvas == null) return;

@@ -54,7 +54,14 @@
     "FalconSDK",
     "3rd.ServiceImplementation.Adjust",
     "3rd.RemoteConfig.DI",
-    "SupersonicWisdom"
+    "SupersonicWisdom",
+    "UITemplate.Data",
+    "UITemplate.Services.Internet",
+    "UITemplate.Service.FlyingAnimation",
+    "UITemplate.Utils",
+    "UITemplate.Signals",
+    "UITemplate.Configs",
+    "UITemplate.Blueprint"
   ],
   "precompiledReferences": [
     "DOTween.dll",

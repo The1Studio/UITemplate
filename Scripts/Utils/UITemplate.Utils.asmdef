@@ -1,0 +1,23 @@
+{
+    "name": "UITemplate.Utils",
+    "rootNamespace": "",
+    "references": [
+        "3rd.Configs",
+        "GameFoundation.Utilities",
+        "GameFoundation.AssetLibrary",
+        "UniTask.Addressables",
+        "Unity.TextMeshPro",
+        "UniTask",
+        "Unity.ResourceManager",
+        "Unity.Addressables"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

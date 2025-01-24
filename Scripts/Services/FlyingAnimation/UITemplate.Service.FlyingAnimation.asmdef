@@ -1,0 +1,23 @@
+{
+    "name": "UITemplate.Service.FlyingAnimation",
+    "rootNamespace": "",
+    "references": [
+        "GameFoundation.AssetLibrary",
+        "GameFoundation.UIModule",
+        "GameFoundation.Utilities",
+        "UniTask",
+        "UITemplate.Extension",
+        "Unity.ResourceManager",
+        "UniTask.Addressables",
+        "Unity.Addressables"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,7 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Blueprints
 {
     using BlueprintFlow.BlueprintReader;
-    using TheOneStudio.UITemplate.UITemplate.Models;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints.Enums;
     using UnityEngine.Scripting;
 
     [Preserve]
@@ -14,9 +14,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
     [CsvHeaderKey("Id")]
     public class UITemplateShopRecord
     {
-        public string                        Id         { get; [Preserve] private set; }
-        public UITemplateItemData.UnlockType UnlockType { get; [Preserve] private set; }
-        public string                        CurrencyID { get; [Preserve] private set; }
-        public int                           Price      { get; [Preserve] private set; }
+        public string     Id         { get; [Preserve] private set; }
+        public UnlockType UnlockType { get; [Preserve] private set; }
+        public string     CurrencyID { get; [Preserve] private set; }
+        public int        Price      { get; [Preserve] private set; }
     }
 }

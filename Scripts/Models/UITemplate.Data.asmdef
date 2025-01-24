@@ -1,0 +1,32 @@
+{
+    "name": "UITemplate.Data",
+    "rootNamespace": "",
+    "references": [
+        "GameFoundation.Models",
+        "UniTask",
+        "UITemplate.Blueprint",
+        "GameFoundation.BlueprintFlow",
+        "3rd.IAP",
+        "GameFoundation.Signals",
+        "GameFoundation.UIModule",
+        "GameFoundation.Utilities",
+        "UITemplate.Services.Internet",
+        "UITemplate.Service.FlyingAnimation",
+        "GameFoundation.DI",
+        "UITemplate.Signals",
+        "GameFoundation.AssetLibrary",
+        "3rd.RemoteConfig",
+        "UITemplate.Services.CountryFlags",
+        "UITemplate.Configs",
+        "UniTask.Addressables"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

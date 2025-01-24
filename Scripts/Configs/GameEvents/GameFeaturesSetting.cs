@@ -5,7 +5,8 @@
     using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
     using TheOneStudio.UITemplate.UITemplate.Services.Vibration;
     using UnityEngine;
-    #if UNITY_EDITOR
+    using UnityEngine.Serialization;
+#if UNITY_EDITOR
     using UnityEditor;
     using System.IO;
     using ServiceImplementation.Configs.Editor;
@@ -114,6 +115,8 @@
         #endregion
 
         #region Button Experience
+
+        [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")] public bool enableButtonExperience;
 
         [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")] public VibrationPresetType vibrationPresetType = VibrationPresetType.Selection;
 

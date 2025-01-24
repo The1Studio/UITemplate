@@ -42,6 +42,7 @@
 
         private void OnScreenShowHandler(ScreenShowSignal obj)
         {
+            if(this.gameFeaturesSetting.enableButtonExperience) return;
             if (!this.openedScreenList.Add(obj.ScreenPresenter)) return;
 
             var newButtons = obj.ScreenPresenter.CurrentTransform.GetComponentsInChildren<Button>(true);

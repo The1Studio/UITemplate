@@ -116,7 +116,7 @@
 
         #region Button Experience
 
-        [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")] public bool enableButtonExperience;
+        [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")] public bool enableButtonExperience = true;
 
         [FoldoutGroup("Button Experience")] [Tooltip("Set to None to disable")] public VibrationPresetType vibrationPresetType = VibrationPresetType.Selection;
 

@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using VContainer;
 
     public static class UITemplateSignalVContainer
@@ -28,6 +29,7 @@ namespace TheOneStudio.UITemplate
             builder.DeclareSignal<OnFinishCurrencyAnimationSignal>();
             builder.DeclareSignal<LevelStartedSignal>();
             builder.DeclareSignal<LevelEndedSignal>();
+            builder.DeclareSignal<LevelGaveUpSignal>();
             builder.DeclareSignal<LevelSkippedSignal>();
             builder.DeclareSignal<RemoteConfigFetchedSucceededSignal>();
             builder.DeclareSignal<OnRemoveAdsSucceedSignal>();

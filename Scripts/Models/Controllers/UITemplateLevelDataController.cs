@@ -116,6 +116,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.handleUserDataServices.SaveAll();
         }
 
+        /// <summary>
+        /// Call when player give up current level
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        public void GaveUpCurrentLevel()
+        {
+            this.signalBus.Fire(new LevelGaveUpSignal(this.uiTemplateUserLevelData.CurrentLevel));
+            this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
+
+            this.handleUserDataServices.SaveAll();
+        }
+
         public bool IsTouchedLevel(int level) { return this.MaxLevel + 1 >= level; }
 
         public bool CheckLevelIsUnlockedStatus(int level)

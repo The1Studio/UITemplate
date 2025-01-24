@@ -42,6 +42,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
         }
     }
 
+    public class LevelGiveUp : IEvent
+    {
+        public int level;
+
+        public LevelGiveUp(int level) { this.level = level; }
+    }
+
     public class FirstWin : IEvent
     {
         public int level;

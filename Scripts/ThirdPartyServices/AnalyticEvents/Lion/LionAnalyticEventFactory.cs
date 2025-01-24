@@ -208,9 +208,15 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.L
             return base.LevelLose(level, timeSpent, loseCount);
         }
 
+        public override IEvent LevelGiveUp(int level)
+        {
+            LionAnalytics.MissionAbandoned(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose});
+            return base.LevelGiveUp(level);
+        }
+
         public override IEvent LevelSkipped(int level, int timeSpent)
         {
-            LionAnalytics.MissionAbandoned(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose });
+            LionAnalytics.MissionCompleted(new MissionCompletedEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose });
 
             return base.LevelSkipped(level, timeSpent);
         }

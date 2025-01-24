@@ -174,6 +174,11 @@
             return new LevelWin(level, timeSpent);
         }
 
+        public virtual IEvent LevelGiveUp(int level)
+        {
+            return new LevelGiveUp(level);
+        }
+
         public virtual IEvent LevelLose(int level, int timeSpent, int loseCount)
         {
             return new LevelLose(level, timeSpent);

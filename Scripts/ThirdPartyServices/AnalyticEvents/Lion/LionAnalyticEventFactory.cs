@@ -7,15 +7,25 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.L
     using Core.AnalyticServices;
     using Core.AnalyticServices.Data;
     using GameFoundation.Signals;
+    using global::Events.Mission.EventArgs;
     using LionStudios.Suite.Analytics;
     using LionStudios.Suite.Analytics.Events.EventArgs;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using VContainer;
 
     public class LionAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        private readonly UITemplateLevelDataController levelDataController;
+
         [Preserve]
-        public LionAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
+        public LionAnalyticEventFactory
+        (
+            SignalBus                     signalBus,
+            IAnalyticServices             analyticServices,
+            UITemplateLevelDataController levelDataController
+        ) : base(signalBus, analyticServices)
         {
+            this.levelDataController = levelDataController;
         }
 
         public override IEvent AppOpenCalled(string place)
@@ -165,33 +175,47 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.L
             return base.RewardedVideoShowFail(place, msg);
         }
 
+#region Missions
+
+        private int TotalWinLose
+        {
+            get
+            {
+                var levelData = this.levelDataController.GetCurrentLevelData;
+
+                return levelData.WinCount + levelData.LoseCount;
+            }
+        }
+
         public override IEvent LevelStart(int level, int gold)
         {
-            LionAnalytics.MissionStarted(new() { MissionName = $"Level{level}" });
+            LionAnalytics.MissionStarted(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose + 1});
 
             return base.LevelStart(level, gold);
         }
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount)
         {
-            LionAnalytics.MissionCompleted(new() { MissionName = $"Level{level}" });
+            LionAnalytics.MissionCompleted(new MissionCompletedEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose });
 
             return base.LevelWin(level, timeSpent, winCount);
         }
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount)
         {
-            LionAnalytics.MissionFailed(new MissionFailedEventArgs(new MissionEventArgs() { MissionName = $"Level{level}" }));
+            LionAnalytics.MissionFailed(new MissionFailedEventArgs(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose }));
 
             return base.LevelLose(level, timeSpent, loseCount);
         }
 
         public override IEvent LevelSkipped(int level, int timeSpent)
         {
-            LionAnalytics.MissionAbandoned(new() { MissionName = $"Level{level}" });
+            LionAnalytics.MissionAbandoned(new MissionEventArgs { MissionID = $"Level{level}", MissionAttempt = this.TotalWinLose });
 
             return base.LevelSkipped(level, timeSpent);
         }
+
+#endregion
     }
 }
 #endif

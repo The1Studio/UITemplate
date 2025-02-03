@@ -230,6 +230,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual void HideBannerAd()
         {
+            this.IsShowBannerAd = false;
             this.InternalHideCollapsibleBannerAd();
             this.InternalHideMediationBannerAd();
             this.logService.Log("onelog: HideBannerAd");
@@ -237,14 +238,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void InternalHideMediationBannerAd()
         {
-            this.IsShowBannerAd = false;
             this.bannerAdService.HideBannedAd();
             this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(false));
         }
 
         private void InternalHideCollapsibleBannerAd()
         {
-            this.IsShowBannerAd = false;
             this.RefreshCollapsibleCts?.Cancel();
             this.RefreshCollapsibleCts?.Dispose();
             this.RefreshCollapsibleCts = null;

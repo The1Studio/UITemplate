@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
+    using System;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -21,9 +22,19 @@
         public Image    ConnectErrorImage;
         public Image    ConnectingImage;
     }
+    
+    public class UITemplateConnectErrorModel
+    {
+        public Action OnConnectSuccess { get; }
+        
+        public UITemplateConnectErrorModel(Action onConnectSuccess)
+        {
+            this.OnConnectSuccess    = onConnectSuccess;
+        }
+    }
 
     [PopupInfo(nameof(UITemplateConnectErrorPopupView), true, false, true)]
-    public class UITemplateConnectErrorPresenter : UITemplateBasePopupPresenter<UITemplateConnectErrorPopupView>
+    public class UITemplateConnectErrorPresenter : UITemplateBasePopupPresenter<UITemplateConnectErrorPopupView, UITemplateConnectErrorModel>
     {
         protected virtual double CheckTimeout        => 5;
         protected virtual string ConnectingMessage   => "Trying to reconnect...\nPlease wait...";
@@ -44,7 +55,7 @@
             this.internetService = internetService;
         }
 
-        public override UniTask BindData()
+        public override UniTask BindData(UITemplateConnectErrorModel model)
         {
             this.UpdateContent(false);
             return UniTask.CompletedTask;
@@ -58,6 +69,7 @@
 
         protected virtual void OnConnectSuccess()
         {
+            this.Model.OnConnectSuccess?.Invoke();
             this.CloseView();
         }
 

@@ -25,13 +25,11 @@
     
     public class UITemplateConnectErrorModel
     {
-        public Action OnBindData;
-        public Action OnClose;
+        public Action OnConnectSuccess { get; }
         
-        public UITemplateConnectErrorModel(Action onBindData, Action onClose)
+        public UITemplateConnectErrorModel(Action onConnectSuccess)
         {
-            this.OnBindData = onBindData;
-            this.OnClose    = onClose;
+            this.OnConnectSuccess    = onConnectSuccess;
         }
     }
 
@@ -59,7 +57,6 @@
 
         public override UniTask BindData(UITemplateConnectErrorModel model)
         {
-            this.Model.OnBindData?.Invoke();
             this.UpdateContent(false);
             return UniTask.CompletedTask;
         }
@@ -72,7 +69,7 @@
 
         protected virtual void OnConnectSuccess()
         {
-            this.Model.OnClose?.Invoke();
+            this.Model.OnConnectSuccess?.Invoke();
             this.CloseView();
         }
 

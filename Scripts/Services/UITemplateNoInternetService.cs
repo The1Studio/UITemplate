@@ -79,17 +79,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void HandleNoInternet()
         {
-            var previousTimeScale = Time.timeScale;
+            var previousTimeScale                         = Time.timeScale;
+            if (this.PauseGameByTimeScale) Time.timeScale = 0;
 
             this.screenManager.OpenScreen<UITemplateConnectErrorPresenter, UITemplateConnectErrorModel>(
                 new(() =>
-                    {
-                        if (this.PauseGameByTimeScale) Time.timeScale = 0;
-                    },
-                    () =>
-                    {
-                        if (this.PauseGameByTimeScale) Time.timeScale = previousTimeScale;
-                    }));
+                {
+                    if (this.PauseGameByTimeScale) Time.timeScale = previousTimeScale;
+                }));
         }
 
         private void OnScreenShow(ScreenShowSignal obj)

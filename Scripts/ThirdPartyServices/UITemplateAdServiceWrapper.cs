@@ -180,7 +180,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.IsMediationBanner = forceShowMediation || !this.adServicesConfig.EnableCollapsibleBanner || this.PreviousCollapsibleBannerAdLoadedFail;
                 this.logService.Log($"onelog: ShowBannerAd EnableCollapsibleBanner {this.adServicesConfig.EnableCollapsibleBanner}, PreviousCollapsibleBannerAdLoadedFail {this.PreviousCollapsibleBannerAdLoadedFail}, IsMediationBanner {this.IsMediationBanner}");
-                if (this.IsMediationBanner)
+                if (!this.IsMediationBanner)
                 {
                     var useNewGuid = this.IsRefreshingCollapsible
                         ? this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled

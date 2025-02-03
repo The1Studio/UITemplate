@@ -62,7 +62,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 if (this.continuousNoInternetChecked >= this.gameFeaturesSetting.NoInternetConfig.ContinuesFailToShow)
                 {
                     this.continuousNoInternetChecked = 0;
-                    this.HandlerNoInternet();
+                    this.HandleNoInternet();
                 }
             }
 
@@ -77,7 +77,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
-        private void HandlerNoInternet()
+        private void HandleNoInternet()
         {
             var previousTimeScale = Time.timeScale;
 

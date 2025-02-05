@@ -66,6 +66,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         //Banner
         private bool                    IsShowBannerAd                        { get; set; }
+        private bool                    IsMediationBanner                     { get; set; }
         private bool                    IsShowMRECAd                          { get; set; }
         private bool                    IsCheckFirstScreenShow                { get; set; }
         private DateTime                LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
@@ -173,13 +174,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             await UniTask.WaitUntil(() => this.bannerAdService.IsAdsInitialized());
 
-            this.logService.Log($"onelog: ShowBannerAd this.adServicesConfig.EnableBannerAd {this.adServicesConfig.EnableBannerAd}");
+            this.logService.Log($"onelog: ShowBannerAd EnableBannerAd {this.adServicesConfig.EnableBannerAd}, IsShowBannerAd {this.IsShowBannerAd}");
             if (!this.adServicesConfig.EnableBannerAd) return;
-            this.logService.Log($"onelog: ShowBannerAd IsShowBannerAd {this.IsShowBannerAd}");
             if (this.IsShowBannerAd)
             {
-                this.logService.Log($"onelog: ShowBannerAd EnableCollapsibleBanner {this.adServicesConfig.EnableCollapsibleBanner}, PreviousCollapsibleBannerAdLoadedFail {this.PreviousCollapsibleBannerAdLoadedFail}");
-                if (!forceShowMediation && this.adServicesConfig.EnableCollapsibleBanner && !this.PreviousCollapsibleBannerAdLoadedFail)
+                this.IsMediationBanner = forceShowMediation || !this.adServicesConfig.EnableCollapsibleBanner || this.PreviousCollapsibleBannerAdLoadedFail;
+                this.logService.Log($"onelog: ShowBannerAd EnableCollapsibleBanner {this.adServicesConfig.EnableCollapsibleBanner}, PreviousCollapsibleBannerAdLoadedFail {this.PreviousCollapsibleBannerAdLoadedFail}, IsMediationBanner {this.IsMediationBanner}");
+                if (!this.IsMediationBanner)
                 {
                     var useNewGuid = this.IsRefreshingCollapsible
                         ? this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled
@@ -232,13 +233,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.IsShowBannerAd = false;
             this.InternalHideCollapsibleBannerAd();
             this.InternalHideMediationBannerAd();
-            this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(false));
             this.logService.Log("onelog: HideBannerAd");
         }
 
         private void InternalHideMediationBannerAd()
         {
             this.bannerAdService.HideBannedAd();
+            this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(false));
         }
 
         private void InternalHideCollapsibleBannerAd()
@@ -248,6 +249,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.RefreshCollapsibleCts = null;
             // this.collapsibleBannerAd.HideCollapsibleBannerAd(); TODO uncomment when update collapsible
             this.collapsibleBannerAd.DestroyCollapsibleBannerAd();
+            this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(false));
         }
 
         private void OnScreenChanged(IScreenPresenter screenPresenter)
@@ -335,12 +337,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.IsShowingAOA = false;
                 if (!this.consentInformation.CanRequestAds() || this.screenManager.CurrentActiveScreen.Value is not UITemplateLoadingScreenPresenter) return;
             }
-            
+
             #if BRAVESTARS
             if (isOpenAppAOA && !this.adServicesConfig.AoaFirstOpen && this.gameSessionDataController.OpenTime == 1) return;
             if (isOpenAppAOA && !this.adServicesConfig.AoaStartGame) return;
             #endif
-            
+
             var placement = isOpenAppAOA ? AppOpenPlacement.FirstOpen.ToString() : AppOpenPlacement.ResumeApp.ToString();
 
             if (!isOpenAppAOA)
@@ -398,7 +400,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (this.IsRemovedAds)
                 this.bannerAdService.DestroyBannerAd();
-            else if (!this.IsShowBannerAd) this.bannerAdService.HideBannedAd();
+            else
+            {
+                if (!this.IsShowBannerAd || !this.IsMediationBanner) this.InternalHideMediationBannerAd();
+                if (!this.IsShowBannerAd || this.IsMediationBanner) this.InternalHideCollapsibleBannerAd();
+            }
         }
 
         private void OnInterstitialDisplayedFailedHandler(InterstitialAdDisplayedFailedSignal obj)
@@ -557,7 +563,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         #endregion
-        
+
         private string                  mrecPlacement;
         private AdScreenPosition        mrecPosition;
         private AdScreenPosition        mrecOffset;
@@ -598,7 +604,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.logService.Log($"onelog: HideMREC, placement: {placement}");
             }
         }
-        
+
         private void DestroyMREC(string placement, AdScreenPosition position)
         {
             var mrecAdServices = this.mrecAdServices.Where(service => service.IsMRECReady(placement, position, default)).ToList();
@@ -609,7 +615,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.logService.Log($"onelog: DestroyMREC, placement: {placement}");
             }
         }
-        
+
         private void ScheduleRefreshMREC()
         {
             if (!this.adServicesConfig.EnableMrecRefreshInterval) return;
@@ -624,8 +630,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         #region CollapsibleMREC
+
         #if THEONE_COLLAPSIBLE_MREC
-        
         private CancellationTokenSource refreshMrecCts;
         private CancellationTokenSource displayMrecCts;
 
@@ -653,7 +659,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.ResetMrecRefreshCts();
             this.InternalHideCollapsibleMREC(placement);
         }
-        
+
         private void InternalHideCollapsibleMREC(string placement)
         {
             Debug.Log($"oneLog: HIDE collapsible mrec, placement: {placement}");
@@ -664,7 +670,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
             this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, placement));
         }
-        
+
         private void InternalRefreshMrec(string placement)
         {
             UniTask.WaitForSeconds(this.adServicesConfig.CollapsibleMrecInterval, true, cancellationToken: (this.refreshMrecCts = new()).Token)
@@ -680,7 +686,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.InternalHideCollapsibleMREC(placement);
             this.InternalRefreshMrec(placement);
         }
-        
+
         private void ResetMrecRefreshCts()
         {
             this.refreshMrecCts?.Cancel();
@@ -696,11 +702,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
 
         #endif
+
         #endregion
 
         private void OnRemoveAdsComplete()
         {
-            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, ""));   
+            this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, ""));
             foreach (var mrecAdService in this.mrecAdServices)
             {
                 mrecAdService.HideAllMREC();

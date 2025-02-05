@@ -69,7 +69,7 @@
 
         protected virtual void OnConnectSuccess()
         {
-            this.Model.OnConnectSuccess?.Invoke();
+            this.Model?.OnConnectSuccess?.Invoke();
             this.CloseView();
         }
 

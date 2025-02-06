@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Creative
 {
+    using System;
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using R3;
@@ -10,6 +11,8 @@
     [Preserve]
     public class NewCreativeService : IInitializable
     {
+        public event Action<bool> OnTripleTap;
+
         private bool  EnableTripleTap { get; set; } = true;
         private float lastTimeCheck;
         private int   tapCheckCount;
@@ -46,7 +49,8 @@
             if (rootUICanvas == null) return;
             var canvas = rootUICanvas.GetComponentInChildren<Canvas>();
             if (canvas == null) return;
-            canvas.enabled = !canvas.enabled;
+            var enableUI = canvas.enabled = !canvas.enabled;
+            this.OnTripleTap?.Invoke(enableUI);
         }
 
         public void DisableTripleTapAction()

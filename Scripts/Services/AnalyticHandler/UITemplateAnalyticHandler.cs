@@ -348,7 +348,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Track(this.analyticEventFactory.LevelGiveUp(obj.Level));
         }
 
-        private void LevelEndedHandler(LevelEndedSignal obj)
+        protected virtual void LevelEndedHandler(LevelEndedSignal obj)
         {
             var levelData = this.uiTemplateLevelDataController.GetLevelData(obj.Level);
 

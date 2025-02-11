@@ -3,14 +3,14 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine.Scripting;
 
-    public class FTUEEnoughCurrencyContidionModel
+    public class FTUEEnoughCurrencyConditionModel
     {
         public string Condition { get; }
         public string Id        { get; }
         public int    Value     { get; }
 
         [Preserve]
-        public FTUEEnoughCurrencyContidionModel(string condition, string id, int value)
+        public FTUEEnoughCurrencyConditionModel(string condition, string id, int value)
         {
             this.Condition = condition;
             this.Id        = id;
@@ -18,7 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
         }
     }
 
-    public class FTUEEnoughCurrencyCondition : FtueCondition<FTUEEnoughCurrencyContidionModel>
+    public class FTUEEnoughCurrencyCondition : FtueCondition<FTUEEnoughCurrencyConditionModel>
     {
         #region inject
 
@@ -36,7 +36,12 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 
         public override string Id => "enough_currency";
 
-        protected override bool IsPassedCondition(FTUEEnoughCurrencyContidionModel data)
+        protected override string GetTooltipText(FTUEEnoughCurrencyConditionModel data)
+        {
+            return $"Not enough currency";
+        }
+
+        protected override bool IsPassedCondition(FTUEEnoughCurrencyConditionModel data)
         {
             return this.uiTemplateFtueHelper.CompareIntWithCondition(this.uiTemplateInventoryDataController.GetCurrencyValue(data.Id), data.Value, data.Condition);
         }

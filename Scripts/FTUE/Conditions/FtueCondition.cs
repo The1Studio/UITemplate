@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
     {
         string Id { get; }
         bool   IsPassedCondition(string data);
+        string GetTooltipText(string    data);
     }
 
     public abstract class FtueCondition<T> : IFtueCondition
@@ -16,6 +17,13 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
         {
             return this.IsPassedCondition(JsonConvert.DeserializeObject<T>(data));
         }
+
+        public string GetTooltipText(string data)
+        {
+            return this.GetTooltipText(JsonConvert.DeserializeObject<T>(data));
+        }
+
+        protected abstract string GetTooltipText(T data);
 
         protected abstract bool IsPassedCondition(T data);
     }

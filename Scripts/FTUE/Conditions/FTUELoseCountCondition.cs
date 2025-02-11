@@ -30,6 +30,11 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 
+        protected override string GetTooltipText(FTUELoseCountModel data)
+        {
+            return "";
+        }
+
         protected override bool IsPassedCondition(FTUELoseCountModel data)
         {
             return this.uiTemplateLevelDataController.TotalLose == data.Count;

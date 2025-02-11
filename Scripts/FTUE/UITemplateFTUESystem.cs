@@ -165,6 +165,17 @@
             return true;
         }
 
+        public string GetTooltipText(string stepId)
+        {
+            return this.uiTemplateFtueBlueprint.GetDataById(stepId).TooltipText;
+        }
+
+        public string GetConditionTooltipText(string stepId)
+        {
+            var requireConditions = this.uiTemplateFtueBlueprint.GetDataById(stepId).GetRequireCondition();
+            return requireConditions is { Count: > 0 } ? this.IDToFtueConditions[requireConditions.First().RequireId].GetTooltipText(requireConditions.First().ConditionDetail) : "";
+        }
+
         public bool IsAnyFtueActive()
         {
             return this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);

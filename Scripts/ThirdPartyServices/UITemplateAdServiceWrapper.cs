@@ -495,7 +495,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.InternalHideCollapsibleBannerAd();
                 #endif
                 await this.screenManager.OpenScreen<BreakAdsPopupPresenter>();
-                await UniTask.Delay(TimeSpan.FromSeconds(0.5f), DelayType.UnscaledDeltaTime);
+                await UniTask.Delay(TimeSpan.FromSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayShowInterBreakAds), DelayType.UnscaledDeltaTime);
                 action.Invoke();
             }
 

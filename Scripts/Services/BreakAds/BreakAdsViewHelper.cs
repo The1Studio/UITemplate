@@ -6,6 +6,7 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Signals;
+    using ServiceImplementation.Configs;
     using UnityEngine.Scripting;
 
     // Rebind this class to your own view
@@ -17,12 +18,14 @@
         
         public bool IsViewReady => BreakAdsPopupPresenter.ScreenStatus == ScreenStatus.Opened;
         
-        protected readonly SignalBus SignalBus;
+        protected readonly SignalBus          SignalBus;
+        private readonly   ThirdPartiesConfig thirdPartiesConfig;
 
         [Preserve]
-        public BreakAdsViewHelper(SignalBus signalBus)
+        public BreakAdsViewHelper(SignalBus signalBus, ThirdPartiesConfig thirdPartiesConfig)
         {
-            this.SignalBus = signalBus;
+            this.SignalBus          = signalBus;
+            this.thirdPartiesConfig = thirdPartiesConfig;
         }
 
         public virtual void OnViewReady(BreakAdsPopupView view, BreakAdsPopupPresenter breakAdsPopupPresenter)
@@ -45,7 +48,7 @@
             {
                 this.Cts?.Cancel();
                 this.Cts = new();
-                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: this.Cts.Token);
+                await UniTask.Delay(TimeSpan.FromSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayCloseBreakAdsPopup), cancellationToken: this.Cts.Token);
                 this.BreakAdsPopupPresenter.CloseView();
             }
             catch (Exception e)

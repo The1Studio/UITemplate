@@ -48,7 +48,7 @@
             {
                 this.Cts?.Cancel();
                 this.Cts = new();
-                await UniTask.Delay(TimeSpan.FromSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayClosePopup), cancellationToken: this.Cts.Token);
+                await UniTask.Delay(TimeSpan.FromSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayCloseBreakAdsPopup), cancellationToken: this.Cts.Token);
                 this.BreakAdsPopupPresenter.CloseView();
             }
             catch (Exception e)

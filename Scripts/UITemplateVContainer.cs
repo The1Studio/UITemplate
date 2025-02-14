@@ -34,6 +34,7 @@ namespace TheOneStudio.UITemplate
 
             builder.RegisterUITemplateLocalData();
             builder.RegisterUITemplateServices(rootTransform, toastControllerPrefab);
+            builder.RegisterBlueprintRemoteConfig();
             builder.RegisterDailyReward();
             builder.RegisterNotificationService();
             builder.RegisterStoreRatingService();
@@ -72,7 +73,7 @@ namespace TheOneStudio.UITemplate
             builder.RegisterComponentInNewPrefabResource<Reporter>("LogsViewer", Lifetime.Singleton).UnderTransform(rootTransform);
             builder.AutoResolve<Reporter>();
             #endif
-            
+
             #if THEONE_COLLAPSIBLE_MREC
             builder.RegisterCollapsibleMREC(rootTransform);
             #endif

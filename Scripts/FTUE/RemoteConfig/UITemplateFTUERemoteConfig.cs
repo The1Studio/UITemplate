@@ -4,9 +4,9 @@
     using GameFoundation.Signals;
     using Newtonsoft.Json;
     using ServiceImplementation.FireBaseRemoteConfig;
-    using ServiceImplementation.RemoteConfig;
+    using TheOneStudio.UITemplate.UITemplate.Models.Core.Interface;
 
-    public class UITemplateFTUERemoteConfig : FTUEConfig, IInitializable
+    public class UITemplateFTUERemoteConfig : FTUEConfig, IInitializable, IUITemplateBlueprintRemoteConfig
     {
         private const string RemoteConfigKey = "UITemplateFTUE";
 

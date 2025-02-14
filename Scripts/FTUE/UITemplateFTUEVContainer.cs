@@ -7,7 +7,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
     using TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen;
-    using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using VContainer;
 
     public static class UITemplateFTUEVContainer
@@ -16,8 +15,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
         {
             builder.Register<UITemplateFTUEController>(Lifetime.Singleton);
             builder.Register<UITemplateFTUEHelper>(Lifetime.Singleton);
-            builder.Register<UITemplateFTUEBlueprintDataHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
-            builder.Register<UITemplateFTUERemoteConfig>(Lifetime.Singleton).AsInterfacesAndSelf();
             typeof(FTUEBaseListen).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton).AsImplementedInterfaces());
 
             builder.Register<UITemplateFTUESystem>(Lifetime.Singleton)

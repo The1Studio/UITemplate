@@ -15,7 +15,7 @@
 
     public class FTUERemoteConfigEditorWindow : OdinEditorWindow
     {
-        private BlueprintRecordReader<FTUERecordDTO> blueprint;
+        private BlueprintRecordReader<UITemplateFTUERecord> blueprint;
 
         [MenuItem("TheOne/Editor/FTUE Remote Config")]
         public static void Open()

@@ -2,9 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
 
     [Serializable]
-    public class FTUEConfig : Dictionary<string, FTUERecordDTO>
+    public class FTUEConfig : Dictionary<string, UITemplateFTUERecord>
     {
     }
 }

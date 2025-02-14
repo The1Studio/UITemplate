@@ -19,7 +19,7 @@
             this.blueprint    = blueprint;
         }
 
-        public FTUERecordDTO GetDataById(string id)
+        public UITemplateFTUERecord GetDataById(string id)
         {
             if (this.ContainsKey(id)) return this.GetValueOrDefault(id);
             if (this.remoteConfig.TryGetValue(id, out var byId))
@@ -29,8 +29,8 @@
             }
             if (this.blueprint.TryGetValue(id, out var byIdBlueprint))
             {
-                this.Add(byIdBlueprint.Id, byIdBlueprint.ToDTO());
-                return byIdBlueprint.ToDTO();
+                this.Add(byIdBlueprint.Id, byIdBlueprint);
+                return byIdBlueprint;
             }
             return null;
         }

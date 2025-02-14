@@ -101,6 +101,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         public override UniTask BindData()
         {
+            Debug.Log($"phuongdmp  - BindData 1");
             this.ShowFirstBannerAd(BannerLoadStrategy.Instantiate);
             this.SignalBus.Subscribe<AppOpenFullScreenContentClosedSignal>(this.OnAOAClosedHandler);
             this.SignalBus.Subscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
@@ -108,6 +109,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.objectPoolContainer = new(nameof(this.objectPoolContainer));
             Object.DontDestroyOnLoad(this.objectPoolContainer);
 
+            Debug.Log($"phuongdmp  - BindData 2");
             this.LoadingProgress = 0f;
             this.loadingSteps    = 1;
 
@@ -134,6 +136,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 },
             });
 
+            Debug.Log($"phuongdmp  - BindData 3");
             return UniTask.CompletedTask;
         }
 
@@ -148,14 +151,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         protected virtual async UniTask LoadNextScene()
         {
+            Debug.Log($"phuongdmp  - LoadNextScene 1");
             SceneDirector.CurrentSceneName = this.NextSceneName;
 
             var stopWatch = Stopwatch.StartNew();
 
             this.SignalBus.Fire<StartLoadingNewSceneSignal>();
+
+            Debug.Log($"phuongdmp  - LoadNextScene 2");
             var nextScene = await this.TrackProgress(this.LoadSceneAsync());
+
+            Debug.Log($"phuongdmp  - LoadNextScene 3");
             await this.View.CompleteLoading();
+            Debug.Log($"phuongdmp  - LoadNextScene 4");
             await nextScene.ActivateAsync();
+            Debug.Log($"phuongdmp  - LoadNextScene 5");
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
 
             stopWatch.Stop();
@@ -175,6 +185,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             this.ShowFirstBannerAd(BannerLoadStrategy.AfterLoading);
             this.OnAfterLoading();
+            Debug.Log($"phuongdmp  - LoadNextScene 6");
         }
 
         protected virtual void ShowFirstBannerAd(BannerLoadStrategy strategy)
@@ -216,7 +227,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         protected virtual UniTask OnBlueprintAndUserDataLoaded() { return UniTask.CompletedTask; }
 
-        protected virtual UniTask OnLoadingCompleted() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnLoadingCompleted()
+        {
+
+            Debug.Log($"phuongdmp  - OnLoadingCompleted 1");
+            return UniTask.CompletedTask;
+        }
 
         protected virtual UniTask Preload() { return UniTask.CompletedTask; }
 

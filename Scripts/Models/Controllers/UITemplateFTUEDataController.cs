@@ -2,23 +2,24 @@
 {
     using Cysharp.Threading.Tasks;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using UnityEngine.Scripting;
 
     public class UITemplateFTUEDataController : IUITemplateControllerData
     {
         #region inject
 
-        private readonly UITemplateFTUEBlueprint           uiTemplateFtueBlueprint;
-        private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
-        private readonly UITemplateFTUEData                templateFtueData;
+        private readonly UITemplateFTUEBlueprintDataHandler uiTemplateFtueBlueprint;
+        private readonly UITemplateInventoryDataController  uiTemplateInventoryDataController;
+        private readonly UITemplateFTUEData                 templateFtueData;
 
         #endregion
 
         [Preserve]
         public UITemplateFTUEDataController(
-            UITemplateFTUEData                templateFtueData,
-            UITemplateFTUEBlueprint           uiTemplateFtueBlueprint,
-            UITemplateInventoryDataController uiTemplateInventoryDataController
+            UITemplateFTUEData                 templateFtueData,
+            UITemplateFTUEBlueprintDataHandler uiTemplateFtueBlueprint,
+            UITemplateInventoryDataController  uiTemplateInventoryDataController
         )
         {
             this.templateFtueData                  = templateFtueData;

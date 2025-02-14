@@ -13,6 +13,7 @@
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
@@ -22,11 +23,11 @@
     {
         #region inject
 
-        private readonly SignalBus                    signalBus;
-        private readonly UITemplateFTUEDataController uiTemplateFtueDataController;
-        private readonly UITemplateFTUEBlueprint      uiTemplateFtueBlueprint;
-        private readonly UITemplateFTUEController     uiTemplateFtueController;
-        private readonly IScreenManager               screenManager;
+        private readonly SignalBus                          signalBus;
+        private readonly UITemplateFTUEDataController       uiTemplateFtueDataController;
+        private readonly UITemplateFTUEBlueprintDataHandler uiTemplateFtueBlueprint;
+        private readonly UITemplateFTUEController           uiTemplateFtueController;
+        private readonly IScreenManager                     screenManager;
 
         #endregion
 
@@ -38,12 +39,12 @@
 
         [Preserve]
         public UITemplateFTUESystem(
-            SignalBus                    signalBus,
-            UITemplateFTUEDataController uiTemplateFtueDataController,
-            UITemplateFTUEBlueprint      uiTemplateFtueBlueprint,
-            UITemplateFTUEController     uiTemplateFtueController,
-            IScreenManager               screenManager,
-            List<IFtueCondition>         ftueConditions
+            SignalBus                          signalBus,
+            UITemplateFTUEDataController       uiTemplateFtueDataController,
+            UITemplateFTUEBlueprintDataHandler uiTemplateFtueBlueprint,
+            UITemplateFTUEController           uiTemplateFtueController,
+            IScreenManager                     screenManager,
+            List<IFtueCondition>               ftueConditions
         )
         {
             this.signalBus                    = signalBus;

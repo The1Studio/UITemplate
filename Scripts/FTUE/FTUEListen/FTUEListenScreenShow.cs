@@ -3,12 +3,13 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using UnityEngine.Scripting;
 
     public class FTUEListenScreenShow : FTUEBaseListen
     {
         [Preserve]
-        public FTUEListenScreenShow(SignalBus signalBus, UITemplateFTUEBlueprint ftueBlueprint) : base(signalBus, ftueBlueprint)
+        public FTUEListenScreenShow(SignalBus signalBus, UITemplateFTUEBlueprintDataHandler ftueBlueprint) : base(signalBus, ftueBlueprint)
         {
         }
 

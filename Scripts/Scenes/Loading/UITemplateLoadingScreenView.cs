@@ -221,11 +221,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             );
         }
 
-        protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnBlueprintLoaded()
+        {
+            Debug.Log($"phuongdmp  - OnBlueprintLoaded");
+            return UniTask.CompletedTask;
+        }
 
-        protected virtual UniTask OnUserDataLoaded() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnUserDataLoaded()
+        {
 
-        protected virtual UniTask OnBlueprintAndUserDataLoaded() { return UniTask.CompletedTask; }
+            Debug.Log($"phuongdmp  - OnUserDataLoaded");
+            return UniTask.CompletedTask;
+        }
+
+        protected virtual UniTask OnBlueprintAndUserDataLoaded()
+        {
+            Debug.Log($"phuongdmp  - OnBlueprintAndUserDataLoaded");
+
+            return UniTask.CompletedTask;
+        }
 
         protected virtual UniTask OnLoadingCompleted()
         {

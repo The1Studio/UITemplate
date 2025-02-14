@@ -11,6 +11,7 @@
     using Newtonsoft.Json;
     using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
 
     public class FTUERemoteConfigEditorWindow : OdinEditorWindow
     {
@@ -78,10 +79,5 @@
         }
 
         #endregion
-
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-        }
     }
 }

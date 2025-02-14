@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services.Highlight;
@@ -13,16 +14,16 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 
     public class UITemplateFTUEController
     {
-        private readonly HighlightController     highlightController;
-        private readonly UITemplateFTUEBlueprint uiTemplateFtueBlueprint;
-        private readonly SignalBus               signalBus;
-        private          string                  currentActiveStepId;
+        private readonly HighlightController                highlightController;
+        private readonly UITemplateFTUEBlueprintDataHandler uiTemplateFtueBlueprint;
+        private readonly SignalBus                          signalBus;
+        private          string                             currentActiveStepId;
 
         [Preserve]
         public UITemplateFTUEController(
-            HighlightController     highlightController,
-            UITemplateFTUEBlueprint uiTemplateFtueBlueprint,
-            SignalBus               signalBus
+            HighlightController                highlightController,
+            UITemplateFTUEBlueprintDataHandler uiTemplateFtueBlueprint,
+            SignalBus                          signalBus
         )
         {
             this.highlightController     = highlightController;

@@ -1,8 +1,10 @@
-﻿namespace UITemplate.Scripts.FTUE.Editor
+﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig
 {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
     using Sirenix.OdinInspector;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using UnityEngine;
 
     [Serializable]
@@ -26,5 +28,37 @@
         [ShowInInspector] [ShowIf("IsShowFull")]            public  string                  TooltipText;
         [ShowInInspector] [ShowIf("IsShowFull")]            public  float                   TooltipDuration;
         [ShowInInspector] [ShowIf("IsShowFull")]            public  bool                    HideOnComplete;
+
+        public List<RequireCondition> GetRequireCondition()
+        {
+            return JsonConvert.DeserializeObject<List<RequireCondition>>(this.RequireCondition);
+        }
+    }
+
+    public static class FTUERecordDTOExtensions
+    {
+        public static FTUERecordDTO ToDTO(this UITemplateFTUERecord record)
+        {
+            return new()
+            {
+                Id                     = record.Id,
+                EnableTrigger          = record.EnableTrigger,
+                NextStepId             = record.NextStepId,
+                PreviousSteps          = record.PreviousSteps,
+                ScreenLocation         = record.ScreenLocation,
+                RequireTriggerComplete = record.RequireTriggerComplete,
+                RequireCondition       = record.RequireCondition,
+                HighLightPath          = record.HighLightPath,
+                ButtonCanClick         = record.ButtonCanClick,
+                Radius                 = record.Radius,
+                HandAnchor             = record.HandAnchor,
+                HandRotation           = record.HandRotation,
+                HandSizeDelta          = record.HandSizeDelta,
+                BonusOnStart           = record.BonusOnStart,
+                TooltipText            = record.TooltipText,
+                TooltipDuration        = record.TooltipDuration,
+                HideOnComplete         = record.HideOnComplete
+            };
+        }
     }
 }

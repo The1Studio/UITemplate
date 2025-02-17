@@ -1,5 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
 {
+    #if BRAVESTARS
+
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -18,10 +20,8 @@
         {
             base.InterstitialAdDisplayedHandler(obj);
 
-            #if BRAVESTARS
             if(this.uiTemplateAdsController.WatchInterstitialAds > 20) return;
             this.Track(new CustomEvent { EventName = $"af_inters_displayed_{this.uiTemplateAdsController.WatchInterstitialAds}_times" });
-            #endif
         }
 
         protected override void LevelEndedHandler(LevelEndedSignal obj)
@@ -59,4 +59,6 @@
 
         #endregion
     }
+    #endif
+
 }

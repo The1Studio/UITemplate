@@ -3,6 +3,7 @@
 namespace TheOneStudio.UITemplate
 {
     using GameFoundation.DI;
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -21,7 +22,7 @@ namespace TheOneStudio.UITemplate
             #elif HIGAME
             builder.Register<HiGameAnalyticHandler>(Lifetime.Singleton).As<UITemplateAnalyticHandler>().AsInterfacesAndSelf();
             #else
-            builder.Register<UITemplateAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
+            builder.RegisterFromDerivedType<UITemplateAnalyticHandler>().AsInterfacesAndSelf();
             #endif
 
             #if CREATIVE

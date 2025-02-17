@@ -4,13 +4,13 @@
 
     public class FTUEShowTooltipSignal
     {
-        public string     FTUEId          { get; set; }
+        public string     TooltipText     { get; set; }
         public GameObject HighlightObject { get; set; }
         public float      Duration        { get; set; }
 
-        public FTUEShowTooltipSignal(string ftueId, GameObject highlightObject, float duration)
+        public FTUEShowTooltipSignal(string tooltipText, GameObject highlightObject, float duration)
         {
-            this.FTUEId          = ftueId;
+            this.TooltipText     = tooltipText;
             this.HighlightObject = highlightObject;
             this.Duration        = duration;
         }

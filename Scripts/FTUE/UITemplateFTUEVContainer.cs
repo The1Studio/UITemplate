@@ -8,7 +8,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
     using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
     using TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen;
     using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
-    using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using VContainer;
 
@@ -16,7 +15,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
     {
         public static void RegisterFTUESystem(this IContainerBuilder builder)
         {
-            builder.Register<UITemplateFTUEData>(Lifetime.Singleton).AsInterfacesAndSelf();
             builder.Register<UITemplateFTUEDataController>(Lifetime.Singleton);
             builder.Register<UITemplateFTUEController>(Lifetime.Singleton);
             builder.Register<UITemplateFTUEHelper>(Lifetime.Singleton);

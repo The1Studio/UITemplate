@@ -1,11 +1,10 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 {
     using Cysharp.Threading.Tasks;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using UnityEngine.Scripting;
 
-    public class UITemplateFTUEDataController : IUITemplateControllerData
+    public class UITemplateFTUEDataController
     {
         #region inject
 

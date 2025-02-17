@@ -72,7 +72,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             this.highlightedObject = this.highlightController.GetHighlightedObject();
             if (this.highlightedObject != null)
             {
-                this.signalBus.Fire(new FTUEShowTooltipSignal(stepId, this.highlightedObject, record.TooltipDuration));
+                this.signalBus.Fire(new FTUEShowTooltipSignal(this.uiTemplateFtueBlueprint.GetDataById(stepId).TooltipText, this.highlightedObject, record.TooltipDuration));
             }
         }
     }

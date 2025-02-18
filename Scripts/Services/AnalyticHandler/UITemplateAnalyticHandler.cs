@@ -130,7 +130,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.TotalDaysPlayedChange();
         }
 
-        private void AddRevenueHandler(AdRevenueSignal obj)
+        protected virtual void AddRevenueHandler(AdRevenueSignal obj)
         {
             #if WIDO
             var paramDic = new Dictionary<string, object>()

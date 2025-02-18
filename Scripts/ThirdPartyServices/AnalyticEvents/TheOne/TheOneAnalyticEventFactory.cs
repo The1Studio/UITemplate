@@ -6,15 +6,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.T
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using GameFoundation.Signals;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
 
     public class TheOneAnalyticEventFactory : BaseAnalyticEventFactory
     {
-        [Preserve]
-        public TheOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices)
-        {
-        }
+        [Preserve] public TheOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
 
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {
@@ -44,17 +40,11 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.T
             },
         };
 
-        public override IEvent LevelLose(int level, int timeSpent, int loseCount)
-        {
-            this.analyticServices.Track(new LevelEnd(level, "lose", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
-            return base.LevelLose(level, timeSpent, loseCount);
-        }
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelEnd(level, false, "classic", "", 0, timeSpent, 0, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount)
-        {
-            this.analyticServices.Track(new LevelEnd(level, "win", 0, timeSpent, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
-            return base.LevelWin(level, timeSpent, winCount);
-        }
+        public override IEvent LevelWin(int   level, int timeSpent, int winCount) { return new LevelEnd(level, true, "classic", "win", 0, timeSpent, 0, DateTimeOffset.UtcNow.ToUnixTimeSeconds()); }
+        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, gold); }
     }
 }
+
 #endif

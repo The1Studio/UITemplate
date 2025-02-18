@@ -3,6 +3,7 @@
 namespace TheOneStudio.UITemplate
 {
     using GameFoundation.DI;
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -14,15 +15,7 @@ namespace TheOneStudio.UITemplate
     {
         public static void RegisterUITemplateAdsService(this IContainerBuilder builder)
         {
-            #if BRAVESTARS
-            builder.Register<BraveStarsAnalyticHandler>(Lifetime.Singleton).As<UITemplateAnalyticHandler>().AsInterfacesAndSelf();
-            #elif APERO
-            builder.Register<AperoAnalyticHandler>(Lifetime.Singleton).As<UITemplateAnalyticHandler>().AsInterfacesAndSelf();
-            #elif HIGAME
-            builder.Register<HiGameAnalyticHandler>(Lifetime.Singleton).As<UITemplateAnalyticHandler>().AsInterfacesAndSelf();
-            #else
-            builder.Register<UITemplateAnalyticHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
-            #endif
+            builder.RegisterFromDerivedType<UITemplateAnalyticHandler>().AsImplementedInterfaces();
 
             #if CREATIVE
             builder.Register<UITemplateAdServiceWrapper, UITemplateAdServiceWrapperCreative>(Lifetime.Singleton);

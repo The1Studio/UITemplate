@@ -231,7 +231,7 @@
             signalBus.Subscribe<AdRevenueSignal>(this.OnAdsRevenue);
         }
 
-        private void OnAdsRevenue(AdRevenueSignal obj)
+        protected virtual void OnAdsRevenue(AdRevenueSignal obj)
         {
             this.analyticServices.Track(new CustomEvent()
             {

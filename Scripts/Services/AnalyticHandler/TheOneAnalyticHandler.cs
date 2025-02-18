@@ -1,40 +1,35 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
+﻿#if THEONE
+namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
 {
-    #if BRAVESTARS
-
-    using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
+    using Core.AnalyticServices.Signal;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
-    using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.BraveStars;
-    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
 
-    public class BraveStarsAnalyticHandler : UITemplateAnalyticHandler
+    public class TheOneAnalyticHandler : UITemplateAnalyticHandler
     {
-        protected override void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
+        protected override void AddRevenueHandler(AdRevenueSignal obj)
         {
-            base.InterstitialAdDisplayedHandler(obj);
-
-            if(this.uiTemplateAdsController.WatchInterstitialAds > 20) return;
-            this.Track(new CustomEvent { EventName = $"af_inters_displayed_{this.uiTemplateAdsController.WatchInterstitialAds}_times" });
-        }
-
-        protected override void LevelEndedHandler(LevelEndedSignal obj)
-        {
-            base.LevelEndedHandler(obj);
-            if (obj.IsWin)
+            this.analyticServices.Track(new CustomEvent
             {
-                this.analyticServices.Track(new AchievedLevel(obj.Level));
-                this.analyticServices.Track(new CustomEvent
+                EventName = "ad_revenue_sdk",
+                EventProperties = new()
                 {
-                    EventName = $"completed_level_{obj.Level}",
-                });
-            }
+                    { "play_mode", "classic" },
+                    { "level", this.uiTemplateLevelDataController.CurrentLevel },
+                    { "ad_format", obj.AdsRevenueEvent.AdFormat },
+                    { "value", obj.AdsRevenueEvent.Revenue },
+                    { "location", obj.AdsRevenueEvent.Placement },
+                    { "ad_network", obj.AdsRevenueEvent.AdNetwork },
+                    { "ad_platform", obj.AdsRevenueEvent.AdsRevenueSourceId },
+                    { "ad_unit_name", obj.AdsRevenueEvent.AdUnit },
+                    { "currency", obj.AdsRevenueEvent.Currency },
+                },
+            });
         }
 
         #region Inject
@@ -42,7 +37,7 @@
         private readonly UITemplateAdsController uiTemplateAdsController;
 
         [Preserve]
-        public BraveStarsAnalyticHandler(
+        public TheOneAnalyticHandler(
             SignalBus                           signalBus,
             IAnalyticServices                   analyticServices,
             IAnalyticEventFactory               analyticEventFactory,
@@ -59,6 +54,5 @@
 
         #endregion
     }
-    #endif
-
 }
+#endif

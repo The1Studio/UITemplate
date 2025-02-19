@@ -4,7 +4,7 @@
     using GameFoundation.Signals;
     using Newtonsoft.Json;
     using ServiceImplementation.FireBaseRemoteConfig;
-    using ServiceImplementation.RemoteConfig;
+    using UnityEngine.Scripting;
 
     public class UITemplateFTUERemoteConfig : FTUEConfig, IInitializable
     {
@@ -12,6 +12,7 @@
 
         private readonly SignalBus signalBus;
 
+        [Preserve]
         public UITemplateFTUERemoteConfig(SignalBus signalBus)
         {
             this.signalBus = signalBus;

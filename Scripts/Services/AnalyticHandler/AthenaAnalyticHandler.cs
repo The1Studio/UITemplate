@@ -1,0 +1,159 @@
+﻿#if ATHENA
+namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
+{
+    using System;
+    using System.Linq;
+    using Core.AnalyticServices;
+    using Core.AnalyticServices.CommonEvents;
+    using Core.AnalyticServices.Signal;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
+    using GameFoundation.Scripts.Utilities.ApplicationServices;
+    using GameFoundation.Signals;
+    using ServiceImplementation.IAPServices.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
+    using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Apero;
+    using UnityEngine.Scripting;
+    
+    public class AthenaAnalyticHandler : UITemplateAnalyticHandler
+    {
+        #region Inject
+        
+        private readonly UITemplateLevelDataController levelDataController;
+        
+        [Preserve]
+        public AthenaAnalyticHandler(
+            SignalBus signalBus,
+            IAnalyticServices analyticServices,
+            IAnalyticEventFactory analyticEventFactory,
+            UITemplateLevelDataController uiTemplateLevelDataController,
+            UITemplateInventoryDataController uITemplateInventoryDataController,
+            UITemplateDailyRewardController uiTemplateDailyRewardController,
+            UITemplateGameSessionDataController uITemplateGameSessionDataController,
+            IScreenManager screenManager,
+            UITemplateLevelDataController levelDataController) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController,
+            uITemplateInventoryDataController, uiTemplateDailyRewardController,
+            uITemplateGameSessionDataController, screenManager)
+        {
+            this.levelDataController = levelDataController;
+        }
+        
+        #endregion
+        
+        private        bool   isLevelAbandoned;
+        private static Random random = new();
+        private string uniqueId;
+        public override void Initialize()
+        {
+            base.Initialize();
+            this.signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnIAPPurchaseSuccessHandler);
+            this.signalBus.Subscribe<AdRevenueSignal>(this.OnAdRevenueHandler);
+            this.signalBus.Subscribe<LevelStartedSignal>(this.OnLevelStartHandler);
+            this.signalBus.Subscribe<LevelEndedSignal>(this.OnLevelEndedHandler);
+            this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrencyHandler);
+            this.signalBus.Subscribe<ApplicationQuitSignal>(this.OnApplicationQuitHandler);
+        }
+        private void OnIAPPurchaseSuccessHandler(OnIAPPurchaseSuccessSignal signal)
+        {
+            this.analyticServices.Track(new Purchase(signal.Product));
+            this.analyticServices.Track(new CustomEvent
+            {
+                EventName = "bi_business_event",
+                EventProperties = new()
+                {
+                    { "product_name", string.Empty },
+                    { "product_id", signal.Product.Id },
+                    { "quantity", signal.Quantity },
+                    { "price", signal.Product.Price },
+                    { "currency", signal.Product.CurrencyCode },
+                    { "transaction_id", string.Empty },
+                },
+            });
+        }
+        private void OnAdRevenueHandler(AdRevenueSignal signal)
+        {
+            this.analyticServices.Track(new CustomEvent
+            {
+                EventName = "bi_ad_value",
+                EventProperties = new()
+                {
+                    { "ad_platform", signal.AdsRevenueEvent.AdsRevenueSourceId },
+                    { "ad_source", signal.AdsRevenueEvent.AdNetwork },
+                    { "ad_platform_unit_id", signal.AdsRevenueEvent.AdUnit },
+                    { "ad_source_unit_id", signal.AdsRevenueEvent.NetworkPlacement },
+                    { "ad_format", signal.AdsRevenueEvent.AdFormat },
+                    { "ad_placement", signal.AdsRevenueEvent.Placement },
+                    { "estimate_value", signal.AdsRevenueEvent.Revenue },
+                    { "estimate_value_in_usd", signal.AdsRevenueEvent.Revenue },
+                    { "level_id", string.Empty }
+                },
+            });
+        }
+        private void OnLevelStartHandler(LevelStartedSignal signal)
+        {
+            var level    = signal.Level;
+            var leveData = this.levelDataController.GetLevelData(level);
+            this.uniqueId = RandomString(10);
+            this.analyticServices.Track(new CustomEvent
+            {
+                EventName = "game_start",
+                EventProperties = new()
+                {
+                    { "game_mode", string.Empty },
+                    { "ID", this.uniqueId },
+                    { "level_id", level },
+                    { "attempts", leveData.LoseCount + leveData.WinCount + 1 }
+                },
+            });
+        }
+        private void OnLevelEndedHandler(LevelEndedSignal signal)
+        {
+            var level    = signal.Level;
+            var leveData = this.levelDataController.GetLevelData(level);
+            this.analyticServices.Track(new CustomEvent
+            {
+                EventName = "game_over",
+                EventProperties = new()
+                {
+                    { "game_mode", string.Empty },
+                    { "ID", this.uniqueId },
+                    { "level_id", level },
+                    { "time_spent", signal.Time },
+                    { "context", signal.IsWin ? 1 : 0 },
+                    { "level_abandoned", this.isLevelAbandoned },
+                    { "attempts", leveData.LoseCount + leveData.WinCount }
+                },
+            });
+        }
+        private void OnUpdateCurrencyHandler(OnUpdateCurrencySignal signal)
+        {
+            this.analyticServices.Track(new CustomEvent
+            {
+                EventName = "bi_resource_event",
+                EventProperties = new()
+                {
+                    { "flow_type", signal.Amount > 0 ? "source" : "sink" },
+                    { "from", signal.Metadata["from"] },
+                    { "to", signal.Metadata["to"] },
+                    { "virtual_currency_name", signal.Id },
+                    { "value", signal.Amount },
+                    { "level_id", this.levelDataController.CurrentLevel },
+                    { "balance", signal.FinalValue }
+                },
+            });
+        }
+        private void OnApplicationQuitHandler()
+        {
+            this.isLevelAbandoned = true;
+            this.levelDataController.LoseCurrentLevel();
+        }
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+    }
+}
+#endif

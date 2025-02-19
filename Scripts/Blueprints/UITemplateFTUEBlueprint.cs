@@ -45,6 +45,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         {
         }
 
+        [Preserve]
         [JsonConstructor]
         public UITemplateFTUERecord(
             string                  id,

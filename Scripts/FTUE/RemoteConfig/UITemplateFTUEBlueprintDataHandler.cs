@@ -1,15 +1,15 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig
 {
     using System.Collections.Generic;
-    using System.Linq;
-    using GameFoundation.DI;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
+    using UnityEngine.Scripting;
 
     public class UITemplateFTUEBlueprintDataHandler : FTUEConfig
     {
         private readonly UITemplateFTUERemoteConfig remoteConfig;
         private readonly UITemplateFTUEBlueprint    blueprint;
 
+        [Preserve]
         public UITemplateFTUEBlueprintDataHandler(
             UITemplateFTUERemoteConfig remoteConfig,
             UITemplateFTUEBlueprint    blueprint

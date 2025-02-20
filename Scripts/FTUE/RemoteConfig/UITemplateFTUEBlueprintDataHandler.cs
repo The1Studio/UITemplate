@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using BlueprintFlow.Signals;
     using GameFoundation.DI;
     using GameFoundation.Signals;
     using ServiceImplementation.FireBaseRemoteConfig;
@@ -33,10 +34,19 @@
 
         public void Initialize()
         {
-            this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.LoadData);
+            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.LoadBlueprintData);
+            this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.LoadRemoteData);
         }
 
-        private void LoadData(RemoteConfigFetchedSucceededSignal signal)
+        private void LoadBlueprintData()
+        {
+            foreach (var record in this.blueprint.Where(record => !this.Keys.Contains(record.Key)))
+            {
+                this[record.Key] = record.Value;
+            }
+        }
+
+        private void LoadRemoteData(RemoteConfigFetchedSucceededSignal signal)
         {
             #if !UNITY_EDITOR
             this.remoteConfig.LoadData(signal);
@@ -45,11 +55,6 @@
                 this[record.Key] = record.Value;
             }
             #endif
-
-            foreach (var record in this.blueprint.Where(record => !this.Keys.Contains(record.Key)))
-            {
-                this[record.Key] = record.Value;
-            }
         }
     }
 }

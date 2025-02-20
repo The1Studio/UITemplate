@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Signal;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Signals;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -19,9 +20,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
         [Preserve]
         public AperoAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateLevelDataController uiTemplateLevelDataController,
                                     UITemplateInventoryDataController uITemplateInventoryDataController, UITemplateDailyRewardController uiTemplateDailyRewardController,
-                                    UITemplateGameSessionDataController uITemplateGameSessionDataController) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController,
+                                    UITemplateGameSessionDataController uITemplateGameSessionDataController,
+                                    IScreenManager screenManager) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController,
                                                                                                                     uITemplateInventoryDataController, uiTemplateDailyRewardController,
-                                                                                                                    uITemplateGameSessionDataController)
+                                                                                                                    uITemplateGameSessionDataController, screenManager)
         {
         }
 

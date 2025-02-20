@@ -20,8 +20,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         public ABIAnalyticEventFactory(
             SignalBus                           signalBus,
             IAnalyticServices                   analyticServices,
-            UITemplateGameSessionDataController sessionDataController
-        ) : base(signalBus, analyticServices)
+            UITemplateGameSessionDataController sessionDataController,
+            UITemplateLevelDataController levelDataController
+        ) : base(signalBus, analyticServices, levelDataController)
         {
             this.sessionDataController = sessionDataController;
         }

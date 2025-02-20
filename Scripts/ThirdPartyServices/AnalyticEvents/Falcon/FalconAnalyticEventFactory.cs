@@ -18,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.ABI;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using GameFoundation.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using AdInterClick = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdInterClick;
     using AdInterFail = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdInterFail;
     using AdsRewardClick = TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.ABI.AdsRewardClick;
@@ -38,8 +39,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.F
                                           IAnalyticServices analyticServices,
                                           IIapServices iapServices,
                                           IScreenManager screenManager,
-                                          FalconLocalData falconLocalData)
-            : base(signalBus, analyticServices)
+                                          FalconLocalData falconLocalData,
+                                          UITemplateLevelDataController levelDataController)
+            : base(signalBus, analyticServices, levelDataController)
         {
             this.iapServices = iapServices;
             this.screenManager = screenManager;

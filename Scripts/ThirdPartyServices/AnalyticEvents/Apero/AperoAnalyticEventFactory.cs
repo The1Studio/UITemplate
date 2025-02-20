@@ -5,12 +5,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
     using Core.AnalyticServices;
     using Core.AnalyticServices.Data;
     using GameFoundation.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine.Scripting;
 
     public class AperoAnalyticEventFactory : BaseAnalyticEventFactory
     {
         [Preserve]
-        public AperoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices) : base(signalBus, analyticServices) { }
+        public AperoAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, UITemplateLevelDataController levelDataController) 
+            : base(signalBus, analyticServices, levelDataController) { }
 
         public override AnalyticsEventCustomizationConfig ByteBrewAnalyticsEventCustomizationConfig { get; set; } = new()
         {

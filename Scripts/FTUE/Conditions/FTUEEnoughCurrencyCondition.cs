@@ -45,5 +45,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
         {
             return this.uiTemplateFtueHelper.CompareIntWithCondition(this.uiTemplateInventoryDataController.GetCurrencyValue(data.Id), data.Value, data.Condition);
         }
+
+        protected override string GetShortConditionText(FTUEEnoughCurrencyConditionModel data)
+        {
+            return $"{data.Id} {data.Condition} {data.Value}";
+        }
     }
 }

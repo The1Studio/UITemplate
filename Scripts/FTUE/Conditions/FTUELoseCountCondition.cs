@@ -39,5 +39,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
         {
             return this.uiTemplateLevelDataController.TotalLose == data.Count;
         }
+
+        protected override string GetShortConditionText(FTUELoseCountModel data)
+        {
+            return $"{data.Count}";
+        }
     }
 }

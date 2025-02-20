@@ -210,6 +210,12 @@
             return requireConditions is { Count: > 0 } ? this.IDToFtueConditions[requireConditions.First().RequireId].GetTooltipText(requireConditions.First().ConditionDetail) : "";
         }
 
+        public string GetShortConditionText(string stepId)
+        {
+            var requireConditions = this.uiTemplateFtueBlueprint.GetDataById(stepId).GetRequireCondition();
+            return requireConditions is { Count: > 0 } ? this.IDToFtueConditions[requireConditions.First().RequireId].GetShortConditionText(requireConditions.First().ConditionDetail) : "";
+        }
+
         public bool IsAnyFtueActive()
         {
             return this.IsAnyFtueActive(this.screenManager.CurrentActiveScreen.Value);

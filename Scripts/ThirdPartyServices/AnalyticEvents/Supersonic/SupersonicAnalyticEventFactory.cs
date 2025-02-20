@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using GameFoundation.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine.Scripting;
     #if SUPERSONIC_WISDOM
     using SupersonicWisdomSDK;
@@ -15,8 +16,8 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
     public class SupersonicAnalyticEventFactory : BaseAnalyticEventFactory
     {
         [Preserve]
-        public SupersonicAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
-            : base(signalBus, analyticServices)
+        public SupersonicAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, UITemplateLevelDataController levelDataController)
+            : base(signalBus, analyticServices, levelDataController)
         {
         }
 

@@ -7,13 +7,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.I
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
     using GameFoundation.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine.Scripting;
 
     public class InwaveAnalyticEventFactory : BaseAnalyticEventFactory
     {
         [Preserve]
-        public InwaveAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
-            : base(signalBus, analyticServices)
+        public InwaveAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, UITemplateLevelDataController levelDataController)
+            : base(signalBus, analyticServices, levelDataController)
         {
         }
 

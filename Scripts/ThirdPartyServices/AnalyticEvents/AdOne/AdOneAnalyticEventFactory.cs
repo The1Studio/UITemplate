@@ -23,8 +23,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
         #endregion
 
         [Preserve]
-        public AdOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController) : base(
-            signalBus, analyticServices)
+        public AdOneAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, IInternetService internetService, UITemplateLevelDataController uiTemplateLevelDataController, UITemplateLevelDataController levelDataController) : base(
+            signalBus, analyticServices, levelDataController)
         {
             this.internetService = internetService;
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;

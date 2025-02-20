@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.Serialization;

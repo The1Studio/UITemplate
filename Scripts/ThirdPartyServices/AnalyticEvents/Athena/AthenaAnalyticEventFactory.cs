@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using Core.AnalyticServices.Signal;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
 
@@ -13,20 +14,39 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
         {
         }
 
-        public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
+        protected override void OnAdsRevenue(AdRevenueSignal obj)
         {
-            IgnoreEvents = new(),
-            CustomEventKeys = new()
-                              {
-                                  { nameof(AdsRevenueEvent), "ad_impression" },
-                                  { "AdsRevenueSourceId", "ad_platform" },
-                                  { "AdNetwork", "ad_source" },
-                                  { "AdUnit", "ad_platform_unit_id" },
-                                  { "NetworkPlacement", "ad_source_unit_id" },
-                                  { "AdFormat", "ad_format" },
-                                  { "Placement", "ad_placement" }
-                              },
-        };
+            this.analyticServices.Track(new CustomEvent
+                                        {
+                                            EventName = "bi_ad_value",
+                                            EventProperties = new()
+                                                              {
+                                                                  { "ad_platform", obj.AdsRevenueEvent.AdsRevenueSourceId },
+                                                                  { "ad_source", obj.AdsRevenueEvent.AdNetwork },
+                                                                  { "ad_platform_unit_id", obj.AdsRevenueEvent.AdUnit },
+                                                                  { "ad_source_unit_id", obj.AdsRevenueEvent.NetworkPlacement },
+                                                                  { "ad_format", obj.AdsRevenueEvent.AdFormat },
+                                                                  { "ad_placement", obj.AdsRevenueEvent.Placement },
+                                                                  { "estimate_value", obj.AdsRevenueEvent.Revenue },
+                                                                  { "estimate_value_in_usd", obj.AdsRevenueEvent.Revenue },
+                                                                  { "level_id", string.Empty }
+                                                              },
+                                        });
+            
+            this.analyticServices.Track(new CustomEvent
+                                        {
+                                            EventName = "ad_impression",
+                                            EventProperties = new()
+                                                              {
+                                                                  { "ad_platform", obj.AdsRevenueEvent.AdsRevenueSourceId },
+                                                                  { "ad_source", obj.AdsRevenueEvent.AdNetwork },
+                                                                  { "ad_platform_unit_id", obj.AdsRevenueEvent.AdUnit },
+                                                                  { "ad_source_unit_id", obj.AdsRevenueEvent.NetworkPlacement },
+                                                                  { "ad_format", obj.AdsRevenueEvent.AdFormat },
+                                                                  { "ad_placement", obj.AdsRevenueEvent.Placement },
+                                                              },
+                                        });
+        }
     }
 }
 #endif

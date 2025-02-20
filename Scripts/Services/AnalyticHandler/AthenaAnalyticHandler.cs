@@ -48,12 +48,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
         {
             base.Initialize();
             this.signalBus.Subscribe<OnIAPPurchaseSuccessSignal>(this.OnIAPPurchaseSuccessHandler);
-            this.signalBus.Subscribe<AdRevenueSignal>(this.OnAdRevenueHandler);
             this.signalBus.Subscribe<LevelStartedSignal>(this.OnLevelStartHandler);
             this.signalBus.Subscribe<LevelEndedSignal>(this.OnLevelEndedHandler);
             this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrencyHandler);
             this.signalBus.Subscribe<ApplicationQuitSignal>(this.OnApplicationQuitHandler);
         }
+        
         private void OnIAPPurchaseSuccessHandler(OnIAPPurchaseSuccessSignal signal)
         {
             this.analyticServices.Track(new Purchase(signal.Product));
@@ -71,25 +71,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 },
             });
         }
-        private void OnAdRevenueHandler(AdRevenueSignal signal)
-        {
-            this.analyticServices.Track(new CustomEvent
-            {
-                EventName = "bi_ad_value",
-                EventProperties = new()
-                {
-                    { "ad_platform", signal.AdsRevenueEvent.AdsRevenueSourceId },
-                    { "ad_source", signal.AdsRevenueEvent.AdNetwork },
-                    { "ad_platform_unit_id", signal.AdsRevenueEvent.AdUnit },
-                    { "ad_source_unit_id", signal.AdsRevenueEvent.NetworkPlacement },
-                    { "ad_format", signal.AdsRevenueEvent.AdFormat },
-                    { "ad_placement", signal.AdsRevenueEvent.Placement },
-                    { "estimate_value", signal.AdsRevenueEvent.Revenue },
-                    { "estimate_value_in_usd", signal.AdsRevenueEvent.Revenue },
-                    { "level_id", string.Empty }
-                },
-            });
-        }
+        
         private void OnLevelStartHandler(LevelStartedSignal signal)
         {
             var level    = signal.Level;
@@ -107,6 +89,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 },
             });
         }
+        
         private void OnLevelEndedHandler(LevelEndedSignal signal)
         {
             var level    = signal.Level;
@@ -126,6 +109,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 },
             });
         }
+        
         private void OnUpdateCurrencyHandler(OnUpdateCurrencySignal signal)
         {
             this.analyticServices.Track(new CustomEvent
@@ -143,12 +127,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 },
             });
         }
+        
         private void OnApplicationQuitHandler()
         {
             this.isLevelAbandoned = true;
             this.levelDataController.LoseCurrentLevel();
         }
-        public static string RandomString(int length)
+
+        private static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)

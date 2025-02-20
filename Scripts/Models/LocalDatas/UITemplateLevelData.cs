@@ -34,8 +34,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
                 levelData.LevelStatus = LevelData.Status.Passed;
             }
 #endif
+        }
+
+        public void OnDataLoaded()
+        {
             this.ModeToCurrentLevel.GetOrAdd(ClassicMode, () => this.CurrentLevel);
-            this.ModeToLevelToLevelData.GetOrAdd(ClassicMode, () => this.LevelToLevelData);
+            this.ModeToLevelToLevelData.GetOrAdd(ClassicMode, () => this.LevelToLevelData); 
         }
 
         public Type ControllerType => typeof(UITemplateLevelDataController);

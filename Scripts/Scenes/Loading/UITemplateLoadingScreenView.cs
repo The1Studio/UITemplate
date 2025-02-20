@@ -26,7 +26,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
     using UnityEngine.ResourceManagement.ResourceProviders;
-    using UnityEngine.SceneManagement;
     using UnityEngine.Scripting;
     using UnityEngine.UI;
     using Utilities.Utils;
@@ -99,6 +98,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.OpenViewAsync().Forget();
         }
 
+        private Stopwatch loadingStopwatch;
+
         public override UniTask BindData()
         {
             this.ShowFirstBannerAd(BannerLoadStrategy.Instantiate);
@@ -111,7 +112,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.LoadingProgress = 0f;
             this.loadingSteps    = 1;
 
-            var stopWatch = Stopwatch.StartNew();
+            this.loadingStopwatch = Stopwatch.StartNew();
             UniTask.WhenAll(
                 this.CreateObjectPool(AudioService.AudioSourceKey, 3),
                 this.Preload(),
@@ -123,16 +124,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
                 ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene).Forget();
-            stopWatch.Stop();
-            Debug.Log("Game Loading Time: " + stopWatch.ElapsedMilliseconds + "ms");
-            this.analyticServices.Track(new CustomEvent()
-            {
-                EventName = "GameLoadingTime",
-                EventProperties = new()
-                {
-                    { "timeMilis", stopWatch.ElapsedMilliseconds },
-                },
-            });
 
             return UniTask.CompletedTask;
         }
@@ -150,12 +141,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         {
             SceneDirector.CurrentSceneName = this.NextSceneName;
 
+            await this.View.CompleteLoading();
+
             var stopWatch = Stopwatch.StartNew();
 
             this.SignalBus.Fire<StartLoadingNewSceneSignal>();
-            var nextScene = await this.TrackProgress(this.LoadSceneAsync());
-            await this.View.CompleteLoading();
-            await nextScene.ActivateAsync();
+            await this.TrackProgress(this.LoadSceneAsync());
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
 
             stopWatch.Stop();
@@ -175,6 +166,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
             this.ShowFirstBannerAd(BannerLoadStrategy.AfterLoading);
             this.OnAfterLoading();
+
+            this.loadingStopwatch.Stop();
+            Debug.Log("Game Loading Time: " + this.loadingStopwatch.ElapsedMilliseconds + "ms");
+            this.analyticServices.Track(new CustomEvent()
+            {
+                EventName = "GameLoadingTime",
+                EventProperties = new()
+                {
+                    { "timeMilis", this.loadingStopwatch.ElapsedMilliseconds },
+                },
+            });
         }
 
         protected virtual void ShowFirstBannerAd(BannerLoadStrategy strategy)
@@ -185,7 +187,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         protected virtual void OnAfterLoading() { }
 
-        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.gameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
+        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync()
+        {
+            return this.gameAssets.LoadSceneAsync(this.NextSceneName);
+        }
 
         private UniTask LoadBlueprint()
         {

@@ -82,7 +82,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 EventName = "game_start",
                 EventProperties = new()
                 {
-                    { "game_mode", string.Empty },
+                    { "game_mode", signal.Mode },
                     { "ID", this.uniqueId },
                     { "level_id", level },
                     { "attempts", leveData.LoseCount + leveData.WinCount + 1 }
@@ -99,7 +99,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 EventName = "game_over",
                 EventProperties = new()
                 {
-                    { "game_mode", string.Empty },
+                    { "game_mode", signal.Mode },
                     { "ID", this.uniqueId },
                     { "level_id", level },
                     { "time_spent", signal.Time },

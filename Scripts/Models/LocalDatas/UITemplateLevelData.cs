@@ -16,10 +16,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         
         [OdinSerialize] public UITemplateItemData.UnlockType UnlockedFeature { get; set; } = UITemplateItemData.UnlockType.Default;
 
+        [Obsolete]
         [OdinSerialize] public int CurrentLevel { get; set; } = 1;
 
         [OdinSerialize] public Dictionary<string, int> ModeToCurrentLevel { get; set; } = new();
 
+        [Obsolete]
         [OdinSerialize] public Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
 
         [OdinSerialize] public Dictionary<string, Dictionary<int, LevelData>> ModeToLevelToLevelData { get; set; } = new();

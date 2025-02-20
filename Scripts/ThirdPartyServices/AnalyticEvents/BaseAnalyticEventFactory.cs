@@ -5,6 +5,7 @@
     using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
     using GameFoundation.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
 
     public abstract class BaseAnalyticEventFactory : IAnalyticEventFactory
@@ -223,11 +224,13 @@
 
         protected virtual string EvenName { get; } = "ad_impression";
 
-        protected readonly IAnalyticServices analyticServices;
+        protected readonly IAnalyticServices             analyticServices;
+        private readonly   UITemplateLevelDataController levelDataController;
 
-        protected BaseAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices)
+        protected BaseAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, UITemplateLevelDataController levelDataController)
         {
-            this.analyticServices = analyticServices;
+            this.analyticServices    = analyticServices;
+            this.levelDataController = levelDataController;
             signalBus.Subscribe<AdRevenueSignal>(this.OnAdsRevenue);
         }
 
@@ -245,6 +248,7 @@
                     { "placement", obj.AdsRevenueEvent.Placement },
                     { "currency", obj.AdsRevenueEvent.Currency },
                     { "value", obj.AdsRevenueEvent.Revenue },
+                    { "level_id", this.levelDataController.CurrentLevel }
                 },
             });
         }

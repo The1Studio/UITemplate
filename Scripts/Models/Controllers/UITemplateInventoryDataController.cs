@@ -231,12 +231,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return true;
         }
 
-        public void UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID)
+        public void UpdateCurrency(int finalValue, string id = DefaultSoftCurrencyID, Dictionary<string, object> metadata = null)
         {
             var lastValue = this.GetCurrencyValue(id);
 
             var currencyWithCap = this.SetCurrencyWithCap(finalValue, id);
-            this.signalBus.Fire(new OnUpdateCurrencySignal(id, currencyWithCap - lastValue, currencyWithCap));
+            this.signalBus.Fire(new OnUpdateCurrencySignal(id, currencyWithCap - lastValue, currencyWithCap, metadata: metadata));
         }
 
         private int SetCurrencyWithCap(int value, string id)

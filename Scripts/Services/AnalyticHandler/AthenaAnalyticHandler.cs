@@ -5,23 +5,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
     using System.Linq;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
-    using Core.AnalyticServices.Signal;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Signals;
     using ServiceImplementation.IAPServices.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Apero;
     using UnityEngine.Scripting;
-    
+
     public class AthenaAnalyticHandler : UITemplateAnalyticHandler
     {
         #region Inject
         
         private readonly UITemplateLevelDataController levelDataController;
-        
+        private readonly UITemplateShopPackBlueprint   shopPackBlueprint;
+
         [Preserve]
         public AthenaAnalyticHandler(
             SignalBus signalBus,
@@ -32,11 +33,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
             UITemplateDailyRewardController uiTemplateDailyRewardController,
             UITemplateGameSessionDataController uITemplateGameSessionDataController,
             IScreenManager screenManager,
-            UITemplateLevelDataController levelDataController) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController,
+            UITemplateLevelDataController levelDataController,
+            UITemplateShopPackBlueprint shopPackBlueprint) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController,
             uITemplateInventoryDataController, uiTemplateDailyRewardController,
             uITemplateGameSessionDataController, screenManager)
         {
             this.levelDataController = levelDataController;
+            this.shopPackBlueprint   = shopPackBlueprint;
         }
         
         #endregion
@@ -62,7 +65,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 EventName = "bi_business_event",
                 EventProperties = new()
                 {
-                    { "product_name", string.Empty },
+                    { "product_name", this.shopPackBlueprint[signal.Product.Id].Name },
                     { "product_id", signal.Product.Id },
                     { "quantity", signal.Quantity },
                     { "price", signal.Product.Price },
@@ -82,7 +85,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 EventName = "game_start",
                 EventProperties = new()
                 {
-                    { "game_mode", string.Empty },
+                    { "game_mode", signal.Mode },
                     { "ID", this.uniqueId },
                     { "level_id", level },
                     { "attempts", leveData.LoseCount + leveData.WinCount + 1 }
@@ -99,7 +102,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 EventName = "game_over",
                 EventProperties = new()
                 {
-                    { "game_mode", string.Empty },
+                    { "game_mode", signal.Mode },
                     { "ID", this.uniqueId },
                     { "level_id", level },
                     { "time_spent", signal.Time },

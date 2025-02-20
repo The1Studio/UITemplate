@@ -39,5 +39,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
         {
             return this.uiTemplateLevelDataController.MaxLevel >= data.Level;
         }
+
+        protected override string GetShortConditionText(FTUEPassedLevelConditionModel data)
+        {
+            return $"Pass Level {data.Level}";
+        }
     }
 }

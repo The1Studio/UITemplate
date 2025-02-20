@@ -3,6 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
@@ -12,8 +13,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
     public class UITemplateLevelDataController : IUITemplateControllerData
     {
+        private Dictionary<string, Dictionary<int, DateTime>> modeToLevelToStartLevelTime = new();
+
         [Preserve]
-        public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData, UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices)
+        public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData,
+            UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices)
         {
             this.uiTemplateLevelBlueprint          = uiTemplateLevelBlueprint;
             this.uiTemplateUserLevelData           = uiTemplateUserLevelData;
@@ -21,26 +25,28 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.signalBus                         = signalBus;
             this.handleUserDataServices            = handleUserDataServices;
         }
-        
-        private Dictionary<int, DateTime> levelToStartLevelTime = new();
 
         public UITemplateItemData.UnlockType UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
 
         public int LastUnlockRewardLevel { get => this.uiTemplateUserLevelData.LastUnlockRewardLevel; set => this.uiTemplateUserLevelData.LastUnlockRewardLevel = value; }
 
-        public int TotalLose => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.LoseCount);
-        public int TotalWin  => this.uiTemplateUserLevelData.LevelToLevelData.Values.Sum(levelData => levelData.WinCount);
+        public int TotalLose => this.GetModelData().Values.Sum(levelData => levelData.LoseCount);
+        public int TotalWin  => this.GetModelData().Values.Sum(levelData => levelData.WinCount);
 
-        public LevelData GetCurrentLevelData => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel);
-        public int       CurrentLevel        => this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).Level;
+        public LevelData GetCurrentLevelData => this.GetLevelData(this.CurrentLevel);
+        public int       CurrentLevel        => this.uiTemplateUserLevelData.ModeToCurrentLevel[UITemplateUserLevelData.ClassicMode];
+
+        public LevelData GetCurrentModeLevelData(string mode) => this.GetLevelData(this.CurrentLevel, mode);
+
+        public int CurrentModeLevel(string mode) => this.GetLevelData(this.CurrentLevel, mode).Level;
 
         public int MaxLevel
         {
             get
             {
-                var levelDatas = this.uiTemplateUserLevelData.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus == LevelData.Status.Passed).ToList();
+                var levelDataList = this.GetModelData().Values.Where(levelData => levelData.LevelStatus == LevelData.Status.Passed).ToList();
 
-                return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
+                return levelDataList.Count == 0 ? 0 : levelDataList.Max(data => data.Level);
             }
         }
 
@@ -48,7 +54,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             get
             {
-                var levelDatas = this.uiTemplateUserLevelData.LevelToLevelData.Values.Where(levelData => levelData.LevelStatus != LevelData.Status.Locked).ToList();
+                var levelDatas = this.GetModelData().Values.Where(levelData => levelData.LevelStatus != LevelData.Status.Locked).ToList();
 
                 return levelDatas.Count == 0 ? 0 : levelDatas.Max(data => data.Level);
             }
@@ -60,46 +66,55 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
 
-        public IEnumerable<LevelData> GetAllLevelData() { return this.uiTemplateUserLevelData.LevelToLevelData.Values; }
+        public IEnumerable<LevelData> GetAllLevelData(string mode = UITemplateUserLevelData.ClassicMode) { return this.GetModelData(mode).Values; }
 
-        public LevelData GetLevelData(int level) { return this.uiTemplateUserLevelData.LevelToLevelData.GetOrAdd(level, () => new(level, LevelData.Status.Locked)); }
+        public LevelData GetLevelData(int level, string mode = UITemplateUserLevelData.ClassicMode)
+        {
+            return this.uiTemplateUserLevelData.ModeToLevelToLevelData.GetOrAdd(mode, () => new Dictionary<int, LevelData>()).GetOrAdd(level, () => new LevelData(level, LevelData.Status.Locked));
+        }
+
+        private Dictionary<int, LevelData> GetModelData(string mode = UITemplateUserLevelData.ClassicMode)
+        {
+            return this.uiTemplateUserLevelData.ModeToLevelToLevelData.GetOrAdd(mode, () => new Dictionary<int, LevelData>());
+        }
+
+        private DateTime GetModePlayTime(string mode, int level) => this.modeToLevelToStartLevelTime.GetOrAdd(mode, () => new Dictionary<int, DateTime>()).GetOrAdd(level, () => DateTime.UtcNow);
 
         /// <summary>Have be called when level started</summary>
-        public void PlayCurrentLevel()
+        public void PlayCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
         {
-            this.levelToStartLevelTime[this.uiTemplateUserLevelData.CurrentLevel] = DateTime.UtcNow;
-            this.signalBus.Fire(new LevelStartedSignal(this.uiTemplateUserLevelData.CurrentLevel));
+            var currentModeLevel = this.CurrentModeLevel(mode);
+            this.GetModePlayTime(mode, currentModeLevel);
+            this.signalBus.Fire(new LevelStartedSignal(currentModeLevel, mode));
         }
 
         /// <summary>
         /// Called when select a level in level selection screen
         /// </summary>
         /// <param name="level">selected level</param>
-        public void SelectLevel(int level)
+        public void SelectLevel(int level, string mode = UITemplateUserLevelData.ClassicMode)
         {
-            this.uiTemplateUserLevelData.CurrentLevel = level;
+            this.uiTemplateUserLevelData.ModeToCurrentLevel[mode] = level;
 
             this.handleUserDataServices.SaveAll();
         }
 
-        private int GetCurrentLevelPlayTime()
+        private int GetCurrentLevelPlayTime(string mode = UITemplateUserLevelData.ClassicMode)
         {
-            var time = 0;
-            if (this.levelToStartLevelTime.TryGetValue(this.uiTemplateUserLevelData.CurrentLevel, out var starTime))
-            {
-                time = (int)(DateTime.UtcNow - starTime).TotalSeconds;
-            }
+            var currentModeLevel = this.CurrentModeLevel(mode);
+            var startTime        = this.modeToLevelToStartLevelTime.GetOrAdd(mode, () => new Dictionary<int, DateTime>()).GetOrAdd(currentModeLevel, () => DateTime.UtcNow);
 
-            return time;
+            return (int)(DateTime.UtcNow - startTime).TotalSeconds;
         }
-        
+
         /// <summary>
         /// Called when player lose current level
         /// </summary>
-        public void LoseCurrentLevel()
+        public void LoseCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
         {
-            this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = false, Time = this.GetCurrentLevelPlayTime(), CurrentIdToValue = null });
-            this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).LoseCount++;
+            var currentModeLevel = this.CurrentModeLevel(mode);
+            this.signalBus.Fire(new LevelEndedSignal (currentModeLevel, mode, false, this.GetCurrentLevelPlayTime(),  null ));
+            this.GetLevelData(currentModeLevel, mode).LoseCount++;
 
             this.handleUserDataServices.SaveAll();
         }
@@ -107,13 +122,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <summary>
         /// Called when player win current level
         /// </summary>
-        public void PassCurrentLevel()
+        public void PassCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
         {
-            this.GetLevelData(this.uiTemplateUserLevelData.CurrentLevel).WinCount++;
-            this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
-            this.signalBus.Fire(new LevelEndedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, IsWin = true, Time = this.GetCurrentLevelPlayTime(), CurrentIdToValue = null });
-            if (this.GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Passed);
-            this.uiTemplateUserLevelData.CurrentLevel++;
+            var currentModeLevel = this.CurrentModeLevel(mode);
+            var levelData        = this.GetLevelData(currentModeLevel, mode);
+            levelData.WinCount++;
+            levelData.LevelStatus = LevelData.Status.Passed;
+            this.signalBus.Fire(new LevelEndedSignal (currentModeLevel, mode, true, this.GetCurrentLevelPlayTime(), null ));
+            this.uiTemplateUserLevelData.ModeToCurrentLevel[mode]++;
 
             this.handleUserDataServices.SaveAll();
         }
@@ -122,21 +138,29 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player skip current level
         /// </summary>
         /// <param name="time">Play time in seconds</param>
-        public void SkipCurrentLevel(int time = 0)
+        public void SkipCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
         {
-            if (this.GetCurrentLevelData.LevelStatus == LevelData.Status.Locked) this.uiTemplateUserLevelData.SetLevelStatusByLevel(this.uiTemplateUserLevelData.CurrentLevel, LevelData.Status.Skipped);
-            this.signalBus.Fire(new LevelSkippedSignal { Level = this.uiTemplateUserLevelData.CurrentLevel, Time = time });
-            this.uiTemplateUserLevelData.CurrentLevel++;
+            var currentModeLevel = this.CurrentModeLevel(mode);
+            var levelData        = this.GetLevelData(currentModeLevel, mode);
+            if (levelData.LevelStatus == LevelData.Status.Locked)
+            {
+                levelData.LevelStatus = LevelData.Status.Skipped;
+            }
+            this.signalBus.Fire(new LevelSkippedSignal (currentModeLevel, mode, this.GetCurrentLevelPlayTime(mode)));
+            this.uiTemplateUserLevelData.ModeToCurrentLevel[mode]++;
 
             this.handleUserDataServices.SaveAll();
         }
 
         public bool IsTouchedLevel(int level) { return this.MaxLevel + 1 >= level; }
 
-        public bool CheckLevelIsUnlockedStatus(int level)
+        public bool CheckLevelIsUnlockedStatus(int level, string mode = UITemplateUserLevelData.ClassicMode)
         {
-            var skippedLevel      = this.uiTemplateUserLevelData.LevelToLevelData.Values.LastOrDefault(levelData => levelData.LevelStatus == LevelData.Status.Skipped);
-            var skippedLevelIndex = this.uiTemplateUserLevelData.LevelToLevelData.Values.ToList().IndexOf(skippedLevel);
+            var currentModeLevel  = this.CurrentModeLevel(mode);
+            var levelData         = this.GetLevelData(currentModeLevel, mode);
+            
+            var skippedLevel      = this.GetModelData(mode).Values.LastOrDefault(levelData => levelData.LevelStatus == LevelData.Status.Skipped);
+            var skippedLevelIndex = this.GetModelData(mode).Values.ToList().IndexOf(skippedLevel);
             if (skippedLevelIndex == -1 && this.MaxLevel == 0 && level == 1) return true;
 
             var maxIndex = Math.Max(skippedLevelIndex, this.MaxLevel);

@@ -1,12 +1,11 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig
 {
-    using GameFoundation.DI;
     using GameFoundation.Signals;
     using Newtonsoft.Json;
     using ServiceImplementation.FireBaseRemoteConfig;
     using UnityEngine.Scripting;
 
-    public class UITemplateFTUERemoteConfig : FTUEConfig, IInitializable
+    public class UITemplateFTUERemoteConfig : FTUEConfig
     {
         private const string RemoteConfigKey = "UITemplateFTUE";
 
@@ -18,12 +17,7 @@
             this.signalBus = signalBus;
         }
 
-        public void Initialize()
-        {
-            this.signalBus.Subscribe<RemoteConfigFetchedSucceededSignal>(this.LoadData);
-        }
-
-        private void LoadData(RemoteConfigFetchedSucceededSignal signal)
+        public void LoadData(RemoteConfigFetchedSucceededSignal signal)
         {
             var remoteConfigValue = signal.RemoteConfig.GetRemoteConfigStringValue(RemoteConfigKey);
             if (string.IsNullOrEmpty(remoteConfigValue))

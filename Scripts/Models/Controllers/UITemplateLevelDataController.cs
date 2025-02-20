@@ -34,11 +34,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public int TotalWin  => this.GetModelData().Values.Sum(levelData => levelData.WinCount);
 
         public LevelData GetCurrentLevelData => this.GetLevelData(this.CurrentLevel);
-        public int       CurrentLevel        => this.uiTemplateUserLevelData.ModeToCurrentLevel[UITemplateUserLevelData.ClassicMode];
-
+        public int       CurrentLevel        => this.CurrentModeLevel(UITemplateUserLevelData.ClassicMode);
         public LevelData GetCurrentModeLevelData(string mode) => this.GetLevelData(this.CurrentLevel, mode);
 
-        public int CurrentModeLevel(string mode) => this.GetLevelData(this.CurrentLevel, mode).Level;
+        public int CurrentModeLevel(string mode) => this.uiTemplateUserLevelData.ModeToCurrentLevel.GetOrAdd(UITemplateUserLevelData.ClassicMode, () => 1);
 
         public int MaxLevel
         {
@@ -77,7 +76,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             return this.uiTemplateUserLevelData.ModeToLevelToLevelData.GetOrAdd(mode, () => new Dictionary<int, LevelData>());
         }
-
+        
         private DateTime GetModePlayTime(string mode, int level) => this.modeToLevelToStartLevelTime.GetOrAdd(mode, () => new Dictionary<int, DateTime>()).GetOrAdd(level, () => DateTime.UtcNow);
 
         /// <summary>Have be called when level started</summary>

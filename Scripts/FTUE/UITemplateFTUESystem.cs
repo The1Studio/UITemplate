@@ -62,17 +62,7 @@
             this.signalBus.Subscribe<FTUEDoActionSignal>(this.OnFTUEStepFinishedHandler);
         }
 
-        //TODO : need to refactor for contunious FTUE
-        public void OnFTUEStepFinishedHandler(IHaveStepId obj)
-        {
-            this.cancellationTokenSource.Cancel();
-            this.uiTemplateFtueDataController.CompleteStep(obj.StepId);
-            var disableObjectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
-            foreach (var gameObject in disableObjectSet) gameObject.SetActive(false);
-            this.uiTemplateFtueController.DoDeactiveFTUE(obj.StepId);
-            var nextStepId = this.uiTemplateFtueBlueprint[obj.StepId].NextStepId;
-            if (!nextStepId.IsNullOrEmpty()) this.OnTriggerFTUE(new(nextStepId));
-        }
+        #region Register Objects
 
         [Obsolete("Use RegisterEnableOnAndAfterFTUEObjectToStepId instead")]
         public void RegisterEnableObjectToStepId(GameObject gameObject, string stepId)
@@ -111,6 +101,10 @@
             objectSet.Add(gameObject);
         }
 
+        #endregion
+
+        #region Signal Handlers
+
         private void OnTriggerFTUE(FTUETriggerSignal obj)
         {
             this.cancellationTokenSource = new();
@@ -126,6 +120,7 @@
 
                 return;
             }
+
             foreach (var gameObject in enableObjectSet) gameObject.SetActive(true);
 
             var disableObjectSet = this.StepIdToShowBeforeFTUEGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
@@ -134,30 +129,68 @@
             disableObjectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             foreach (var disableObject in disableObjectSet) disableObject.SetActive(true);
 
-            if (!this.uiTemplateFtueDataController.IsRewardedStep(stepId))
+            var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
+            if (record.ShowUnlockPopup)
             {
-                this.uiTemplateFtueDataController.GiveReward(stepId);
+                this.signalBus.Fire(new FTUEShowUnlockPopupSignal(
+                    ShowFTUE,
+                    record.ItemId,
+                    record.NextScreenName,
+                    record.DestinationName));
             }
-            this.uiTemplateFtueController.DoActiveFTUE(stepId);
-            var duration = this.uiTemplateFtueBlueprint.GetDataById(stepId).TooltipDuration;
-            if (duration > 0)
+            else
             {
-                UniTask.Delay(
-                    TimeSpan.FromSeconds(this.uiTemplateFtueBlueprint.GetDataById(stepId).TooltipDuration),
-                    cancellationToken: this.cancellationTokenSource.Token).ContinueWith(() =>
+                ShowFTUE();
+            }
+
+            void ShowFTUE()
+            {
+                if (!this.uiTemplateFtueDataController.IsRewardedStep(stepId))
                 {
-                    this.signalBus.Fire(new FTUEDoActionSignal(stepId));
-                }).Forget();
+                    this.uiTemplateFtueDataController.GiveReward(stepId);
+                }
+                this.uiTemplateFtueController.DoActiveFTUE(stepId);
+                var duration = this.uiTemplateFtueBlueprint.GetDataById(stepId).TooltipDuration;
+                if (duration > 0)
+                {
+                    UniTask.Delay(
+                        TimeSpan.FromSeconds(this.uiTemplateFtueBlueprint.GetDataById(stepId).TooltipDuration),
+                        cancellationToken: this.cancellationTokenSource.Token).ContinueWith(() =>
+                    {
+                        this.signalBus.Fire(new FTUEDoActionSignal(stepId));
+                    }).Forget();
+                }
             }
         }
+
+        //TODO : need to refactor for contunious FTUE
+        public void OnFTUEStepFinishedHandler(IHaveStepId obj)
+        {
+            this.cancellationTokenSource.Cancel();
+            this.uiTemplateFtueDataController.CompleteStep(obj.StepId);
+            var disableObjectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
+            foreach (var gameObject in disableObjectSet) gameObject.SetActive(false);
+            this.uiTemplateFtueController.DoDeactiveFTUE(obj.StepId);
+            var nextStepId = this.uiTemplateFtueBlueprint[obj.StepId].NextStepId;
+            if (!nextStepId.IsNullOrEmpty())
+            {
+                this.OnTriggerFTUE(new(nextStepId));
+            }
+        }
+
+        #endregion
+
+        #region Ultilities
 
         public bool IsFTUEActiveAble(string stepId)
         {
             if (this.uiTemplateFtueDataController.IsFinishedStep(stepId)) return false;
 
-            if (this.uiTemplateFtueBlueprint.GetDataById(stepId).RequireTriggerComplete.Any(stepId => !this.uiTemplateFtueDataController.IsFinishedStep(stepId))) return false;
+            var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
 
-            var requireConditions = this.uiTemplateFtueBlueprint.GetDataById(stepId).GetRequireCondition();
+            if (record.RequireTriggerComplete.Any(stepId => !this.uiTemplateFtueDataController.IsFinishedStep(stepId))) return false;
+
+            var requireConditions = record.GetRequireCondition();
 
             if (requireConditions != null && !requireConditions.All(requireCondition => this.IDToFtueConditions[requireCondition.RequireId].IsPassedCondition(requireCondition.ConditionDetail)))
                 return
@@ -196,5 +229,7 @@
 
             return false;
         }
+
+        #endregion
     }
 }

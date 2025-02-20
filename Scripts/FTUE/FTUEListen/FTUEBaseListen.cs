@@ -2,7 +2,6 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen
 {
     using GameFoundation.DI;
     using GameFoundation.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
 

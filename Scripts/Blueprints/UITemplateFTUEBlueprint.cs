@@ -34,6 +34,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         [ShowInInspector]            public string                  TooltipText            { get; [Preserve] private set; }
         [ShowInInspector]            public float                   TooltipDuration        { get; [Preserve] private set; }
         [ShowInInspector]            public bool                    HideOnComplete         { get; [Preserve] private set; }
+        [ShowInInspector]            public bool                    ShowUnlockPopup        { get; [Preserve] private set; }
+        [ShowInInspector]            public string                  ItemId                 { get; [Preserve] private set; }
+        [ShowInInspector]            public string                  NextScreenName         { get; [Preserve] private set; }
+        [ShowInInspector]            public string                  DestinationName        { get; [Preserve] private set; }
 
         public List<RequireCondition> GetRequireCondition()
         {
@@ -64,7 +68,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
             Dictionary<string, int> bonusOnStart,
             string                  tooltipText,
             float                   tooltipDuration,
-            bool                    hideOnComplete
+            bool                    hideOnComplete,
+            bool                    showUnlockPopup,
+            string                  itemId,
+            string                  nextScreenName,
+            string                  destinationName
         )
         {
             this.Id                     = id;
@@ -84,6 +92,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
             this.TooltipText            = tooltipText;
             this.TooltipDuration        = tooltipDuration;
             this.HideOnComplete         = hideOnComplete;
+            this.ShowUnlockPopup        = showUnlockPopup;
+            this.ItemId                 = itemId;
+            this.NextScreenName         = nextScreenName;
+            this.DestinationName        = destinationName;
         }
     }
 

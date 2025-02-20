@@ -21,6 +21,7 @@ namespace TheOneStudio.UITemplate
             builder.DeclareSignal<FTUEDoActionSignal>();
             builder.DeclareSignal<FTUETriggerSignal>();
             builder.DeclareSignal<FTUEShowTooltipSignal>();
+            builder.DeclareSignal<FTUEShowUnlockPopupSignal>();
 
             //Signal
             builder.DeclareSignal<OnNotEnoughCurrencySignal>();

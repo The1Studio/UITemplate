@@ -89,7 +89,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         /// Please fill loading text with format "Text {0}" where {0} is the value position."
         /// </summary>
         /// <param name="text"></param>
-        protected virtual string GetLoadingText() { return "Loading {0}%"; }
+        protected virtual string GetLoadingText()
+        {
+            return "Loading {0}%";
+        }
 
         protected override void OnViewReady()
         {
@@ -135,7 +138,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Unsubscribe<AppOpenFullScreenContentFailedSignal>(this.OnAOAClosedHandler);
         }
 
-        private void OnAOAClosedHandler() { this.IsClosedFirstOpen = true; }
+        private void OnAOAClosedHandler()
+        {
+            this.IsClosedFirstOpen = true;
+        }
 
         protected virtual async UniTask LoadNextScene()
         {
@@ -160,10 +166,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 },
             });
 
-            await Resources.UnloadUnusedAssets().ToUniTask();
-
-            GCUtils.ForceGCWithLOH();
-
             this.ShowFirstBannerAd(BannerLoadStrategy.AfterLoading);
             this.OnAfterLoading();
 
@@ -177,6 +179,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                     { "timeMilis", this.loadingStopwatch.ElapsedMilliseconds },
                 },
             });
+
+            await Resources.UnloadUnusedAssets();
+            GCUtils.ForceGCWithLOH();
         }
 
         protected virtual void ShowFirstBannerAd(BannerLoadStrategy strategy)
@@ -184,8 +189,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             if (strategy != this.adService.BannerLoadStrategy) return;
             this.adService.ShowBannerAd();
         }
-
-        protected virtual void OnAfterLoading() { }
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync()
         {
@@ -200,7 +203,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return this.blueprintManager.LoadBlueprint();
         }
 
-        private UniTask LoadUserData() { return this.TrackProgress(this.userDataManager.LoadUserData()); }
+        private UniTask LoadUserData()
+        {
+            return this.TrackProgress(this.userDataManager.LoadUserData());
+        }
 
         private UniTask WaitForAoa()
         {
@@ -215,36 +221,50 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             );
         }
 
-        protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
+        protected virtual UniTask Preload()
+        {
+            return UniTask.CompletedTask;
+        }
 
-        protected virtual UniTask OnUserDataLoaded() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnBlueprintLoaded()
+        {
+            return UniTask.CompletedTask;
+        }
 
-        protected virtual UniTask OnBlueprintAndUserDataLoaded() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnUserDataLoaded()
+        {
+            return UniTask.CompletedTask;
+        }
 
-        protected virtual UniTask OnLoadingCompleted() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnBlueprintAndUserDataLoaded()
+        {
+            return UniTask.CompletedTask;
+        }
 
-        protected virtual UniTask Preload() { return UniTask.CompletedTask; }
+        protected virtual UniTask OnLoadingCompleted()
+        {
+            return UniTask.CompletedTask;
+        }
+
+        protected virtual void OnAfterLoading() { }
 
         protected UniTask PreloadAssets<T>(params object[] keys)
         {
-            return UniTask.WhenAll(this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys)
-                .Select(this.TrackProgress));
+            return UniTask.WhenAll(this.gameAssets.PreloadAsync<T>(this.NextSceneName, keys).Select(this.TrackProgress));
         }
 
         protected UniTask CreateObjectPool(string prefabName, int initialPoolSize = 1)
         {
-            return this.TrackProgress(
-                this.objectPoolManager.CreatePool(prefabName, initialPoolSize, this.objectPoolContainer));
+            return this.TrackProgress(this.objectPoolManager.CreatePool(prefabName, initialPoolSize, this.objectPoolContainer));
         }
 
         protected UniTask TrackProgress(UniTask task)
         {
             ++this.loadingSteps;
-
             return task.ContinueWith(() => ++this.LoadingProgress);
         }
 
-        protected UniTask<T> TrackProgress<T>(AsyncOperationHandle<T> aoh)
+        protected UniTask<T> TrackProgress<T>(AsyncOperationHandle<T> handle)
         {
             ++this.loadingSteps;
             var localLoadingProgress = 0f;
@@ -255,11 +275,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 localLoadingProgress =  progress;
             }
 
-            return aoh.ToUniTask(Progress.CreateOnlyValueChanged<float>(UpdateProgress))
+            return handle.ToUniTask(Progress.CreateOnlyValueChanged<float>(UpdateProgress))
                 .ContinueWith(result =>
                 {
                     UpdateProgress(1f);
-
                     return result;
                 });
         }

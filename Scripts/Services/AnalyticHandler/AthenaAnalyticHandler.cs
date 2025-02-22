@@ -2,6 +2,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -115,20 +116,26 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
         
         private void OnUpdateCurrencyHandler(OnUpdateCurrencySignal signal)
         {
-            this.analyticServices.Track(new CustomEvent
+            var eventProperties = new Dictionary<string, object>()
+                                  {
+                                      { "flow_type", signal.Amount > 0 ? "source" : "sink" },
+                                      { "virtual_currency_name", signal.Id },
+                                      { "value", signal.Amount },
+                                      { "level_id", this.levelDataController.CurrentLevel },
+                                      { "balance", signal.FinalValue }
+                                  };
+            if (signal.Metadata != null)
             {
-                EventName = "bi_resource_event",
-                EventProperties = new()
+                foreach (var (key, value) in signal.Metadata)
                 {
-                    { "flow_type", signal.Amount > 0 ? "source" : "sink" },
-                    { "from", signal.Metadata["from"] },
-                    { "to", signal.Metadata["to"] },
-                    { "virtual_currency_name", signal.Id },
-                    { "value", signal.Amount },
-                    { "level_id", this.levelDataController.CurrentLevel },
-                    { "balance", signal.FinalValue }
-                },
-            });
+                    eventProperties.TryAdd(key, value);
+                }
+            }
+            this.analyticServices.Track(new CustomEvent
+                                        {
+                                            EventName = "bi_resource_event",
+                                            EventProperties = eventProperties,
+                                        });
         }
         
         private void OnApplicationQuitHandler()

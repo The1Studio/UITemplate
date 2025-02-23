@@ -3,13 +3,14 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
 {
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
-    using Core.AnalyticServices.Data;
     using Core.AnalyticServices.Signal;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
 
     public class AthenaAnalyticEventFactory : BaseAnalyticEventFactory
     {
+        [Preserve]
         public AthenaAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, UITemplateLevelDataController levelDataController) : base(signalBus, analyticServices, levelDataController)
         {
         }

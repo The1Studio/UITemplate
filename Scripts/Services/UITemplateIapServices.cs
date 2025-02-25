@@ -88,7 +88,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             if (rewardItemData.Count <= 0) return;
             for (var i = 0; i < quantity; i++)
             {
-                this.uiTemplateRewardHandler.AddRewardsWithPackId(productId, rewardItemData, source);
+                this.uiTemplateRewardHandler.AddRewardsWithPackId(productId, rewardItemData, $"iap_{productId}", source);
             }
         }
 

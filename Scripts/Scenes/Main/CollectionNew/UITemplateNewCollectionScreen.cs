@@ -97,7 +97,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private async void BuyItemCompleted()
         {
-            await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
+            await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, "collection", startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
             this.View.itemCollectionGridAdapter.Refresh();
         }
 

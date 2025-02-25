@@ -72,7 +72,7 @@
         protected virtual async UniTask RewardAfterWatchedAds()
         {
             if (!this.thirdPartiesConfig.AdSettings.IsBreakAdsRewardCurrency) return;
-            await this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency, this.View.currencyTransform);
+            await this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, "break_ads", this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency, this.View.currencyTransform);
         }
 
         public override void Dispose()

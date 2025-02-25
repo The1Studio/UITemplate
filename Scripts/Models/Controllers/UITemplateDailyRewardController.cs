@@ -114,7 +114,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                     var reward = this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1);
 
-                    foreach (var (key, item) in reward.Reward) this.uiTemplateInventoryDataController.AddGenericReward(item.RewardId, item.RewardValue, dayToView[reward.Day], claimSoundKey).Forget();
+                    foreach (var (key, item) in reward.Reward) this.uiTemplateInventoryDataController.AddGenericReward(item.RewardId, item.RewardValue, "daily_reward", dayToView[reward.Day], claimSoundKey).Forget();
                 }
             }
 

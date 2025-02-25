@@ -19,7 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
     public class UITemplateInventoryDataController : IUITemplateControllerData, IInitializable
     {
-        #region Inject
+#region Inject
 
         private readonly SignalBus                           signalBus;
         private readonly IScreenManager                      screenManager;
@@ -30,14 +30,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateItemBlueprint             uiTemplateItemBlueprint;
         private readonly IAudioService                       audioService;
 
-        #endregion
+#endregion
 
         public const string DefaultSoftCurrencyID              = "Coin";
         public const string DefaultChestRoomKeyCurrencyID      = "ChestRoomKey";
         public const string DefaultLuckySpinFreeTurnCurrencyID = "LuckySpinFreeTurn";
 
         [Preserve]
-        public UITemplateInventoryDataController(
+        public UITemplateInventoryDataController
+        (
             UITemplateInventoryData             uiTemplateInventoryData,
             UITemplateFlyingAnimationController uiTemplateFlyingAnimationController,
             UITemplateCurrencyBlueprint         uiTemplateCurrencyBlueprint,
@@ -61,39 +62,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public List<UITemplateItemData> GetDefaultItemByCategory(string category)
         {
             return this.uiTemplateInventoryData.IDToItemData.Values.Where(itemData =>
-                itemData.ItemBlueprintRecord.Category == category && itemData.ItemBlueprintRecord.IsDefaultItem
-            ).ToList();
+                                                                              itemData.ItemBlueprintRecord.Category == category && itemData.ItemBlueprintRecord.IsDefaultItem
+                                                                         ).ToList();
         }
 
         public Dictionary<string, List<UITemplateItemData>> GetDefaultItemWithCategory()
         {
             return this.uiTemplateInventoryData.IDToItemData.Values
-                .GroupBy(itemData => itemData.ItemBlueprintRecord.Category)
-                .ToDictionary(
-                    group => group.Key,
-                    group => group.Where(itemData => itemData.ItemBlueprintRecord.IsDefaultItem).ToList()
-                );
+               .GroupBy(itemData => itemData.ItemBlueprintRecord.Category)
+               .ToDictionary(
+                             group => group.Key,
+                             group => group.Where(itemData => itemData.ItemBlueprintRecord.IsDefaultItem).ToList()
+                            );
         }
 
-        public string GetTempCurrencyKey(string currency)
-        {
-            return $"Temp_{currency}";
-        }
+        public string GetTempCurrencyKey(string currency) { return $"Temp_{currency}"; }
 
-        public void ApplyTempCurrency(string currency)
-        {
-            this.UpdateCurrency(this.GetCurrencyValue(this.GetTempCurrencyKey(currency)), currency);
-        }
+        public void ApplyTempCurrency(string currency) { this.UpdateCurrency(this.GetCurrencyValue(this.GetTempCurrencyKey(currency)), currency); }
 
-        public void ResetTempCurrency(string currency)
-        {
-            this.UpdateCurrency(this.GetCurrencyValue(currency), this.GetTempCurrencyKey(currency));
-        }
+        public void ResetTempCurrency(string currency) { this.UpdateCurrency(this.GetCurrencyValue(currency), this.GetTempCurrencyKey(currency)); }
 
-        public string GetCurrentItemSelected(string category)
-        {
-            return this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null;
-        }
+        public string GetCurrentItemSelected(string category) { return this.uiTemplateInventoryData.CategoryToChosenItem.TryGetValue(category, out var currentId) ? currentId : null; }
 
         public void UpdateCurrentSelectedItem(string category, string id)
         {
@@ -106,28 +95,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public int GetCurrencyValue(string id = DefaultSoftCurrencyID)
         {
             return this.uiTemplateInventoryData.IDToCurrencyData
-                .GetOrAdd(id, () => new(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)).Value;
+               .GetOrAdd(id, () => new(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)).Value;
         }
 
-        public UITemplateCurrencyData GetCurrencyData(string id = DefaultSoftCurrencyID)
-        {
-            return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max));
-        }
+        public UITemplateCurrencyData GetCurrencyData(string id = DefaultSoftCurrencyID) { return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)); }
 
-        public bool IsCurrencyFull(string id)
-        {
-            return this.GetCurrencyValue(id) >= this.uiTemplateCurrencyBlueprint.GetDataById(id).Max;
-        }
+        public bool IsCurrencyFull(string id) { return this.GetCurrencyValue(id) >= this.uiTemplateCurrencyBlueprint.GetDataById(id).Max; }
 
-        public bool HasItem(string id)
-        {
-            return this.uiTemplateInventoryData.IDToItemData.ContainsKey(id);
-        }
+        public bool HasItem(string id) { return this.uiTemplateInventoryData.IDToItemData.ContainsKey(id); }
 
-        public bool TryGetItemData(string id, out UITemplateItemData itemData)
-        {
-            return this.uiTemplateInventoryData.IDToItemData.TryGetValue(id, out itemData);
-        }
+        public bool TryGetItemData(string id, out UITemplateItemData itemData) { return this.uiTemplateInventoryData.IDToItemData.TryGetValue(id, out itemData); }
 
         public UITemplateItemData GetItemData(string id, UITemplateItemData.Status defaultStatusWhenCreateNew = UITemplateItemData.Status.Locked)
         {
@@ -136,6 +113,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var item       = this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id, () => new(id, shopRecord, itemRecord, defaultStatusWhenCreateNew));
             item.ShopBlueprintRecord = shopRecord;
             item.ItemBlueprintRecord = itemRecord;
+
             return item;
         }
 
@@ -171,8 +149,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <summary>
         /// minAnimAmount and maxAnimAmount is range amount of currency object that will be animated
         /// </summary>
-        public async UniTask<bool> AddCurrency(
+        public async UniTask<bool> AddCurrency
+        (
             int           addingValue,
+            string        where,
             string        id                         = DefaultSoftCurrencyID,
             RectTransform startAnimationRect         = null,
             string        claimSoundKey              = null,
@@ -190,12 +170,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             if (resultValue < 0)
             {
                 this.signalBus.Fire(new OnNotEnoughCurrencySignal(id));
+
                 return false;
             }
 
             var currencyWithCap = this.SetCurrencyWithCap(resultValue, id);
             var amount          = currencyWithCap - lastValue;
-            this.signalBus.Fire(new OnUpdateCurrencySignal(id, amount, currencyWithCap));
+            this.signalBus.Fire(new OnUpdateCurrencySignal(id, amount, currencyWithCap, where));
 
             if (startAnimationRect != null)
             {
@@ -205,24 +186,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 {
                     if (!string.IsNullOrEmpty(claimSoundKey)) this.audioService.PlaySound(claimSoundKey);
                     await this.uiTemplateFlyingAnimationController.PlayAnimation<UITemplateCurrencyView>(
-                        startPointRect: startAnimationRect,
-                        minAmount: minAnimAmount,
-                        maxAmount: maxAnimAmount,
-                        timeAnim: timeAnimAnim,
-                        target: currencyView.CurrencyIcon.transform as RectTransform,
-                        prefabName: flyingObject,
-                        flyPunchPositionFactor: flyPunchPositionAnimFactor,
-                        onCompleteEachItem: () =>
-                        {
-                            onCompleteEachItem?.Invoke();
-                            if(!string.IsNullOrEmpty(flyCompleteSoundKey)) this.audioService.PlaySound(flyCompleteSoundKey);
-                        });
+                                                                                                         startPointRect: startAnimationRect,
+                                                                                                         minAmount: minAnimAmount,
+                                                                                                         maxAmount: maxAnimAmount,
+                                                                                                         timeAnim: timeAnimAnim,
+                                                                                                         target: currencyView.CurrencyIcon.transform as RectTransform,
+                                                                                                         prefabName: flyingObject,
+                                                                                                         flyPunchPositionFactor: flyPunchPositionAnimFactor,
+                                                                                                         onCompleteEachItem: () =>
+                                                                                                                             {
+                                                                                                                                 onCompleteEachItem?.Invoke();
+                                                                                                                                 if (!string.IsNullOrEmpty(flyCompleteSoundKey)) this.audioService.PlaySound(flyCompleteSoundKey);
+                                                                                                                             });
 
                     lastValue = this.GetCurrencyValue(id); // get last value after animation because it can be changed by other animation
                     this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));
                 }
             }
             else
+
                 // if there is no animation, just update the currency
             {
                 this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));
@@ -243,10 +225,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             var uiTemplateCurrencyData = this.uiTemplateInventoryData.IDToCurrencyData[id];
             uiTemplateCurrencyData.Value = Math.Min(uiTemplateCurrencyData.MaxValue, value);
+
             return uiTemplateCurrencyData.Value;
         }
 
-        public UITemplateItemData GetFirstItem(
+        public UITemplateItemData GetFirstItem
+        (
             string                             category   = null,
             UITemplateItemData.UnlockType      unlockType = UITemplateItemData.UnlockType.All,
             IComparer<UITemplateItemData>      orderBy    = null,
@@ -256,23 +240,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return this.GetAllItems(category, unlockType, orderBy, statuses).FirstOrDefault();
         }
 
-        public List<UITemplateItemData> GetAllItems(
+        public List<UITemplateItemData> GetAllItems
+        (
             string                             category   = null,
             UITemplateItemData.UnlockType      unlockType = UITemplateItemData.UnlockType.All,
             IComparer<UITemplateItemData>      orderBy    = null,
             params UITemplateItemData.Status[] statuses
         )
         {
-            var query                                                  = this.uiTemplateInventoryData.IDToItemData.Values.ToList();
-            if (category is { }) query                                 = query.Where(itemData => itemData.ItemBlueprintRecord.Category.Equals(category)).ToList();
-            if (unlockType != UITemplateItemData.UnlockType.All) query = query.Where(itemData => (itemData.ShopBlueprintRecord.UnlockType & unlockType) != 0).ToList();
-            if (statuses.Length > 0) query                             = query.Where(itemData => statuses.Contains(itemData.CurrentStatus)).ToList();
-            if (orderBy is { }) query                                  = query.OrderBy(itemData => itemData, orderBy).ToList();
+            var query                                                       = this.uiTemplateInventoryData.IDToItemData.Values.ToList();
+            if (category is { }) query                                      = query.Where(itemData => itemData.ItemBlueprintRecord.Category.Equals(category)).ToList();
+            if (unlockType      != UITemplateItemData.UnlockType.All) query = query.Where(itemData => (itemData.ShopBlueprintRecord.UnlockType & unlockType) != 0).ToList();
+            if (statuses.Length > 0) query                                  = query.Where(itemData => statuses.Contains(itemData.CurrentStatus)).ToList();
+            if (orderBy is { }) query                                       = query.OrderBy(itemData => itemData, orderBy).ToList();
 
             return query;
         }
 
-        public List<UITemplateItemData> GetAllItemWithOrder(
+        public List<UITemplateItemData> GetAllItemWithOrder
+        (
             string                        category   = null,
             UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
             IComparer<UITemplateItemData> comparer   = null
@@ -284,13 +270,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public UITemplateItemData UpdateStatusItemData(string id, UITemplateItemData.Status status)
         {
             var itemData = this.uiTemplateInventoryData.IDToItemData.GetOrAdd(id,
-                () =>
-                {
-                    var shopRecord = this.uiTemplateShopBlueprint.GetDataById(id);
-                    var itemRecord = this.uiTemplateItemBlueprint.GetDataById(id);
+                                                                              () =>
+                                                                              {
+                                                                                  var shopRecord = this.uiTemplateShopBlueprint.GetDataById(id);
+                                                                                  var itemRecord = this.uiTemplateItemBlueprint.GetDataById(id);
 
-                    return new(id, shopRecord, itemRecord, status);
-                });
+                                                                                  return new(id, shopRecord, itemRecord, status);
+                                                                              });
 
             itemData.CurrentStatus = status;
 
@@ -338,26 +324,45 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             foreach (var (category, defaultItems) in defaultItemWithCategory)
             {
                 var currentItemSelected = this.GetCurrentItemSelected(category);
+
                 if (currentItemSelected is { } && this.uiTemplateItemBlueprint.ContainsKey(currentItemSelected)) continue;
                 if (defaultItems is null or { Count: 0 }) continue;
                 this.UpdateCurrentSelectedItem(category, defaultItems[0].Id);
             }
         }
 
-        public async UniTask AddGenericReward(string rewardKey, int rewardValue, RectTransform startPosCurrency = null, string claimSoundKey = null)
+        /// <summary>
+        /// add reward from multiple faucet
+        /// </summary>
+        /// <param name="rewardKey"></param>
+        /// <param name="rewardValue"></param>
+        /// <param name="from">where players earn reward</param>
+        /// <param name="startPosCurrency"></param>
+        /// <param name="claimSoundKey"></param>
+        /// <exception cref="Exception"></exception>
+        public async UniTask AddGenericReward(string rewardKey, int rewardValue, string from, RectTransform startPosCurrency = null, string claimSoundKey = null)
         {
             if (this.uiTemplateCurrencyBlueprint.TryGetValue(rewardKey, out _))
-                await this.AddCurrency(rewardValue, rewardKey, startPosCurrency, claimSoundKey);
+                await this.AddCurrency(rewardValue, from, rewardKey, startPosCurrency, claimSoundKey);
             else if (this.uiTemplateItemBlueprint.TryGetValue(rewardKey, out _))
+            {
                 this.uiTemplateInventoryData.IDToItemData[rewardKey].CurrentStatus = UITemplateItemData.Status.Owned;
+                this.signalBus.Fire(new OnUpdateItemDataSignal(rewardKey, UITemplateItemData.Status.Owned));
+            }
             else
                 throw new("Need to implemented!!!");
         }
 
-        public async UniTask AddGenericReward(Dictionary<string, int> reward, RectTransform startPosCurrency = null)
+        /// <summary>
+        /// add reward from multiple faucet
+        /// </summary>
+        /// <param name="reward"></param>
+        /// <param name="where">where you earn reward from</param>
+        /// <param name="startPosCurrency"></param>
+        public async UniTask AddGenericReward(Dictionary<string, int> reward, string where, RectTransform startPosCurrency = null)
         {
             List<UniTask> rewardAnimationTasks = new();
-            foreach (var (rewardKey, rewardValue) in reward) rewardAnimationTasks.Add(this.AddGenericReward(rewardKey, rewardValue, startPosCurrency));
+            foreach (var (rewardKey, rewardValue) in reward) rewardAnimationTasks.Add(this.AddGenericReward(rewardKey, rewardValue, where, startPosCurrency));
 
             await UniTask.WhenAll(rewardAnimationTasks);
         }
@@ -377,14 +382,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public Dictionary<string, UITemplateItemData> GetAllItemAvailable()
         {
             return this.uiTemplateInventoryData.IDToItemData
-                .Where(itemData => itemData.Value.CurrentStatus != UITemplateItemData.Status.Owned && itemData.Value.CurrentStatus == UITemplateItemData.Status.Unlocked)
-                .ToDictionary(itemData => itemData.Key, itemData => itemData.Value);
+               .Where(itemData => itemData.Value.CurrentStatus != UITemplateItemData.Status.Owned && itemData.Value.CurrentStatus == UITemplateItemData.Status.Unlocked)
+               .ToDictionary(itemData => itemData.Key, itemData => itemData.Value);
         }
 
-        public void Initialize()
-        {
-            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess);
-        }
+        public void Initialize() { this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.OnLoadBlueprintSuccess); }
 
         public bool IsAffordCurrency(Dictionary<string, int> currency, int time = 1)
         {
@@ -395,9 +397,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return true;
         }
 
-        public bool IsAffordCurrency(string currencyName, int amount)
-        {
-            return this.GetCurrencyValue(currencyName) >= amount;
-        }
+        public bool IsAffordCurrency(string currencyName, int amount) { return this.GetCurrencyValue(currencyName) >= amount; }
     }
 }

@@ -26,6 +26,7 @@ namespace TheOneStudio.UITemplate
             //Signal
             builder.DeclareSignal<OnNotEnoughCurrencySignal>();
             builder.DeclareSignal<OnUpdateCurrencySignal>();
+            builder.DeclareSignal<OnUpdateItemDataSignal>();
             builder.DeclareSignal<OnFinishCurrencyAnimationSignal>();
             builder.DeclareSignal<LevelStartedSignal>();
             builder.DeclareSignal<LevelEndedSignal>();

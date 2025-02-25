@@ -88,7 +88,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 {
                     { "game_mode", signal.Mode },
                     { "ID", this.uniqueId },
-                    { "level_id", level },
+                    { "level_id", level.ToString() },
                     { "attempts", leveData.LoseCount + leveData.WinCount + 1 }
                 },
             });
@@ -105,10 +105,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 {
                     { "game_mode", signal.Mode },
                     { "ID", this.uniqueId },
-                    { "level_id", level },
+                    { "level_id", level.ToString() },
                     { "time_spent", signal.Time },
                     { "context", signal.IsWin ? 1 : 0 },
-                    { "level_abandoned", this.isLevelAbandoned },
+                    { "level_abandoned", this.isLevelAbandoned ? 1 : 0 },
                     { "attempts", leveData.LoseCount + leveData.WinCount }
                 },
             });
@@ -124,6 +124,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                                       { "level_id", this.levelDataController.CurrentLevel },
                                       { "balance", signal.FinalValue }
                                   };
+            if (signal.Amount >= 0)
+            {
+                eventProperties.Add("from", signal.Source);
+            }
+            else
+            {
+                eventProperties.Add("to", signal.Source);
+            }
+            
             if (signal.Metadata != null)
             {
                 foreach (var (key, value) in signal.Metadata)

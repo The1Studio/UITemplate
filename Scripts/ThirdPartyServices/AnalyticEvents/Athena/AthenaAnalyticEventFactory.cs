@@ -28,6 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.A
                                                                   { "ad_source_unit_id", obj.AdsRevenueEvent.NetworkPlacement },
                                                                   { "ad_format", obj.AdsRevenueEvent.AdFormat },
                                                                   { "ad_placement", obj.AdsRevenueEvent.Placement },
+                                                                  { "estimate_value_currency", obj.AdsRevenueEvent.Currency },
                                                                   { "estimate_value", obj.AdsRevenueEvent.Revenue },
                                                                   { "estimate_value_in_usd", obj.AdsRevenueEvent.Revenue },
                                                                   { "level_id", string.Empty }

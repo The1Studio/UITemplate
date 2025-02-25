@@ -399,15 +399,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void UpdateCurrencyHandler(OnUpdateCurrencySignal obj)
         {
-            var valueScreenId = obj.Source ?? this.screenManager.CurrentActiveScreen.Value?.ScreenId;
             var level         = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
             if (obj.Amount > 0)
             {
-                this.Track(this.analyticEventFactory.EarnVirtualCurrency(obj.Id, obj.Amount, valueScreenId, level));
+                this.Track(this.analyticEventFactory.EarnVirtualCurrency(obj.Id, obj.Amount, obj.Source, level));
             }
             else if (obj.Amount < 0)
             {
-                this.Track(this.analyticEventFactory.SpendVirtualCurrency(obj.Id, obj.Amount, valueScreenId, level));
+                this.Track(this.analyticEventFactory.SpendVirtualCurrency(obj.Id, obj.Amount, obj.Source, level));
             }
             if (obj.Amount > 0)
                 this.analyticServices.UserProperties[this.analyticEventFactory.TotalVirtualCurrencyEarnedProperty] = this.uITemplateInventoryDataController.GetCurrencyData(obj.Id).TotalEarned;

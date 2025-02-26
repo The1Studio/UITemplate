@@ -135,6 +135,7 @@
                 this.signalBus.Fire(new FTUEShowUnlockPopupSignal(
                     ShowFTUE,
                     record.ItemId,
+                    "",
                     record.NextScreenName,
                     record.DestinationName));
             }

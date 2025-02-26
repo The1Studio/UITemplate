@@ -6,14 +6,6 @@
 
     public class UITemplateFTUEDataController
     {
-        #region inject
-
-        private readonly UITemplateFTUEBlueprintDataHandler uiTemplateFtueBlueprint;
-        private readonly UITemplateInventoryDataController  uiTemplateInventoryDataController;
-        private readonly UITemplateFTUEData                 templateFtueData;
-
-        #endregion
-
         [Preserve]
         public UITemplateFTUEDataController(
             UITemplateFTUEData                 templateFtueData,
@@ -26,10 +18,7 @@
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
         }
 
-        public bool IsFinishedStep(string stepId)
-        {
-            return this.templateFtueData.FinishedStep.Contains(stepId);
-        }
+        public bool IsFinishedStep(string stepId) { return this.templateFtueData.FinishedStep.Contains(stepId); }
 
         public void CompleteStep(string stepId)
         {
@@ -38,10 +27,7 @@
             foreach (var previousStep in this.uiTemplateFtueBlueprint.GetDataById(stepId).PreviousSteps) this.CompleteStep(previousStep);
         }
 
-        public bool IsRewardedStep(string stepId)
-        {
-            return this.templateFtueData.RewardedStep.Contains(stepId);
-        }
+        public bool IsRewardedStep(string stepId) { return this.templateFtueData.RewardedStep.Contains(stepId); }
 
         public void GiveReward(string stepId)
         {
@@ -49,8 +35,16 @@
             this.templateFtueData.RewardedStep.Add(stepId);
             foreach (var pair in this.uiTemplateFtueBlueprint.GetDataById(stepId).BonusOnStart)
             {
-                this.uiTemplateInventoryDataController.AddCurrency(pair.Value, pair.Key).Forget();
+                this.uiTemplateInventoryDataController.AddCurrency(pair.Value, pair.Key, "ftue").Forget();
             }
         }
+
+        #region inject
+
+        private readonly UITemplateFTUEBlueprintDataHandler uiTemplateFtueBlueprint;
+        private readonly UITemplateInventoryDataController  uiTemplateInventoryDataController;
+        private readonly UITemplateFTUEData                 templateFtueData;
+
+        #endregion
     }
 }

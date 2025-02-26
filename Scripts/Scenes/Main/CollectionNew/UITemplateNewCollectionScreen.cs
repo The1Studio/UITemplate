@@ -97,7 +97,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private async void BuyItemCompleted()
         {
-            await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, "collection", startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
+            await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, UITemplateInventoryDataController.DefaultSoftCurrencyID, placement, startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
             this.View.itemCollectionGridAdapter.Refresh();
         }
 
@@ -140,10 +140,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         {
         }
 
-        protected virtual async void OnClickHomeButton()
-        {
-            await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>();
-        }
+        protected virtual async void OnClickHomeButton() { await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>(); }
 
         private void PrePareModel()
         {
@@ -355,7 +352,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 return;
             }
 
-            this.uiTemplateInventoryDataController.AddCurrency(-obj.ShopBlueprintRecord.Price, obj.ShopBlueprintRecord.CurrencyID).Forget();
+            this.uiTemplateInventoryDataController.AddCurrency(-obj.ShopBlueprintRecord.Price, obj.ShopBlueprintRecord.CurrencyID, placement).Forget();
             this.BuyItemCompleted(obj);
         }
 

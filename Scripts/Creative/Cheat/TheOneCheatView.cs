@@ -28,16 +28,6 @@
 
         protected ICheatDetector cheatDetector;
 
-        #region Inject
-
-        protected UITemplateInventoryDataController inventoryDataController;
-        protected GameFeaturesSetting               gameFeaturesSetting;
-        protected UITemplateLevelDataController     levelDataController;
-        protected SignalBus                         signalBus;
-        protected UITemplateCurrencyBlueprint       currencyBlueprint;
-
-        #endregion
-
         protected virtual void Awake()
         {
             DontDestroyOnLoad(this.gameObject);
@@ -64,6 +54,13 @@
             this.goContainer.SetActive(false);
         }
 
+        protected void Update()
+        {
+            if (!this.cheatDetector.Check()) return;
+            this.goContainer.SetActive(true);
+            this.SetupDropdown();
+        }
+
         protected void OnChangeLevelClick()
         {
             if (!int.TryParse(this.inputLevel.text, out var level)) return;
@@ -72,15 +69,12 @@
             this.signalBus.Fire(new ChangeLevelCreativeSignal(level));
         }
 
-        protected void OnCloseView()
-        {
-            this.goContainer.SetActive(false);
-        }
+        protected void OnCloseView() { this.goContainer.SetActive(false); }
 
         protected void OnAddCurrencyClick()
         {
             var ddCurrencyOption = this.ddCurrency.options[this.ddCurrency.value].text;
-            this.inventoryDataController.AddCurrency(int.Parse(this.inputCurrencyValue.text), ddCurrencyOption).Forget();
+            this.inventoryDataController.AddCurrency(int.Parse(this.inputCurrencyValue.text), ddCurrencyOption, "cheat").Forget();
         }
 
         protected void OnOnOffUIClick()
@@ -98,17 +92,20 @@
             canvas.enabled = isOn;
         }
 
-        protected void Update()
-        {
-            if (!this.cheatDetector.Check()) return;
-            this.goContainer.SetActive(true);
-            this.SetupDropdown();
-        }
-
         protected void SetupDropdown()
         {
             this.ddCurrency.ClearOptions();
             this.ddCurrency.AddOptions(this.currencyBlueprint.Keys.ToList());
         }
+
+        #region Inject
+
+        protected UITemplateInventoryDataController inventoryDataController;
+        protected GameFeaturesSetting               gameFeaturesSetting;
+        protected UITemplateLevelDataController     levelDataController;
+        protected SignalBus                         signalBus;
+        protected UITemplateCurrencyBlueprint       currencyBlueprint;
+
+        #endregion
     }
 }

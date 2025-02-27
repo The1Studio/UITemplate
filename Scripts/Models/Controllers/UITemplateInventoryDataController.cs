@@ -326,9 +326,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <exception cref="Exception"></exception>
         public async UniTask AddGenericReward(string rewardKey, int rewardValue, string from, RectTransform startPosCurrency = null, string claimSoundKey = null)
         {
-            if (this.uiTemplateCurrencyBlueprint.TryGetValue(rewardKey, out _))
-                await this.AddCurrency(rewardValue, from, rewardKey, startPosCurrency, claimSoundKey);
-            else if (this.uiTemplateItemBlueprint.TryGetValue(rewardKey, out _))
+            if (this.uiTemplateCurrencyBlueprint.ContainsKey(rewardKey))
+                await this.AddCurrency(rewardValue, rewardKey, from, startPosCurrency, claimSoundKey);
+            else if (this.uiTemplateItemBlueprint.ContainsKey(rewardKey))
             {
                 this.uiTemplateInventoryData.IDToItemData[rewardKey].CurrentStatus = UITemplateItemData.Status.Owned;
                 this.signalBus.Fire(new OnUpdateItemDataSignal(rewardKey, UITemplateItemData.Status.Owned));

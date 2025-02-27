@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
+    using System.Collections.Generic;
     #if WIDO
     using System.Collections.Generic;
     #endif
@@ -13,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Signals;
+    using ServiceImplementation;
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
@@ -23,7 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
     public class UITemplateAnalyticHandler : IInitializable, IDisposable
     {
-        #region inject
+#region inject
 
         protected readonly SignalBus                           signalBus;
         protected readonly IAnalyticServices                   analyticServices;
@@ -33,11 +35,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         protected readonly UITemplateDailyRewardController     uiTemplateDailyRewardController;
         protected readonly UITemplateGameSessionDataController uITemplateGameSessionDataController;
         protected readonly IScreenManager                      screenManager;
+        private readonly   UITemplateAdsController             uiTemplateAdsController;
 
-        #endregion
+#endregion
 
         [Preserve]
-        public UITemplateAnalyticHandler(
+        public UITemplateAnalyticHandler
+        (
             SignalBus                           signalBus,
             IAnalyticServices                   analyticServices,
             IAnalyticEventFactory               analyticEventFactory,
@@ -45,7 +49,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             UITemplateInventoryDataController   uITemplateInventoryDataController,
             UITemplateDailyRewardController     uiTemplateDailyRewardController,
             UITemplateGameSessionDataController uITemplateGameSessionDataController,
-            IScreenManager                      screenManager
+            IScreenManager                      screenManager,
+            UITemplateAdsController             uiTemplateAdsController
         )
         {
             this.signalBus                           = signalBus;
@@ -56,6 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.uiTemplateDailyRewardController     = uiTemplateDailyRewardController;
             this.uITemplateGameSessionDataController = uITemplateGameSessionDataController;
             this.screenManager                       = screenManager;
+            this.uiTemplateAdsController             = uiTemplateAdsController;
         }
 
         public void Track(IEvent trackEvent)
@@ -130,8 +136,34 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.TotalDaysPlayedChange();
         }
 
+        private static readonly List<int> SumAdsEventList = new() { 2, 3, 4, 5, 10 };
         protected virtual void AddRevenueHandler(AdRevenueSignal obj)
         {
+            switch (obj.AdsRevenueEvent.AdFormat)
+            {
+                case AdFormatConstants.Rewarded:
+                case AdFormatConstants.Interstitial:
+                    this.uiTemplateAdsController.CountAdsImpression(obj.AdsRevenueEvent.Revenue);
+
+                    break;
+            }
+
+            foreach (var sumAmount in SumAdsEventList)
+            {
+                if (this.uiTemplateAdsController.TryGetCircleSumInterstitialAndRewardedAdsRevenue(sumAmount, out var sum))
+                {
+                    this.Track(new CustomEvent()
+                               {
+                                   EventName = $"ad_engagement_value_{sumAmount}",
+                                   EventProperties = new()
+                                                     {
+                                                         { "revenue", sum },
+                                                         { "value", sum },
+                                                     },
+                               });
+                }
+            }
+
             #if WIDO
             var paramDic = new Dictionary<string, object>()
             {
@@ -166,62 +198,29 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             #endif
         }
 
-        private void AppOpenClickedHandler(AppOpenClickedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.AppOpenClicked(obj.Placement));
-        }
+        private void AppOpenClickedHandler(AppOpenClickedSignal obj) { this.Track(this.analyticEventFactory.AppOpenClicked(obj.Placement)); }
 
-        private void AppOpenCalledHandler(AppOpenCalledSignal obj)
-        {
-            this.Track(this.analyticEventFactory.AppOpenCalled(obj.Placement));
-        }
+        private void AppOpenCalledHandler(AppOpenCalledSignal obj) { this.Track(this.analyticEventFactory.AppOpenCalled(obj.Placement)); }
 
-        private void AppOpenEligibleHandler(AppOpenEligibleSignal obj)
-        {
-            this.Track(this.analyticEventFactory.AppOpenEligible(obj.Placement));
-        }
+        private void AppOpenEligibleHandler(AppOpenEligibleSignal obj) { this.Track(this.analyticEventFactory.AppOpenEligible(obj.Placement)); }
 
-        private void AppOpenLoadFailedHandler(AppOpenLoadFailedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.AppOpenLoadFailed());
-        }
+        private void AppOpenLoadFailedHandler(AppOpenLoadFailedSignal obj) { this.Track(this.analyticEventFactory.AppOpenLoadFailed()); }
 
-        private void AppOpenLoadedHandler(AppOpenLoadedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.AppOpenLoaded());
-        }
+        private void AppOpenLoadedHandler(AppOpenLoadedSignal obj) { this.Track(this.analyticEventFactory.AppOpenLoaded()); }
 
-        private void AppOpenFullScreenContentClosedHandler(AppOpenFullScreenContentClosedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.AppOpenFullScreenContentClosed(obj.Placement));
-        }
+        private void AppOpenFullScreenContentClosedHandler(AppOpenFullScreenContentClosedSignal obj) { this.Track(this.analyticEventFactory.AppOpenFullScreenContentClosed(obj.Placement)); }
 
-        private void AppOpenFullScreenContentFailedHandler(AppOpenFullScreenContentFailedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.AppOpenFullScreenContentFailed(obj.Placement));
-        }
+        private void AppOpenFullScreenContentFailedHandler(AppOpenFullScreenContentFailedSignal obj) { this.Track(this.analyticEventFactory.AppOpenFullScreenContentFailed(obj.Placement)); }
 
-        private void AppOpenFullScreenContentOpenedHandler(AppOpenFullScreenContentOpenedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.AppOpenFullScreenContentOpened(obj.Placement));
-        }
+        private void AppOpenFullScreenContentOpenedHandler(AppOpenFullScreenContentOpenedSignal obj) { this.Track(this.analyticEventFactory.AppOpenFullScreenContentOpened(obj.Placement)); }
 
-        private void OnRewardedAdSkipped(RewardedSkippedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, obj.Placement, false));
-        }
+        private void OnRewardedAdSkipped(RewardedSkippedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, obj.Placement, false)); }
 
-        private void OnRewardedAdCompleted(RewardedAdCompletedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, obj.Placement, true));
-        }
+        private void OnRewardedAdCompleted(RewardedAdCompletedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoShowCompleted(0, obj.Placement, true)); }
 
-        private void OnInterstitialAdClosed(InterstitialAdClosedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.InterstitialShowCompleted(0, obj.Placement));
-        }
+        private void OnInterstitialAdClosed(InterstitialAdClosedSignal obj) { this.Track(this.analyticEventFactory.InterstitialShowCompleted(0, obj.Placement)); }
 
-        #region Interstitial Ads Signal Handler
+#region Interstitial Ads Signal Handler
 
         private void InterstitialAdEligibleHandler(InterstitialAdEligibleSignal obj)
         {
@@ -229,20 +228,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Track(new CustomEvent { EventName = $"Inters_Eligible_{obj.Placement}" });
         }
 
-        private void InterstitialAdClickedHandler(InterstitialAdClickedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.InterstitialClick(obj.Placement));
-        }
+        private void InterstitialAdClickedHandler(InterstitialAdClickedSignal obj) { this.Track(this.analyticEventFactory.InterstitialClick(obj.Placement)); }
 
-        private void InterstitialAdLoadedHandler(InterstitialAdLoadedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.InterstitialDownloaded(obj.Placement, obj.LoadingMilis));
-        }
+        private void InterstitialAdLoadedHandler(InterstitialAdLoadedSignal obj) { this.Track(this.analyticEventFactory.InterstitialDownloaded(obj.Placement, obj.LoadingMilis)); }
 
-        private void InterstitialDownloadAdFailedHandler(InterstitialAdLoadFailedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.InterstitialDownloadFailed(obj.Placement, obj.Message, obj.LoadingMilis));
-        }
+        private void InterstitialDownloadAdFailedHandler(InterstitialAdLoadFailedSignal obj) { this.Track(this.analyticEventFactory.InterstitialDownloadFailed(obj.Placement, obj.Message, obj.LoadingMilis)); }
 
         protected virtual void InterstitialAdDisplayedHandler(InterstitialAdDisplayedSignal obj)
         {
@@ -252,10 +242,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Track(new CustomEvent { EventName = $"Inters_Display_{obj.Placement}" });
         }
 
-        private void InterstitialAdCalledHandler(InterstitialAdCalledSignal obj)
-        {
-            this.Track(this.analyticEventFactory.InterstitialCalled(obj.Placement));
-        }
+        private void InterstitialAdCalledHandler(InterstitialAdCalledSignal obj) { this.Track(this.analyticEventFactory.InterstitialCalled(obj.Placement)); }
 
         private void RewardedInterstitialAdDisplayedHandler(RewardedInterstitialAdCompletedSignal obj)
         {
@@ -264,28 +251,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Track(this.analyticEventFactory.RewardedInterstitialAdDisplayed(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
         }
 
-        #endregion
+#endregion
 
-        #region Banner ads Signal Handler
+#region Banner ads Signal Handler
 
-        private void BannerShowHandler(BannerAdLoadedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.BannerAdShow());
-        }
+        private void BannerShowHandler(BannerAdLoadedSignal obj) { this.Track(this.analyticEventFactory.BannerAdShow()); }
 
-        private void BannerLoadFailHandler(BannerAdLoadFailedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.BannerAdLoadFail(obj.Message));
-        }
+        private void BannerLoadFailHandler(BannerAdLoadFailedSignal obj) { this.Track(this.analyticEventFactory.BannerAdLoadFail(obj.Message)); }
 
-        private void BannerLoadHandler(BannerAdLoadedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.BannerAdLoad());
-        }
+        private void BannerLoadHandler(BannerAdLoadedSignal obj) { this.Track(this.analyticEventFactory.BannerAdLoad()); }
 
-        #endregion
+#endregion
 
-        #region Rewarded Ads Signal Handler
+#region Rewarded Ads Signal Handler
 
         private void RewardedAdEligibleHandler(RewardedAdEligibleSignal obj)
         {
@@ -293,30 +271,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Track(new CustomEvent { EventName = $"Reward_Eligible_{obj.Placement}" });
         }
 
-        private void RewardedAdShowFailedHandler(RewardedAdShowFailedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.RewardedVideoShowFail(obj.Placement, null));
-        }
+        private void RewardedAdShowFailedHandler(RewardedAdShowFailedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoShowFail(obj.Placement, null)); }
 
-        private void RewardedAdLoadFailedHandler(RewardedAdLoadFailedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.RewardedLoadFail(obj.Placement, obj.Message));
-        }
+        private void RewardedAdLoadFailedHandler(RewardedAdLoadFailedSignal obj) { this.Track(this.analyticEventFactory.RewardedLoadFail(obj.Placement, obj.Message)); }
 
-        private void RewardedAdOfferHandler(RewardedAdOfferSignal obj)
-        {
-            this.Track(this.analyticEventFactory.RewardedVideoOffer(obj.Placement));
-        }
+        private void RewardedAdOfferHandler(RewardedAdOfferSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoOffer(obj.Placement)); }
 
-        private void RewardedAdDownloadedHandler(RewardedAdLoadedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.RewardedVideoDownloaded(obj.Placement, obj.LoadingTime));
-        }
+        private void RewardedAdDownloadedHandler(RewardedAdLoadedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoDownloaded(obj.Placement, obj.LoadingTime)); }
 
-        private void RewardedAdClickedHandler(RewardedAdClickedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.RewardedVideoClick(obj.Placement));
-        }
+        private void RewardedAdClickedHandler(RewardedAdClickedSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoClick(obj.Placement)); }
 
         private void RewardedAdDisplayedHandler(RewardedAdDisplayedSignal obj)
         {
@@ -326,21 +289,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.Track(new CustomEvent { EventName = $"Reward_Display_{obj.Placement}" });
         }
 
-        private void RewardedAdCalledHandler(RewardedAdCalledSignal obj)
-        {
-            this.Track(this.analyticEventFactory.RewardedVideoCalled(obj.Placement));
-        }
+        private void RewardedAdCalledHandler(RewardedAdCalledSignal obj) { this.Track(this.analyticEventFactory.RewardedVideoCalled(obj.Placement)); }
 
-        #endregion
+#endregion
 
-        private void PopupShowedHandler(PopupShowedSignal obj)
-        {
-        }
+        private void PopupShowedHandler(PopupShowedSignal obj) { }
 
-        private void LevelSkippedHandler(LevelSkippedSignal obj)
-        {
-            this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time));
-        }
+        private void LevelSkippedHandler(LevelSkippedSignal obj) { this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time)); }
 
         protected virtual void LevelEndedHandler(LevelEndedSignal obj)
         {
@@ -349,9 +304,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticServices.UserProperties[this.analyticEventFactory.LevelMaxProperty] = this.uiTemplateLevelDataController.MaxLevel;
 
             this.Track(obj.IsWin
-                ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time, levelData.WinCount)
-                : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount)
-            );
+                           ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time, levelData.WinCount)
+                           : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount)
+                      );
 
             if (obj.IsWin && levelData.WinCount == 1)
             {
@@ -362,6 +317,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 case 1:
                     this.Track(new CompleteLevel1());
+
                     break;
                 case 5:
                     this.Track(new CompleteLevel5());
@@ -369,6 +325,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                     {
                         this.Track(new WinLevel5());
                     }
+
                     break;
                 case 10:
                     this.Track(new CompleteLevel10());
@@ -376,14 +333,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                     {
                         this.Track(new WinLevel10());
                     }
+
                     break;
             }
         }
 
-        private void TutorialCompletionHandler(TutorialCompletionSignal obj)
-        {
-            this.Track(this.analyticEventFactory.TutorialCompletion(obj.Success, obj.TutorialId));
-        }
+        private void TutorialCompletionHandler(TutorialCompletionSignal obj) { this.Track(this.analyticEventFactory.TutorialCompletion(obj.Success, obj.TutorialId)); }
 
         private void LevelStartedHandler(LevelStartedSignal obj)
         {
@@ -392,14 +347,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
             if (obj.Level > 50) return;
             this.Track(new CustomEvent()
-            {
-                EventName = $"play_level_{obj.Level}",
-            });
+                       {
+                           EventName = $"play_level_{obj.Level}",
+                       });
         }
 
         private void UpdateCurrencyHandler(OnUpdateCurrencySignal obj)
         {
-            var level         = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
+            var level = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
             if (obj.Amount > 0)
             {
                 this.Track(this.analyticEventFactory.EarnVirtualCurrency(obj.Id, obj.Amount, obj.Source, level));
@@ -418,9 +373,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void ScreenShowHandler(ScreenShowSignal obj)
         {
             this.Track(new CustomEvent()
-            {
-                EventName = $"Enter{obj.ScreenPresenter.GetType().Name.Replace("Screen", "").Replace("Popup", "").Replace("Presenter", "")}",
-            });
+                       {
+                           EventName = $"Enter{obj.ScreenPresenter.GetType().Name.Replace("Screen", "").Replace("Popup", "").Replace("Presenter", "")}",
+                       });
         }
 
         private void TotalDaysPlayedChange()
@@ -432,20 +387,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         private void OnIAPPurchaseSuccess(OnIAPPurchaseSuccessSignal signal)
         {
             this.analyticServices.Track(new IapTransactionDidSucceed
-            {
-                OfferSku     = signal.Product.Id,
-                CurrencyCode = signal.Product.CurrencyCode,
-                Price        = decimal.ToDouble(signal.Product.Price),
-            });
+                                        {
+                                            OfferSku     = signal.Product.Id,
+                                            CurrencyCode = signal.Product.CurrencyCode,
+                                            Price        = decimal.ToDouble(signal.Product.Price),
+                                        });
         }
 
         private void OnIAPPurchaseFailed(OnIAPPurchaseFailedSignal signal)
         {
             this.analyticServices.Track(new IapTransactionDidFail
-            {
-                OfferSku     = signal.ProductId,
-                ErrorMessage = signal.Error,
-            });
+                                        {
+                                            OfferSku     = signal.ProductId,
+                                            ErrorMessage = signal.Error,
+                                        });
         }
 
         public void Dispose()

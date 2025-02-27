@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
     {
         protected override void AddRevenueHandler(AdRevenueSignal obj)
         {
+            base.AddRevenueHandler(obj);
             this.analyticServices.Track(new CustomEvent
             {
                 EventName = "ad_revenue_sdk",
@@ -34,7 +35,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
 
         #region Inject
 
-        private readonly UITemplateAdsController uiTemplateAdsController;
 
         [Preserve]
         public TheOneAnalyticHandler(
@@ -47,9 +47,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
             UITemplateAdsController             uiTemplateAdsController,
             UITemplateGameSessionDataController uITemplateGameSessionDataController,
             IScreenManager                      screenManager
-        ) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController, screenManager)
+        ) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController, screenManager, uiTemplateAdsController)
         {
-            this.uiTemplateAdsController = uiTemplateAdsController;
         }
 
         #endregion

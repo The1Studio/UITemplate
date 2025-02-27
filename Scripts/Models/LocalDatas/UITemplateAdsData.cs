@@ -1,6 +1,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.Models
 {
     using System;
+    using System.Collections.Generic;
     using GameFoundation.Scripts.Interfaces;
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -10,13 +11,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     [Preserve]
     public class UITemplateAdsData : ILocalData, IUITemplateLocalData
     {
-        [OdinSerialize] public int WatchedInterstitialAds { get; set; }
+        [OdinSerialize] public int          WatchedInterstitialAds         { get; set; }
+        [OdinSerialize] public int          WatchedRewardedAds             { get; set; }
+        [OdinSerialize] public List<double> InterstitialAndRewardedRevenue { get; set; } = new();
 
-        [OdinSerialize] public int WatchedRewardedAds { get; set; }
-
-        public void Init()
-        {
-        }
+        public void Init() { }
 
         public Type ControllerType => typeof(UITemplateAdsController);
     }

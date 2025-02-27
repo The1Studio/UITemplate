@@ -35,9 +35,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
             UITemplateGameSessionDataController uITemplateGameSessionDataController,
             IScreenManager screenManager,
             UITemplateLevelDataController levelDataController,
+            UITemplateAdsController adsController,
             UITemplateShopPackBlueprint shopPackBlueprint) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController,
             uITemplateInventoryDataController, uiTemplateDailyRewardController,
-            uITemplateGameSessionDataController, screenManager)
+            uITemplateGameSessionDataController, screenManager, adsController)
         {
             this.levelDataController = levelDataController;
             this.shopPackBlueprint   = shopPackBlueprint;

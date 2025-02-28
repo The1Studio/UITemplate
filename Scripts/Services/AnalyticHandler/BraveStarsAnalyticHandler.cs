@@ -49,10 +49,20 @@
             UITemplateLevelDataController       uiTemplateLevelDataController,
             UITemplateInventoryDataController   uITemplateInventoryDataController,
             UITemplateDailyRewardController     uiTemplateDailyRewardController,
-            UITemplateAdsController             uiTemplateAdsController,
             UITemplateGameSessionDataController uITemplateGameSessionDataController,
-            IScreenManager                      screenManager
-        ) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController, screenManager)
+            IScreenManager                      screenManager,
+            UITemplateAdsController             uiTemplateAdsController
+        ) : base(
+            signalBus,
+            analyticServices,
+            analyticEventFactory,
+            uiTemplateLevelDataController,
+            uITemplateInventoryDataController,
+            uiTemplateDailyRewardController,
+            uITemplateGameSessionDataController,
+            screenManager,
+            uiTemplateAdsController
+        )
         {
             this.uiTemplateAdsController = uiTemplateAdsController;
         }

@@ -144,25 +144,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 case AdFormatConstants.Rewarded:
                 case AdFormatConstants.Interstitial:
                     this.uiTemplateAdsController.CountAdsImpression(obj.AdsRevenueEvent.Revenue);
-
+                    foreach (var sumAmount in SumAdsEventList)
+                    {
+                        if (this.uiTemplateAdsController.TryGetCircleSumInterstitialAndRewardedAdsRevenue(sumAmount, out var sum))
+                        {
+                            this.Track(new CustomEvent()
+                            {
+                                EventName = $"ad_engagement_value_{sumAmount}",
+                                EventProperties = new()
+                                {
+                                    { "revenue", sum },
+                                    { "value", sum },
+                                },
+                            });
+                        }
+                    }
                     break;
             }
 
-            foreach (var sumAmount in SumAdsEventList)
-            {
-                if (this.uiTemplateAdsController.TryGetCircleSumInterstitialAndRewardedAdsRevenue(sumAmount, out var sum))
-                {
-                    this.Track(new CustomEvent()
-                               {
-                                   EventName = $"ad_engagement_value_{sumAmount}",
-                                   EventProperties = new()
-                                                     {
-                                                         { "revenue", sum },
-                                                         { "value", sum },
-                                                     },
-                               });
-                }
-            }
+            
 
             #if WIDO
             var paramDic = new Dictionary<string, object>()

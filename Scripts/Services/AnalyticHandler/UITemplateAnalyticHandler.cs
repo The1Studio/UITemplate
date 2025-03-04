@@ -149,20 +149,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                         if (this.uiTemplateAdsController.TryGetCircleSumInterstitialAndRewardedAdsRevenue(sumAmount, out var sum))
                         {
                             this.Track(new CustomEvent()
-                            {
-                                EventName = $"ad_engagement_value_{sumAmount}",
-                                EventProperties = new()
-                                {
-                                    { "revenue", sum },
-                                    { "value", sum },
-                                },
-                            });
+                                       {
+                                           EventName = $"ad_engagement_value_{sumAmount}",
+                                           EventProperties = new()
+                                                             {
+                                                                 { "currency", obj.AdsRevenueEvent.Currency },
+                                                                 { "revenue", sum },
+                                                                 { "value", sum },
+                                                             },
+                                       });
+
+                            this.Track(new CustomEvent()
+                                       {
+                                           EventName = $"ad_impression_{sumAmount}",
+                                           EventProperties = new()
+                                                             {
+                                                                 { "currency", obj.AdsRevenueEvent.Currency },
+                                                                 { "revenue", sum },
+                                                                 { "value", sum },
+                                                             },
+                                       });
                         }
                     }
+
                     break;
             }
-
-            
 
             #if WIDO
             var paramDic = new Dictionary<string, object>()

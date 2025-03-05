@@ -68,7 +68,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" },
             #endif
             #if BYTEBREW
-            { "com.bytebrew.unitysdk", "https://github.com/The1Studio/ByteBrewUnitySDK.git?path=UPMPackage#" },
+            { "com.bytebrew.unitysdk", "https://github.com/ByteBrewIO/ByteBrewUnitySDK.git?path=UPMPackage#" },
             #endif
             #if UNITY_6000_0_OR_NEWER
             { "com.unity.addressables.android", "1.0.4" },

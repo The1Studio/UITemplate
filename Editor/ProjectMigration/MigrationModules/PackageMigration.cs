@@ -61,7 +61,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
-            { "com.google.external-dependency-manager", "1.2.183" },
+            { "com.google.external-dependency-manager", "1.2.185" },
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
             //need to use this method because of the purchase connector, if we can import the purchase connector through UPM then we can change it
             #if APPSFLYER
@@ -71,7 +71,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.bytebrew.unitysdk", "https://github.com/ByteBrewIO/ByteBrewUnitySDK.git?path=UPMPackage#" },
             #endif
             #if UNITY_6000_0_OR_NEWER
-            { "com.unity.addressables.android", "1.0.4" },
+            { "com.unity.addressables.android", "1.0.6" },
             #endif
             // add more packages as needed
         };
@@ -80,7 +80,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         [NonSerialized]
         private static readonly Dictionary<string, string> PackagesVersionToUse = new()
         {
-            { "com.google.ads.mobile", "9.5.0" },
+            { "com.google.ads.mobile", "9.6.0" },
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
             { "jp.hadashikick.vcontainer", "1.16.8" },

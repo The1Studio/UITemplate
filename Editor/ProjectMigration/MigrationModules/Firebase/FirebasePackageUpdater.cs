@@ -21,15 +21,15 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules.Firebase
         [NonSerialized]
         private static readonly Dictionary<string, string> RequirePackages = new()
         {
-            { "com.google.firebase.analytics", "12.5.0" },
-            { "com.google.firebase.app", "12.5.0" },
-            { "com.google.firebase.crashlytics", "12.5.0" },
-            { "com.google.firebase.messaging", "12.5.0" },
-            { "com.google.firebase.remote-config", "12.5.0" },
-            { "com.google.play.core", "1.8.4" },
-            { "com.google.play.common", "1.9.1" },
+            { "com.google.firebase.analytics", "12.7.0" },
+            { "com.google.firebase.app", "12.7.0" },
+            { "com.google.firebase.crashlytics", "12.7.0" },
+            { "com.google.firebase.messaging", "12.7.0" },
+            { "com.google.firebase.remote-config", "12.7.0" },
+            { "com.google.play.core", "1.8.5" },
+            { "com.google.play.common", "1.9.2" },
             { "com.google.android.appbundle", "1.9.0" },
-            { "com.google.play.review", "1.8.2" },
+            { "com.google.play.review", "1.8.3" },
         };
 
         static FirebasePackagesUpdater()

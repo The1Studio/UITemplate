@@ -10,7 +10,6 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
     using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
@@ -64,27 +63,11 @@
 
         #region Register Objects
 
-        [Obsolete("Use RegisterEnableOnAndAfterFTUEObjectToStepId instead")]
-        public void RegisterEnableObjectToStepId(GameObject gameObject, string stepId)
-        {
-            var objectSet = this.StepIdToEnableOnAndAfterFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
-            objectSet.Add(gameObject);
-            gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId) || this.IsFTUEActiveAble(stepId));
-        }
-
         public void RegisterEnableOnAndAfterFTUEObjectToStepId(GameObject gameObject, string stepId)
         {
             var objectSet = this.StepIdToEnableOnAndAfterFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             objectSet.Add(gameObject);
-            gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId) || this.IsFTUEActiveAble(stepId));
-        }
-
-        [Obsolete("Use RegisterOnlyShowOnFTUEObjectToStepId instead")]
-        public void RegisterDisableObjectToStepId(GameObject gameObject, string stepId)
-        {
-            gameObject.SetActive(false);
-            var objectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
-            objectSet.Add(gameObject);
+            gameObject.SetActive(this.IsOnFTUE(stepId) || this.IsAfterFTUE(stepId));
         }
 
         public void RegisterShowOnFTUEObjectToStepId(GameObject gameObject, string stepId)
@@ -96,7 +79,7 @@
 
         public void RegisterShowBeforeFTUEObjectToStepId(GameObject gameObject, string stepId)
         {
-            gameObject.SetActive(!(this.uiTemplateFtueDataController.IsFinishedStep(stepId) || this.IsFTUEActiveAble(stepId)));
+            gameObject.SetActive(this.IsBeforeFTUE(stepId));
             var objectSet = this.StepIdToShowBeforeFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
             objectSet.Add(gameObject);
         }
@@ -113,21 +96,20 @@
             if (stepId.IsNullOrEmpty()) return;
             if (this.uiTemplateFtueController.ThereIsFTUEActive()) return;
 
-            var enableObjectSet = this.StepIdToEnableOnAndAfterFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
-            if (!this.IsFTUEActiveAble(stepId))
+            var onAndAfterObjectSet = this.StepIdToEnableOnAndAfterFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            var beforeObjectSet     = this.StepIdToShowBeforeFTUEGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
+            var onObjectSet         = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
+            if (!this.CanTriggerFTUE(stepId))
             {
-                foreach (var gameObject in enableObjectSet) gameObject.SetActive(this.uiTemplateFtueDataController.IsFinishedStep(stepId));
-
+                foreach (var gameObject in onAndAfterObjectSet) gameObject.SetActive(this.IsOnFTUE(stepId) || this.IsAfterFTUE(stepId));
+                foreach (var gameObject in beforeObjectSet) gameObject.SetActive(this.IsBeforeFTUE(stepId));
+                foreach (var gameObject in onObjectSet) gameObject.SetActive(this.IsOnFTUE(stepId));
                 return;
             }
 
-            foreach (var gameObject in enableObjectSet) gameObject.SetActive(true);
-
-            var disableObjectSet = this.StepIdToShowBeforeFTUEGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
-            foreach (var gameObject in disableObjectSet) gameObject.SetActive(false);
-
-            disableObjectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(stepId, () => new HashSet<GameObject>());
-            foreach (var disableObject in disableObjectSet) disableObject.SetActive(true);
+            foreach (var gameObject in onAndAfterObjectSet) gameObject.SetActive(true);
+            foreach (var gameObject in beforeObjectSet) gameObject.SetActive(false);
+            foreach (var gameObject in onObjectSet) gameObject.SetActive(true);
 
             var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
             if (record.ShowUnlockPopup)
@@ -183,21 +165,43 @@
 
         #region Ultilities
 
-        public bool IsFTUEActiveAble(string stepId)
+        private bool CanTriggerFTUE(string stepId)
         {
-            if (this.uiTemplateFtueDataController.IsFinishedStep(stepId)) return false;
+            return !this.IsFTUECompleted(stepId)
+                && this.CanTrigger(stepId)
+                && this.uiTemplateFtueBlueprint.GetDataById(stepId).RequireTriggerComplete.All(this.IsFTUECompleted);
+        }
 
-            var record = this.uiTemplateFtueBlueprint.GetDataById(stepId);
+        private bool IsBeforeFTUE(string stepId)
+        {
+            return !this.IsFTUECompleted(stepId) && !this.IsFTUEPassed(stepId);
+        }
 
-            if (record.RequireTriggerComplete.Any(stepId => !this.uiTemplateFtueDataController.IsFinishedStep(stepId))) return false;
+        private bool IsOnFTUE(string stepId)
+        {
+            return this.CanTriggerFTUE(stepId);
+        }
 
-            var requireConditions = record.GetRequireCondition();
+        private bool IsAfterFTUE(string stepId)
+        {
+            return this.IsFTUECompleted(stepId) || this.IsFTUEPassed(stepId);
+        }
 
-            if (requireConditions != null && !requireConditions.All(requireCondition => this.IDToFtueConditions[requireCondition.RequireId].IsPassedCondition(requireCondition.ConditionDetail)))
-                return
-                    false;
+        private bool IsFTUEPassed(string stepId)
+        {
+            var requireConditions = this.uiTemplateFtueBlueprint.GetDataById(stepId).GetRequireCondition();
+            return requireConditions == null || requireConditions.All(requireCondition => this.IDToFtueConditions[requireCondition.RequireId].IsPassedCondition(requireCondition.ConditionDetail));
+        }
 
-            return true;
+        private bool CanTrigger(string stepId)
+        {
+            var requireConditions = this.uiTemplateFtueBlueprint.GetDataById(stepId).GetRequireCondition();
+            return requireConditions == null || requireConditions.All(requireCondition => this.IDToFtueConditions[requireCondition.RequireId].CanTrigger(requireCondition.ConditionDetail));
+        }
+
+        private bool IsFTUECompleted(string stepId)
+        {
+            return this.uiTemplateFtueDataController.IsFinishedStep(stepId);
         }
 
         public string GetTooltipText(string stepId)
@@ -229,7 +233,7 @@
             foreach (var stepBlueprintRecord in this.uiTemplateFtueBlueprint.Values)
             {
                 if (!currentScreen.Equals(stepBlueprintRecord.ScreenLocation)) continue;
-                if (!this.IsFTUEActiveAble(stepBlueprintRecord.Id)) continue;
+                if (!this.CanTriggerFTUE(stepBlueprintRecord.Id)) continue;
 
                 return true;
             }

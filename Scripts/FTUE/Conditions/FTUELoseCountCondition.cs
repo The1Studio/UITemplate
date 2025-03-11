@@ -30,19 +30,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
             this.uiTemplateLevelDataController = uiTemplateLevelDataController;
         }
 
-        protected override string GetTooltipText(FTUELoseCountModel data)
-        {
-            return "";
-        }
+        protected override string GetTooltipText(FTUELoseCountModel data) => "";
 
-        protected override bool IsPassedCondition(FTUELoseCountModel data)
-        {
-            return this.uiTemplateLevelDataController.TotalLose == data.Count;
-        }
+        protected override bool IsPassedCondition(FTUELoseCountModel data) => this.uiTemplateLevelDataController.TotalLose == data.Count;
 
-        protected override string GetShortConditionText(FTUELoseCountModel data)
-        {
-            return $"{data.Count}";
-        }
+        protected override string GetShortConditionText(FTUELoseCountModel data) => $"{data.Count}";
     }
 }

@@ -21,8 +21,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
         }
 
-        protected override void RegisterNotification() { }
-
         protected override async void CheckOpenedByNotification()
         {
             await UniTask.DelayFrame(1); // await 1 frame are required to get the last notification intent
@@ -32,7 +30,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                 this.TrackEventClick(new NotificationContent(intent.Title, intent.Body));
         }
 
-        public override void CancelNotification() { iOSNotificationCenter.RemoveAllScheduledNotifications(); }
+        public override void CancelNotification()
+        {
+            iOSNotificationCenter.RemoveAllScheduledNotifications();
+            iOSNotificationCenter.ApplicationBadge = 0;
+        }
 
         public override void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
         {
@@ -40,7 +42,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 Title = title,
                 Body = body,
-                Trigger = new iOSNotificationTimeIntervalTrigger() { TimeInterval = delayTime }
+                Trigger = new iOSNotificationTimeIntervalTrigger() { TimeInterval = delayTime },
+                Badge = 1,
             };
             iOSNotificationCenter.ScheduleNotification(notification);
         }

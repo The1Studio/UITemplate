@@ -14,8 +14,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             var doc                 = new XmlDocument();
             doc.Load(androidManifestPath);
             
-            AdServicePropertyMigration(doc);
-            
+            // AdServicePropertyMigration(doc);
             FirebaseMessagingMigration(doc);
 
             //save manifest

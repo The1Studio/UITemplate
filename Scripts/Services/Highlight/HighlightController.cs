@@ -16,19 +16,21 @@
     using R3.Triggers;
     using UnityEngine;
     using UnityEngine.UI;
+    using Object = UnityEngine.Object;
 
     public class HighlightController : MonoBehaviour
     {
         // if the first element in path is "RootUICanvas", the highlight object will be searched in the RootUICanvas, otherwise it will be searched in the current screen
         // Example : "RootUICanvas|HighlightObject" or "ScreenName|HighlightObject" or HighlightObject
         private const string ROOT_UI_LOCATION = "RootUICanvas";
+        private const string ALL              = "ALL";
 
         public Button        btnCompleteStep;
         public HighlightHand highlightHand;
 
         private CompositeDisposable disposables = new();
 
-        #region Zenject
+        #region Inject
 
         private IScreenManager screenManager;
         private SignalBus      signalBus;
@@ -78,9 +80,10 @@
 
         #region Highlight
 
-        private List<Transform> highlightObjects = new();
+        private          List<Transform>     highlightObjects = new();
+        private readonly IReadOnlyList<Type> screenPresenters = ReflectionUtils.GetAllDerivedTypes<IScreenPresenter>().ToList();
 
-        public async UniTask SetHighlight(string highlightPath, bool clickable = false, Action onButtonDown = null)
+        public async UniTask SetHighlight(string highlightPath, bool canClickOutside = false, Action onButtonDown = null)
         {
             this.ClearHighlightObject();
             await this.GetHighlightObject(highlightPath);
@@ -95,7 +98,7 @@
             this.btnCompleteStep.onClick.RemoveAllListeners();
 
             this.disposables = new();
-            this.HandleButtonClick(clickable, onButtonDown);
+            this.HandleButtonClick(canClickOutside, onButtonDown);
 
             var containHighlightObject = this.highlightObjects[0];
             foreach (var obj in this.highlightObjects)
@@ -127,49 +130,34 @@
 
         private async UniTask GetHighlightObject(string highlightPath)
         {
-            const int maxLoop = 100;
-            var       count   = 0;
-            while (this.highlightObjects.Count == 0)
+            List<HighlightElement> highlightElements;
+            var                    objNames = highlightPath.Split('|').ToList();
+            if (objNames.Count == 0) return;
+            switch (objNames[0])
             {
-                count++;
-                var tfs      = new List<Transform>();
-                var objNames = highlightPath.Split('|').ToList();
-                if (objNames.Count == 0) return;
-                switch (objNames[0])
-                {
-                    case ROOT_UI_LOCATION: tfs = this.screenManager.RootUICanvas.GetComponentsInChildren<HighlightElement>().Select(ele => ele.transform).ToList(); break;
-                    default:
-                        var screens = ReflectionUtils.GetAllDerivedTypes<IScreenPresenter>();
-                        try
-                        {
-                            var screenType = screens.First(screen => screen.Name == objNames[0]);
-                            if (screenType != null)
-                                tfs = (this.GetCurrentContainer().Resolve(screenType) as IScreenPresenter)?.CurrentTransform
-                                    .GetComponentsInChildren<HighlightElement>().Select(ele => ele.transform).ToList();
-                        }
-                        catch
-                        {
-                            objNames.Add(objNames[0]);
-                            tfs = this.screenManager.CurrentActiveScreen.Value.CurrentTransform.GetComponentsInChildren<HighlightElement>()
-                                .Select(ele => ele.transform).ToList();
-                        }
-                        break;
-                }
-                for (var i = 1; i < objNames.Count; i++)
-                {
-                    var tf = tfs.FirstOrDefault(obj => obj.name == objNames[i]);
-                    if (tf != null) this.highlightObjects.Add(tf);
-                }
-                if (count >= maxLoop)
-                {
-                    Debug.LogError("Highlight object not found");
+                case ROOT_UI_LOCATION: highlightElements = this.screenManager.RootUICanvas.GetComponentsInChildren<HighlightElement>().ToList(); break;
+                case ALL:              highlightElements = Object.FindObjectsByType<HighlightElement>(FindObjectsSortMode.None).ToList(); break;
+                default:
+                    var screenType = this.screenPresenters.FirstOrDefault(screen => screen.Name == objNames[0]);
+                    if (screenType != null && this.GetCurrentContainer().Resolve(screenType) is IScreenPresenter screenPresenter)
+                    {
+                        highlightElements = screenPresenter.CurrentTransform.GetComponentsInChildren<HighlightElement>().ToList();
+                    }
+                    else
+                    {
+                        objNames.Add(objNames[0]);
+                        highlightElements = this.screenManager.CurrentActiveScreen.Value.CurrentTransform.GetComponentsInChildren<HighlightElement>().ToList();
+                    }
                     break;
-                }
-                if (this.highlightObjects.Count == 0) await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+            }
+            for (var i = 1; i < objNames.Count; i++)
+            {
+                var tf = highlightElements.FirstOrDefault(obj => obj.name == objNames[i]);
+                if (tf) this.highlightObjects.Add(tf.transform);
             }
         }
 
-        private void HandleButtonClick(bool clickable, Action onButtonDown)
+        private void HandleButtonClick(bool canClickOutside, Action onButtonDown)
         {
             foreach (var highlightObject in this.highlightObjects)
             {
@@ -185,8 +173,8 @@
                     }));
                 }
             }
-            this.btnCompleteStep.gameObject.SetActive(clickable);
-            if (clickable)
+            this.btnCompleteStep.gameObject.SetActive(canClickOutside);
+            if (canClickOutside)
                 this.btnCompleteStep.onClick.AddListener(() =>
                 {
                     this.OnButtonClick();

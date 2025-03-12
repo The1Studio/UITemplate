@@ -4,6 +4,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Core.AnalyticServices;
     using Cysharp.Threading.Tasks;
     using Newtonsoft.Json.Linq;
     using ServiceImplementation.Configs.Common;
@@ -65,10 +66,10 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
             //need to use this method because of the purchase connector, if we can import the purchase connector through UPM then we can change it
             #if APPSFLYER
-            { "com.theone.appsflyer-unity-plugin", "https://github.com/The1Studio/appsflyer.git?path=Assets/AppsFlyer#appsflyer_sdk-purchase_sdk" },
+            { "com.theone.appsflyer-unity-plugin", AnalyticConfig.AppsflyerPackageGitURL },
             #endif
             #if BYTEBREW
-            { "com.bytebrew.unitysdk", "https://github.com/ByteBrewIO/ByteBrewUnitySDK.git?path=UPMPackage#" },
+            { "com.bytebrew.unitysdk", AnalyticConfig.ByteBrewPackageGitURL },
             #endif
             #if UNITY_6000_0_OR_NEWER
             { "com.unity.addressables.android", "1.0.6" },

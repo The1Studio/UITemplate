@@ -9,7 +9,8 @@
     "UniTask",
     "GameFoundation.DI",
     "MaxSdk.Scripts.IntegrationManager.Editor",
-    "MaxSdk.Scripts"
+    "MaxSdk.Scripts",
+    "3rdCore.Analytic"
   ],
   "includePlatforms": [
     "Editor"

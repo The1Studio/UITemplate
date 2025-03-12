@@ -36,19 +36,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 
         public override string Id => "enough_currency";
 
-        protected override string GetTooltipText(FTUEEnoughCurrencyConditionModel data)
-        {
-            return $"Not enough currency";
-        }
+        protected override string GetTooltipText(FTUEEnoughCurrencyConditionModel data) => $"Not enough currency";
 
-        protected override bool IsPassedCondition(FTUEEnoughCurrencyConditionModel data)
-        {
-            return this.uiTemplateFtueHelper.CompareIntWithCondition(this.uiTemplateInventoryDataController.GetCurrencyValue(data.Id), data.Value, data.Condition);
-        }
+        protected override bool IsPassedCondition(FTUEEnoughCurrencyConditionModel data) => this.uiTemplateFtueHelper.CompareIntWithCondition(this.uiTemplateInventoryDataController.GetCurrencyValue(data.Id), data.Value, data.Condition);
 
-        protected override string GetShortConditionText(FTUEEnoughCurrencyConditionModel data)
-        {
-            return $"{data.Id} {data.Condition} {data.Value}";
-        }
+        protected override string GetShortConditionText(FTUEEnoughCurrencyConditionModel data) => $"{data.Id} {data.Condition} {data.Value}";
     }
 }

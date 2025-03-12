@@ -30,19 +30,10 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE.Conditions
 
         public override string Id => "passed_level";
 
-        protected override string GetTooltipText(FTUEPassedLevelConditionModel data)
-        {
-            return $"You need to pass level {data.Level}";
-        }
+        protected override string GetTooltipText(FTUEPassedLevelConditionModel data) => $"You need to pass level {data.Level}";
 
-        protected override bool IsPassedCondition(FTUEPassedLevelConditionModel data)
-        {
-            return this.uiTemplateLevelDataController.MaxLevel >= data.Level;
-        }
+        protected override bool IsPassedCondition(FTUEPassedLevelConditionModel data) => this.uiTemplateLevelDataController.MaxLevel >= data.Level;
 
-        protected override string GetShortConditionText(FTUEPassedLevelConditionModel data)
-        {
-            return $"Pass Level {data.Level}";
-        }
+        protected override string GetShortConditionText(FTUEPassedLevelConditionModel data) => $"Pass Level {data.Level}";
     }
 }

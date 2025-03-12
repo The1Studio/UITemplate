@@ -21,7 +21,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
         }
 
-        protected override void RegisterNotification() { }
+        protected override void RegisterNotification()
+        {
+            iOSNotificationCenter.ApplicationBadge = 0;
+        }
 
         protected override async void CheckOpenedByNotification()
         {
@@ -40,7 +43,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 Title = title,
                 Body = body,
-                Trigger = new iOSNotificationTimeIntervalTrigger() { TimeInterval = delayTime }
+                Trigger = new iOSNotificationTimeIntervalTrigger() { TimeInterval = delayTime },
+                Badge = 1,
             };
             iOSNotificationCenter.ScheduleNotification(notification);
         }

@@ -219,6 +219,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             ).ContinueWith(() =>
             {
                 this.IsRefreshingCollapsible = true;
+                this.HideBannerAd();
                 this.ShowBannerAd();
             }).Forget();
         }

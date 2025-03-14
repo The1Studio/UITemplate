@@ -232,7 +232,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 cancellationToken: (this.AutoDismissCts = new()).Token
             ).ContinueWith(() =>
             {
-                this.HideBannerAd();
+                this.signalBus.Fire(new CollapsibleBannerAdDismissedSignal(AdFormatConstants.CollapsibleBanner));
                 this.ScheduleRefreshCollapsible();
             }).Forget();
         }

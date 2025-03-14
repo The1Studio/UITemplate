@@ -212,7 +212,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private void OnCollapsibleBannerDismissed(CollapsibleBannerAdDismissedSignal signal)
         {
             Debug.LogError("vubc call");
-            if (signal.Placement != AdFormatConstants.CollapsibleBanner) return;
             this.IsUserDismissedCollapsible = true;
             Debug.LogError($"vubc call:{this.IsUserDismissedCollapsible }");
         }

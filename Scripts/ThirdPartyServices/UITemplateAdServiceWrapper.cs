@@ -72,7 +72,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool                    PreviousCollapsibleBannerAdLoadedFail { get; set; }
         private bool                    IsRefreshingCollapsible               { get; set; }
         private CancellationTokenSource RefreshCollapsibleCts                 { get; set; }
-        private bool                    IsUserDismissedCollapsible            { get; set; }
+        private CancellationTokenSource AutoDismissCts                        { get; set; }
 
         //AOA
         private DateTime StartLoadingAOATime          { get; set; }
@@ -129,6 +129,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnApplicationPauseHandler);
             this.signalBus.Subscribe<CollapsibleBannerAdLoadFailedSignal>(this.OnCollapsibleBannerLoadFailed);
             this.signalBus.Subscribe<CollapsibleBannerAdDismissedSignal>(this.OnCollapsibleBannerDismissed);
+            this.signalBus.Subscribe<CollapsibleBannerAdPresentedSignal>(this.OnCollapsibleBannerPresented);
 
             //AOA
             this.StartLoadingAOATime = DateTime.Now;
@@ -171,8 +172,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (this.IsRemovedAds) return;
 
-            this.IsShowBannerAd             = true;
-            this.IsUserDismissedCollapsible = false;
+            this.IsShowBannerAd = true;
 
             await UniTask.WaitUntil(() => this.bannerAdService.IsAdsInitialized());
 
@@ -206,15 +206,39 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
+        private void OnCollapsibleBannerPresented(CollapsibleBannerAdPresentedSignal signal)
+        {
+            Debug.Log("onelog: Collapsible Banner Presented -> Start auto-dismiss timer.");
+            this.StartAutoDismissTimer();
+        }
+
         private void OnCollapsibleBannerDismissed(CollapsibleBannerAdDismissedSignal signal)
         {
-            this.IsUserDismissedCollapsible = true;
+            this.AutoDismissCts?.Cancel();
+            this.AutoDismissCts?.Dispose();
+            this.AutoDismissCts = null;
             this.ScheduleRefreshCollapsible();
+        }
+
+        private void StartAutoDismissTimer()
+        {
+            this.AutoDismissCts?.Cancel();
+            this.AutoDismissCts?.Dispose();
+            this.AutoDismissCts = null;
+            if (this.adServicesConfig.CollapsibleBannerAutoDismissTime < 0) return;
+            UniTask.WaitForSeconds(
+                this.adServicesConfig.CollapsibleBannerAutoDismissTime,
+                true,
+                cancellationToken: (this.AutoDismissCts = new()).Token
+            ).ContinueWith(() =>
+            {
+                this.HideBannerAd();
+                this.ScheduleRefreshCollapsible();
+            }).Forget();
         }
 
         private void ScheduleRefreshCollapsible()
         {
-            if (!this.IsUserDismissedCollapsible) return;
             this.RefreshCollapsibleCts?.Cancel();
             this.RefreshCollapsibleCts?.Dispose();
             this.RefreshCollapsibleCts = null;

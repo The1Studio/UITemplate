@@ -11,7 +11,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
@@ -159,8 +158,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
         }
 
-       
-
         private void OnOpenAOA(AppOpenFullScreenContentOpenedSignal obj)
         {
             this.IsResumedFromAnotherServices = true;
@@ -208,30 +205,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(true));
             }
         }
+
         private void OnCollapsibleBannerDismissed(CollapsibleBannerAdDismissedSignal signal)
         {
-            Debug.LogError("vubc call");
             this.IsUserDismissedCollapsible = true;
             this.ScheduleRefreshCollapsible();
-            Debug.LogError($"vubc call:{this.IsUserDismissedCollapsible }");
         }
+
         private void ScheduleRefreshCollapsible()
         {
-            if(!this.IsUserDismissedCollapsible)return;
+            if (!this.IsUserDismissedCollapsible) return;
             this.RefreshCollapsibleCts?.Cancel();
             this.RefreshCollapsibleCts?.Dispose();
             this.RefreshCollapsibleCts = null;
             if (this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval <= 0) return;
             if (!this.adServicesConfig.CollapsibleBannerAutoRefreshEnabled) return;
-            float waitTime = this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval;
-            Debug.LogError($"[vubc] Start waiting to refresh Collapsible Banner at: {DateTime.Now:HH:mm:ss}, waiting for {waitTime} seconds...");
             UniTask.WaitForSeconds(
                 this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval,
                 true,
                 cancellationToken: (this.RefreshCollapsibleCts = new()).Token
             ).ContinueWith(() =>
             {
-                Debug.LogError($"[vubc] Finished waiting at: {DateTime.Now:HH:mm:ss}, refreshing banner now.");
                 this.IsRefreshingCollapsible = true;
                 this.HideBannerAd();
                 this.ShowBannerAd();
@@ -446,8 +440,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             return this.adServices.Any(adService => adService.IsInterstitialAdReady(place));
         }
 
-        private int FirstInterstitialAdsDelayTime =>
-            this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
+        private int FirstInterstitialAdsDelayTime => this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
 
         private bool IsInterstitialAdEnable(string placement)
         {

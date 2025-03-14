@@ -196,7 +196,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                     this.collapsibleBannerAd.ShowCollapsibleBannerAd(useNewGuid, this.thirdPartiesConfig.AdSettings.BannerPosition);
                     this.logService.Log($"onelog: ShowCollapsibleBannerAd refreshing: {this.IsRefreshingCollapsible}, expandOnRefresh: {this.adServicesConfig.CollapsibleBannerExpandOnRefreshEnabled}, useNewGuid: {useNewGuid}");
                     this.IsRefreshingCollapsible = false;
-                    this.ScheduleRefreshCollapsible();
                 }
                 else
                 {
@@ -213,6 +212,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             Debug.LogError("vubc call");
             this.IsUserDismissedCollapsible = true;
+            this.ScheduleRefreshCollapsible();
             Debug.LogError($"vubc call:{this.IsUserDismissedCollapsible }");
         }
         private void ScheduleRefreshCollapsible()
@@ -224,14 +224,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval <= 0) return;
             if (!this.adServicesConfig.CollapsibleBannerAutoRefreshEnabled) return;
             float waitTime = this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval;
-            Debug.Log($"[TimeCapping] Start waiting to refresh Collapsible Banner at: {DateTime.Now:HH:mm:ss}, waiting for {waitTime} seconds...");
+            Debug.LogError($"[vubc] Start waiting to refresh Collapsible Banner at: {DateTime.Now:HH:mm:ss}, waiting for {waitTime} seconds...");
             UniTask.WaitForSeconds(
                 this.adServicesConfig.CollapsibleBannerExpandOnRefreshInterval,
                 true,
                 cancellationToken: (this.RefreshCollapsibleCts = new()).Token
             ).ContinueWith(() =>
             {
-                Debug.Log($"[TimeCapping] Finished waiting at: {DateTime.Now:HH:mm:ss}, refreshing banner now.");
+                Debug.LogError($"[vubc] Finished waiting at: {DateTime.Now:HH:mm:ss}, refreshing banner now.");
                 this.IsRefreshingCollapsible = true;
                 this.HideBannerAd();
                 this.ShowBannerAd();

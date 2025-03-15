@@ -16,19 +16,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     {
         public const string ClassicMode = "classic";
         
-        [OdinSerialize] public UnlockType UnlockedFeature { get; set; } = UnlockType.Default;
+        [OdinSerialize] internal UnlockType UnlockedFeature { get; set; } = UnlockType.Default;
 
         [Obsolete]
-        [OdinSerialize] public int CurrentLevel { get; set; } = 1;
+        [OdinSerialize] internal int CurrentLevel { get; set; } = 1;
 
-        [OdinSerialize] public Dictionary<string, int> ModeToCurrentLevel { get; set; } = new();
+        [OdinSerialize] internal Dictionary<string, int> ModeToCurrentLevel { get; set; } = new();
 
         [Obsolete]
-        [OdinSerialize] public Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
+        [OdinSerialize] internal Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
 
-        [OdinSerialize] public Dictionary<string, Dictionary<int, LevelData>> ModeToLevelToLevelData { get; set; } = new();
+        [OdinSerialize] internal Dictionary<string, Dictionary<int, LevelData>> ModeToLevelToLevelData { get; set; } = new();
 
-        [OdinSerialize] public int LastUnlockRewardLevel;
+        [OdinSerialize] internal int LastUnlockRewardLevel;
 
         public void Init()
         {
@@ -51,11 +51,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
     public class LevelData
     {
-        public int    Level;
-        public Status LevelStatus;
-        public int    StarCount;
-        public int    LoseCount;
-        public int    WinCount;
+        public int    Level       { get; internal set; }
+        public Status LevelStatus { get; internal set; }
+        public int    StarCount   { get; internal set; }
+        public int    LoseCount   { get; internal set; }
+        public int    WinCount    { get; internal set; }
 
         public LevelData(int level, Status levelStatus, int loseCount = 0, int winCount = 0, int starCount = 0)
         {

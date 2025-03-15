@@ -11,7 +11,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     public class UITemplateRewardData : ILocalData, IUITemplateLocalData
     {
         //PackId can be any thing you want, it's just a key to store reward data
-        [OdinSerialize] public Dictionary<string, Dictionary<string, UITemplateRewardItemData>> PackIdToIdToRewardData { get; set; } = new();
+        [OdinSerialize] internal Dictionary<string, Dictionary<string, UITemplateRewardItemData>> PackIdToIdToRewardData { get; set; } = new();
 
         public void Init()
         {
@@ -23,10 +23,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     [Serializable]
     public class UITemplateRewardItemData
     {
-        [OdinSerialize] public int      RewardValue           { get; set; }
-        [OdinSerialize] public int      Repeat                { get; set; }
-        [OdinSerialize] public string   AddressableFlyingItem { get; set; }
-        [OdinSerialize] public DateTime LastTimeReceive       { get; set; }
+        [OdinSerialize] public int      RewardValue           { get; internal set; }
+        [OdinSerialize] public int      Repeat                { get; internal set; }
+        [OdinSerialize] public string   AddressableFlyingItem { get; internal set; }
+        [OdinSerialize] public DateTime LastTimeReceive       { get; internal set; }
 
         public UITemplateRewardItemData(int rewardValue, int repeat, string addressableFlyingItem)
         {

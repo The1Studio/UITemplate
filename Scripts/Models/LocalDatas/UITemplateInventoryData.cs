@@ -11,11 +11,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     [Preserve]
     public class UITemplateInventoryData : ILocalData, IUITemplateLocalData
     {
-        [OdinSerialize] public readonly Dictionary<string, string> CategoryToChosenItem = new();
+        [OdinSerialize] internal readonly Dictionary<string, string> CategoryToChosenItem = new();
 
-        [OdinSerialize] public Dictionary<string, UITemplateItemData> IDToItemData { get; private set; } = new();
+        [OdinSerialize] internal Dictionary<string, UITemplateItemData> IDToItemData { get; private set; } = new();
 
-        [OdinSerialize] public Dictionary<string, UITemplateCurrencyData> IDToCurrencyData { get; private set; } = new();
+        [OdinSerialize] internal Dictionary<string, UITemplateCurrencyData> IDToCurrencyData { get; private set; } = new();
 
         public Type ControllerType => typeof(UITemplateInventoryDataController);
 

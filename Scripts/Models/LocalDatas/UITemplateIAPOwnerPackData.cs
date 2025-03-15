@@ -9,9 +9,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     [Preserve]
     public class UITemplateIAPOwnerPackData : ILocalData, IUITemplateLocalData
     {
-        public List<string> OwnedPacks { get; set; } = new();
+        internal List<string> OwnedPacks { get; set; } = new();
 
-        public bool IsRestoredPurchase { get; set; }
+        internal bool IsRestoredPurchase { get; set; }
 
         public void Init()
         {

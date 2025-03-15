@@ -11,9 +11,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     [Preserve]
     public class UITemplateAdsData : ILocalData, IUITemplateLocalData
     {
-        [OdinSerialize] public int          WatchedInterstitialAds         { get; set; }
-        [OdinSerialize] public int          WatchedRewardedAds             { get; set; }
-        [OdinSerialize] public List<double> InterstitialAndRewardedRevenue { get; set; } = new();
+        [OdinSerialize] internal int          WatchedInterstitialAds         { get; set; }
+        [OdinSerialize] internal int          WatchedRewardedAds             { get; set; }
+        [OdinSerialize] internal List<double> InterstitialAndRewardedRevenue { get; set; } = new();
 
         public void Init() { }
 

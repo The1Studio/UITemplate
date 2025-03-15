@@ -46,6 +46,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 .ToList();
         }
 
+        public void MarkClaimedReward(UITemplateRewardItemData rewardData)
+        {
+            rewardData.LastTimeReceive = DateTime.Now;
+        }
+
         public bool IsExistAvailableRepeatedReward()
         {
             return this.GetAvailableRepeatedReward().Count > 0;

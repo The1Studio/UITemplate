@@ -33,8 +33,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public int TotalLose => this.GetModelData().Values.Sum(levelData => levelData.LoseCount);
         public int TotalWin  => this.GetModelData().Values.Sum(levelData => levelData.WinCount);
 
-        public LevelData GetCurrentLevelData => this.GetLevelData(this.CurrentLevel);
-        public int       CurrentLevel        => this.CurrentModeLevel(UITemplateUserLevelData.ClassicMode);
+        public LevelData GetCurrentLevelData                  => this.GetLevelData(this.CurrentLevel);
+        public int       CurrentLevel                         => this.CurrentModeLevel(UITemplateUserLevelData.ClassicMode);
         public LevelData GetCurrentModeLevelData(string mode) => this.GetLevelData(this.CurrentLevel, mode);
 
         public int CurrentModeLevel(string mode) => this.uiTemplateUserLevelData.ModeToCurrentLevel.GetOrAdd(UITemplateUserLevelData.ClassicMode, () => 1);
@@ -76,7 +76,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             return this.uiTemplateUserLevelData.ModeToLevelToLevelData.GetOrAdd(mode, () => new Dictionary<int, LevelData>());
         }
-        
+
         private DateTime GetModePlayTime(string mode, int level) => this.modeToLevelToStartLevelTime.GetOrAdd(mode, () => new Dictionary<int, DateTime>()).GetOrAdd(level, () => DateTime.UtcNow);
 
         /// <summary>Have be called when level started</summary>
@@ -112,7 +112,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void LoseCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
-            this.signalBus.Fire(new LevelEndedSignal (currentModeLevel, mode, false, this.GetCurrentLevelPlayTime(),  null ));
+            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, false, this.GetCurrentLevelPlayTime(), null));
             this.GetLevelData(currentModeLevel, mode).LoseCount++;
 
             this.handleUserDataServices.SaveAll();
@@ -121,13 +121,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <summary>
         /// Called when player win current level
         /// </summary>
-        public void PassCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
+        public void PassCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode, int starCount = 1)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
             var levelData        = this.GetLevelData(currentModeLevel, mode);
             levelData.WinCount++;
             levelData.LevelStatus = LevelData.Status.Passed;
-            this.signalBus.Fire(new LevelEndedSignal (currentModeLevel, mode, true, this.GetCurrentLevelPlayTime(), null ));
+            levelData.StarCount   = starCount;
+            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, true, this.GetCurrentLevelPlayTime(), null));
             this.uiTemplateUserLevelData.ModeToCurrentLevel[mode]++;
 
             this.handleUserDataServices.SaveAll();
@@ -145,7 +146,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             {
                 levelData.LevelStatus = LevelData.Status.Skipped;
             }
-            this.signalBus.Fire(new LevelSkippedSignal (currentModeLevel, mode, this.GetCurrentLevelPlayTime(mode)));
+
+            this.signalBus.Fire(new LevelSkippedSignal(currentModeLevel, mode, this.GetCurrentLevelPlayTime(mode)));
             this.uiTemplateUserLevelData.ModeToCurrentLevel[mode]++;
 
             this.handleUserDataServices.SaveAll();
@@ -155,9 +157,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public bool CheckLevelIsUnlockedStatus(int level, string mode = UITemplateUserLevelData.ClassicMode)
         {
-            var currentModeLevel  = this.CurrentModeLevel(mode);
-            var levelData         = this.GetLevelData(currentModeLevel, mode);
-            
+            var currentModeLevel = this.CurrentModeLevel(mode);
+            var levelData        = this.GetLevelData(currentModeLevel, mode);
+
             var skippedLevel      = this.GetModelData(mode).Values.LastOrDefault(levelData => levelData.LevelStatus == LevelData.Status.Skipped);
             var skippedLevelIndex = this.GetModelData(mode).Values.ToList().IndexOf(skippedLevel);
             if (skippedLevelIndex == -1 && this.MaxLevel == 0 && level == 1) return true;

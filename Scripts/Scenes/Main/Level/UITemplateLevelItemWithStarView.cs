@@ -13,7 +13,6 @@
         public override void InitView(LevelData data, UITemplateLevelDataController userLevelData)
         {
             base.InitView(data, userLevelData);
-            data.StarCount = data.LevelStatus != LevelData.Status.Passed ? 0 : data.StarCount;
             for (var i = 0; i < this.StarList.Count; i++) this.StarList[i].SetActive(i < data.StarCount);
 
             if (data.StarCount == 0)

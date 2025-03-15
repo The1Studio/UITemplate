@@ -10,9 +10,9 @@
     [Preserve]
     public class UITemplateDailyRewardData : ILocalData, IUITemplateLocalData
     {
-        [OdinSerialize] public List<RewardStatus> RewardStatus        { get; set; } = new();
-        [OdinSerialize] public DateTime           LastRewardedDate    { get; set; }
-        [OdinSerialize] public DateTime           FirstTimeOpenedDate { get; set; } = DateTime.Now;
+        [OdinSerialize] internal List<RewardStatus> RewardStatus        { get; set; } = new();
+        [OdinSerialize] internal DateTime           LastRewardedDate    { get; set; }
+        [OdinSerialize] internal DateTime           FirstTimeOpenedDate { get; set; } = DateTime.Now;
 
         public void Init()
         {

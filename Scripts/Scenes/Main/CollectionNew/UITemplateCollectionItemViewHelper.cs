@@ -2,6 +2,7 @@
 {
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
@@ -47,12 +48,12 @@
 
         protected virtual void SetButtonStatusAndBorderStatus(ItemCollectionItemModel param, ItemCollectionItemView view)
         {
-            var isCoin      = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.SoftCurrency;
-            var isAds       = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.Ads;
-            var isIap       = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.IAP;
-            var isDaily     = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.DailyReward;
-            var isLuckySpin = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.LuckySpin;
-            var isStartPack = param.ShopBlueprintRecord.UnlockType == UITemplateItemData.UnlockType.StartedPack;
+            var isCoin      = param.ShopBlueprintRecord.UnlockType == UnlockType.SoftCurrency;
+            var isAds       = param.ShopBlueprintRecord.UnlockType == UnlockType.Ads;
+            var isIap       = param.ShopBlueprintRecord.UnlockType == UnlockType.IAP;
+            var isDaily     = param.ShopBlueprintRecord.UnlockType == UnlockType.DailyReward;
+            var isLuckySpin = param.ShopBlueprintRecord.UnlockType == UnlockType.LuckySpin;
+            var isStartPack = param.ShopBlueprintRecord.UnlockType == UnlockType.StartedPack;
 
             var isOwner    = param.ItemData.CurrentStatus == UITemplateItemData.Status.Owned;
             var isUnlocked = param.ItemData.CurrentStatus == UITemplateItemData.Status.Unlocked;

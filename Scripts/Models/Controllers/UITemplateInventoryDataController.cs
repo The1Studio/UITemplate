@@ -25,14 +25,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         [Preserve]
         public UITemplateInventoryDataController(
-            UITemplateInventoryData             uiTemplateInventoryData,
+            UITemplateInventoryData uiTemplateInventoryData,
             UITemplateFlyingAnimationController uiTemplateFlyingAnimationController,
-            UITemplateCurrencyBlueprint         uiTemplateCurrencyBlueprint,
-            UITemplateShopBlueprint             uiTemplateShopBlueprint,
-            SignalBus                           signalBus,
-            UITemplateItemBlueprint             uiTemplateItemBlueprint,
-            IScreenManager                      screenManager,
-            IAudioService                       audioService
+            UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint,
+            UITemplateShopBlueprint uiTemplateShopBlueprint,
+            SignalBus signalBus,
+            UITemplateItemBlueprint uiTemplateItemBlueprint,
+            IScreenManager screenManager,
+            IAudioService audioService
         )
         {
             this.uiTemplateInventoryData             = uiTemplateInventoryData;
@@ -86,7 +86,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 .GetOrAdd(id, () => new(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)).Value;
         }
 
-        public UITemplateCurrencyData GetCurrencyData(string id = DefaultSoftCurrencyID) { return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max)); }
+        public UITemplateCurrencyData GetCurrencyData(string id = DefaultSoftCurrencyID)
+        {
+            return this.uiTemplateInventoryData.IDToCurrencyData.GetOrAdd(id, () => new(id, 0, this.uiTemplateCurrencyBlueprint.GetDataById(id).Max));
+        }
 
         public bool IsCurrencyFull(string id) { return this.GetCurrencyValue(id) >= this.uiTemplateCurrencyBlueprint.GetDataById(id).Max; }
 
@@ -138,17 +141,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// minAnimAmount and maxAnimAmount is range amount of currency object that will be animated
         /// </summary>
         public async UniTask<bool> AddCurrency(
-            int           addingValue,
-            string        id,
-            string        where,
-            RectTransform startAnimationRect         = null,
-            string        claimSoundKey              = null,
-            string        flyCompleteSoundKey        = null,
-            int           minAnimAmount              = 6,
-            int           maxAnimAmount              = 10,
-            float         timeAnimAnim               = 1f,
-            float         flyPunchPositionAnimFactor = 0.3f,
-            Action        onCompleteEachItem         = null
+            int addingValue,
+            string id,
+            string where,
+            RectTransform startAnimationRect = null,
+            string claimSoundKey = null,
+            string flyCompleteSoundKey = null,
+            int minAnimAmount = 6,
+            int maxAnimAmount = 10,
+            float timeAnimAnim = 1f,
+            float flyPunchPositionAnimFactor = 0.3f,
+            Action onCompleteEachItem = null
         )
         {
             var lastValue = this.GetCurrencyValue(id);
@@ -217,9 +220,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public UITemplateItemData GetFirstItem(
-            string                             category   = null,
-            UITemplateItemData.UnlockType      unlockType = UITemplateItemData.UnlockType.All,
-            IComparer<UITemplateItemData>      orderBy    = null,
+            string category = null,
+            UnlockType unlockType = UnlockType.All,
+            IComparer<UITemplateItemData> orderBy = null,
             params UITemplateItemData.Status[] statuses
         )
         {
@@ -227,25 +230,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         }
 
         public List<UITemplateItemData> GetAllItems(
-            string                             category   = null,
-            UITemplateItemData.UnlockType      unlockType = UITemplateItemData.UnlockType.All,
-            IComparer<UITemplateItemData>      orderBy    = null,
+            string category = null,
+            UnlockType unlockType = UnlockType.All,
+            IComparer<UITemplateItemData> orderBy = null,
             params UITemplateItemData.Status[] statuses
         )
         {
-            var query                                                  = this.uiTemplateInventoryData.IDToItemData.Values.ToList();
-            if (category is { }) query                                 = query.Where(itemData => itemData.ItemBlueprintRecord.Category.Equals(category)).ToList();
-            if (unlockType != UITemplateItemData.UnlockType.All) query = query.Where(itemData => (itemData.ShopBlueprintRecord.UnlockType & unlockType) != 0).ToList();
-            if (statuses.Length > 0) query                             = query.Where(itemData => statuses.Contains(itemData.CurrentStatus)).ToList();
-            if (orderBy is { }) query                                  = query.OrderBy(itemData => itemData, orderBy).ToList();
+            var query                               = this.uiTemplateInventoryData.IDToItemData.Values.ToList();
+            if (category is { }) query              = query.Where(itemData => itemData.ItemBlueprintRecord.Category.Equals(category)).ToList();
+            if (unlockType != UnlockType.All) query = query.Where(itemData => (itemData.ShopBlueprintRecord.UnlockType & unlockType) != 0).ToList();
+            if (statuses.Length > 0) query          = query.Where(itemData => statuses.Contains(itemData.CurrentStatus)).ToList();
+            if (orderBy is { }) query               = query.OrderBy(itemData => itemData, orderBy).ToList();
 
             return query;
         }
 
         public List<UITemplateItemData> GetAllItemWithOrder(
-            string                        category   = null,
-            UITemplateItemData.UnlockType unlockType = UITemplateItemData.UnlockType.All,
-            IComparer<UITemplateItemData> comparer   = null
+            string category = null,
+            UnlockType unlockType = UnlockType.All,
+            IComparer<UITemplateItemData> comparer = null
         )
         {
             return this.GetAllItems(category, unlockType).OrderBy(itemData => itemData, comparer ?? UITemplateItemData.DefaultComparerInstance).ToList();
@@ -270,7 +273,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private void OnLoadBlueprintSuccess()
         {
             //remove item that don't exist in blueprint anymore
-            foreach (var notExistKey in this.uiTemplateInventoryData.IDToItemData.Keys.Where(itemKey => !this.uiTemplateItemBlueprint.ContainsKey(itemKey)).ToList()) this.uiTemplateInventoryData.IDToItemData.Remove(notExistKey);
+            foreach (var notExistKey in this.uiTemplateInventoryData.IDToItemData.Keys.Where(itemKey => !this.uiTemplateItemBlueprint.ContainsKey(itemKey)).ToList())
+                this.uiTemplateInventoryData.IDToItemData.Remove(notExistKey);
 
             foreach (var itemRecord in this.uiTemplateItemBlueprint.Values)
             {
@@ -286,17 +290,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                 if (!this.uiTemplateInventoryData.IDToItemData.TryGetValue(itemRecord.Id, out var existedItemData))
                 {
-                    #if CREATIVE
+#if CREATIVE
                     this.uiTemplateInventoryData.IDToItemData.Add(itemRecord.Id, new UITemplateItemData(itemRecord.Id, shopRecord, itemRecord, UITemplateItemData.Status.Owned));
-                    #else
+#else
                     this.uiTemplateInventoryData.IDToItemData.Add(itemRecord.Id, new(itemRecord.Id, shopRecord, itemRecord, status));
-                    #endif
+#endif
                 }
                 else
                 {
-                    #if CREATIVE
+#if CREATIVE
                     existedItemData.CurrentStatus = UITemplateItemData.Status.Owned;
-                    #endif
+#endif
                     existedItemData.ShopBlueprintRecord = shopRecord;
                     existedItemData.ItemBlueprintRecord = itemRecord;
                 }

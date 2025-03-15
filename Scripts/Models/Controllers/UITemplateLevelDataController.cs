@@ -26,7 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.handleUserDataServices            = handleUserDataServices;
         }
 
-        public UITemplateItemData.UnlockType UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
+        public UnlockType UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
 
         public int LastUnlockRewardLevel { get => this.uiTemplateUserLevelData.LastUnlockRewardLevel; set => this.uiTemplateUserLevelData.LastUnlockRewardLevel = value; }
 
@@ -59,9 +59,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public bool IsFeatureUnlocked(UITemplateItemData.UnlockType feature) { return (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0; }
+        public bool IsFeatureUnlocked(UnlockType feature) { return (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0; }
 
-        public void UnlockFeature(UITemplateItemData.UnlockType feature) { this.uiTemplateUserLevelData.UnlockedFeature |= feature; }
+        public void UnlockFeature(UnlockType feature) { this.uiTemplateUserLevelData.UnlockedFeature |= feature; }
 
         public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
 

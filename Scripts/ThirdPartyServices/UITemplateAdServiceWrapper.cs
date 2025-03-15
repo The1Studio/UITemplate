@@ -14,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using GoogleMobileAds.Api;
     using R3;
     using ServiceImplementation;
     using ServiceImplementation.AdsServices.ConsentInformation;
@@ -73,6 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool                    IsRefreshingCollapsible               { get; set; }
         private CancellationTokenSource RefreshCollapsibleCts                 { get; set; }
         private CancellationTokenSource AutoDismissCts                        { get; set; }
+        private BannerView              CollapsibleBannerView                 { get; set; }
 
         //AOA
         private DateTime StartLoadingAOATime          { get; set; }
@@ -234,6 +236,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 Debug.LogError($"vubc start time");
                 this.signalBus.Fire(new CollapsibleBannerAdDismissedSignal(AdFormatConstants.CollapsibleBanner));
+                this.CollapsibleBannerView.Hide();
                 Debug.LogError($"vubc start time1");
                 //this.ScheduleRefreshCollapsible();
             }).Forget();

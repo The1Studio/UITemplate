@@ -232,8 +232,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 cancellationToken: (this.AutoDismissCts = new()).Token
             ).ContinueWith(() =>
             {
+                Debug.LogError($"vubc start time");
                 this.signalBus.Fire(new CollapsibleBannerAdDismissedSignal(AdFormatConstants.CollapsibleBanner));
-                this.ScheduleRefreshCollapsible();
+                Debug.LogError($"vubc start time1");
+                //this.ScheduleRefreshCollapsible();
             }).Forget();
         }
 

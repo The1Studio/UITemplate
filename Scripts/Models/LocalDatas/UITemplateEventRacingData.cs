@@ -10,14 +10,14 @@
     [Preserve]
     public class UITemplateEventRacingData : ILocalData, IUITemplateLocalData
     {
-        public DateTime startDate;
-        public DateTime endDate;
-        public DateTime lastRandomTime;
+        internal DateTime startDate;
+        internal DateTime endDate;
+        internal DateTime lastRandomTime;
 
-        public int YourOldShowScore;
-        public int yourIndex;
+        internal int YourOldShowScore;
+        internal int yourIndex;
 
-        [OdinSerialize] public Dictionary<int, UITemplateRacingPlayerData> playerIndexToData = new();
+        [OdinSerialize] internal Dictionary<int, UITemplateRacingPlayerData> playerIndexToData = new();
 
         //set startDate at start of local today and endDate at end of 7 days from today
         //set playerIndexToScore to empty dictionary

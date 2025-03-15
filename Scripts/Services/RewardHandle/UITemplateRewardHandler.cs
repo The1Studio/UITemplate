@@ -37,8 +37,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
 
             foreach (var (rewardId, value) in availableRepeatedReward) this.ReceiveReward(rewardId, value, "recurring");
 
-            rewardList.ForEach(keyPairValue => keyPairValue.Value.LastTimeReceive = DateTime.Now);
-
+            rewardList.ForEach(keyPairValue => this.uiTemplateRewardDataController.MarkClaimedReward(keyPairValue.Value));
+            
             return availableRepeatedReward;
         }
 

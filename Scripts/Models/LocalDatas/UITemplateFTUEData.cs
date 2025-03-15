@@ -8,8 +8,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     [Preserve]
     public class UITemplateFTUEData : ILocalData
     {
-        [OdinSerialize] public List<string> FinishedStep { get; set; } = new();
-        [OdinSerialize] public List<string> RewardedStep { get; set; } = new();
+        [OdinSerialize] internal List<string> FinishedStep { get; set; } = new();
+        [OdinSerialize] internal List<string> RewardedStep { get; set; } = new();
 
         public void Init()
         {

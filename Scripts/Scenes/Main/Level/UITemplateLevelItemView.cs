@@ -64,9 +64,7 @@
         {
             #region test
 
-            var currentLevel = this.userLevelData.GetCurrentLevelData.Level;
-            this.userLevelData.GetLevelData(currentLevel).LevelStatus = LevelData.Status.Passed;
-            this.userLevelData.GetLevelData(currentLevel).StarCount   = Random.Range(1, 4);
+            this.userLevelData.PassCurrentLevel(starCount: Random.Range(1, 4));
 
             #endregion
         }

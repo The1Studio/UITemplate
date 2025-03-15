@@ -40,7 +40,6 @@
         {
             this.model = param;
             this.Init(param.UITemplateItemInventoryData.CurrentStatus);
-            this.inventoryData.CategoryToChosenItem.Values.Any(value => value.Equals(this.model.UITemplateItemInventoryData.Id));
             this.View.ItemImage.sprite = await this.gameAssets.LoadAssetAsync<Sprite>(this.model.UITemplateItemInventoryData.ItemBlueprintRecord.ImageAddress);
             this.View.PriceText.text   = $"{param.UITemplateItemInventoryData.ShopBlueprintRecord.Price}";
             this.View.SelectButton.onClick.AddListener(this.OnSelect);

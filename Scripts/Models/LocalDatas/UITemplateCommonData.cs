@@ -8,8 +8,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.LocalDatas
     [Preserve]
     public class UITemplateCommonData : ILocalData, IUITemplateLocalData
     {
-        public bool IsFirstTimeOpenGame { get; set; } = true;
-        public Type ControllerType      => typeof(UITemplateCommonController);
+        internal bool IsFirstTimeOpenGame { get; set; } = true;
+        public   Type ControllerType      => typeof(UITemplateCommonController);
 
         public void Init()
         {

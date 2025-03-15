@@ -10,9 +10,9 @@
     [Preserve]
     public class UITemplateUserSettingData : ILocalData, IUITemplateLocalData
     {
-        [OdinSerialize] public bool IsVibrationEnable = true;
+        [OdinSerialize] internal bool IsVibrationEnable = true;
 
-        [OdinSerialize] public bool IsFlashLightEnable = true;
+        [OdinSerialize] internal bool IsFlashLightEnable = true;
 
         public void Init()
         {

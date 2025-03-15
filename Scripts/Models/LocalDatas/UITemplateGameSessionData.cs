@@ -9,8 +9,8 @@
     [Preserve]
     public class UITemplateGameSessionData : ILocalData, IUITemplateLocalData
     {
-        [OdinSerialize] public DateTime FirstInstallDate { get; set; } = DateTime.Now;
-        public                 int      OpenTime;
+        [OdinSerialize] internal DateTime FirstInstallDate { get; set; } = DateTime.Now;
+        internal                 int      OpenTime;
 
         public void Init()
         {

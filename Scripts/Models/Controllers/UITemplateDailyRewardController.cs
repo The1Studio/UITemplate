@@ -8,7 +8,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
-    using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine;
     using UnityEngine.Scripting;
@@ -23,7 +22,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateDailyRewardData           uiTemplateDailyRewardData;
         private readonly UITemplateDailyRewardBlueprint      uiTemplateDailyRewardBlueprint;
         private readonly UITemplateInventoryDataController   uiTemplateInventoryDataController;
-        private readonly UITemplateFlyingAnimationController uiTemplateFlyingAnimationController;
 
         #endregion
 
@@ -34,15 +32,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             IInternetService                    internetService,
             UITemplateDailyRewardData           uiTemplateDailyRewardData,
             UITemplateDailyRewardBlueprint      uiTemplateDailyRewardBlueprint,
-            UITemplateInventoryDataController   uiTemplateInventoryDataController,
-            UITemplateFlyingAnimationController uiTemplateFlyingAnimationController
+            UITemplateInventoryDataController   uiTemplateInventoryDataController
         )
         {
             this.internetService                     = internetService;
             this.uiTemplateDailyRewardData           = uiTemplateDailyRewardData;
             this.uiTemplateDailyRewardBlueprint      = uiTemplateDailyRewardBlueprint;
             this.uiTemplateInventoryDataController   = uiTemplateInventoryDataController;
-            this.uiTemplateFlyingAnimationController = uiTemplateFlyingAnimationController;
         }
 
         public async UniTask CheckRewardStatus()
@@ -114,7 +110,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
                     var reward = this.uiTemplateDailyRewardBlueprint.GetDataById(i + 1);
 
-                    foreach (var (key, item) in reward.Reward) this.uiTemplateInventoryDataController.AddGenericReward(item.RewardId, item.RewardValue, "daily_reward", dayToView[reward.Day], claimSoundKey).Forget();
+                    foreach (var (key, item) in reward.Reward) this.uiTemplateInventoryDataController.AddGenericReward(item.RewardId, item.RewardValue, "daily_reward", dayToView[reward.Day], claimSoundKey);
                 }
             }
 

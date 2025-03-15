@@ -55,10 +55,10 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         [Preserve]
         public UITemplateQuestListItemPresenter(
-            IGameAssets         gameAssets,
-            IAudioService       audioService,
+            IGameAssets gameAssets,
+            IAudioService audioService,
             GameFeaturesSetting gameFeaturesSetting,
-            SignalBus           signalBus
+            SignalBus signalBus
         ) : base(gameAssets)
         {
             this.gameAssets          = gameAssets;
@@ -114,10 +114,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.View.CollectedObjects.ForEach(obj => obj.SetActive(status.HasFlag(QuestStatus.Collected)));
         }
 
-        private void OnClickGo()
-        {
-            this.Model.Parent.CloseViewAsync().Forget();
-        }
+        private void OnClickGo() { this.Model.Parent.CloseViewAsync().Forget(); }
 
         private void OnClickClaim()
         {
@@ -129,8 +126,8 @@ namespace TheOneStudio.UITemplate.Quests.UI
         {
             var newStatus = this.Model.Quest.Progress.Status | QuestStatus.Collected;
             this.SetItemStatus(newStatus);
-            await this.Model.Quest.CollectReward(this.View.ImgReward.rectTransform)
-                .ContinueWith(() => this.Model.Parent.Refresh());
+            this.Model.Quest.CollectReward(this.View.ImgReward.rectTransform);
+            this.Model.Parent.Refresh();
         }
 
         public override void Dispose()

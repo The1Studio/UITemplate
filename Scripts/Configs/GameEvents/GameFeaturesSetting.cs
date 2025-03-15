@@ -139,7 +139,7 @@
 
         [BoxGroup("Cheat Settings")] public TheOneCheatActiveType cheatActiveBy = TheOneCheatActiveType.DrawTripleCircle;
 
-        #endregion
+        #endregion  
 
         #if UNITY_EDITOR
 

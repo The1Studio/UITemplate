@@ -1,0 +1,49 @@
+{
+    "name": "UITemplate.Service.UIHighlight",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e7f0ab2ac424208429d649986281d535",
+        "GUID:f072e216975d56b4f9ab0e22fb7a76a5",
+        "GUID:3d4daf6696a825240b11d99d0d2865ed",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:570288d68c06d364a82f87aca0bc1a34",
+        "GUID:f51af22c92914bc6b143539603c8f57d",
+        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.coffee.ui-effect",
+            "expression": "",
+            "define": "UI_EFFECT"
+        },
+        {
+            "name": "com.theone.module.highscore",
+            "expression": "",
+            "define": "THEONE_HIGHSCORE"
+        },
+        {
+            "name": "com.svermeulen.extenject",
+            "expression": "",
+            "define": "GDK_ZENJECT"
+        },
+        {
+            "name": "jp.hadashikick.vcontainer",
+            "expression": "",
+            "define": "GDK_VCONTAINER"
+        },
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "THEONE_LOCALIZATION"
+        }
+    ],
+    "noEngineReferences": false
+}

@@ -55,9 +55,9 @@
             var isLuckySpin = param.ShopBlueprintRecord.UnlockType == UnlockType.LuckySpin;
             var isStartPack = param.ShopBlueprintRecord.UnlockType == UnlockType.StartedPack;
 
-            var isOwner    = param.ItemData.CurrentStatus == UITemplateItemData.Status.Owned;
-            var isUnlocked = param.ItemData.CurrentStatus == UITemplateItemData.Status.Unlocked;
-            var isLocked   = param.ItemData.CurrentStatus == UITemplateItemData.Status.Locked;
+            var isOwner    = param.ItemData.CurrentStatus == Status.Owned;
+            var isUnlocked = param.ItemData.CurrentStatus == Status.Unlocked;
+            var isLocked   = param.ItemData.CurrentStatus == Status.Locked;
 
             var isChoose = param.ItemIndex == param.IndexItemSelected;
             var isUse    = param.ItemIndex == param.IndexItemUsed;

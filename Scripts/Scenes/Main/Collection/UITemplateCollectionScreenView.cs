@@ -96,9 +96,9 @@
 
         private void OnBuyItem(ItemCollectionItemModel obj)
         {
-            obj.UITemplateItemInventoryData.CurrentStatus = UITemplateItemData.Status.Owned;
+            obj.UITemplateItemInventoryData.CurrentStatus = Status.Owned;
             // this.userData.InventoryData.CurrentSelectItemId.Value = obj.UITemplateItemData.BlueprintRecord.Name;
-            this.uiTemplateInventoryDataController.UpdateStatusItemData(obj.UITemplateItemInventoryData.ItemBlueprintRecord.Id, UITemplateItemData.Status.Owned);
+            this.uiTemplateInventoryDataController.UpdateStatusItemData(obj.UITemplateItemInventoryData.ItemBlueprintRecord.Id, Status.Owned);
             // update payment coin here
 
             this.View.ItemCollectionAdapter.Refresh();

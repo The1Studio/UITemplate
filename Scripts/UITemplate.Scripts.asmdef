@@ -55,7 +55,19 @@
     "3rd.ServiceImplementation.Adjust",
     "3rd.RemoteConfig.DI",
     "SupersonicWisdom",
-    "UITemplate.Blueprint"
+    "UITemplate.Blueprint",
+    "UITemplate.Extension",
+    "UITemplate.LocalData",
+    "UITemplate.FlyingAnimation",
+    "UITemplate.Signal",
+    "UITemplate.FTUE",
+    "UITemplate.Internet",
+    "UITemplate.Service.Vibration",
+    "UITemplate.Config",
+    "UITemplate.Enum",
+    "UITemplate.Utils",
+    "UITemplate.Utils.View",
+    "UITemplate.Services.CountryFlag"
   ],
   "precompiledReferences": [
     "DOTween.dll",

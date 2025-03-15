@@ -1,13 +1,10 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
-    using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
-    using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services.Highlight;
     using UnityEngine;
     using UnityEngine.Scripting;

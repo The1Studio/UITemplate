@@ -130,7 +130,7 @@
             {
                 if (!this.uiTemplateFtueDataController.IsRewardedStep(stepId))
                 {
-                    this.uiTemplateFtueDataController.GiveReward(stepId);
+                    this.uiTemplateFtueBlueprint.GiveReward(stepId);
                 }
                 this.uiTemplateFtueController.DoActiveFTUE(stepId);
                 var duration = this.uiTemplateFtueBlueprint.GetDataById(stepId).TooltipDuration;
@@ -150,7 +150,7 @@
         public void OnFTUEStepFinishedHandler(IHaveStepId obj)
         {
             this.cancellationTokenSource.Cancel();
-            this.uiTemplateFtueDataController.CompleteStep(obj.StepId);
+            this.uiTemplateFtueBlueprint.CompleteStep(obj.StepId);
             var disableObjectSet = this.StepIdToShowOnFTUEGameObjects.GetOrAdd(obj.StepId, () => new HashSet<GameObject>());
             foreach (var gameObject in disableObjectSet) gameObject.SetActive(false);
             this.uiTemplateFtueController.DoDeactiveFTUE(obj.StepId);

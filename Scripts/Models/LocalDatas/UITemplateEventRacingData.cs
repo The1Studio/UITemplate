@@ -3,9 +3,7 @@
     using System;
     using System.Collections.Generic;
     using GameFoundation.Scripts.Interfaces;
-    using Newtonsoft.Json;
     using Sirenix.Serialization;
-    using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine.Scripting;
 

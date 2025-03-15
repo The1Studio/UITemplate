@@ -5,18 +5,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.ObjectPool;
+    using GameFoundation.Signals;
+    using global::UITemplate.Scripts.Signals;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
+    using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using UnityEngine.Scripting;
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
 
-    public class UITemplateFlyingAnimationController
+    public class UITemplateFlyingAnimationController : IInitializable
     {
         private float FlyPunchTime              = 0.5f;
         private float DelayFlyTargetTimePerItem = 0.08f;
@@ -25,18 +30,55 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #region Inject
 
-        private readonly IScreenManager screenManager;
-        private readonly IGameAssets    gameAssets;
-        private const    string         PrefabName = "UITemplateFlyingAnimationItem";
+        private readonly IScreenManager              screenManager;
+        private readonly IGameAssets                 gameAssets;
+        private readonly SignalBus                   signalBus;
+        private readonly UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint;
+        private readonly IAudioService               audioService;
+        private const    string                      PrefabName = "UITemplateFlyingAnimationItem";
 
         [Preserve]
-        public UITemplateFlyingAnimationController(IScreenManager screenManager, IGameAssets gameAssets)
+        public UITemplateFlyingAnimationController(IScreenManager screenManager, IGameAssets gameAssets, SignalBus signalBus, UITemplateCurrencyBlueprint uiTemplateCurrencyBlueprint, IAudioService audioService)
         {
-            this.screenManager = screenManager;
-            this.gameAssets    = gameAssets;
+            this.screenManager               = screenManager;
+            this.gameAssets                  = gameAssets;
+            this.signalBus                   = signalBus;
+            this.uiTemplateCurrencyBlueprint = uiTemplateCurrencyBlueprint;
+            this.audioService                = audioService;
         }
 
         #endregion
+        
+        
+        public void Initialize()
+        {
+            this.signalBus.Subscribe<PlayCurrencyAnimationSignal>(obj => this.OnPlayCurrencyAnimation(obj).Forget());
+        }
+        private async UniTaskVoid OnPlayCurrencyAnimation(PlayCurrencyAnimationSignal obj)
+        {
+            var id           = obj.currecyId;
+            var flyingObject = this.uiTemplateCurrencyBlueprint.GetDataById(id).FlyingObject;
+            var currencyView = this.screenManager.RootUICanvas.GetComponentsInChildren<UITemplateCurrencyView>().FirstOrDefault(viewTarget => viewTarget.CurrencyKey.Equals(id));
+            if (currencyView != null)
+            {
+                if (!string.IsNullOrEmpty(obj.claimSoundKey)) this.audioService.PlaySound(obj.claimSoundKey);
+                await this.PlayAnimation<UITemplateFlyingAnimationView>(
+                    startPointRect: obj.startAnimationRect,
+                    minAmount: obj.minAnimAmount,
+                    maxAmount: obj.maxAnimAmount,
+                    timeAnim: obj.timeAnimAnim,
+                    target: currencyView.CurrencyIcon.transform as RectTransform,
+                    prefabName: flyingObject,
+                    flyPunchPositionFactor: obj.flyPunchPositionAnimFactor,
+                    onCompleteEachItem: () =>
+                    {
+                        obj.onCompleteEachItem?.Invoke();
+                        if (!string.IsNullOrEmpty(obj.flyCompleteSoundKey)) this.audioService.PlaySound(obj.flyCompleteSoundKey);
+                    });
+
+                this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, obj.amount, obj.currencyWithCap));
+            }
+        }
 
         public async UniTask PlayAnimation<T>(RectTransform startPointRect, int minAmount = 6, int maxAmount = 10, float timeAnim = 1f, RectTransform target = null, string prefabName = "", float flyPunchPositionFactor = 0.3f, Action onCompleteEachItem = null)
             where T : UITemplateFlyingAnimationView

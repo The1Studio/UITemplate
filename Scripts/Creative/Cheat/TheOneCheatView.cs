@@ -74,7 +74,7 @@
         protected void OnAddCurrencyClick()
         {
             var ddCurrencyOption = this.ddCurrency.options[this.ddCurrency.value].text;
-            this.inventoryDataController.AddCurrency(int.Parse(this.inputCurrencyValue.text), ddCurrencyOption, "cheat").Forget();
+            this.inventoryDataController.AddCurrency(int.Parse(this.inputCurrencyValue.text), ddCurrencyOption, "cheat");
         }
 
         protected void OnOnOffUIClick()

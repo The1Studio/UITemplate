@@ -1,0 +1,53 @@
+{
+    "name": "UITemplate.FTUE",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f072e216975d56b4f9ab0e22fb7a76a5",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:4d920f803f6e4616a58de22ca7834bad",
+        "GUID:131049c454a34a11b3910295555d2830",
+        "GUID:7212d61794904eac9281ce9f26262cb1",
+        "GUID:e7f0ab2ac424208429d649986281d535",
+        "GUID:f51af22c92914bc6b143539603c8f57d",
+        "GUID:3d4daf6696a825240b11d99d0d2865ed",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:890fbe2513d5a4da7b2f467accfb1892",
+        "GUID:b6e813ebdc284172b397966f0cc2ae16",
+        "GUID:2c90e14f48194f74c8ea43f9a2e06d80"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.coffee.ui-effect",
+            "expression": "",
+            "define": "UI_EFFECT"
+        },
+        {
+            "name": "com.theone.module.highscore",
+            "expression": "",
+            "define": "THEONE_HIGHSCORE"
+        },
+        {
+            "name": "com.svermeulen.extenject",
+            "expression": "",
+            "define": "GDK_ZENJECT"
+        },
+        {
+            "name": "jp.hadashikick.vcontainer",
+            "expression": "",
+            "define": "GDK_VCONTAINER"
+        },
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "THEONE_LOCALIZATION"
+        }
+    ],
+    "noEngineReferences": false
+}

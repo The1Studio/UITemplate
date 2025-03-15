@@ -36,4 +36,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Blueprints
         All          = -1,
         Default      = IAP | SoftCurrency | Ads | Progression | Gift | StartedPack,
     }
+    public enum Status
+    {
+        Owned      = 0,
+        Unlocked   = 1,
+        InProgress = 2,
+        Locked     = 3,
+    }
 }

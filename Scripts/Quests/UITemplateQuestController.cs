@@ -44,12 +44,12 @@
         public         UITemplateQuestProgress.Quest                         Progress { get; internal set; }
         private static Dictionary<IRedirectTarget, IRedirectTarget.IHandler> handleTargets = new();
 
-        public async UniTask CollectReward(RectTransform startAnimRectTransform = null)
+        public void CollectReward(RectTransform startAnimRectTransform = null)
         {
             if (this.Progress.Status is not QuestStatus.NotCollected) return;
             this.RemoveProgressHandlers(this.Progress.CompleteProgress);
             this.Progress.Status |= QuestStatus.Collected;
-            await this.Record.Rewards.Select(reward => this.inventoryDataController.AddGenericReward(reward.Id, reward.Value, $"quest_{this.Record.Id}", startAnimRectTransform));
+            this.Record.Rewards.ForEach(reward => this.inventoryDataController.AddGenericReward(reward.Id, reward.Value, $"quest_{this.Record.Id}", startAnimRectTransform));
         }
 
         public IEnumerable<ICondition.IProgress.IHandler> GetCompleteProgressHandlers()

@@ -11,7 +11,8 @@
     "UniTask",
     "GameFoundation.DI",
     "MaxSdk.Scripts.IntegrationManager.Editor",
-    "MaxSdk.Scripts"
+    "MaxSdk.Scripts",
+    "UITemplate.Config"
   ],
   "includePlatforms": [
     "Editor"

@@ -10,6 +10,7 @@
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using Sirenix.OdinInspector;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main;
@@ -188,7 +189,7 @@
                 );
 
             if (newValue < 1f)
-                this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.InProgress);
+                this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, Status.InProgress);
             else
                 sequence.onComplete += this.OnItemUnlock;
         }
@@ -218,7 +219,7 @@
 
         protected virtual void OnItemUnlock()
         {
-            this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.Owned);
+            this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, Status.Owned);
         }
 
         public override void Dispose()

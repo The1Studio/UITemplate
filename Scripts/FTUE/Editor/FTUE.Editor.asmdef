@@ -4,7 +4,8 @@
   "references": [
     "UITemplate.Scripts",
     "GameFoundation.BlueprintFlow",
-    "UniTask"
+    "UniTask",
+    "UITemplate.Blueprint"
   ],
   "includePlatforms": [
     "Editor"

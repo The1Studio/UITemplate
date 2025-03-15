@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.Serialization;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine.Scripting;
@@ -15,7 +16,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     {
         public const string ClassicMode = "classic";
         
-        [OdinSerialize] public UITemplateItemData.UnlockType UnlockedFeature { get; set; } = UITemplateItemData.UnlockType.Default;
+        [OdinSerialize] public UnlockType UnlockedFeature { get; set; } = UnlockType.Default;
 
         [Obsolete]
         [OdinSerialize] public int CurrentLevel { get; set; } = 1;

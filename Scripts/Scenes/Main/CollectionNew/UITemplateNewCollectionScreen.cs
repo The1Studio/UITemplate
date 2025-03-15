@@ -47,17 +47,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         [Preserve]
         public UITemplateNewCollectionScreenPresenter(
-            SignalBus                         signalBus,
-            ILogService                       logger,
-            EventSystem                       eventSystem,
-            IIapServices                      iapServices,
-            UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
-            IGameAssets                       gameAssets,
-            IScreenManager                    screenManager,
-            UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint,
-            UITemplateItemBlueprint           uiTemplateItemBlueprint,
+            SignalBus signalBus,
+            ILogService logger,
+            EventSystem eventSystem,
+            IIapServices iapServices,
+            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+            IGameAssets gameAssets,
+            IScreenManager screenManager,
+            UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
+            UITemplateItemBlueprint uiTemplateItemBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateLevelDataController     levelDataController
+            UITemplateLevelDataController levelDataController
         ) : base(signalBus, logger)
         {
             this.eventSystem                       = eventSystem;
@@ -97,7 +97,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         private async void BuyItemCompleted()
         {
-            await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, UITemplateInventoryDataController.DefaultSoftCurrencyID, placement, startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
+            await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, UITemplateInventoryDataController.DefaultSoftCurrencyID, placement,
+                startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
             this.View.itemCollectionGridAdapter.Refresh();
         }
 
@@ -136,9 +137,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 });
         }
 
-        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model)
-        {
-        }
+        protected virtual void OnRandomItemComplete(ItemCollectionItemModel model) { }
 
         protected virtual async void OnClickHomeButton() { await this.ScreenManager.OpenScreen<UITemplateHomeTapToPlayScreenPresenter>(); }
 
@@ -197,13 +196,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                     currentModel.IndexItemUsed = currentModel.IndexItemSelected = indexUsed == -1 ? 0 : indexUsed;
                 }
             }
+
             this.RebindModelData();
             await this.View.topButtonBarAdapter.InitItemAdapter(this.topButtonItemModels);
         }
 
-        protected virtual void RebindModelData()
-        {
-        }
+        protected virtual void RebindModelData() { }
 
         protected virtual async void OnButtonCategorySelected(TopButtonItemModel obj)
         {
@@ -239,9 +237,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.itemCollectionGridAdapter.Refresh();
         }
 
-        protected virtual void OnUsedItem(UITemplateItemData itemData)
-        {
-        }
+        protected virtual void OnUsedItem(UITemplateItemData itemData) { }
 
         private void OnSelectItem(ItemCollectionItemModel obj)
         {
@@ -256,44 +252,42 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.View.itemCollectionGridAdapter.Refresh();
         }
 
-        protected virtual void OnSelectedItem(UITemplateItemData itemData)
-        {
-        }
+        protected virtual void OnSelectedItem(UITemplateItemData itemData) { }
 
         private void OnBuyItem(ItemCollectionItemModel obj)
         {
             switch (obj.ShopBlueprintRecord.UnlockType)
             {
-                case UITemplateItemData.UnlockType.Ads:
+                case UnlockType.Ads:
                     this.BuyWithAds(obj);
 
                     break;
-                case UITemplateItemData.UnlockType.SoftCurrency:
+                case UnlockType.SoftCurrency:
                     this.BuyWithSoftCurrency(obj);
 
                     break;
-                case UITemplateItemData.UnlockType.None: break;
-                case UITemplateItemData.UnlockType.IAP:
+                case UnlockType.None: break;
+                case UnlockType.IAP:
                     this.BuyWithIAP(obj);
 
                     break;
-                case UITemplateItemData.UnlockType.StartedPack:
+                case UnlockType.StartedPack:
                     this.BuyWithStartedPack(obj);
 
                     break;
 
-                case UITemplateItemData.UnlockType.Progression: break;
-                case UITemplateItemData.UnlockType.Gift:        break;
-                case UITemplateItemData.UnlockType.DailyReward:
+                case UnlockType.Progression: break;
+                case UnlockType.Gift:        break;
+                case UnlockType.DailyReward:
                     this.BuyWithDailyReward(obj);
 
                     break;
-                case UITemplateItemData.UnlockType.LuckySpin:
+                case UnlockType.LuckySpin:
                     this.BuyWithLuckySpin(obj);
 
                     break;
-                case UITemplateItemData.UnlockType.All: break;
-                default:                                throw new ArgumentOutOfRangeException();
+                case UnlockType.All: break;
+                default:             throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -305,9 +299,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             });
         }
 
-        protected virtual void OnBuyStartedPackComplete(string packId, int quantity)
-        {
-        }
+        protected virtual void OnBuyStartedPackComplete(string packId, int quantity) { }
 
         public override void Dispose()
         {
@@ -359,19 +351,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private void BuyWithAds(ItemCollectionItemModel obj)
         {
             this.uiTemplateAdServiceWrapper.ShowRewardedAd(placement,
-                () =>
-                {
-                    this.BuyItemCompleted(obj);
-                });
+                () => { this.BuyItemCompleted(obj); });
         }
 
         private void BuyWithIAP(ItemCollectionItemModel obj)
         {
             this.iapServices.BuyProductID(obj.ShopBlueprintRecord.Id,
-                (x, quantity) =>
-                {
-                    this.BuyItemCompleted(obj);
-                });
+                (x, quantity) => { this.BuyItemCompleted(obj); });
         }
 
         private void BuyItemCompleted(ItemCollectionItemModel obj)

@@ -82,7 +82,7 @@
 
         private void OnClick()
         {
-            this.Model.Quest.CollectReward(this.transform as RectTransform).Forget();
+            this.Model.Quest.CollectReward(this.transform as RectTransform);
             this.SetStatus();
         }
     }

@@ -32,14 +32,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             if (this.ShopBlueprintRecord is { } && (this.ShopBlueprintRecord.UnlockType & UnlockType.Ads) != 0) this.RemainingAdsProgress = this.ShopBlueprintRecord?.Price ?? 0;
         }
 
-        public enum Status
-        {
-            Owned      = 0,
-            Unlocked   = 1,
-            InProgress = 2,
-            Locked     = 3,
-        }
-
         public class DefaultComparer : IComparer<UITemplateItemData>
         {
             public int Compare(UITemplateItemData x, UITemplateItemData y)

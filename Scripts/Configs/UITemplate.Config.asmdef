@@ -1,0 +1,20 @@
+{
+    "name": "UITemplate.Config",
+    "rootNamespace": "",
+    "references": [
+        "GUID:889e0127bba74690b02267ceb80204f7",
+        "GUID:563749aea2450c64fb6d1e8f8ea88217",
+        "GUID:7f5c76d5df8d45da9685a7a9f428cd6c",
+        "GUID:131049c454a34a11b3910295555d2830",
+        "GUID:a08b4fecfb4e43f1aa902a9aa5214b91"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

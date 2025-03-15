@@ -95,9 +95,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 this.BuyItemCompleted);
         }
 
-        private async void BuyItemCompleted()
+        private void BuyItemCompleted()
         {
-            await this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, UITemplateInventoryDataController.DefaultSoftCurrencyID, placement,
+            this.uiTemplateInventoryDataController.AddCurrency(this.CoinAddAmount, UITemplateInventoryDataController.DefaultSoftCurrencyID, placement,
                 startAnimationRect: this.View.btnAddMoreCoin.transform as RectTransform);
             this.View.itemCollectionGridAdapter.Refresh();
         }
@@ -149,7 +149,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
             foreach (var record in this.uiTemplateItemBlueprint.Values)
             {
-                var itemData = this.uiTemplateInventoryDataController.GetItemData(record.Id, UITemplateItemData.Status.Unlocked);
+                var itemData = this.uiTemplateInventoryDataController.GetItemData(record.Id, Status.Unlocked);
 
                 if ((itemData.ShopBlueprintRecord.UnlockType & unlockType) == 0) continue;
 
@@ -223,7 +223,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
         private void OnUseItem(ItemCollectionItemModel obj)
         {
             // If the item is not owned, do not use it
-            if (!this.uiTemplateInventoryDataController.TryGetItemData(obj.ItemData.Id, out var itemData) || itemData.CurrentStatus != UITemplateItemData.Status.Owned) return;
+            if (!this.uiTemplateInventoryDataController.TryGetItemData(obj.ItemData.Id, out var itemData) || itemData.CurrentStatus != Status.Owned) return;
 
             var currentCategory = this.uiTemplateCategoryItemBlueprint.ElementAt(this.currentSelectedCategoryIndex).Value.Id;
             var tempModel       = this.itemCollectionItemModels.Where(x => x.ItemBlueprintRecord.Category.Equals(currentCategory)).ToList();
@@ -344,7 +344,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
                 return;
             }
 
-            this.uiTemplateInventoryDataController.AddCurrency(-obj.ShopBlueprintRecord.Price, obj.ShopBlueprintRecord.CurrencyID, placement).Forget();
+            this.uiTemplateInventoryDataController.AddCurrency(-obj.ShopBlueprintRecord.Price, obj.ShopBlueprintRecord.CurrencyID, placement);
             this.BuyItemCompleted(obj);
         }
 

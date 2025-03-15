@@ -31,10 +31,10 @@
 
         [Preserve]
         public BreakAdsPopupPresenter(
-            SignalBus                         signalBus,
-            ILogService                       logger,
-            BreakAdsViewHelper                breakAdsViewHelper,
-            ThirdPartiesConfig                thirdPartiesConfig,
+            SignalBus signalBus,
+            ILogService logger,
+            BreakAdsViewHelper breakAdsViewHelper,
+            ThirdPartiesConfig thirdPartiesConfig,
             UITemplateInventoryDataController inventoryDataController
         ) : base(signalBus, logger)
         {
@@ -45,10 +45,7 @@
 
         #endregion
 
-        protected override void OnViewReady()
-        {
-            this.breakAdsViewHelper.OnViewReady(this.View, this);
-        }
+        protected override void OnViewReady() { this.breakAdsViewHelper.OnViewReady(this.View, this); }
 
         public override UniTask BindData()
         {
@@ -58,7 +55,7 @@
 
         public override async UniTask CloseViewAsync()
         {
-            this.RewardAfterWatchedAds().Forget();
+            this.RewardAfterWatchedAds();
             await base.CloseViewAsync();
         }
 
@@ -69,15 +66,13 @@
             this.View.txtRewardCurrencyValue.text = string.Format(this.View.currencyValuePattern, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount);
         }
 
-        protected virtual async UniTask RewardAfterWatchedAds()
+        protected virtual void RewardAfterWatchedAds()
         {
             if (!this.thirdPartiesConfig.AdSettings.IsBreakAdsRewardCurrency) return;
-            await this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, "break_ads", this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency, this.View.currencyTransform);
+            this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, "break_ads", this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency,
+                this.View.currencyTransform);
         }
 
-        public override void Dispose()
-        {
-            this.breakAdsViewHelper.Dispose();
-        }
+        public override void Dispose() { this.breakAdsViewHelper.Dispose(); }
     }
 }

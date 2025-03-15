@@ -1,0 +1,18 @@
+{
+    "name": "UITemplate.Internet",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3d4daf6696a825240b11d99d0d2865ed",
+        "GUID:f51af22c92914bc6b143539603c8f57d",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

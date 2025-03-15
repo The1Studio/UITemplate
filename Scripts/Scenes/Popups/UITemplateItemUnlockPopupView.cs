@@ -107,7 +107,7 @@
             this.adService.ShowRewardedAd("",
                 () =>
                 {
-                    this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, UITemplateItemData.Status.Owned);
+                    this.inventoryDataController.UpdateStatusItemData(this.Model.ItemId, Status.Owned);
                     this.CloseView();
                 });
         }

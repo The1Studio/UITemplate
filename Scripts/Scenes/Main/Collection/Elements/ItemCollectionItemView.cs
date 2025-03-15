@@ -4,6 +4,7 @@
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
+    using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.Collection.Base;
     using UnityEngine;
@@ -60,24 +61,24 @@
             // endif
         }
 
-        private void Init(UITemplateItemData.Status status)
+        private void Init(Status status)
         {
             this.Init();
             switch (status)
             {
-                case UITemplateItemData.Status.Owned:
+                case Status.Owned:
                     this.InitItemOwned();
 
                     break;
-                case UITemplateItemData.Status.Unlocked:
+                case Status.Unlocked:
                     this.InitItemUnLocked();
 
                     break;
-                case UITemplateItemData.Status.Locked:
+                case Status.Locked:
                     this.InitItemLocked();
 
                     break;
-                case UITemplateItemData.Status.InProgress:
+                case Status.InProgress:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(status), status, null);
             }

@@ -5,7 +5,8 @@
     "UITemplate.Scripts",
     "GameFoundation.BlueprintFlow",
     "UniTask",
-    "UITemplate.Blueprint"
+    "UITemplate.Blueprint",
+    "UITemplate.FTUE"
   ],
   "includePlatforms": [
     "Editor"

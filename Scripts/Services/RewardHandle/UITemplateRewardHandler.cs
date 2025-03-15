@@ -59,7 +59,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
             if (this.rewardIdToRewardExecutor.TryGetValue(rewardId, out var dicRewardRecord))
                 dicRewardRecord.ReceiveReward(rewardValue, startPos);
             else
-                this.uiTemplateInventoryDataController.AddGenericReward(rewardId, rewardValue, from, startPos).Forget();
+                this.uiTemplateInventoryDataController.AddGenericReward(rewardId, rewardValue, from, startPos);
         }
     }
 }

@@ -186,7 +186,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             var rewardList = this.uiTemplateLevelBlueprint.GetDataById(levelUnlockReward).Rewards;
 
             for (var i = 0; i < rewardList.Count; i++)
-                if (this.uiTemplateInventoryDataController.GetItemData(rewardList[i]).CurrentStatus != UITemplateItemData.Status.Owned)
+                if (this.uiTemplateInventoryDataController.GetItemData(rewardList[i]).CurrentStatus != Status.Owned)
                     return rewardList[i];
 
             return null;

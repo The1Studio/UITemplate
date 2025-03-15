@@ -236,9 +236,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 Debug.LogError($"vubc start time");
                 this.signalBus.Fire(new CollapsibleBannerAdDismissedSignal(AdFormatConstants.CollapsibleBanner));
-                this.CollapsibleBannerView.Hide();
+                this.CollapsibleBannerView.Destroy();
                 Debug.LogError($"vubc start time1");
-                //this.ScheduleRefreshCollapsible();
+                this.ScheduleRefreshCollapsible();
             }).Forget();
         }
 

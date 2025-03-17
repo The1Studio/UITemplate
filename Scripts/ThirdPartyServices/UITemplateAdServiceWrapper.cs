@@ -131,7 +131,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnApplicationPauseHandler);
             this.signalBus.Subscribe<CollapsibleBannerAdLoadFailedSignal>(this.OnCollapsibleBannerLoadFailed);
             this.signalBus.Subscribe<CollapsibleBannerAdDismissedSignal>(this.OnCollapsibleBannerDismissed);
-            this.signalBus.Subscribe<CollapsibleBannerAdPresentedSignal>(this.OnCollapsibleBannerPresented);
 
             //AOA
             this.StartLoadingAOATime = DateTime.Now;
@@ -208,38 +207,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        private void OnCollapsibleBannerPresented(CollapsibleBannerAdPresentedSignal signal)
-        {
-            Debug.Log("onelog: Collapsible Banner Presented -> Start auto-dismiss timer.");
-            this.StartAutoDismissTimer();
-        }
-
         private void OnCollapsibleBannerDismissed(CollapsibleBannerAdDismissedSignal signal)
         {
             this.AutoDismissCts?.Cancel();
             this.AutoDismissCts?.Dispose();
             this.AutoDismissCts = null;
             this.ScheduleRefreshCollapsible();
-        }
-
-        private void StartAutoDismissTimer()
-        {
-            this.AutoDismissCts?.Cancel();
-            this.AutoDismissCts?.Dispose();
-            this.AutoDismissCts = null;
-            if (this.adServicesConfig.CollapsibleBannerAutoDismissTime < 0) return;
-            UniTask.WaitForSeconds(
-                this.adServicesConfig.CollapsibleBannerAutoDismissTime,
-                true,
-                cancellationToken: (this.AutoDismissCts = new()).Token
-            ).ContinueWith(() =>
-            {
-                if (this.AutoDismissCts?.Token.IsCancellationRequested ?? true) return;
-                this.CollapsibleBannerView.Hide();
-                this.CollapsibleBannerView.Destroy();
-                this.collapsibleBannerAd.ShowCollapsibleBannerAd(false);
-                this.ScheduleRefreshCollapsible();
-            }).Forget();
         }
 
         private void ScheduleRefreshCollapsible()

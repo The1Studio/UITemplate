@@ -1,4 +1,4 @@
-﻿namespace UITemplate.Scripts.Signals
+﻿namespace TheOneStudio.UITemplate.UITemplate.Signals
 {
     using System;
     using UnityEngine;

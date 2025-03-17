@@ -7,7 +7,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
-    using global::UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;

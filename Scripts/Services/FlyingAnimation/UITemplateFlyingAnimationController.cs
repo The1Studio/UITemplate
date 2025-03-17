@@ -11,7 +11,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Scripts.Utilities;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using GameFoundation.Signals;
-    using global::UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;

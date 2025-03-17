@@ -1,4 +1,4 @@
-#if UI_EFFECT
+#if UI_EFFECT_V4_TWEEN
 namespace TheOneStudio.UITemplate.UITemplate.Utils
 {
     using System;

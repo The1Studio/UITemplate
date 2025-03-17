@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using System.Linq;
     using GameFoundation.Scripts.Interfaces;
     using GameFoundation.Scripts.Utilities.Extension;
+    using Newtonsoft.Json;
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -15,20 +16,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     public class UITemplateUserLevelData : ILocalData, IUITemplateLocalData
     {
         public const string ClassicMode = "classic";
-        
-        [OdinSerialize] internal UnlockType UnlockedFeature { get; set; } = UnlockType.Default;
 
+        [JsonProperty] [OdinSerialize] internal UnlockType UnlockedFeature { get; set; } = UnlockType.Default;
+
+        [JsonProperty]
         [Obsolete]
-        [OdinSerialize] internal int CurrentLevel { get; set; } = 1;
+        [OdinSerialize]
+        internal int CurrentLevel { get; set; } = 1;
 
-        [OdinSerialize] internal Dictionary<string, int> ModeToCurrentLevel { get; set; } = new();
+        [JsonProperty] [OdinSerialize] internal Dictionary<string, int> ModeToCurrentLevel { get; set; } = new();
 
+        [JsonProperty]
         [Obsolete]
-        [OdinSerialize] internal Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
+        [OdinSerialize]
+        internal Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
 
-        [OdinSerialize] internal Dictionary<string, Dictionary<int, LevelData>> ModeToLevelToLevelData { get; set; } = new();
+        [JsonProperty] [OdinSerialize] internal Dictionary<string, Dictionary<int, LevelData>> ModeToLevelToLevelData { get; set; } = new();
 
-        [OdinSerialize] internal int LastUnlockRewardLevel;
+        [JsonProperty] [OdinSerialize] internal int LastUnlockRewardLevel;
 
         public void Init()
         {
@@ -43,7 +48,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         public void OnDataLoaded()
         {
             this.ModeToCurrentLevel.GetOrAdd(ClassicMode, () => this.CurrentLevel);
-            this.ModeToLevelToLevelData.GetOrAdd(ClassicMode, () => this.LevelToLevelData); 
+            this.ModeToLevelToLevelData.GetOrAdd(ClassicMode, () => this.LevelToLevelData);
         }
 
         public Type ControllerType => typeof(UITemplateLevelDataController);
@@ -51,11 +56,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
     public class LevelData
     {
-        public int    Level       { get; internal set; }
-        public Status LevelStatus { get; internal set; }
-        public int    StarCount   { get; internal set; }
-        public int    LoseCount   { get; internal set; }
-        public int    WinCount    { get; internal set; }
+        [JsonProperty] public int    Level       { get; internal set; }
+        [JsonProperty] public Status LevelStatus { get; internal set; }
+        [JsonProperty] public int    StarCount   { get; internal set; }
+        [JsonProperty] public int    LoseCount   { get; internal set; }
+        [JsonProperty] public int    WinCount    { get; internal set; }
 
         public LevelData(int level, Status levelStatus, int loseCount = 0, int winCount = 0, int starCount = 0)
         {

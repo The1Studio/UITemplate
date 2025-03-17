@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using GameFoundation.Scripts.Interfaces;
+    using Newtonsoft.Json;
     using Sirenix.Serialization;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine.Scripting;
@@ -10,14 +11,12 @@
     [Preserve]
     public class UITemplateEventRacingData : ILocalData, IUITemplateLocalData
     {
-        internal DateTime startDate;
-        internal DateTime endDate;
-        internal DateTime lastRandomTime;
-
-        internal int YourOldShowScore;
-        internal int yourIndex;
-
-        [OdinSerialize] internal Dictionary<int, UITemplateRacingPlayerData> playerIndexToData = new();
+        [JsonProperty]                 internal DateTime                                    startDate;
+        [JsonProperty]                 internal DateTime                                    endDate;
+        [JsonProperty]                 internal DateTime                                    lastRandomTime;
+        [JsonProperty]                 internal int                                         YourOldShowScore;
+        [JsonProperty]                 internal int                                         yourIndex;
+        [JsonProperty] [OdinSerialize] internal Dictionary<int, UITemplateRacingPlayerData> playerIndexToData = new();
 
         //set startDate at start of local today and endDate at end of 7 days from today
         //set playerIndexToScore to empty dictionary
@@ -36,10 +35,10 @@
 
     public class UITemplateRacingPlayerData
     {
-        public string Name;
-        public string CountryCode;
-        public string IconAddressable;
-        public int    Score;
-        public bool   IsClaimItem;
+        [JsonProperty] public string Name;
+        [JsonProperty] public string CountryCode;
+        [JsonProperty] public string IconAddressable;
+        [JsonProperty] public int    Score;
+        [JsonProperty] public bool   IsClaimItem;
     }
 }

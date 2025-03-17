@@ -90,6 +90,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.applovin.mediation.adapters.google.android", "24010000.0.0" }, // temp lock util the new version is released
             { "com.applovin.mediation.adapters.googleadmanager.android", "24000000.0.0" }, // temp lock util the new version is released
             { "com.applovin.mediation.ads", "8.1.0" },
+            { "com.adjust.sdk", "5.1.2" }
         };
 
         [NonSerialized] private static readonly Dictionary<(string, string), string> NameToUnityPackageToImport = new()

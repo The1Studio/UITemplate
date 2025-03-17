@@ -14,7 +14,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             var doc                 = new XmlDocument();
             doc.Load(androidManifestPath);
             
-            // AdServicePropertyMigration(doc);
+            AdServicePropertyMigration(doc);
             FirebaseMessagingMigration(doc);
 
             //save manifest
@@ -55,18 +55,22 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                         node.Name == "property" && 
                         node.Attributes?["android:name"]?.Value == "android.adservices.AD_SERVICES_CONFIG"))
                 {
-                    continue;
+                    // If the property already exists, remove it
+                    application.RemoveChild(application.ChildNodes.Cast<XmlNode>().First(node => 
+                        node.Name == "property" && 
+                        node.Attributes?["android:name"]?.Value == "android.adservices.AD_SERVICES_CONFIG"));
+                    // continue;
                 }
                 
                 //Add <property android:name="android.adservices.AD_SERVICES_CONFIG" android:resource="@xml/ga_ad_services_config" tools:replace="android:resource"/>
                 // Create the new property element
-                var propertyElement = doc.CreateElement("property");
-                propertyElement.SetAttribute("name", "http://schemas.android.com/apk/res/android", "android.adservices.AD_SERVICES_CONFIG");
-                propertyElement.SetAttribute("resource", "http://schemas.android.com/apk/res/android", "@xml/ga_ad_services_config");
-                propertyElement.SetAttribute("replace", "http://schemas.android.com/tools", "android:resource");
+                // var propertyElement = doc.CreateElement("property");
+                // propertyElement.SetAttribute("name", "http://schemas.android.com/apk/res/android", "android.adservices.AD_SERVICES_CONFIG");
+                // propertyElement.SetAttribute("resource", "http://schemas.android.com/apk/res/android", "@xml/ga_ad_services_config");
+                // propertyElement.SetAttribute("replace", "http://schemas.android.com/tools", "android:resource");
                     
                 // Append the new property element to the service node
-                application.AppendChild(propertyElement);
+                // application.AppendChild(propertyElement);
             }
         }
     }

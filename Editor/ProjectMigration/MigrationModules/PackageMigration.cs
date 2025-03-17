@@ -57,48 +57,47 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             ),
         };
 
-        [NonSerialized]
-        private static readonly Dictionary<string, string> PackagesToAdd = new()
+        [NonSerialized] private static readonly Dictionary<string, string> PackagesToAdd = new()
         {
             // {"com.unity.adaptiveperformance", "5.1.0"},
             // {"com.unity.adaptiveperformance.samsung.android", "5.0.0"},
             { "com.google.external-dependency-manager", "1.2.185" },
             { "com.theone.foundation.buildscript", "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts" },
             //need to use this method because of the purchase connector, if we can import the purchase connector through UPM then we can change it
-            #if APPSFLYER
+#if APPSFLYER
             { "com.theone.appsflyer-unity-plugin", AnalyticConfig.AppsflyerPackageGitURL },
-            #endif
-            #if BYTEBREW
+#endif
+#if BYTEBREW
             { "com.bytebrew.unitysdk", AnalyticConfig.ByteBrewPackageGitURL },
-            #endif
-            #if UNITY_6000_0_OR_NEWER
+#endif
+#if UNITY_6000_0_OR_NEWER
             { "com.unity.addressables.android", "1.0.6" },
-            #endif
+#endif
             // add more packages as needed
         };
 
         // Add the package version to use here if you want to use a specific version
-        [NonSerialized]
-        private static readonly Dictionary<string, string> PackagesVersionToUse = new()
+        [NonSerialized] private static readonly Dictionary<string, string> PackagesVersionToUse = new()
         {
             { "com.google.ads.mobile", "9.6.0" },
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
             { "jp.hadashikick.vcontainer", "1.16.8" },
-            { "com.coffee.ui-effect", "5.2.0" },
+            { "com.coffee.ui-effect", "5.5.3" },
+            { "com.coffee.ui-particl", "4.11.2" },
             { "com.applovin.mediation.adapters.google.ios", "11130001.0.0" },
             { "com.applovin.mediation.adapters.googleadmanager.ios", "11130001.0.0" },
+            { "com.applovin.mediation.adapters.google.android", "24010000.0.0" }, // temp lock util the new version is released
+            { "com.applovin.mediation.adapters.googleadmanager.android", "24000000.0.0" }, // temp lock util the new version is released
             { "com.applovin.mediation.ads", "8.1.0" },
         };
 
-        [NonSerialized]
-        private static readonly Dictionary<(string, string), string> NameToUnityPackageToImport = new()
+        [NonSerialized] private static readonly Dictionary<(string, string), string> NameToUnityPackageToImport = new()
         {
             { ("BuildScripts", "Assets/BuildScripts"), "https://cdn.builds.the1studio.org/packages/GameVersionRuntime.unitypackage" },
         };
 
-        [NonSerialized]
-        public static readonly List<string> PackagesToRemove = new()
+        [NonSerialized] public static readonly List<string> PackagesToRemove = new()
         {
             // "com.unity.adaptiveperformance.google.android"
             "appsflyer-unity-plugin"
@@ -189,11 +188,13 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                     updated = true;
                     continue;
                 }
+
                 if (jRegistry["url"]?.ToString() != registry.url)
                 {
                     jRegistry["url"] = registry.url;
                     updated          = true;
                 }
+
                 var otherRegistryScopes = Registries.Where(otherRegistry => otherRegistry.name != registry.name).SelectMany(otherRegistry => otherRegistry.scopes).ToArray();
                 var oldScopes           = jRegistry["scopes"]?.Values<string>().Select(scope => scope.Trim().ToLower()).ToArray() ?? Array.Empty<string>();
                 var newScopes           = oldScopes.Union(registry.scopes).Except(otherRegistryScopes).ToArray();
@@ -202,6 +203,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                     jRegistry["scopes"] = JArray.FromObject(newScopes);
                     updated             = true;
                 }
+
                 if (!jRegistry["scopes"]!.Any())
                 {
                     jRegistry.Remove();

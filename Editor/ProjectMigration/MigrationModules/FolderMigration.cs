@@ -10,10 +10,11 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
     {
         [NonSerialized]
         // Define a global list of folders
-        private static readonly List<string> Folders = new()
+        private static readonly List<string> DeletedFolders = new()
         {
             "Assets/ExternalDependencyManager",
             "Assets/PlayServicesResolver",
+            "Assets/Samples/UI Effect",
             // Add more folders as needed
         };
 
@@ -22,7 +23,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             var folderDeleted = false;
 
             // Iterate over the global list of folders
-            foreach (var unused in Folders.Where(DeleteFolderIfExists)) folderDeleted = true;
+            foreach (var unused in DeletedFolders.Where(DeleteFolderIfExists)) folderDeleted = true;
 
             if (folderDeleted) AssetDatabase.Refresh();
         }

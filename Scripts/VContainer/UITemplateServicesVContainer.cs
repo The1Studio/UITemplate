@@ -34,7 +34,7 @@ namespace TheOneStudio.UITemplate
             typeof(IUITemplateScreenShow).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton).AsImplementedInterfaces());
 
             //FlyingAnimation Currency
-            builder.Register<UITemplateFlyingAnimationController>(Lifetime.Singleton);
+            builder.Register<UITemplateFlyingAnimationController>(Lifetime.Singleton).AsImplementedInterfaces();
 
             //Utils
             builder.Register<GameAssetUtil>(Lifetime.Singleton);

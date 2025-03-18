@@ -128,6 +128,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Subscribe<BannerAdPresentedSignal>(this.OnBannerAdPresented);
             this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnApplicationPauseHandler);
             this.signalBus.Subscribe<CollapsibleBannerAdLoadFailedSignal>(this.OnCollapsibleBannerLoadFailed);
+            this.signalBus.Subscribe<CollapsibleBannerAdDismissedSignal>(this.OnCollapsibleBannerDismissed);
 
             //AOA
             this.StartLoadingAOATime = DateTime.Now;
@@ -204,7 +205,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.signalBus.Fire(new UITemplateOnUpdateBannerStateSignal(true));
             }
         }
-
+        private void OnCollapsibleBannerDismissed(CollapsibleBannerAdDismissedSignal signal)
+        {
+            this.ScheduleRefreshCollapsible();
+        }
         private void ScheduleRefreshCollapsible()
         {
             this.RefreshCollapsibleCts?.Cancel();
@@ -219,6 +223,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             ).ContinueWith(() =>
             {
                 this.IsRefreshingCollapsible = true;
+                this.HideBannerAd();
                 this.ShowBannerAd();
             }).Forget();
         }

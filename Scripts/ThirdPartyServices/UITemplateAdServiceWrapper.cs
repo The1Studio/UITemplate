@@ -590,6 +590,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
+        public void ShowMRECAboveBanner(string placement)
+        {
+            if (this.IsRemovedAds || !this.adServicesConfig.EnableMRECAd) return;
+
+            var mrecAdService = this.mrecAdServices.FirstOrDefault(service => service.IsMRECReady(placement, default, default));
+            if (mrecAdService != null)
+            {
+                mrecAdService.ShowMREC(placement);
+                this.IsShowMRECAd = true;
+                this.logService.Log($"onelog: ShowMREC above banner, placement: {placement}");
+                this.ScheduleRefreshMREC();
+            }
+            else
+            {
+                this.logService.Log("onelog: ShowMREC, MREC no available!");
+            }
+        }
+
         public virtual void HideMREC(string placement, AdScreenPosition position)
         {
             this.RefreshMRECCts?.Cancel();

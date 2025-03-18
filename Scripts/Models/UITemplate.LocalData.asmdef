@@ -31,11 +31,6 @@
   "defineConstraints": [],
   "versionDefines": [
     {
-      "name": "com.coffee.ui-effect",
-      "expression": "",
-      "define": "UI_EFFECT"
-    },
-    {
       "name": "com.theone.module.highscore",
       "expression": "",
       "define": "THEONE_HIGHSCORE"

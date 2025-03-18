@@ -139,7 +139,7 @@
                 case ALL:              highlightElements = Object.FindObjectsByType<HighlightElement>(FindObjectsSortMode.None).ToList(); break;
                 default:
                     var screenType = this.screenPresenters.FirstOrDefault(screen => screen.Name == objNames[0]);
-                    if (screenType != null && this.GetCurrentContainer().Resolve(screenType) is IScreenPresenter screenPresenter)
+                    if (screenType != null && await this.screenManager.GetScreen(screenType) is { } screenPresenter)
                     {
                         highlightElements = screenPresenter.CurrentTransform.GetComponentsInChildren<HighlightElement>().ToList();
                     }
@@ -150,9 +150,10 @@
                     }
                     break;
             }
+
             for (var i = 1; i < objNames.Count; i++)
             {
-                var tf = highlightElements.FirstOrDefault(obj => obj.name == objNames[i]);
+                var tf = highlightElements.Where(x => x.isActiveAndEnabled).FirstOrDefault(obj => obj.name == objNames[i]);
                 if (tf) this.highlightObjects.Add(tf.transform);
             }
         }

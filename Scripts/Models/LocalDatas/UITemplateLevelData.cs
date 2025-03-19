@@ -10,6 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
+    using UnityEngine;
     using UnityEngine.Scripting;
 
     [Preserve]
@@ -48,6 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         public void OnDataLoaded()
         {
+            Debug.Log("On Level Data Loaded");
             this.ModeToCurrentLevel.GetOrAdd(ClassicMode, () => this.CurrentLevel);
             this.ModeToLevelToLevelData.GetOrAdd(ClassicMode, () => this.LevelToLevelData);
         }

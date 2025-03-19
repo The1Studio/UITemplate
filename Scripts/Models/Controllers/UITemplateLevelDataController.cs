@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Utilities.Extension;
+    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
@@ -16,13 +17,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         [Preserve]
         public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData,
-            UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices)
+            UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices, ILogService logService)
         {
             this.uiTemplateLevelBlueprint          = uiTemplateLevelBlueprint;
             this.uiTemplateUserLevelData           = uiTemplateUserLevelData;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.signalBus                         = signalBus;
             this.handleUserDataServices            = handleUserDataServices;
+            this.logService                        = logService;
         }
 
         public UnlockType UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
@@ -34,9 +36,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public LevelData GetCurrentLevelData                  => this.GetLevelData(this.CurrentLevel);
         public int       CurrentLevel                         => this.CurrentModeLevel(UITemplateUserLevelData.ClassicMode);
-        public LevelData GetCurrentModeLevelData(string mode) => this.GetLevelData(this.CurrentLevel, mode);
+        public LevelData GetCurrentModeLevelData(string mode) => this.GetLevelData(this.CurrentModeLevel(mode), mode);
 
-        public int CurrentModeLevel(string mode) => this.uiTemplateUserLevelData.ModeToCurrentLevel.GetOrAdd(mode, () => 1);
+        public int CurrentModeLevel(string mode) => this.uiTemplateUserLevelData.ModeToCurrentLevel.GetOrAdd(mode, () =>
+        {
+            this.logService.Log($"Init level for {mode} mode");
+            return 1;
+        });
 
         public int MaxLevel
         {
@@ -223,6 +229,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly SignalBus                         signalBus;
         private readonly IHandleUserDataServices           handleUserDataServices;
+        private readonly ILogService                       logService;
 
         #endregion
     }

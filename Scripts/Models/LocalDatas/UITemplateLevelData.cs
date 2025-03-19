@@ -49,7 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         public void OnDataLoaded()
         {
-            Debug.Log("On Level Data Loaded");
+            Debug.Log($"On Level Data Loaded, current level is {this.CurrentLevel}");
             this.ModeToCurrentLevel.GetOrAdd(ClassicMode, () => this.CurrentLevel);
             this.ModeToLevelToLevelData.GetOrAdd(ClassicMode, () => this.LevelToLevelData);
         }

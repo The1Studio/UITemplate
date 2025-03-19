@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     {
         public string virtualCurrencyName;
         public long   value;
+        public long   currencyAmount;
         public string placement;
         public int    level;
 
@@ -13,6 +14,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
         {
             this.virtualCurrencyName = virtualCurrencyName;
             this.value               = value;
+            this.currencyAmount      = value;
             this.placement           = placement;
             this.level               = level;
         }
@@ -22,6 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
     {
         public string virtualCurrencyName;
         public long   value;
+        public long   currencyAmount;
         public string placement;
         public int    level;
 
@@ -29,8 +32,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
         {
             this.virtualCurrencyName = virtualCurrencyName;
             this.value               = value;
+            this.currencyAmount      = value;
             this.placement           = placement;
-            this.level              = level;
+            this.level               = level;
         }
     }
 }

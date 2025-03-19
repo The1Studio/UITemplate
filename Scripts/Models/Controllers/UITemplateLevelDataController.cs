@@ -3,7 +3,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
@@ -37,7 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public int       CurrentLevel                         => this.CurrentModeLevel(UITemplateUserLevelData.ClassicMode);
         public LevelData GetCurrentModeLevelData(string mode) => this.GetLevelData(this.CurrentLevel, mode);
 
-        public int CurrentModeLevel(string mode) => this.uiTemplateUserLevelData.ModeToCurrentLevel.GetOrAdd(UITemplateUserLevelData.ClassicMode, () => 1);
+        public int CurrentModeLevel(string mode) => this.uiTemplateUserLevelData.ModeToCurrentLevel.GetOrAdd(mode, () => 1);
 
         public int MaxLevel
         {
@@ -91,6 +90,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when select a level in level selection screen
         /// </summary>
         /// <param name="level">selected level</param>
+        /// <param name="mode">the mode of level</param>
         public void SelectLevel(int level, string mode = UITemplateUserLevelData.ClassicMode)
         {
             this.uiTemplateUserLevelData.ModeToCurrentLevel[mode] = level;
@@ -137,7 +137,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <summary>
         /// Called when player skip current level
         /// </summary>
-        /// <param name="time">Play time in seconds</param>
+        /// <param name="mode">Play mode</param>
         public void SkipCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
@@ -157,9 +157,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public bool CheckLevelIsUnlockedStatus(int level, string mode = UITemplateUserLevelData.ClassicMode)
         {
-            var currentModeLevel = this.CurrentModeLevel(mode);
-            var levelData        = this.GetLevelData(currentModeLevel, mode);
-
             var skippedLevel      = this.GetModelData(mode).Values.LastOrDefault(levelData => levelData.LevelStatus == LevelData.Status.Skipped);
             var skippedLevelIndex = this.GetModelData(mode).Values.ToList().IndexOf(skippedLevel);
             if (skippedLevelIndex == -1 && this.MaxLevel == 0 && level == 1) return true;

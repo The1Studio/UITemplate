@@ -33,7 +33,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         [JsonProperty] [OdinSerialize] internal Dictionary<string, Dictionary<int, LevelData>> ModeToLevelToLevelData { get; set; } = new();
 
-        [JsonProperty] [OdinSerialize] internal int LastUnlockRewardLevel;
+        [JsonProperty] [OdinSerialize] internal int   LastUnlockRewardLevel;
+        [JsonProperty] [OdinSerialize] internal float TimeStamp; //Time stamp in second
 
         public void Init()
         {

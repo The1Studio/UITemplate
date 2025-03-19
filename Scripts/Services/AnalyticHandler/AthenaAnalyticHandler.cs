@@ -20,7 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
     public class AthenaAnalyticHandler : UITemplateAnalyticHandler
     {
         #region Inject
-        
+
         private readonly UITemplateLevelDataController levelDataController;
         private readonly UITemplateShopPackBlueprint   shopPackBlueprint;
 
@@ -43,11 +43,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
             this.levelDataController = levelDataController;
             this.shopPackBlueprint   = shopPackBlueprint;
         }
-        
+
         #endregion
-        
-        private        bool   isLevelAbandoned;
-        private static Random random = new();
+
+        private bool   isLevelAbandoned;
         private string uniqueId;
         public override void Initialize()
         {
@@ -58,7 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
             this.signalBus.Subscribe<OnUpdateCurrencySignal>(this.OnUpdateCurrencyHandler);
             this.signalBus.Subscribe<ApplicationQuitSignal>(this.OnApplicationQuitHandler);
         }
-        
+
         private void OnIAPPurchaseSuccessHandler(OnIAPPurchaseSuccessSignal signal)
         {
             this.analyticServices.Track(new Purchase(signal.Product));
@@ -76,12 +75,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 },
             });
         }
-        
+
         private void OnLevelStartHandler(LevelStartedSignal signal)
         {
             var level    = signal.Level;
             var leveData = this.levelDataController.GetLevelData(level);
-            this.uniqueId = RandomString(10);
+            this.uniqueId = Guid.NewGuid().ToString();
             this.analyticServices.Track(new CustomEvent
             {
                 EventName = "game_start",
@@ -94,7 +93,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 },
             });
         }
-        
+
         private void OnLevelEndedHandler(LevelEndedSignal signal)
         {
             var level    = signal.Level;
@@ -114,17 +113,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 },
             });
         }
-        
+
         private void OnUpdateCurrencyHandler(OnUpdateCurrencySignal signal)
         {
             var eventProperties = new Dictionary<string, object>()
-                                  {
-                                      { "flow_type", signal.Amount > 0 ? "source" : "sink" },
-                                      { "virtual_currency_name", signal.Id },
-                                      { "value", signal.Amount },
-                                      { "level_id", this.levelDataController.CurrentLevel },
-                                      { "balance", signal.FinalValue }
-                                  };
+            {
+                { "flow_type", signal.Amount > 0 ? "source" : "sink" },
+                { "virtual_currency_name", signal.Id },
+                { "value", signal.Amount },
+                { "level_id", this.levelDataController.CurrentLevel },
+                { "balance", signal.FinalValue }
+            };
             if (signal.Amount >= 0)
             {
                 eventProperties.Add("from", signal.Source);
@@ -133,7 +132,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
             {
                 eventProperties.Add("to", signal.Source);
             }
-            
+
             if (signal.Metadata != null)
             {
                 foreach (var (key, value) in signal.Metadata)
@@ -141,25 +140,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                     eventProperties.TryAdd(key, value);
                 }
             }
+
             this.analyticServices.Track(new CustomEvent
-                                        {
-                                            EventName = "bi_resource_event",
-                                            EventProperties = eventProperties,
-                                        });
+            {
+                EventName       = "bi_resource_event",
+                EventProperties = eventProperties,
+            });
         }
-        
+
         private void OnApplicationQuitHandler()
         {
             this.isLevelAbandoned = true;
             this.levelDataController.LoseCurrentLevel();
         }
-
-        private static string RandomString(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
     }
 }
+
 #endif

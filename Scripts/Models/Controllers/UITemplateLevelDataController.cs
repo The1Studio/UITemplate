@@ -3,15 +3,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
+    using UnityEngine;
     using UnityEngine.Scripting;
 
-    public class UITemplateLevelDataController : IUITemplateControllerData
+    public class UITemplateLevelDataController : IUITemplateControllerData, ITickable
     {
         private Dictionary<string, Dictionary<int, DateTime>> modeToLevelToStartLevelTime = new();
 
@@ -89,7 +91,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
             this.GetModePlayTime(mode, currentModeLevel);
-            this.signalBus.Fire(new LevelStartedSignal(currentModeLevel, mode));
+            this.signalBus.Fire(new LevelStartedSignal(currentModeLevel, mode, this.uiTemplateUserLevelData.TimeStamp));
         }
 
         /// <summary>
@@ -232,5 +234,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly ILogService                       logService;
 
         #endregion
+
+        public void Tick()
+        {
+            this.uiTemplateUserLevelData.TimeStamp += Time.unscaledDeltaTime;
+        }
     }
 }

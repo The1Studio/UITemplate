@@ -18,15 +18,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
     public class AperoAnalyticHandler : UITemplateAnalyticHandler
     {
         [Preserve]
-        public AperoAnalyticHandler(SignalBus signalBus, IAnalyticServices analyticServices, IAnalyticEventFactory analyticEventFactory, UITemplateLevelDataController uiTemplateLevelDataController,
-                                    UITemplateInventoryDataController uITemplateInventoryDataController, UITemplateDailyRewardController uiTemplateDailyRewardController,
-                                    UITemplateGameSessionDataController uITemplateGameSessionDataController,
-                                    IScreenManager screenManager) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController,
-                                                                                                                    uITemplateInventoryDataController, uiTemplateDailyRewardController,
-                                                                                                                    uITemplateGameSessionDataController, screenManager)
+        public AperoAnalyticHandler(
+            SignalBus                           signalBus,
+            IAnalyticServices                   analyticServices,
+            IAnalyticEventFactory               analyticEventFactory,
+            UITemplateLevelDataController       uiTemplateLevelDataController,
+            UITemplateInventoryDataController   uITemplateInventoryDataController,
+            UITemplateDailyRewardController     uiTemplateDailyRewardController,
+            UITemplateGameSessionDataController uITemplateGameSessionDataController,
+            IScreenManager                      screenManager,
+            UITemplateAdsController             uiTemplateAdsController
+        )
+            : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController, screenManager, uiTemplateAdsController)
         {
+            
         }
-
+        
         public override void Initialize()
         {
             base.Initialize();

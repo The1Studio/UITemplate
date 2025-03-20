@@ -21,14 +21,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         [JsonProperty] [OdinSerialize] internal UnlockType UnlockedFeature { get; set; } = UnlockType.Default;
 
         [JsonProperty]
+        [Obsolete]
         [OdinSerialize]
-        internal int CurrentLevel { get; set; } = 1;
+        private int CurrentLevel { get; set; } = 1;
 
         [JsonProperty] [OdinSerialize] internal Dictionary<string, int> ModeToCurrentLevel { get; set; } = new();
 
         [JsonProperty]
+        [Obsolete]
         [OdinSerialize]
-        internal Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
+        private Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
 
         [JsonProperty] [OdinSerialize] internal Dictionary<string, Dictionary<int, LevelData>> ModeToLevelToLevelData { get; set; } = new();
 
@@ -45,11 +47,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 #endif
         }
 
+        [Obsolete("Only use to migrate data")]
         public void OnDataLoaded()
         {
             Debug.Log($"On Level Data Loaded, current level is {this.CurrentLevel}");
             this.ModeToCurrentLevel.GetOrAdd(ClassicMode, () => this.CurrentLevel);
             this.ModeToLevelToLevelData.GetOrAdd(ClassicMode, () => this.LevelToLevelData);
+            this.CurrentLevel = 2;
         }
 
         public Type ControllerType => typeof(UITemplateLevelDataController);

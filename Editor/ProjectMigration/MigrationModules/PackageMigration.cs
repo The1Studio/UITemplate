@@ -83,9 +83,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             { "com.unity.purchasing", "4.12.2" },
             { "com.cysharp.unitask", "2.5.10" },
             { "jp.hadashikick.vcontainer", "1.16.8" },
-            #if !USE_LEGACY_UI_EFFECT
             { "com.coffee.ui-effect", "5.5.3" },
-            #endif
             { "com.coffee.ui-particle", "4.11.2" },
             { "com.applovin.mediation.adapters.google.ios", "11130001.0.0" },
             { "com.applovin.mediation.adapters.googleadmanager.ios", "11130001.0.0" },

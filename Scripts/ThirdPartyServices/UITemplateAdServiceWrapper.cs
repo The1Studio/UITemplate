@@ -165,6 +165,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region banner
 
         public BannerLoadStrategy BannerLoadStrategy => this.thirdPartiesConfig.AdSettings.BannerLoadStrategy;
+        public bool IsBannerAdReady() => this.bannerAdService.IsBannerAdReady();
 
         public virtual async void ShowBannerAd(int width = 320, int height = 50, bool forceShowMediation = false)
         {

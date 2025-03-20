@@ -21,14 +21,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         [JsonProperty] [OdinSerialize] internal UnlockType UnlockedFeature { get; set; } = UnlockType.Default;
 
         [JsonProperty]
-        [Obsolete]
         [OdinSerialize]
-        private int CurrentLevel { get; set; } = 1;
+        public int CurrentLevel { get; set; } = 1;
 
         [JsonProperty] [OdinSerialize] internal Dictionary<string, int> ModeToCurrentLevel { get; set; } = new();
 
         [JsonProperty]
-        [Obsolete]
         [OdinSerialize]
         private Dictionary<int, LevelData> LevelToLevelData { get; set; } = new();
 

@@ -14,7 +14,6 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         {
             "Assets/ExternalDependencyManager",
             "Assets/PlayServicesResolver",
-            "Assets/Samples/UI Effect",
             // Add more folders as needed
         };
 

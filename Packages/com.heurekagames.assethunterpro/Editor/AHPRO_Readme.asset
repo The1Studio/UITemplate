@@ -480,3 +480,9 @@ MonoBehaviour:
       Patch: 22
     VersionChanges:
     - Fixed compile error in Unity 6
+  - VersionNum:
+      Major: 2
+      Minor: 2
+      Patch: 23
+    VersionChanges:
+    - '[Minor] Utility changes'

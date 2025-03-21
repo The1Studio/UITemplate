@@ -16,7 +16,6 @@ namespace HeurekaGames.Utils
         public static readonly Color clr_Red = new Color((183f / 256f), (0f / 256f), (0f / 256f));
         public static readonly Color clr_middleGreen = new Color((85f / 256f), (133f / 256f), (100f / 256f));
 
-
         public static void DrawGlobalHeader(Color color, string label, string version = "", Action additionHeaderContent = null)
         {
             EditorGUI.DrawRect(new Rect(0, 0, EditorGUIUtility.currentViewWidth, HeaderHeight), color);

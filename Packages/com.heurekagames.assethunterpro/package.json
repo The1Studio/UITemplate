@@ -1,7 +1,7 @@
 {
   "name": "com.heurekagames.assethunterpro",
   "displayName": "HeurekaGames Asset Hunter PRO",
-  "version": "2.2.22",
+  "version": "2.2.23",
   "unity": "2020.1",
   "description": "Asset Hunter PRO will find unused or duplicate assets in the project, and gives you the overview to easily delete them. You will also be given an overview over how your assets references each other.",
   "documentationUrl": "https://kristianhj.gitbook.io/assethunterpro/",

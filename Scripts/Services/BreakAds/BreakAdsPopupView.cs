@@ -69,8 +69,7 @@
         protected virtual void RewardAfterWatchedAds()
         {
             if (!this.thirdPartiesConfig.AdSettings.IsBreakAdsRewardCurrency) return;
-            this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, "break_ads", this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency,
-                this.View.currencyTransform);
+            this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency,"break_ads", this.View.currencyTransform);
         }
 
         public override void Dispose() { this.breakAdsViewHelper.Dispose(); }

@@ -131,8 +131,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// </summary>
         public bool AddCurrency(
             int addingValue,
-            string id,
-            string where,
+            string currencyId,
+            string placement,
             RectTransform startAnimationRect = null,
             string claimSoundKey = null,
             string flyCompleteSoundKey = null,
@@ -143,24 +143,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             Action onCompleteEachItem = null
         )
         {
-            var lastValue = this.GetCurrencyValue(id);
+            var lastValue = this.GetCurrencyValue(currencyId);
 
             var resultValue = lastValue + addingValue;
             if (resultValue < 0)
             {
-                this.signalBus.Fire(new OnNotEnoughCurrencySignal(id));
+                this.signalBus.Fire(new OnNotEnoughCurrencySignal(currencyId));
 
                 return false;
             }
 
-            var currencyWithCap = this.SetCurrencyWithCap(resultValue, id);
+            var currencyWithCap = this.SetCurrencyWithCap(resultValue, currencyId);
             var amount          = currencyWithCap - lastValue;
-            this.signalBus.Fire(new OnUpdateCurrencySignal(id, amount, currencyWithCap, where));
+            this.signalBus.Fire(new OnUpdateCurrencySignal(currencyId, amount, currencyWithCap, placement));
             if (startAnimationRect != null)
             {
                 this.signalBus.Fire(new PlayCurrencyAnimationSignal
                 {
-                    currecyId                  = id,
+                    currecyId                  = currencyId,
                     amount                     = amount,
                     currencyWithCap            = currencyWithCap,
                     startAnimationRect         = startAnimationRect,
@@ -176,7 +176,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             // if there is no animation, just update the currency
             else
             {
-                this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(id, amount, currencyWithCap));
+                this.signalBus.Fire(new OnFinishCurrencyAnimationSignal(currencyId, amount, currencyWithCap));
             }
 
             return true;

@@ -42,7 +42,7 @@
         private void Initialize()
         {
             this.signalBus.Subscribe<OnFinishCurrencyAnimationSignal>(this.OnUpdateCurrency);
-            this.UpdateCurrencyData();
+            this.RefreshView();
         }
 
         private void ResetState()
@@ -82,10 +82,10 @@
         public void SetCurrencyId(string id)
         {
             this.currencyId = id;
-            this.UpdateCurrencyData();
+            this.RefreshView();
         }
 
-        private void UpdateCurrencyData()
+        private void RefreshView()
         {
             this.UpdateData(this.uiTemplateInventoryDataController.GetCurrencyValue(this.currencyId));
             if (this.currencyValueText != null) this.defaultColor = this.currencyValueText.color;

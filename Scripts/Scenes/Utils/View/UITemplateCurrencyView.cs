@@ -42,8 +42,7 @@
         private void Initialize()
         {
             this.signalBus.Subscribe<OnFinishCurrencyAnimationSignal>(this.OnUpdateCurrency);
-            this.UpdateData(this.uiTemplateInventoryDataController.GetCurrencyValue(this.currencyId));
-            if (this.currencyValueText != null) this.defaultColor = this.currencyValueText.color;
+            this.UpdateCurrencyData();
         }
 
         private void ResetState()
@@ -80,6 +79,18 @@
             }).SetUpdate(true);
         }
 
+        public void SetCurrencyId(string id)
+        {
+            this.currencyId = id;
+            this.UpdateCurrencyData();
+        }
+
+        private void UpdateCurrencyData()
+        {
+            this.UpdateData(this.uiTemplateInventoryDataController.GetCurrencyValue(this.currencyId));
+            if (this.currencyValueText != null) this.defaultColor = this.currencyValueText.color;
+        }
+        
         public override string CurrencyKey => this.currencyId;
     }
 }

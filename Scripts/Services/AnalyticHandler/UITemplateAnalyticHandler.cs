@@ -146,7 +146,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.uiTemplateLevelDataController.LoseCurrentLevel();
         }
 
-        private static readonly List<int> SumAdsEventList = new() { 2, 3, 4, 5, 10 };
+        private static readonly List<int> SumAdsEventList = new() { 2, 3, 4, 5, 6, 10 };
         protected virtual void AddRevenueHandler(AdRevenueSignal obj)
         {
             switch (obj.AdsRevenueEvent.AdFormat)

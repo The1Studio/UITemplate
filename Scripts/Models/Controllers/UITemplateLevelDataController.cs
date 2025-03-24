@@ -106,7 +106,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.handleUserDataServices.SaveAll();
         }
 
-        private int GetCurrentLevelPlayTime(string mode = UITemplateUserLevelData.ClassicMode)
+        public int GetCurrentLevelPlayTime(string mode = UITemplateUserLevelData.ClassicMode)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
             var startTime        = this.modeToLevelToStartLevelTime.GetOrAdd(mode, () => new Dictionary<int, DateTime>()).GetOrAdd(currentModeLevel, () => DateTime.UtcNow);

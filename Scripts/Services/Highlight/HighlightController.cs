@@ -87,6 +87,19 @@
         {
             this.ClearHighlightObject();
             await this.GetHighlightObject(highlightPath);
+            this.SetHighlight(canClickOutside, onButtonDown);
+        }
+
+        public UniTask SetHighlight(List<Transform> highlightObjects, bool canClickOutside = false, Action onButtonDown = null)
+        {
+            this.ClearHighlightObject();
+            this.highlightObjects = highlightObjects;
+            this.SetHighlight(canClickOutside, onButtonDown);
+            return UniTask.CompletedTask;
+        }
+
+        private void SetHighlight(bool canClickOutside, Action onButtonDown = null)
+        {
             if (this.highlightObjects.Count == 0)
             {
                 this.TurnOffHighlight();

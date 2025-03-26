@@ -525,13 +525,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (!this.adServicesConfig.EnableRewardedAd || this.adServicesConfig.RewardedAdFreePlacements.Contains(place))
             {
+                Debug.Log($"cuongnq: ShowRewardedAd {place} - {this.adServicesConfig.EnableRewardedAd} - {this.adServicesConfig.RewardedAdFreePlacements.Contains(place)}");
                 onComplete?.Invoke();
                 return;
             }
 
             this.signalBus.Fire(new RewardedAdEligibleSignal(place));
 
-            this.logService.Log($"onelog: ShowRewardedAd {place} - {string.Join(", ", this.adServices.Select(adService => $"{adService.GetType().Name}: {adService.IsRewardedAdReady(place)}"))}");
+            this.logService.Log($"cuongnq: ShowRewardedAd {place} - {string.Join(", ", this.adServices.Select(adService => $"{adService.GetType().Name}: {adService.IsRewardedAdReady(place)}"))}");
 
             if (this.rewardedAdServices.FirstOrDefault(adService => adService.IsRewardedAdReady(place)) is not { } adService)
             {
@@ -552,6 +553,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             void OnRewardedAdCompleted()
             {
+                Debug.Log($"cuongnq: OnRewardedAdCompleted {place}");
                 onComplete?.Invoke();
 
                 if (this.adServicesConfig.ResetInterAdIntervalAfterRewardAd) this.totalNoAdsPlayingTime = 0;

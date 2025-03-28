@@ -79,6 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
             Locked,
             Passed,
             Skipped,
+            Unlocked
         }
     }
 }

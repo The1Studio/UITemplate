@@ -161,6 +161,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.handleUserDataServices.SaveAll();
         }
 
+        /// <summary>
+        /// Unlock level
+        /// </summary>
+        /// <param name="level">level to unlock</param>
+        /// <param name="mode">mode of level</param>
+        /// <returns></returns>
+        public bool UnlockLevel(int level, string mode)
+        {
+            var levelData        = this.GetLevelData(level, mode);
+            if (levelData.LevelStatus != LevelData.Status.Locked) return false;
+            levelData.LevelStatus = LevelData.Status.Unlocked;
+            return true;
+        }
+
         public bool IsTouchedLevel(int level) { return this.MaxLevel + 1 >= level; }
 
         public bool CheckLevelIsUnlockedStatus(int level, string mode = UITemplateUserLevelData.ClassicMode)

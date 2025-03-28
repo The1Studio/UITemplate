@@ -150,7 +150,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
             var levelData        = this.GetLevelData(currentModeLevel, mode);
-            if (levelData.LevelStatus == LevelData.Status.Locked)
+            if (levelData.LevelStatus != LevelData.Status.Passed)
             {
                 levelData.LevelStatus = LevelData.Status.Skipped;
             }

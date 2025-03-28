@@ -74,7 +74,7 @@
 
             this.updateCurrencyTween = DOTween.To(() => obj.FinalValue - obj.Amount, this.UpdateData, obj.FinalValue, this.animDuration).OnComplete(() =>
             {
-                this.UpdateData(obj.FinalValue);
+                this.UpdateData(this.uiTemplateInventoryDataController.GetCurrencyValue(this.currencyId));
                 this.ResetState();
             }).SetUpdate(true);
         }

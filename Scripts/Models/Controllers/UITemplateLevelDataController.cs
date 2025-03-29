@@ -146,12 +146,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player skip current level
         /// </summary>
         /// <param name="mode">Play mode</param>
-        public void SkipCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
+        public void SkipCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode, int starCount = 0)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
             var levelData        = this.GetLevelData(currentModeLevel, mode);
             if (levelData.LevelStatus != LevelData.Status.Passed)
             {
+                levelData.StarCount   = starCount;
                 levelData.LevelStatus = LevelData.Status.Skipped;
             }
 

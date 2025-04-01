@@ -11,8 +11,7 @@ namespace TheOne.Tool.Migration.ProjectMigration
         [InitializeOnLoadMethod]
         private static void OnProjectLoadedInEditor()
         {
-            PackageMigration.CheckAndUpdatePackageManagerSettings();
-            PackageMigration.ImportUnityPackage();
+            PackageMigration.Migrate();
             AndroidManifestMigration.UpdateAndroidManifest();
             GradlePropertiesMigration.CheckAndUpdateGradleProperties();
             ProguardMigration.CheckAndUpdateProguardFile();

@@ -179,7 +179,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <summary>
         /// Be careful, do not use unless necessary
         /// </summary>
-        public void UpdateLevelData(int level, string mode, LevelData newLevelData)
+        public void MigrateLevelData(int level, string mode, LevelData newLevelData)
         {
             var levelData = this.GetLevelData(level, mode);
             this.uiTemplateUserLevelData.ModeToLevelToLevelData[mode][level] = newLevelData;

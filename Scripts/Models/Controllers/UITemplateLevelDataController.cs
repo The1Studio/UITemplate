@@ -176,6 +176,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             return true;
         }
 
+        /// <summary>
+        /// Be careful, do not use unless necessary
+        /// </summary>
+        public void UpdateLevelData(int level, string mode, LevelData newLevelData)
+        {
+            var levelData = this.GetLevelData(level, mode);
+            this.uiTemplateUserLevelData.ModeToLevelToLevelData[mode][level] = newLevelData;
+    
+            this.handleUserDataServices.SaveAll();
+        }
+
         public bool IsTouchedLevel(int level) { return this.MaxLevel + 1 >= level; }
 
         public bool CheckLevelIsUnlockedStatus(int level, string mode = UITemplateUserLevelData.ClassicMode)

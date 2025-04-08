@@ -121,7 +121,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler
                 { "flow_type", signal.Amount > 0 ? "source" : "sink" },
                 { "virtual_currency_name", signal.Id },
                 { "value", signal.Amount },
-                { "level_id", this.levelDataController.CurrentLevel },
+                { "level_id", this.levelDataController.CurrentLevel.ToString() },
                 { "balance", signal.FinalValue }
             };
             if (signal.Amount >= 0)

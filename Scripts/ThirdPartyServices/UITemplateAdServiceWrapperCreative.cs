@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
+    #if CREATIVE
     using System;
     using System.Collections.Generic;
     using Core.AdsServices;
@@ -104,4 +105,5 @@
         }
         #endif
     }
+    #endif
 }

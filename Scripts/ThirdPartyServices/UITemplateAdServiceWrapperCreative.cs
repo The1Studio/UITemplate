@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using Core.AdsServices;
     using Core.AdsServices.CollapsibleBanner;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
@@ -91,6 +92,10 @@
         }
 
         public override void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
+        {
+        }
+
+        protected async override UniTaskVoid ShowAOAAdsIfAvailable(bool isOpenAppAOA)
         {
         }
 

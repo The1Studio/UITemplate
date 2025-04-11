@@ -327,7 +327,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public double LoadingTimeToShowAOA => this.adServicesConfig.AOALoadingThreshold;
 
-        private async UniTaskVoid ShowAOAAdsIfAvailable(bool isOpenAppAOA)
+        protected virtual async UniTaskVoid ShowAOAAdsIfAvailable(bool isOpenAppAOA)
         {
             this.logService.Log($"onelog: AdServiceWrapper: ShowAOAAdsIfAvailable firstopen {isOpenAppAOA} IsRemovedAds {this.IsRemovedAds} EnableAOAAd {this.adServicesConfig.EnableAOAAd} TrackingComplete {AttHelper.IsRequestTrackingComplete()} IsIntersInsteadAoaResume {this.adServicesConfig.IsIntersInsteadAoaResume} ConsentCanRequestAds {this.consentInformation.CanRequestAds()} IsShowingAOA {this.IsShowingAOA}");
 

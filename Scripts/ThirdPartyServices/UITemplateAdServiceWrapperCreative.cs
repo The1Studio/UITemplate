@@ -1,9 +1,11 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
+    #if CREATIVE
     using System;
     using System.Collections.Generic;
     using Core.AdsServices;
     using Core.AdsServices.CollapsibleBanner;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
@@ -93,6 +95,10 @@
         {
         }
 
+        protected async override UniTaskVoid ShowAOAAdsIfAvailable(bool isOpenAppAOA)
+        {
+        }
+
         #if THEONE_COLLAPSIBLE_MREC
         public override void ShowCollapsibleMREC(string placement)
         {
@@ -104,4 +110,5 @@
         }
         #endif
     }
+    #endif
 }

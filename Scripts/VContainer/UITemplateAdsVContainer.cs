@@ -7,8 +7,6 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
-    using TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler;
-    using TheOneStudio.UITemplate.UITemplate.Services.AnalyticHandler.HiGame;
     using VContainer;
 
     public static class UITemplateAdsVContainer
@@ -16,12 +14,7 @@ namespace TheOneStudio.UITemplate
         public static void RegisterUITemplateAdsService(this IContainerBuilder builder)
         {
             builder.RegisterFromDerivedType<UITemplateAnalyticHandler>().AsImplementedInterfaces();
-
-            #if CREATIVE
-            builder.Register<UITemplateAdServiceWrapper, UITemplateAdServiceWrapperCreative>(Lifetime.Singleton);
-            #else
-            builder.Register<UITemplateAdServiceWrapper>(Lifetime.Singleton).AsInterfacesAndSelf();
-            #endif
+            builder.RegisterFromDerivedType<UITemplateAdServiceWrapper>().AsImplementedInterfaces();
 
             #if CREATIVE
             builder.Register<CreativeService>(Lifetime.Singleton).AsInterfacesAndSelf();

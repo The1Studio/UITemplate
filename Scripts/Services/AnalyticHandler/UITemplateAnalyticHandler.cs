@@ -153,6 +153,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             {
                 case AdFormatConstants.Rewarded:
                 case AdFormatConstants.Interstitial:
+                case IronSourceAdFormatConstants.Rewarded:
+                case IronSourceAdFormatConstants.Interstitial:
                     this.uiTemplateAdsController.CountAdsImpression(obj.AdsRevenueEvent.Revenue);
                     foreach (var sumAmount in SumAdsEventList)
                     {

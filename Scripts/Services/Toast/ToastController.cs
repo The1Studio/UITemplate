@@ -1,7 +1,5 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.Toast
 {
-    using System.Threading;
-    using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using TMPro;
     using UnityEngine;
@@ -32,26 +30,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.Toast
             };
         }
 
-        public void ShowToast(string message, float offsetX = 0, float offsetY = 0, ToastPosition position = ToastPosition.Center)
+        public void ShowToast(string message, float offsetX = 0, float offsetY = 0, ToastPosition position = ToastPosition.Center, float duration = 1f, float endYPos = 100)
         {
-            try
+            this.toastObj.SetActive(false);
+            this.toastObj.transform.DOKill();
+            this.toastObj.transform.SetParent(this.GetParentObj(position).transform);
+            this.toastObj.transform.localPosition = Vector3.zero + new Vector3(offsetX, offsetY, 0);
+            this.txtToast.text                    = message;
+
+            this.toastObj.SetActive(true);
+            this.toastObj.transform.DOLocalMoveY(endYPos, duration).SetUpdate(true).OnComplete(() =>
             {
                 this.toastObj.SetActive(false);
-                this.toastObj.transform.DOKill();
-                this.toastObj.transform.SetParent(this.GetParentObj(position).transform);
-                this.toastObj.transform.localPosition = Vector3.zero + new Vector3(offsetX, offsetY, 0);
-                this.txtToast.text                    = message;
-
-                this.toastObj.SetActive(true);
-                this.toastObj.transform.DOLocalMoveY(100, 1f).SetUpdate(true).OnComplete(() =>
-                {
-                    this.toastObj.SetActive(false);
-                });
-            }
-            catch (System.Exception e)
-            {
-                // ignored
-            }
+            });
         }
     }
 }

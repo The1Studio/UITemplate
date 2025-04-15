@@ -15,20 +15,20 @@
         #region Inject
 
         private readonly HiGameLocalData hiGameLocalData;
-
+        
         [Preserve]
-        public HiGameAnalyticHandler(SignalBus signalBus,
-                                     IAnalyticServices analyticServices,
-                                     IAnalyticEventFactory analyticEventFactory,
-                                     UITemplateLevelDataController uiTemplateLevelDataController,
-                                     UITemplateInventoryDataController uITemplateInventoryDataController,
-                                     UITemplateDailyRewardController uiTemplateDailyRewardController,
-                                     UITemplateAdsController uiTemplateAdsController,
-                                     UITemplateGameSessionDataController uITemplateGameSessionDataController,
-                                     HiGameLocalData hiGameLocalData,
-                                     IScreenManager screenManager)
-            : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController,
-                uiTemplateDailyRewardController, uITemplateGameSessionDataController,screenManager)
+        public HiGameAnalyticHandler(
+            SignalBus                           signalBus,
+            IAnalyticServices                   analyticServices,
+            IAnalyticEventFactory               analyticEventFactory,
+            UITemplateLevelDataController       uiTemplateLevelDataController,
+            UITemplateInventoryDataController   uITemplateInventoryDataController,
+            UITemplateDailyRewardController     uiTemplateDailyRewardController,
+            UITemplateGameSessionDataController uITemplateGameSessionDataController,
+            IScreenManager                      screenManager,
+            UITemplateAdsController             uiTemplateAdsController,
+            HiGameLocalData                     hiGameLocalData
+        ) : base(signalBus, analyticServices, analyticEventFactory, uiTemplateLevelDataController, uITemplateInventoryDataController, uiTemplateDailyRewardController, uITemplateGameSessionDataController, screenManager, uiTemplateAdsController)
         {
             this.hiGameLocalData = hiGameLocalData;
         }

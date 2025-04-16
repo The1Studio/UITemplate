@@ -17,6 +17,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Signals;
     using ServiceImplementation;
     using ServiceImplementation.IAPServices.Signals;
+#if THEONE_FTUE
+    using TheOne.FTUE;
+#endif
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
@@ -137,8 +140,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             // Game Life Circle
             this.signalBus.Subscribe<ApplicationQuitSignal>(this.OnApplicationQuitHandler);
 
+#if THEONE_FTUE
+            this.signalBus.Subscribe<FTUECompletedSignal>(this.OnFTUECompleted);
+#endif
+
             this.TotalDaysPlayedChange();
         }
+#if THEONE_FTUE
+        private void OnFTUECompleted(FTUECompletedSignal obj)
+        {
+            this.Track(new CustomEvent()
+            {
+                EventName = $"ftue_completed",
+                EventProperties = new()
+                {
+                    { "step_id", obj.FTUEId },
+                },
+            });
+        }
+#endif
 
         private void OnApplicationQuitHandler()
         {

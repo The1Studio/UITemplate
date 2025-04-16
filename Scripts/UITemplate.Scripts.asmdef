@@ -67,7 +67,8 @@
     "UITemplate.Enum",
     "UITemplate.Utils",
     "UITemplate.Utils.View",
-    "UITemplate.Services.CountryFlag"
+    "UITemplate.Services.CountryFlag",
+    "TheOne.FTUE"
   ],
   "precompiledReferences": [
     "DOTween.dll",

@@ -181,7 +181,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             });
 
             await Resources.UnloadUnusedAssets();
-            GCUtils.ForceGCWithLOH();
+            // GCUtils.ForceGCWithLOH();
         }
 
         protected virtual void ShowFirstBannerAd(BannerLoadStrategy strategy)

@@ -181,6 +181,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// </summary>
         public void MigrateLevelData(int level, string mode, LevelData newLevelData)
         {
+            this.GetLevelData(level, mode);
             this.uiTemplateUserLevelData.ModeToLevelToLevelData[mode][level] = newLevelData;
     
             this.handleUserDataServices.SaveAll();

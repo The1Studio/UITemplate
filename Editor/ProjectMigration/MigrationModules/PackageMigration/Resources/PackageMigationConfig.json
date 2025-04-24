@@ -26,7 +26,6 @@
     }
   ],
   "packagesToAdd": {
-    "com.google.external-dependency-manager": "1.2.185",
     "com.theone.foundation.buildscript": "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts"
   },
   "packagesVersionToUse": {
@@ -51,6 +50,7 @@
     "com.applovin.mediation.adapters.google.android",
     "com.applovin.mediation.adapters.googleadmanager.android",
     "com.applovin.mediation.ads",
-    "com.adjust.sdk"
+    "com.adjust.sdk",
+    "com.google.external-dependency-manager"
   ]
 }

@@ -62,5 +62,7 @@
   },
   "packagesToRemove": [
     "appsflyer-unity-plugin"
+  ],
+  "webGLPackagesToRemove": [
   ]
 }

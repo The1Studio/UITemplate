@@ -22,14 +22,15 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             public Dictionary<string, string>       PackagesVersionToUse       { get; set; }
             public Dictionary<string, UnityPackage> NameToUnityPackageToImport { get; set; }
             public List<string>                     PackagesToRemove           { get; set; }
-            
+            public List<string>                     WebGLPackageToRemove       { get; set; }
+
             public class Registry
             {
                 public string       Name   { get; set; }
                 public string       Url    { get; set; }
                 public List<string> Scopes { get; set; }
             }
-            
+
             public class UnityPackage
             {
                 public string Path { get; set; }
@@ -93,6 +94,16 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 
             // Remove the packages
             foreach (var package in config.PackagesToRemove)
+            {
+                if (dependencies.ContainsKey(package))
+                {
+                    dependencies.Remove(package);
+                    updated = true;
+                }
+            }
+            
+            // Remove the packages for WebGL
+            foreach (var package in config.WebGLPackageToRemove)
             {
                 if (dependencies.ContainsKey(package))
                 {

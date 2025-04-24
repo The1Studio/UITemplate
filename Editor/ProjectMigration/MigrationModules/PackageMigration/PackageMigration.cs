@@ -101,7 +101,8 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                     updated = true;
                 }
             }
-            
+
+#if UNITY_WEBGL
             // Remove the packages for WebGL
             foreach (var package in config.WebGLPackageToRemove)
             {
@@ -111,6 +112,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                     updated = true;
                 }
             }
+#endif
 
             // Change package version
             foreach (var package in config.PackagesVersionToUse)

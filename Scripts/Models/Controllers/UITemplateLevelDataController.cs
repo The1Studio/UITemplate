@@ -120,7 +120,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void LoseCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
-            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, false, this.GetCurrentLevelPlayTime(), null));
+            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, false, this.GetCurrentLevelPlayTime(mode), null));
             this.GetLevelData(currentModeLevel, mode).LoseCount++;
 
             this.handleUserDataServices.SaveAll();
@@ -136,7 +136,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             levelData.WinCount++;
             levelData.LevelStatus = LevelData.Status.Passed;
             levelData.StarCount   = starCount;
-            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, true, this.GetCurrentLevelPlayTime(), null));
+            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, true, this.GetCurrentLevelPlayTime(mode), null));
             this.uiTemplateUserLevelData.ModeToCurrentLevel[mode]++;
 
             this.handleUserDataServices.SaveAll();
@@ -183,7 +183,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             var levelData = this.GetLevelData(level, mode);
             this.uiTemplateUserLevelData.ModeToLevelToLevelData[mode][level] = newLevelData;
-    
+
             this.handleUserDataServices.SaveAll();
         }
 

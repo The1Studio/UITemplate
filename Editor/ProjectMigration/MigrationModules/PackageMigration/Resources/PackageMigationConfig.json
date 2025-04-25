@@ -64,5 +64,15 @@
     "appsflyer-unity-plugin"
   ],
   "webGLPackagesToRemove": [
+    "com.google.ads.mobile",
+    "com.applovin.mediation.adapters.google.ios",
+    "com.applovin.mediation.adapters.googleadmanager.ios",
+    "com.applovin.mediation.adapters.google.android",
+    "com.applovin.mediation.adapters.googleadmanager.android",
+    "com.applovin.mediation.ads",
+    "com.applovin.mediation.adapters",
+    "com.applovin.mediation.dsp",
+    "com.adjust.sdk",
+    "com.google.external-dependency-manager"
   ]
 }

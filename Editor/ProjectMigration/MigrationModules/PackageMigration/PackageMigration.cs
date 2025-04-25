@@ -22,7 +22,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             public Dictionary<string, string>       PackagesVersionToUse       { get; set; }
             public Dictionary<string, UnityPackage> NameToUnityPackageToImport { get; set; }
             public List<string>                     PackagesToRemove           { get; set; }
-            public List<string>                     WebGLPackagesToRemove       { get; set; }
+            public List<string>                     WebGLPackagesToRemove      { get; set; }
 
             public class Registry
             {
@@ -39,6 +39,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         }
 
         [NonSerialized] private static Config config;
+
         public static void Migrate()
         {
             var configTextAsset = Resources.Load<TextAsset>("PackageMigationConfig");

@@ -87,9 +87,9 @@
         {
             var rootUICanvas = FindObjectOfType<RootUICanvas>();
             if (rootUICanvas == null) return;
-            var canvas = rootUICanvas.GetComponentInChildren<Canvas>();
+            var canvas = rootUICanvas.GetComponentsInChildren<Canvas>();
             if (canvas == null) return;
-            canvas.enabled = isOn;
+            canvas.ToList().ForEach(c => c.enabled = isOn);
         }
 
         protected void SetupDropdown()

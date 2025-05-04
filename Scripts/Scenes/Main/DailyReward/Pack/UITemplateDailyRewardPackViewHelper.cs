@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.AssetLibrary;
+    using GameFoundation.Scripts.UIModule.Utilities.LoadImage;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine;
@@ -17,12 +18,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
 
         protected readonly IGameAssets                     GameAssets;
         protected readonly UITemplateDailyRewardController DailyRewardController;
+        private readonly   LoadImageHelper                 loadImageHelper;
 
         [Preserve]
-        public UITemplateDailyRewardPackViewHelper(IGameAssets gameAssets, UITemplateDailyRewardController dailyRewardController)
+        public UITemplateDailyRewardPackViewHelper(IGameAssets gameAssets, UITemplateDailyRewardController dailyRewardController, LoadImageHelper loadImageHelper)
         {
             this.GameAssets            = gameAssets;
             this.DailyRewardController = dailyRewardController;
+            this.loadImageHelper       = loadImageHelper;
         }
 
         public virtual async void BindDataItem(UITemplateDailyRewardPackModel model, UITemplateDailyRewardPackView view, UITemplateDailyRewardPackPresenter presenter)
@@ -46,7 +49,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Pack
                 await UniTask.Delay(TimeSpan.FromSeconds(duration));
             }
 
-            if (view.PackImg != null) view.PackImg.sprite = this.GameAssets.ForceLoadAsset<Sprite>(model.DailyRewardRecord.PackImage);
+            if (view.PackImg != null)
+            {
+                this.loadImageHelper.LoadLocalSpriteToUIImage(view.PackImg, model.DailyRewardRecord.PackImage)
+                    .Forget();
+            }
         }
 
         public virtual void DisposeItem(UITemplateDailyRewardPackPresenter presenter)

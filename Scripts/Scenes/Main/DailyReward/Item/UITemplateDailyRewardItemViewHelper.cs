@@ -1,10 +1,9 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.DailyReward.Item
 {
-    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.AssetLibrary;
+    using GameFoundation.Scripts.UIModule.Utilities.LoadImage;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
-    using UnityEngine;
     using UnityEngine.Scripting;
 
     // Rebind this class to your own item view
@@ -12,12 +11,14 @@
     {
         protected readonly IGameAssets                     GameAssets;
         protected readonly UITemplateDailyRewardController DailyRewardController;
+        private readonly   LoadImageHelper                 loadImageHelper;
 
         [Preserve]
-        public UITemplateDailyRewardItemViewHelper(IGameAssets gameAssets, UITemplateDailyRewardController dailyRewardController)
+        public UITemplateDailyRewardItemViewHelper(IGameAssets gameAssets, UITemplateDailyRewardController dailyRewardController, LoadImageHelper loadImageHelper)
         {
             this.GameAssets            = gameAssets;
             this.DailyRewardController = dailyRewardController;
+            this.loadImageHelper       = loadImageHelper;
         }
 
         public virtual void BindDataItem(UITemplateDailyRewardItemModel model, UITemplateDailyRewardItemView view, UITemplateDailyRewardItemPresenter presenter)
@@ -25,8 +26,8 @@
             view.ImgReward.gameObject.SetActive(!string.IsNullOrEmpty(model.RewardRecord.RewardImage));
             if (!string.IsNullOrEmpty(model.RewardRecord.RewardImage))
             {
-                var rewardSprite = this.GameAssets.ForceLoadAsset<Sprite>($"{model.RewardRecord.RewardImage}");
-                view.ImgReward.sprite = rewardSprite;
+                this.loadImageHelper.LoadLocalSpriteToUIImage(view.ImgReward, model.RewardRecord.RewardImage)
+                    .Forget();
             }
 
             view.TxtValue.text = $"{model.RewardRecord.RewardValue}";

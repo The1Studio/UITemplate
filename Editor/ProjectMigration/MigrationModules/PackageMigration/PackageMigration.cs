@@ -22,7 +22,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
             public Dictionary<string, string>       PackagesVersionToUse       { get; set; }
             public Dictionary<string, UnityPackage> NameToUnityPackageToImport { get; set; }
             public List<string>                     PackagesToRemove           { get; set; }
-            public List<string>                     WebGLPackageToRemove       { get; set; }
+            public List<string>                     WebGLPackagesToRemove       { get; set; }
 
             public class Registry
             {
@@ -104,7 +104,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 
 #if UNITY_WEBGL
             // Remove the packages for WebGL
-            foreach (var package in config.WebGLPackageToRemove)
+            foreach (var package in config.WebGLPackagesToRemove)
             {
                 if (dependencies.ContainsKey(package))
                 {

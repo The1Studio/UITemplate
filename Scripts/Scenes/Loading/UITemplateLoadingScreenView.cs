@@ -118,6 +118,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.loadingStopwatch = Stopwatch.StartNew();
             UniTask.WhenAll(
                 this.CreateObjectPool(AudioService.AudioSourceKey, 3),
+                this.PreloadLabelAssets<Sprite>("PreloadSprite"),
+                this.PreloadLabelAssets<GameObject>("PreloadGameObject"),
                 this.Preload(),
                 #if ADMOB || APPLOVIN
                 this.WaitForAoa(),
@@ -219,6 +221,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                     && !this.consentInformation.IsRequestingConsent()
                 )
             );
+        }
+        
+        // Preload assets by label
+        protected async UniTask PreloadLabelAssets<T>(string label)
+        {
+            await UniTask.WhenAll((await this.gameAssets.PreLoadAssetsByLabelAsync<T>(label, this.NextSceneName)).Select(this.TrackProgress));
         }
 
         protected virtual UniTask Preload()

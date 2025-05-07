@@ -8,7 +8,9 @@ namespace TheOneStudio.UITemplate
     using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
+#if THEONE_FACEBOOK_SDK
     using ServiceImplementation.Analytic.FacebookSDK;
+#endif
     using ServiceImplementation.Configs;
     using ServiceImplementation.FirebaseAnalyticTracker;
     using ServiceImplementation.FireBaseRemoteConfig;

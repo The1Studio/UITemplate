@@ -8,6 +8,7 @@ namespace TheOneStudio.UITemplate
     using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
+    using ServiceImplementation.Analytic.FacebookSDK;
     using ServiceImplementation.Configs;
     using ServiceImplementation.FirebaseAnalyticTracker;
     using ServiceImplementation.FireBaseRemoteConfig;
@@ -51,6 +52,10 @@ namespace TheOneStudio.UITemplate
             #endif
             #if ADJUST
             builder.Register<AdjustTracker>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(container => container.ResolveOrDefault<AnalyticsEventCustomizationConfig>(new()));
+            #endif
+            
+            #if THEONE_FACEBOOK_SDK
+            builder.Register<FacebookSDKService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif
         }
     }

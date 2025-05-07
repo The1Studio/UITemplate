@@ -68,7 +68,8 @@
     "UITemplate.Utils",
     "UITemplate.Utils.View",
     "UITemplate.Services.CountryFlag",
-    "TheOne.FTUE"
+    "TheOne.FTUE",
+    "FacebookSDK"
   ],
   "precompiledReferences": [
     "DOTween.dll",

@@ -10,7 +10,7 @@ namespace TheOneStudio.UITemplate
 
     public static class UITemplateDailyRewardVContainer
     {
-        public static void RegisterDailyReward(this IContainerBuilder builder)
+        public static void RegisterUITemplateDailyReward(this IContainerBuilder builder)
         {
             builder.RegisterFromDerivedType<UITemplateDailyRewardItemViewHelper>();
             builder.RegisterFromDerivedType<UITemplateDailyRewardPackViewHelper>();

@@ -34,7 +34,7 @@ namespace TheOneStudio.UITemplate
 
             builder.RegisterUITemplateLocalData();
             builder.RegisterUITemplateServices(rootTransform, toastControllerPrefab);
-            builder.RegisterDailyReward();
+            builder.RegisterUITemplateDailyReward();
             builder.RegisterNotificationService();
             builder.RegisterStoreRatingService();
             builder.RegisterPermissionService();

@@ -197,7 +197,7 @@ MonoBehaviour:
   useUnlitShader: 1
   useLegacyShaders: 0
   fallbackTexture: {fileID: 0}
-  fallbackTextureVisibleWhenLoading: 1
+  fallbackTextureVisibleWhenLoading: 0
   meshRenderer: {fileID: 6404308265301930395}
   meshSegments: 2
   meshBendAmount: 0

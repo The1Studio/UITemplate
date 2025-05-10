@@ -57,7 +57,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly IAdServices                         bannerAdService;
         private readonly IReadOnlyCollection<IAdServices>    interstitialAdServices;
         private readonly IReadOnlyCollection<IAdServices>    rewardedAdServices;
-        private readonly IReadOnlyCollection<INativeAdsService>    nativeAdsServices;
 
         #endregion
 
@@ -100,8 +99,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
             IEnumerable<AdServiceOrder>         adServiceOrders,
-            IConsentInformation                 consentInformation,
-            IEnumerable<INativeAdsService>                      nativeAdsService
+            IConsentInformation                 consentInformation
         )
         {
             this.adServices                = adServices.ToArray();
@@ -122,7 +120,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.bannerAdService        = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Banner))).First();
             this.interstitialAdServices = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Interstitial))).ToArray();
             this.rewardedAdServices     = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Rewarded))).ToArray();
-            this.nativeAdsServices      = nativeAdsService.ToArray();
         }
 
         public void Initialize()
@@ -738,7 +735,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         public void RemoveAds()
         {
             foreach (var adService in this.adServices) adService.RemoveAds();
-            foreach (var native in this.nativeAdsServices) native.RemoveAds();
             this.OnRemoveAdsComplete();
             this.signalBus.Fire<OnRemoveAdsSucceedSignal>();
         }

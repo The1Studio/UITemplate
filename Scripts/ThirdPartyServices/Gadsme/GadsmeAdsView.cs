@@ -1,6 +1,5 @@
 ﻿namespace Core.AdsServices.Native
 {
-    using System;
     using Gadsme;
     using GameFoundation.DI;
     using ServiceImplementation.Configs.Ads;
@@ -34,7 +33,7 @@
         public void   DrawNativeAds(NativeAdsView admobNativeAdsView) {}
         public void RemoveAds()
         {
-            Debug.Log("nhh : remove ads ");
+            Debug.Log("onelog : remove gadsme ads ");
             this.ShowAds(false);
         }
         public bool IsRemoveAds()

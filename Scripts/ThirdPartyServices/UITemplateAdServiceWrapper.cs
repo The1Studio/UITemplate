@@ -737,13 +737,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public void RemoveAds()
         {
-            Debug.Log("nhh : this.nativeAdsService " + this.nativeAdsService.Count);
-            foreach (var adsService in this.nativeAdsService)
-            {
-                Debug.Log("nhh : this.nativeAdsService name " + adsService.GetType().Name);
-            }
             foreach (var adService in this.adServices) adService.RemoveAds();
-            foreach (var native in this.nativeAdsService) native.OnRemoveAds?.Invoke();
+            foreach (var native in this.nativeAdsService) native.RemoveAds();
             this.OnRemoveAdsComplete();
             this.signalBus.Fire<OnRemoveAdsSucceedSignal>();
         }

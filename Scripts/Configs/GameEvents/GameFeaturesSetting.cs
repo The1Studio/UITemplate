@@ -1,4 +1,7 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
+﻿using Enum_FpsScreenPosition = UITemplate.Scripts.Enum.FpsScreenPosition;
+using FpsScreenPosition = UITemplate.Scripts.Enum.FpsScreenPosition;
+
+namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
 {
     using System.Linq;
     using Sirenix.OdinInspector;
@@ -11,9 +14,11 @@
     using ServiceImplementation.Configs.Editor;
     #endif
 
-    [CreateAssetMenu(fileName = nameof(GameFeaturesSetting),
+    [CreateAssetMenu(
+        fileName = nameof(GameFeaturesSetting),
         menuName = "TheOne/ScriptableObjects/SpawnGameFeatruesSettingConfig",
-        order = 1)]
+        order = 1
+    )]
     public class GameFeaturesSetting : ScriptableObject
     {
         #region essential
@@ -31,6 +36,7 @@
         private const string QuestSystemSymbol      = "THEONE_QUEST_SYSTEM";
         private const string FireBaseAuthSymbol     = "THEONE_FIREBASE_AUTH";
         private const string DailyQueueRewardSymbol = "THEONE_DAILY_QUEUE_REWARD";
+        private const string TheOneShowFpsSymbol    = "THEONE_SHOW_FPS";
 
         public static string ResourcePath = $"GameConfigs/{nameof(GameFeaturesSetting)}";
 
@@ -139,9 +145,24 @@
 
         [BoxGroup("Cheat Settings")] public TheOneCheatActiveType cheatActiveBy = TheOneCheatActiveType.DrawTripleCircle;
 
-        #endregion  
+        #endregion
+
+        #region FPS Settings
+
+        [OnValueChanged("OnChangeShowFPS")] [FoldoutGroup("FPS Settings", true)] public bool enableShowFPS;
+
+        [SerializeField] [ShowIf(nameof(enableShowFPS))] [FoldoutGroup("FPS Settings")] private FpsScreenPosition fpsScreenPosition = Enum_FpsScreenPosition.TopLeft;
+
+        public FpsScreenPosition FpsScreenPosition => this.fpsScreenPosition;
+
+        #endregion
 
         #if UNITY_EDITOR
+
+        private void OnChangeShowFPS()
+        {
+            EditorUtils.SetDefineSymbol(TheOneShowFpsSymbol, this.enableShowFPS);
+        }
 
         private void OnChangeDailyReward()
         {

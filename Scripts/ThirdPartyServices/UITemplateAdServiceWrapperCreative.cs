@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using Core.AdsServices;
     using Core.AdsServices.CollapsibleBanner;
+    using Core.AdsServices.Native;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
@@ -34,7 +35,8 @@
             IScreenManager                      screenManager,
             ICollapsibleBannerAd                collapsibleBannerAd,
             IEnumerable<AdServiceOrder>         adServiceOrders,
-            IConsentInformation                 consentInformation
+            IConsentInformation                 consentInformation,
+            IEnumerable<INativeAdsService>      nativeAdsServices
         ) : base(logService,
             adServicesConfig,
             signalBus,
@@ -49,7 +51,8 @@
             screenManager,
             collapsibleBannerAd,
             adServiceOrders,
-            consentInformation)
+            consentInformation,
+            nativeAdsServices)
         {
         }
 

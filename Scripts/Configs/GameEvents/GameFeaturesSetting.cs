@@ -1,5 +1,4 @@
-﻿using Enum_FpsScreenPosition = UITemplate.Scripts.Enum.FpsScreenPosition;
-using FpsScreenPosition = UITemplate.Scripts.Enum.FpsScreenPosition;
+﻿using FpsScreenPosition = UITemplate.Scripts.Enum.FpsScreenPosition;
 
 namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
 {
@@ -8,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
     using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
     using TheOneStudio.UITemplate.UITemplate.Services.Vibration;
     using UnityEngine;
+    using UnityEngine.Serialization;
     #if UNITY_EDITOR
     using UnityEditor;
     using System.IO;
@@ -145,13 +145,23 @@ namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
 
         [BoxGroup("Cheat Settings")] public TheOneCheatActiveType cheatActiveBy = TheOneCheatActiveType.DrawTripleCircle;
 
+        [SerializeField] [ShowIf(nameof(IsTapOnCorner))] [BoxGroup("Cheat Settings")] private TapCheatPosition tapCheatPosition = TapCheatPosition.TopLeft;
+        [SerializeField] [ShowIf(nameof(IsTapOnCorner))] [BoxGroup("Cheat Settings")] private int              tapZoneSize      = 200;
+        [SerializeField] [ShowIf(nameof(IsTapOnCorner))] [BoxGroup("Cheat Settings")] private int              tapCount         = 3;
+
+        public TapCheatPosition TapCheatPosition => this.tapCheatPosition;
+        public int              TapZoneSize      => this.tapZoneSize;
+        public int              TapCount         => this.tapCount;
+
+        private bool IsTapOnCorner => this.cheatActiveBy == TheOneCheatActiveType.TapOnCorner;
+
         #endregion
 
         #region FPS Settings
 
         [OnValueChanged("OnChangeShowFPS")] [FoldoutGroup("FPS Settings", true)] public bool enableShowFPS;
 
-        [SerializeField] [ShowIf(nameof(enableShowFPS))] [FoldoutGroup("FPS Settings")] private FpsScreenPosition fpsScreenPosition = Enum_FpsScreenPosition.TopLeft;
+        [SerializeField] [ShowIf(nameof(enableShowFPS))] [FoldoutGroup("FPS Settings")] private FpsScreenPosition fpsScreenPosition = FpsScreenPosition.TopLeft;
 
         public FpsScreenPosition FpsScreenPosition => this.fpsScreenPosition;
 

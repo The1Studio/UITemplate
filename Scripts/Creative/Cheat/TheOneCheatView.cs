@@ -47,6 +47,7 @@
             this.cheatDetector = this.gameFeaturesSetting.cheatActiveBy switch
             {
                 TheOneCheatActiveType.TripleTap        => new TripleTapCheatDetector(),
+                TheOneCheatActiveType.TapOnCorner      => new TapOnCornerCheatDetector(this.gameFeaturesSetting.TapCheatPosition, this.gameFeaturesSetting.TapZoneSize, this.gameFeaturesSetting.TapCount),
                 TheOneCheatActiveType.DrawTripleCircle => new CircleDrawCheatDetector(),
                 _                                      => null,
             };

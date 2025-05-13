@@ -49,7 +49,6 @@
         {
             this.ShowAds(false);
             this.SignalBus.Unsubscribe<OnRemoveAdsSucceedSignal>(this.RemoveAds);
-            this.NativeAdsService.OnRemoveAds -= this.RemoveAds;
         }
     }
 }

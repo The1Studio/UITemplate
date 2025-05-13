@@ -101,7 +101,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             ICollapsibleBannerAd                collapsibleBannerAd,
             IEnumerable<AdServiceOrder>         adServiceOrders,
             IConsentInformation                 consentInformation,
-            IEnumerable<INativeAdsService>      nativeAdsService
+            IEnumerable<INativeAdsService>      nativeAdsServices
         )
         {
             this.adServices                = adServices.ToArray();
@@ -122,7 +122,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.bannerAdService        = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Banner))).First();
             this.interstitialAdServices = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Interstitial))).ToArray();
             this.rewardedAdServices     = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Rewarded))).ToArray();
-            this.nativeAdsServices       = nativeAdsService.ToArray();
+            this.nativeAdsServices       = nativeAdsServices.ToArray();
         }
 
         public void Initialize()

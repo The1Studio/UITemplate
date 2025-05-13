@@ -25,7 +25,7 @@
             this.adServicesConfig = container.Resolve<AdServicesConfig>();
             this.SignalBus        = container.Resolve<SignalBus>();
 
-            this.SignalBus.Subscribe<OnRemoveAdsSucceedSignal>(this.RemoveAds);
+            this.SignalBus.Subscribe<OnRemoveAdsSucceedSignal>(this.OnRemoveAds );
             if (this.currentAdsPlacement == null)
             {
                 this.currentAdsPlacement = this.adsHolder.GetComponentInChildren<GadsmePlacement>();
@@ -34,7 +34,7 @@
             this.currentAdsPlacement.adChannelNumber  = this.adsChannelNumber;
             this.ShowAds(this.adServicesConfig.EnableGadsme);
         }
-        public void RemoveAds()
+        public void OnRemoveAds ()
         {
             Debug.Log("onelog : remove gadsme ads ");
             this.ShowAds(false);
@@ -48,7 +48,7 @@
         private void OnDisable()
         {
             this.ShowAds(false);
-            this.SignalBus.Unsubscribe<OnRemoveAdsSucceedSignal>(this.RemoveAds);
+            this.SignalBus.Unsubscribe<OnRemoveAdsSucceedSignal>(this.OnRemoveAds );
         }
     }
 }

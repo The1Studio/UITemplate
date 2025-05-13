@@ -1,4 +1,5 @@
-﻿namespace Core.AdsServices.Native
+﻿#if GADSME
+namespace Core.AdsServices.Native
 {
     using Gadsme;
     using GameFoundation.DI;
@@ -52,3 +53,4 @@
         }
     }
 }
+#endif

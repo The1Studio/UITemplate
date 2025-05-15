@@ -35,7 +35,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using UnityEngine.Scripting;
     #if ADMOB
     using ServiceImplementation.AdsServices.AdMob;
-    // using ServiceImplementation.AdsServices.AdMob;
     using ServiceImplementation.AdsServices.EasyMobile;
     #endif
 

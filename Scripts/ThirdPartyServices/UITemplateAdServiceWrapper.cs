@@ -18,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Signals;
     using R3;
     using ServiceImplementation;
+    using ServiceImplementation.AdsServices.AdMob.NativeOverlay;
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.AdsServices.Signal;
     using ServiceImplementation.Configs;
@@ -51,6 +52,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly IScreenManager                      screenManager;
         private readonly ICollapsibleBannerAd                collapsibleBannerAd;
         private readonly IConsentInformation                 consentInformation;
+        private readonly NativeOverlayWrapper                nativeOverlayWrapper;
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
@@ -101,7 +103,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             ICollapsibleBannerAd                collapsibleBannerAd,
             IEnumerable<AdServiceOrder>         adServiceOrders,
             IConsentInformation                 consentInformation,
-            IEnumerable<INativeAdsService>      nativeAdsServices
+            IEnumerable<INativeAdsService>      nativeAdsServices,
+            NativeOverlayWrapper                nativeOverlayWrapper
         )
         {
             this.adServices                = adServices.ToArray();
@@ -115,6 +118,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.screenManager             = screenManager;
             this.collapsibleBannerAd       = collapsibleBannerAd;
             this.consentInformation        = consentInformation;
+            this.nativeOverlayWrapper      = nativeOverlayWrapper;
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
@@ -710,6 +714,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.displayMrecCts?.Dispose();
             this.displayMrecCts = null;
         }
+
+        #endif
+
+        #endregion
+
+        #region NativeOverlayAd
+
+        #if ADMOB
+
+        public void ShowNativeOverlayAd() => this.nativeOverlayWrapper.ShowAd();
+
+        public void HideNativeOverlayAd() => this.nativeOverlayWrapper.HideAd();
 
         #endif
 

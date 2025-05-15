@@ -34,6 +34,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using UnityEngine;
     using UnityEngine.Scripting;
     #if ADMOB
+    using ServiceImplementation.AdsServices.AdMob;
+    // using ServiceImplementation.AdsServices.AdMob;
     using ServiceImplementation.AdsServices.EasyMobile;
     #endif
 
@@ -723,9 +725,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #if ADMOB
 
-        public void ShowNativeOverlayAd() => this.nativeOverlayWrapper.ShowAd();
+        public virtual void ShowNativeOverlayAd(AdViewPosition adViewPosition) => this.nativeOverlayWrapper.ShowAd(adViewPosition);
 
-        public void HideNativeOverlayAd() => this.nativeOverlayWrapper.HideAd();
+        public virtual void HideNativeOverlayAd() => this.nativeOverlayWrapper.HideAd();
 
         #endif
 

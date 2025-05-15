@@ -10,6 +10,8 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using ServiceImplementation.AdsServices.AdMob;
+    using ServiceImplementation.AdsServices.AdMob.NativeOverlay;
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
@@ -36,7 +38,8 @@
             ICollapsibleBannerAd                collapsibleBannerAd,
             IEnumerable<AdServiceOrder>         adServiceOrders,
             IConsentInformation                 consentInformation,
-            IEnumerable<INativeAdsService>      nativeAdsServices
+            IEnumerable<INativeAdsService>      nativeAdsServices,
+            NativeOverlayWrapper                nativeOverlayWrapper
         ) : base(logService,
             adServicesConfig,
             signalBus,
@@ -52,7 +55,8 @@
             collapsibleBannerAd,
             adServiceOrders,
             consentInformation,
-            nativeAdsServices)
+            nativeAdsServices,
+            nativeOverlayWrapper)
         {
         }
 
@@ -109,8 +113,20 @@
 
         public override void HideCollapsibleMREC(string placement)
         {
-            
+
         }
+        #endif
+
+        #if ADMOB
+
+        public override void ShowNativeOverlayAd(AdViewPosition adViewPosition)
+        {
+        }
+
+        public override void HideNativeOverlayAd()
+        {
+        }
+
         #endif
     }
     #endif

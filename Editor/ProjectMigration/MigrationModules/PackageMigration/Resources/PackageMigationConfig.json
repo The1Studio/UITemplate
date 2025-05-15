@@ -40,7 +40,7 @@
     "com.theone.foundation.buildscript": "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts"
   },
   "packagesVersionToUse": {
-    "com.google.ads.mobile": "10.1.0",
+    "com.google.ads.mobile": "9.6.0",
     "com.unity.purchasing": "4.12.2",
     "com.cysharp.unitask": "2.5.10",
     "jp.hadashikick.vcontainer": "1.16.8",

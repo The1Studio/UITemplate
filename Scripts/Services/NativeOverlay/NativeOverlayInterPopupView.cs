@@ -6,6 +6,7 @@
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class NativeOverlayInterPopupView : BaseView
@@ -18,6 +19,7 @@
     {
         private readonly UITemplateAdServiceWrapper adServiceWrapper;
 
+        [Preserve]
         public NativeOverlayInterPopupPresenter(
             SignalBus                  signalBus,
             ILogService                logger,

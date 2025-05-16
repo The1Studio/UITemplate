@@ -84,17 +84,28 @@
                 });
         }
 
-        private async void OnClose()
+        private void OnClose()
         {
-            await this.CloseViewAsync();
             if (this.adServicesConfig.NativeOverlayInterShowAdsComplete)
             {
-                this.adServiceWrapper.ShowInterstitialAd(this.Model.InterPlacement, this.Model.OnComplete);
+                this.adServiceWrapper.ShowNativeOverlayInterAd(this.Model.InterPlacement, _ =>
+                {
+                    this.OnComplete();
+                });
             }
             else
             {
-                this.Model.OnComplete?.Invoke(false);
+                this.OnComplete();
             }
+        }
+
+        private async void OnComplete()
+        {
+            await this.CloseViewAsync();
+            this.Model.OnComplete?.Invoke(false);
+            #if ADMOB
+            this.adServiceWrapper.LastTimeShowNativeOverInterAd = Time.realtimeSinceStartup;
+            #endif
         }
     }
 }

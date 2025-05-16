@@ -725,15 +725,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #if ADMOB
 
-        private float lastTimeShowNativeOverAd = Time.realtimeSinceStartup;
+        public float LastTimeShowNativeOverInterAd = Time.realtimeSinceStartup;
 
         public virtual async void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete)
         {
-            var canShowNativeOverlayAd = Time.realtimeSinceStartup - this.lastTimeShowNativeOverAd > this.adServicesConfig.NativeOverlayInterCappingTime;
+            var canShowNativeOverlayAd = Time.realtimeSinceStartup - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime;
             if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)
             {
                 await this.screenManager.OpenScreen<NativeOverlayInterPopupPresenter, NativeOverlayInterModel>(new (placement, onComplete));
-                this.lastTimeShowNativeOverAd = Time.realtimeSinceStartup;
             }
             else
             {

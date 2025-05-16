@@ -56,6 +56,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
+        public int LevelEndedThisSession  { get; private set; }
+        public int LevelPassedThisSession { get; private set; }
+        public int LevelLostThisSession   => this.LevelEndedThisSession - this.LevelPassedThisSession;
+
         public int TotalLevelSurpassed
         {
             get
@@ -121,6 +125,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
             this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, false, this.GetCurrentLevelPlayTime(mode), null));
+            this.LevelEndedThisSession++;
             this.GetLevelData(currentModeLevel, mode).LoseCount++;
 
             this.handleUserDataServices.SaveAll();
@@ -137,6 +142,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             levelData.LevelStatus = LevelData.Status.Passed;
             levelData.StarCount   = starCount;
             this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, true, this.GetCurrentLevelPlayTime(mode), null));
+            this.LevelEndedThisSession++;
+            this.LevelPassedThisSession++;
             this.uiTemplateUserLevelData.ModeToCurrentLevel[mode]++;
 
             this.handleUserDataServices.SaveAll();

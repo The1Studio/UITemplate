@@ -724,9 +724,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #if ADMOB
 
-        public virtual void ShowNativeOverlayAd(AdViewPosition adViewPosition) => this.nativeOverlayWrapper.ShowAd(adViewPosition);
+        public virtual void ShowNativeOverlayAd(AdViewPosition adViewPosition)
+        {
+            if (this.IsRemovedAds) return;
+            this.nativeOverlayWrapper.ShowAd(adViewPosition);
+        }
 
-        public virtual void HideNativeOverlayAd() => this.nativeOverlayWrapper.HideAd();
+        public virtual void HideNativeOverlayAd()
+        {
+            if (this.IsRemovedAds) return;
+            this.nativeOverlayWrapper.HideAd();
+        }
 
         #endif
 
@@ -756,6 +764,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             foreach (var adService in this.adServices) adService.RemoveAds();
             foreach (var adService in this.nativeAdsServices) adService.RemoveAds();
+            this.nativeOverlayWrapper.DestroyAd();
             this.OnRemoveAdsComplete();
             this.signalBus.Fire<OnRemoveAdsSucceedSignal>();
         }

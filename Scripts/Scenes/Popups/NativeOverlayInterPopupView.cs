@@ -76,7 +76,7 @@
 
         private void StartCountDown()
         {
-            this.View.TxtTimer.DOCounter(3, 1, 3).SetUpdate(true).SetEase(Ease.Linear)
+            this.View.TxtTimer.DOCounter(this.adServicesConfig.NativeOverlayInterCountdown, 1, this.adServicesConfig.NativeOverlayInterCountdown).SetUpdate(true).SetEase(Ease.Linear)
                 .OnComplete(() =>
                 {
                     this.View.ObjTimer.SetActive(false);

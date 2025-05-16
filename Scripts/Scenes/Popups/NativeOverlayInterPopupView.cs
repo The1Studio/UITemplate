@@ -88,7 +88,7 @@
         {
             if (this.adServicesConfig.NativeOverlayInterShowAdsComplete)
             {
-                this.adServiceWrapper.ShowNativeOverlayInterAd(this.Model.InterPlacement, _ =>
+                this.adServiceWrapper.ShowInterstitialAd(this.Model.InterPlacement, _ =>
                 {
                     this.OnComplete();
                 });

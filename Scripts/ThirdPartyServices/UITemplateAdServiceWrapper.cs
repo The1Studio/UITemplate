@@ -26,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Loading;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
@@ -723,6 +724,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region NativeOverlayAd
 
         #if ADMOB
+
+        private float lastTimeShowNativeOverAd = Time.realtimeSinceStartup;
+
+        public virtual async void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete)
+        {
+            var canShowNativeOverlayAd = Time.realtimeSinceStartup - this.lastTimeShowNativeOverAd > this.adServicesConfig.NativeOverlayInterCappingTime;
+            if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)
+            {
+                await this.screenManager.OpenScreen<NativeOverlayInterPopupPresenter, NativeOverlayInterModel>(new (placement, onComplete));
+                this.lastTimeShowNativeOverAd = Time.realtimeSinceStartup;
+            }
+            else
+            {
+                this.ShowInterstitialAd(placement, onComplete);
+            }
+        }
 
         public virtual void ShowNativeOverlayAd(AdViewPosition adViewPosition)
         {

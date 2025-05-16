@@ -127,6 +127,10 @@
         {
         }
 
+        public override void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete)
+        {
+        }
+
         #endif
     }
     #endif

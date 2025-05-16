@@ -8,6 +8,7 @@
     using GameFoundation.Signals;
     using ServiceImplementation.AdsServices.AdMob;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
+    using UnityEngine.Scripting;
     using UnityEngine.UI;
 
     public class NativeOverlayInterModel
@@ -32,6 +33,7 @@
     {
         private readonly UITemplateAdServiceWrapper adServiceWrapper;
 
+        [Preserve]
         public NativeOverlayInterPopupPresenter(
             SignalBus                  signalBus,
             ILogService                logger,

@@ -732,6 +732,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             var canShowNativeOverlayAd = Time.realtimeSinceStartup - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime;
             if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)
             {
+                this.HideMREC(this.mrecPlacement, this.mrecPosition);;
                 await this.screenManager.OpenScreen<NativeOverlayInterPopupPresenter, NativeOverlayInterModel>(new (placement, onComplete));
             }
             else

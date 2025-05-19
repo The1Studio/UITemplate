@@ -127,7 +127,7 @@
         {
         }
 
-        public override void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete)
+        public override void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
         {
             this.ShowInterstitialAd(placement, onComplete);
         }

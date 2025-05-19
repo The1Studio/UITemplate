@@ -18,6 +18,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Signals;
     using R3;
     using ServiceImplementation;
+    using ServiceImplementation.AdsServices.AdMob.NativeOverlay;
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.AdsServices.Signal;
     using ServiceImplementation.Configs;
@@ -25,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.IAPServices.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Loading;
+    using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
@@ -33,6 +35,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using UnityEngine;
     using UnityEngine.Scripting;
     #if ADMOB
+    using ServiceImplementation.AdsServices.AdMob;
     using ServiceImplementation.AdsServices.EasyMobile;
     #endif
 
@@ -51,6 +54,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly IScreenManager                      screenManager;
         private readonly ICollapsibleBannerAd                collapsibleBannerAd;
         private readonly IConsentInformation                 consentInformation;
+        private readonly NativeOverlayWrapper                nativeOverlayWrapper;
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
@@ -101,7 +105,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             ICollapsibleBannerAd                collapsibleBannerAd,
             IEnumerable<AdServiceOrder>         adServiceOrders,
             IConsentInformation                 consentInformation,
-            IEnumerable<INativeAdsService>      nativeAdsServices
+            IEnumerable<INativeAdsService>      nativeAdsServices,
+            NativeOverlayWrapper                nativeOverlayWrapper
         )
         {
             this.adServices                = adServices.ToArray();
@@ -115,6 +120,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.screenManager             = screenManager;
             this.collapsibleBannerAd       = collapsibleBannerAd;
             this.consentInformation        = consentInformation;
+            this.nativeOverlayWrapper      = nativeOverlayWrapper;
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
@@ -715,6 +721,43 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
+        #region NativeOverlayAd
+
+        #if ADMOB
+
+        public float LastTimeShowNativeOverInterAd = Time.time;
+
+        // Automatically hide the MREC; if it needs to be shown again, customize it manually within the action.
+        public virtual async void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
+        {
+            var canShowNativeOverlayAd = Time.time - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime;
+            if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)
+            {
+                if (this.IsShowMRECAd && isHidePreviousMrec) this.HideMREC(this.mrecPlacement, this.mrecPosition);
+                await this.screenManager.OpenScreen<NativeOverlayInterPopupPresenter, NativeOverlayInterModel>(new (placement, onComplete));
+            }
+            else
+            {
+                this.ShowInterstitialAd(placement, onComplete);
+            }
+        }
+
+        public virtual void ShowNativeOverlayAd(AdViewPosition adViewPosition)
+        {
+            if (this.IsRemovedAds) return;
+            this.nativeOverlayWrapper.ShowAd(adViewPosition);
+        }
+
+        public virtual void HideNativeOverlayAd()
+        {
+            if (this.IsRemovedAds) return;
+            this.nativeOverlayWrapper.HideAd();
+        }
+
+        #endif
+
+        #endregion
+
         private void OnRemoveAdsComplete()
         {
             this.signalBus.Fire(new UITemplateOnUpdateCollapMrecStateSignal(false, ""));
@@ -739,6 +782,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             foreach (var adService in this.adServices) adService.RemoveAds();
             foreach (var adService in this.nativeAdsServices) adService.RemoveAds();
+            #if ADMOB
+            this.nativeOverlayWrapper.DestroyAd();
+            #endif
             this.OnRemoveAdsComplete();
             this.signalBus.Fire<OnRemoveAdsSucceedSignal>();
         }

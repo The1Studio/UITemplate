@@ -129,6 +129,7 @@
 
         public override void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete)
         {
+            this.ShowInterstitialAd(placement, onComplete);
         }
 
         #endif

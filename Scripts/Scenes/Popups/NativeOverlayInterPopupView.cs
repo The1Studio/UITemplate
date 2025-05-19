@@ -104,7 +104,7 @@
             await this.CloseViewAsync();
             this.Model.OnComplete?.Invoke(false);
             #if ADMOB
-            this.adServiceWrapper.LastTimeShowNativeOverInterAd = Time.realtimeSinceStartup;
+            this.adServiceWrapper.LastTimeShowNativeOverInterAd = Time.time;
             #endif
         }
     }

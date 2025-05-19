@@ -725,14 +725,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #if ADMOB
 
-        public float LastTimeShowNativeOverInterAd = Time.realtimeSinceStartup;
+        public float LastTimeShowNativeOverInterAd = Time.time;
 
-        public virtual async void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete)
+        // Automatically hide the MREC; if it needs to be shown again, customize it manually within the action.
+        public virtual async void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
         {
-            var canShowNativeOverlayAd = Time.realtimeSinceStartup - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime;
+            var canShowNativeOverlayAd = Time.time - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime;
             if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)
             {
-                if (this.IsShowMRECAd) this.HideMREC(this.mrecPlacement, this.mrecPosition);
+                if (this.IsShowMRECAd && isHidePreviousMrec) this.HideMREC(this.mrecPlacement, this.mrecPosition);
                 await this.screenManager.OpenScreen<NativeOverlayInterPopupPresenter, NativeOverlayInterModel>(new (placement, onComplete));
             }
             else

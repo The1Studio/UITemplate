@@ -62,7 +62,9 @@
         {
             this.View.BtnClose.gameObject.SetActive(false);
             this.View.ObjTimer.SetActive(true);
+            #if ADMOB
             this.adServiceWrapper.ShowNativeOverlayAd(AdViewPosition.Center);
+            #endif
             this.StartCountDown();
             return UniTask.CompletedTask;
         }
@@ -70,7 +72,9 @@
         public override void Dispose()
         {
             base.Dispose();
+            #if ADMOB
             this.adServiceWrapper.HideNativeOverlayAd();
+            #endif
             this.View.BtnClose.gameObject.SetActive(false);
         }
 

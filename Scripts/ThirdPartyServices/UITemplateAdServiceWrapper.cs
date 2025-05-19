@@ -782,7 +782,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             foreach (var adService in this.adServices) adService.RemoveAds();
             foreach (var adService in this.nativeAdsServices) adService.RemoveAds();
+            #if ADMOB
             this.nativeOverlayWrapper.DestroyAd();
+            #endif
             this.OnRemoveAdsComplete();
             this.signalBus.Fire<OnRemoveAdsSucceedSignal>();
         }

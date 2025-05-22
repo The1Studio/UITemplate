@@ -46,7 +46,7 @@ namespace TheOneStudio.UITemplate
 
             //Reward Handle
             builder.Register<UITemplateRewardHandler>(Lifetime.Singleton);
-            typeof(IUITemplateRewardExecutor).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton).AsImplementedInterfaces());
+            builder.Register<UITemplateRemoveAdRewardExecutorBase>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // VFX Spawn
             builder.Register<UITemplateVFXSpawnService>(Lifetime.Singleton);

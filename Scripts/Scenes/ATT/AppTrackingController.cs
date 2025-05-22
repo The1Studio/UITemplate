@@ -38,12 +38,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.ATT
         private async void OnClickRequestTracking()
         {
             this.btnRequestTracking.interactable = false;
-            if (!this.AppTrackingServices.IsTrackingComplete())
-            {
+            // if (!this.AppTrackingServices.IsTrackingComplete())
+            // {
                 this.SetActiveLoadingScreen(true);
                 await this.AppTrackingServices.RequestConsentAndTracking();
                 this.SetActiveLoadingScreen(false);
-            }
+            // }
 
             LoadLoadingScene();
         }

@@ -8,7 +8,7 @@ namespace Core.AnalyticServices.Data
     {
         public static void RegisterSessionWatcher(this IContainerBuilder builder)
         {
-            builder.Register<SessionWatcher>(Lifetime.Singleton); 
+            builder.Register<SessionWatcher>(Lifetime.Singleton).AsImplementedInterfaces(); 
             builder.AutoResolve<SessionWatcher>();
         }
     }

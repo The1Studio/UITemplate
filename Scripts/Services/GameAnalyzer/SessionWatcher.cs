@@ -1,9 +1,9 @@
 ﻿namespace Core.AnalyticServices.Data
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using Core.AnalyticServices.CommonEvents;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
@@ -29,27 +29,22 @@
 
         private void Init() { this.SessionId = Guid.NewGuid().ToString(); }
 
-        private void Start()
-        {
-            this.StartCoroutine(this.Heartbeat());
-        }
+        private void Start() { this.Heartbeat().Forget(); }
 
-        private IEnumerator Heartbeat()
+        private async UniTaskVoid Heartbeat()
         {
-            while (true)
+            await UniTask.WaitForSeconds(HeartbeatInterval);
+            this.analyticServices.Track(new CustomEvent()
             {
-                yield return new WaitForSecondsRealtime(HeartbeatInterval);
-                this.analyticServices.Track(new CustomEvent()
+                EventName = "ut_heartbeat",
+                EventProperties = new Dictionary<string, object>
                 {
-                    EventName = "ut_heartbeat",
-                    EventProperties = new Dictionary<string, object>
-                    {
-                        { "session_id", this.SessionId },
-                        { "game_session_id", this.gameSessionDataController.OpenTime },
-                        { "placement", this.screenManager.CurrentActiveScreen?.Value.ScreenId ?? "unknown" }
-                    },
-                });
-            }
+                    { "session_id", this.SessionId },
+                    { "game_session_id", this.gameSessionDataController.OpenTime },
+                    { "placement", this.screenManager.CurrentActiveScreen?.Value.ScreenId ?? "unknown" }
+                },
+            });
+            this.Heartbeat().Forget();
         }
 
         private void OnApplicationQuit()

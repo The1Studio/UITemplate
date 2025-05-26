@@ -49,7 +49,7 @@
     "com.applovin.mediation.adapters.googleadmanager.ios": "12030000.0.0",
     "com.applovin.mediation.adapters.google.android": "24020001.0.0",
     "com.applovin.mediation.adapters.googleadmanager.android": "24020000.0.0",
-    "com.applovin.mediation.ads": "8.2.0",
+    "com.applovin.mediation.ads": "8.3.0",
     "com.adjust.sdk": "5.1.3",
     "com.unity.ide.rider": "3.0.36"
   },

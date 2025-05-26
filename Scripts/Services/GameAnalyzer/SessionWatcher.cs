@@ -40,7 +40,8 @@
 
         private async UniTaskVoid Heartbeat()
         {
-            await UniTask.WaitForSeconds(HeartbeatInterval);
+            await UniTask.SwitchToMainThread();
+            await UniTask.WaitForSeconds(HeartbeatInterval, true);
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "ut_heartbeat",

@@ -3,6 +3,7 @@
 namespace TheOneStudio.UITemplate
 {
     using System.Linq;
+    using Core.AnalyticServices.Data;
     using GameFoundation.DI;
     using GameFoundation.Scripts.Utilities.Extension;
     using TheOneStudio.DeepLinking;
@@ -47,6 +48,8 @@ namespace TheOneStudio.UITemplate
             builder.Register<UITemplateIapServices>(Lifetime.Singleton).AsInterfacesAndSelf();
 
             builder.RegisterCheatView();
+            
+            builder.RegisterSessionWatcher();
 
             // not lock in editor because interstitial fake ads can not close
             #if !UNITY_EDITOR && !DISABLE_LOCK_INPUT

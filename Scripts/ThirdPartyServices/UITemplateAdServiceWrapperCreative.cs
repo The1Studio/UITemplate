@@ -124,11 +124,11 @@
 
         #if ADMOB
 
-        public override void ShowNativeOverlayAd(AdViewPosition adViewPosition)
+        public override void ShowNativeOverlayAd(string placement, AdViewPosition adViewPosition)
         {
         }
 
-        public override void HideNativeOverlayAd()
+        public override void HideNativeOverlayAd(string placement)
         {
         }
 

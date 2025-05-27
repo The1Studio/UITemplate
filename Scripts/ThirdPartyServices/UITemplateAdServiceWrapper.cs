@@ -742,7 +742,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         // Automatically hide the MREC; if it needs to be shown again, customize it manually within the action.
         public virtual async void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
         {
-            var canShowNativeOverlayAd = Time.time - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime;
+            var canShowNativeOverlayAd = (Time.time - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime) && this.nativeOverlayWrapper.IsNativeReady(placement);
             if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)
             {
                 if (this.IsShowMRECAd && isHidePreviousMrec) this.HideMREC(this.mrecPlacement, this.mrecPosition);
@@ -754,16 +754,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             }
         }
 
-        public virtual void ShowNativeOverlayAd(AdViewPosition adViewPosition)
+        public virtual void ShowNativeOverlayAd(string placement, AdViewPosition adViewPosition)
         {
             if (this.IsRemovedAds) return;
-            this.nativeOverlayWrapper.ShowAd(adViewPosition);
+            this.nativeOverlayWrapper.ShowAd(placement, adViewPosition);
         }
 
-        public virtual void HideNativeOverlayAd()
+        public virtual void HideNativeOverlayAd(string placement)
         {
             if (this.IsRemovedAds) return;
-            this.nativeOverlayWrapper.HideAd();
+            this.nativeOverlayWrapper.HideAd(placement);
         }
 
         #endif
@@ -794,7 +794,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             PlayerPrefs.SetInt(REMOVE_ADS_KEY, -1);
             #if ADMOB
-            this.nativeOverlayWrapper.DestroyAd();
+            this.nativeOverlayWrapper.DestroyAll();
             #endif
             this.OnRemoveAdsComplete();
             this.signalBus.Fire<OnRemoveAdsSucceedSignal>();

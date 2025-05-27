@@ -26,6 +26,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         internal int CurrentLevel { get; set; } = 1;
 
         [JsonProperty] [OdinSerialize] internal Dictionary<string, int> ModeToCurrentLevel { get; set; } = new();
+        [JsonProperty] [OdinSerialize] internal string CurrentMode { get; set; } = ClassicMode;
 
         [JsonProperty]
         [Obsolete]

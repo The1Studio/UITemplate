@@ -39,6 +39,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public LevelData GetCurrentLevelData                  => this.GetLevelData(this.CurrentLevel);
         public int       CurrentLevel                         => this.CurrentModeLevel(UITemplateUserLevelData.ClassicMode);
         public LevelData GetCurrentModeLevelData(string mode) => this.GetLevelData(this.CurrentModeLevel(mode), mode);
+        
+        public string CurrentMode => this.uiTemplateUserLevelData.CurrentMode;
 
         public int CurrentModeLevel(string mode) => this.uiTemplateUserLevelData.ModeToCurrentLevel.GetOrAdd(mode, () =>
         {
@@ -94,6 +96,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void PlayCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
+            this.uiTemplateUserLevelData.CurrentMode = mode;
             this.GetModePlayTime(mode, currentModeLevel);
             this.signalBus.Fire(new LevelStartedSignal(currentModeLevel, mode, this.uiTemplateUserLevelData.TimeStamp));
         }
@@ -106,7 +109,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public void SelectLevel(int level, string mode = UITemplateUserLevelData.ClassicMode)
         {
             this.uiTemplateUserLevelData.ModeToCurrentLevel[mode] = level;
-
             this.handleUserDataServices.SaveAll();
         }
 

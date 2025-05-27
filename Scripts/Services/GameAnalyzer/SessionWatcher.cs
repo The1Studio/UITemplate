@@ -16,17 +16,20 @@
         private readonly IScreenManager                      screenManager;
         private readonly UITemplateGameSessionDataController gameSessionDataController;
         private readonly SignalBus                           signalBus;
+        private readonly UITemplateLevelDataController       levelDataController;
 
         private string SessionId { get; set; }
 
         private const float HeartbeatInterval = 1f;
 
-        public SessionWatcher(IAnalyticServices analyticServices, IScreenManager screenManager, UITemplateGameSessionDataController gameSessionDataController, SignalBus signalBus)
+        public SessionWatcher(IAnalyticServices analyticServices, IScreenManager screenManager, UITemplateGameSessionDataController gameSessionDataController, SignalBus signalBus,
+            UITemplateLevelDataController levelDataController)
         {
             this.analyticServices          = analyticServices;
             this.screenManager             = screenManager;
             this.gameSessionDataController = gameSessionDataController;
             this.signalBus                 = signalBus;
+            this.levelDataController       = levelDataController;
         }
 
         public void Initialize()
@@ -38,6 +41,19 @@
             this.signalBus.Subscribe<ApplicationPauseSignal>(this.OnApplicationPause);
         }
 
+        private string GetPlacement() { return this.screenManager.CurrentActiveScreen?.Value?.ScreenId ?? "unknown"; }
+        private Dictionary<string, object> GetCommonEventProperties()
+        {
+            return new Dictionary<string, object>
+            {
+                { "session_id", this.SessionId },
+                { "game_session_id", this.gameSessionDataController.OpenTime },
+                { "placement", this.GetPlacement() },
+                { "move", this.levelDataController.CurrentMode },
+                { "level", this.levelDataController.GetCurrentModeLevelData(this.levelDataController.CurrentMode) },
+            };
+        }
+
         private async UniTaskVoid Heartbeat()
         {
             await UniTask.SwitchToMainThread();
@@ -45,12 +61,7 @@
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "ut_heartbeat",
-                EventProperties = new Dictionary<string, object>
-                {
-                    { "session_id", this.SessionId },
-                    { "game_session_id", this.gameSessionDataController.OpenTime },
-                    { "placement", this.screenManager.CurrentActiveScreen?.Value.ScreenId ?? "unknown" }
-                },
+                EventProperties = this.GetCommonEventProperties()
             });
             this.Heartbeat().Forget();
         }
@@ -60,12 +71,7 @@
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "ut_application_quit",
-                EventProperties = new Dictionary<string, object>
-                {
-                    { "session_id", this.SessionId },
-                    { "game_session_id", this.gameSessionDataController.OpenTime },
-                    { "placement", this.screenManager.CurrentActiveScreen?.Value.ScreenId ?? "unknown" }
-                },
+                EventProperties = this.GetCommonEventProperties()
             });
         }
 
@@ -74,12 +80,7 @@
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = pauseSignal.PauseStatus ? "ut_focus_out" : "ut_focus_in",
-                EventProperties = new Dictionary<string, object>()
-                {
-                    { "session_id", this.SessionId },
-                    { "game_session_id", this.gameSessionDataController.OpenTime },
-                    { "placement", this.screenManager.CurrentActiveScreen?.Value.ScreenId ?? "unknown" }
-                }
+                EventProperties = this.GetCommonEventProperties()
             });
         }
     }

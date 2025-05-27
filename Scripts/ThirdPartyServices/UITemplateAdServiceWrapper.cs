@@ -742,6 +742,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         // Automatically hide the MREC; if it needs to be shown again, customize it manually within the action.
         public virtual async void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
         {
+            if (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)
+            {
+                onComplete?.Invoke(false);
+                return;
+            }
             this.nativeOverlayWrapper.LoadAd(placement);
             var canShowNativeOverlayAd = (Time.time - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime) && this.nativeOverlayWrapper.IsNativeReady(placement);
             if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)

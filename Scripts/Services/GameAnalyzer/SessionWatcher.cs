@@ -8,6 +8,7 @@
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
     using VContainer.Unity;
 
     internal sealed class SessionWatcher : IInitializable
@@ -22,6 +23,7 @@
 
         private const float HeartbeatInterval = 1f;
 
+        [Preserve]
         public SessionWatcher(IAnalyticServices analyticServices, IScreenManager screenManager, UITemplateGameSessionDataController gameSessionDataController, SignalBus signalBus,
             UITemplateLevelDataController levelDataController)
         {

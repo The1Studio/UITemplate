@@ -2,9 +2,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using System.Collections.Generic;
-#if WIDO
-    using System.Collections.Generic;
-#endif
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -17,15 +14,18 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using GameFoundation.Signals;
     using ServiceImplementation;
     using ServiceImplementation.IAPServices.Signals;
-#if THEONE_FTUE
-    using TheOne.FTUE;
-#endif
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
+#if WIDO
+    using System.Collections.Generic;
+#endif
+#if THEONE_FTUE
+    using TheOne.FTUE;
+#endif
 
     public class UITemplateAnalyticHandler : IInitializable, IDisposable
     {
@@ -140,12 +140,32 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             // Game Life Circle
             this.signalBus.Subscribe<ApplicationQuitSignal>(this.OnApplicationQuitHandler);
 
+            // Attribution changed
+            this.signalBus.Subscribe<AttributionChangedSignal>(this.OnAttributionChangedHandler);
+
 #if THEONE_FTUE
             this.signalBus.Subscribe<FTUECompletedSignal>(this.OnFTUECompleted);
 #endif
 
             this.TotalDaysPlayedChange();
         }
+        
+        private void OnAttributionChangedHandler(AttributionChangedSignal obj)
+        {
+            var eventParameters = new Dictionary<string, object>(obj.EventProperties);
+            eventParameters.Add("session", this.uITemplateGameSessionDataController.OpenTime);
+            eventParameters.Add("session_timestamp", this.uITemplateGameSessionDataController.SessionTimeStamp);
+            this.signalBus.Fire(new EventTrackedSignal()
+            {
+                TrackedEvent = new CustomEvent()
+                {
+                    EventName       = "AttributionChanged",
+                    EventProperties = eventParameters
+                },
+                ChangedProps = obj.EventProperties
+            });
+        }
+
 #if THEONE_FTUE
         private void OnFTUECompleted(FTUECompletedSignal obj)
         {

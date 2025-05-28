@@ -141,6 +141,7 @@
 
         public void CheckAllBadgeNotifyStatus(bool force = true)
         {
+            if (this.screenManager.CurrentActiveScreen.Value == null) return;
             var currentScreenPresenter = this.screenManager.CurrentActiveScreen.Value;
 
             if (!force && currentScreenPresenter.Equals(this.currentPresenter)) return;

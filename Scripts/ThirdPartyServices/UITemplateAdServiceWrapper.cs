@@ -41,6 +41,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
     public class UITemplateAdServiceWrapper : IInitializable, ITickable
     {
+        private const string REMOVE_ADS_KEY = "EM_REMOVE_ADS";
+        
         #region inject
 
         private readonly IReadOnlyList<IAdServices>          adServices;
@@ -176,7 +178,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region banner
 
         public BannerLoadStrategy BannerLoadStrategy      => this.thirdPartiesConfig.AdSettings.BannerLoadStrategy;
-        public bool               ShouldShowBannerAds() => !this.bannerAdService.IsRemoveAds() && this.adServicesConfig.EnableBannerAd;
+        public bool               ShouldShowBannerAds() => !this.IsRemovedAds && this.adServicesConfig.EnableBannerAd;
 
         public virtual async void ShowBannerAd(int width = 320, int height = 50, bool forceShowMediation = false)
         {
@@ -769,7 +771,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.bannerAdService.DestroyBannerAd();
         }
 
-        public bool IsRemovedAds => this.adServices.Any(adService => adService.IsRemoveAds());
+        public bool IsRemovedAds => PlayerPrefs.HasKey(REMOVE_ADS_KEY);
 
         public void Tick()
         {
@@ -780,8 +782,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public void RemoveAds()
         {
-            foreach (var adService in this.adServices) adService.RemoveAds();
-            foreach (var adService in this.nativeAdsServices) adService.RemoveAds();
+            PlayerPrefs.SetInt(REMOVE_ADS_KEY, -1);
             #if ADMOB
             this.nativeOverlayWrapper.DestroyAd();
             #endif

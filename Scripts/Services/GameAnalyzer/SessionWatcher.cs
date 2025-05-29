@@ -11,7 +11,6 @@
     using UnityEngine.Scripting;
     using VContainer.Unity;
 
-    [Preserve]
     internal sealed class SessionWatcher : IInitializable
     {
         private readonly IAnalyticServices                   analyticServices;
@@ -23,6 +22,7 @@
 
         private const float HeartbeatInterval = 1f;
 
+        [Preserve]
         public SessionWatcher(IAnalyticServices analyticServices, IScreenManager screenManager, UITemplateGameSessionDataController gameSessionDataController, SignalBus signalBus)
         {
             this.analyticServices          = analyticServices;

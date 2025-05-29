@@ -8,8 +8,10 @@
     using GameFoundation.Scripts.Utilities.ApplicationServices;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
+    using UnityEngine.Scripting;
     using VContainer.Unity;
 
+    [Preserve]
     internal sealed class SessionWatcher : IInitializable
     {
         private readonly IAnalyticServices                   analyticServices;

@@ -18,7 +18,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Signals;
     using R3;
     using ServiceImplementation;
-    using ServiceImplementation.AdsServices.Admob;
     using ServiceImplementation.AdsServices.AdMob.NativeOverlay;
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.AdsServices.PreloadService;
@@ -43,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     public class UITemplateAdServiceWrapper : IInitializable, ITickable
     {
         private const string REMOVE_ADS_KEY = "EM_REMOVE_ADS";
-        
+
         #region inject
 
         private readonly IReadOnlyList<IAdServices>          adServices;
@@ -130,7 +129,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
-            
+
             var adServiceOrdersDict = adServiceOrders.ToDictionary(order => (order.ServiceType, order.AdType), order => order.Order);
             this.bannerAdService        = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Banner))).First();
             this.interstitialAdServices = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Interstitial))).ToArray();
@@ -173,7 +172,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             //Permission
             this.signalBus.Subscribe<OnRequestPermissionStartSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
-            
+
             //Preload ads service
             if (!this.IsRemovedAds)
             {

@@ -13,6 +13,7 @@
     using ServiceImplementation.AdsServices.AdMob;
     using ServiceImplementation.AdsServices.AdMob.NativeOverlay;
     using ServiceImplementation.AdsServices.ConsentInformation;
+    using ServiceImplementation.AdsServices.PreloadService;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -39,7 +40,8 @@
             IEnumerable<AdServiceOrder>         adServiceOrders,
             IConsentInformation                 consentInformation,
             IEnumerable<INativeAdsService>      nativeAdsServices,
-            NativeOverlayWrapper                nativeOverlayWrapper
+            NativeOverlayWrapper                nativeOverlayWrapper,
+            PreloadAdService preloadAdService
         ) : base(logService,
             adServicesConfig,
             signalBus,
@@ -56,7 +58,8 @@
             adServiceOrders,
             consentInformation,
             nativeAdsServices,
-            nativeOverlayWrapper)
+            nativeOverlayWrapper,
+            preloadAdService)
         {
         }
 

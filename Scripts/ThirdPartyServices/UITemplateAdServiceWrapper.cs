@@ -18,8 +18,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Signals;
     using R3;
     using ServiceImplementation;
+    using ServiceImplementation.AdsServices.Admob;
     using ServiceImplementation.AdsServices.AdMob.NativeOverlay;
     using ServiceImplementation.AdsServices.ConsentInformation;
+    using ServiceImplementation.AdsServices.PreloadService;
     using ServiceImplementation.AdsServices.Signal;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
@@ -36,7 +38,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using UnityEngine.Scripting;
     #if ADMOB
     using ServiceImplementation.AdsServices.AdMob;
-    using ServiceImplementation.AdsServices.EasyMobile;
     #endif
 
     public class UITemplateAdServiceWrapper : IInitializable, ITickable
@@ -57,6 +58,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private readonly ICollapsibleBannerAd                collapsibleBannerAd;
         private readonly IConsentInformation                 consentInformation;
         private readonly NativeOverlayWrapper                nativeOverlayWrapper;
+        private readonly PreloadAdService                    preloadAdService;
         private readonly ILogService                         logService;
         private readonly AdServicesConfig                    adServicesConfig;
         private readonly SignalBus                           signalBus;
@@ -108,7 +110,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             IEnumerable<AdServiceOrder>         adServiceOrders,
             IConsentInformation                 consentInformation,
             IEnumerable<INativeAdsService>      nativeAdsServices,
-            NativeOverlayWrapper                nativeOverlayWrapper
+            NativeOverlayWrapper                nativeOverlayWrapper,
+            PreloadAdService preloadAdService
         )
         {
             this.adServices                = adServices.ToArray();
@@ -123,9 +126,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.collapsibleBannerAd       = collapsibleBannerAd;
             this.consentInformation        = consentInformation;
             this.nativeOverlayWrapper      = nativeOverlayWrapper;
+            this.preloadAdService          = preloadAdService;
             this.logService                = logService;
             this.adServicesConfig          = adServicesConfig;
             this.signalBus                 = signalBus;
+            
             var adServiceOrdersDict = adServiceOrders.ToDictionary(order => (order.ServiceType, order.AdType), order => order.Order);
             this.bannerAdService        = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Banner))).First();
             this.interstitialAdServices = this.adServices.OrderBy(adService => adServiceOrdersDict.GetValueOrDefault((adService.GetType(), AdType.Interstitial))).ToArray();
@@ -168,6 +173,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             //Permission
             this.signalBus.Subscribe<OnRequestPermissionStartSignal>(this.ShownAdInDifferentProcessHandler);
             this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
+            
+            //Preload ads service
+            if (!this.IsRemovedAds)
+            {
+                this.preloadAdService.LoadAdsInterval().Forget();
+            }
         }
 
         private void OnOpenAOA(AppOpenFullScreenContentOpenedSignal obj)

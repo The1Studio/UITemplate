@@ -4,7 +4,7 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.Quests.Data;
     using UnityEngine;
 

@@ -5,8 +5,6 @@ namespace TheOneStudio.UITemplate
     using System.Linq;
     using Core.AnalyticServices;
     using Core.AnalyticServices.Data;
-    using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
     using ServiceImplementation.AdsServices;
 #if THEONE_FACEBOOK_SDK
     using ServiceImplementation.Analytic.FacebookSDK;
@@ -16,6 +14,7 @@ namespace TheOneStudio.UITemplate
     using ServiceImplementation.FireBaseRemoteConfig;
     using ServiceImplementation.IAPServices;
     using ServiceImplementation.RemoteConfig;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using VContainer;
@@ -55,7 +54,7 @@ namespace TheOneStudio.UITemplate
             #if ADJUST
             builder.Register<AdjustTracker>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(container => container.ResolveOrDefault<AnalyticsEventCustomizationConfig>(new()));
             #endif
-            
+
             #if THEONE_FACEBOOK_SDK
             builder.Register<FacebookSDKService>(Lifetime.Singleton).AsInterfacesAndSelf();
             #endif

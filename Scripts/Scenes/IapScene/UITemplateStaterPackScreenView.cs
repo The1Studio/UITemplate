@@ -10,8 +10,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using ServiceImplementation.IAPServices;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;

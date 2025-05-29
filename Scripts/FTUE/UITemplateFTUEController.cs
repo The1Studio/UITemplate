@@ -2,7 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using Cysharp.Threading.Tasks;
     using GameFoundation.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services.Highlight;

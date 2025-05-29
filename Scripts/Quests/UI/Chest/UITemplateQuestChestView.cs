@@ -4,8 +4,8 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.ObjectPool;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.Quests.Data;
     using UnityEngine;
     using UnityEngine.UI;

@@ -6,9 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Scripts.Interfaces;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using UnityEngine.Scripting;
 
@@ -28,9 +28,9 @@ namespace TheOneStudio.UITemplate.UITemplate.UserData
 
         public async UniTask LoadUserData()
         {
-            // Màn loading sử dụng InitScreenManually nên sẽ đc BindData trong Awake nên cần chờ 1 frame để các service khác subscribe UserDataLoadedSignal trong Start 
+            // Màn loading sử dụng InitScreenManually nên sẽ đc BindData trong Awake nên cần chờ 1 frame để các service khác subscribe UserDataLoadedSignal trong Start
             await UniTask.NextFrame();
-            var types     = ReflectionUtils.GetAllDerivedTypes<ILocalData>().ToArray();
+            var types     = typeof(ILocalData).GetDerivedTypes().ToArray();
             var datas     = await this.handleUserDataService.Load(types);
             var dataCache = (Dictionary<string, ILocalData>)typeof(BaseHandleUserDataServices).GetField("userDataCache", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(this.handleUserDataService);
             IterTools.Zip(types, datas).ForEach((type, data) =>

@@ -8,15 +8,14 @@
     using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
     using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using UnityEngine;
     using UnityEngine.Scripting;
+    using TheOne.Extensions;
 
     public class UITemplateFTUESystem : IInitializable
     {

@@ -4,9 +4,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.Scripts.Interfaces;
-    using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
     using Sirenix.Serialization;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;

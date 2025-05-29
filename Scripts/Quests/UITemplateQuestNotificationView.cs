@@ -9,8 +9,8 @@ namespace TheOneStudio.UITemplate.Quests
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.Quests.UI;

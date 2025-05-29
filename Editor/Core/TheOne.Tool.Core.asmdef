@@ -2,7 +2,7 @@
   "name": "TheOne.Tool.Core",
   "rootNamespace": "TheOne.Tool.Core",
   "references": [
-    "GameFoundation.Utilities",
+    "TheOne.Extensions",
     "GameFoundation.Models",
     "3rd.Configs",
     "Unity.Addressables.Editor",

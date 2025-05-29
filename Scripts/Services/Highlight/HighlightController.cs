@@ -6,14 +6,13 @@
     using Com.ForbiddenByte.OSA.Core;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
-    using GameFoundation.DI;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
     using R3;
     using R3.Triggers;
+    using TheOne.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
     using Object = UnityEngine.Object;
@@ -81,7 +80,7 @@
         #region Highlight
 
         private          List<Transform>     highlightObjects = new();
-        private readonly IReadOnlyList<Type> screenPresenters = ReflectionUtils.GetAllDerivedTypes<IScreenPresenter>().ToList();
+        private readonly IReadOnlyList<Type> screenPresenters = typeof(IScreenPresenter).GetDerivedTypes().ToList();
 
         public async UniTask SetHighlight(string highlightPath, bool canClickOutside = false, Action onButtonDown = null)
         {

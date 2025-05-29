@@ -5,7 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Linq;
     using System.Threading;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services;

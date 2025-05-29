@@ -5,7 +5,6 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.Utilities;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
@@ -14,6 +13,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using UnityEngine;
     using UnityEngine.Scripting;
     using UnityEngine.UI;
+    using TheOne.Extensions;
 
     public class UITemplateQuestListItemModel
     {
@@ -55,10 +55,10 @@ namespace TheOneStudio.UITemplate.Quests.UI
 
         [Preserve]
         public UITemplateQuestListItemPresenter(
-            IGameAssets gameAssets,
-            IAudioService audioService,
+            IGameAssets         gameAssets,
+            IAudioService       audioService,
             GameFeaturesSetting gameFeaturesSetting,
-            SignalBus signalBus
+            SignalBus           signalBus
         ) : base(gameAssets)
         {
             this.gameAssets          = gameAssets;
@@ -114,7 +114,10 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.View.CollectedObjects.ForEach(obj => obj.SetActive(status.HasFlag(QuestStatus.Collected)));
         }
 
-        private void OnClickGo() { this.Model.Parent.CloseViewAsync().Forget(); }
+        private void OnClickGo()
+        {
+            this.Model.Parent.CloseViewAsync().Forget();
+        }
 
         private void OnClickClaim()
         {

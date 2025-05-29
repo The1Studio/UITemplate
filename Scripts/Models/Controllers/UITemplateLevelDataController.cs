@@ -4,10 +4,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
@@ -39,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         public LevelData GetCurrentLevelData                  => this.GetLevelData(this.CurrentLevel);
         public int       CurrentLevel                         => this.CurrentModeLevel(UITemplateUserLevelData.ClassicMode);
         public LevelData GetCurrentModeLevelData(string mode) => this.GetLevelData(this.CurrentModeLevel(mode), mode);
-        
+
         public string CurrentMode => this.uiTemplateUserLevelData.CurrentMode;
 
         public int CurrentModeLevel(string mode) => this.uiTemplateUserLevelData.ModeToCurrentLevel.GetOrAdd(mode, () =>

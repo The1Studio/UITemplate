@@ -5,8 +5,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Linq;
     using BlueprintFlow.Signals;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;

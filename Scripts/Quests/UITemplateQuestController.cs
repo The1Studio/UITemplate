@@ -4,8 +4,8 @@
     using System.Linq;
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Signals;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.Quests.Signals;
@@ -131,7 +131,7 @@
 
         private void AddProgressHandlers(IEnumerable<ICondition> conditions, IEnumerable<ICondition.IProgress> progresses)
         {
-            IterTools.StrictZip(conditions, progresses).ForEach((condition, progress) =>
+            IterTools.Zip(conditions, progresses).ForEach((condition, progress) =>
             {
                 if (this.progressHandlers.ContainsKey(progress)) return;
                 var handler = (ICondition.IProgress.IHandler)this.container.Instantiate(progress.HandlerType);

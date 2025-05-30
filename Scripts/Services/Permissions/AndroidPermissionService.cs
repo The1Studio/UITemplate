@@ -3,6 +3,7 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using UnityEngine;
     using UnityEngine.Scripting;
     #if UNITY_ANDROID
     using UnityEngine.Android;
@@ -20,6 +21,7 @@
 
         protected override async UniTask<bool> InternalRequestPermission(PermissionRequest request)
         {
+            Debug.Log($"[duck] Permission Request: {request}");
             #if UNITY_ANDROID
             var permissionString = request.ToPermissionString();
             if (Permission.HasUserAuthorizedPermission(permissionString)) return true;

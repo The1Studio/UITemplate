@@ -12,16 +12,16 @@
         {
         }
 
-        protected override async UniTask<bool> InternalRequestPermission(PermissionRequest request)
+        protected override UniTask<bool> InternalRequestPermission(PermissionRequest request)
         {
             this.LogService.Info("DummyPermissionService InternalRequestPermission: {request}");
-            return false;
+            return UniTask.FromResult(false);
         }
 
-        protected override async UniTask<bool> InternalRequestNotificationPermission()
+        protected override UniTask<bool> InternalRequestNotificationPermission()
         {
             this.LogService.Info("DummyPermissionService InternalRequestNotificationPermission");
-            return false;
+            return UniTask.FromResult(false);
         }
     }
 }

@@ -49,7 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
             this.soundServices = soundServices;
         }
 
-        public override async void BindData(TopButtonItemModel param)
+        public override void BindData(TopButtonItemModel param)
         {
             if (this.View.txtTittle != null) this.View.txtTittle.text = param.Title;
 

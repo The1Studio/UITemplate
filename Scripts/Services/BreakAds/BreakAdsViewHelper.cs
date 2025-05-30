@@ -15,9 +15,9 @@
         protected BreakAdsPopupView       View;
         protected BreakAdsPopupPresenter  BreakAdsPopupPresenter;
         protected CancellationTokenSource Cts;
-        
+
         public bool IsViewReady => BreakAdsPopupPresenter.ScreenStatus == ScreenStatus.Opened;
-        
+
         protected readonly SignalBus          SignalBus;
         private readonly   ThirdPartiesConfig thirdPartiesConfig;
 
@@ -34,12 +34,14 @@
             this.BreakAdsPopupPresenter = breakAdsPopupPresenter;
         }
 
-        public virtual async UniTask BindData()
+        public virtual UniTask BindData()
         {
             this.SignalBus.Subscribe<InterstitialAdClosedSignal>(this.BreakAdsPopupPresenter.CloseView);
             this.SignalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.BreakAdsPopupPresenter.CloseView);
             this.SignalBus.Subscribe<InterstitialAdDisplayedSignal>(this.BreakAdsPopupPresenter.CloseView);
             this.AutomaticCloseView();
+
+            return UniTask.CompletedTask;
         }
 
         private async void AutomaticCloseView()
@@ -51,7 +53,7 @@
                 await UniTask.Delay(TimeSpan.FromSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayCloseBreakAdsPopup), cancellationToken: this.Cts.Token);
                 this.BreakAdsPopupPresenter.CloseView();
             }
-            catch (Exception e)
+            catch
             {
                 // ignored
             }

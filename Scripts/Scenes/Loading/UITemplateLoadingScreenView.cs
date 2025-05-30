@@ -158,7 +158,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.SignalBus.Fire<FinishLoadingNewSceneSignal>();
 
             stopWatch.Stop();
-            Debug.Log("Loading Main Scene Time: " + stopWatch.ElapsedMilliseconds + "ms");
+            this.Logger.Info("Loading Main Scene Time: " + stopWatch.ElapsedMilliseconds + "ms");
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "LoadingMainSceneTime",
@@ -172,7 +172,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             this.OnAfterLoading();
 
             this.loadingStopwatch.Stop();
-            Debug.Log("Game Loading Time: " + this.loadingStopwatch.ElapsedMilliseconds + "ms");
+            this.Logger.Info("Game Loading Time: " + this.loadingStopwatch.ElapsedMilliseconds + "ms");
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "GameLoadingTime",

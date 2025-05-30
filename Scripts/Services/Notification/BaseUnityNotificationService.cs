@@ -94,7 +94,7 @@
         {
         }
 
-        protected virtual async void CheckOpenedByNotification()
+        protected virtual void CheckOpenedByNotification()
         {
         }
 
@@ -148,7 +148,7 @@
                     this.ScheduleNotification(notificationData, delayTime, notificationContents[i]);
                 }
             }
-            catch (Exception e)
+            catch
             {
                 // ignored
             }

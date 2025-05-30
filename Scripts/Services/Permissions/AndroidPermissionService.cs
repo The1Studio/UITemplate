@@ -18,6 +18,7 @@
         {
         }
 
+        #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         protected override async UniTask<bool> InternalRequestPermission(PermissionRequest request)
         {
             #if UNITY_ANDROID
@@ -28,14 +29,17 @@
 
             permissionCallbacks.PermissionGranted               += _ => isGranted = true;
             permissionCallbacks.PermissionDenied                += _ => isGranted = false;
+            #pragma warning disable CS0618 // Type or member is obsolete
             permissionCallbacks.PermissionDeniedAndDontAskAgain += _ => isGranted = false;
+            #pragma warning restore CS0618 // Type or member is obsolete
 
             Permission.RequestUserPermission(permissionString, permissionCallbacks);
 
             await UniTask.WaitUntil(() => isGranted || Permission.HasUserAuthorizedPermission(permissionString));
             return isGranted || Permission.HasUserAuthorizedPermission(permissionString);
-            #endif
+            #else
             return false;
+            #endif
         }
 
         protected override async UniTask<bool> InternalRequestNotificationPermission()
@@ -46,5 +50,6 @@
             this.LogService.Info($"You must add THEONE_NOTIFICATION symbol to request notification permission!");
             return false;
         }
+        #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     }
 }

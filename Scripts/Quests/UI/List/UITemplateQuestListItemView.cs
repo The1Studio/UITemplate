@@ -125,7 +125,7 @@ namespace TheOneStudio.UITemplate.Quests.UI
             this.ClaimQuestItem();
         }
 
-        private async void ClaimQuestItem()
+        private void ClaimQuestItem()
         {
             var newStatus = this.Model.Quest.Progress.Status | QuestStatus.Collected;
             this.SetItemStatus(newStatus);

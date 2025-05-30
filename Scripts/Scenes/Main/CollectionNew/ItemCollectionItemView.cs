@@ -87,7 +87,7 @@
             this.uiTemplateCollectionItemViewHelper = uiTemplateCollectionItemViewHelper;
         }
 
-        public override async void BindData(ItemCollectionItemModel param)
+        public override void BindData(ItemCollectionItemModel param)
         {
             this.uiTemplateCollectionItemViewHelper.BindDataItem(param, this.View);
         }

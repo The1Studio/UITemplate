@@ -61,7 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
                     }
                 }
             }
-            catch (OperationCanceledException e)
+            catch (OperationCanceledException)
             {
                 // ignore
             }

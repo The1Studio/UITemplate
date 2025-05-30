@@ -61,7 +61,7 @@
             return UniTask.CompletedTask;
         }
 
-        protected override async void OnViewReady()
+        protected override void OnViewReady()
         {
             base.OnViewReady();
             this.View.Reconnect.onClick.AddListener(this.OnClickReconnect);

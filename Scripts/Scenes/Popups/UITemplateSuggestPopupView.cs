@@ -4,8 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
@@ -50,7 +50,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
         [Preserve]
         public UITemplateSuggestPopupPresenter(
             SignalBus                  signalBus,
-            ILogService                logger,
+            ILoggerManager             logger,
             IGameAssets                gameAssets,
             UITemplateAdServiceWrapper uiTemplateAdServiceWrapper
         )

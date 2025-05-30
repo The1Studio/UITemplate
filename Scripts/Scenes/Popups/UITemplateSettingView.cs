@@ -3,8 +3,8 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using UnityEngine.Scripting;
@@ -32,7 +32,7 @@
         [Preserve]
         public UITemplateSettingPopupPresenter(
             SignalBus                       signalBus,
-            ILogService                     logger,
+            ILoggerManager                  logger,
             UITemplateSettingDataController uiTemplateSettingDataController
         ) : base(signalBus, logger)
         {

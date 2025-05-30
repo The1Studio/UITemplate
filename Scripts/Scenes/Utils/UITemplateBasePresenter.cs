@@ -8,8 +8,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Wido;
@@ -184,7 +184,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
     public abstract class UITemplateBaseScreenPresenter<TView> : BaseScreenPresenter<TView> where TView : IScreenView
     {
-        protected UITemplateBaseScreenPresenter(SignalBus signalBus, ILogService logger) : base(signalBus, logger) { UITemplateBaseScreenUtils.Init(); }
+        protected UITemplateBaseScreenPresenter(SignalBus signalBus, ILoggerManager loggerManager) : base(signalBus, loggerManager) { UITemplateBaseScreenUtils.Init(); }
 
         protected override void OnViewReady()
         {
@@ -198,7 +198,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
     public abstract class UITemplateBaseScreenPresenter<TView, TModel> : BaseScreenPresenter<TView, TModel> where TView : IScreenView
     {
-        protected UITemplateBaseScreenPresenter(SignalBus signalBus, ILogService logger) : base(signalBus, logger) { UITemplateBaseScreenUtils.Init(); }
+        protected UITemplateBaseScreenPresenter(SignalBus signalBus, ILoggerManager loggerManager) : base(signalBus, loggerManager) { UITemplateBaseScreenUtils.Init(); }
 
         protected override void OnViewReady()
         {
@@ -212,7 +212,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
     public abstract class UITemplateBasePopupPresenter<TView> : BasePopupPresenter<TView> where TView : IScreenView
     {
-        protected UITemplateBasePopupPresenter(SignalBus signalBus, ILogService logger) : base(signalBus, logger) { UITemplateBaseScreenUtils.Init(); }
+        protected UITemplateBasePopupPresenter(SignalBus signalBus, ILoggerManager loggerManager) : base(signalBus, loggerManager) { UITemplateBaseScreenUtils.Init(); }
 
         protected override void OnViewReady()
         {
@@ -226,7 +226,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Utils
 
     public abstract class UITemplateBasePopupPresenter<TView, TModel> : BasePopupPresenter<TView, TModel> where TView : IScreenView
     {
-        protected UITemplateBasePopupPresenter(SignalBus signalBus, ILogService logger) : base(signalBus, logger) { UITemplateBaseScreenUtils.Init(); }
+        protected UITemplateBasePopupPresenter(SignalBus signalBus, ILoggerManager loggerManager) : base(signalBus, loggerManager) { UITemplateBaseScreenUtils.Init(); }
 
         protected override void OnViewReady()
         {

@@ -4,8 +4,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.HyperCasual.Others.StateMachine.Interface;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Interface;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Signals;
@@ -14,19 +14,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
     {
         #region inject
 
-        protected readonly ILogService              LogService;
+        protected readonly ILogger                  Logger;
         protected readonly SignalBus                signalBus;
         protected readonly Dictionary<Type, IState> TypeToState;
 
         #endregion
 
         protected StateMachine(
-            List<IState> listState,
-            ILogService  logService,
-            SignalBus    signalBus
+            List<IState>   listState,
+            ILoggerManager loggerManager,
+            SignalBus      signalBus
         )
         {
-            this.LogService  = logService;
+            this.Logger      = loggerManager.GetLogger(this);
             this.signalBus   = signalBus;
             this.TypeToState = listState.ToDictionary(state => state.GetType(), state => state);
         }
@@ -62,12 +62,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Controller
             {
                 this.CurrentState.Exit();
                 this.signalBus.Fire(new OnStateExitSignal(this.CurrentState));
-                this.LogService.Log($"Exit {this.CurrentState.GetType().Name} State!!!");
+                this.Logger.Info($"Exit {this.CurrentState.GetType().Name} State!!!");
             }
 
             this.CurrentState = nextState;
             this.signalBus.Fire(new OnStateEnterSignal(this.CurrentState));
-            this.LogService.Log($"Enter {nextState.GetType().Name} State!!!");
+            this.Logger.Info($"Enter {nextState.GetType().Name} State!!!");
             nextState.Enter();
         }
 

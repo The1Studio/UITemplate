@@ -5,23 +5,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using System.Linq;
     using BlueprintFlow.Signals;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using ServiceImplementation.IAPServices;
     using ServiceImplementation.IAPServices.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
     using TheOneStudio.UITemplate.UITemplate.Services.RewardHandle;
     using UnityEngine;
     using UnityEngine.Scripting;
+    using ILogger = TheOne.Logging.ILogger;
 
     public class UITemplateIapServices : IInitializable, IDisposable
     {
         #region inject
 
         private readonly SignalBus                            signalBus;
-        private readonly ILogService                          logger;
+        private readonly ILogger                              logger;
         private readonly UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData;
         private readonly UITemplateShopPackBlueprint          uiTemplateShopPackBlueprint;
         private readonly IIapServices                         iapServices;
@@ -32,7 +33,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         [Preserve]
         public UITemplateIapServices(
             SignalBus                            signalBus,
-            ILogService                          logger,
+            ILoggerManager                       loggerManager,
             UITemplateIAPOwnerPackControllerData uiTemplateIAPOwnerPackControllerData,
             UITemplateShopPackBlueprint          uiTemplateShopPackBlueprint,
             IIapServices                         iapServices,
@@ -40,7 +41,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         )
         {
             this.signalBus                            = signalBus;
-            this.logger                               = logger;
+            this.logger                               = loggerManager.GetLogger(this);
             this.uiTemplateIAPOwnerPackControllerData = uiTemplateIAPOwnerPackControllerData;
             this.uiTemplateShopPackBlueprint          = uiTemplateShopPackBlueprint;
             this.iapServices                          = iapServices;

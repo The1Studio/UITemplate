@@ -6,8 +6,8 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -37,7 +37,7 @@
         [Preserve]
         public UITemplateCollectionScreenPresenter(
             SignalBus                         signalBus,
-            ILogService                       logger,
+            ILoggerManager                    logger,
             IScreenManager                    screenManager,
             UITemplateShopBlueprint           shopBlueprint,
             UITemplateItemBlueprint           itemBlueprint,

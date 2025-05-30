@@ -5,8 +5,8 @@
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services.StoreRating;
     using UnityEngine;
@@ -31,7 +31,7 @@
         [Preserve]
         public UITemplateRateGamePopupPresenter(
             SignalBus                    signalBus,
-            ILogService                  logger,
+            ILoggerManager               logger,
             UITemplateStoreRatingHandler storeRatingHandler
         ) : base(signalBus, logger)
         {

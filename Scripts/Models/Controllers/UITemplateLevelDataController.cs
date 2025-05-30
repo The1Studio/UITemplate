@@ -4,29 +4,36 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.UserData;
     using GameFoundation.Signals;
     using TheOne.Extensions;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Signals;
     using UnityEngine;
     using UnityEngine.Scripting;
+    using ILogger = TheOne.Logging.ILogger;
 
     public class UITemplateLevelDataController : IUITemplateControllerData, ITickable
     {
         private Dictionary<string, Dictionary<int, DateTime>> modeToLevelToStartLevelTime = new();
 
         [Preserve]
-        public UITemplateLevelDataController(UITemplateLevelBlueprint uiTemplateLevelBlueprint, UITemplateUserLevelData uiTemplateUserLevelData,
-            UITemplateInventoryDataController uiTemplateInventoryDataController, SignalBus signalBus, IHandleUserDataServices handleUserDataServices, ILogService logService)
+        public UITemplateLevelDataController(
+            UITemplateLevelBlueprint          uiTemplateLevelBlueprint,
+            UITemplateUserLevelData           uiTemplateUserLevelData,
+            UITemplateInventoryDataController uiTemplateInventoryDataController,
+            SignalBus                         signalBus,
+            IHandleUserDataServices           handleUserDataServices,
+            ILoggerManager                    loggerManager
+        )
         {
             this.uiTemplateLevelBlueprint          = uiTemplateLevelBlueprint;
             this.uiTemplateUserLevelData           = uiTemplateUserLevelData;
             this.uiTemplateInventoryDataController = uiTemplateInventoryDataController;
             this.signalBus                         = signalBus;
             this.handleUserDataServices            = handleUserDataServices;
-            this.logService                        = logService;
+            this.logger                            = loggerManager.GetLogger(this);
         }
 
         public UnlockType UnlockedFeature => this.uiTemplateUserLevelData.UnlockedFeature;
@@ -44,7 +51,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         public int CurrentModeLevel(string mode) => this.uiTemplateUserLevelData.ModeToCurrentLevel.GetOrAdd(mode, () =>
         {
-            this.logService.Log($"Init level for {mode} mode");
+            this.logger.Info($"Init level for {mode} mode");
             return 1;
         });
 
@@ -72,13 +79,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             }
         }
 
-        public bool IsFeatureUnlocked(UnlockType feature) { return (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0; }
+        public bool IsFeatureUnlocked(UnlockType feature)
+        {
+            return (this.uiTemplateUserLevelData.UnlockedFeature & feature) != 0;
+        }
 
-        public void UnlockFeature(UnlockType feature) { this.uiTemplateUserLevelData.UnlockedFeature |= feature; }
+        public void UnlockFeature(UnlockType feature)
+        {
+            this.uiTemplateUserLevelData.UnlockedFeature |= feature;
+        }
 
-        public List<LevelData> GetAllLevels() { return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList(); }
+        public List<LevelData> GetAllLevels()
+        {
+            return this.uiTemplateLevelBlueprint.Values.Select(levelRecord => this.GetLevelData(levelRecord.Level)).ToList();
+        }
 
-        public IEnumerable<LevelData> GetAllLevelData(string mode = UITemplateUserLevelData.ClassicMode) { return this.GetModelData(mode).Values; }
+        public IEnumerable<LevelData> GetAllLevelData(string mode = UITemplateUserLevelData.ClassicMode)
+        {
+            return this.GetModelData(mode).Values;
+        }
 
         public LevelData GetLevelData(int level, string mode = UITemplateUserLevelData.ClassicMode)
         {
@@ -179,7 +198,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <returns></returns>
         public bool UnlockLevel(int level, string mode)
         {
-            var levelData        = this.GetLevelData(level, mode);
+            var levelData = this.GetLevelData(level, mode);
             if (levelData.LevelStatus != LevelData.Status.Locked) return false;
             levelData.LevelStatus = LevelData.Status.Unlocked;
             return true;
@@ -196,7 +215,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.handleUserDataServices.SaveAll();
         }
 
-        public bool IsTouchedLevel(int level) { return this.MaxLevel + 1 >= level; }
+        public bool IsTouchedLevel(int level)
+        {
+            return this.MaxLevel + 1 >= level;
+        }
 
         public bool CheckLevelIsUnlockedStatus(int level, string mode = UITemplateUserLevelData.ClassicMode)
         {
@@ -266,7 +288,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private readonly UITemplateInventoryDataController uiTemplateInventoryDataController;
         private readonly SignalBus                         signalBus;
         private readonly IHandleUserDataServices           handleUserDataServices;
-        private readonly ILogService                       logService;
+        private readonly ILogger                           logger;
 
         #endregion
 

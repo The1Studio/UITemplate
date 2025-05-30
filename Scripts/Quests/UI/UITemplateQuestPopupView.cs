@@ -4,9 +4,9 @@ namespace TheOneStudio.UITemplate.Quests.UI
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using TheOne.Extensions;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.Quests.Data;
     using TheOneStudio.UITemplate.UITemplate.Quests.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
@@ -40,12 +40,12 @@ namespace TheOneStudio.UITemplate.Quests.UI
         [Preserve]
         public UITemplateQuestPopupPresenter(
             SignalBus              signalBus,
-            ILogService            logger,
+            ILoggerManager         loggerManager,
             UITemplateQuestManager questManager
             #if THEONE_BADGE_NOTIFY
             , UITemplateBadgeNotifySystem badgeNotifySystem
             #endif
-        ) : base(signalBus, logger)
+        ) : base(signalBus, loggerManager)
         {
             this.questManager = questManager;
             #if THEONE_BADGE_NOTIFY

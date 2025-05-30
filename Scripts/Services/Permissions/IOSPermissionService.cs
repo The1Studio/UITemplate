@@ -2,8 +2,8 @@
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     #if THEONE_NOTIFICATION && UNITY_IOS
     using Unity.Notifications.iOS;
     #endif
@@ -13,7 +13,7 @@
     public class IOSPermissionService : BaseUnityPermissionService
     {
         [Preserve]
-        public IOSPermissionService(ILogService logService, SignalBus signalBus) : base(logService, signalBus)
+        public IOSPermissionService(ILoggerManager loggerManager, SignalBus signalBus) : base(loggerManager, signalBus)
         {
         }
 

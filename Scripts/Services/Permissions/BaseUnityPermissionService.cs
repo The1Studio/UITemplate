@@ -1,25 +1,25 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services.Permissions
 {
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions.Signals;
 
     public abstract class BaseUnityPermissionService : IPermissionService
     {
-        protected readonly ILogService LOGService;
-        protected readonly SignalBus   SignalBus;
+        protected readonly ILogger   LogService;
+        protected readonly SignalBus SignalBus;
 
-        protected BaseUnityPermissionService(ILogService logService, SignalBus signalBus)
+        protected BaseUnityPermissionService(ILoggerManager loggerManager, SignalBus signalBus)
         {
-            this.LOGService = logService;
+            this.LogService = loggerManager.GetLogger(this);
             this.SignalBus  = signalBus;
         }
 
         public virtual async UniTask<bool> RequestPermission(PermissionRequest request)
         {
             this.SignalBus.Fire<OnRequestPermissionStartSignal>();
-            this.LOGService.Log($"oneLog: CheckPermission Start: {request}");
+            this.LogService.Info($"CheckPermission Start: {request}");
             bool isGranted;
             if (request is PermissionRequest.Notification)
             {
@@ -36,7 +36,7 @@
             }
 
             this.SignalBus.Fire(new OnRequestPermissionCompleteSignal { IsGranted = isGranted });
-            this.LOGService.Log($"onelog: CheckPermission Complete: {request} - isGranted: {isGranted}");
+            this.LogService.Info($"CheckPermission Complete: {request} - isGranted: {isGranted}");
             return isGranted;
         }
 

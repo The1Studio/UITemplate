@@ -14,11 +14,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Scripts.Utilities;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using GameFoundation.Signals;
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.Configs.Ads;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
@@ -222,7 +222,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 )
             );
         }
-        
+
         // Preload assets by label
         protected async UniTask PreloadLabelAssets<T>(string label)
         {
@@ -320,7 +320,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
         [Preserve]
         protected UITemplateLoadingScreenPresenter(
             SignalBus                  signalBus,
-            ILogService                logger,
+            ILoggerManager             loggerManager,
             UITemplateAdServiceWrapper adService,
             BlueprintReaderManager     blueprintManager,
             UserDataManager            userDataManager,
@@ -329,7 +329,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
             IAnalyticServices          analyticServices,
             IConsentInformation        consentInformation
-        ) : base(signalBus, logger)
+        ) : base(signalBus, loggerManager)
         {
             this.adService                  = adService;
             this.blueprintManager           = blueprintManager;

@@ -3,11 +3,12 @@
     using System;
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.LogService;
     using Newtonsoft.Json;
+    using TheOne.Logging;
     using UnityEngine;
     using UnityEngine.Networking;
     using UnityEngine.Scripting;
+    using ILogger = TheOne.Logging.ILogger;
 
     public interface IInternetService
     {
@@ -20,16 +21,16 @@
 
     public class InternetService : IInternetService, IInitializable
     {
-        private readonly ILogService logService;
+        private readonly ILogger logger;
 
         public static string WorldTimeAPIUrl => "https://worldtimeapi.org/api";
 
         private bool isInternetAvailable = true;
 
         [Preserve]
-        public InternetService(ILogService logService)
+        public InternetService(ILoggerManager loggerManager)
         {
-            this.logService = logService;
+            this.logger = loggerManager.GetLogger(this);
         }
 
         public async UniTask<bool> IsDifferentDay(DateTime timeCompare)
@@ -71,7 +72,7 @@
             var request = UnityWebRequest.Get(url);
             await request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.ConnectionError) this.logService.Error("No internet!");
+            if (request.result == UnityWebRequest.Result.ConnectionError) this.logger.Error("No internet!");
 
             return JsonConvert.DeserializeObject<WorldTimeAPIResponse>(request.downloadHandler.text);
         }
@@ -84,7 +85,7 @@
             }
             catch
             {
-                this.logService.Error("No internet!");
+                this.logger.Error("No internet!");
             }
 
             return default;
@@ -98,7 +99,7 @@
             }
             catch
             {
-                this.logService.Error("No internet!");
+                this.logger.Error("No internet!");
             }
 
             return default;

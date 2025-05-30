@@ -3,6 +3,7 @@
   "rootNamespace": "",
   "references": [
     "TheOne.Extensions",
+    "TheOne.Logging",
     "UITemplate.Blueprint",
     "GameFoundation.Models",
     "GameFoundation.Utilities",

@@ -1,27 +1,29 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services.StoreRating
 {
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.LogService;
+    using TheOne.Extensions;
+    using TheOne.Logging;
     using UnityEngine;
     using UnityEngine.Scripting;
+    using ILogger = TheOne.Logging.ILogger;
 
     public class DummyStoreRatingService : IStoreRatingService
     {
         #region Inject
 
-        private readonly ILogService logService;
+        private readonly ILogger logger;
 
         #endregion
 
         [Preserve]
-        public DummyStoreRatingService(ILogService logService)
+        public DummyStoreRatingService(ILoggerManager loggerManager)
         {
-            this.logService = logService;
+            this.logger = loggerManager.GetLogger(this);
         }
 
         public UniTask LaunchStoreRating()
         {
-            this.logService.LogWithColor("Launch Rating", Color.cyan);
+            this.logger.Info("Launch Rating".WithColor(Color.cyan));
             return UniTask.CompletedTask;
         }
     }

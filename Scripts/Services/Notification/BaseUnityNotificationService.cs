@@ -9,12 +9,13 @@
     using Core.AnalyticServices.CommonEvents;
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using TheOne.Extensions;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using UnityEngine;
+    using ILogger = TheOne.Logging.ILogger;
 
     public abstract class BaseUnityNotificationService : INotificationService, IInitializable, IDisposable
     {
@@ -23,7 +24,7 @@
         protected readonly SignalBus                           SignalBus;
         protected readonly UITemplateNotificationBlueprint     UITemplateNotificationBlueprint;
         protected readonly UITemplateNotificationDataBlueprint UITemplateNotificationDataBlueprint;
-        protected readonly ILogService                         Logger;
+        protected readonly ILogger                             Logger;
         protected readonly IAnalyticServices                   AnalyticServices;
         protected readonly IPermissionService                  PermissionService;
         protected readonly NotificationMappingHelper           NotificationMappingHelper;
@@ -43,7 +44,7 @@
             UITemplateNotificationBlueprint     uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint,
             NotificationMappingHelper           notificationMappingHelper,
-            ILogService                         logger,
+            ILoggerManager                      loggerManager,
             IAnalyticServices                   analyticServices,
             IPermissionService                  permissionService
         )
@@ -52,7 +53,7 @@
             this.UITemplateNotificationBlueprint     = uiTemplateNotificationBlueprint;
             this.UITemplateNotificationDataBlueprint = uiTemplateNotificationDataBlueprint;
             this.NotificationMappingHelper           = notificationMappingHelper;
-            this.Logger                              = logger;
+            this.Logger                              = loggerManager.GetLogger(this);
             this.AnalyticServices                    = analyticServices;
             this.PermissionService                   = permissionService;
         }
@@ -107,7 +108,7 @@
                     { content.Title, content.Body },
                 },
             });
-            this.Logger.Log($"onelog: Notification Opened: {content.Title} - {content.Body}");
+            this.Logger.Info($"Notification Opened: {content.Title} - {content.Body}");
         }
 
         #endregion
@@ -163,7 +164,7 @@
             var highHour = notificationData.HourRangeShow[1];
             var lowHour  = notificationData.HourRangeShow[0];
 
-            this.Logger.Log($"onelog: Notification Schedule: {notificationContent.Title} - {notificationContent.Body} - {fireTime}");
+            this.Logger.Info($"Notification Schedule: {notificationContent.Title} - {notificationContent.Body} - {fireTime}");
             if (fireTime.Hour >= highHour || fireTime.Hour <= lowHour) return;
 
             this.SendNotification(notificationContent.Title, notificationContent.Body, fireTime, delayTime);

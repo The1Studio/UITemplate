@@ -1,8 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services.Permissions
 {
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using UnityEngine.Scripting;
     #if UNITY_ANDROID
     using UnityEngine.Android;
@@ -14,7 +14,7 @@
     public class AndroidPermissionService : BaseUnityPermissionService
     {
         [Preserve]
-        public AndroidPermissionService(ILogService logService, SignalBus signalBus) : base(logService, signalBus)
+        public AndroidPermissionService(ILoggerManager loggerManager, SignalBus signalBus) : base(loggerManager, signalBus)
         {
         }
 
@@ -43,7 +43,7 @@
             #if THEONE_NOTIFICATION && UNITY_ANDROID
             if (PermissionHelper.GetSDKVersionInt() < 28) return AndroidNotificationCenter.UserPermissionToPost is not (PermissionStatus.RequestPending or PermissionStatus.NotRequested);
             #endif
-            this.LOGService.Log($"oneLog: You must add THEONE_NOTIFICATION symbol to request notification permission!");
+            this.LogService.Info($"You must add THEONE_NOTIFICATION symbol to request notification permission!");
             return false;
         }
     }

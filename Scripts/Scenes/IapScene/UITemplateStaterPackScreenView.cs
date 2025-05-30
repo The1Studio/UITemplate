@@ -7,10 +7,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.Utilities.LoadImage;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using ServiceImplementation.IAPServices;
     using TheOne.Extensions;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
@@ -51,14 +51,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
         [Preserve]
         public UITemplateStartPackScreenPresenter(
             SignalBus                    signalBus,
-            ILogService                  logger,
+            ILoggerManager               loggerManager,
             UITemplateAdServiceWrapper   adService,
             UITemplateShopPackBlueprint  uiTemplateShopPackBlueprint,
             UITemplateIapServices        uiTemplateIapServices,
             UITemplateMiscParamBlueprint uiTemplateMiscParamBlueprint,
             LoadImageHelper              loadImageHelper,
             IIapServices                 iapServices
-        ) : base(signalBus, logger)
+        ) : base(signalBus, loggerManager)
         {
             this.adService                    = adService;
             this.uiTemplateShopPackBlueprint  = uiTemplateShopPackBlueprint;

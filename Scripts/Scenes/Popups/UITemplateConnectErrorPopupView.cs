@@ -5,8 +5,8 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TMPro;
@@ -22,11 +22,11 @@
         public Image    ConnectErrorImage;
         public Image    ConnectingImage;
     }
-    
+
     public class UITemplateConnectErrorModel
     {
         public Action OnConnectSuccess { get; }
-        
+
         public UITemplateConnectErrorModel(Action onConnectSuccess)
         {
             this.OnConnectSuccess    = onConnectSuccess;
@@ -46,7 +46,7 @@
         [Preserve]
         public UITemplateConnectErrorPresenter(
             SignalBus        signalBus,
-            ILogService      logger,
+            ILoggerManager   logger,
             IScreenManager   screenManager,
             IInternetService internetService
         ) : base(signalBus, logger)

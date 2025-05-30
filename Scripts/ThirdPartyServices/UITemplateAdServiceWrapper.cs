@@ -37,6 +37,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using UnityEngine.Scripting;
     #if ADMOB
     using ServiceImplementation.AdsServices.Admob;
+    using ServiceImplementation.AdsServices;
     #endif
 
     public class UITemplateAdServiceWrapper : IInitializable, ITickable

@@ -10,7 +10,6 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
-    using ServiceImplementation.AdsServices.Admob;
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.AdsServices.NativeOverlay;
     using ServiceImplementation.AdsServices.PreloadService;

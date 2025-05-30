@@ -41,10 +41,16 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         [NonSerialized] private static Config config;
         public static void Migrate()
         {
-            var configTextAsset = Resources.Load<TextAsset>("PackageMigationConfig");
+            var configFileName =
+#if UNITY_6000_0_OR_NEWER
+                "PackageMigationConfig_unity6";
+#else
+                "PackageMigrationConfig_unity2022";
+#endif
+            var configTextAsset = Resources.Load<TextAsset>(configFileName);
             if (configTextAsset == null)
             {
-                Debug.LogError("PackageMigationConfig.json not found in Resources folder");
+                Debug.LogError($"{configFileName}.json not found in Resources folder");
                 return;
             }
 

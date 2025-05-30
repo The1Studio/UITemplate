@@ -7,7 +7,9 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
-    using ServiceImplementation.AdsServices.AdMob;
+    #if ADMOB
+    using ServiceImplementation.AdsServices.Admob;
+    #endif
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;

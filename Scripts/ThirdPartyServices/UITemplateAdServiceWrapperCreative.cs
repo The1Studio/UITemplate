@@ -10,8 +10,10 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
-    using ServiceImplementation.AdsServices.AdMob;
-    using ServiceImplementation.AdsServices.AdMob.NativeOverlay;
+    #if ADMOB
+    using ServiceImplementation.AdsServices.Admob;
+    using ServiceImplementation.AdsServices.Admob.NativeOverlay;
+    #endif
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.AdsServices.PreloadService;
     using ServiceImplementation.Configs;

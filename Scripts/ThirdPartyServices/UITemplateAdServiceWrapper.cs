@@ -18,7 +18,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using GameFoundation.Signals;
     using R3;
     using ServiceImplementation;
-    using ServiceImplementation.AdsServices.AdMob.NativeOverlay;
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.AdsServices.PreloadService;
     using ServiceImplementation.AdsServices.Signal;
@@ -36,7 +35,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using UnityEngine;
     using UnityEngine.Scripting;
     #if ADMOB
-    using ServiceImplementation.AdsServices.AdMob;
+    using ServiceImplementation.AdsServices.Admob.NativeOverlay;
+    using ServiceImplementation.AdsServices.Admob;
     #endif
 
     public class UITemplateAdServiceWrapper : IInitializable, ITickable

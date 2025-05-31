@@ -1,15 +1,13 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.Popups
 {
     using System;
+    using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
-    #if ADMOB
-    using ServiceImplementation.AdsServices.Admob;
-    #endif
     using ServiceImplementation.Configs.Ads;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
@@ -64,9 +62,7 @@
         {
             this.View.BtnClose.gameObject.SetActive(false);
             this.View.ObjTimer.SetActive(true);
-            #if ADMOB
-            this.adServiceWrapper.ShowNativeOverlayAd(AdViewPosition.Center);
-            #endif
+            this.adServiceWrapper.ShowNativeOverlayAd(this.Model.InterPlacement, AdViewPosition.Center);
             this.StartCountDown();
             return UniTask.CompletedTask;
         }
@@ -74,9 +70,7 @@
         public override void Dispose()
         {
             base.Dispose();
-            #if ADMOB
-            this.adServiceWrapper.HideNativeOverlayAd();
-            #endif
+            this.adServiceWrapper.HideNativeOverlayAd(this.Model.InterPlacement);
             this.View.BtnClose.gameObject.SetActive(false);
         }
 
@@ -109,9 +103,7 @@
         {
             await this.CloseViewAsync();
             this.Model.OnComplete?.Invoke(false);
-            #if ADMOB
             this.adServiceWrapper.LastTimeShowNativeOverInterAd = Time.time;
-            #endif
         }
     }
 }

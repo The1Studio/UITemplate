@@ -10,11 +10,8 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
-    #if ADMOB
-    using ServiceImplementation.AdsServices.Admob;
-    using ServiceImplementation.AdsServices.Admob.NativeOverlay;
-    #endif
     using ServiceImplementation.AdsServices.ConsentInformation;
+    using ServiceImplementation.AdsServices.NativeOverlay;
     using ServiceImplementation.AdsServices.PreloadService;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
@@ -42,8 +39,8 @@
             IEnumerable<AdServiceOrder>         adServiceOrders,
             IConsentInformation                 consentInformation,
             IEnumerable<INativeAdsService>      nativeAdsServices,
-            NativeOverlayWrapper                nativeOverlayWrapper,
-            PreloadAdService preloadAdService
+            PreloadAdService                    preloadAdService,
+            INativeOverlayService               nativeOverlayService
         ) : base(logService,
             adServicesConfig,
             signalBus,
@@ -60,8 +57,8 @@
             adServiceOrders,
             consentInformation,
             nativeAdsServices,
-            nativeOverlayWrapper,
-            preloadAdService)
+            preloadAdService,
+            nativeOverlayService)
         {
         }
 
@@ -124,11 +121,11 @@
 
         #if ADMOB
 
-        public override void ShowNativeOverlayAd(AdViewPosition adViewPosition)
+        public override void ShowNativeOverlayAd(string placement, AdViewPosition adViewPosition)
         {
         }
 
-        public override void HideNativeOverlayAd()
+        public override void HideNativeOverlayAd(string placement)
         {
         }
 

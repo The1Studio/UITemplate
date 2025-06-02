@@ -2,11 +2,11 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using Core.AnalyticServices;
-    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using GameFoundation.Signals;
     using System;
     using Cysharp.Threading.Tasks;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using Unity.Notifications.iOS;
     using UnityEngine.Scripting;
@@ -14,10 +14,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     public class IOSUnityNotificationService : BaseUnityNotificationService
     {
         [Preserve]
-        public IOSUnityNotificationService(SignalBus signalBus, UITemplateNotificationBlueprint uiTemplateNotificationBlueprint,
-            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint, NotificationMappingHelper notificationMappingHelper, ILogService logger, IAnalyticServices analyticServices,
-            IPermissionService permissionService) :
-            base(signalBus, uiTemplateNotificationBlueprint, uiTemplateNotificationDataBlueprint, notificationMappingHelper, logger, analyticServices, permissionService)
+        public IOSUnityNotificationService(
+            SignalBus                           signalBus,
+            UITemplateNotificationBlueprint     uiTemplateNotificationBlueprint,
+            UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint,
+            NotificationMappingHelper           notificationMappingHelper,
+            ILoggerManager                      loggerManager,
+            IAnalyticServices                   analyticServices,
+            IPermissionService                  permissionService
+        ) : base(signalBus, uiTemplateNotificationBlueprint, uiTemplateNotificationDataBlueprint, notificationMappingHelper, loggerManager, analyticServices, permissionService)
         {
         }
 
@@ -26,8 +31,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             await UniTask.DelayFrame(1); // await 1 frame are required to get the last notification intent
 
             var intent = iOSNotificationCenter.GetLastRespondedNotification();
-            if (intent != null)
-                this.TrackEventClick(new NotificationContent(intent.Title, intent.Body));
+            if (intent != null) this.TrackEventClick(new NotificationContent(intent.Title, intent.Body));
         }
 
         public override void CancelNotification()
@@ -40,10 +44,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             var notification = new iOSNotification()
             {
-                Title = title,
-                Body = body,
+                Title   = title,
+                Body    = body,
                 Trigger = new iOSNotificationTimeIntervalTrigger() { TimeInterval = delayTime },
-                Badge = 1,
+                Badge   = 1,
             };
             iOSNotificationCenter.ScheduleNotification(notification);
         }

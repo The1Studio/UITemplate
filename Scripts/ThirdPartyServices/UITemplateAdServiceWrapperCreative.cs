@@ -1,6 +1,6 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
+﻿#if CREATIVE
+namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 {
-    #if CREATIVE
     using System;
     using System.Collections.Generic;
     using Core.AdsServices;
@@ -8,13 +8,13 @@
     using Core.AdsServices.Native;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.AdsServices.NativeOverlay;
     using ServiceImplementation.AdsServices.PreloadService;
     using ServiceImplementation.Configs;
     using ServiceImplementation.Configs.Ads;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
     using UnityEngine.Scripting;
@@ -23,7 +23,7 @@
     {
         [Preserve]
         public UITemplateAdServiceWrapperCreative(
-            ILogService                         logService,
+            ILoggerManager                      loggerManager,
             AdServicesConfig                    adServicesConfig,
             SignalBus                           signalBus,
             IEnumerable<IAdServices>            adServices,
@@ -41,24 +41,10 @@
             IEnumerable<INativeAdsService>      nativeAdsServices,
             PreloadAdService                    preloadAdService,
             INativeOverlayService               nativeOverlayService
-        ) : base(logService,
-            adServicesConfig,
-            signalBus,
-            adServices,
-            mrecAdServices,
-            uiTemplateAdsController,
-            gameSessionDataController,
-            aoaAdServices,
-            toastController,
-            levelDataController,
-            thirdPartiesConfig,
-            screenManager,
-            collapsibleBannerAd,
-            adServiceOrders,
-            consentInformation,
-            nativeAdsServices,
-            preloadAdService,
-            nativeOverlayService)
+        ) : base(
+            loggerManager, adServicesConfig, signalBus, adServices, mrecAdServices, uiTemplateAdsController, gameSessionDataController, aoaAdServices, toastController, levelDataController,
+            thirdPartiesConfig, screenManager, collapsibleBannerAd, adServiceOrders, consentInformation, nativeAdsServices, preloadAdService, nativeOverlayService
+        )
         {
         }
 
@@ -120,7 +106,6 @@
         #endif
 
         #if ADMOB
-
         public override void ShowNativeOverlayAd(string placement, AdViewPosition adViewPosition)
         {
         }
@@ -136,5 +121,5 @@
 
         #endif
     }
-    #endif
 }
+#endif

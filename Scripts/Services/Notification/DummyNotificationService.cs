@@ -2,21 +2,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.LogService;
+    using TheOne.Logging;
     using UnityEngine.Scripting;
 
     public class DummyNotificationService : INotificationService
     {
         #region inject
 
-        private readonly ILogService logService;
+        private readonly ILogger logger;
 
         #endregion
 
         [Preserve]
-        public DummyNotificationService(ILogService logService)
+        public DummyNotificationService(ILoggerManager loggerManager)
         {
-            this.logService = logService;
+            this.logger = loggerManager.GetLogger(this);
         }
 
         public bool IsInitialized { get; set; }
@@ -27,7 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public void SetupCustomNotification(string notificationId, TimeSpan? delayTime = null)
         {
-            this.logService.Log($"Notify: Id - {notificationId}, delay - {delayTime}");
+            this.logger.Info($"Notify: Id - {notificationId}, delay - {delayTime}");
         }
 
         public UniTask CheckPermission()

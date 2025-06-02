@@ -25,8 +25,10 @@ namespace TheOne.Tool.Core
 
         [InlineEditor] [TabGroup("Game Features")] public GameFeaturesSetting gameFeaturesSetting;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             this.AnalyticConfig      = Resources.Load<AnalyticConfig>($"GameConfigs/{nameof(this.AnalyticConfig)}");
             this.ThirdPartiesConfig  = Resources.Load<ThirdPartiesConfig>($"GameConfigs/{nameof(this.ThirdPartiesConfig)}");
             this.remoteConfigSetting = Resources.Load<RemoteConfigSetting>(RemoteConfigSetting.ResourcePath);

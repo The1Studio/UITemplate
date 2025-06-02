@@ -7,8 +7,8 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.Utilities.UIStuff;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.HyperCasual.GamePlay.Models;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TMPro;
@@ -42,10 +42,10 @@
         [Preserve]
         protected UITemplateRacingEventScreenPresenter(
             SignalBus                           signalBus,
-            ILogService                         logger,
+            ILoggerManager                      loggerManager,
             UITemplateEventRacingDataController uiTemplateEventRacingDataController,
             AutoCooldownTimer                   autoCooldownTimer
-        ) : base(signalBus, logger)
+        ) : base(signalBus, loggerManager)
         {
             this.uiTemplateEventRacingDataController = uiTemplateEventRacingDataController;
             this.autoCooldownTimer                   = autoCooldownTimer;

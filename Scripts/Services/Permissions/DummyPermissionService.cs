@@ -1,27 +1,27 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services.Permissions
 {
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using UnityEngine.Scripting;
 
     public class DummyPermissionService : BaseUnityPermissionService
     {
         [Preserve]
-        public DummyPermissionService(ILogService logService, SignalBus signalBus) : base(logService, signalBus)
+        public DummyPermissionService(ILoggerManager loggerManager, SignalBus signalBus) : base(loggerManager, signalBus)
         {
         }
 
-        protected override async UniTask<bool> InternalRequestPermission(PermissionRequest request)
+        protected override UniTask<bool> InternalRequestPermission(PermissionRequest request)
         {
-            this.LOGService.Log($"oneLog: DummyPermissionService InternalRequestPermission: {request}");
-            return false;
+            this.LogService.Info("DummyPermissionService InternalRequestPermission: {request}");
+            return UniTask.FromResult(false);
         }
 
-        protected override async UniTask<bool> InternalRequestNotificationPermission()
+        protected override UniTask<bool> InternalRequestNotificationPermission()
         {
-            this.LOGService.Log($"oneLog: DummyPermissionService InternalRequestNotificationPermission");
-            return false;
+            this.LogService.Info("DummyPermissionService InternalRequestNotificationPermission");
+            return UniTask.FromResult(false);
         }
     }
 }

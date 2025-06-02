@@ -3,8 +3,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
     using UnityEngine.Scripting;
@@ -19,7 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     public class UITemplateLoseOp2Presenter : BaseEndGameScreenPresenter<UITemplateLoseOP2Screen>
     {
         [Preserve]
-        public UITemplateLoseOp2Presenter(SignalBus signalBus, ILogService logger, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus, logger, uiTemplateAdService, soundServices)
+        public UITemplateLoseOp2Presenter(SignalBus signalBus, ILoggerManager loggerManager, UITemplateAdServiceWrapper uiTemplateAdService, UITemplateSoundServices soundServices) : base(signalBus, loggerManager, uiTemplateAdService, soundServices)
         {
         }
 

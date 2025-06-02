@@ -23,7 +23,7 @@ namespace UITemplate.Editor
 
         [OdinSerialize]
         [HideLabel]
-        [ListDrawerSettings(Expanded = true, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]
+        [ListDrawerSettings(ShowFoldout = false, ShowPaging = true, ShowItemCount = true, IsReadOnly = true, DraggableItems = false, NumberOfItemsPerPage = 5)]
         private List<ILocalData> localData;
 
         private Vector2 scrollPosition;

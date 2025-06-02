@@ -3,10 +3,10 @@
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using ServiceImplementation.Configs;
     using Sirenix.OdinInspector;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TMPro;
     using UnityEngine;
@@ -31,12 +31,12 @@
 
         [Preserve]
         public BreakAdsPopupPresenter(
-            SignalBus signalBus,
-            ILogService logger,
-            BreakAdsViewHelper breakAdsViewHelper,
-            ThirdPartiesConfig thirdPartiesConfig,
+            SignalBus                         signalBus,
+            ILoggerManager                    loggerManager,
+            BreakAdsViewHelper                breakAdsViewHelper,
+            ThirdPartiesConfig                thirdPartiesConfig,
             UITemplateInventoryDataController inventoryDataController
-        ) : base(signalBus, logger)
+        ) : base(signalBus, loggerManager)
         {
             this.breakAdsViewHelper      = breakAdsViewHelper;
             this.thirdPartiesConfig      = thirdPartiesConfig;
@@ -45,7 +45,10 @@
 
         #endregion
 
-        protected override void OnViewReady() { this.breakAdsViewHelper.OnViewReady(this.View, this); }
+        protected override void OnViewReady()
+        {
+            this.breakAdsViewHelper.OnViewReady(this.View, this);
+        }
 
         public override UniTask BindData()
         {
@@ -69,9 +72,12 @@
         protected virtual void RewardAfterWatchedAds()
         {
             if (!this.thirdPartiesConfig.AdSettings.IsBreakAdsRewardCurrency) return;
-            this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency,"break_ads", this.View.currencyTransform);
+            this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency, "break_ads", this.View.currencyTransform);
         }
 
-        public override void Dispose() { this.breakAdsViewHelper.Dispose(); }
+        public override void Dispose()
+        {
+            this.breakAdsViewHelper.Dispose();
+        }
     }
 }

@@ -2,12 +2,12 @@
 namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using Core.AnalyticServices;
-    using GameFoundation.Scripts.Utilities.LogService;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using System;
     using Unity.Notifications.Android;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using UnityEngine.Scripting;
 
@@ -19,11 +19,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             UITemplateNotificationBlueprint     uiTemplateNotificationBlueprint,
             UITemplateNotificationDataBlueprint uiTemplateNotificationDataBlueprint,
             NotificationMappingHelper           notificationMappingHelper,
-            ILogService                         logger,
+            ILoggerManager                      loggerManager,
             IAnalyticServices                   analyticServices,
             IPermissionService                  permissionService
         ) :
-            base(signalBus, uiTemplateNotificationBlueprint, uiTemplateNotificationDataBlueprint, notificationMappingHelper, logger, analyticServices, permissionService)
+            base(signalBus, uiTemplateNotificationBlueprint, uiTemplateNotificationDataBlueprint, notificationMappingHelper, loggerManager, analyticServices, permissionService)
         {
         }
 
@@ -47,7 +47,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         public override void SendNotification(string title, string body, DateTime fireTime, TimeSpan delayTime)
         {
-            this.Logger.Log($"onelog: Notification SendNotification: {title} - {body} - {fireTime} - {delayTime}");
+            this.Logger.Info($"SendNotification: {title} - {body} - {fireTime} - {delayTime}");
             var notification = new AndroidNotification
             {
                 Title     = title,

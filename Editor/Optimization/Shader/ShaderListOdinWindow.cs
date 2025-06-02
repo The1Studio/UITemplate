@@ -19,7 +19,7 @@ namespace TheOne.Tool.Optimization.Shader
             this.shaderInfos = this.FindAllShadersAndMaterials();
         }
 
-        [ListDrawerSettings(Expanded = true)] [TableList] [ShowInInspector] private List<ShaderMaterialInfo> shaderInfos = new();
+        [ListDrawerSettings(ShowFoldout = false)] [TableList] [ShowInInspector] private List<ShaderMaterialInfo> shaderInfos = new();
 
         [MenuItem("TheOne/List And Optimize/Shader List")]
         private static void OpenWindow()

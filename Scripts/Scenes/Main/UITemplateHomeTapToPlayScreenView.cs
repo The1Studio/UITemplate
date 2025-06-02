@@ -4,8 +4,8 @@
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Play;
@@ -28,7 +28,7 @@
         [Preserve]
         public UITemplateHomeTapToPlayScreenPresenter(
             SignalBus                         signalBus,
-            ILogService                       logger,
+            ILoggerManager                    logger,
             IScreenManager                    screenManager,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
             UITemplateSoundServices           soundServices

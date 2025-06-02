@@ -3,8 +3,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
     using Core.AdsServices;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.Services;
@@ -23,10 +23,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.EndGame
         [Preserve]
         public UITemPlateWinOp2ScreenPresenter(
             SignalBus                  signalBus,
-            ILogService                logger,
+            ILoggerManager             loggerManager,
             UITemplateAdServiceWrapper uiTemplateAdService,
             UITemplateSoundServices    soundServices
-        ) : base(signalBus, logger, uiTemplateAdService, soundServices)
+        ) : base(signalBus, loggerManager, uiTemplateAdService, soundServices)
         {
         }
 

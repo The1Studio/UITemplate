@@ -117,7 +117,7 @@
             }
             else
             {
-                this.screenManager.OpenScreen<UITemplateSettingPopupPresenter>();
+                this.screenManager.OpenScreen<UITemplateSettingPopupPresenter>().Forget();
             }
         }
     }

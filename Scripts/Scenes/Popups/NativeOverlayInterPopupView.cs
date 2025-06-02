@@ -6,9 +6,9 @@
     using DG.Tweening;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using ServiceImplementation.Configs.Ads;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
     using UnityEngine;
@@ -43,7 +43,7 @@
         [Preserve]
         public NativeOverlayInterPopupPresenter(
             SignalBus                  signalBus,
-            ILogService                logger,
+            ILoggerManager             logger,
             UITemplateAdServiceWrapper adServiceWrapper,
             AdServicesConfig           adServicesConfig
         ) : base(signalBus, logger)

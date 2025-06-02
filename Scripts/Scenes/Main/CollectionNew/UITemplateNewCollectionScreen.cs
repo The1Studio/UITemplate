@@ -8,9 +8,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
     using ServiceImplementation.IAPServices;
+    using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -47,17 +47,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
         [Preserve]
         public UITemplateNewCollectionScreenPresenter(
-            SignalBus signalBus,
-            ILogService logger,
-            EventSystem eventSystem,
-            IIapServices iapServices,
-            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
-            IGameAssets gameAssets,
-            IScreenManager screenManager,
-            UITemplateCategoryItemBlueprint uiTemplateCategoryItemBlueprint,
-            UITemplateItemBlueprint uiTemplateItemBlueprint,
+            SignalBus                         signalBus,
+            ILoggerManager                    logger,
+            EventSystem                       eventSystem,
+            IIapServices                      iapServices,
+            UITemplateAdServiceWrapper        uiTemplateAdServiceWrapper,
+            IGameAssets                       gameAssets,
+            IScreenManager                    screenManager,
+            UITemplateCategoryItemBlueprint   uiTemplateCategoryItemBlueprint,
+            UITemplateItemBlueprint           uiTemplateItemBlueprint,
             UITemplateInventoryDataController uiTemplateInventoryDataController,
-            UITemplateLevelDataController levelDataController
+            UITemplateLevelDataController     levelDataController
         ) : base(signalBus, logger)
         {
             this.eventSystem                       = eventSystem;
@@ -339,7 +339,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew
 
             if (currentCoin < obj.ShopBlueprintRecord.Price)
             {
-                this.Logger.Log($"Not Enough {obj.ShopBlueprintRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.ShopBlueprintRecord.Price}");
+                this.Logger.Info($"Not Enough {obj.ShopBlueprintRecord.CurrencyID}\nCurrent: {currentCoin}, Needed: {obj.ShopBlueprintRecord.Price}");
                 onFail?.Invoke();
                 return;
             }

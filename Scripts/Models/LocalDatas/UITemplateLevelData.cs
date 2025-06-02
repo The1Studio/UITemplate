@@ -6,11 +6,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
     using GameFoundation.Scripts.Interfaces;
     using Newtonsoft.Json;
     using Sirenix.Serialization;
-    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Models.LocalDatas;
-    using UnityEngine;
     using UnityEngine.Scripting;
 
     [Preserve]
@@ -26,7 +24,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         internal int CurrentLevel { get; set; } = 1;
 
         [JsonProperty] [OdinSerialize] internal Dictionary<string, int> ModeToCurrentLevel { get; set; } = new();
-        [JsonProperty] [OdinSerialize] internal string CurrentMode { get; set; } = ClassicMode;
+        [JsonProperty] [OdinSerialize] internal string                  CurrentMode        { get; set; } = ClassicMode;
 
         [JsonProperty]
         [Obsolete]
@@ -40,19 +38,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
 
         public void Init()
         {
-#if CREATIVE
+            #if CREATIVE
             foreach (var levelData in this.LevelToLevelData.Values.ToList())
             {
                 levelData.LevelStatus = LevelData.Status.Passed;
             }
-#endif
+            #endif
         }
 
         public void OnDataLoaded()
         {
-            Debug.Log("On Level Data Loaded");
-            this.ModeToCurrentLevel.GetOrAdd(ClassicMode, () => this.CurrentLevel);
-            this.ModeToLevelToLevelData.GetOrAdd(ClassicMode, () => this.LevelToLevelData);
+            #pragma warning disable CS0612 // Type or member is obsolete
+            this.ModeToCurrentLevel.TryAdd(ClassicMode, this.CurrentLevel);
+            this.ModeToLevelToLevelData.TryAdd(ClassicMode, this.LevelToLevelData);
+            #pragma warning restore CS0612 // Type or member is obsolete
         }
 
         public Type ControllerType => typeof(UITemplateLevelDataController);

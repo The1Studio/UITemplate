@@ -2,8 +2,8 @@
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Logging;
     #if THEONE_NOTIFICATION && UNITY_IOS
     using Unity.Notifications.iOS;
     #endif
@@ -13,7 +13,7 @@
     public class IOSPermissionService : BaseUnityPermissionService
     {
         [Preserve]
-        public IOSPermissionService(ILogService logService, SignalBus signalBus) : base(logService, signalBus)
+        public IOSPermissionService(ILoggerManager loggerManager, SignalBus signalBus) : base(loggerManager, signalBus)
         {
         }
 
@@ -24,6 +24,7 @@
             return Application.HasUserAuthorization(authorization);
         }
 
+        #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         protected override async UniTask<bool> InternalRequestNotificationPermission()
         {
             #if THEONE_NOTIFICATION && UNITY_IOS
@@ -32,8 +33,10 @@
             using var req = new AuthorizationRequest(AuthorizationOption.Alert | AuthorizationOption.Badge, true);
             await UniTask.WaitUntil(() => req.IsFinished);
             return iOSNotificationSettings.AuthorizationStatus != AuthorizationStatus.Denied;
-            #endif
+            #else
             return false;
+            #endif
         }
+        #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     }
 }

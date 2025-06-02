@@ -1,6 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.Quests.UI
 {
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using UnityEngine;
     using UnityEngine.Events;
     using UnityEngine.UI;

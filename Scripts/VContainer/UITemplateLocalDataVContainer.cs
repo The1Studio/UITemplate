@@ -2,9 +2,8 @@
 #nullable enable
 namespace TheOneStudio.UITemplate
 {
-    using GameFoundation.DI;
     using GameFoundation.Scripts.Interfaces;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.UserData;
     using VContainer;
@@ -14,7 +13,7 @@ namespace TheOneStudio.UITemplate
         public static void RegisterUITemplateLocalData(this IContainerBuilder builder)
         {
             typeof(ILocalData).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton));
-            typeof(IUITemplateControllerData).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton).AsInterfacesAndSelf());
+            typeof(IUITemplateControllerData).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton).AsImplementedInterfaces().AsSelf());
             builder.Register<UserDataManager>(Lifetime.Singleton);
         }
     }

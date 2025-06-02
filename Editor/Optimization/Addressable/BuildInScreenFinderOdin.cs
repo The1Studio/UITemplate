@@ -3,9 +3,9 @@ namespace TheOne.Tool.Optimization.Addressable
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
+    using TheOne.Extensions;
     using TheOne.Tool.Core;
     using TheOne.Tool.Optimization.Texture.MenuItems;
     using UnityEditor;

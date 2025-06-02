@@ -2,7 +2,6 @@
 #nullable enable
 namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
 {
-    using GameFoundation.DI;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
     using VContainer;
 
@@ -13,7 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Creative.Cheat
             #if !CREATIVE
             return;
             #endif
-            builder.Register<NewCreativeService>(Lifetime.Singleton).AsInterfacesAndSelf();
+            builder.Register<NewCreativeService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterBuildCallback(container => container.Resolve<CreativeService>().DisableTripleTap());
         }
     }

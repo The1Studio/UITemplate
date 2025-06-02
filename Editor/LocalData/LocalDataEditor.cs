@@ -11,6 +11,7 @@ namespace UITemplate.Editor
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
     using Sirenix.Serialization;
+    using TheOne.Extensions;
     using UnityEditor;
     using UnityEngine;
 
@@ -88,7 +89,7 @@ namespace UITemplate.Editor
         {
             var result = new List<ILocalData>();
 
-            var localDataTypes = ReflectionUtils.GetAllDerivedTypes<ILocalData>();
+            var localDataTypes = typeof(ILocalData).GetDerivedTypes();
 
             foreach (var type in localDataTypes)
             {

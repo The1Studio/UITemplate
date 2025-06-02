@@ -2,6 +2,7 @@
   "name": "TheOne.Tool.LocalData",
   "rootNamespace": "TheOne.Tool.LocalData",
   "references": [
+    "TheOne.Extensions",
     "GameFoundation.Utilities",
     "Unity.Addressables.Editor",
     "UniTask",

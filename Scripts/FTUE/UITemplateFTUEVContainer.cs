@@ -3,8 +3,7 @@
 namespace TheOneStudio.UITemplate.UITemplate.FTUE
 {
     using System.Linq;
-    using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Conditions;
     using TheOneStudio.UITemplate.UITemplate.FTUE.FTUEListen;
     using TheOneStudio.UITemplate.UITemplate.FTUE.RemoteConfig;
@@ -18,13 +17,13 @@ namespace TheOneStudio.UITemplate.UITemplate.FTUE
             builder.Register<UITemplateFTUEDataController>(Lifetime.Singleton);
             builder.Register<UITemplateFTUEController>(Lifetime.Singleton);
             builder.Register<UITemplateFTUEHelper>(Lifetime.Singleton);
-            builder.Register<UITemplateFTUEBlueprintDataHandler>(Lifetime.Singleton).AsInterfacesAndSelf();
-            builder.Register<UITemplateFTUERemoteConfig>(Lifetime.Singleton).AsInterfacesAndSelf();
+            builder.Register<UITemplateFTUEBlueprintDataHandler>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UITemplateFTUERemoteConfig>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             typeof(FTUEBaseListen).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton).AsImplementedInterfaces());
 
             builder.Register<UITemplateFTUESystem>(Lifetime.Singleton)
                 .WithParameter(container => typeof(IFtueCondition).GetDerivedTypes().Select(type => (IFtueCondition)container.Instantiate(type)).ToList())
-                .AsInterfacesAndSelf();
+                .AsImplementedInterfaces().AsSelf();
         }
     }
 }

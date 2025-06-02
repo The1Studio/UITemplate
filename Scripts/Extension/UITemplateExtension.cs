@@ -77,11 +77,6 @@
             return elements[defaultElementIndex];
         }
 
-        public static bool IsNullOrEmpty(this string str)
-        {
-            return string.IsNullOrEmpty(str);
-        }
-
         public static Vector3 RandomPointInBounds(this Bounds bounds)
         {
             return new(

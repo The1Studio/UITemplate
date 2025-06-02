@@ -3,7 +3,7 @@ namespace TheOneStudio.UITemplate.Quests
     using System.Collections.Generic;
     using System.Linq;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.Quests.Data;
     using UnityEngine.Scripting;
 

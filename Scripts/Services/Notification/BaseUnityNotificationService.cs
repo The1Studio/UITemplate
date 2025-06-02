@@ -9,9 +9,9 @@
     using Core.AnalyticServices.CommonEvents;
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.LogService;
     using GameFoundation.Signals;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Blueprints;
     using TheOneStudio.UITemplate.UITemplate.Services.Permissions;
     using UnityEngine;
@@ -183,7 +183,7 @@
             var body  = "";
 
             var listCanRandom = this.UITemplateNotificationDataBlueprint.Values.Where(x => x.RandomAble).ToList();
-            var itemRandom    = listCanRandom.Count > 0 ? listCanRandom.PickRandom() : null;
+            var itemRandom    = listCanRandom.Count > 0 ? listCanRandom.Random() : null;
 
             if (itemRandom == null) this.Logger.Warning($"There is no item can random in {this.UITemplateNotificationDataBlueprint.GetType().Name}, ignore random");
 

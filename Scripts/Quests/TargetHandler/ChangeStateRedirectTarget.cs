@@ -3,8 +3,8 @@
     using System;
     using System.Linq;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
+    using TheOne.Extensions;
     using TheOneStudio.HyperCasual.Others.StateMachine.Interface;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Interface;
     using UnityEngine.Scripting;
@@ -28,7 +28,7 @@
 
             public override UniTask Handle()
             {
-                var type = ReflectionUtils.GetAllDerivedTypes<IState>().Single(type1 => type1.Name == this.RedirectTarget.StateName);
+                var type = typeof(IState).GetDerivedTypes().Single(type1 => type1.Name == this.RedirectTarget.StateName);
                 this.stateMachine.TransitionTo(type);
                 return UniTask.CompletedTask;
             }

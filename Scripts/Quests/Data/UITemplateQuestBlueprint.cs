@@ -6,8 +6,8 @@ namespace TheOneStudio.UITemplate.Quests.Data
     using BlueprintFlow.BlueprintReader;
     using BlueprintFlow.BlueprintReader.Converter;
     using BlueprintFlow.BlueprintReader.Converter.TypeConversion;
-    using GameFoundation.Scripts.Utilities.Extension;
     using Newtonsoft.Json;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.Quests.Conditions;
     using TheOneStudio.UITemplate.Quests.Rewards;
     using TheOneStudio.UITemplate.Quests.TargetHandler;
@@ -35,7 +35,7 @@ namespace TheOneStudio.UITemplate.Quests.Data
             public JsonConverter()
             {
                 var postFix = typeof(T).Name[1..];
-                this.typeMap = ReflectionUtils.GetAllDerivedTypes<T>()
+                this.typeMap = typeof(T).GetDerivedTypes()
                     .ToDictionary(type =>
                         type.Name.EndsWith(postFix)
                             ? type.Name[..^postFix.Length]

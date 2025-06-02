@@ -4,12 +4,11 @@
     using System.Collections.Generic;
     using GameFoundation.DI;
     using GameFoundation.Scripts.AssetLibrary;
-    using GameFoundation.Scripts.Utilities.Extension;
     using GameFoundation.Scripts.Utilities.ObjectPool;
     using GameFoundation.Signals;
     using ServiceImplementation.FireBaseRemoteConfig;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Configs.GameEvents;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Services.CountryFlags.CountryFlags.Scripts;
     using UnityEngine;
@@ -131,10 +130,10 @@
                         Score = 0,
                         CountryCode =
                             isYou ? RegionHelper.GetCountryCodeByDeviceLang() : this.CountryFlags.RandomCountryCode(),
-                        IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.PickRandom(),
+                        IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.Random(),
                     });
 
-            if (racingPlayerData.IconAddressable.IsNullOrEmpty()) racingPlayerData.IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.PickRandom();
+            if (racingPlayerData.IconAddressable.IsNullOrEmpty()) racingPlayerData.IconAddressable = this.gameFeaturesSetting.RacingConfig.IconAddressableSet.Random();
 
             if (isYou) racingPlayerData.Score = this.uiTemplateInventoryDataController.GetCurrencyValue(this.gameFeaturesSetting.RacingConfig.RacingCurrency);
 

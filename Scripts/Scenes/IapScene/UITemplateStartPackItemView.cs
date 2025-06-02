@@ -3,7 +3,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.IapScene
     using GameFoundation.Scripts.AssetLibrary;
     using GameFoundation.Scripts.UIModule.MVP;
     using GameFoundation.Scripts.UIModule.Utilities.LoadImage;
-    using TheOneStudio.UITemplate.UITemplate.Extension;
+    using TheOne.Extensions;
     using TMPro;
     using UnityEngine.Scripting;
     using UnityEngine.UI;

@@ -2,8 +2,7 @@
 #nullable enable
 namespace TheOneStudio.UITemplate
 {
-    using GameFoundation.DI;
-    using GameFoundation.Scripts.Utilities.Extension;
+    using TheOne.Extensions;
     using TheOneStudio.UITemplate.UITemplate.Helpers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.FeaturesConfig;
     using TheOneStudio.UITemplate.UITemplate.Scripts.Services;
@@ -21,7 +20,7 @@ namespace TheOneStudio.UITemplate
     {
         public static void RegisterUITemplateServices(this IContainerBuilder builder, Transform rootTransform, ToastController toastController)
         {
-            builder.Register<UITemplateFeatureConfig>(Lifetime.Singleton).AsInterfacesAndSelf();
+            builder.Register<UITemplateFeatureConfig>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             // Master Audio
             builder.Register<UITemplateSoundServices>(Lifetime.Singleton);
@@ -34,7 +33,7 @@ namespace TheOneStudio.UITemplate
             typeof(IUITemplateScreenShow).GetDerivedTypes().ForEach(type => builder.Register(type, Lifetime.Singleton).AsImplementedInterfaces());
 
             //FlyingAnimation Currency
-            builder.Register<UITemplateFlyingAnimationController>(Lifetime.Singleton).AsInterfacesAndSelf();
+            builder.Register<UITemplateFlyingAnimationController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             //Utils
             builder.Register<GameAssetUtil>(Lifetime.Singleton);

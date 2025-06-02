@@ -7,26 +7,26 @@
 
     public abstract class BaseUnityPermissionService : IPermissionService
     {
-        protected readonly ILogger   LogService;
+        protected readonly ILogger   Logger;
         protected readonly SignalBus SignalBus;
 
         protected BaseUnityPermissionService(ILoggerManager loggerManager, SignalBus signalBus)
         {
-            this.LogService = loggerManager.GetLogger(this);
-            this.SignalBus  = signalBus;
+            this.Logger    = loggerManager.GetLogger(this);
+            this.SignalBus = signalBus;
         }
 
         public virtual async UniTask<bool> RequestPermission(PermissionRequest request)
         {
             this.SignalBus.Fire<OnRequestPermissionStartSignal>();
-            this.LogService.Info($"CheckPermission Start: {request}");
+            this.Logger.Info($"CheckPermission Start: {request}");
             bool isGranted;
             if (request is PermissionRequest.Notification)
             {
                 #if THEONE_NOTIFICATION
                 isGranted = await this.InternalRequestNotificationPermission();
                 #else
-                this.LOGService.Log($"oneLog: You must add THEONE_NOTIFICATION symbol to request notification permission!");
+                this.Logger.Log($"oneLog: You must add THEONE_NOTIFICATION symbol to request notification permission!");
                 isGranted = false;
                 #endif
             }
@@ -36,7 +36,7 @@
             }
 
             this.SignalBus.Fire(new OnRequestPermissionCompleteSignal { IsGranted = isGranted });
-            this.LogService.Info($"CheckPermission Complete: {request} - isGranted: {isGranted}");
+            this.Logger.Info($"CheckPermission Complete: {request} - isGranted: {isGranted}");
             return isGranted;
         }
 

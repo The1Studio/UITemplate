@@ -47,7 +47,7 @@
             #if THEONE_NOTIFICATION && UNITY_ANDROID
             if (PermissionHelper.GetSDKVersionInt() < 28) return AndroidNotificationCenter.UserPermissionToPost is not (PermissionStatus.RequestPending or PermissionStatus.NotRequested);
             #endif
-            this.LogService.Info($"You must add THEONE_NOTIFICATION symbol to request notification permission!");
+            this.Logger.Info($"You must add THEONE_NOTIFICATION symbol to request notification permission!");
             return false;
         }
         #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously

@@ -14,13 +14,13 @@
 
         protected override UniTask<bool> InternalRequestPermission(PermissionRequest request)
         {
-            this.LogService.Info("DummyPermissionService InternalRequestPermission: {request}");
+            this.Logger.Info("DummyPermissionService InternalRequestPermission: {request}");
             return UniTask.FromResult(false);
         }
 
         protected override UniTask<bool> InternalRequestNotificationPermission()
         {
-            this.LogService.Info("DummyPermissionService InternalRequestNotificationPermission");
+            this.Logger.Info("DummyPermissionService InternalRequestNotificationPermission");
             return UniTask.FromResult(false);
         }
     }

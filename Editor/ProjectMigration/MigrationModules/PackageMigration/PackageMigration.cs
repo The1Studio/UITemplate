@@ -43,7 +43,7 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
         {
             var configFileName =
 #if UNITY_6000_0_OR_NEWER
-                "PackageMigationConfig_unity6";
+                "PackageMigrationConfig_unity6";
 #else
                 "PackageMigrationConfig_unity2022";
 #endif

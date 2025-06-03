@@ -82,6 +82,7 @@
 
         private void OnCloseView()
         {
+            this.view.SetActive(false);
             this.nativeAdsView.ShowAds(false);
             this.signal.OnComplete?.Invoke(false);
             this.adServiceWrapper.LastTimeShowNativeInterAd = Time.time;

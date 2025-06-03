@@ -37,14 +37,12 @@ namespace Core.AdsServices.Native
         }
         public void OnRemoveAds ()
         {
-            Debug.Log("onelog : remove gadsme ads ");
             this.ShowAds(false);
         }
         public void ShowAds(bool isShow)
         {
-            var enable = isShow && !this.NativeAdsService.IsRemoveAds();
-            this.nonAdsHolder.SetActive(!enable);
-            this.adsHolder.SetActive(enable);
+            this.nonAdsHolder.SetActive(!isShow);
+            this.adsHolder.SetActive(isShow);
         }
         private void OnDisable()
         {

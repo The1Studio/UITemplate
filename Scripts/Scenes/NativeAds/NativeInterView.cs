@@ -23,6 +23,7 @@
         private SignalBus                  signalBus;
         private UITemplateAdServiceWrapper adServiceWrapper;
         private AdServicesConfig           adServicesConfig;
+        private INativeAdsService          nativeAdsService;
 
         private void Awake()
         {
@@ -52,6 +53,7 @@
             this.view.SetActive(true);
             this.ChangeButtonState(false);
             this.StartCountDown();
+            this.nativeAdsView.Init(this.nativeAdsService);
         }
 
         private void StartCountDown()
@@ -80,6 +82,7 @@
 
         private void OnCloseView()
         {
+            this.nativeAdsView.ShowAds(false);
             this.signal.OnComplete?.Invoke(false);
             this.adServiceWrapper.LastTimeShowNativeInterAd = Time.time;
         }

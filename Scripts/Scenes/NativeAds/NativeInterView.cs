@@ -1,4 +1,5 @@
-﻿namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
+﻿#if ADMOB_NATIVE_ADS
+namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
 {
     using Core.AdsServices.Native;
     using DG.Tweening;
@@ -81,3 +82,4 @@
         }
     }
 }
+#endif

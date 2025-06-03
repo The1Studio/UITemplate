@@ -495,6 +495,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool ShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)
         {
+            var canShowNativeInterAd = Time.time - this.LastTimeShowNativeInterAd > this.adServicesConfig.NativeInterCappingTime;
+            if (!this.adServicesConfig.NativeInterEnable || !canShowNativeInterAd)
+            {
+                return this.InternalShowInterstitialAd(place, onShowInterstitialFinished, force);
+            }
+
+            if (this.adServicesConfig.NativeInterShowInterBeforeNative)
+            {
+                this.InternalShowInterstitialAd(place, _ =>
+                {
+                    this.signalBus.Fire(new ShowNativeInterAdsSignal(onShowInterstitialFinished));
+                }, force);
+            }
+            else
+            {
+                this.signalBus.Fire(new ShowNativeInterAdsSignal(_ =>
+                {
+                    this.InternalShowInterstitialAd(place, onShowInterstitialFinished, force);
+                }));
+            }
+            return false;
+        }
+
+        private bool InternalShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)
+        {
             if (!this.CanShowInterstitialAd(place, force))
             {
                 onShowInterstitialFinished?.Invoke(false);
@@ -779,25 +804,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region NativeAds
 
         public float LastTimeShowNativeInterAd = Time.time;
-
-        public virtual void ShowNativeInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
-        {
-            if ((this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime) || this.IsRemovedAds)
-            {
-                onComplete?.Invoke(false);
-                return;
-            }
-            var canShowNativeInterAd = Time.time - this.LastTimeShowNativeInterAd > this.adServicesConfig.NativeInterCappingTime;
-            if (this.adServicesConfig.NativeInterEnable && canShowNativeInterAd)
-            {
-                if (this.IsShowMRECAd && isHidePreviousMrec) this.HideMREC(this.mrecPlacement, this.mrecPosition);
-                this.signalBus.Fire(new ShowNativeInterAdsSignal(placement, onComplete));
-            }
-            else
-            {
-                this.ShowInterstitialAd(placement, onComplete);
-            }
-        }
 
         #endregion
 

@@ -4,12 +4,10 @@
 
     public class ShowNativeInterAdsSignal
     {
-        public string       InterPlacement;
         public Action<bool> OnComplete;
 
-        public ShowNativeInterAdsSignal(string interPlacement, Action<bool> onComplete)
+        public ShowNativeInterAdsSignal(Action<bool> onComplete)
         {
-            this.InterPlacement = interPlacement;
             this.OnComplete     = onComplete;
         }
     }

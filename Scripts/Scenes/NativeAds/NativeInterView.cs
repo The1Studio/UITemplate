@@ -35,7 +35,7 @@
             this.view.SetActive(false);
             this.btnClose.gameObject.SetActive(false);
             this.objTimer.SetActive(false);
-            this.btnClose.onClick.AddListener(this.OnClickClose);
+            this.btnClose.onClick.AddListener(this.OnCloseView);
 
             this.signalBus.Subscribe<ShowNativeInterAdsSignal>(this.OnShowNativeInterAdsSignal);
         }
@@ -63,21 +63,6 @@
                 {
                     this.ChangeButtonState(true);
                 });
-        }
-
-        private void OnClickClose()
-        {
-            if (this.adServicesConfig.NativeInterShowAdsComplete)
-            {
-                this.adServiceWrapper.ShowInterstitialAd(this.signal.InterPlacement, _ =>
-                {
-                    this.OnCloseView();
-                });
-            }
-            else
-            {
-                this.OnCloseView();
-            }
         }
 
         private void OnCloseView()

@@ -501,7 +501,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 return this.InternalShowInterstitialAd(place, onShowInterstitialFinished, force);
             }
 
-            if (this.adServicesConfig.NativeInterShowInterBeforeNative)
+            if (this.adServicesConfig.ShowNativeInterBeforeInter)
             {
                 this.InternalShowInterstitialAd(place, _ =>
                 {

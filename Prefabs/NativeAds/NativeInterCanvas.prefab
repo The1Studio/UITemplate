@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1513722284836638678}
   - component: {fileID: 3547787657851541512}
   - component: {fileID: 8595380538283111759}
+  - component: {fileID: 2253290830069787503}
   m_Layer: 5
   m_Name: AdvertiserText
   m_TagString: Untagged
@@ -101,6 +102,20 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: advertiser
+--- !u!114 &2253290830069787503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795649371905618107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd743c5cd99c4bc8ad2f0cb59243957e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rectTransform: {fileID: 6733176070358616148}
+  boxCollider: {fileID: 3547787657851541512}
 --- !u!1 &1052841583812324074
 GameObject:
   m_ObjectHideFlags: 0
@@ -1032,6 +1047,7 @@ GameObject:
   - component: {fileID: 2927183976797923390}
   - component: {fileID: 4095420899635905056}
   - component: {fileID: 5430416030377588566}
+  - component: {fileID: 5049769485290781743}
   m_Layer: 5
   m_Name: AdsRawImage
   m_TagString: Untagged
@@ -1114,6 +1130,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 80, y: 80, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5049769485290781743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7503442270714618108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd743c5cd99c4bc8ad2f0cb59243957e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rectTransform: {fileID: 457946531983364431}
+  boxCollider: {fileID: 5430416030377588566}
 --- !u!1 &8047228271709265134
 GameObject:
   m_ObjectHideFlags: 0

@@ -76,6 +76,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
         private int FindFirstLockedDayIndex()
         {
+            if (!this.uiTemplateDailyRewardData.RewardStatus.Any()) return -1;
             return this.uiTemplateDailyRewardData.RewardStatus.FirstIndex(status => status is RewardStatus.Locked);
         }
 

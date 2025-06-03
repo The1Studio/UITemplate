@@ -105,7 +105,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         }
         #endif
 
-        #if ADMOB
         public override void ShowNativeOverlayAd(string placement, AdViewPosition adViewPosition)
         {
         }
@@ -119,7 +118,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.ShowInterstitialAd(placement, onComplete);
         }
 
-        #endif
+        public override void ShowNativeInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
+        {
+            this.ShowInterstitialAd(placement, onComplete);
+        }
     }
 }
 #endif

@@ -25,6 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
     using TheOne.Logging;
+    using TheOneStudio.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Loading;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
@@ -743,13 +744,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         // Automatically hide the MREC; if it needs to be shown again, customize it manually within the action.
         public virtual async void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
         {
-            if (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)
+            if ((this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime) || this.IsRemovedAds)
             {
                 onComplete?.Invoke(false);
                 return;
             }
             this.nativeOverlayService.LoadAd(placement);
-            var canShowNativeOverlayAd = (Time.time - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime) && this.nativeOverlayService.IsAdReady(placement);
+            var canShowNativeOverlayAd = (Time.time - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeInterCappingTime) && this.nativeOverlayService.IsAdReady(placement);
             if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)
             {
                 if (this.IsShowMRECAd && isHidePreviousMrec) this.HideMREC(this.mrecPlacement, this.mrecPosition);
@@ -771,6 +772,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             if (this.IsRemovedAds) return;
             this.nativeOverlayService.HideAd(placement);
+        }
+
+        #endregion
+
+        #region NativeAds
+
+        public float LastTimeShowNativeInterAd = Time.time;
+
+        public virtual void ShowNativeInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
+        {
+            if ((this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime) || this.IsRemovedAds)
+            {
+                onComplete?.Invoke(false);
+                return;
+            }
+            var canShowNativeInterAd = Time.time - this.LastTimeShowNativeInterAd > this.adServicesConfig.NativeInterCappingTime;
+            if (this.adServicesConfig.NativeInterEnable && canShowNativeInterAd)
+            {
+                if (this.IsShowMRECAd && isHidePreviousMrec) this.HideMREC(this.mrecPlacement, this.mrecPosition);
+                this.signalBus.Fire(new ShowNativeInterAdsSignal(placement, onComplete));
+            }
+            else
+            {
+                this.ShowInterstitialAd(placement, onComplete);
+            }
         }
 
         #endregion

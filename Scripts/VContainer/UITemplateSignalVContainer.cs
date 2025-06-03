@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate
 {
     using GameFoundation.Signals;
     using ServiceImplementation.FireBaseRemoteConfig;
+    using TheOneStudio.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Creative.CheatLevel;
     using TheOneStudio.UITemplate.UITemplate.FTUE.Signal;
     using TheOneStudio.UITemplate.UITemplate.Others.StateMachine.Signals;
@@ -24,6 +25,7 @@ namespace TheOneStudio.UITemplate
             builder.DeclareSignal<FTUEShowUnlockPopupSignal>();
 
             //Signal
+            builder.DeclareSignal<ShowNativeInterAdsSignal>();
             builder.DeclareSignal<OnNotEnoughCurrencySignal>();
             builder.DeclareSignal<OnUpdateCurrencySignal>();
             builder.DeclareSignal<OnUpdateItemDataSignal>();

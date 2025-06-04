@@ -32,6 +32,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             this.signalBus        = container.Resolve<SignalBus>();
             this.adServiceWrapper = container.Resolve<UITemplateAdServiceWrapper>();
             this.adServicesConfig = container.Resolve<AdServicesConfig>();
+            this.nativeAdsService = container.Resolve<INativeAdsService>();
 
             this.view.SetActive(false);
             this.btnClose.gameObject.SetActive(false);

@@ -70,7 +70,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         private void OnCloseView()
         {
             this.view.SetActive(false);
-            this.nativeAdsView.ShowAds(false);
+            this.nativeAdsView.Release();
             this.signal.OnComplete?.Invoke(false);
             this.adServiceWrapper.LastTimeShowNativeInterAd = Time.time;
         }

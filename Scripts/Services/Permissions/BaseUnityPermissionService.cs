@@ -26,7 +26,7 @@
                 #if THEONE_NOTIFICATION
                 isGranted = await this.InternalRequestNotificationPermission();
                 #else
-                this.Logger.Log($"oneLog: You must add THEONE_NOTIFICATION symbol to request notification permission!");
+                this.Logger.Log($"You must add THEONE_NOTIFICATION symbol to request notification permission!", LogLevel.Warning);
                 isGranted = false;
                 #endif
             }

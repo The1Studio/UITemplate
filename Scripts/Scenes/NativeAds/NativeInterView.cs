@@ -57,6 +57,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             if (!this.adMobNativeAdsService.IsNativeAdsReady(this.nativeAdsView.Placement))
             {
                 this.signal.OnComplete?.Invoke(false);
+                this.nativeAdsView.Release();
                 return;
             }
             this.view.SetActive(true);

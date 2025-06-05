@@ -6,11 +6,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
     using GameFoundation.DI;
     using GameFoundation.Signals;
     using ServiceImplementation.Configs.Ads;
+    using TheOne.Logging;
     using UnityEngine;
     using TheOneStudio.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TMPro;
     using UnityEngine.UI;
+    using ILogger = TheOne.Logging.ILogger;
 
     public class NativeInterView : MonoBehaviour
     {
@@ -26,6 +28,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         private AdServicesConfig           adServicesConfig;
         private INativeAdsService          nativeAdsService;
         private IAdMobNativeAdsService     adMobNativeAdsService;
+        private ILogger                    logger;
 
         private void Awake()
         {
@@ -35,6 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             this.adServicesConfig      = container.Resolve<AdServicesConfig>();
             this.nativeAdsService      = container.Resolve<INativeAdsService>();
             this.adMobNativeAdsService = (IAdMobNativeAdsService)this.nativeAdsService;
+            this.logger                = container.Resolve<ILoggerManager>().GetLogger(this);
 
             this.view.SetActive(false);
             this.btnClose.gameObject.SetActive(false);
@@ -54,7 +58,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         private void OnShowNativeInterAdsSignal(ShowNativeInterAdsSignal signal)
         {
             this.signal = signal;
-            if (!this.adMobNativeAdsService.IsNativeAdsReady(this.nativeAdsView.Placement))
+            var isReady = this.adMobNativeAdsService.IsNativeAdsReady(this.nativeAdsView.Placement);
+            this.logger.Info($"Native ads ready: {isReady}, placement: {this.nativeAdsView.Placement}");
+            if (!isReady)
             {
                 this.signal.OnComplete?.Invoke(false);
                 return;

@@ -25,14 +25,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         private UITemplateAdServiceWrapper adServiceWrapper;
         private AdServicesConfig           adServicesConfig;
         private INativeAdsService          nativeAdsService;
+        private IAdMobNativeAdsService     adMobNativeAdsService;
 
         private void Awake()
         {
             var container = this.GetCurrentContainer();
-            this.signalBus        = container.Resolve<SignalBus>();
-            this.adServiceWrapper = container.Resolve<UITemplateAdServiceWrapper>();
-            this.adServicesConfig = container.Resolve<AdServicesConfig>();
-            this.nativeAdsService = container.Resolve<INativeAdsService>();
+            this.signalBus             = container.Resolve<SignalBus>();
+            this.adServiceWrapper      = container.Resolve<UITemplateAdServiceWrapper>();
+            this.adServicesConfig      = container.Resolve<AdServicesConfig>();
+            this.nativeAdsService      = container.Resolve<INativeAdsService>();
+            this.adMobNativeAdsService = (IAdMobNativeAdsService)this.nativeAdsService;
 
             this.view.SetActive(false);
             this.btnClose.gameObject.SetActive(false);
@@ -52,6 +54,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         private void OnShowNativeInterAdsSignal(ShowNativeInterAdsSignal signal)
         {
             this.signal = signal;
+            if (!this.adMobNativeAdsService.IsNativeAdsReady(this.nativeAdsView.Placement))
+            {
+                this.signal.OnComplete?.Invoke(false);
+                return;
+            }
             this.view.SetActive(true);
             this.ChangeButtonState(false);
             this.StartCountDown();

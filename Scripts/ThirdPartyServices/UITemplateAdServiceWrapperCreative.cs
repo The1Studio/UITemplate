@@ -117,11 +117,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             this.ShowInterstitialAd(placement, onComplete);
         }
-
-        public override void ShowNativeInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
-        {
-            this.ShowInterstitialAd(placement, onComplete);
-        }
     }
 }
 #endif

@@ -21,7 +21,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         [SerializeField] private Button        btnClose;
         [SerializeField] private GameObject    objTimer;
         [SerializeField] private TMP_Text      txtTimer;
-        [SerializeField] private BoxCollider   boxCollider;
 
         private SignalBus                  signalBus;
         private UITemplateAdServiceWrapper adServiceWrapper;
@@ -92,7 +91,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         {
             this.btnClose.gameObject.SetActive(isActive);
             this.objTimer.SetActive(!isActive);
-            this.boxCollider.enabled = isActive;
         }
     }
 }

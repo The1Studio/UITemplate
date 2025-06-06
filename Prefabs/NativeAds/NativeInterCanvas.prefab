@@ -231,6 +231,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855e98f5ad474c55acd87f295abfe782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  placement: 
+  refreshSeconds: 10
   nonAdsHolder: {fileID: 6054447781099733915}
   adsHolder: {fileID: 2387760997771277723}
   iconImage: {fileID: 259837952461520749}
@@ -946,6 +948,7 @@ GameObject:
   - component: {fileID: 8635525515720080}
   - component: {fileID: 9027258999592251055}
   - component: {fileID: 4296587429817308625}
+  - component: {fileID: 5009365386166253426}
   m_Layer: 5
   m_Name: HeadlineText
   m_TagString: Untagged
@@ -1035,6 +1038,20 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Headline
+--- !u!114 &5009365386166253426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6716976689437378757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd743c5cd99c4bc8ad2f0cb59243957e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rectTransform: {fileID: 900970074682862937}
+  boxCollider: {fileID: 9027258999592251055}
 --- !u!1 &7503442270714618108
 GameObject:
   m_ObjectHideFlags: 0

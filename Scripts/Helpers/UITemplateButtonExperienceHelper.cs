@@ -50,7 +50,7 @@
                 newButton.onClick.AddListener(() =>
                 {
                     this.vibrationService.PlayPresetType(this.gameFeaturesSetting.vibrationPresetType);
-                    if (!this.gameFeaturesSetting.clickButtonSound.IsNullOrEmpty() && !this.gameFeaturesSetting.ignoredClickSoundButtons.Contains(newButton.name)) this.soundServices.PlaySound(this.gameFeaturesSetting.clickButtonSound);
+                    if (!this.gameFeaturesSetting.clickButtonSound.IsNullOrEmpty() && !this.gameFeaturesSetting.buttonsToIgnoreClickSound.Contains(newButton.name)) this.soundServices.PlaySound(this.gameFeaturesSetting.clickButtonSound);
                 });
                 if (this.gameFeaturesSetting.enableScaleAnimationOnCLicked && !newButton.gameObject.GetComponent<AnimationButton>()) newButton.gameObject.AddComponent<AnimationButton>();
             }

@@ -2,6 +2,7 @@
 
 namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
 {
+    using System.Collections.Generic;
     using System.Linq;
     using Sirenix.OdinInspector;
     using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
@@ -126,6 +127,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
         [FoldoutGroup("Button Experience")] [Tooltip("Set to empty to disable")] public string clickButtonSound = "click_button";
 
         [FoldoutGroup("Button Experience")] public bool enableScaleAnimationOnCLicked = true;
+
+        [FoldoutGroup("Button Experience")] [Tooltip("List of button names to ignore when playing click sound")] public List<string> buttonsToIgnoreClickSound;
 
         #endregion
 

@@ -128,7 +128,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Configs.GameEvents
 
         [FoldoutGroup("Button Experience")] public bool enableScaleAnimationOnCLicked = true;
 
-        [FoldoutGroup("Button Experience")] [Tooltip("Ignore play sound button by button name")] public List<string> buttonIgnores;
+        [FoldoutGroup("Button Experience")] [Tooltip("List of button names to ignore when playing click sound")] public List<string> ignoredClickSoundButtons;
 
         #endregion
 

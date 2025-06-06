@@ -76,14 +76,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool                    IsShowBannerAd                        { get; set; }
-        private bool                    IsMediationBanner                     { get; set; }
-        private bool                    IsShowMRECAd                          { get; set; }
-        private bool                    IsCheckFirstScreenShow                { get; set; }
-        private DateTime                LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
-        private bool                    PreviousCollapsibleBannerAdLoadedFail { get; set; }
-        private bool                    IsRefreshingCollapsible               { get; set; }
-        private CancellationTokenSource RefreshCollapsibleCts                 { get; set; }
+        private   bool                    IsShowBannerAd                        { get; set; }
+        private   bool                    IsMediationBanner                     { get; set; }
+        protected bool                    IsShowMRECAd                          { get; set; }
+        private   bool                    IsCheckFirstScreenShow                { get; set; }
+        private   DateTime                LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
+        private   bool                    PreviousCollapsibleBannerAdLoadedFail { get; set; }
+        private   bool                    IsRefreshingCollapsible               { get; set; }
+        private   CancellationTokenSource RefreshCollapsibleCts                 { get; set; }
 
         //AOA
         private DateTime StartLoadingAOATime          { get; set; }
@@ -621,10 +621,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        private string                  mrecPlacement;
-        private AdScreenPosition        mrecPosition;
-        private AdScreenPosition        mrecOffset;
-        private CancellationTokenSource RefreshMRECCts;
+        protected string                  mrecPlacement;
+        protected AdScreenPosition        mrecPosition;
+        private   AdScreenPosition        mrecOffset;
+        private   CancellationTokenSource RefreshMRECCts;
 
         public virtual void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {

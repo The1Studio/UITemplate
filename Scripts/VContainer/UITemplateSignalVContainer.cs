@@ -26,6 +26,7 @@ namespace TheOneStudio.UITemplate
 
             //Signal
             builder.DeclareSignal<ShowNativeInterAdsSignal>();
+            builder.DeclareSignal<ShowNativeCollapseSignal>();
             builder.DeclareSignal<OnNotEnoughCurrencySignal>();
             builder.DeclareSignal<OnUpdateCurrencySignal>();
             builder.DeclareSignal<OnUpdateItemDataSignal>();

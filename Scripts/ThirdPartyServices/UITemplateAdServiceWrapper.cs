@@ -88,7 +88,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         //AOA
         private DateTime StartLoadingAOATime          { get; set; }
         private DateTime StartBackgroundTime          { get; set; }
-        public  bool     IsResumedFromAnotherServices { get; set; } // after Ads, IAP, permission, login, etc.
+        private bool     IsResumedFromAnotherServices { get; set; } // after Ads, IAP, permission, login, etc.
         private bool     IsCheckedShowFirstOpen       { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen         { get; private set; }
         private bool     IsShowingAOA                 { get; set; }

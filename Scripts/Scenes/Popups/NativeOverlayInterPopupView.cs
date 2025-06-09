@@ -76,7 +76,7 @@
 
         private void StartCountDown()
         {
-            this.View.TxtTimer.DOCounter(this.adServicesConfig.NativeOverlayInterCountdown, 1, this.adServicesConfig.NativeOverlayInterCountdown).SetUpdate(true).SetEase(Ease.Linear)
+            this.View.TxtTimer.DOCounter(this.adServicesConfig.NativeInterCountdown, 1, this.adServicesConfig.NativeInterCountdown).SetUpdate(true).SetEase(Ease.Linear)
                 .OnComplete(() =>
                 {
                     this.View.ObjTimer.SetActive(false);
@@ -86,7 +86,7 @@
 
         private void OnClose()
         {
-            if (this.adServicesConfig.NativeOverlayInterShowAdsComplete)
+            if (this.adServicesConfig.NativeInterShowAdsComplete)
             {
                 this.adServiceWrapper.ShowInterstitialAd(this.Model.InterPlacement, _ =>
                 {

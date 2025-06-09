@@ -25,6 +25,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
     using ServiceImplementation.Configs.Ads;
     using ServiceImplementation.IAPServices.Signals;
     using TheOne.Logging;
+    using TheOneStudio.UITemplate.Scripts.Signals;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Loading;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Popups;
@@ -75,14 +76,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private int          totalInterstitialAdsShowedInSession;
 
         //Banner
-        private bool                    IsShowBannerAd                        { get; set; }
-        private bool                    IsMediationBanner                     { get; set; }
-        private bool                    IsShowMRECAd                          { get; set; }
-        private bool                    IsCheckFirstScreenShow                { get; set; }
-        private DateTime                LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
-        private bool                    PreviousCollapsibleBannerAdLoadedFail { get; set; }
-        private bool                    IsRefreshingCollapsible               { get; set; }
-        private CancellationTokenSource RefreshCollapsibleCts                 { get; set; }
+        private   bool                    IsShowBannerAd                        { get; set; }
+        private   bool                    IsMediationBanner                     { get; set; }
+        protected bool                    IsShowMRECAd                          { get; set; }
+        private   bool                    IsCheckFirstScreenShow                { get; set; }
+        private   DateTime                LastCollapsibleBannerChangeGuid       { get; set; } = DateTime.MinValue;
+        private   bool                    PreviousCollapsibleBannerAdLoadedFail { get; set; }
+        private   bool                    IsRefreshingCollapsible               { get; set; }
+        private   CancellationTokenSource RefreshCollapsibleCts                 { get; set; }
 
         //AOA
         private DateTime StartLoadingAOATime          { get; set; }
@@ -494,6 +495,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         public virtual bool ShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)
         {
+            var canShowNativeInterAd = Time.time - this.LastTimeShowNativeInterAd > this.adServicesConfig.NativeInterCappingTime;
+            if (!this.adServicesConfig.NativeInterEnable || !canShowNativeInterAd)
+            {
+                return this.InternalShowInterstitialAd(place, onShowInterstitialFinished, force);
+            }
+
+            if (this.adServicesConfig.ShowNativeInterAfterInter)
+            {
+                this.InternalShowInterstitialAd(place, _ =>
+                {
+                    this.signalBus.Fire(new ShowNativeInterAdsSignal(onShowInterstitialFinished));
+                }, force);
+            }
+            else
+            {
+                this.signalBus.Fire(new ShowNativeInterAdsSignal(_ =>
+                {
+                    this.InternalShowInterstitialAd(place, onShowInterstitialFinished, force);
+                }));
+            }
+            return false;
+        }
+
+        private bool InternalShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)
+        {
             if (!this.CanShowInterstitialAd(place, force))
             {
                 onShowInterstitialFinished?.Invoke(false);
@@ -595,10 +621,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #endregion
 
-        private string                  mrecPlacement;
-        private AdScreenPosition        mrecPosition;
-        private AdScreenPosition        mrecOffset;
-        private CancellationTokenSource RefreshMRECCts;
+        protected string                  mrecPlacement;
+        protected AdScreenPosition        mrecPosition;
+        private   AdScreenPosition        mrecOffset;
+        private   CancellationTokenSource RefreshMRECCts;
 
         public virtual void ShowMREC(string placement, AdScreenPosition position, AdScreenPosition offset = default)
         {
@@ -743,13 +769,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         // Automatically hide the MREC; if it needs to be shown again, customize it manually within the action.
         public virtual async void ShowNativeOverlayInterAd(string placement, Action<bool> onComplete, bool isHidePreviousMrec = true)
         {
-            if (this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime)
+            if ((this.totalInterstitialAdsShowedInSession == 0 && this.totalNoAdsPlayingTime < this.FirstInterstitialAdsDelayTime) || this.IsRemovedAds)
             {
                 onComplete?.Invoke(false);
                 return;
             }
             this.nativeOverlayService.LoadAd(placement);
-            var canShowNativeOverlayAd = (Time.time - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeOverlayInterCappingTime) && this.nativeOverlayService.IsAdReady(placement);
+            var canShowNativeOverlayAd = (Time.time - this.LastTimeShowNativeOverInterAd > this.adServicesConfig.NativeInterCappingTime) && this.nativeOverlayService.IsAdReady(placement);
             if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)
             {
                 if (this.IsShowMRECAd && isHidePreviousMrec) this.HideMREC(this.mrecPlacement, this.mrecPosition);
@@ -772,6 +798,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.IsRemovedAds) return;
             this.nativeOverlayService.HideAd(placement);
         }
+
+        #endregion
+
+        #region NativeAds
+
+        public float LastTimeShowNativeInterAd = Time.time;
 
         #endregion
 

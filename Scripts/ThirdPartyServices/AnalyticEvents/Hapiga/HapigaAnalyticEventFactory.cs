@@ -1,6 +1,8 @@
 ﻿#if HAPIGA
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Hapiga
 {
+    using System;
+    using System.Collections.Generic;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
@@ -15,7 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.H
         {
         }
 
-        public override IEvent LevelStart(int level, int gold)
+        public override IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata = null)
         {
             if (level < 100)
                 this.analyticServices.Track(new CustomEvent()
@@ -25,7 +27,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.H
             return base.LevelStart(level, gold);
         }
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount)
+        public override IEvent LevelWin(int level, int timeSpent, int winCount, Dictionary<string, object> metadata = null)
         {
             if (level < 100)
                 this.analyticServices.Track(new CustomEvent()

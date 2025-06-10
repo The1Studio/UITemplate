@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 {
+    using System.Collections.Generic;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
@@ -31,7 +32,7 @@
             return new InterstitialAdEligible(place);
         }
 
-        public virtual IEvent InterstitialShow(int level, string place)
+        public virtual IEvent InterstitialShow(int level, string place, Dictionary<string, object> metadata = null)
         {
             return new InterstitialAdDisplayed(level, place);
         }
@@ -98,7 +99,7 @@
             return new RewardedAdCalled(place);
         }
 
-        public virtual IEvent RewardedVideoShow(int level, string place)
+        public virtual IEvent RewardedVideoShow(int level, string place, Dictionary<string, object> metadata = null)
         {
             return new RewardedAdDisplayed(place, level);
         }
@@ -165,36 +166,36 @@
         }
 
         //Level
-        public virtual IEvent LevelStart(int level, int gold)
+        public virtual IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata = null)
         {
             return new LevelStart(level, gold);
         }
 
-        public virtual IEvent LevelWin(int level, int timeSpent, int winCount)
+        public virtual IEvent LevelWin(int level, int timeSpent, int winCount, Dictionary<string, object> metadata = null)
         {
             return new LevelWin(level, timeSpent);
         }
 
-        public virtual IEvent LevelLose(int level, int timeSpent, int loseCount)
+        public virtual IEvent LevelLose(int level, int timeSpent, int loseCount, Dictionary<string, object> metadata = null)
         {
             return new LevelLose(level, timeSpent);
         }
 
-        public virtual IEvent FirstWin(int level, int timeSpent)
+        public virtual IEvent FirstWin(int level, int timeSpent, Dictionary<string, object> metadata = null)
         {
             return new FirstWin(level, timeSpent);
         }
 
-        public virtual IEvent LevelSkipped(int level, int timeSpent)
+        public virtual IEvent LevelSkipped(int level, int timeSpent, Dictionary<string, object> metadata = null)
         {
             return new LevelSkipped(level, timeSpent);
         }
-        public IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string placement, int level)
+        public virtual IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata = null)
         {
             return new EarnVirtualCurrency(virtualCurrencyName, value, placement, level);
 
         }
-        public IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level)
+        public virtual IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata = null)
         {
             return new SpendVirtualCurrency(virtualCurrencyName, value, placement, level);
         }

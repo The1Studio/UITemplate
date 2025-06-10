@@ -112,12 +112,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         private DateTime GetModePlayTime(string mode, int level) => this.modeToLevelToStartLevelTime.GetOrAdd(mode, () => new Dictionary<int, DateTime>()).GetOrAdd(level, () => DateTime.UtcNow);
 
         /// <summary>Have be called when level started</summary>
-        public void PlayCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
+        public void PlayCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode, Dictionary<string, object> metadata = null)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
             this.uiTemplateUserLevelData.CurrentMode = mode;
             this.GetModePlayTime(mode, currentModeLevel);
-            this.signalBus.Fire(new LevelStartedSignal(currentModeLevel, mode, this.uiTemplateUserLevelData.TimeStamp));
+            this.signalBus.Fire(new LevelStartedSignal(currentModeLevel, mode, this.uiTemplateUserLevelData.TimeStamp, metadata));
         }
 
         /// <summary>
@@ -142,10 +142,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <summary>
         /// Called when player lose current level
         /// </summary>
-        public void LoseCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode)
+        public void LoseCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode, Dictionary<string, object> metadata = null)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
-            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, false, this.GetCurrentLevelPlayTime(mode), null));
+            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, false, this.GetCurrentLevelPlayTime(mode), null, metadata));
             this.LevelEndedThisSession++;
             this.GetLevelData(currentModeLevel, mode).LoseCount++;
 
@@ -155,14 +155,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <summary>
         /// Called when player win current level
         /// </summary>
-        public void PassCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode, int starCount = 1)
+        public void PassCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode, int starCount = 1, Dictionary<string, object> metadata = null)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
             var levelData        = this.GetLevelData(currentModeLevel, mode);
             levelData.WinCount++;
             levelData.LevelStatus = LevelData.Status.Passed;
             levelData.StarCount   = starCount;
-            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, true, this.GetCurrentLevelPlayTime(mode), null));
+            this.signalBus.Fire(new LevelEndedSignal(currentModeLevel, mode, true, this.GetCurrentLevelPlayTime(mode), null, metadata));
             this.LevelEndedThisSession++;
             this.LevelPassedThisSession++;
             this.uiTemplateUserLevelData.ModeToCurrentLevel[mode]++;
@@ -174,7 +174,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// Called when player skip current level
         /// </summary>
         /// <param name="mode">Play mode</param>
-        public void SkipCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode, int starCount = 0)
+        public void SkipCurrentLevel(string mode = UITemplateUserLevelData.ClassicMode, int starCount = 0, Dictionary<string, object> metadata = null)
         {
             var currentModeLevel = this.CurrentModeLevel(mode);
             var levelData        = this.GetLevelData(currentModeLevel, mode);
@@ -184,7 +184,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
                 levelData.LevelStatus = LevelData.Status.Skipped;
             }
 
-            this.signalBus.Fire(new LevelSkippedSignal(currentModeLevel, mode, this.GetCurrentLevelPlayTime(mode)));
+            this.signalBus.Fire(new LevelSkippedSignal(currentModeLevel, mode, this.GetCurrentLevelPlayTime(mode), metadata));
             this.uiTemplateUserLevelData.ModeToCurrentLevel[mode]++;
 
             this.handleUserDataServices.SaveAll();

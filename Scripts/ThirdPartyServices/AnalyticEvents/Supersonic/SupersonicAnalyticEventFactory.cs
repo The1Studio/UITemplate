@@ -51,19 +51,19 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         };
 
         #if SUPERSONIC_WISDOM
-        public override IEvent LevelStart(int level, int gold)
+        public override IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata = null)
         {
             SupersonicWisdom.Api.NotifyLevelStarted(ESwLevelType.Regular, level, null);
             return base.LevelStart(level, gold);
         }
 
-        public override IEvent LevelLose(int level, int timeSpent, int loseCount)
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount, Dictionary<string, object> metadata = null)
         {
             SupersonicWisdom.Api.NotifyLevelFailed(ESwLevelType.Regular, level, null);
             return base.LevelLose(level, timeSpent, loseCount);
         }
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount)
+        public override IEvent LevelWin(int level, int timeSpent, int winCount, Dictionary<string, object> metadata = null)
         {
             SupersonicWisdom.Api.NotifyLevelCompleted(ESwLevelType.Regular, level, null);
             return base.LevelWin(level, timeSpent, winCount);

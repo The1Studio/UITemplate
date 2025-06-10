@@ -302,7 +302,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LastAdsPlacementProperty]     = obj.Placement;
             this.analyticServices.UserProperties[this.analyticEventFactory.TotalInterstitialAdsProperty] = obj.Placement;
-            this.Track(this.analyticEventFactory.InterstitialShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
+            this.Track(this.analyticEventFactory.InterstitialShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement, obj.Metadata));
             this.Track(new CustomEvent { EventName = $"Inters_Display_{obj.Placement}" });
         }
 
@@ -359,7 +359,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         private void PopupShowedHandler(PopupShowedSignal obj) { }
 
-        private void LevelSkippedHandler(LevelSkippedSignal obj) { this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time)); }
+        private void LevelSkippedHandler(LevelSkippedSignal obj) { this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time, obj.Metadata)); }
 
         protected virtual void LevelEndedHandler(LevelEndedSignal obj)
         {
@@ -368,13 +368,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.analyticServices.UserProperties[this.analyticEventFactory.LevelMaxProperty] = this.uiTemplateLevelDataController.MaxLevel;
 
             this.Track(obj.IsWin
-                ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time, levelData.WinCount)
-                : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount)
+                ? this.analyticEventFactory.LevelWin(obj.Level, obj.Time, levelData.WinCount, obj.Metadata)
+                : this.analyticEventFactory.LevelLose(obj.Level, obj.Time, levelData.LoseCount, obj.Metadata)
             );
 
             if (obj.IsWin && levelData.WinCount == 1)
             {
-                this.Track(this.analyticEventFactory.FirstWin(obj.Level, obj.Time));
+                this.Track(this.analyticEventFactory.FirstWin(obj.Level, obj.Time, obj.Metadata));
             }
             
             this.analyticServices.Track(new CustomEvent
@@ -426,7 +426,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             var currentLevelData = this.uiTemplateLevelDataController.GetCurrentLevelData;
             this.analyticServices.UserProperties[this.analyticEventFactory.LastLevelProperty] = currentLevelData.Level;
-            this.Track(this.analyticEventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue()));
+            this.Track(this.analyticEventFactory.LevelStart(obj.Level, this.uITemplateInventoryDataController.GetCurrencyValue(), obj.Metadata));
 
             this.uniqueId = Guid.NewGuid().ToString();
             this.analyticServices.Track(new CustomEvent
@@ -456,11 +456,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             var level = this.uiTemplateLevelDataController.GetCurrentLevelData.Level;
             if (obj.Amount > 0)
             {
-                this.Track(this.analyticEventFactory.EarnVirtualCurrency(obj.Id, obj.Amount, obj.Source, level));
+                this.Track(this.analyticEventFactory.EarnVirtualCurrency(obj.Id, obj.Amount, obj.Source, level, obj.Metadata));
             }
             else if (obj.Amount < 0)
             {
-                this.Track(this.analyticEventFactory.SpendVirtualCurrency(obj.Id, obj.Amount, obj.Source, level));
+                this.Track(this.analyticEventFactory.SpendVirtualCurrency(obj.Id, obj.Amount, obj.Source, level, obj.Metadata));
             }
 
             if (obj.Amount > 0)

@@ -1,6 +1,8 @@
 #if WIDO
 namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.AnalyticEvents.Wido
 {
+    using System;
+    using System.Collections.Generic;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
@@ -32,7 +34,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         #endregion
 
-        public override IEvent InterstitialShow(int level, string place) { return new ShowInterstitialAds(this.internetService.IsInternetAvailable, place); }
+        public override IEvent InterstitialShow(int level, string place, Dictionary<string, object> metadata = null) { return new ShowInterstitialAds(this.internetService.IsInternetAvailable, place); }
 
         public override IEvent InterstitialShowCompleted(int level, string place) { return new InterstitialAdsSuccess(place); }
 
@@ -44,17 +46,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent RewardedVideoCalled(string place) { return new AdsRewardedCalled(); }
 
-        public override IEvent RewardedVideoShow(int level, string place) { return new ShowRewardedAds(this.internetService.IsInternetAvailable, place); }
+        public override IEvent RewardedVideoShow(int level, string place, Dictionary<string, object> metadata = null) { return new ShowRewardedAds(this.internetService.IsInternetAvailable, place); }
 
         public override IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) { return new RewardedAdsSuccess(place, isRewarded ? "success" : "skip"); }
 
-        public override IEvent LevelLose(int level, int timeSpent, int loseCount) { return new LevelFailed(level, timeSpent); }
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount, Dictionary<string, object> metadata = null) { return new LevelFailed(level, timeSpent); }
 
-        public override IEvent LevelStart(int level, int gold) { return new LevelStart(level, this.uiTemplateLevelDataController.GetLevelData(level).LevelStatus == LevelData.Status.Passed); }
+        public override IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata = null) { return new LevelStart(level, this.uiTemplateLevelDataController.GetLevelData(level).LevelStatus == LevelData.Status.Passed); }
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount) { return new LevelPassed(level, timeSpent); }
+        public override IEvent LevelWin(int level, int timeSpent, int winCount, Dictionary<string, object> metadata = null) { return new LevelPassed(level, timeSpent); }
 
-        public override IEvent LevelSkipped(int level, int timeSpent) { return new LevelSkipped(level, timeSpent); }
+        public override IEvent LevelSkipped(int level, int timeSpent, Dictionary<string, object> metadata = null) { return new LevelSkipped(level, timeSpent); }
 
 
         public override void ForceUpdateAllProperties() { }

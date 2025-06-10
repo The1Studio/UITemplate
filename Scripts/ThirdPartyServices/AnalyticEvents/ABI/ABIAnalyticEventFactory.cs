@@ -81,7 +81,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent InterstitialEligible(string place) => new AdsIntersEligible(place);
 
-        public override IEvent InterstitialShow(int level, string place) => new AdInterShow(place);
+        public override IEvent InterstitialShow(int level, string place, Dictionary<string, object> metadata = null) => new AdInterShow(place);
 
         public override IEvent InterstitialShowFail(string place, string msg) => new AdInterFail(msg);
 
@@ -99,21 +99,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices.Analytic
 
         public override IEvent RewardedVideoCalled(string place) => new AdsRewardedCalled();
 
-        public override IEvent RewardedVideoShow(int level, string place) => new AdsRewardShow(place);
+        public override IEvent RewardedVideoShow(int level, string place, Dictionary<string, object> metadata = null) => new AdsRewardShow(place);
 
         public override IEvent RewardedVideoClick(string place) => new AdsRewardClick(place);
 
         public override IEvent RewardedVideoShowFail(string place, string msg) => new AdsRewardFail(place, msg);
 
-        public override IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelFail(level, loseCount);
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount, Dictionary<string, object> metadata = null) => new LevelFail(level, loseCount);
 
-        public override IEvent LevelStart(int level, int gold) => new LevelStart(level, gold, this.sessionDataController.OpenTime);
+        public override IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata = null) => new LevelStart(level, gold, this.sessionDataController.OpenTime);
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelComplete(level, timeSpent, this.sessionDataController.OpenTime);
+        public override IEvent LevelWin(int level, int timeSpent, int winCount, Dictionary<string, object> metadata = null) => new LevelComplete(level, timeSpent, this.sessionDataController.OpenTime);
 
-        public override IEvent FirstWin(int level, int timeSpent) => new LevelAchieved(level, timeSpent);
+        public override IEvent FirstWin(int level, int timeSpent, Dictionary<string, object> metadata = null) => new LevelAchieved(level, timeSpent);
 
-        public override IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
+        public override IEvent LevelSkipped(int level, int timeSpent, Dictionary<string, object> metadata = null) => new LevelSkipped(level, timeSpent);
 
         public override IEvent TutorialCompletion(bool success, string tutorialId) => new GameTutorialCompletion(success, tutorialId);
 

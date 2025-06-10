@@ -36,7 +36,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             this.logger                = container.Resolve<ILoggerManager>().GetLogger(this);
 
             this.view.SetActive(false);
-            this.btnClose.gameObject.SetActive(false);
             this.btnClose.onClick.AddListener(this.OnHide);
 
             this.signalBus.Subscribe<ShowNativeCollapseSignal>(this.OnShowNativeCollapseSignal);

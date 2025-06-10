@@ -64,6 +64,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             this.logger.Info($"Native ads ready: {this.isShow}, placement: {this.nativeAdsView.Placement}");
             if (this.isShow)
             {
+                this.adServiceWrapper.HideBannerAd();
                 this.view.SetActive(true);
                 this.nativeAdsView.Init(this.nativeAdsService);
             }
@@ -72,6 +73,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         private void OnHide()
         {
             if (!this.isShow) return;
+            this.adServiceWrapper.ShowBannerAd();
             this.isShow = false;
             this.view.SetActive(false);
             this.nativeAdsView.Release();

@@ -2,7 +2,9 @@
 namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
 {
     using System;
+    using System.Threading;
     using Core.AdsServices.Native;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Signals;
     using ServiceImplementation.Configs.Ads;
@@ -23,8 +25,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         private UITemplateAdServiceWrapper adServiceWrapper;
         private INativeAdsService          nativeAdsService;
         private IAdMobNativeAdsService     adMobNativeAdsService;
+        private AdServicesConfig           adServicesConfig;
         private ILogger                    logger;
+        private int                        loadedCount;
         private bool                       isShow;
+        private Action                     onHide;
+        private CancellationTokenSource    showingCts;
 
         private void Awake()
         {
@@ -32,6 +38,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             this.signalBus             = container.Resolve<SignalBus>();
             this.adServiceWrapper      = container.Resolve<UITemplateAdServiceWrapper>();
             this.nativeAdsService      = container.Resolve<INativeAdsService>();
+            this.adServicesConfig      = container.Resolve<AdServicesConfig>();
             this.adMobNativeAdsService = (IAdMobNativeAdsService)this.nativeAdsService;
             this.logger                = container.Resolve<ILoggerManager>().GetLogger(this);
 
@@ -48,9 +55,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
 
         private void OnShowNativeCollapseSignal(ShowNativeCollapseSignal signal)
         {
+            this.onHide = signal.OnHide;
             if (signal.IsShow)
             {
+                this.btnClose.interactable = false;
                 this.OnShow();
+                UniTask.WaitForSeconds(this.adServicesConfig.NativeCollapseCloseTime, cancellationToken: (this.showingCts = new()).Token).ContinueWith(this.SetupNativeClick);
             }
             else
             {
@@ -64,6 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             this.logger.Info($"Native ads ready: {this.isShow}, placement: {this.nativeAdsView.Placement}");
             if (this.isShow)
             {
+                this.logger.Info("Showing native collapse");
                 this.adServiceWrapper.HideBannerAd();
                 this.view.SetActive(true);
                 this.nativeAdsView.Init(this.nativeAdsService);
@@ -73,11 +84,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         private void OnHide()
         {
             if (!this.isShow) return;
+            this.showingCts?.Cancel();
+            this.showingCts?.Dispose();
+            this.showingCts = null;
+            this.logger.Info("Hiding native collapse");
             this.adServiceWrapper.ShowBannerAd();
             this.isShow = false;
             this.view.SetActive(false);
-            this.nativeAdsView.Release();
-            this.adServiceWrapper.InternalCloseNativeCollapse();
+            this.loadedCount++;
+            if (this.loadedCount == this.adServicesConfig.NativeCollapseLoad)
+            {
+                this.loadedCount = 0;
+                this.nativeAdsView.Release();
+            }
+            this.onHide?.Invoke();
+        }
+
+        private void SetupNativeClick()
+        {
+            this.btnClose.interactable = true;
         }
     }
 }

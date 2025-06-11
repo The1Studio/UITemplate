@@ -807,71 +807,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #if ADMOB_NATIVE_ADS
 
-        private CancellationTokenSource refreshNativeCollapseCts;
-        private CancellationTokenSource displayNativeCollapseCts;
-        private bool                    showingNativeCollapse;
-
-
-        public void ShowNativeCollapse()
+        public void ShowNativeCollapse(Action onHide = null)
         {
             if (!this.adServicesConfig.EnableNativeAd) return;
             if (!this.adServicesConfig.EnableNativeCollapse) return;
             if (this.IsRemovedAds) return;
-            if (this.showingNativeCollapse) return;
-            this.logger.Info("Show Native Collapse");
-            this.showingNativeCollapse = true;
-            this.signalBus.Fire(new ShowNativeCollapseSignal(true));
-            UniTask.WaitForSeconds(this.adServicesConfig.NativeCollapseDisplayTime, true, cancellationToken: (this.displayNativeCollapseCts = new()).Token)
-                .ContinueWith(
-                    () =>
-                    {
-                        this.InternalHideNativeCollapse();
-                        this.InternalRefreshNativeCollapse();
-                    }).Forget();
+            this.logger.Info("start show");
+            this.signalBus.Fire(new ShowNativeCollapseSignal(true, onHide));
         }
 
-        public void HideNativeCollapse()
+        public void HideNativeCollapse(Action onHide = null)
         {
             if (!this.adServicesConfig.EnableNativeAd) return;
             if (!this.adServicesConfig.EnableNativeCollapse) return;
-            if (!this.showingNativeCollapse) return;
-            this.showingNativeCollapse = false;
-            this.ResetNativeCollapseCts();
-            this.ResetNativeCollapseDisplayCts();
-            this.InternalHideNativeCollapse();
-        }
-
-        public void InternalCloseNativeCollapse()
-        {
-            this.ResetNativeCollapseDisplayCts();
-            this.InternalHideNativeCollapse();
-            this.InternalRefreshNativeCollapse();
-        }
-
-        private void InternalHideNativeCollapse()
-        {
-            this.logger.Info("Hide Native Collapse");
-            this.signalBus.Fire(new ShowNativeCollapseSignal(false));
-        }
-
-        private void InternalRefreshNativeCollapse()
-        {
-            UniTask.WaitForSeconds(this.adServicesConfig.NativeCollapseInterval, true, cancellationToken: (this.refreshNativeCollapseCts = new()).Token)
-                .ContinueWith(this.ShowNativeCollapse).Forget();
-        }
-
-        private void ResetNativeCollapseCts()
-        {
-            this.refreshNativeCollapseCts?.Cancel();
-            this.refreshNativeCollapseCts?.Dispose();
-            this.refreshNativeCollapseCts = null;
-        }
-
-        private void ResetNativeCollapseDisplayCts()
-        {
-            this.displayNativeCollapseCts?.Cancel();
-            this.displayNativeCollapseCts?.Dispose();
-            this.displayNativeCollapseCts = null;
+            this.logger.Info("start hide");
+            this.signalBus.Fire(new ShowNativeCollapseSignal(false, onHide));
         }
 
         #endif

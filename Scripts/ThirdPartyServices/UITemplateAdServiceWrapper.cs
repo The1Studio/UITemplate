@@ -530,7 +530,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             return false;
         }
 
-        private bool InternalShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false)
+        private bool InternalShowInterstitialAd(string place, Action<bool> onShowInterstitialFinished, bool force = false, Dictionary<string, object> metadata = null)
         {
             if (!this.CanShowInterstitialAd(place, force))
             {
@@ -576,7 +576,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.uiTemplateAdsController.UpdateWatchedInterstitialAds();
                 this.IsResumedFromAnotherServices = true;
                 this.onInterstitialFinishedAction = onShowInterstitialFinished;
-                adService.ShowInterstitialAd(place);
+                adService.ShowInterstitialAd(place, metadata);
             }
         }
 
@@ -586,7 +586,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #region RewardAd
 
-        public virtual void ShowRewardedAd(string place, Action onComplete, Action onFail = null)
+        public virtual void ShowRewardedAd(string place, Action onComplete, Action onFail = null, Dictionary<string, object> metadata = null)
         {
             if (!this.adServicesConfig.EnableRewardedAd || this.adServicesConfig.RewardedAdFreePlacements.Contains(place))
             {
@@ -612,7 +612,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.signalBus.Fire(new RewardedAdCalledSignal(place, adInfo));
             this.uiTemplateAdsController.UpdateWatchedRewardedAds();
             this.IsResumedFromAnotherServices = true;
-            adService.ShowRewardedAd(place, OnRewardedAdCompleted, onFail);
+            adService.ShowRewardedAd(place, OnRewardedAdCompleted, onFail, metadata);
             return;
 
             void OnRewardedAdCompleted()

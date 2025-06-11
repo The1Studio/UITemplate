@@ -817,6 +817,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServicesConfig.EnableNativeAd) return;
             if (!this.adServicesConfig.EnableNativeCollapse) return;
             if (this.IsRemovedAds) return;
+            if (this.showingNativeCollapse) return;
             this.logger.Info("Show Native Collapse");
             this.showingNativeCollapse = true;
             this.signalBus.Fire(new ShowNativeCollapseSignal(true));
@@ -834,6 +835,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (!this.adServicesConfig.EnableNativeAd) return;
             if (!this.adServicesConfig.EnableNativeCollapse) return;
             if (!this.showingNativeCollapse) return;
+            this.showingNativeCollapse = false;
             this.ResetNativeCollapseCts();
             this.ResetNativeCollapseDisplayCts();
             this.InternalHideNativeCollapse();

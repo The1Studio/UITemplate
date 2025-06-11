@@ -63,10 +63,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "screen_view",
-                EventProperties =
+                EventProperties = new Dictionary<string, object>
                 {
-                    {"screen_name", screenName},
-                    {"screen_class", screenClass},
+                    { "screen_name", screenName },
+                    { "screen_class", screenClass },
                 }
             });
         }
@@ -87,6 +87,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         // reference link: "https://docs.google.com/spreadsheets/d/1jkLaX4Q-lErmM9WhC2k9BSmpiXOET2ywu5FJfNtQ3oU/edit?gid=1260577405#rangeid=864661828"
         private object GetMetadataValue(Dictionary<string, object> metadata, string key)
         {
+            if (metadata == null)
+            {
+                this.logger.Error("Metadata is null");
+
+                return null;
+            }
+
             if (metadata.TryGetValue(key, out var value))
             {
                 return value;
@@ -98,16 +105,16 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         }
 
         // mapping metadata event data by "screen" param, value should be screen name or screen type
-        private string GetScreen(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "screen").ToString();
+        private string GetScreen(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "screen")?.ToString();
 
         // mapping metadata event data by "item_type" param, value should be [virtual_currency_type] or "pack", "feature", "ads"
-        private string GetItemType(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "item_type").ToString();
+        private string GetItemType(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "item_type")?.ToString();
 
         // mapping metadata event data by "item_id" param, value should be [virtual_currency_name] or [pack_id], [feature_id], "rwd_ads"
-        private string GetItemId(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "item_id").ToString();
+        private string GetItemId(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "item_id")?.ToString();
 
         // mapping metadata event data by "source" param, value should be "iap" or "non_iap"
-        private string GetSource(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "source").ToString();
+        private string GetSource(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "source")?.ToString();
         
         public override IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata = null)
         {

@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Signals;
     using global::TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -28,23 +29,47 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         {
             this.levelDataController = levelDataController;
             this.logger              = loggerManager.GetLogger(this);
+            signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
         }
+
+        private string lastScreenName;
+        private string lastScreenClass;
 
         public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IgnoreEvents = new HashSet<Type>(),
             CustomEventKeys = new Dictionary<string, string>()
-                              {
-                                  { nameof(AdsRevenueEvent), "paid_ad_impression" },
-                                  { "AdsRevenueSourceId", "ad_platform" },
-                                  { "AdNetwork", "ad_source" },
-                                  { "AdUnit", "ad_unit_name" },
-                                  { "AdFormat", "ad_format" },
-                                  { "Placement", "ad_placement" },
-                                  { "Currency", "currency" },
-                                  { "Revenue", "value" },
-                              }
+            {
+                { nameof(AdsRevenueEvent), "paid_ad_impression" },
+                { "AdsRevenueSourceId", "ad_platform" },
+                { "AdNetwork", "ad_source" },
+                { "AdUnit", "ad_unit_name" },
+                { "AdFormat", "ad_format" },
+                { "Placement", "ad_placement" },
+                { "Currency", "currency" },
+                { "Revenue", "value" },
+            }
         };
+
+        private void OnScreenShow(ScreenShowSignal obj)
+        {
+            this.lastScreenName = obj.ScreenPresenter.GetType().Name;
+            this.lastScreenClass = obj.ScreenPresenter.GetType().Name;
+            this.TrackScreenView(this.lastScreenName, this.lastScreenClass);
+        }
+
+        private void TrackScreenView(string screenName, string screenClass)
+        {
+            this.analyticServices.Track(new CustomEvent()
+            {
+                EventName = "screen_view",
+                EventProperties =
+                {
+                    {"screen_name", screenName},
+                    {"screen_class", screenClass},
+                }
+            });
+        }
 
         private IEvent EndLevel(int timeSpent, bool isSuccess, string loseCause, string flow, LevelData levelData)
         {
@@ -112,12 +137,26 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
 
         public override IEvent InterstitialShow(int level, string place, Dictionary<string, object> metadata = null)
         {
+            this.TrackScreenView("IntersAds","IntersAds");
             return new InterstitialShow(this.Location, this.GetScreen(metadata), place, level.ToString(), this.levelDataController.CurrentMode);
+        }
+
+        public override IEvent InterstitialShowCompleted(int level, string place)
+        {
+            this.TrackScreenView(this.lastScreenName,this.lastScreenClass);
+            return base.InterstitialShowCompleted(level, place);
         }
 
         public override IEvent RewardedVideoShow(int level, string place, Dictionary<string, object> metadata = null)
         {
+            this.TrackScreenView("RewardedAds","RewardedAds");
             return new VideoRewarded(this.levelDataController.CurrentMode, level.ToString(), "", this.Location, place, this.GetItemType(metadata), this.GetItemId(metadata));
+        }
+
+        public override IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)
+        {
+            this.TrackScreenView(this.lastScreenName,this.lastScreenClass);
+            return base.RewardedVideoShowCompleted(level, place, isRewarded);
         }
 
         public override IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata = null)

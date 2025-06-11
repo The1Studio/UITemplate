@@ -1,10 +1,11 @@
 ﻿#if SONAT
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Sonat
 {
+    using System;
     using System.Collections.Generic;
     using Core.AnalyticServices;
+    using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Signals;
     using global::TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Models;
@@ -14,7 +15,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
     public sealed class SonatAnalyticEventFactory : BaseAnalyticEventFactory
     {
         private readonly UITemplateLevelDataController levelDataController;
-        private readonly IScreenManager                screenManager;
         private readonly ILogger                       logger;
 
         [Preserve]
@@ -23,14 +23,28 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
             SignalBus                     signalBus,
             IAnalyticServices             analyticServices,
             UITemplateLevelDataController levelDataController,
-            IScreenManager                screenManager,
             ILoggerManager                loggerManager
         ) : base(signalBus, analyticServices, levelDataController)
         {
             this.levelDataController = levelDataController;
-            this.screenManager       = screenManager;
             this.logger              = loggerManager.GetLogger(this);
         }
+
+        public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
+        {
+            IgnoreEvents = new HashSet<Type>(),
+            CustomEventKeys = new Dictionary<string, string>()
+                              {
+                                  { nameof(AdsRevenueEvent), "paid_ad_impression" },
+                                  { "AdsRevenueSourceId", "ad_platform" },
+                                  { "AdNetwork", "ad_source" },
+                                  { "AdUnit", "ad_unit_name" },
+                                  { "AdFormat", "ad_format" },
+                                  { "Placement", "ad_placement" },
+                                  { "Currency", "currency" },
+                                  { "Revenue", "value" },
+                              }
+        };
 
         private IEvent EndLevel(int timeSpent, bool isSuccess, string loseCause, string flow, LevelData levelData)
         {

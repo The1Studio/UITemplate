@@ -7,6 +7,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Signals;
+    using ServiceImplementation.AdsServices.Signal;
     using ServiceImplementation.Configs.Ads;
     using TheOne.Logging;
     using TheOneStudio.UITemplate.Scripts.Signals;
@@ -59,9 +60,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             this.onHide = signal.OnHide;
             if (signal.IsShow)
             {
-                this.btnClose.interactable = false;
                 this.OnShow();
-                UniTask.WaitForSeconds(this.adServicesConfig.NativeCollapseCloseTime, cancellationToken: (this.showingCts = new()).Token).ContinueWith(this.SetupNativeClick);
             }
             else
             {
@@ -75,11 +74,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             this.logger.Info($"Native ads ready: {this.isShow}, placement: {this.nativeAdsView.Placement}");
             if (this.isShow)
             {
+                this.signalBus.Fire(new AttDisplayedSignal());
                 this.boxCollider.enabled = true;
                 this.logger.Info("Showing native collapse");
                 this.adServiceWrapper.HideBannerAd();
                 this.view.SetActive(true);
                 this.nativeAdsView.Init(this.nativeAdsService);
+                this.btnClose.interactable = false;
+                UniTask.WaitForSeconds(this.adServicesConfig.NativeCollapseCloseTime, ignoreTimeScale: true, cancellationToken: (this.showingCts = new()).Token).ContinueWith(this.SetupNativeClick);
             }
             else
             {
@@ -91,6 +93,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         {
             this.onHide?.Invoke();
             if (!this.isShow) return;
+            this.signalBus.Fire(new AttClosedSignal());
             this.showingCts?.Cancel();
             this.showingCts?.Dispose();
             this.showingCts = null;

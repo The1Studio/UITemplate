@@ -87,6 +87,7 @@ MonoBehaviour:
   view: {fileID: 2984133206451592692}
   nativeAdsView: {fileID: 1067402311497754318}
   btnClose: {fileID: 2094726014827733010}
+  boxCollider: {fileID: 7648185639667052812}
 --- !u!1 &2494096527364103101
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9175171226734861944
 RectTransform:
   m_ObjectHideFlags: 0
@@ -318,7 +319,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 125, y: -125}
-  m_SizeDelta: {x: 0, y: 200}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5289216029665651151
 CanvasRenderer:
@@ -471,10 +472,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3509521141711795767}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 805.93, y: -26}
-  m_SizeDelta: {x: 63, y: 52}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -81.07001, y: -31.222992}
+  m_SizeDelta: {x: 50.3443, y: 41.554}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4362091283738098035
 CanvasRenderer:

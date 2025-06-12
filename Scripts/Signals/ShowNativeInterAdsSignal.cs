@@ -19,7 +19,7 @@
 
         public ShowNativeCollapseSignal(bool isShow, Action onHide = null)
         {
-            this.IsShow = isShow;
+            this.IsShow           = isShow;
             this.OnHide = onHide;
         }
     }

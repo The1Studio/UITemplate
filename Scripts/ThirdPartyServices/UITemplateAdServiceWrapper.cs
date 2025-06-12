@@ -807,19 +807,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         #if ADMOB_NATIVE_ADS
 
-        public void ShowNativeCollapse(Action onHide = null)
+        public void ShowNativeCollapse(Action onHideOrLoadFail = null)
         {
-            if (!this.adServicesConfig.EnableNativeAd) return;
-            if (!this.adServicesConfig.EnableNativeCollapse) return;
             if (this.IsRemovedAds) return;
+            if (!this.adServicesConfig.EnableNativeAd) return;
+            if (!this.adServicesConfig.EnableNativeCollapse)
+            {
+                onHideOrLoadFail?.Invoke();
+                return;
+            }
             this.logger.Info("start show");
-            this.signalBus.Fire(new ShowNativeCollapseSignal(true, onHide));
+            this.signalBus.Fire(new ShowNativeCollapseSignal(true, onHideOrLoadFail));
         }
 
         public void HideNativeCollapse(Action onHide = null)
         {
             if (!this.adServicesConfig.EnableNativeAd) return;
-            if (!this.adServicesConfig.EnableNativeCollapse) return;
+            if (!this.adServicesConfig.EnableNativeCollapse)
+            {
+                onHide?.Invoke();
+                return;
+            }
             this.logger.Info("start hide");
             this.signalBus.Fire(new ShowNativeCollapseSignal(false, onHide));
         }

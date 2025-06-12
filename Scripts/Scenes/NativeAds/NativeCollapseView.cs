@@ -20,6 +20,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         [SerializeField] private GameObject    view;
         [SerializeField] private NativeAdsView nativeAdsView;
         [SerializeField] private Button        btnClose;
+        [SerializeField] private BoxCollider   boxCollider;
 
         private SignalBus                  signalBus;
         private UITemplateAdServiceWrapper adServiceWrapper;
@@ -74,15 +75,21 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
             this.logger.Info($"Native ads ready: {this.isShow}, placement: {this.nativeAdsView.Placement}");
             if (this.isShow)
             {
+                this.boxCollider.enabled = true;
                 this.logger.Info("Showing native collapse");
                 this.adServiceWrapper.HideBannerAd();
                 this.view.SetActive(true);
                 this.nativeAdsView.Init(this.nativeAdsService);
             }
+            else
+            {
+                this.onHide?.Invoke();
+            }
         }
 
         private void OnHide()
         {
+            this.onHide?.Invoke();
             if (!this.isShow) return;
             this.showingCts?.Cancel();
             this.showingCts?.Dispose();
@@ -97,12 +104,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
                 this.loadedCount = 0;
                 this.nativeAdsView.Release();
             }
-            this.onHide?.Invoke();
         }
 
         private void SetupNativeClick()
         {
             this.btnClose.interactable = true;
+            this.boxCollider.enabled   = false;
         }
     }
 }

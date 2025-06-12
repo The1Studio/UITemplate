@@ -92,8 +92,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.NativeAds
         private void OnHide()
         {
             this.onHide?.Invoke();
-            if (!this.isShow) return;
             this.signalBus.Fire(new AttClosedSignal());
+            if (!this.isShow) return;
             this.showingCts?.Cancel();
             this.showingCts?.Dispose();
             this.showingCts = null;

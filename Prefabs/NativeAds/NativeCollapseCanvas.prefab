@@ -1085,7 +1085,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   placement: collapse
-  refreshSeconds: 10
+  refreshSeconds: 300
   nonAdsHolder: {fileID: 881623068366773044}
   adsHolder: {fileID: 3434877800107816961}
   iconImage: {fileID: 1573172069768065121}

@@ -1,3 +1,4 @@
 ﻿{
-  "name": "TheOne.Segment.Difficulty"
+  "name": "TheOne.Segment.Difficulty",
+  "references":[ "GUID:7212d61794904eac9281ce9f26262cb1", "GUID:f51af22c92914bc6b143539603c8f57d" ]
 }

@@ -37,7 +37,7 @@
   ],
   "packagesToAdd": {
     "com.google.external-dependency-manager": "1.2.185",
-    "com.theone.foundation.buildscript": "https://github.com/The1Studio/UnityBuildScript.git?path=Assets/BuildScripts"
+    "com.theone.foundation.buildscript": "1.0.1"
   },
   "packagesVersionToUse": {
     "com.google.ads.mobile": "9.4.0",

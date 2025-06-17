@@ -804,6 +804,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region NativeAds
 
         public float LastTimeShowNativeInterAd = Time.time;
+        public void ShowNativeCollapse(Action onHideOrLoadFail = null)
+        {
+            if (this.IsRemovedAds) return;
+            if (!this.adServicesConfig.EnableNativeAd) return;
+            if (!this.adServicesConfig.EnableNativeCollapse)
+            {
+                onHideOrLoadFail?.Invoke();
+                return;
+            }
+            this.logger.Info("start show");
+            this.signalBus.Fire(new ShowNativeCollapseSignal(true, onHideOrLoadFail));
+        }
+
+        public void HideNativeCollapse(Action onHide = null)
+        {
+            if (!this.adServicesConfig.EnableNativeAd) return;
+            if (!this.adServicesConfig.EnableNativeCollapse)
+            {
+                onHide?.Invoke();
+                return;
+            }
+            this.logger.Info("start hide");
+            this.signalBus.Fire(new ShowNativeCollapseSignal(false, onHide));
+        }
 
         #endregion
 
@@ -833,6 +857,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.nativeOverlayService.DestroyAll();
             this.OnRemoveAdsComplete();
             this.signalBus.Fire<OnRemoveAdsSucceedSignal>();
+
+            #if ADMOB_NATIVE_ADS
+            this.HideNativeCollapse();
+            #endif
         }
     }
 }

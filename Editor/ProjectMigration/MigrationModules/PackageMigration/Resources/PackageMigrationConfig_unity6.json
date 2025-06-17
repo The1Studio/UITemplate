@@ -52,7 +52,8 @@
     "com.applovin.mediation.adapters.googleadmanager.android": "24020000.0.0",
     "com.applovin.mediation.ads": "8.3.0",
     "com.adjust.sdk": "5.1.3",
-    "com.unity.ide.rider": "3.0.36"
+    "com.unity.ide.rider": "3.0.36",
+    "com.theone.appsflyer-unity-plugin": "6.15.2"
   },
   "nameToUnityPackageToImport": {
     "BuildScripts": {

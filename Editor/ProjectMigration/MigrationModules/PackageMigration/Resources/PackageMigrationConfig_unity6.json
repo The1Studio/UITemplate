@@ -22,7 +22,8 @@
       "name": "TheOne",
       "url": "https://upm.the1studio.org/",
       "scopes": [
-        "com.theone"
+        "com.theone",
+        "com.bytebrew"
       ]
     },
     {

@@ -804,9 +804,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region NativeAds
 
         public float LastTimeShowNativeInterAd = Time.time;
-
-        #if ADMOB_NATIVE_ADS
-
         public void ShowNativeCollapse(Action onHideOrLoadFail = null)
         {
             if (this.IsRemovedAds) return;
@@ -831,8 +828,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.logger.Info("start hide");
             this.signalBus.Fire(new ShowNativeCollapseSignal(false, onHide));
         }
-
-        #endif
 
         #endregion
 

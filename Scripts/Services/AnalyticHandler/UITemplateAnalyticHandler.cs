@@ -2,6 +2,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Core.AdsServices.Signals;
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
@@ -20,6 +21,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents;
     using TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.CommonEvents;
     using UnityEngine.Scripting;
+    using Utilities.Extension;
 #if WIDO
     using System.Collections.Generic;
 #endif
@@ -144,6 +146,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             this.signalBus.Subscribe<AttributionChangedSignal>(this.OnAttributionChangedHandler);
 
 #if THEONE_FTUE
+            this.signalBus.Subscribe<FTUEStartSignal>(this.OnFTUEStart);
             this.signalBus.Subscribe<FTUECompletedSignal>(this.OnFTUECompleted);
 #endif
 
@@ -167,16 +170,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         }
 
 #if THEONE_FTUE
-        private void OnFTUECompleted(FTUECompletedSignal obj)
+        private void OnFTUEStart(FTUEStartSignal signal)
         {
-            this.Track(new CustomEvent()
-            {
-                EventName = $"ftue_completed",
-                EventProperties = new()
-                {
-                    { "step_id", obj.FTUEId },
-                },
-            });
+            this.Track(this.analyticEventFactory.FTUEStart(signal.FTUEId, signal.AnalyticProperties));
+        }
+        
+        private void OnFTUECompleted(FTUECompletedSignal signal)
+        {
+            this.Track(this.analyticEventFactory.FTUECompleted(signal.FTUEId, signal.AnalyticProperties));
         }
 #endif
 

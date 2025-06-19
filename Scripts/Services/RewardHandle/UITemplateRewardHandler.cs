@@ -49,7 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services.RewardHandle
             this.AddRewards(rewardIdToData, from, sourceGameObject);
         }
 
-        public void AddRewards(Dictionary<string, UITemplateRewardItemData> rewardIdToData, string from, GameObject sourceGameObject)
+        public void AddRewards(Dictionary<string, UITemplateRewardItemData> rewardIdToData, string from, GameObject sourceGameObject, Dictionary<string, object> metadata = null)
         {
             foreach (var rewardData in rewardIdToData) this.ReceiveReward(rewardData.Key, rewardData.Value.RewardValue, from, sourceGameObject == null ? null : sourceGameObject.transform as RectTransform);
         }

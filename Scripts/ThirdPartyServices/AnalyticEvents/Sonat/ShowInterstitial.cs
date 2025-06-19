@@ -2,7 +2,7 @@
 {
     using Core.AnalyticServices.Data;
 
-    internal sealed class InterstitialShow : IEvent
+    internal sealed class ShowInterstitial : IEvent
     {
         public string Location  { get; }
         public string Screen    { get; }
@@ -10,7 +10,7 @@
         public string Level     { get; }
         public string Mode      { get; }
 
-        public InterstitialShow(string location, string screen, string placement, string level, string mode)
+        public ShowInterstitial(string location, string screen, string placement, string level, string mode)
         {
             this.Location  = location;
             this.Screen    = screen;

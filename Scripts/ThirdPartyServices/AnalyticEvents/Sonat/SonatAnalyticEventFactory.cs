@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
     using Core.AnalyticServices;
     using Core.AnalyticServices.CommonEvents;
     using Core.AnalyticServices.Data;
+    using GameFoundation.Scripts.UIModule.ScreenFlow.Managers;
     using GameFoundation.Scripts.UIModule.ScreenFlow.Signals;
     using GameFoundation.Signals;
     using global::TheOne.Logging;
@@ -16,6 +17,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
     public sealed class SonatAnalyticEventFactory : BaseAnalyticEventFactory
     {
         private readonly UITemplateLevelDataController levelDataController;
+        private readonly IScreenManager                screenManager;
         private readonly ILogger                       logger;
 
         [Preserve]
@@ -24,10 +26,12 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
             SignalBus                     signalBus,
             IAnalyticServices             analyticServices,
             UITemplateLevelDataController levelDataController,
-            ILoggerManager                loggerManager
+            ILoggerManager                loggerManager,
+            IScreenManager                screenManager
         ) : base(signalBus, analyticServices, levelDataController)
         {
             this.levelDataController = levelDataController;
+            this.screenManager       = screenManager;
             this.logger              = loggerManager.GetLogger(this);
             signalBus.Subscribe<ScreenShowSignal>(this.OnScreenShow);
         }
@@ -104,8 +108,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
             return null;
         }
 
-        // mapping metadata event data by "screen" param, value should be screen name or screen type
-        private string GetScreen(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "screen")?.ToString();
+        private string GetScreen()
+        {
+            return this.screenManager.CurrentActiveScreen.Value != null ? this.screenManager.CurrentActiveScreen.Value.ScreenId : "null";
+        }
 
         // mapping metadata event data by "item_type" param, value should be [virtual_currency_type] or "pack", "feature", "ads"
         private string GetItemType(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "item_type")?.ToString();
@@ -155,7 +161,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         public override IEvent InterstitialShow(int level, string place, Dictionary<string, object> metadata = null)
         {
             this.TrackScreenView("IntersAds","IntersAds");
-            return new InterstitialShow(this.Location, this.GetScreen(metadata), place, level.ToString(), this.levelDataController.CurrentMode);
+            return new ShowInterstitial(this.Location, this.GetScreen(), place, level.ToString(), this.levelDataController.CurrentMode);
         }
 
         public override IEvent InterstitialShowCompleted(int level, string place)
@@ -178,12 +184,12 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
 
         public override IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata = null)
         {
-            return new EarnVirtualCurrency(virtualCurrencyName, value, this.Location, this.GetScreen(metadata), this.GetSource(metadata), this.GetItemType(metadata), this.GetItemId(metadata));
+            return new EarnVirtualCurrency(virtualCurrencyName, value, this.Location, this.GetScreen(), this.GetSource(metadata), this.GetItemType(metadata), this.GetItemId(metadata));
         }
 
         public override IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata = null)
         {
-            return new SpendVirtualCurrency(virtualCurrencyName, value, this.Location, this.GetScreen(metadata), this.GetItemType(metadata), this.GetItemId(metadata));
+            return new SpendVirtualCurrency(virtualCurrencyName, value, this.Location, this.GetScreen(), this.GetItemType(metadata), this.GetItemId(metadata));
         }
     }
 }

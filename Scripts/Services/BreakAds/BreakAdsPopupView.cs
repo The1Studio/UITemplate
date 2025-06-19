@@ -1,5 +1,6 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services.BreakAds
 {
+    using System.Collections.Generic;
     using Cysharp.Threading.Tasks;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.View;
@@ -72,7 +73,13 @@
         protected virtual void RewardAfterWatchedAds()
         {
             if (!this.thirdPartiesConfig.AdSettings.IsBreakAdsRewardCurrency) return;
-            this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency, "break_ads", this.View.currencyTransform);
+            var metadata = new Dictionary<string, object>
+            {
+                { "item_type", this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency },
+                { "item_id", this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency },
+                { "source", "non_iap" }
+            };
+            this.inventoryDataController.AddCurrency(this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrencyAmount, this.thirdPartiesConfig.AdSettings.BreakAdsRewardCurrency, "break_ads", this.View.currencyTransform, metadata: metadata);
         }
 
         public override void Dispose()

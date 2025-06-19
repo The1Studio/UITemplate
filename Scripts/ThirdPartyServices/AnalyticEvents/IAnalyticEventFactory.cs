@@ -69,6 +69,10 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent TutorialCompletion(bool success, string tutorialId);
 
+        IEvent FTUEStart(string ftueId, Dictionary<string, object> metadata);
+
+        IEvent FTUECompleted(string completedId, Dictionary<string, object> metadata);
+
         void ForceUpdateAllProperties();
 
         string                            LevelMaxProperty                           { get; }

@@ -205,6 +205,16 @@
             return new TutorialCompletion(success, tutorialId);
         }
 
+        public virtual IEvent FTUEStart(string ftueId, Dictionary<string, object> metadata)
+        {
+            return new FTUEStart(ftueId, metadata);
+        }
+
+        public virtual IEvent FTUECompleted(string completedId, Dictionary<string, object> metadata)
+        {
+            return new FTUECompleted(completedId, metadata);
+        }
+
         public virtual void ForceUpdateAllProperties()
         {
         }

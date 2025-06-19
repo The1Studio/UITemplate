@@ -142,6 +142,16 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
             return this.EndLevel(timeSpent, false, "skipped", "", this.levelDataController.GetLevelData(level));
         }
 
+        public override IEvent FTUEStart(string ftueId, Dictionary<string, object> metadata)
+        {
+            return new TutorialBegin(ftueId, metadata);
+        }
+
+        public override IEvent FTUECompleted(string completedId, Dictionary<string, object> metadata)
+        {
+            return new TutorialComplete(completedId, metadata);
+        }
+
         public override IEvent InterstitialShow(int level, string place, Dictionary<string, object> metadata = null)
         {
             this.TrackScreenView("IntersAds","IntersAds");
@@ -174,11 +184,6 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         public override IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata = null)
         {
             return new SpendVirtualCurrency(virtualCurrencyName, value, this.Location, this.GetScreen(metadata), this.GetItemType(metadata), this.GetItemId(metadata));
-        }
-
-        public override IEvent TutorialCompletion(bool success, string tutorialId)
-        {
-            return new TutorialComplete(tutorialId, 1);
         }
     }
 }

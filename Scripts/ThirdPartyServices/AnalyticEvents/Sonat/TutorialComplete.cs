@@ -1,16 +1,17 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Sonat
 {
+    using System.Collections.Generic;
     using Core.AnalyticServices.Data;
 
     internal sealed class TutorialComplete : IEvent
     {
-        public string Placement { get; }
-        public int    Step      { get; }
+        public string                     Id         { get; }
+        public Dictionary<string, object> Properties { get; }
 
-        public TutorialComplete(string placement, int step)
+        public TutorialComplete(string id, Dictionary<string, object> properties)
         {
-            this.Placement = placement;
-            this.Step      = step;
+            this.Id         = id;
+            this.Properties = properties;
         }
     }
 }

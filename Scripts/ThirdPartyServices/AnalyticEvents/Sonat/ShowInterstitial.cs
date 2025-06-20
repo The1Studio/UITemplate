@@ -2,7 +2,7 @@
 {
     using Core.AnalyticServices.Data;
     using UnityEngine.Scripting;
-
+    [Preserve]
     internal sealed class ShowInterstitial : IEvent
     {
         public string Location  { get; }
@@ -11,7 +11,6 @@
         public string Level     { get; }
         public string Mode      { get; }
 
-        [Preserve]
         public ShowInterstitial(string location, string screen, string placement, string level, string mode)
         {
             this.Location  = location;

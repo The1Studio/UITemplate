@@ -3,6 +3,7 @@
     using Core.AnalyticServices.Data;
     using UnityEngine.Scripting;
 
+    [Preserve]
     internal sealed class StartLevel : IEvent
     {
         public string Mode        { get; }
@@ -10,7 +11,6 @@
         public int    StartCount  { get; }
         public bool   IsFirstPlay { get; }
 
-        [Preserve]
         public StartLevel(string mode, string level, int startCount, bool isFirstPlay)
         {
             this.Mode        = mode;

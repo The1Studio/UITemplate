@@ -2,7 +2,7 @@
 {
     using Core.AnalyticServices.Data;
     using UnityEngine.Scripting;
-
+    [Preserve]
     internal sealed class EndLevel : IEvent
     {
         public string Mode        { get; }
@@ -14,7 +14,6 @@
         public string LoseCause   { get; }
         public string Flow        { get; }
 
-        [Preserve]
         public EndLevel(string mode, string level, int startCount, int playTime, bool isFirstPlay, bool success, string loseCause, string flow)
         {
             this.Mode        = mode;

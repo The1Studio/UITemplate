@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Sonat
 {
     using Core.AnalyticServices.Data;
+    using UnityEngine.Scripting;
 
     internal sealed class EarnVirtualCurrency : IEvent
     {
@@ -12,6 +13,7 @@
         public string ItemType            { get; }
         public string ItemId              { get; }
 
+        [Preserve]
         public EarnVirtualCurrency(string virtualCurrencyName, float value, string location, string screen, string source, string itemType, string itemId)
         {
             this.VirtualCurrencyName = virtualCurrencyName;

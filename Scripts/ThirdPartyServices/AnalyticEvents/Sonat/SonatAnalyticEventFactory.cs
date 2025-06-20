@@ -81,8 +81,22 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
             var isFirstPlay = levelData.WinCount == 0 && levelData.LoseCount == 0;
 
             this.IsInGame = false;
-
-            return new EndLevel(this.levelDataController.CurrentMode, levelData.Level.ToString(), startCount, timeSpent, isFirstPlay, isSuccess, loseCause, flow);
+            
+            return new CustomEvent()
+            {
+                EventName = "level_end",
+                EventProperties = new ()
+                {
+                    { "mode", this.levelDataController.CurrentMode },
+                    { "level", levelData.Level.ToString() },
+                    { "start_count", startCount },
+                    { "play_time", timeSpent },
+                    { "is_first_play", isFirstPlay },
+                    { "success", isSuccess },
+                    { "lose_cause", loseCause },
+                    { "flow_i", flow },
+                }
+            };
         }
 
         private bool   IsInGame { get; set; }
@@ -129,8 +143,18 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
             var isFirstPlay = levelData.WinCount == 0 && levelData.LoseCount == 0;
 
             this.IsInGame = true;
-
-            return new StartLevel(this.levelDataController.CurrentMode, levelData.Level.ToString(), startCount, isFirstPlay);
+           
+            return new CustomEvent()
+            {
+                EventName = "level_start",
+                EventProperties = new ()
+                {
+                    { "mode", this.levelDataController.CurrentMode },
+                    { "level", levelData.Level.ToString() },
+                    { "start_count", startCount },
+                    { "is_first_play", isFirstPlay },
+                }
+            };
         }
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount, Dictionary<string, object> metadata = null)
@@ -150,18 +174,45 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
 
         public override IEvent FTUEStart(string ftueId, Dictionary<string, object> metadata)
         {
-            return new TutorialBegin(ftueId, metadata);
+            return new CustomEvent()
+            {
+                EventName = "tutorial_begin",
+                EventProperties = new ()
+                {
+                    { "placement", ftueId },
+                    { "step", metadata },
+                }
+            };
         }
 
         public override IEvent FTUECompleted(string completedId, Dictionary<string, object> metadata)
         {
-            return new TutorialComplete(completedId, metadata);
+            return new CustomEvent()
+            {
+                EventName = "tutorial_complete",        
+                EventProperties = new ()
+                {
+                    { "placement", completedId },
+                    { "step", metadata },
+                }
+            };
         }
 
         public override IEvent InterstitialShow(int level, string place, Dictionary<string, object> metadata = null)
         {
             this.TrackScreenView("IntersAds","IntersAds");
-            return new ShowInterstitial(this.Location, this.GetScreen(), place, level.ToString(), this.levelDataController.CurrentMode);
+            return new CustomEvent()
+            {
+                EventName = "show_interstitial",
+                EventProperties = new ()
+                {
+                    { "location", this.Location },
+                    { "screen", this.GetScreen() },
+                    { "placement", place },
+                    { "level", level.ToString() },
+                    { "mode", this.levelDataController.CurrentMode },
+                }
+            };
         }
 
         public override IEvent InterstitialShowCompleted(int level, string place)
@@ -173,7 +224,20 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         public override IEvent RewardedVideoShow(int level, string place, Dictionary<string, object> metadata = null)
         {
             this.TrackScreenView("RewardedAds","RewardedAds");
-            return new VideoRewarded(this.levelDataController.CurrentMode, level.ToString(), "", this.Location, place, this.GetItemType(metadata), this.GetItemId(metadata));
+            return new CustomEvent()
+            {
+                EventName = "video_rewarded",
+                EventProperties = new ()
+                {
+                    { "mode", this.levelDataController.CurrentMode },
+                    { "level", level.ToString() },
+                    { "phase", "" },
+                    { "location", this.Location },
+                    { "placement", place },
+                    { "item_type", this.GetItemType(metadata) },
+                    { "item_id", this.GetItemId(metadata) },
+                }
+            };
         }
 
         public override IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded)
@@ -184,12 +248,39 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
 
         public override IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata = null)
         {
-            return new EarnVirtualCurrency(virtualCurrencyName, value, this.Location, this.GetScreen(), this.GetSource(metadata), this.GetItemType(metadata), this.GetItemId(metadata));
+            return new CustomEvent()
+            {
+                EventName = "earn_virtual_currency",
+                EventProperties = new ()
+                {
+                    { "virtual_currency_name", virtualCurrencyName },
+                    { "virtual_currency_type", virtualCurrencyName },
+                    { "value", value },
+                    { "location", this.Location },
+                    { "screen", this.GetScreen() },
+                    { "source", this.GetSource(metadata) },
+                    { "item_type", this.GetItemType(metadata) },
+                    { "item_id", this.GetItemId(metadata) },
+                }
+            };
         }
 
         public override IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata = null)
         {
-            return new SpendVirtualCurrency(virtualCurrencyName, value, this.Location, this.GetScreen(), this.GetItemType(metadata), this.GetItemId(metadata));
+            return new CustomEvent()
+            {
+                EventName = "spend_virtual_currency",
+                EventProperties = new ()
+                {
+                    { "virtual_currency_name", virtualCurrencyName },
+                    { "virtual_currency_type", virtualCurrencyName },
+                    { "value", value },
+                    { "location", this.Location },
+                    { "screen", this.GetScreen() },
+                    { "item_type", this.GetItemType(metadata) },
+                    { "item_id", this.GetItemId(metadata) },
+                }
+            };
         }
     }
 }

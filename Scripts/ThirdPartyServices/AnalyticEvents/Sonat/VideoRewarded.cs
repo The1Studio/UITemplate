@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.Sonat
 {
     using Core.AnalyticServices.Data;
+    using UnityEngine.Scripting;
 
     internal sealed class VideoRewarded : IEvent
     {
@@ -12,6 +13,7 @@
         public string ItemType  { get; }
         public string ItemId    { get; }
 
+        [Preserve]
         public VideoRewarded(string mode, string level, string phase, string location, string placement, string itemType, string itemId)
         {
             this.Mode      = mode;

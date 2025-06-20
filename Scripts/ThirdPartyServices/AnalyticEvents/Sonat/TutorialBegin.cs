@@ -2,12 +2,14 @@
 {
     using System.Collections.Generic;
     using Core.AnalyticServices.Data;
+    using UnityEngine.Scripting;
 
     internal sealed class TutorialBegin : IEvent
     {
         public string                     Id         { get; }
         public Dictionary<string, object> Properties { get; }
 
+        [Preserve]
         public TutorialBegin(string id, Dictionary<string, object> properties)
         {
             this.Id         = id;

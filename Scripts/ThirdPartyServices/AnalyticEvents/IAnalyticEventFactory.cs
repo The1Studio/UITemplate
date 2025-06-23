@@ -73,6 +73,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent FTUECompleted(string completedId, Dictionary<string, object> metadata);
 
+        IEvent ShowPopupUI(string   popUpId, bool isAuto);
+        IEvent ClickWidgetGame(string iconId,  Dictionary<string, object> metadata);
+        
         void ForceUpdateAllProperties();
 
         string                            LevelMaxProperty                           { get; }

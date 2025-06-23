@@ -48,4 +48,28 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.C
             this.Properties = properties;
         }
     }
+    
+    public sealed class ShowPopupUI : IEvent
+    {
+        public string Id     { get; }
+        public bool   IsAuto { get; }
+
+        public ShowPopupUI(string id, bool isAuto)
+        {
+            this.Id     = id;
+            this.IsAuto = isAuto;
+        }
+    }
+    
+    public sealed class ClickWidgetGame : IEvent
+    {
+        public string                     Id         { get; }
+        public Dictionary<string, object> Properties { get; }
+
+        public ClickWidgetGame(string id, Dictionary<string, object> properties)
+        {
+            this.Id         = id;
+            this.Properties = properties;
+        }
+    }
 }

@@ -350,7 +350,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
         {
             this.analyticServices.UserProperties[this.analyticEventFactory.LastAdsPlacementProperty] = obj.Placement;
             this.analyticServices.UserProperties[this.analyticEventFactory.TotalRewardedAdsProperty] = obj.Placement;
-            this.Track(this.analyticEventFactory.RewardedVideoShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement));
+            this.Track(this.analyticEventFactory.RewardedVideoShow(this.uiTemplateLevelDataController.GetCurrentLevelData.Level, obj.Placement, obj.Metadata));
             this.Track(new CustomEvent { EventName = $"Reward_Display_{obj.Placement}" });
         }
 
@@ -358,7 +358,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
 
         #endregion
 
-        private void PopupShowedHandler(PopupShowedSignal obj) { }
+        private void PopupShowedHandler(PopupShowedSignal obj)
+        {
+            this.Track(this.analyticEventFactory.ShowPopupUI(obj.ScreenPresenter.GetType().Name.Replace("Screen", "").Replace("Popup", "").Replace("Presenter", ""), obj.ScreenPresenter.IsClosePrevious));
+        }
 
         private void LevelSkippedHandler(LevelSkippedSignal obj) { this.Track(this.analyticEventFactory.LevelSkipped(obj.Level, obj.Time, obj.Metadata)); }
 
@@ -461,7 +464,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Services
             }
             else if (obj.Amount < 0)
             {
-                this.Track(this.analyticEventFactory.SpendVirtualCurrency(obj.Id, obj.Amount, obj.Source, level, obj.Metadata));
+                this.Track(this.analyticEventFactory.SpendVirtualCurrency(obj.Id, (long)MathF.Abs(obj.Amount), obj.Source, level, obj.Metadata));
             }
 
             if (obj.Amount > 0)

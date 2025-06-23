@@ -202,7 +202,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
                 EventProperties = new ()
                 {
                     { "placement", completedId },
-                    { "step", metadata.TryGetValue("step", out var step) ? step.ToString() : null },
+                    { "step", metadata.TryGetValue("step", out var step) ? ((int)step - 1).ToString() : null },
                 }
             };
         }

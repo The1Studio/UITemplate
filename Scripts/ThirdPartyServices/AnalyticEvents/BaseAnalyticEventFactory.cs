@@ -215,6 +215,16 @@
             return new FTUECompleted(completedId, metadata);
         }
 
+        public virtual IEvent ShowPopupUI(string popUpId, bool isAuto)
+        {
+            return new ShowPopupUI(popUpId, isAuto);
+        }
+
+        public virtual IEvent ClickWidgetGame(string iconId, Dictionary<string, object> metadata)
+        {
+            return new ClickWidgetGame(iconId, metadata);
+        }
+
         public virtual void ForceUpdateAllProperties()
         {
         }

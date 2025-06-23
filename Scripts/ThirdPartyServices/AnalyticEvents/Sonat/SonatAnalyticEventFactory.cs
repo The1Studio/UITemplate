@@ -42,7 +42,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         public override AnalyticsEventCustomizationConfig FireBaseAnalyticsEventCustomizationConfig { get; set; } = new()
         {
             IgnoreEvents = new HashSet<Type>(),
-            CustomEventKeys = new Dictionary<string, string>()
+            CustomEventKeys = new ()
             {
                 { nameof(AdsRevenueEvent), "paid_ad_impression" },
                 { "AdsRevenueSourceId", "ad_platform" },
@@ -67,7 +67,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
             this.analyticServices.Track(new CustomEvent()
             {
                 EventName = "screen_view",
-                EventProperties = new Dictionary<string, object>
+                EventProperties = new()
                 {
                     { "screen_name", screenName },
                     { "screen_class", screenClass },
@@ -126,6 +126,12 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         {
             return this.screenManager.CurrentActiveScreen.Value != null ? this.screenManager.CurrentActiveScreen.Value.ScreenId : "null";
         }
+        
+        // Get class name of the current screen, used for analytics
+        private string GetScreenClass()
+        {
+            return this.screenManager.CurrentActiveScreen.Value != null ? this.screenManager.CurrentActiveScreen.Value.GetType().Name : "null";
+        }
 
         // mapping metadata event data by "item_type" param, value should be [virtual_currency_type] or "pack", "feature", "ads"
         private string GetItemType(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "item_type")?.ToString();
@@ -136,10 +142,13 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
         // mapping metadata event data by "source" param, value should be "iap" or "non_iap"
         private string GetSource(Dictionary<string, object> metadata) => this.GetMetadataValue(metadata, "source")?.ToString();
         
+        // mapping metadata event data by "flow_i" param, value should be "flow_i" or ""    
+        private string GetFlow(Dictionary<string, object> metadata) => metadata != null && metadata.TryGetValue("flow_i", out var flow) ? flow.ToString() : "";
+        
         public override IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata = null)
         {
             var levelData   = this.levelDataController.GetLevelData(level);
-            var startCount  = levelData.WinCount + levelData.LoseCount;
+            var startCount  = levelData.WinCount + levelData.LoseCount + 1;
             var isFirstPlay = levelData.WinCount == 0 && levelData.LoseCount == 0;
 
             this.IsInGame = true;
@@ -159,17 +168,17 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
 
         public override IEvent LevelLose(int level, int timeSpent, int loseCount, Dictionary<string, object> metadata = null)
         {
-            return this.EndLevel(timeSpent, false, "lose", "", this.levelDataController.GetLevelData(level));
+            return this.EndLevel(timeSpent, false, "lose", this.GetFlow(metadata), this.levelDataController.GetLevelData(level));
         }
 
         public override IEvent LevelWin(int level, int timeSpent, int winCount, Dictionary<string, object> metadata = null)
         {
-            return this.EndLevel(timeSpent, true, "", "", this.levelDataController.GetLevelData(level));
+            return this.EndLevel(timeSpent, true, "", this.GetFlow(metadata), this.levelDataController.GetLevelData(level));
         }
 
         public override IEvent LevelSkipped(int level, int timeSpent, Dictionary<string, object> metadata = null)
         {
-            return this.EndLevel(timeSpent, false, "skipped", "", this.levelDataController.GetLevelData(level));
+            return this.EndLevel(timeSpent, false, "skipped", this.GetFlow(metadata), this.levelDataController.GetLevelData(level));
         }
 
         public override IEvent FTUEStart(string ftueId, Dictionary<string, object> metadata)
@@ -180,7 +189,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
                 EventProperties = new ()
                 {
                     { "placement", ftueId },
-                    { "step", metadata },
+                    { "step", metadata.TryGetValue("step", out var step) ? step.ToString() : null },
                 }
             };
         }
@@ -193,7 +202,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
                 EventProperties = new ()
                 {
                     { "placement", completedId },
-                    { "step", metadata },
+                    { "step", metadata.TryGetValue("step", out var step) ? step.ToString() : null },
                 }
             };
         }
@@ -231,7 +240,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
                 {
                     { "mode", this.levelDataController.CurrentMode },
                     { "level", level.ToString() },
-                    { "phase", "" },
+                    { "phase", "1" },
                     { "location", this.Location },
                     { "placement", place },
                     { "item_type", this.GetItemType(metadata) },
@@ -282,6 +291,41 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.S
                 }
             };
         }
+        
+        public override IEvent ClickWidgetGame(string widgetId, Dictionary<string, object> metadata = null)
+        {
+            return new CustomEvent()
+            {
+                EventName = "click_icon_shortcut",
+                EventProperties = new ()
+                {
+                    { "shortcut", widgetId },
+                    { "mode", this.Location },
+                    { "level", this.GetScreen() },
+                    { "placement", this.GetItemType(metadata) }
+                }
+            };
+        }
+        
+        public override IEvent ShowPopupUI(string popupId, bool isAuto)
+        {
+            return new CustomEvent()
+            {
+                EventName = "show_ui",
+                EventProperties = new ()
+                {
+                    { "ui_name", popupId },
+                    { "ui_type", "popup" },
+                    { "ui_class", this.GetScreenClass() },
+                    { "open_by",  isAuto ? "auto" : "user" },
+                    { "screen", this.GetScreen() },
+                    { "placement", this.Location },
+                    { "mode", this.levelDataController.CurrentMode },
+                    { "level", this.levelDataController.CurrentLevel },
+                }
+            };
+        }
+
     }
 }
 #endif

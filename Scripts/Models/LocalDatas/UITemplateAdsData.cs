@@ -15,6 +15,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models
         [JsonProperty] [OdinSerialize] internal int          WatchedInterstitialAds         { get; set; }
         [JsonProperty] [OdinSerialize] internal int          WatchedRewardedAds             { get; set; }
         [JsonProperty] [OdinSerialize] internal List<double> InterstitialAndRewardedRevenue { get; set; } = new();
+        [JsonProperty] [OdinSerialize] internal DateTime     AdFreeTrialExpirationTime      { get; set; }
 
         public void Init() { }
 

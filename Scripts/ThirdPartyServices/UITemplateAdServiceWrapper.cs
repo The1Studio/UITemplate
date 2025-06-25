@@ -91,10 +91,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     IsResumedFromAnotherServices { get; set; } // after Ads, IAP, permission, login, etc.
         private bool     IsCheckedShowFirstOpen       { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen         { get; private set; }
-        private bool     IsShowingAOA                 { get; set; }
+        private bool     IsShowingAOA                 { get; set; } //Free Trial Ads
+        private bool     WasAdFreeTrialActive         { get; set; }
 
-        [Preserve]
-        public UITemplateAdServiceWrapper(
+        [Preserve] public UITemplateAdServiceWrapper(
             ILoggerManager                      loggerManager,
             AdServicesConfig                    adServicesConfig,
             SignalBus                           signalBus,
@@ -173,13 +173,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             //Permission
             this.signalBus.Subscribe<OnRequestPermissionStartSignal>(this.ShownAdInDifferentProcessHandler);
-            this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
-
-            //Preload ads service
+            this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler); //Preload ads service
             if (!this.IsRemovedAds)
             {
                 this.preloadAdService.LoadAdsInterval().Forget();
             }
+
+            // Initialize Free Trial Ads
+            this.InitializeAdFreeTrial();
         }
 
         private void OnOpenAOA(AppOpenFullScreenContentOpenedSignal obj)
@@ -470,8 +471,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             return this.adServices.Any(adService => adService.IsInterstitialAdReady(place));
         }
 
-        private int FirstInterstitialAdsDelayTime =>
-            this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
+        private int FirstInterstitialAdsDelayTime => this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
 
         private bool IsInterstitialAdEnable(string placement)
         {
@@ -510,10 +510,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.adServicesConfig.ShowNativeInterAfterInter)
             {
-                this.InternalShowInterstitialAd(place, _ =>
-                {
-                    this.signalBus.Fire(new ShowNativeInterAdsSignal(onShowInterstitialFinished));
-                }, force);
+                this.InternalShowInterstitialAd(place,
+                    _ =>
+                    {
+                        this.signalBus.Fire(new ShowNativeInterAdsSignal(onShowInterstitialFinished));
+                    },
+                    force);
             }
             else
             {
@@ -852,13 +854,105 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.bannerAdService.DestroyBannerAd();
         }
 
-        public bool IsRemovedAds => PlayerPrefs.HasKey(REMOVE_ADS_KEY);
+        public bool IsRemovedAds => PlayerPrefs.HasKey(REMOVE_ADS_KEY) || this.uiTemplateAdsController.IsAdFreeTrialActive();
+
+        #region Free Trial Ads
+
+        private void InitializeAdFreeTrial()
+
+        {
+            this.WasAdFreeTrialActive = this.uiTemplateAdsController.IsAdFreeTrialActive();
+
+            this.logger.Info($"InitializeAdFreeTrial: IsActive={this.WasAdFreeTrialActive}, ExpirationTime={this.uiTemplateAdsController.AdFreeTrialExpirationTime}");
+        }
+
+        private void CheckAdFreeTrialStatus()
+        {
+            var isCurrentlyActive = this.uiTemplateAdsController.IsAdFreeTrialActive();
+
+            // If trial was active and now expired, restore ads
+            if (this.WasAdFreeTrialActive && !isCurrentlyActive)
+            {
+                this.OnAdFreeTrialExpired();
+                this.WasAdFreeTrialActive = false;
+                this.logger.Info("Ad Free Trial expired - restoring ads");
+            }
+            // If trial just started
+            else if (!this.WasAdFreeTrialActive && isCurrentlyActive)
+            {
+                this.OnAdFreeTrialStarted();
+                this.WasAdFreeTrialActive = true;
+                this.logger.Info("Ad Free Trial started - disabling ads");
+            }
+        }
+
+        private void OnAdFreeTrialStarted()
+        {
+            this.HideAllAdsForFreeTrial();
+            this.signalBus.Fire(new UITemplateAdFreeTrialStartedSignal());
+        }
+
+        private void OnAdFreeTrialExpired()
+        {
+            this.RestoreAllAdsAfterFreeTrial();
+            this.signalBus.Fire(new UITemplateAdFreeTrialExpiredSignal());
+        }
+
+        private void HideAllAdsForFreeTrial()
+        {
+            if (this.IsShowBannerAd)
+            {
+                this.HideBannerAd();
+            }
+
+            if (this.IsShowMRECAd)
+            {
+                this.HideMREC(this.mrecPlacement, this.mrecPosition);
+            }
+
+            #if THEONE_COLLAPSIBLE_MREC
+                // Hide collapsible MREC
+                if (this.IsShowMRECAd && !string.IsNullOrEmpty(this.mrecPlacement))
+                {
+                    this.HideCollapsibleMREC(this.mrecPlacement);
+                }
+            #endif
+
+            this.nativeOverlayService.DestroyAll();
+
+            #if ADMOB_NATIVE_ADS
+                // Hide native collapse ads
+                this.HideNativeCollapse();
+            #endif
+
+            this.logger.Info("oneLog: HideAllAdsForFreeTrial completed");
+        }
+
+        private void RestoreAllAdsAfterFreeTrial()
+        {
+            if (PlayerPrefs.HasKey(REMOVE_ADS_KEY)) return;
+
+            if (this.ShouldShowBannerAds())
+            {
+                this.ShowBannerAd();
+            }
+            this.logger.Info("oneLog: RestoreAllAdsAfterFreeTrial completed");
+        }
+
+        public bool IsAdFreeTrialActive()
+        {
+            return this.uiTemplateAdsController.IsAdFreeTrialActive();
+        }
+
+        #endregion
 
         public void Tick()
         {
             if (Time.unscaledDeltaTime < 1) this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
 
             if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession) this.CheckShowFirstOpen();
+
+            this.CheckAdFreeTrialStatus();
         }
 
         public void RemoveAds()

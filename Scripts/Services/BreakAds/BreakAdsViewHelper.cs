@@ -51,11 +51,10 @@
                 this.Cts?.Cancel();
                 this.Cts = new();
                 await UniTask.Delay(TimeSpan.FromSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayCloseBreakAdsPopup), cancellationToken: this.Cts.Token);
-                this.BreakAdsPopupPresenter.CloseView();
             }
-            catch
+            finally
             {
-                // ignored
+                this.BreakAdsPopupPresenter.CloseView();
             }
         }
 

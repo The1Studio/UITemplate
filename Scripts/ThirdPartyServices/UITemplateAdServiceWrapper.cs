@@ -861,14 +861,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         {
             var isCurrentlyActive = this.uiTemplateAdsController.IsAdFreeTrialActive();
 
-            // If trial was active and now expired, restore ads
             if (this.WasAdFreeTrialActive && !isCurrentlyActive)
             {
                 this.OnAdFreeTrialExpired();
                 this.WasAdFreeTrialActive = false;
                 this.logger.Info("Ad Free Trial expired - restoring ads");
             }
-            // If trial just started
             else if (!this.WasAdFreeTrialActive && isCurrentlyActive)
             {
                 this.OnAdFreeTrialStarted();
@@ -928,11 +926,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.ShowBannerAd();
             }
             this.logger.Info("oneLog: RestoreAllAdsAfterFreeTrial completed");
-        }
-
-        public bool IsAdFreeTrialActive()
-        {
-            return this.uiTemplateAdsController.IsAdFreeTrialActive();
         }
 
         #endregion

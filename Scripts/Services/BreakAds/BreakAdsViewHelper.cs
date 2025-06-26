@@ -1,6 +1,5 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Services.BreakAds
 {
-    using System;
     using System.Threading;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
@@ -50,7 +49,7 @@
             {
                 this.Cts?.Cancel();
                 this.Cts = new();
-                await UniTask.Delay(TimeSpan.FromSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayCloseBreakAdsPopup), cancellationToken: this.Cts.Token);
+                await UniTask.WaitForSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayCloseBreakAdsPopup, true, cancellationToken: this.Cts.Token);
             }
             finally
             {

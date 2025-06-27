@@ -230,9 +230,6 @@ namespace TheOne.Tool.Localization
 
         [ShowInInspector, TabGroup("DynamicLocalized"), TableList]
         private List<TMPTextInfo> dynamicLocalizedTextInfos = new();
-
-        [MenuItem("TheOne/Localization")]
-        private static void OpenWindow() { GetWindow<TMPLocalization>().Show(); }
     }
 
     [Serializable]

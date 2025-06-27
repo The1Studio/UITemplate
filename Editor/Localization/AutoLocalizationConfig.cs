@@ -76,7 +76,7 @@ namespace TheOne.Tool.Localization
         [PropertyOrder(10)]
         public void TestOpenAIConnection()
         {
-            AutoLocalizationManager.TestOpenAIConnection(this);
+            AutoTranslationManager.TestOpenAIConnection(this);
         }
         
         [Button("Translate All Missing Entries", ButtonSizes.Large)]
@@ -84,7 +84,7 @@ namespace TheOne.Tool.Localization
         [PropertyOrder(11)]
         public void TranslateAllMissingEntries()
         {
-            AutoLocalizationManager.TranslateAllMissingEntries(this);
+            AutoTranslationManager.TranslateAllMissingEntries(this);
         }
     }
     

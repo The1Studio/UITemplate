@@ -13,7 +13,7 @@ using UnityEngine.Localization.Tables;
 
 namespace TheOne.Tool.Localization
 {
-    public static class AutoLocalizationManager
+    public static class AutoTranslationManager
     {
         private static readonly HttpClient httpClient = new HttpClient();
         
@@ -221,68 +221,6 @@ namespace TheOne.Tool.Localization
             
             dynamic result = JsonConvert.DeserializeObject(responseContent);
             return result.choices[0].message.content.ToString().Trim().Trim('"');
-        }
-        
-        /// <summary>
-        /// Add a new localization entry to all string table collections
-        /// </summary>
-        public static void AddLocalizationEntry(string key, string englishText)
-        {
-            try
-            {
-                var collections = LocalizationEditorSettings.GetStringTableCollections();
-                
-                if (collections.Count == 0)
-                {
-                    EditorUtility.DisplayDialog("No String Tables", "No String Table Collections found. Create one first.", "OK");
-                    return;
-                }
-                
-                // Use first collection or let user choose
-                var collection = collections[0];
-                if (collections.Count > 1)
-                {
-                    var options = collections.Select(c => c.name).ToArray();
-                    var selectedIndex = EditorUtility.DisplayDialogComplex("Select Collection", 
-                        "Which String Table Collection?", 
-                        options[0], options.Length > 1 ? options[1] : "Cancel", 
-                        options.Length > 2 ? "More..." : "Cancel");
-                    
-                    if (selectedIndex == 1 && collections.Count > 1)
-                        collection = collections[1];
-                    else if (selectedIndex == 2)
-                        return; // User cancelled or chose "More"
-                }
-                
-                // Check if key already exists
-                if (collection.SharedData.Contains(key))
-                {
-                    EditorUtility.DisplayDialog("Key Exists", $"Key '{key}' already exists in collection '{collection.name}'.", "OK");
-                    return;
-                }
-                
-                // Add shared entry
-                var sharedEntry = collection.SharedData.AddKey(key);
-                
-                // Add English text
-                var englishTable = collection.GetTable("en") as StringTable;
-                if (englishTable != null)
-                {
-                    englishTable.AddEntry(sharedEntry.Id, englishText);
-                    EditorUtility.SetDirty(englishTable);
-                }
-                
-                EditorUtility.SetDirty(collection.SharedData);
-                AssetDatabase.SaveAssets();
-                
-                Debug.Log($"✅ Added localization entry: '{key}' = '{englishText}'");
-                EditorUtility.DisplayDialog("Entry Added", $"✅ Added entry '{key}' to collection '{collection.name}'", "OK");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Failed to add localization entry: {e.Message}");
-                EditorUtility.DisplayDialog("Error", $"Failed to add entry: {e.Message}", "OK");
-            }
         }
         
         /// <summary>

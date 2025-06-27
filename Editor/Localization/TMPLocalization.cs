@@ -4,6 +4,7 @@ namespace TheOne.Tool.Localization
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Castle.DynamicProxy.Internal;
     using GameFoundation.Scripts.Utilities.Extension;
     using Sirenix.OdinInspector;
     using Sirenix.OdinInspector.Editor;
@@ -90,7 +91,7 @@ namespace TheOne.Tool.Localization
                     continue;
                 }
 
-                var fields = monoBehaviour.GetType().GetRecursiveFields();
+                var fields = monoBehaviour.GetType().GetAllFields();
 
                 foreach (var field in fields)
                 {
@@ -162,7 +163,7 @@ namespace TheOne.Tool.Localization
         public MonoBehaviour refMono;
         [ShowIf("IsDynamicLocalized")] [ShowInInspector, ReadOnly]
         public string fieldName;
-    
+
         [ShowInInspector, ReadOnly] public string DisplayText => this.tmpText.text;
 
         [ShowInInspector, ReadOnly] public TextMeshType TextType;

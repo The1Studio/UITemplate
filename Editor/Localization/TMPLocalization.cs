@@ -53,7 +53,7 @@ namespace TheOne.Tool.Localization
             this.noLocalizedTextInfos.Clear();
             this.staticLocalizedTextInfos.Clear();
             this.dynamicLocalizedTextInfos.Clear();
-            
+
             // Get string table collection and table
             this.selectedCollection = LocalizationEditorSettings.GetStringTableCollection(Instance.StringTableName);
             if (this.selectedCollection == null)
@@ -61,7 +61,7 @@ namespace TheOne.Tool.Localization
                 Debug.LogError($"String table collection '{Instance.StringTableName}' not found!");
                 return;
             }
-            
+
             this.stringTable = LocalizationSettings.StringDatabase.GetTableAsync(Instance.StringTableName).Result;
 
             var gameObjects = AssetSearcher.GetAllAssetInAddressable<GameObject>().Keys;
@@ -155,6 +155,69 @@ namespace TheOne.Tool.Localization
             }
         }
 
+        [HorizontalGroup("Action Group")]
+        [Button("Add All Entry Keys")]
+        [GUIColor(0.0f, 0.7f, 1.0f)]
+        private void AddAllStaticEntryKeys()
+        {
+            // Ensure we have the string table collection
+            if (this.selectedCollection == null)
+            {
+                this.selectedCollection = LocalizationEditorSettings.GetStringTableCollection(Instance.StringTableName);
+            }
+
+            if (this.selectedCollection == null)
+            {
+                Debug.LogError($"Could not find string table collection: {Instance.StringTableName}");
+                return;
+            }
+
+            var staticLocalizedInfos = this.staticLocalizedTextInfos.ToList();
+            int addedCount = 0;
+
+            foreach (var textInfo in staticLocalizedInfos)
+            {
+                if (textInfo.DisplayText.Any(char.IsLetter))
+                {
+                    var textValue = textInfo.DisplayText;
+
+                    // Check if entry already exists
+                    var existingEntry = this.selectedCollection.SharedData.GetEntry(textValue);
+                    if (existingEntry == null)
+                    {
+                        // Add new entry
+                        var entry = this.selectedCollection.SharedData.AddKey(textValue);
+                        if (entry != null)
+                        {
+                            // Add the entry to all locale tables in the collection
+                            foreach (var table in this.selectedCollection.StringTables)
+                            {
+                                if (table != null)
+                                {
+                                    var tableEntry = table.AddEntry(entry.Key, textValue);
+                                    if (tableEntry != null)
+                                    {
+                                        EditorUtility.SetDirty(table);
+                                    }
+                                }
+                            }
+                            addedCount++;
+                        }
+                    }
+                }
+            }
+
+            if (addedCount > 0)
+            {
+                EditorUtility.SetDirty(this.selectedCollection.SharedData);
+                AssetDatabase.SaveAssets();
+                Debug.Log($"Added {addedCount} entry keys to string table collection.");
+            }
+            else
+            {
+                Debug.Log("No new entry keys were added. All entries may already exist.");
+            }
+        }
         public List<TMPTextInfo> NoLocalizedTextInfos      => this.noLocalizedTextInfos;
         public List<TMPTextInfo> StaticLocalizedTextInfos  => this.staticLocalizedTextInfos;
         public List<TMPTextInfo> DynamicLocalizedTextInfos => this.dynamicLocalizedTextInfos;
@@ -242,39 +305,56 @@ namespace TheOne.Tool.Localization
                 {
                     localizeStringEvent = tmpGo.AddComponent<LocalizeStringEvent>();
                 }
-                
+
                 localizeStringEvent.SetTable(TMPLocalization.Instance.StringTableName);
                 var textValue = this.tmpText.text;
-                
+
                 // Ensure we have the string table collection
                 if (TMPLocalization.Instance.selectedCollection == null)
                 {
                     TMPLocalization.Instance.selectedCollection = LocalizationEditorSettings.GetStringTableCollection(TMPLocalization.Instance.StringTableName);
                 }
-                
+
                 if (TMPLocalization.Instance.selectedCollection != null)
                 {
-                    // Use the collection to add entry
-                    var entry = TMPLocalization.Instance.selectedCollection.SharedData.AddKey(textValue);
-                    if (entry != null)
+                    // Check if entry already exists, if not add it
+                    var existingEntry = TMPLocalization.Instance.selectedCollection.SharedData.GetEntry(textValue);
+                    string entryKey;
+
+                    if (existingEntry != null)
                     {
-                        // Add the entry to all locale tables in the collection
-                        foreach (var table in TMPLocalization.Instance.selectedCollection.StringTables)
+                        entryKey = existingEntry.Key;
+                    }
+                    else
+                    {
+                        // Add new entry
+                        var entry = TMPLocalization.Instance.selectedCollection.SharedData.AddKey(textValue);
+                        if (entry != null)
                         {
-                            if (table != null)
+                            entryKey = entry.Key;
+                            // Add the entry to all locale tables in the collection
+                            foreach (var table in TMPLocalization.Instance.selectedCollection.StringTables)
                             {
-                                var tableEntry = table.AddEntry(entry.Key, textValue);
-                                if (tableEntry != null)
+                                if (table != null)
                                 {
-                                    EditorUtility.SetDirty(table);
+                                    var tableEntry = table.AddEntry(entry.Key, textValue);
+                                    if (tableEntry != null)
+                                    {
+                                        EditorUtility.SetDirty(table);
+                                    }
                                 }
                             }
+                            EditorUtility.SetDirty(TMPLocalization.Instance.selectedCollection.SharedData);
+                            AssetDatabase.SaveAssets();
                         }
-                        
-                        localizeStringEvent.SetEntry(entry.Key);
-                        EditorUtility.SetDirty(TMPLocalization.Instance.selectedCollection.SharedData);
-                        AssetDatabase.SaveAssets();
+                        else
+                        {
+                            Debug.LogError($"Failed to add entry key for text: {textValue}");
+                            return;
+                        }
                     }
+
+                    localizeStringEvent.SetEntry(entryKey);
                 }
                 else
                 {
@@ -288,6 +368,46 @@ namespace TheOne.Tool.Localization
         [GUIColor(1.0f, 0.5f, 0.0f)]
         [ButtonGroup("Action")]
         public void MakeThisDynamic() { this.UpdatePrefab(_ => { }, TMPLocalization.Instance.DynamicLocalizedTextInfos); }
+
+        public void SetupLocalizeStringEvent()
+        {
+            this.UpdatePrefab((tmpGo) =>
+            {
+                var localizeStringEvent = tmpGo.GetComponent<LocalizeStringEvent>();
+                if (localizeStringEvent == null)
+                {
+                    localizeStringEvent = tmpGo.AddComponent<LocalizeStringEvent>();
+                }
+
+                localizeStringEvent.SetTable(TMPLocalization.Instance.StringTableName);
+                var textValue = this.tmpText.text;
+
+                // Ensure we have the string table collection
+                if (TMPLocalization.Instance.selectedCollection == null)
+                {
+                    TMPLocalization.Instance.selectedCollection = LocalizationEditorSettings.GetStringTableCollection(TMPLocalization.Instance.StringTableName);
+                }
+
+                if (TMPLocalization.Instance.selectedCollection != null)
+                {
+                    // Find existing entry by text value
+                    var existingEntry = TMPLocalization.Instance.selectedCollection.SharedData.GetEntry(textValue);
+                    if (existingEntry != null)
+                    {
+                        localizeStringEvent.SetEntry(existingEntry.Key);
+                        Debug.Log($"Set entry key '{existingEntry.Key}' for text: {textValue}");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Entry not found for text: {textValue}. Please add entry key first.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Could not find string table collection: {TMPLocalization.Instance.StringTableName}");
+                }
+            }, TMPLocalization.Instance.StaticLocalizedTextInfos);
+        }
 
         private bool IsDynamicLocalized() { return this.TextType == TextMeshType.DynamicLocalized; }
 
@@ -309,6 +429,7 @@ namespace TheOne.Tool.Localization
             this.RemoveElementFromList();
             newList.Add(this);
 
+            Object.DestroyImmediate(prefabInstance);
             Object.DestroyImmediate(prefabInstance);
 
             if (newList == TMPLocalization.Instance.StaticLocalizedTextInfos)

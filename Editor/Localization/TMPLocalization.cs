@@ -16,6 +16,7 @@ namespace TheOne.Tool.Localization
     using UnityEngine.Localization.Components;
     using UnityEngine.Localization.Settings;
     using UnityEngine.Localization.Tables;
+    using UnityEditor.Localization;
     using Object = UnityEngine.Object;
 
     public enum TextMeshType
@@ -31,8 +32,17 @@ namespace TheOne.Tool.Localization
 
         private void OnEnable() { Instance = this; }
 
+        [ValueDropdown("GetStringTableNames")]
         public string      StringTableName = "StringLocalizationAssets";
+
         public StringTable stringTable;
+        public StringTableCollection selectedCollection;
+
+        private IEnumerable<string> GetStringTableNames()
+        {
+            var stringTableCollections = LocalizationEditorSettings.GetStringTableCollections();
+            return stringTableCollections.Select(collection => collection.TableCollectionName);
+        }
 
         [HorizontalGroup("Action Group")]
         [Button("Search TMP in Addressable")]
@@ -43,6 +53,15 @@ namespace TheOne.Tool.Localization
             this.noLocalizedTextInfos.Clear();
             this.staticLocalizedTextInfos.Clear();
             this.dynamicLocalizedTextInfos.Clear();
+            
+            // Get string table collection and table
+            this.selectedCollection = LocalizationEditorSettings.GetStringTableCollection(Instance.StringTableName);
+            if (this.selectedCollection == null)
+            {
+                Debug.LogError($"String table collection '{Instance.StringTableName}' not found!");
+                return;
+            }
+            
             this.stringTable = LocalizationSettings.StringDatabase.GetTableAsync(Instance.StringTableName).Result;
 
             var gameObjects = AssetSearcher.GetAllAssetInAddressable<GameObject>().Keys;
@@ -219,10 +238,48 @@ namespace TheOne.Tool.Localization
             this.UpdatePrefab((tmpGo) =>
             {
                 var localizeStringEvent = tmpGo.GetComponent<LocalizeStringEvent>();
+                if (localizeStringEvent == null)
+                {
+                    localizeStringEvent = tmpGo.AddComponent<LocalizeStringEvent>();
+                }
+                
                 localizeStringEvent.SetTable(TMPLocalization.Instance.StringTableName);
                 var textValue = this.tmpText.text;
-                TMPLocalization.Instance.stringTable.AddEntry(textValue, textValue);
-                localizeStringEvent.SetEntry(textValue);
+                
+                // Ensure we have the string table collection
+                if (TMPLocalization.Instance.selectedCollection == null)
+                {
+                    TMPLocalization.Instance.selectedCollection = LocalizationEditorSettings.GetStringTableCollection(TMPLocalization.Instance.StringTableName);
+                }
+                
+                if (TMPLocalization.Instance.selectedCollection != null)
+                {
+                    // Use the collection to add entry
+                    var entry = TMPLocalization.Instance.selectedCollection.SharedData.AddKey(textValue);
+                    if (entry != null)
+                    {
+                        // Add the entry to all locale tables in the collection
+                        foreach (var table in TMPLocalization.Instance.selectedCollection.StringTables)
+                        {
+                            if (table != null)
+                            {
+                                var tableEntry = table.AddEntry(entry.Key, textValue);
+                                if (tableEntry != null)
+                                {
+                                    EditorUtility.SetDirty(table);
+                                }
+                            }
+                        }
+                        
+                        localizeStringEvent.SetEntry(entry.Key);
+                        EditorUtility.SetDirty(TMPLocalization.Instance.selectedCollection.SharedData);
+                        AssetDatabase.SaveAssets();
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Could not find string table collection: {TMPLocalization.Instance.StringTableName}");
+                }
             }, TMPLocalization.Instance.StaticLocalizedTextInfos);
         }
 

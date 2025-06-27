@@ -9,7 +9,9 @@
     "Unity.Localization",
     "Unity.TextMeshPro",
     "Unity.ResourceManager",
-    "UITemplate.Scripts"
+    "UITemplate.Scripts",
+    "Unity.Localization.Editor"
+
   ],
   "includePlatforms": [
     "Editor"

@@ -73,7 +73,7 @@
             await this.CheckPermission();
             this.RegisterNotification();
             this.CheckOpenedByNotification();
-            #if LOCALIZATION
+            #if THEONE_LOCALIZATION
             UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += this.OnLanguageChange;
             #endif
             this.IsInitialized = true;
@@ -81,12 +81,12 @@
 
         public void Dispose()
         {
-            #if LOCALIZATION
+            #if THEONE_LOCALIZATION
             UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= this.OnLanguageChange;
             #endif
         }
 
-        #if LOCALIZATION
+        #if THEONE_LOCALIZATION
         private void OnLanguageChange(UnityEngine.Localization.Locale obj) { this.SetUpNotification(); }
         #endif
 

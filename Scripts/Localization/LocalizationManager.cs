@@ -12,27 +12,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     /// Main service for managing language changes and localization
     /// Use this service to change language in your game
     /// </summary>
-    [Preserve]
-    public class LocalizationManager : IInitializable
+    [Preserve] public class LocalizationManager : IInitializable
     {
-        private readonly SignalBus signalBus;
-        private readonly UnityStringTableLocalizationProvider localizationProvider;
+        private readonly SignalBus                       signalBus;
+        private readonly BlueprintLocalizationService    blueprintLocalizationService;
+        private readonly StringTableLocalizationProvider localizationProvider;
 
-        [Preserve]
-        public LocalizationManager(SignalBus signalBus, UnityStringTableLocalizationProvider localizationProvider)
+        [Preserve] public LocalizationManager(
+            SignalBus                       signalBus,
+            BlueprintLocalizationService    blueprintLocalizationService,
+            StringTableLocalizationProvider localizationProvider
+        )
         {
-            this.signalBus = signalBus;
-            this.localizationProvider = localizationProvider;
+            this.signalBus                    = signalBus;
+            this.blueprintLocalizationService = blueprintLocalizationService;
+            this.localizationProvider         = localizationProvider;
         }
 
-        /// <summary>
-        /// Gets the current language code
-        /// </summary>
         public string CurrentLanguage => this.localizationProvider.CurrentLanguage;
 
-        /// <summary>
-        /// Gets available language codes
-        /// </summary>
         public System.Collections.Generic.IReadOnlyList<string> AvailableLanguages => this.localizationProvider.AvailableLanguages;
 
         public void Initialize()
@@ -45,7 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         /// This will trigger localization of all blueprint fields marked with [LocalizableField]
         /// </summary>
         /// <param name="languageCode">Language code to change to (e.g., "en", "vi", "zh")</param>
-        public async UniTask ChangeLanguageAsync(string languageCode)
+        public void ChangeLanguage(string languageCode)
         {
             if (string.IsNullOrEmpty(languageCode))
             {
@@ -63,26 +61,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
             try
             {
-                Debug.Log($"[LocalizationManager] Changing language from {oldLanguage} to {languageCode}");
+                this.localizationProvider.SetLanguage(languageCode);
+                this.blueprintLocalizationService.LocalizeAllBlueprintFields().Forget();
 
-                // Fire changing signal
-                this.signalBus.Fire(new LanguageChangingSignal
-                {
-                    NewLanguage = languageCode,
-                    CurrentLanguage = oldLanguage
-                });
-
-                // Load new language data
-                await this.localizationProvider.LoadLanguageAsync(languageCode);
-
-                // Fire changed signal - this will trigger blueprint localization
                 this.signalBus.Fire(new LanguageChangedSignal
                 {
                     NewLanguage = languageCode,
                     OldLanguage = oldLanguage
                 });
-
-                Debug.Log($"[LocalizationManager] Successfully changed language to: {languageCode}");
             }
             catch (Exception ex)
             {
@@ -109,7 +95,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         /// <param name="languageCode">Language code to set</param>
         public void SetLanguage(string languageCode)
         {
-            this.ChangeLanguageAsync(languageCode).Forget();
+            this.ChangeLanguage(languageCode);
         }
     }
 }

@@ -10,23 +10,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     /// </summary>
     public static class LocalizationVContainer
     {
-        /// <summary>
-        /// Register localization services with Unity String Table provider
-        /// </summary>
-        /// <param name="builder">Container builder</param>
         public static void RegisterLocalization(this IContainerBuilder builder)
         {
-            // Register Unity string table localization provider
-            builder.Register<UnityStringTableLocalizationProvider>(Lifetime.Singleton);
-            
-            // Register localization manager (main API)
-            builder.Register<LocalizationManager>(Lifetime.Singleton).AsImplementedInterfaces();
-            
-            // Register blueprint localization service
+            builder.Register<StringTableLocalizationProvider>(Lifetime.Singleton);
+
             builder.Register<BlueprintLocalizationService>(Lifetime.Singleton).AsImplementedInterfaces();
-            
-            // Register localization signals
-            builder.DeclareSignal<LanguageChangingSignal>();
+            builder.Register<LocalizationManager>(Lifetime.Singleton).AsImplementedInterfaces();
+
             builder.DeclareSignal<LanguageChangedSignal>();
             builder.DeclareSignal<BlueprintLocalizationCompletedSignal>();
         }

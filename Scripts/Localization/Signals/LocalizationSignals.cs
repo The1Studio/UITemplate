@@ -12,15 +12,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization.Signals
     }
 
     /// <summary>
-    /// Signal fired before language change starts
-    /// </summary>
-    public class LanguageChangingSignal
-    {
-        public string NewLanguage { get; set; }
-        public string CurrentLanguage { get; set; }
-    }
-
-    /// <summary>
     /// Signal fired when blueprint localization is completed
     /// </summary>
     public class BlueprintLocalizationCompletedSignal

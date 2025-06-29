@@ -20,39 +20,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     /// </summary>
     public class BlueprintLocalizationService : IInitializable, IDisposable
     {
-        private readonly SignalBus signalBus;
-        private readonly UnityStringTableLocalizationProvider localizationProvider;
-        private readonly BlueprintReaderManager blueprintReaderManager;
-        private readonly ILogger logger;
+        private readonly SignalBus                            signalBus;
+        private readonly StringTableLocalizationProvider localizationProvider;
+        private readonly IEnumerable<IGenericBlueprintReader> blueprints;
+        private readonly ILogger                              logger;
 
         // Cache original values before localization
         private readonly Dictionary<object, Dictionary<string, string>> originalValuesCache;
 
         [Preserve]
         public BlueprintLocalizationService(
-            SignalBus signalBus,
-            UnityStringTableLocalizationProvider localizationProvider,
-            BlueprintReaderManager blueprintReaderManager,
-            ILoggerManager loggerManager)
+            SignalBus                            signalBus,
+            StringTableLocalizationProvider localizationProvider,
+            IEnumerable<IGenericBlueprintReader> blueprints,
+            ILoggerManager                       loggerManager)
         {
-            this.signalBus = signalBus;
+            this.signalBus            = signalBus;
             this.localizationProvider = localizationProvider;
-            this.blueprintReaderManager = blueprintReaderManager;
-            this.logger = loggerManager.GetLogger(this);
-            this.originalValuesCache = new Dictionary<object, Dictionary<string, string>>();
+            this.blueprints           = blueprints;
+            this.logger               = loggerManager.GetLogger(this);
+            this.originalValuesCache  = new Dictionary<object, Dictionary<string, string>>();
         }
 
         public void Initialize()
         {
-            this.logger?.Info("Initializing Blueprint Localization Service");
-
-            // Subscribe to language change signals
-            this.signalBus.Subscribe<LanguageChangedSignal>(this.OnLanguageChanged);
-
-            // Cache original values from all blueprints
             this.CacheOriginalValues();
-
-            this.logger?.Info("Blueprint Localization Service initialized");
         }
 
         public void Dispose()
@@ -61,69 +53,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             this.originalValuesCache.Clear();
         }
 
-        /// <summary>
-        /// Change language and localize all blueprint fields
-        /// </summary>
-        /// <param name="languageCode">Target language code</param>
-        public async UniTask ChangeLanguageAsync(string languageCode)
-        {
-            if (string.IsNullOrEmpty(languageCode))
-            {
-                this.logger?.Error("Language code cannot be null or empty");
-                return;
-            }
-
-            var oldLanguage = this.localizationProvider.CurrentLanguage;
-
-            this.logger?.Info($"Changing language from '{oldLanguage}' to '{languageCode}'");
-
-            // Fire language changing signal
-            this.signalBus.Fire(new LanguageChangingSignal
-            {
-                NewLanguage = languageCode,
-                CurrentLanguage = oldLanguage
-            });
-
-            try
-            {
-                // Load new language data
-                await this.localizationProvider.LoadLanguageAsync(languageCode);
-
-                // Localize all blueprint fields
-                var localizedCount = await this.LocalizeAllBlueprintFields();
-
-                // Fire language changed signal
-                this.signalBus.Fire(new LanguageChangedSignal
-                {
-                    NewLanguage = languageCode,
-                    OldLanguage = oldLanguage
-                });
-
-                // Fire localization completed signal
-                this.signalBus.Fire(new BlueprintLocalizationCompletedSignal
-                {
-                    Language = languageCode,
-                    LocalizedFieldsCount = localizedCount.fieldsCount,
-                    BlueprintCount = localizedCount.blueprintCount
-                });
-
-                this.logger?.Info($"Language changed successfully. Localized {localizedCount.fieldsCount} fields in {localizedCount.blueprintCount} blueprints");
-            }
-            catch (Exception ex)
-            {
-                this.logger?.Error($"Failed to change language to '{languageCode}'");
-                this.logger?.Exception(ex);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Handle language changed signal
-        /// </summary>
         private async void OnLanguageChanged(LanguageChangedSignal signal)
         {
-            // This is called after language has already been changed
-            // We can add additional logic here if needed
             this.logger?.Info($"Language changed signal received: {signal.OldLanguage} -> {signal.NewLanguage}");
         }
 
@@ -132,12 +63,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         /// </summary>
         private void CacheOriginalValues()
         {
-            this.logger?.Info("Caching original values from blueprints");
-
-            var blueprints = this.GetAllBlueprintReaders();
             var cachedCount = 0;
 
-            foreach (var blueprint in blueprints)
+            foreach (var blueprint in this.blueprints)
             {
                 var fieldsData = this.GetLocalizableFieldsData(blueprint);
 
@@ -154,14 +82,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         /// <summary>
         /// Localize all fields in all blueprint readers
         /// </summary>
-        private async UniTask<(int fieldsCount, int blueprintCount)> LocalizeAllBlueprintFields()
+        public async UniTask LocalizeAllBlueprintFields()
         {
             var totalFieldsCount = 0;
             var blueprintCount = 0;
 
-            var blueprints = this.GetAllBlueprintReaders();
-
-            foreach (var blueprint in blueprints)
+            foreach (var blueprint in this.blueprints)
             {
                 var localizedFields = await this.LocalizeBlueprintFields(blueprint);
                 if (localizedFields > 0)
@@ -170,8 +96,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
                     blueprintCount++;
                 }
             }
-
-            return (totalFieldsCount, blueprintCount);
+            this.logger?.Info($"Localized {totalFieldsCount} fields in {blueprintCount} blueprints");
         }
 
         /// <summary>
@@ -218,7 +143,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             var valuesProperty = blueprintType.GetProperty("Values");
             if (valuesProperty == null) return 0;
 
-            var records = valuesProperty.GetValue(blueprint) as System.Collections.IEnumerable;
+            var records = valuesProperty.GetValue(blueprint) as IEnumerable;
             if (records == null) return 0;
 
             foreach (var record in records)
@@ -282,13 +207,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             if (string.IsNullOrEmpty(originalValue)) return false;
 
             // Determine localization key
-            var localizationKey = !string.IsNullOrEmpty(attribute.LocalizationKey)
-                ? attribute.LocalizationKey
-                : originalValue; // Use original value as key
+            var localizationKey = originalValue; // Use original value as key
 
             // Get localized value
             var localizedValue = this.localizationProvider.GetLocalizedText(localizationKey);
-            
+
             // Use original value as fallback if localization not found
             if (localizedValue == localizationKey)
             {
@@ -382,24 +305,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         {
             return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.GetCustomAttribute<LocalizableFieldAttribute>() != null);
-        }
-
-        /// <summary>
-        /// Get all blueprint readers from the manager
-        /// </summary>
-        private IEnumerable<IGenericBlueprintReader> GetAllBlueprintReaders()
-        {
-            // Use reflection to get the blueprints field from BlueprintReaderManager
-            var blueprintsField = typeof(BlueprintReaderManager)
-                .GetField("blueprints", BindingFlags.NonPublic | BindingFlags.Instance);
-
-            if (blueprintsField?.GetValue(this.blueprintReaderManager) is IEnumerable<IGenericBlueprintReader> blueprints)
-            {
-                return blueprints;
-            }
-
-            this.logger?.Warning("Could not access blueprints from BlueprintReaderManager");
-            return Enumerable.Empty<IGenericBlueprintReader>();
         }
 
         private static bool IsGenericBlueprintByRow(Type type)

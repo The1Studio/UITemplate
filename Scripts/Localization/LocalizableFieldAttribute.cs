@@ -3,28 +3,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     using System;
 
     /// <summary>
-    /// Attribute to mark fields that should be localized
+    /// Attribute to mark blueprint fields for automatic localization.
+    /// Fields marked with this attribute will be automatically updated when language changes.
+    /// The localization key will be derived from the property name.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class LocalizableFieldAttribute : Attribute
     {
-        /// <summary>
-        /// Optional localization key. If not provided, will use the field name or original value as key
-        /// </summary>
-        public string LocalizationKey { get; }
-
-        /// <summary>
-        /// Default constructor - uses field name as localization key
-        /// </summary>
-        public LocalizableFieldAttribute() { }
-
-        /// <summary>
-        /// Constructor with custom localization key
-        /// </summary>
-        /// <param name="localizationKey">Custom key for localization</param>
-        public LocalizableFieldAttribute(string localizationKey)
-        {
-            this.LocalizationKey = localizationKey;
-        }
+        // Simple attribute without any parameters
+        // The property/field name will be used as the localization key
     }
 }

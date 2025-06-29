@@ -19,6 +19,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.Configs.Ads;
     using TheOne.Logging;
+    using TheOneStudio.UITemplate.Localization;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
@@ -210,6 +211,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return this.TrackProgress(this.userDataManager.LoadUserData());
         }
 
+        private UniTask LoadLocalizedFields()
+        {
+            this.blueprintLocalizationManager.LoadAllLocalizedFields();
+
+            return UniTask.CompletedTask;
+        }
+
         private UniTask WaitForAoa()
         {
             var startWaitingAoaTime = DateTime.Now;
@@ -246,6 +254,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         protected virtual UniTask OnBlueprintAndUserDataLoaded()
         {
+            this.LoadLocalizedFields();
             return UniTask.CompletedTask;
         }
 
@@ -308,20 +317,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         #region Inject
 
-        protected readonly UITemplateAdServiceWrapper adService;
-        protected readonly BlueprintReaderManager     blueprintManager;
-        protected readonly UserDataManager            userDataManager;
-        protected readonly IGameAssets                gameAssets;
-        private readonly   ObjectPoolManager          objectPoolManager;
-        private readonly   UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
-        private readonly   IAnalyticServices          analyticServices;
-        private readonly   IConsentInformation        consentInformation;
+        protected readonly UITemplateAdServiceWrapper   adService;
+        private readonly   BlueprintLocalizationManager blueprintLocalizationManager;
+        protected readonly BlueprintReaderManager       blueprintManager;
+        protected readonly UserDataManager              userDataManager;
+        protected readonly IGameAssets                  gameAssets;
+        private readonly   ObjectPoolManager            objectPoolManager;
+        private readonly   UITemplateAdServiceWrapper   uiTemplateAdServiceWrapper;
+        private readonly   IAnalyticServices            analyticServices;
+        private readonly   IConsentInformation          consentInformation;
 
         [Preserve]
         protected UITemplateLoadingScreenPresenter(
             SignalBus                  signalBus,
             ILoggerManager             loggerManager,
             UITemplateAdServiceWrapper adService,
+            BlueprintLocalizationManager blueprintLocalizationManager,
             BlueprintReaderManager     blueprintManager,
             UserDataManager            userDataManager,
             IGameAssets                gameAssets,
@@ -331,14 +342,15 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             IConsentInformation        consentInformation
         ) : base(signalBus, loggerManager)
         {
-            this.adService                  = adService;
-            this.blueprintManager           = blueprintManager;
-            this.userDataManager            = userDataManager;
-            this.gameAssets                 = gameAssets;
-            this.objectPoolManager          = objectPoolManager;
-            this.uiTemplateAdServiceWrapper = uiTemplateAdServiceWrapper;
-            this.analyticServices           = analyticServices;
-            this.consentInformation         = consentInformation;
+            this.adService                    = adService;
+            this.blueprintLocalizationManager = blueprintLocalizationManager;
+            this.blueprintManager             = blueprintManager;
+            this.userDataManager              = userDataManager;
+            this.gameAssets                   = gameAssets;
+            this.objectPoolManager            = objectPoolManager;
+            this.uiTemplateAdServiceWrapper   = uiTemplateAdServiceWrapper;
+            this.analyticServices             = analyticServices;
+            this.consentInformation           = consentInformation;
         }
 
         #endregion

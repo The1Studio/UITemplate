@@ -9,6 +9,7 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.Notification;
     using TheOneStudio.Permission;
     using TheOneStudio.StoreRating;
+    using TheOneStudio.UITemplate.Localization;
     using TheOneStudio.UITemplate.UITemplate.Creative.Cheat;
     using TheOneStudio.UITemplate.UITemplate.Scenes.BadgeNotify;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Main.CollectionNew;
@@ -34,6 +35,7 @@ namespace TheOneStudio.UITemplate
             builder.RegisterUITemplateAdsService();
             builder.RegisterUITemplateThirdPartyServices();
 
+            builder.RegisterLocalization();
             builder.RegisterUITemplateLocalData();
             builder.RegisterUITemplateServices(rootTransform, toastControllerPrefab);
             builder.RegisterUITemplateDailyReward();

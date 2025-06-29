@@ -11,13 +11,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization.Signals
         public string OldLanguage { get; set; }
     }
 
-    /// <summary>
-    /// Signal fired when blueprint localization is completed
-    /// </summary>
-    public class BlueprintLocalizationCompletedSignal
-    {
-        public string Language { get; set; }
-        public int LocalizedFieldsCount { get; set; }
-        public int BlueprintCount { get; set; }
-    }
 }

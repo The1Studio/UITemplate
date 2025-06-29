@@ -18,11 +18,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         public string CurrentLanguage => this.currentLanguage;
         public string TableName       => this.tableName;
 
-        [Preserve] public StringTableLocalizationProvider(ILoggerManager loggerManager, string tableName = "Game")
+        [Preserve] public StringTableLocalizationProvider(ILoggerManager loggerManager)
         {
             this.logger          = loggerManager.GetLogger(this);
             this.currentLanguage = "en"; // Default language
-            this.tableName       = tableName;
+            this.tableName       = "Game";
         }
 
         public void SetLanguage(string languageCode)

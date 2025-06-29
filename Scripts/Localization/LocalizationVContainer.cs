@@ -12,10 +12,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     {
         public static void RegisterLocalization(this IContainerBuilder builder)
         {
-            builder.Register<StringTableLocalizationProvider>(Lifetime.Singleton);
+            builder.Register<StringTableLocalizationProvider>(Lifetime.Singleton).AsSelf();
 
-            builder.Register<BlueprintLocalizationService>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<LocalizationManager>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<BlueprintLocalizationService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<LocalizationManager>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             builder.DeclareSignal<LanguageChangedSignal>();
         }

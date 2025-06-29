@@ -12,7 +12,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     /// Main service for managing language changes and localization
     /// Use this service to change language in your game
     /// </summary>
-    [Preserve] public class LocalizationManager : IInitializable
+    [Preserve] public class LocalizationManager
     {
         private readonly SignalBus                       signalBus;
         private readonly BlueprintLocalizationService    blueprintLocalizationService;
@@ -33,17 +33,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
         public System.Collections.Generic.IReadOnlyList<string> AvailableLanguages => this.localizationProvider.AvailableLanguages;
 
-        public void Initialize()
-        {
-            Debug.Log($"[LocalizationManager] Initialized with language: {this.CurrentLanguage}");
-        }
 
         /// <summary>
         /// Changes the current language
         /// This will trigger localization of all blueprint fields marked with [LocalizableField]
         /// </summary>
         /// <param name="languageCode">Language code to change to (e.g., "en", "vi", "zh")</param>
-        public void ChangeLanguage(string languageCode)
+        public async UniTask ChangeLanguageAsync(string languageCode)
         {
             if (string.IsNullOrEmpty(languageCode))
             {
@@ -62,7 +58,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             try
             {
                 this.localizationProvider.SetLanguage(languageCode);
-                this.blueprintLocalizationService.LocalizeAllBlueprintFields().Forget();
+                await this.blueprintLocalizationService.LocalizeAllBlueprintFields();
 
                 this.signalBus.Fire(new LanguageChangedSignal
                 {
@@ -87,15 +83,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         {
             var result = this.localizationProvider.GetLocalizedText(key);
             return result == key && !string.IsNullOrEmpty(fallback) ? fallback : result;
-        }
-
-        /// <summary>
-        /// Convenience method to set language synchronously (calls async method)
-        /// </summary>
-        /// <param name="languageCode">Language code to set</param>
-        public void SetLanguage(string languageCode)
-        {
-            this.ChangeLanguage(languageCode);
         }
     }
 }

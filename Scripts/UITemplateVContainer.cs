@@ -17,6 +17,7 @@ namespace TheOneStudio.UITemplate
     using TheOneStudio.UITemplate.UITemplate.Services;
     using TheOneStudio.UITemplate.UITemplate.Services.BreakAds;
     using TheOneStudio.UITemplate.UITemplate.Services.Toast;
+    using TheOneStudio.UITemplate.UITemplate.Localization;
     using UnityEngine;
     using VContainer;
     using VContainer.Unity;
@@ -35,6 +36,7 @@ namespace TheOneStudio.UITemplate
             builder.RegisterUITemplateThirdPartyServices();
 
             builder.RegisterUITemplateLocalData();
+            builder.RegisterLocalization();
             builder.RegisterUITemplateServices(rootTransform, toastControllerPrefab);
             builder.RegisterUITemplateDailyReward();
             builder.RegisterNotificationService();

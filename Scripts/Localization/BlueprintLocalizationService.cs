@@ -49,13 +49,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
         public void Dispose()
         {
-            this.signalBus?.Unsubscribe<LanguageChangedSignal>(this.OnLanguageChanged);
             this.originalValuesCache.Clear();
-        }
-
-        private async void OnLanguageChanged(LanguageChangedSignal signal)
-        {
-            this.logger?.Info($"Language changed signal received: {signal.OldLanguage} -> {signal.NewLanguage}");
         }
 
         /// <summary>

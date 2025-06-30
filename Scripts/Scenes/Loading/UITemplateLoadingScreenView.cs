@@ -126,9 +126,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 this.WaitForAoa(),
                 #endif
                 UniTask.WhenAll(
-                    this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
-                    this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
-                ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
+                        this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
+                        this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
+                    ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
+                    .ContinueWith(this.OnLocalizedBlueprints)
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene).Forget();
 
             return UniTask.CompletedTask;
@@ -245,7 +246,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return UniTask.CompletedTask;
         }
 
-        protected virtual async UniTask OnBlueprintAndUserDataLoaded()
+        protected virtual UniTask OnBlueprintAndUserDataLoaded()
+        {
+            return UniTask.CompletedTask;
+        }
+
+        protected virtual async UniTask OnLocalizedBlueprints()
         {
             await this.TrackProgress(this.localizationManager.LoadLocalizationSettings());
         }

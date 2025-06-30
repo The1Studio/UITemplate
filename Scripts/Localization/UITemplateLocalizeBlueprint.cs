@@ -16,7 +16,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     public sealed class UITemplateLocalizeBlueprint
     {
         private readonly SignalBus                              signalBus;
-        private readonly UITemplateLocalizationSettingsProvider uiTemplateLocalizationSettingsProvider;
         private readonly IEnumerable<IGenericBlueprintReader>   blueprints;
         private readonly ILogger                                logger;
 
@@ -25,19 +24,20 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         [Preserve]
         public UITemplateLocalizeBlueprint(
             SignalBus                              signalBus,
-            UITemplateLocalizationSettingsProvider uiTemplateLocalizationSettingsProvider,
             IEnumerable<IGenericBlueprintReader>   blueprints,
             ILoggerManager                         loggerManager
         )
         {
             this.signalBus                              = signalBus;
-            this.uiTemplateLocalizationSettingsProvider = uiTemplateLocalizationSettingsProvider;
             this.blueprints                             = blueprints;
             this.logger                                 = loggerManager.GetLogger(this);
         }
 
-        public UniTask LoadCacheOriginalValues()
+        private UITemplateLocalizationManager localizationManager;
+
+        public UniTask LoadCacheOriginalValues(UITemplateLocalizationManager localizationManager)
         {
+            this.localizationManager = localizationManager;
             foreach (var blueprint in this.blueprints)
             {
                 var fieldsData = this.GetLocalizableFieldsData(blueprint);
@@ -58,37 +58,25 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         {
             foreach (var blueprint in this.originalValuesCache.Keys)
             {
-                this.LocalizeBlueprintFields(blueprint);
+                this.LocalizeRecordFields(blueprint);
             }
         }
 
-        private int LocalizeBlueprintFields(IGenericBlueprintReader blueprint)
-        {
-            if (blueprint == null) return 0;
-
-            var localizedCount = 0;
-
-            this.LocalizeRecordFields(blueprint);
-
-            return localizedCount;
-        }
-
-        private void LocalizeRecordFields(IGenericBlueprintReader blueprint)
+        private UniTask LocalizeRecordFields(IGenericBlueprintReader blueprint)
         {
             this.originalValuesCache.TryGetValue(blueprint, out var members);
 
-            if (members == null) return;
-            foreach (var member in members)
-            {
-                this.LocalizeField(member);
-            }
+            if (members == null) return UniTask.CompletedTask;
+
+            return UniTask.WhenAll(members.Select(this.LocalizeField));
+
         }
 
-        private bool LocalizeField(LocalizableMember member)
+        private async UniTask<bool> LocalizeField(LocalizableMember member)
         {
             var localizationKey = member.OriginalValue;
 
-            var localizedValue = this.uiTemplateLocalizationSettingsProvider.GetLocalizedText(localizationKey);
+            var localizedValue = await this.localizationManager.GetLocalizedString(localizationKey);
 
             if (!member.Property.CanWrite) return false;
             member.Property.SetValue(member.Record, localizedValue);

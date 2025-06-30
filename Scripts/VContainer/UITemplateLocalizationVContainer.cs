@@ -12,8 +12,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     {
         public static void RegisterLocalization(this IContainerBuilder builder)
         {
-            builder.Register<UITemplateLocalizationSettingsProvider>(Lifetime.Singleton).AsSelf();
-
             builder.Register<UITemplateLocalizeBlueprint>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UITemplateLocalizationManager>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 

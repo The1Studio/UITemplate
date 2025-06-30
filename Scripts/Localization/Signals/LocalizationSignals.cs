@@ -8,7 +8,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization.Signals
     public class LanguageChangedSignal
     {
         public string NewLanguage { get; set; }
-        public string OldLanguage { get; set; }
     }
 
     public class LoadedLocalizationBlueprintsSignal

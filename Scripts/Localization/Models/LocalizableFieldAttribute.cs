@@ -1,3 +1,4 @@
+#if THEONE_LOCALIZATION
 namespace TheOneStudio.UITemplate.UITemplate.Localization
 {
     using System;
@@ -13,3 +14,4 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
     }
 }
+#endif

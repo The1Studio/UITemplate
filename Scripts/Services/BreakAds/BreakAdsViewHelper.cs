@@ -3,7 +3,6 @@
     using System.Threading;
     using Core.AdsServices.Signals;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.Scripts.UIModule.ScreenFlow.BaseScreen.Presenter;
     using GameFoundation.Signals;
     using ServiceImplementation.Configs;
     using TheOneStudio.UITemplate.UITemplate.Models.Controllers;
@@ -12,11 +11,9 @@
     // Rebind this class to your own view
     public class BreakAdsViewHelper
     {
-        public bool IsViewReady => this.BreakAdsPopupPresenter.ScreenStatus == ScreenStatus.Opened;
-
-        protected BreakAdsPopupView       View;
-        protected BreakAdsPopupPresenter  BreakAdsPopupPresenter;
-        protected CancellationTokenSource Cts;
+        protected BreakAdsPopupView       View                   { get; private set; }
+        protected BreakAdsPopupPresenter  BreakAdsPopupPresenter { get; private set; }
+        protected CancellationTokenSource Cts                    { get; set; }
 
         #region Inject
 
@@ -38,49 +35,46 @@
 
         #endregion
 
+        private bool isShowing;
+
         public virtual void OnViewReady(BreakAdsPopupView view, BreakAdsPopupPresenter breakAdsPopupPresenter)
         {
             this.View                   = view;
             this.BreakAdsPopupPresenter = breakAdsPopupPresenter;
         }
 
-        public virtual UniTask BindData()
+        public virtual async UniTask BindData()
         {
+            if (this.isShowing) return;
+
+            this.isShowing = true;
             this.signalBus.Subscribe<InterstitialAdClosedSignal>(this.BreakAdsPopupPresenter.CloseView);
             this.signalBus.Subscribe<InterstitialAdDisplayedFailedSignal>(this.BreakAdsPopupPresenter.CloseView);
             this.signalBus.Subscribe<InterstitialAdDisplayedSignal>(this.BreakAdsPopupPresenter.CloseView);
-            this.AutomaticCloseView();
-
-            return UniTask.CompletedTask;
+            this.AutomaticCloseView().Forget();
         }
 
-        private async void AutomaticCloseView()
+        private async UniTaskVoid AutomaticCloseView()
         {
-            try
-            {
-                this.Cts?.Cancel();
-                this.Cts = new();
-                await UniTask.WaitForSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayCloseBreakAdsPopup, true, cancellationToken: this.Cts.Token);
-            }
-            finally
-            {
-                this.BreakAdsPopupPresenter.CloseView();
-            }
+            this.Cts = new();
+            await UniTask.WaitForSeconds(this.thirdPartiesConfig.AdSettings.TimeDelayCloseBreakAdsPopup, true, cancellationToken: this.Cts.Token);
+            this.BreakAdsPopupPresenter.CloseView();
         }
 
         public virtual void Dispose()
         {
-            if (this.Cts == null) return;
-            
-            this.RewardAfterWatchedAds();
+            if (!this.isShowing) return;
 
             this.signalBus.Unsubscribe<InterstitialAdClosedSignal>(this.BreakAdsPopupPresenter.CloseView);
             this.signalBus.Unsubscribe<InterstitialAdDisplayedFailedSignal>(this.BreakAdsPopupPresenter.CloseView);
             this.signalBus.Unsubscribe<InterstitialAdDisplayedSignal>(this.BreakAdsPopupPresenter.CloseView);
 
-            this.Cts.Cancel();
-            this.Cts.Dispose();
+            this.Cts?.Cancel();
+            this.Cts?.Dispose();
             this.Cts = null;
+
+            this.RewardAfterWatchedAds();
+            this.isShowing = false;
         }
 
         protected virtual void RewardAfterWatchedAds()

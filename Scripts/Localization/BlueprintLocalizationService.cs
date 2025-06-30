@@ -141,76 +141,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         }
         private List<LocalizableMember> GetLocalizableFieldsData(IGenericBlueprintReader blueprint)
         {
-            var fieldsData    = new List<LocalizableMember>();
+            var fieldsData = new List<LocalizableMember>();
             var blueprintType = blueprint.GetType();
 
             this.logger?.Info($"GetLocalizableFieldsData for {blueprintType.Name}");
-            this.logger?.Info($"IsGenericBlueprintByRow: {this.IsGenericBlueprintByRow(blueprintType)}");
+            this.logger?.Info($"IsGenericBlueprintByRow (IBlueprintCollection): {this.IsGenericBlueprintByRow(blueprintType)}");
             this.logger?.Info($"IsGenericBlueprintByCol: {this.IsGenericBlueprintByCol(blueprintType)}");
 
             if (this.IsGenericBlueprintByRow(blueprintType))
             {
-                var valuesProperty = blueprintType.GetProperty("Values");
-                this.logger?.Info($"Values property found: {valuesProperty != null}");
-
-                if (valuesProperty != null)
-                {
-                    var valuesObject = valuesProperty.GetValue(blueprint);
-                    this.logger?.Info($"trong: Values object type: {valuesObject?.GetType().Name ?? "null"}");
-                    this.logger?.Info($"trong: Values object is null: {valuesObject == null}");
-
-                    if (valuesObject != null)
-                    {
-                        // For GenericBlueprintReaderByRow, Values is typically a Dictionary<TKey, TRecord>
-                        // We need to access the Values property of the dictionary to get the records
-                        if (valuesObject is IDictionary dictionary)
-                        {
-                            this.logger?.Info($"trong: Values is Dictionary with {dictionary.Count} items");
-                            var recordCount = 0;
-                            foreach (var kvp in dictionary)
-                            {
-                                // kvp is DictionaryEntry, kvp.Value is the actual record
-                                var record = ((DictionaryEntry)kvp).Value;
-                                recordCount++;
-                                this.CacheRecordFields(record, fieldsData);
-                            }
-                            this.logger?.Info($"trong: Processed {recordCount} records total");
-                        }
-                        else if (valuesObject is IEnumerable records)
-                        {
-                            this.logger?.Info($"trong: Values is IEnumerable");
-                            foreach (var record in records)
-                            {
-                                // If it's KeyValuePair, get the Value
-                                var actualRecord = record;
-                                var recordType = record.GetType();
-                                if (recordType.IsGenericType && recordType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
-                                {
-                                    var valueProperty = recordType.GetProperty("Value");
-                                    actualRecord = valueProperty?.GetValue(record);
-                                    this.logger?.Info($"trong: Extracted Value from KeyValuePair: {actualRecord?.GetType().Name ?? "null"}");
-                                }
-
-                                if (actualRecord != null)
-                                {
-                                    this.CacheRecordFields(actualRecord, fieldsData);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            this.logger?.Info($"trong: Values property exists but is not Dictionary or IEnumerable. Type: {valuesObject.GetType().Name}");
-                        }
-                    }
-                    else
-                    {
-                        this.logger?.Warning($"trong: Values property returned null for blueprint {blueprintType.Name}");
-                    }
-                }
-                else
-                {
-                    this.logger?.Info($"trong: Blueprint {blueprintType.Name} should be ByRow but has no Values property!");
-                }
+                this.ProcessBlueprintCollectionData(blueprint, fieldsData);
             }
             else if (this.IsGenericBlueprintByCol(blueprintType))
             {
@@ -225,32 +165,164 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             return fieldsData;
         }
 
+        /// <summary>
+        /// Process IBlueprintCollection data (can be Dictionary or List based)
+        /// </summary>
+        private void ProcessBlueprintCollectionData(object blueprint, List<LocalizableMember> fieldsData)
+        {
+            var blueprintType = blueprint.GetType();
+            this.logger?.Info($"trong: Processing IBlueprintCollection: {blueprintType.Name}");
+
+            if (this.IsDictionaryBlueprintByRow(blueprintType))
+            {
+                this.ProcessDictionaryBlueprintData(blueprint, fieldsData);
+            }
+            else if (this.IsListBlueprintByRow(blueprintType))
+            {
+                this.ProcessListBlueprintData(blueprint, fieldsData);
+            }
+            else
+            {
+                // For GenericBlueprintReaderByRow, check for Values property
+                this.ProcessGenericBlueprintReaderData(blueprint, fieldsData);
+            }
+        }
+
+        /// <summary>
+        /// Process Dictionary-based BlueprintByRow<TKey, TRecord>
+        /// </summary>
+        private void ProcessDictionaryBlueprintData(object blueprint, List<LocalizableMember> fieldsData)
+        {
+            this.logger?.Info($"trong: Processing Dictionary-based blueprint");
+
+            if (blueprint is IDictionary dictionary)
+            {
+                this.logger?.Info($"trong: Dictionary with {dictionary.Count} items");
+                var recordCount = 0;
+                foreach (DictionaryEntry kvp in dictionary)
+                {
+                    var record = kvp.Value;
+                    recordCount++;
+                    this.logger?.Info($"trong: Processing dictionary record {recordCount}: {record.GetType().Name}");
+                    this.CacheRecordFields(record, fieldsData);
+                }
+                this.logger?.Info($"trong: Processed {recordCount} dictionary records total");
+            }
+        }
+
+        /// <summary>
+        /// Process List-based BlueprintByRow<TRecord>
+        /// </summary>
+        private void ProcessListBlueprintData(object blueprint, List<LocalizableMember> fieldsData)
+        {
+            this.logger?.Info($"trong: Processing List-based blueprint");
+
+            if (blueprint is IEnumerable enumerable)
+            {
+                var recordCount = 0;
+                foreach (var record in enumerable)
+                {
+                    recordCount++;
+                    this.logger?.Info($"trong: Processing list record {recordCount}: {record.GetType().Name}");
+                    this.CacheRecordFields(record, fieldsData);
+                }
+                this.logger?.Info($"trong: Processed {recordCount} list records total");
+            }
+        }
+
+        /// <summary>
+        /// Process GenericBlueprintReaderByRow (has Values property)
+        /// </summary>
+        private void ProcessGenericBlueprintReaderData(object blueprint, List<LocalizableMember> fieldsData)
+        {
+            var blueprintType = blueprint.GetType();
+            var valuesProperty = blueprintType.GetProperty("Values");
+
+            this.logger?.Info($"trong: Processing GenericBlueprintReader: {blueprintType.Name}");
+            this.logger?.Info($"Values property found: {valuesProperty != null}");
+
+            if (valuesProperty != null)
+            {
+                var valuesObject = valuesProperty.GetValue(blueprint);
+                this.logger?.Info($"trong: Values object type: {valuesObject?.GetType().Name ?? "null"}");
+
+                if (valuesObject != null)
+                {
+                    // Recursively process the Values object (which should be IBlueprintCollection)
+                    if (typeof(IBlueprintCollection).IsAssignableFrom(valuesObject.GetType()))
+                    {
+                        this.logger?.Info($"trong: Values object is IBlueprintCollection, processing recursively");
+                        this.ProcessBlueprintCollectionData(valuesObject, fieldsData);
+                    }
+                    else
+                    {
+                        this.logger?.Warning($"trong: Values object is not IBlueprintCollection: {valuesObject.GetType().Name}");
+                    }
+                }
+                else
+                {
+                    this.logger?.Warning($"trong: Values property returned null for blueprint {blueprintType.Name}");
+                }
+            }
+            else
+            {
+                this.logger?.Warning($"trong: GenericBlueprintReader {blueprintType.Name} has no Values property!");
+            }
+        }
+
         private void CacheRecordFields(object record, List<LocalizableMember> fieldsData)
         {
             var recordType = record.GetType();
-            var localizableFields = this.GetLocalizableFields(recordType);
+            var localizableFields = this.GetLocalizableFields(recordType).ToList();
 
 
             this.logger?.Info($"trong: Processing record type: {recordType.Name}, found {localizableFields.Count()} localizable fields");
 
             foreach (var property in localizableFields)
             {
-                this.logger?.Info($"trong: Checking property: {property.Name}, type: {property.PropertyType.Name}");
+                if (property.PropertyType != typeof(string)) continue;
+                var value = property.GetValue(record) as string;
+                this.logger?.Info($"trong: Property {property.Name} value: '{value}'");
 
-                if (property.PropertyType == typeof(string))
+                if (string.IsNullOrEmpty(value)) continue;
+                fieldsData.Add(new()
                 {
-                    var value = property.GetValue(record) as string;
-                    this.logger?.Info($"trong: Property {property.Name} value: '{value}'");
+                    Property      = property,
+                    OriginalValue = value,
+                    Record        = record,
+                });
+                this.logger?.Info($"trong: Added localizable member: {property.Name} = '{value}'");
+            }
 
-                    if (!string.IsNullOrEmpty(value))
+            this.CacheNestedBlueprintCollectionFields(record, fieldsData);
+        }
+
+        /// <summary>
+        /// Cache nested IBlueprintCollection fields recursively
+        /// </summary>
+        private void CacheNestedBlueprintCollectionFields(object record, List<LocalizableMember> fieldsData)
+        {
+            var recordType = record.GetType();
+            var properties = recordType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var property in properties)
+            {
+                var propertyType = property.PropertyType;
+
+                // Check if this property implements IBlueprintCollection
+                if (typeof(IBlueprintCollection).IsAssignableFrom(propertyType))
+                {
+                    this.logger?.Info($"trong: Found nested IBlueprintCollection property: {property.Name} of type {propertyType.Name}");
+
+                    var nestedBlueprint = property.GetValue(record);
+                    if (nestedBlueprint != null)
                     {
-                        fieldsData.Add(new()
-                        {
-                            Property      = property,
-                            OriginalValue = value,
-                            Record        = record,
-                        });
-                        this.logger?.Info($"trong: Added localizable member: {property.Name} = '{value}'");
+                        this.logger?.Info($"trong: Processing nested blueprint collection: {property.Name}");
+                        this.ProcessBlueprintCollectionData(nestedBlueprint, fieldsData);
+                    }
+                    else
+                    {
+                        this.logger?.Info($"trong: Nested blueprint collection {property.Name} is null");
                     }
                 }
             }
@@ -274,24 +346,39 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
         private bool IsGenericBlueprintByRow(Type type)
         {
-            var baseType = type.BaseType;
-            while (baseType != null)
-            {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition().Name.Contains("GenericBlueprintReaderByRow")) return true;
-                baseType = baseType.BaseType;
-            }
-            return false;
+            // Check if type implements IBlueprintCollection
+            return typeof(IBlueprintCollection).IsAssignableFrom(type);
         }
 
         private bool IsGenericBlueprintByCol(Type type)
         {
-            var baseType = type.BaseType;
-            while (baseType != null)
-            {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition().Name.Contains("GenericBlueprintReaderByCol")) return true;
-                baseType = baseType.BaseType;
-            }
-            return false;
+            // Check if type implements IGenericBlueprintReader but NOT IBlueprintCollection
+            return typeof(IGenericBlueprintReader).IsAssignableFrom(type) &&
+                   !typeof(IBlueprintCollection).IsAssignableFrom(type);
+        }
+
+        /// <summary>
+        /// Check if type is Dictionary-based BlueprintByRow (has TKey, TRecord generics)
+        /// </summary>
+        private bool IsDictionaryBlueprintByRow(Type type)
+        {
+            if (!type.IsGenericType) return false;
+
+            var genericArgs = type.GetGenericArguments();
+            // BlueprintByRow<TKey, TRecord> has 2 generic arguments
+            return genericArgs.Length == 2 && typeof(IBlueprintCollection).IsAssignableFrom(type);
+        }
+
+        /// <summary>
+        /// Check if type is List-based BlueprintByRow (has only TRecord generic)
+        /// </summary>
+        private bool IsListBlueprintByRow(Type type)
+        {
+            if (!type.IsGenericType) return false;
+
+            var genericArgs = type.GetGenericArguments();
+            // BlueprintByRow<TRecord> has 1 generic argument
+            return genericArgs.Length == 1 && typeof(IBlueprintCollection).IsAssignableFrom(type);
         }
     }
 

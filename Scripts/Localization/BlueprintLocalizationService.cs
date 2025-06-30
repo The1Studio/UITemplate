@@ -6,6 +6,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     using System.Linq;
     using System.Reflection;
     using BlueprintFlow.BlueprintReader;
+    using BlueprintFlow.Signals;
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Signals;
@@ -42,12 +43,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
         public void Initialize()
         {
-            this.CacheOriginalValues();
+            this.signalBus.Subscribe<LoadBlueprintDataSucceedSignal>(this.CacheOriginalValues);
         }
 
         public void Dispose()
         {
             this.originalValuesCache.Clear();
+            this.signalBus.Unsubscribe<LoadBlueprintDataSucceedSignal>(this.CacheOriginalValues);
         }
 
         /// <summary>
@@ -65,7 +67,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
                 }
             }
 
-            this.logger?.Info($"trong: Cached original values for {this.originalValuesCache.Count} blueprints");
+            this.logger?.Info($"trong: Cached original values for {this.originalValuesCache.Count} blueprints of {this.blueprints.Count()}");
         }
 
         /// <summary>
@@ -85,7 +87,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
                     blueprintCount++;
                 }
             }
-            this.logger?.Info($"Localized {totalFieldsCount} fields in {blueprintCount} blueprints");
+            this.logger?.Info($"trong: Localized {totalFieldsCount} fields in {blueprintCount} blueprints");
         }
 
         /// <summary>
@@ -113,7 +115,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             }
             catch (Exception ex)
             {
-                this.logger?.Error($"Failed to localize blueprint: {blueprintType.Name}");
+                this.logger?.Error($"trong: Failed to localize blueprint: {blueprintType.Name}");
                 this.logger?.Exception(ex);
             }
 
@@ -131,12 +133,37 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             var valuesProperty = blueprintType.GetProperty("Values");
             if (valuesProperty == null) return 0;
 
-            var records = valuesProperty.GetValue(blueprint) as IEnumerable;
-            if (records == null) return 0;
+            var valuesObject = valuesProperty.GetValue(blueprint);
+            if (valuesObject == null) return 0;
 
-            foreach (var record in records)
+            // Handle Dictionary<TKey, TRecord> pattern
+            if (valuesObject is IDictionary dictionary)
             {
-                localizedCount += await this.LocalizeRecordFields(record, blueprint);
+                foreach (DictionaryEntry kvp in dictionary)
+                {
+                    var record = kvp.Value;
+                    localizedCount += await this.LocalizeRecordFields(record, blueprint);
+                }
+            }
+            else if (valuesObject is IEnumerable records)
+            {
+                foreach (var item in records)
+                {
+                    var record = item;
+                    var recordType = item.GetType();
+
+                    // If it's KeyValuePair, extract the Value
+                    if (recordType.IsGenericType && recordType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+                    {
+                        var valueProperty = recordType.GetProperty("Value");
+                        record = valueProperty?.GetValue(item);
+                    }
+
+                    if (record != null)
+                    {
+                        localizedCount += await this.LocalizeRecordFields(record, blueprint);
+                    }
+                }
             }
 
             return localizedCount;
@@ -197,21 +224,82 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             var fieldsData    = new List<LocalizableDataRecord>();
             var blueprintType = blueprint.GetType();
 
+            this.logger?.Info($"GetLocalizableFieldsData for {blueprintType.Name}");
+            this.logger?.Info($"IsGenericBlueprintByRow: {this.IsGenericBlueprintByRow(blueprintType)}");
+            this.logger?.Info($"IsGenericBlueprintByCol: {this.IsGenericBlueprintByCol(blueprintType)}");
+
             if (this.IsGenericBlueprintByRow(blueprintType))
             {
                 var valuesProperty = blueprintType.GetProperty("Values");
+                this.logger?.Info($"Values property found: {valuesProperty != null}");
 
-                if (valuesProperty?.GetValue(blueprint) is IEnumerable records)
+                if (valuesProperty != null)
                 {
-                    foreach (var record in records)
+                    var valuesObject = valuesProperty.GetValue(blueprint);
+                    this.logger?.Info($"trong: Values object type: {valuesObject?.GetType().Name ?? "null"}");
+                    this.logger?.Info($"trong: Values object is null: {valuesObject == null}");
+
+                    if (valuesObject != null)
                     {
-                        this.CacheRecordFields(record, fieldsData);
+                        // For GenericBlueprintReaderByRow, Values is typically a Dictionary<TKey, TRecord>
+                        // We need to access the Values property of the dictionary to get the records
+                        if (valuesObject is IDictionary dictionary)
+                        {
+                            this.logger?.Info($"trong: Values is Dictionary with {dictionary.Count} items");
+                            var recordCount = 0;
+                            foreach (var kvp in dictionary)
+                            {
+                                // kvp is DictionaryEntry, kvp.Value is the actual record
+                                var record = ((DictionaryEntry)kvp).Value;
+                                recordCount++;
+                                this.CacheRecordFields(record, fieldsData);
+                            }
+                            this.logger?.Info($"trong: Processed {recordCount} records total");
+                        }
+                        else if (valuesObject is IEnumerable records)
+                        {
+                            this.logger?.Info($"trong: Values is IEnumerable");
+                            foreach (var record in records)
+                            {
+                                // If it's KeyValuePair, get the Value
+                                var actualRecord = record;
+                                var recordType = record.GetType();
+                                if (recordType.IsGenericType && recordType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+                                {
+                                    var valueProperty = recordType.GetProperty("Value");
+                                    actualRecord = valueProperty?.GetValue(record);
+                                    this.logger?.Info($"trong: Extracted Value from KeyValuePair: {actualRecord?.GetType().Name ?? "null"}");
+                                }
+
+                                if (actualRecord != null)
+                                {
+                                    this.CacheRecordFields(actualRecord, fieldsData);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            this.logger?.Info($"trong: Values property exists but is not Dictionary or IEnumerable. Type: {valuesObject.GetType().Name}");
+                        }
                     }
+                    else
+                    {
+                        this.logger?.Warning($"trong: Values property returned null for blueprint {blueprintType.Name}");
+                    }
+                }
+                else
+                {
+                    this.logger?.Info($"trong: Blueprint {blueprintType.Name} should be ByRow but has no Values property!");
                 }
             }
             else if (this.IsGenericBlueprintByCol(blueprintType))
             {
+                this.logger?.Info("trong: Processing as ByCol blueprint");
                 this.CacheRecordFields(blueprint, fieldsData);
+            }
+            else
+            {
+                this.logger?.Info($"trong: Blueprint type {blueprintType.Name} is neither ByRow nor ByCol");
             }
 
             return fieldsData;
@@ -226,11 +314,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             };
             var localizableFields = this.GetLocalizableFields(recordType);
 
+            this.logger?.Info($"trong: Processing record type: {recordType.Name}, found {localizableFields.Count()} localizable fields");
+
             foreach (var property in localizableFields)
             {
+                this.logger?.Info($"trong: Checking property: {property.Name}, type: {property.PropertyType.Name}");
+
                 if (property.PropertyType == typeof(string))
                 {
                     var value = property.GetValue(record) as string;
+                    this.logger?.Info($"trong: Property {property.Name} value: '{value}'");
+
                     if (!string.IsNullOrEmpty(value))
                     {
                         dataRecord.LocalizableMembers.Add(new()
@@ -239,17 +333,34 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
                             OriginalValue = value,
                             Record        = record,
                         });
+                        this.logger?.Info($"trong: Added localizable member: {property.Name} = '{value}'");
                     }
                 }
             }
 
-            // Add to fields data
-            fieldsData.Add(dataRecord);
+            this.logger?.Info($"trong: Record has {dataRecord.LocalizableMembers.Count} localizable members");
+
+            // Only add if there are localizable members
+            if (dataRecord.LocalizableMembers.Count > 0)
+            {
+                fieldsData.Add(dataRecord);
+            }
         }
         private IEnumerable<PropertyInfo> GetLocalizableFields(Type type)
         {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.GetCustomAttribute<LocalizableFieldAttribute>() != null);
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            this.logger?.Debug($"trong: Type {type.Name} has {properties.Length} total properties");
+
+            var localizableFields = properties
+                .Where(p => p.GetCustomAttribute<LocalizableFieldAttribute>() != null).ToList();
+
+            this.logger?.Debug($"trong: Found {localizableFields.Count} localizable fields in {type.Name}");
+            foreach (var field in localizableFields)
+            {
+                this.logger?.Debug($"  - {field.Name} (type: {field.PropertyType.Name})");
+            }
+
+            return localizableFields;
         }
 
         private bool IsGenericBlueprintByRow(Type type)

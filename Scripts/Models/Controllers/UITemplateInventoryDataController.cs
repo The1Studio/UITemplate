@@ -119,12 +119,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             this.uiTemplateInventoryData.IDToItemData.Add(itemData.Id, itemData);
         }
 
-        public void PayCurrency(Dictionary<string, int> currency, string where, int time = 1)
+        public void PayCurrency(Dictionary<string, int> currency, string where, int time = 1, Dictionary<string, object> metadata = null)
         {
-            foreach (var (currencyKey, currencyValue) in currency) this.AddCurrency(-currencyValue * time, currencyKey, where);
+            foreach (var (currencyKey, currencyValue) in currency) this.AddCurrency(-currencyValue * time, currencyKey, where, metadata: metadata);
         }
 
-        public bool PayCurrency(int value, string id, string where) => this.AddCurrency(-value, id, where);
+        public bool PayCurrency(int value, string id, string where, Dictionary<string, object> metadata = null) => this.AddCurrency(-value, id, where, metadata: metadata);
 
         /// <summary>
         /// minAnimAmount and maxAnimAmount is range amount of currency object that will be animated
@@ -140,7 +140,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
             int maxAnimAmount = 10,
             float timeAnimAnim = 1f,
             float flyPunchPositionAnimFactor = 0.3f,
-            Action onCompleteEachItem = null
+            Action onCompleteEachItem = null,
+            Dictionary<string, object> metadata = null
         )
         {
             var lastValue = this.GetCurrencyValue(currencyId);
@@ -155,7 +156,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
 
             var currencyWithCap = this.SetCurrencyWithCap(resultValue, currencyId);
             var amount          = currencyWithCap - lastValue;
-            this.signalBus.Fire(new OnUpdateCurrencySignal(currencyId, amount, currencyWithCap, placement));
+            this.signalBus.Fire(new OnUpdateCurrencySignal(currencyId, amount, currencyWithCap, placement, metadata));
             if (startAnimationRect != null)
             {
                 this.signalBus.Fire(new PlayCurrencyAnimationSignal
@@ -306,11 +307,12 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <param name="from">where players earn reward</param>
         /// <param name="startPosCurrency"></param>
         /// <param name="claimSoundKey"></param>
+        /// <param name="metadata"></param>
         /// <exception cref="Exception"></exception>
         public void AddGenericReward(string rewardKey, int rewardValue, string from, RectTransform startPosCurrency = null, string claimSoundKey = null)
         {
             if (this.uiTemplateCurrencyBlueprint.ContainsKey(rewardKey))
-                this.AddCurrency(rewardValue, rewardKey, from, startPosCurrency, claimSoundKey);
+                this.AddCurrency(rewardValue, rewardKey, from, startPosCurrency, claimSoundKey, metadata: new Dictionary<string, object> { { "item_type", rewardKey }, { "item_id", rewardKey }, {"source", from} });
             else if (this.uiTemplateItemBlueprint.ContainsKey(rewardKey))
             {
                 this.uiTemplateInventoryData.IDToItemData[rewardKey].CurrentStatus = Status.Owned;
@@ -326,9 +328,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Models.Controllers
         /// <param name="reward"></param>
         /// <param name="where">where you earn reward from</param>
         /// <param name="startPosCurrency"></param>
+        /// <param name="metadata"></param>
         public void AddGenericReward(Dictionary<string, int> reward, string where, RectTransform startPosCurrency = null)
         {
-            foreach (var (rewardKey, rewardValue) in reward) this.AddGenericReward(rewardKey, rewardValue, where, startPosCurrency);
+            foreach (var (rewardKey, rewardValue) in reward)
+            {
+                this.AddGenericReward(rewardKey, rewardValue, where, startPosCurrency);
+            }
         }
 
         public bool IsAlreadyContainedItem(Dictionary<string, int> reward)

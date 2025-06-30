@@ -16,22 +16,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     {
         private readonly SignalBus                       signalBus;
         private readonly BlueprintLocalizationService    blueprintLocalizationService;
-        private readonly StringTableLocalizationProvider localizationProvider;
+        private readonly LocalizationSettingsProvider localizationSettingsProvider;
 
         [Preserve] public LocalizationManager(
             SignalBus                       signalBus,
             BlueprintLocalizationService    blueprintLocalizationService,
-            StringTableLocalizationProvider localizationProvider
+            LocalizationSettingsProvider localizationSettingsProvider
         )
         {
             this.signalBus                    = signalBus;
             this.blueprintLocalizationService = blueprintLocalizationService;
-            this.localizationProvider         = localizationProvider;
+            this.localizationSettingsProvider         = localizationSettingsProvider;
         }
 
-        public string CurrentLanguage => this.localizationProvider.CurrentLanguage;
+        public string CurrentLanguage => this.localizationSettingsProvider.CurrentLanguage;
 
-        public System.Collections.Generic.IReadOnlyList<string> AvailableLanguages => this.localizationProvider.AvailableLanguages;
+        public System.Collections.Generic.IReadOnlyList<string> AvailableLanguages => this.localizationSettingsProvider.AvailableLanguages;
 
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         {
             if (string.IsNullOrEmpty(languageCode))
             {
-                Debug.LogWarning($"[LocalizationManager] Invalid language code: {languageCode}");
+                Debug.LogError($"[LocalizationManager] Invalid language code: {languageCode}");
                 return;
             }
 
@@ -55,33 +55,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
             var oldLanguage = this.CurrentLanguage;
 
-            try
-            {
-                this.localizationProvider.SetLanguage(languageCode);
-                this.blueprintLocalizationService.LocalizeAllBlueprintFields();
+            this.localizationSettingsProvider.SetLanguage(languageCode);
+            this.blueprintLocalizationService.LocalizeAllBlueprintFields();
 
-                this.signalBus.Fire(new LanguageChangedSignal
-                {
-                    NewLanguage = languageCode,
-                    OldLanguage = oldLanguage
-                });
-            }
-            catch (Exception ex)
+            this.signalBus.Fire(new LanguageChangedSignal
             {
-                Debug.LogError($"[LocalizationManager] Failed to change language to {languageCode}: {ex.Message}");
-                throw;
-            }
+                NewLanguage = languageCode,
+                OldLanguage = oldLanguage,
+            });
         }
 
-        /// <summary>
-        /// Gets a localized string for the given key
-        /// </summary>
-        /// <param name="key">Localization key</param>
-        /// <param name="fallback">Fallback value if key not found</param>
-        /// <returns>Localized string or fallback</returns>
         public string GetLocalizedString(string key, string fallback = null)
         {
-            var result = this.localizationProvider.GetLocalizedText(key);
+            var result = this.localizationSettingsProvider.GetLocalizedText(key);
             return result == key && !string.IsNullOrEmpty(fallback) ? fallback : result;
         }
     }

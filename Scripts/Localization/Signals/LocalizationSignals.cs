@@ -11,4 +11,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization.Signals
         public string OldLanguage { get; set; }
     }
 
+    public class LoadedLocalizationBlueprintsSignal
+    {
+    }
+
 }

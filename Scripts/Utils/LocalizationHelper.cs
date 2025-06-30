@@ -15,7 +15,7 @@
                 var entry = table.GetEntry(entryKey);
                 if (entry != null) return entry.GetLocalizedString();
 
-                Debug.LogError($"[LocalizationHelper] Entry '{entryKey}' not found in table '{tableName}'.");
+                Debug.LogWarning($"[LocalizationHelper] Entry '{entryKey}' not found in table '{tableName}'.");
                 return entryKey;
             }
             Debug.LogError($"[LocalizationHelper] Table '{tableName}' not found.");

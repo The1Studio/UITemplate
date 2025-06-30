@@ -5,6 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     using System.Linq;
     using System.Reflection;
     using BlueprintFlow.BlueprintReader;
+    using Cysharp.Threading.Tasks;
     using GameFoundation.Signals;
     using TheOne.Logging;
     using TheOneStudio.UITemplate.UITemplate.Localization.Signals;
@@ -12,29 +13,30 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     using UnityEngine.Scripting;
     using ILogger = TheOne.Logging.ILogger;
 
-    public class BlueprintLocalizationService
+    public sealed class UITemplateLocalizeBlueprint
     {
-        private readonly SignalBus                            signalBus;
-        private readonly LocalizationSettingsProvider      localizationSettingsProvider;
-        private readonly IEnumerable<IGenericBlueprintReader> blueprints;
-        private readonly ILogger                              logger;
+        private readonly SignalBus                              signalBus;
+        private readonly UITemplateLocalizationSettingsProvider uiTemplateLocalizationSettingsProvider;
+        private readonly IEnumerable<IGenericBlueprintReader>   blueprints;
+        private readonly ILogger                                logger;
 
         private readonly Dictionary<IGenericBlueprintReader, List<LocalizableMember>> originalValuesCache = new();
 
-        [Preserve] public BlueprintLocalizationService(
-            SignalBus                            signalBus,
-            LocalizationSettingsProvider      localizationSettingsProvider,
-            IEnumerable<IGenericBlueprintReader> blueprints,
-            ILoggerManager                       loggerManager
+        [Preserve]
+        public UITemplateLocalizeBlueprint(
+            SignalBus                              signalBus,
+            UITemplateLocalizationSettingsProvider uiTemplateLocalizationSettingsProvider,
+            IEnumerable<IGenericBlueprintReader>   blueprints,
+            ILoggerManager                         loggerManager
         )
         {
-            this.signalBus            = signalBus;
-            this.localizationSettingsProvider = localizationSettingsProvider;
-            this.blueprints           = blueprints;
-            this.logger               = loggerManager.GetLogger(this);
+            this.signalBus                              = signalBus;
+            this.uiTemplateLocalizationSettingsProvider = uiTemplateLocalizationSettingsProvider;
+            this.blueprints                             = blueprints;
+            this.logger                                 = loggerManager.GetLogger(this);
         }
 
-        private void LoadCacheOriginalValues()
+        public UniTask LoadCacheOriginalValues()
         {
             foreach (var blueprint in this.blueprints)
             {
@@ -47,7 +49,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             }
 
             this.signalBus.Fire<LoadedLocalizationBlueprintsSignal>();
-            this.logger?.Error($"trong: Cached original values for {this.originalValuesCache.Count} blueprints of {this.blueprints.Count()}");
+            this.logger?.Info($"Cached original values for {this.originalValuesCache.Count} blueprints of {this.blueprints.Count()}");
+
+            return UniTask.CompletedTask;
         }
 
         public void LocalizeAllBlueprintFields()
@@ -84,7 +88,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         {
             var localizationKey = member.OriginalValue;
 
-            var localizedValue = this.localizationSettingsProvider.GetLocalizedText(localizationKey);
+            var localizedValue = this.uiTemplateLocalizationSettingsProvider.GetLocalizedText(localizationKey);
 
             if (!member.Property.CanWrite) return false;
             member.Property.SetValue(member.Record, localizedValue);
@@ -96,11 +100,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             var fieldsData    = new List<LocalizableMember>();
             var blueprintType = blueprint.GetType();
 
-            if (BlueprintLocalizeExtensions.IsGenericBlueprintByRow(blueprintType))
+            if (UITemplateBlueprintLocalizeExtensions.IsGenericBlueprintByRow(blueprintType))
             {
                 this.ProcessBlueprintCollectionData(blueprint, fieldsData);
             }
-            else if (BlueprintLocalizeExtensions.IsGenericBlueprintByCol(blueprintType))
+            else if (UITemplateBlueprintLocalizeExtensions.IsGenericBlueprintByCol(blueprintType))
             {
                 this.CacheRecordFields(blueprint, fieldsData);
             }
@@ -111,15 +115,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
             return fieldsData;
         }
+
         private void ProcessBlueprintCollectionData(object blueprint, List<LocalizableMember> fieldsData)
         {
             var blueprintType = blueprint.GetType();
 
-            if (BlueprintLocalizeExtensions.IsDictionaryBlueprintByRow(blueprintType))
+            if (UITemplateBlueprintLocalizeExtensions.IsDictionaryBlueprintByRow(blueprintType))
             {
                 this.ProcessDictionaryBlueprintData(blueprint, fieldsData);
             }
-            else if (BlueprintLocalizeExtensions.IsListBlueprintByRow(blueprintType))
+            else if (UITemplateBlueprintLocalizeExtensions.IsListBlueprintByRow(blueprintType))
             {
                 this.ProcessListBlueprintData(blueprint, fieldsData);
             }
@@ -154,7 +159,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         private void CacheRecordFields(object record, List<LocalizableMember> fieldsData)
         {
             var recordType        = record.GetType();
-            var localizableFields = BlueprintLocalizeExtensions.GetLocalizableFields(recordType).ToList();
+            var localizableFields = UITemplateBlueprintLocalizeExtensions.GetLocalizableFields(recordType).ToList();
 
             this.logger?.Info($"Processing record type: {recordType.Name}, found {localizableFields.Count()} localizable fields");
 
@@ -192,8 +197,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
                 this.ProcessBlueprintCollectionData(nestedBlueprint, fieldsData);
             }
         }
-
-
     }
 
     public class LocalizableMember

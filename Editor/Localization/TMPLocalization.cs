@@ -75,7 +75,7 @@ namespace TheOne.Tool.Localization
                         TextType = TextMeshType.NoLocalized
                     };
 
-                    if (tmp.TryGetComponent<AutoLocalization>(out var component))
+                    if (tmp.TryGetComponent<UITemplateAutoLocalization>(out var component))
                     {
                         info.TextType = IsTMPReferencedInGameObject(tmp, obj, out _, out _) ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
                     }
@@ -282,9 +282,9 @@ namespace TheOne.Tool.Localization
             this.fieldName = fn;
             this.UpdatePrefab((tmpTextInInstance) =>
             {
-                if (!tmpTextInInstance.TryGetComponent<AutoLocalization>(out _))
+                if (!tmpTextInInstance.TryGetComponent<UITemplateAutoLocalization>(out _))
                 {
-                    tmpTextInInstance.AddComponent<AutoLocalization>();
+                    tmpTextInInstance.AddComponent<UITemplateAutoLocalization>();
                 }
             }, isTMPReferencedInGameObject ? TMPLocalization.Instance.DynamicLocalizedTextInfos : TMPLocalization.Instance.StaticLocalizedTextInfos);
         }

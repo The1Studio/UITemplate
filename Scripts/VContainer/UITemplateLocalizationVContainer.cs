@@ -8,14 +8,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     /// <summary>
     /// VContainer registration for localization services
     /// </summary>
-    public static class LocalizationVContainer
+    public static class UITemplateLocalizationVContainer
     {
         public static void RegisterLocalization(this IContainerBuilder builder)
         {
-            builder.Register<LocalizationSettingsProvider>(Lifetime.Singleton).AsSelf();
+            builder.Register<UITemplateLocalizationSettingsProvider>(Lifetime.Singleton).AsSelf();
 
-            builder.Register<BlueprintLocalizationService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<LocalizationManager>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UITemplateLocalizeBlueprint>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UITemplateLocalizationManager>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             builder.DeclareSignal<LanguageChangedSignal>();
             builder.DeclareSignal<LoadedLocalizationBlueprintsSignal>();

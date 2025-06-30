@@ -7,7 +7,7 @@
     using System.Reflection;
     using BlueprintFlow.BlueprintReader;
 
-    internal static class BlueprintLocalizeExtensions
+    internal static class UITemplateBlueprintLocalizeExtensions
     {
         public static IEnumerable<PropertyInfo> GetLocalizableFields(Type type)
         {
@@ -59,9 +59,6 @@
             return false;
         }
 
-        /// <summary>
-        /// Check if type is List-based BlueprintByRow (inherits from List<TRecord>)
-        /// </summary>
         public static bool IsListBlueprintByRow(Type type)
         {
             if (!typeof(IBlueprintCollection).IsAssignableFrom(type)) return false;

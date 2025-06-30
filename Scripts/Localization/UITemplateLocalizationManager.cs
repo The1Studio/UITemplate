@@ -1,8 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.Localization
 {
-    using System;
     using Cysharp.Threading.Tasks;
-    using GameFoundation.DI;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Localization.Signals;
     using UnityEngine;
@@ -12,28 +10,37 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     /// Main service for managing language changes and localization
     /// Use this service to change language in your game
     /// </summary>
-    [Preserve] public class LocalizationManager
+    [Preserve]
+    public class UITemplateLocalizationManager
     {
         private readonly SignalBus                       signalBus;
-        private readonly BlueprintLocalizationService    blueprintLocalizationService;
-        private readonly LocalizationSettingsProvider localizationSettingsProvider;
+        private readonly UITemplateLocalizeBlueprint    uiTemplateLocalizeBlueprint;
+        private readonly UITemplateLocalizationSettingsProvider uiTemplateLocalizationSettingsProvider;
 
-        [Preserve] public LocalizationManager(
+        [Preserve] public UITemplateLocalizationManager(
             SignalBus                       signalBus,
-            BlueprintLocalizationService    blueprintLocalizationService,
-            LocalizationSettingsProvider localizationSettingsProvider
+            UITemplateLocalizeBlueprint    uiTemplateLocalizeBlueprint,
+            UITemplateLocalizationSettingsProvider uiTemplateLocalizationSettingsProvider
         )
         {
             this.signalBus                    = signalBus;
-            this.blueprintLocalizationService = blueprintLocalizationService;
-            this.localizationSettingsProvider         = localizationSettingsProvider;
+            this.uiTemplateLocalizeBlueprint = uiTemplateLocalizeBlueprint;
+            this.uiTemplateLocalizationSettingsProvider         = uiTemplateLocalizationSettingsProvider;
         }
 
-        public string CurrentLanguage => this.localizationSettingsProvider.CurrentLanguage;
+        public string CurrentLanguage => this.uiTemplateLocalizationSettingsProvider.CurrentLanguage;
 
-        public System.Collections.Generic.IReadOnlyList<string> AvailableLanguages => this.localizationSettingsProvider.AvailableLanguages;
+        public System.Collections.Generic.IReadOnlyList<string> AvailableLanguages => this.uiTemplateLocalizationSettingsProvider.AvailableLanguages;
 
 
+        public UniTask LoadLocalizationSettings()
+        {
+            #if THEONE_LOCALIZATION
+            return this.uiTemplateLocalizeBlueprint.LoadCacheOriginalValues();
+            #else
+            return UniTask.CompletedTask;
+            #endif
+        }
         /// <summary>
         /// Changes the current language
         /// This will trigger localization of all blueprint fields marked with [LocalizableField]
@@ -55,8 +62,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
             var oldLanguage = this.CurrentLanguage;
 
-            this.localizationSettingsProvider.SetLanguage(languageCode);
-            this.blueprintLocalizationService.LocalizeAllBlueprintFields();
+            this.uiTemplateLocalizationSettingsProvider.SetLanguage(languageCode);
+            this.uiTemplateLocalizeBlueprint.LocalizeAllBlueprintFields();
 
             this.signalBus.Fire(new LanguageChangedSignal
             {
@@ -67,7 +74,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
 
         public string GetLocalizedString(string key, string fallback = null)
         {
-            var result = this.localizationSettingsProvider.GetLocalizedText(key);
+            var result = this.uiTemplateLocalizationSettingsProvider.GetLocalizedText(key);
             return result == key && !string.IsNullOrEmpty(fallback) ? fallback : result;
         }
     }

@@ -10,6 +10,7 @@
     "Unity.TextMeshPro",
     "Unity.ResourceManager",
     "UITemplate.Scripts",
+    "UITemplate.AutoLocalize",
     "Unity.Localization.Editor"
 
   ],

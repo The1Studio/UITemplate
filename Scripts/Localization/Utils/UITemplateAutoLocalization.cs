@@ -5,7 +5,7 @@ namespace TheOneStudio.UITemplate.UITemplate
     using UnityEngine.Localization.Components;
 
     [RequireComponent(typeof(LocalizeStringEvent))]
-    public class AutoLocalization : MonoBehaviour
+    public class UITemplateAutoLocalization : MonoBehaviour
     {
     }
 }

@@ -9,7 +9,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     using UnityEngine.Scripting;
     using ILogger = TheOne.Logging.ILogger;
 
-    public class LocalizationSettingsProvider
+    public class UITemplateLocalizationSettingsProvider
     {
         private readonly ILogger logger;
         private          string  currentLanguage;
@@ -18,10 +18,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         public string CurrentLanguage => this.currentLanguage;
         public string TableName       => this.tableName;
 
-        [Preserve] public LocalizationSettingsProvider(ILoggerManager loggerManager)
+        [Preserve] public UITemplateLocalizationSettingsProvider(ILoggerManager loggerManager)
         {
             this.logger          = loggerManager.GetLogger(this);
-            this.currentLanguage = "en"; // Default language
+            this.currentLanguage = "en";
             this.tableName       = "Game";
         }
 

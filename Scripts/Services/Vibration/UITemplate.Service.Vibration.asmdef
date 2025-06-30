@@ -1,8 +1,9 @@
 ﻿{
   "name": "UITemplate.Service.Vibration",
   "references": [
-    "GUID:7212d61794904eac9281ce9f26262cb1",
-    "GUID:57a0b9bc628ab4740af4b6f1f0b2e134",
-    "GUID:a08b4fecfb4e43f1aa902a9aa5214b91"
+    "UITemplate.LocalData",
+    "Lofelt.NiceVibrations",
+    "UITemplate.Enum",
+    "GameFoundation.DI"
   ]
 }

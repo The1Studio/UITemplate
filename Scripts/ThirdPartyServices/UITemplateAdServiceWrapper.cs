@@ -452,7 +452,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
         private void DoOnInterstitialFinishedAction(bool isShowSuccess)
         {
-            this.onInterstitialFinishedAction?.Invoke(isShowSuccess);
+            try
+            {
+                this.onInterstitialFinishedAction?.Invoke(isShowSuccess);
+            }
+            catch (Exception e)
+            {
+                this.logger.Exception(e);
+            }
             this.onInterstitialFinishedAction = null;
         }
 
@@ -779,7 +786,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             if (this.adServicesConfig.NativeOverlayInterEnable && canShowNativeOverlayAd)
             {
                 if (this.IsShowMRECAd && isHidePreviousMrec) this.HideMREC(this.mrecPlacement, this.mrecPosition);
-                await this.screenManager.OpenScreen<NativeOverlayInterPopupPresenter, NativeOverlayInterModel>(new (placement, onComplete));
+                await this.screenManager.OpenScreen<NativeOverlayInterPopupPresenter, NativeOverlayInterModel>(new(placement, onComplete));
             }
             else
             {
@@ -804,6 +811,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         #region NativeAds
 
         public float LastTimeShowNativeInterAd = Time.time;
+
         public void ShowNativeCollapse(Action onHideOrLoadFail = null)
         {
             if (this.IsRemovedAds) return;

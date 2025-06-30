@@ -1,6 +1,8 @@
 namespace TheOneStudio.UITemplate.UITemplate.Localization
 {
+    using System;
     using Cysharp.Threading.Tasks;
+    using GameFoundation.DI;
     using GameFoundation.Signals;
     using TheOneStudio.UITemplate.UITemplate.Localization.Signals;
     using TheOneStudio.UITemplate.UITemplate.Utils;
@@ -13,23 +15,22 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     /// Main service for managing language changes and localization
     /// Use this service to change language in your game
     /// </summary>
-    [Preserve]
-    public class UITemplateLocalizationManager
+    [Preserve] public class UITemplateLocalizationManager : IInitializable, IDisposable
     {
-        private readonly SignalBus                       signalBus;
-        private readonly UITemplateLocalizeBlueprint    uiTemplateLocalizeBlueprint;
+        private readonly SignalBus                   signalBus;
+        private readonly UITemplateLocalizeBlueprint uiTemplateLocalizeBlueprint;
 
         [Preserve] public UITemplateLocalizationManager(
-            SignalBus                       signalBus,
-            UITemplateLocalizeBlueprint    uiTemplateLocalizeBlueprint
+            SignalBus                   signalBus,
+            UITemplateLocalizeBlueprint uiTemplateLocalizeBlueprint
         )
         {
-            this.signalBus                    = signalBus;
+            this.signalBus                   = signalBus;
             this.uiTemplateLocalizeBlueprint = uiTemplateLocalizeBlueprint;
         }
 
+        public string TableName { get; set; } = "Game";
 
-        public string TableName { get; set; } = "en";
         public UniTask LoadLocalizationSettings()
         {
             #if THEONE_LOCALIZATION
@@ -38,37 +39,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             return UniTask.CompletedTask;
             #endif
         }
-        /// <summary>
-        /// Changes the current language
-        /// This will trigger localization of all blueprint fields marked with [LocalizableField]
-        /// </summary>
-        /// <param name="languageCode">Language code to change to (e.g., "en", "vi", "zh")</param>
-        public void ChangeLanguage(string languageCode)
+
+        #if THEONE_LOCALIZATION
+        public void ChangeLanguage(Locale obj)
         {
-            if (string.IsNullOrEmpty(languageCode))
-            {
-                Debug.LogError($"[LocalizationManager] Invalid language code: {languageCode}");
-                return;
-            }
-
-
-
-            LocalizationSettings.SelectedLocale = this.FindLocaleByLanguageCode(languageCode);
             this.uiTemplateLocalizeBlueprint.LocalizeAllBlueprintFields();
-
-            this.signalBus.Fire(new LanguageChangedSignal
-            {
-                NewLanguage = languageCode,
-            });
         }
 
-        public async UniTask<string> GetLocalizedString(string key, string fallback = null)
-        {
-            var result = await LocalizationHelper.GetLocalizationString(this.TableName, key);
-            return result == key && !string.IsNullOrEmpty(fallback) ? fallback : result;
-        }
-
-        public Locale FindLocaleByLanguageCode(string languageCode)
+        public Locale GetLocalizationLocale(string languageCode)
         {
             if (LocalizationSettings.AvailableLocales?.Locales == null) return null;
 
@@ -78,6 +56,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             }
 
             return null;
+        }
+
+        #endif
+        public async UniTask<string> GetLocalizedString(string key, string fallback = null)
+        {
+            var result = await LocalizationHelper.GetLocalizationString(this.TableName, key);
+            return result == key && !string.IsNullOrEmpty(fallback) ? fallback : result;
+        }
+
+        public void Initialize()
+        {
+            #if THEONE_LOCALIZATION
+            LocalizationSettings.SelectedLocaleChanged += this.ChangeLanguage;
+            #endif
+        }
+
+        public void Dispose()
+        {
+            #if THEONE_LOCALIZATION
+            LocalizationSettings.SelectedLocaleChanged -= this.ChangeLanguage;
+            #endif
         }
     }
 }

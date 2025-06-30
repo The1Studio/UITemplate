@@ -1,6 +1,7 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Utils
 {
     using Cysharp.Threading.Tasks;
+    using UnityEngine;
 
     public static class LocalizationHelper
     {
@@ -13,7 +14,11 @@
             {
                 var entry = table.GetEntry(entryKey);
                 if (entry != null) return entry.GetLocalizedString();
+
+                Debug.LogError($"[LocalizationHelper] Entry '{entryKey}' not found in table '{tableName}'.");
+                return entryKey;
             }
+            Debug.LogError($"[LocalizationHelper] Table '{tableName}' not found.");
             #endif
             return entryKey;
         }

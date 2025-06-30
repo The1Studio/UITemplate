@@ -15,7 +15,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             builder.Register<UITemplateLocalizeBlueprint>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UITemplateLocalizationManager>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
-            builder.DeclareSignal<LanguageChangedSignal>();
             builder.DeclareSignal<LoadedLocalizationBlueprintsSignal>();
         }
     }

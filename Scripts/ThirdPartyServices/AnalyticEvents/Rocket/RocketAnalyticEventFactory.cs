@@ -17,21 +17,21 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.R
         [Preserve]
         public RocketAnalyticEventFactory(SignalBus signalBus, IAnalyticServices analyticServices, UITemplateLevelDataController levelDataController) : base(signalBus, analyticServices, levelDataController) { }
 
-        public override IEvent InterstitialShow(int level, string place) => new InterstitialShow(level, place);
+        public override IEvent InterstitialShow(int level, string place, Dictionary<string, object> metadata = null)) => new InterstitialShow(level, place);
 
         public override IEvent InterstitialShowCompleted(int level, string place) => new InterstitialShowCompleted(place);
 
-        public override IEvent RewardedVideoShow(int level, string place) => new RewardedVideoShow(level, place);
+        public override IEvent RewardedVideoShow(int level, string place, Dictionary<string, object> metadata = null) => new RewardedVideoShow(level, place);
 
         public override IEvent RewardedVideoShowCompleted(int level, string place, bool isRewarded) => new RewardedAdsShowCompleted(place, isRewarded ? "success" : "skip");
 
-        public override IEvent LevelLose(int level, int timeSpent, int loseCount) => new LevelLose(level, timeSpent);
+        public override IEvent LevelLose(int level, int timeSpent, int loseCount, Dictionary<string, object> metadata = null) => new LevelLose(level, timeSpent);
 
-        public override IEvent LevelStart(int level, int gold) => new LevelStart(level);
+        public override IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata = null) => new LevelStart(level);
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount) => new LevelWin(level, timeSpent);
+        public override IEvent LevelWin(int level, int timeSpent, int winCount, Dictionary<string, object> metadata = null) => new LevelWin(level, timeSpent);
 
-        public override IEvent LevelSkipped(int level, int timeSpent) => new LevelSkipped(level, timeSpent);
+        public override IEvent LevelSkipped(int level, int timeSpent, Dictionary<string, object> metadata = null) => new LevelSkipped(level, timeSpent);
 
         public override void ForceUpdateAllProperties() { }
 

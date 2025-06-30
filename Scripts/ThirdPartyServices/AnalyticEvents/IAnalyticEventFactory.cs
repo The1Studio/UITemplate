@@ -1,5 +1,6 @@
 namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 {
+    using System.Collections.Generic;
     using Core.AnalyticServices.Data;
 
     public interface IAnalyticEventFactory
@@ -9,7 +10,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent BannerAdLoad();
         IEvent InterstitialEligible(string place);
 
-        IEvent InterstitialShow(int level, string place);
+        IEvent InterstitialShow(int level, string place, Dictionary<string, object> metadata);
 
         IEvent InterstitialShowCompleted(int level, string place);
 
@@ -35,7 +36,7 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
 
         IEvent RewardedVideoCalled(string place);
 
-        IEvent RewardedVideoShow(int level, string place);
+        IEvent RewardedVideoShow(int level, string place, Dictionary<string, object> metadata = null);
 
         IEvent RewardedVideoShowFail(string   place, string msg);
         IEvent RewardedLoadFail(string        place, string msg);
@@ -52,22 +53,29 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents
         IEvent AppOpenFullScreenContentOpened(string place);
         IEvent AppOpenClicked(string                 place);
 
-        IEvent LevelLose(int level, int timeSpent, int loseCount);
+        IEvent LevelLose(int level, int timeSpent, int loseCount, Dictionary<string, object> metadata);
 
-        IEvent LevelStart(int level, int gold);
+        IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata);
 
-        IEvent LevelWin(int level, int timeSpent, int winCount);
+        IEvent LevelWin(int level, int timeSpent, int winCount, Dictionary<string, object> metadata);
 
-        IEvent FirstWin(int level, int timeSpent);
+        IEvent FirstWin(int level, int timeSpent, Dictionary<string, object> metadata);
 
-        IEvent LevelSkipped(int level, int timeSpent);
+        IEvent LevelSkipped(int level, int timeSpent, Dictionary<string, object> metadata);
 
-        IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string placement, int level);
+        IEvent EarnVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata);
 
-        IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level);
+        IEvent SpendVirtualCurrency(string virtualCurrencyName, long value, string placement, int level, Dictionary<string, object> metadata);
 
         IEvent TutorialCompletion(bool success, string tutorialId);
 
+        IEvent FTUEStart(string ftueId, Dictionary<string, object> metadata);
+
+        IEvent FTUECompleted(string completedId, Dictionary<string, object> metadata);
+
+        IEvent ShowPopupUI(string   popUpId, bool isAuto);
+        IEvent ClickWidgetGame(string iconId,  Dictionary<string, object> metadata);
+        
         void ForceUpdateAllProperties();
 
         string                            LevelMaxProperty                           { get; }

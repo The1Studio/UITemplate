@@ -31,9 +31,9 @@ namespace TheOneStudio.UITemplate.UITemplate.ThirdPartyServices.AnalyticEvents.B
             }
         }
 
-        public override IEvent LevelWin(int level, int timeSpent, int winCount) => new CustomEvent { EventName = $"win_level_{level}" };
+        public override IEvent LevelWin(int level, int timeSpent, int winCount, Dictionary<string, object> metadata = null) => new CustomEvent { EventName = $"win_level_{level}" };
 
-        public override IEvent LevelStart(int level, int gold) => new CustomEvent { EventName = $"start_level_{level}" };
+        public override IEvent LevelStart(int level, int gold, Dictionary<string, object> metadata = null) => new CustomEvent { EventName = $"start_level_{level}" };
         
         public override AnalyticsEventCustomizationConfig AppsFlyerAnalyticsEventCustomizationConfig { get; set; } = new()
         {

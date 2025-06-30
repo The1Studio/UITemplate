@@ -39,7 +39,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         /// This will trigger localization of all blueprint fields marked with [LocalizableField]
         /// </summary>
         /// <param name="languageCode">Language code to change to (e.g., "en", "vi", "zh")</param>
-        public async UniTask ChangeLanguageAsync(string languageCode)
+        public void ChangeLanguage(string languageCode)
         {
             if (string.IsNullOrEmpty(languageCode))
             {
@@ -58,7 +58,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             try
             {
                 this.localizationProvider.SetLanguage(languageCode);
-                await this.blueprintLocalizationService.LocalizeAllBlueprintFields();
+                this.blueprintLocalizationService.LocalizeAllBlueprintFields();
 
                 this.signalBus.Fire(new LanguageChangedSignal
                 {

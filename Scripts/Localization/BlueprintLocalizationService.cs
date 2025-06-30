@@ -5,14 +5,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using BlueprintFlow.BlueprintControlFlow;
     using BlueprintFlow.BlueprintReader;
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Signals;
     using TheOne.Logging;
-    using TheOneStudio.UITemplate.UITemplate.Localization.Signals;
     using UnityEngine.Scripting;
+    using ILogger = TheOne.Logging.ILogger;
 
     /// <summary>
     /// Service responsible for managing blueprint localization
@@ -21,25 +20,24 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     public class BlueprintLocalizationService : IInitializable, IDisposable
     {
         private readonly SignalBus                            signalBus;
-        private readonly StringTableLocalizationProvider localizationProvider;
+        private readonly StringTableLocalizationProvider      localizationProvider;
         private readonly IEnumerable<IGenericBlueprintReader> blueprints;
         private readonly ILogger                              logger;
 
         // Cache original values before localization
-        private readonly Dictionary<object, Dictionary<string, string>> originalValuesCache;
+        private readonly Dictionary<IGenericBlueprintReader, List<LocalizableDataRecord>> originalValuesCache = new();
 
-        [Preserve]
-        public BlueprintLocalizationService(
+        [Preserve] public BlueprintLocalizationService(
             SignalBus                            signalBus,
-            StringTableLocalizationProvider localizationProvider,
+            StringTableLocalizationProvider      localizationProvider,
             IEnumerable<IGenericBlueprintReader> blueprints,
-            ILoggerManager                       loggerManager)
+            ILoggerManager                       loggerManager
+        )
         {
             this.signalBus            = signalBus;
             this.localizationProvider = localizationProvider;
             this.blueprints           = blueprints;
             this.logger               = loggerManager.GetLogger(this);
-            this.originalValuesCache  = new Dictionary<object, Dictionary<string, string>>();
         }
 
         public void Initialize()
@@ -57,8 +55,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         /// </summary>
         private void CacheOriginalValues()
         {
-            var cachedCount = 0;
-
             foreach (var blueprint in this.blueprints)
             {
                 var fieldsData = this.GetLocalizableFieldsData(blueprint);
@@ -66,11 +62,10 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
                 if (fieldsData.Count > 0)
                 {
                     this.originalValuesCache[blueprint] = fieldsData;
-                    cachedCount += fieldsData.Count;
                 }
             }
 
-            this.logger?.Info($"Cached {cachedCount} original values from {this.originalValuesCache.Count} blueprints");
+            this.logger?.Info($"trong: Cached original values for {this.originalValuesCache.Count} blueprints");
         }
 
         /// <summary>
@@ -79,9 +74,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         public async UniTask LocalizeAllBlueprintFields()
         {
             var totalFieldsCount = 0;
-            var blueprintCount = 0;
+            var blueprintCount   = 0;
 
-            foreach (var blueprint in this.blueprints)
+            foreach (var blueprint in this.originalValuesCache.Keys)
             {
                 var localizedFields = await this.LocalizeBlueprintFields(blueprint);
                 if (localizedFields > 0)
@@ -101,17 +96,17 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             if (blueprint == null) return 0;
 
             var localizedCount = 0;
-            var blueprintType = blueprint.GetType();
+            var blueprintType  = blueprint.GetType();
 
             try
             {
                 // Handle ByRow blueprints
-                if (IsGenericBlueprintByRow(blueprintType))
+                if (this.IsGenericBlueprintByRow(blueprintType))
                 {
                     localizedCount += await this.LocalizeByRowBlueprint(blueprint);
                 }
                 // Handle ByCol blueprints
-                else if (IsGenericBlueprintByCol(blueprintType))
+                else if (this.IsGenericBlueprintByCol(blueprintType))
                 {
                     localizedCount += await this.LocalizeByColBlueprint(blueprint);
                 }
@@ -131,9 +126,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         private async UniTask<int> LocalizeByRowBlueprint(IGenericBlueprintReader blueprint)
         {
             var localizedCount = 0;
-            var blueprintType = blueprint.GetType();
+            var blueprintType  = blueprint.GetType();
 
-            // Get the Values property (collection of records)
             var valuesProperty = blueprintType.GetProperty("Values");
             if (valuesProperty == null) return 0;
 
@@ -161,25 +155,19 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         /// </summary>
         private async UniTask<int> LocalizeRecordFields(object record, IGenericBlueprintReader blueprint)
         {
-            if (record == null) return 0;
 
             var localizedCount = 0;
-            var recordType = record.GetType();
-            var localizableFields = this.GetLocalizableFields(recordType);
-
-            foreach (var field in localizableFields)
+            if (record == null) return localizedCount;
+            this.originalValuesCache.TryGetValue(blueprint, out var fieldsData);
+            if (fieldsData == null) return localizedCount;
+            var localizableMembers = fieldsData
+                .FirstOrDefault(data => data.Record == record)?.LocalizableMembers;
+            if (localizableMembers == null || localizableMembers.Count == 0) return localizedCount;
+            foreach (var member in localizableMembers)
             {
-                try
+                if (await this.LocalizeField(member))
                 {
-                    if (await this.LocalizeField(record, field, blueprint))
-                    {
-                        localizedCount++;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    this.logger?.Error($"Failed to localize field '{field.Name}' in '{recordType.Name}'");
-                    this.logger?.Exception(ex);
+                    localizedCount++;
                 }
             }
 
@@ -189,68 +177,27 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         /// <summary>
         /// Localize a specific field
         /// </summary>
-        private async UniTask<bool> LocalizeField(object record, PropertyInfo property, IGenericBlueprintReader blueprint)
+        private async UniTask<bool> LocalizeField(LocalizableMember member)
         {
-            if (property.PropertyType != typeof(string)) return false;
 
-            var attribute = property.GetCustomAttribute<LocalizableFieldAttribute>();
-            if (attribute == null) return false;
+            var localizationKey = member.OriginalValue;
 
-            // Get original value
-            var originalValue = this.GetOriginalFieldValue(record, property.Name, blueprint);
-            if (string.IsNullOrEmpty(originalValue)) return false;
-
-            // Determine localization key
-            var localizationKey = originalValue; // Use original value as key
-
-            // Get localized value
             var localizedValue = this.localizationProvider.GetLocalizedText(localizationKey);
 
-            // Use original value as fallback if localization not found
-            if (localizedValue == localizationKey)
+            if (member.Property.CanWrite)
             {
-                localizedValue = originalValue;
-            }
-
-            // Set localized value
-            if (property.CanWrite)
-            {
-                property.SetValue(record, localizedValue);
-                this.logger?.Debug($"Localized field '{property.Name}': '{originalValue}' -> '{localizedValue}'");
+                member.Property.SetValue(member.Record, localizedValue);
                 return true;
             }
 
             return false;
         }
-
-        /// <summary>
-        /// Get original field value from cache
-        /// </summary>
-        private string GetOriginalFieldValue(object record, string fieldName, IGenericBlueprintReader blueprint)
+        private List<LocalizableDataRecord> GetLocalizableFieldsData(IGenericBlueprintReader blueprint)
         {
-            if (this.originalValuesCache.TryGetValue(blueprint, out var fieldsData))
-            {
-                var key = $"{record.GetType().Name}.{fieldName}";
-                if (fieldsData.TryGetValue(key, out var originalValue))
-                {
-                    return originalValue;
-                }
-            }
-
-            // Fallback: get current value
-            var property = record.GetType().GetProperty(fieldName);
-            return property?.GetValue(record) as string ?? string.Empty;
-        }
-
-        /// <summary>
-        /// Get localizable fields data for caching
-        /// </summary>
-        private Dictionary<string, string> GetLocalizableFieldsData(IGenericBlueprintReader blueprint)
-        {
-            var fieldsData = new Dictionary<string, string>();
+            var fieldsData    = new List<LocalizableDataRecord>();
             var blueprintType = blueprint.GetType();
 
-            if (IsGenericBlueprintByRow(blueprintType))
+            if (this.IsGenericBlueprintByRow(blueprintType))
             {
                 var valuesProperty = blueprintType.GetProperty("Values");
 
@@ -262,7 +209,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
                     }
                 }
             }
-            else if (IsGenericBlueprintByCol(blueprintType))
+            else if (this.IsGenericBlueprintByCol(blueprintType))
             {
                 this.CacheRecordFields(blueprint, fieldsData);
             }
@@ -270,12 +217,13 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             return fieldsData;
         }
 
-        /// <summary>
-        /// Cache fields from a record
-        /// </summary>
-        private void CacheRecordFields(object record, Dictionary<string, string> fieldsData)
+        private void CacheRecordFields(object record, List<LocalizableDataRecord> fieldsData)
         {
             var recordType = record.GetType();
+            var dataRecord = new LocalizableDataRecord
+            {
+                Record = record,
+            };
             var localizableFields = this.GetLocalizableFields(recordType);
 
             foreach (var property in localizableFields)
@@ -285,44 +233,59 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
                     var value = property.GetValue(record) as string;
                     if (!string.IsNullOrEmpty(value))
                     {
-                        var key = $"{recordType.Name}.{property.Name}";
-                        fieldsData[key] = value;
+                        dataRecord.LocalizableMembers.Add(new()
+                        {
+                            Property      = property,
+                            OriginalValue = value,
+                            Record        = record,
+                        });
                     }
                 }
             }
-        }
 
-        /// <summary>
-        /// Get all properties marked with LocalizableField attribute
-        /// </summary>
+            // Add to fields data
+            fieldsData.Add(dataRecord);
+        }
         private IEnumerable<PropertyInfo> GetLocalizableFields(Type type)
         {
             return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.GetCustomAttribute<LocalizableFieldAttribute>() != null);
         }
 
-        private static bool IsGenericBlueprintByRow(Type type)
+        private bool IsGenericBlueprintByRow(Type type)
         {
             var baseType = type.BaseType;
             while (baseType != null)
             {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition().Name.Contains("GenericBlueprintReaderByRow"))
-                    return true;
+                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition().Name.Contains("GenericBlueprintReaderByRow")) return true;
                 baseType = baseType.BaseType;
             }
             return false;
         }
 
-        private static bool IsGenericBlueprintByCol(Type type)
+        private bool IsGenericBlueprintByCol(Type type)
         {
             var baseType = type.BaseType;
             while (baseType != null)
             {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition().Name.Contains("GenericBlueprintReaderByCol"))
-                    return true;
+                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition().Name.Contains("GenericBlueprintReaderByCol")) return true;
                 baseType = baseType.BaseType;
             }
             return false;
         }
+    }
+
+    public class LocalizableDataRecord
+    {
+        public object                      Record             { get; set; }
+        public List<LocalizableMember>     LocalizableMembers { get; set; } = new();
+        public List<LocalizableDataRecord> Children           { get; set; } = new();
+    }
+
+    public class LocalizableMember
+    {
+        public PropertyInfo Property      { get; set; }
+        public string       OriginalValue { get; set; }
+        public object       Record        { get; set; }
     }
 }

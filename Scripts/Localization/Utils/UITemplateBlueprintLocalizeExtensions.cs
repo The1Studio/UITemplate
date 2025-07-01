@@ -11,11 +11,14 @@
     {
         public static IEnumerable<PropertyInfo> GetLocalizableFields(Type type)
         {
+            #if THEONE_LOCALIZATION
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             return properties
                 .Where(p => p.GetCustomAttribute<LocalizableFieldAttribute>() != null).ToList();
 
+            #endif
+            return Enumerable.Empty<PropertyInfo>();
         }
 
         public static bool IsGenericBlueprintByRow(Type type)

@@ -4,6 +4,7 @@ namespace TheOneStudio.UITemplate
 {
     using System.Linq;
     using Core.AnalyticServices.Data;
+    using GameFoundation.Scripts.Utilities.Extension;
     using TheOne.Extensions;
     using TheOneStudio.DeepLinking;
     using TheOneStudio.Notification;
@@ -29,7 +30,7 @@ namespace TheOneStudio.UITemplate
 
             builder.Register<UITemplateAnimationHelper>(Lifetime.Singleton);
             builder.Register<UITemplateCollectionItemViewHelper>(Lifetime.Singleton);
-            builder.Register(typeof(BreakAdsViewHelper).GetDerivedTypes().OrderBy(type => type == typeof(BreakAdsViewHelper)).First(), Lifetime.Singleton).As<BreakAdsViewHelper>();
+            builder.RegisterFromDerivedType<BreakAdsViewHelper>();
 
             builder.RegisterUITemplateAdsService();
             builder.RegisterUITemplateThirdPartyServices();

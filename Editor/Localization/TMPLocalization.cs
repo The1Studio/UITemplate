@@ -17,6 +17,7 @@ namespace TheOne.Tool.Localization
     using UnityEngine.Localization.Settings;
     using UnityEngine.Localization.Tables;
     using UnityEditor.Localization;
+    using UnityEngine.Localization.Events;
     using Object = UnityEngine.Object;
 
     public enum TextMeshType
@@ -96,6 +97,9 @@ namespace TheOne.Tool.Localization
                     }
                 }
             }
+
+            //Refesh the editor to show the updated lists
+            this.Repaint();
         }
 
         public static bool IsTMPReferencedInGameObject(TMP_Text tmp, GameObject prefab, out MonoBehaviour refMono, out string fieldName)
@@ -151,6 +155,7 @@ namespace TheOne.Tool.Localization
                 if (textInfo.DisplayText.Any(char.IsLetter))
                 {
                     textInfo.Localized();
+                    textInfo.SetupLocalizeStringEvent();
                 }
             }
         }
@@ -369,41 +374,63 @@ namespace TheOne.Tool.Localization
         public void SetupLocalizeStringEvent()
         {
             this.UpdatePrefab((tmpGo) =>
-            {
-                var localizeStringEvent = tmpGo.GetComponent<LocalizeStringEvent>();
-                if (localizeStringEvent == null)
                 {
-                    localizeStringEvent = tmpGo.AddComponent<LocalizeStringEvent>();
-                }
-
-                localizeStringEvent.SetTable(TMPLocalization.Instance.StringTableName);
-                var textValue = this.tmpText.text;
-
-                // Ensure we have the string table collection
-                if (TMPLocalization.Instance.selectedCollection == null)
-                {
-                    TMPLocalization.Instance.selectedCollection = LocalizationEditorSettings.GetStringTableCollection(TMPLocalization.Instance.StringTableName);
-                }
-
-                if (TMPLocalization.Instance.selectedCollection != null)
-                {
-                    // Find existing entry by text value
-                    var existingEntry = TMPLocalization.Instance.selectedCollection.SharedData.GetEntry(textValue);
-                    if (existingEntry != null)
+                    var localizeStringEvent = tmpGo.GetComponent<LocalizeStringEvent>();
+                    if (localizeStringEvent == null)
                     {
-                        localizeStringEvent.SetEntry(existingEntry.Key);
-                        Debug.Log($"Set entry key '{existingEntry.Key}' for text: {textValue}");
+                        localizeStringEvent = tmpGo.AddComponent<LocalizeStringEvent>();
+                    }
+
+                    localizeStringEvent.SetTable(TMPLocalization.Instance.StringTableName);
+                    var textValue = this.tmpText.text;
+
+                    // Ensure we have the string table collection
+                    if (TMPLocalization.Instance.selectedCollection == null)
+                    {
+                        TMPLocalization.Instance.selectedCollection = LocalizationEditorSettings.GetStringTableCollection(TMPLocalization.Instance.StringTableName);
+                    }
+
+                    if (TMPLocalization.Instance.selectedCollection != null)
+                    {
+                        // Find existing entry by text value
+                        var existingEntry = TMPLocalization.Instance.selectedCollection.SharedData.GetEntry(textValue);
+                        if (existingEntry != null)
+                        {
+                            localizeStringEvent.SetEntry(existingEntry.Key);
+
+                            // Set the Update String to update at runtime
+                            if (localizeStringEvent.OnUpdateString == null)
+                            {
+                                localizeStringEvent.OnUpdateString = new UnityEventString();
+                            }
+
+                            // Clear any existing listeners and add the text component's text property
+                            localizeStringEvent.OnUpdateString.RemoveAllListeners();
+                            localizeStringEvent.OnUpdateString.AddListener((string localizedText) =>
+                            {
+                                var textComponent = tmpGo.GetComponent<TMP_Text>();
+                                if (textComponent != null)
+                                {
+                                    textComponent.text = localizedText;
+                                }
+                            });
+
+                            // Set the string reference to target the 'text' property
+                            localizeStringEvent.StringReference.SetReference(TMPLocalization.Instance.StringTableName, existingEntry.Key);
+
+                            Debug.Log($"Set entry key '{existingEntry.Key}' for text: {textValue}");
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"Entry not found for text: {textValue}. Please add entry key first.");
+                        }
                     }
                     else
                     {
-                        Debug.LogWarning($"Entry not found for text: {textValue}. Please add entry key first.");
+                        Debug.LogError($"Could not find string table collection: {TMPLocalization.Instance.StringTableName}");
                     }
-                }
-                else
-                {
-                    Debug.LogError($"Could not find string table collection: {TMPLocalization.Instance.StringTableName}");
-                }
-            }, TMPLocalization.Instance.StaticLocalizedTextInfos);
+                },
+                TMPLocalization.Instance.StaticLocalizedTextInfos);
         }
 
         private bool IsDynamicLocalized() { return this.TextType == TextMeshType.DynamicLocalized; }

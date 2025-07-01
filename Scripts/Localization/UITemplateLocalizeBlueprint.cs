@@ -79,6 +79,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
             var localizedValue = await this.localizationManager.GetLocalizedString(localizationKey);
 
             if (!member.Property.CanWrite) return false;
+            this.logger.Info($"Localizing field '{member.Property.Name}' with key '{localizationKey}' to value '{localizedValue}'");
             member.Property.SetValue(member.Record, localizedValue);
             return true;
         }

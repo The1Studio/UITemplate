@@ -1,34 +1,33 @@
 {
-  "name": "TheOne.Tool.Localization",
-  "rootNamespace": "TheOne.Tool.Localization",
-  "references": [
-    "GameFoundation.Utilities",
-    "Unity.Addressables.Editor",
-    "UniTask",
-    "TheOne.Tool.Core",
-    "Unity.Localization",
-    "Unity.TextMeshPro",
-    "Unity.ResourceManager",
-    "UITemplate.Scripts",
-    "UITemplate.AutoLocalize",
-    "Unity.Localization.Editor"
-
-  ],
-  "includePlatforms": [
-    "Editor"
-  ],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [
-    {
-      "name": "com.unity.localization",
-      "expression": "",
-      "define": "THEONE_LOCALIZATION"
-    }
-  ],
-  "noEngineReferences": false
+    "name": "TheOne.Tool.Localization",
+    "rootNamespace": "TheOne.Tool.Localization",
+    "references": [
+        "GameFoundation.Utilities",
+        "Unity.Addressables.Editor",
+        "UniTask",
+        "TheOne.Tool.Core",
+        "Unity.Localization",
+        "Unity.TextMeshPro",
+        "Unity.ResourceManager",
+        "UITemplate.Scripts",
+        "UITemplate.AutoLocalize",
+        "Unity.Localization.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": ""
+        }
+    ],
+    "noEngineReferences": false
 }

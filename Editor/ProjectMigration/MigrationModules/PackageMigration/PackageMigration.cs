@@ -1,7 +1,6 @@
 namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using Core.AnalyticServices;
@@ -13,40 +12,13 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
     using UnityEditor.PackageManager;
     using UnityEngine;
 
-    public static class PackageMigration
+    public static partial class PackageMigration
     {
-        public class Config
-        {
-            public List<Registry>                   Registries                 { get; set; }
-            public Dictionary<string, string>       PackagesToAdd              { get; set; }
-            public Dictionary<string, string>       PackagesVersionToUse       { get; set; }
-            public Dictionary<string, UnityPackage> NameToUnityPackageToImport { get; set; }
-            public List<string>                     PackagesToRemove           { get; set; }
-            public List<string>                     WebGLPackagesToRemove       { get; set; }
+        [NonSerialized] private static PackageMigrationConfig.Config config;
 
-            public class Registry
-            {
-                public string       Name   { get; set; }
-                public string       Url    { get; set; }
-                public List<string> Scopes { get; set; }
-            }
-
-            public class UnityPackage
-            {
-                public string Path { get; set; }
-                public string Url  { get; set; }
-            }
-        }
-
-        [NonSerialized] private static Config config;
         public static void Migrate()
         {
-            var configFileName =
-#if UNITY_6000_0_OR_NEWER
-                "PackageMigrationConfig_unity6";
-#else
-                "PackageMigrationConfig_unity2022";
-#endif
+            var configFileName = "PackageMigrationConfig";
             var configTextAsset = Resources.Load<TextAsset>(configFileName);
             if (configTextAsset == null)
             {
@@ -54,9 +26,30 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
                 return;
             }
 
-            var configJson = configTextAsset.text;
-            // Deserialize the JSON string into the Config object
-            config = JsonConvert.DeserializeObject<Config>(configJson);
+            var packageMigrationConfig = JsonConvert.DeserializeObject<PackageMigrationConfig>(configTextAsset.text);
+            if (packageMigrationConfig?.Base == null)
+            {
+                Debug.LogError("Invalid config structure: base configuration is missing");
+                return;
+            }
+
+            // Determine which variant to use based on Unity version
+            string variantKey = GetUnityVariantKey();
+            PackageMigrationConfig.Config variantConfig = null;
+
+            if (!string.IsNullOrEmpty(variantKey) && packageMigrationConfig.Variants != null && 
+                packageMigrationConfig.Variants.ContainsKey(variantKey))
+            {
+                variantConfig = packageMigrationConfig.Variants[variantKey];
+                Debug.Log($"Using variant: {variantKey}");
+            }
+            else
+            {
+                Debug.Log("Using base configuration (no variant found)");
+            }
+
+            config = PackageMigrationConfig.Config.Merge(packageMigrationConfig.Base, variantConfig);
+
 #if APPSFLYER
             config.PackagesToAdd.Add("com.theone.appsflyer-unity-plugin", AnalyticConfig.AppsflyerPackageGitURL);
 #endif
@@ -68,6 +61,19 @@ namespace TheOne.Tool.Migration.ProjectMigration.MigrationModules
 #endif
             CheckAndUpdatePackageManagerSettings();
             ImportUnityPackage();
+        }
+
+        private static string GetUnityVariantKey()
+        {
+#if UNITY_6000_0_OR_NEWER
+            return null; // Unity 6 uses base config as-is
+#elif UNITY_2022_3_OR_NEWER
+            return "unity2022";
+#elif UNITY_2021_3_OR_NEWER
+            return "unity2021";
+#else
+            return null; // Default to base config for older versions
+#endif
         }
 
         private static void ImportUnityPackage()

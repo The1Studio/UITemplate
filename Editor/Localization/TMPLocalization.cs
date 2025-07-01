@@ -78,7 +78,15 @@ namespace TheOne.Tool.Localization
 
                     if (tmp.TryGetComponent<UITemplateAutoLocalization>(out var component))
                     {
-                        info.TextType = IsTMPReferencedInGameObject(tmp, obj, out _, out _) ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
+                        var isDynamic = IsTMPReferencedInGameObject(tmp, obj, out var refMono, out var fieldName);
+                        info.TextType = isDynamic ? TextMeshType.DynamicLocalized : TextMeshType.StaticLocalized;
+                        
+                        // Set reference for dynamic localized
+                        if (isDynamic)
+                        {
+                            info.refMono = refMono;
+                            info.fieldName = fieldName;
+                        }
                     }
 
                     switch (info.TextType)
@@ -287,7 +295,11 @@ namespace TheOne.Tool.Localization
             this.fieldName = fn;
             this.UpdatePrefab((tmpTextInInstance) =>
             {
-                if (!tmpTextInInstance.TryGetComponent<UITemplateAutoLocalization>(out _))
+                // Check on both instance and original prefab to handle variants
+                var hasComponentOnInstance = tmpTextInInstance.TryGetComponent<UITemplateAutoLocalization>(out _);
+                var hasComponentOnOriginal = this.tmpText.TryGetComponent<UITemplateAutoLocalization>(out _);
+                
+                if (!hasComponentOnInstance && !hasComponentOnOriginal)
                 {
                     tmpTextInInstance.AddComponent<UITemplateAutoLocalization>();
                 }
@@ -449,11 +461,12 @@ namespace TheOne.Tool.Localization
 
             updatePrefabAction.Invoke(tmpTextInInstance);
 
+            // Only apply changes to this specific prefab, not all variants
             PrefabUtility.ApplyPrefabInstance(prefabInstance, InteractionMode.UserAction);
+            
             this.RemoveElementFromList();
             newList.Add(this);
 
-            Object.DestroyImmediate(prefabInstance);
             Object.DestroyImmediate(prefabInstance);
 
             if (newList == TMPLocalization.Instance.StaticLocalizedTextInfos)

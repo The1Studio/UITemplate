@@ -19,7 +19,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
     using ServiceImplementation.AdsServices.ConsentInformation;
     using ServiceImplementation.Configs.Ads;
     using TheOne.Logging;
-    using TheOneStudio.UITemplate.UITemplate.Localization;
     using TheOneStudio.UITemplate.UITemplate.Scenes.Utils;
     using TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices;
     using TheOneStudio.UITemplate.UITemplate.UserData;
@@ -126,10 +125,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
                 this.WaitForAoa(),
                 #endif
                 UniTask.WhenAll(
-                        this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
-                        this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
-                    ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
-                    .ContinueWith(this.OnLocalizedBlueprints)
+                    this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
+                    this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
+                ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene).Forget();
 
             return UniTask.CompletedTask;
@@ -251,11 +249,6 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
             return UniTask.CompletedTask;
         }
 
-        protected virtual async UniTask OnLocalizedBlueprints()
-        {
-            await this.TrackProgress(this.localizationManager.LoadLocalizationSettings());
-        }
-
         protected virtual UniTask OnLoadingCompleted()
         {
             return UniTask.CompletedTask;
@@ -315,34 +308,31 @@ namespace TheOneStudio.UITemplate.UITemplate.Scenes.Loading
 
         #region Inject
 
-        protected readonly UITemplateAdServiceWrapper    adService;
-        protected readonly BlueprintReaderManager        blueprintManager;
-        private readonly   UITemplateLocalizationManager localizationManager;
-        protected readonly UserDataManager               userDataManager;
-        protected readonly IGameAssets                   gameAssets;
-        private readonly   ObjectPoolManager             objectPoolManager;
-        private readonly   UITemplateAdServiceWrapper    uiTemplateAdServiceWrapper;
-        private readonly   IAnalyticServices             analyticServices;
-        private readonly   IConsentInformation           consentInformation;
+        protected readonly UITemplateAdServiceWrapper adService;
+        protected readonly BlueprintReaderManager     blueprintManager;
+        protected readonly UserDataManager            userDataManager;
+        protected readonly IGameAssets                gameAssets;
+        private readonly   ObjectPoolManager          objectPoolManager;
+        private readonly   UITemplateAdServiceWrapper uiTemplateAdServiceWrapper;
+        private readonly   IAnalyticServices          analyticServices;
+        private readonly   IConsentInformation        consentInformation;
 
         [Preserve]
         protected UITemplateLoadingScreenPresenter(
-            SignalBus                     signalBus,
-            ILoggerManager                loggerManager,
-            UITemplateAdServiceWrapper    adService,
-            BlueprintReaderManager        blueprintManager,
-            UITemplateLocalizationManager localizationManager,
-            UserDataManager               userDataManager,
-            IGameAssets                   gameAssets,
-            ObjectPoolManager             objectPoolManager,
-            UITemplateAdServiceWrapper    uiTemplateAdServiceWrapper,
-            IAnalyticServices             analyticServices,
-            IConsentInformation           consentInformation
+            SignalBus                  signalBus,
+            ILoggerManager             loggerManager,
+            UITemplateAdServiceWrapper adService,
+            BlueprintReaderManager     blueprintManager,
+            UserDataManager            userDataManager,
+            IGameAssets                gameAssets,
+            ObjectPoolManager          objectPoolManager,
+            UITemplateAdServiceWrapper uiTemplateAdServiceWrapper,
+            IAnalyticServices          analyticServices,
+            IConsentInformation        consentInformation
         ) : base(signalBus, loggerManager)
         {
             this.adService                  = adService;
             this.blueprintManager           = blueprintManager;
-            this.localizationManager        = localizationManager;
             this.userDataManager            = userDataManager;
             this.gameAssets                 = gameAssets;
             this.objectPoolManager          = objectPoolManager;

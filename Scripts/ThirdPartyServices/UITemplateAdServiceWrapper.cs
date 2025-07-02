@@ -574,6 +574,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 adService.ShowInterstitialAd(place);
             }
         }
+        
+        public int TotalInterstitialAdShownThisSession => this.totalInterstitialAdsShowedInSession;
 
         #endregion
 

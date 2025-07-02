@@ -16,7 +16,7 @@
         public async UniTask<string> GetFormatString(string input)
         {
             var regex  = new Regex(Pattern);
-            var result = await LocalizationHelper.GetLocalizationString(LocalizationTableCollection, input);
+            var result = await LocalizationHelper.GetLocalizationStringAsync(LocalizationTableCollection, input);
 
             foreach (Match item in regex.Matches(result)) result = result.Replace(item.Value, this.GetReplacement(item.Value));
 

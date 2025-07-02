@@ -28,6 +28,10 @@ namespace TheOneStudio.UITemplate.UITemplate
             var textComponent = this.gameObject.GetComponent<TextMeshProUGUI>();
             if (textComponent != null)
             {
+                if (textComponent.textWrappingMode != TextWrappingModes.NoWrap)
+                {
+                    textComponent.enableAutoSizing = true;
+                }
                 if (localizeStringEvent.OnUpdateString == null)
                 {
                     localizeStringEvent.OnUpdateString = new UnityEventString();
@@ -41,12 +45,22 @@ namespace TheOneStudio.UITemplate.UITemplate
 
                 // Add persistent listener that will show up in Inspector
                 UnityEventTools.AddPersistentListener(localizeStringEvent.OnUpdateString,
-                    textComponent.SetText);
+                    this.SetText);
 
                 // Mark the object as dirty so Unity knows to save the changes
                 #if UNITY_EDITOR
                 UnityEditor.EditorUtility.SetDirty(localizeStringEvent);
                 #endif
+            }
+        }
+
+        public void SetText(string text)
+        {
+            var textComponent = this.gameObject.GetComponent<TMP_Text>();
+            if (textComponent != null)
+            {
+                textComponent.textInfo.ClearAllMeshInfo();
+                textComponent.text = text;
             }
         }
     }

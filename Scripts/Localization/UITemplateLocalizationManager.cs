@@ -61,7 +61,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         #endif
         public async UniTask<string> GetLocalizedString(string key, string fallback = null)
         {
-            var result = await LocalizationHelper.GetLocalizationString(this.TableName, key);
+            var result = await LocalizationHelper.GetLocalizationStringAsync(this.TableName, key);
             return result == key && !string.IsNullOrEmpty(fallback) ? fallback : result;
         }
 

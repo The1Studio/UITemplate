@@ -40,9 +40,9 @@
             return entryKey;
         }
 
-        #if THEONE_LOCALIZATION
         public static void SetReferenceString(this TMP_Text textObject, string referenceString, string tableName = "Game")
         {
+            #if THEONE_LOCALIZATION
             if (!textObject.TryGetComponent(out UnityEngine.Localization.Components.LocalizeStringEvent stringEvent)) return;
 
             if (string.IsNullOrEmpty(stringEvent.StringReference.TableReference))
@@ -52,11 +52,14 @@
 
             stringEvent.StringReference.TableEntryReference = referenceString;
             stringEvent.SetEntry(referenceString);
+            #endif
         }
 
         public static async void SetTextLocalize(this TMP_Text obj, string entryKey, string tableName = "Game")
         {
+            #if THEONE_LOCALIZATION
             obj.textInfo.ClearAllMeshInfo();
+            #endif
             obj.SetReferenceString(entryKey, tableName);
             var localizationString = await GetLocalizationStringAsync(tableName, entryKey);
             obj.text = localizationString;
@@ -65,7 +68,9 @@
 
         public static async void SetTextLocalizeFormat(this TMP_Text obj, string entryKey, string tableName = "Game", params object[] formatArgs)
         {
+            #if THEONE_LOCALIZATION
             obj.textInfo.ClearAllMeshInfo();
+            #endif
             obj.SetReferenceString(entryKey, tableName);
             var localizationString = await GetLocalizationStringAsync(tableName, entryKey);
 
@@ -79,6 +84,5 @@
             }
 
         }
-        #endif
     }
 }

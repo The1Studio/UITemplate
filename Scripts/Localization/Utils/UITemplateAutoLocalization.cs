@@ -14,6 +14,17 @@ namespace TheOneStudio.UITemplate.UITemplate
     {
         [Button] public void SetUpStringEvent(string tableName)
         {
+            var localizeStringEvents = this.gameObject.GetComponents<LocalizeStringEvent>();
+
+            if (localizeStringEvents.Length > 1)
+            {
+                for (var i = 1; i < localizeStringEvents.Length; i++)
+                {
+                    DestroyImmediate(localizeStringEvents[i]);
+                }
+            }
+
+
             var localizeStringEvent = this.gameObject.GetComponent<LocalizeStringEvent>();
             if (localizeStringEvent == null)
             {

@@ -1,11 +1,12 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Utils
 {
     using Cysharp.Threading.Tasks;
+    using TMPro;
+    using UnityEngine;
 
     public static class LocalizationHelper
     {
-        #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public static async UniTask<string> GetLocalizationString(string tableName, string entryKey)
+        public static async UniTask<string> GetLocalizationStringAsync(string tableName, string entryKey)
         {
             #if THEONE_LOCALIZATION
             var table = await UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTableAsync(tableName);
@@ -13,10 +14,75 @@
             {
                 var entry = table.GetEntry(entryKey);
                 if (entry != null) return entry.GetLocalizedString();
+
+                Debug.LogWarning($"[LocalizationHelper] Entry '{entryKey}' not found in table '{tableName}'.");
+                return entryKey;
             }
+            Debug.LogError($"[LocalizationHelper] Table '{tableName}' not found.");
             #endif
             return entryKey;
         }
-        #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+
+        public static string GetLocalizationString(string tableName, string entryKey)
+        {
+            #if THEONE_LOCALIZATION
+            var table = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetTable(tableName);
+            if (table != null)
+            {
+                var entry = table.GetEntry(entryKey);
+                if (entry != null) return entry.GetLocalizedString();
+
+                Debug.LogWarning($"[LocalizationHelper] Entry '{entryKey}' not found in table '{tableName}'.");
+                return entryKey;
+            }
+            Debug.LogError($"[LocalizationHelper] Table '{tableName}' not found.");
+            #endif
+            return entryKey;
+        }
+
+        public static void SetReferenceString(this TMP_Text textObject, string referenceString, string tableName = "Game")
+        {
+            #if THEONE_LOCALIZATION
+            if (!textObject.TryGetComponent(out UnityEngine.Localization.Components.LocalizeStringEvent stringEvent)) return;
+
+            if (string.IsNullOrEmpty(stringEvent.StringReference.TableReference))
+            {
+                stringEvent.StringReference.TableReference = tableName;
+            }
+
+            stringEvent.StringReference.TableEntryReference = referenceString;
+            stringEvent.SetEntry(referenceString);
+            #endif
+        }
+
+        public static async void SetTextLocalize(this TMP_Text obj, string entryKey, string tableName = "Game")
+        {
+            #if THEONE_LOCALIZATION
+            obj.textInfo.ClearAllMeshInfo();
+            #endif
+            obj.SetReferenceString(entryKey, tableName);
+            var localizationString = await GetLocalizationStringAsync(tableName, entryKey);
+            obj.text = localizationString;
+
+        }
+
+        public static async void SetTextLocalizeFormat(this TMP_Text obj, string entryKey, string tableName = "Game", params object[] formatArgs)
+        {
+            #if THEONE_LOCALIZATION
+            obj.textInfo.ClearAllMeshInfo();
+            #endif
+            obj.SetReferenceString(entryKey, tableName);
+            var localizationString = await GetLocalizationStringAsync(tableName, entryKey);
+
+            if (formatArgs is { Length: > 0 })
+            {
+                obj.text = string.Format(localizationString, formatArgs);
+            }
+            else
+            {
+                obj.text = localizationString;
+            }
+
+        }
     }
 }

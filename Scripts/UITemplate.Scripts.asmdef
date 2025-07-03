@@ -59,6 +59,7 @@
     "UITemplate.Blueprint",
     "UITemplate.Extension",
     "UITemplate.LocalData",
+    "UITemplate.AutoLocalize",
     "UITemplate.FlyingAnimation",
     "UITemplate.Signal",
     "UITemplate.FTUE",

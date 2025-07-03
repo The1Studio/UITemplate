@@ -1,0 +1,25 @@
+{
+    "name": "UITemplate.AutoLocalize",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f51af22c92914bc6b143539603c8f57d",
+        "GUID:f072e216975d56b4f9ab0e22fb7a76a5",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
+        "GUID:660bde4a85b593e44881f6d23ee15fd7",
+        "GUID:2c90e14f48194f74c8ea43f9a2e06d80",
+        "GUID:343deaaf83e0cee4ca978e7df0b80d21",
+        "GUID:7f5c76d5df8d45da9685a7a9f428cd6c",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

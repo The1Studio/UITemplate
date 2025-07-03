@@ -11,7 +11,7 @@
         "GUID:2c90e14f48194f74c8ea43f9a2e06d80",
         "GUID:343deaaf83e0cee4ca978e7df0b80d21",
         "GUID:7f5c76d5df8d45da9685a7a9f428cd6c",
-        "Unity.TextMeshPro"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -20,6 +20,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "THEONE_LOCALIZATION"
+        }
+    ],
     "noEngineReferences": false
 }

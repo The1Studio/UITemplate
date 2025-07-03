@@ -38,7 +38,7 @@
       }
     ],
     "packagesToAdd": {
-      "com.theone.foundation.buildscript": "1.0.8"
+      "com.theone.foundation.buildscript": "1.1.0"
     },
     "packagesVersionToUse": {
       "com.google.external-dependency-manager": "1.2.185",

@@ -9,6 +9,7 @@
 - **Mục đích**: Tools trong Editor để extract và add localization keys
 - **Features**:
   - Setup localization cho text của  prefabs được ref trên addressable
+  - Tự động translate các text thành localization keys trong bảng có dùng prompt đính kèm(cần có api key chủa openAI = no free)
 - **Vị trí**: `UITemplate/Editor/Localization/TMPLocalization.cs`
 
 ### 3. LocalizationHelper

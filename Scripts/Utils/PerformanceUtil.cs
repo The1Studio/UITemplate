@@ -1,9 +1,8 @@
 ﻿namespace TheOneStudio.UITemplate.UITemplate.Utils
 {
-    using UnityEngine;
     using SystemInfo = UnityEngine.Device.SystemInfo;
 
-    public enum Quality
+    public enum QualityLevel
     {
         Low,
         Medium,
@@ -12,40 +11,68 @@
 
     public class PerformanceUtil
     {
-        public static Quality CheckDevicePerformance()
+        public static QualityLevel CheckDevicePerformance()
         {
-            Quality quality;
+            #if UNITY_IOS
+            if (IsiOSLowEnd())
+                return Quality.Low;
+            else if (IsiOSMediumEnd())
+            {
+                return Quality.Medium;
+            }
+            return Quality.High;
+            #endif
 
-            // Check device specifications
-            if (SystemInfo.processorCount <= 2 && SystemInfo.systemMemorySize <= 2048)
-                quality = Quality.Low; // Considered low-end if CPU cores <= 2 and memory <= 2GB
-            else if (SystemInfo.processorCount >= 4 && SystemInfo.systemMemorySize >= 4096)
-                quality = Quality.High; // Considered high-end if CPU cores >= 4 and memory >= 4GB
-            else
-                quality = Quality.Medium; // In between low-end and high-end
+            var ramMb    = SystemInfo.systemMemorySize;
+            var cpuCores = SystemInfo.processorCount;
 
-            return quality;
+            if (ramMb >= 8192 || cpuCores >= 8) return QualityLevel.High;
+            if (ramMb >= 4096 || cpuCores >= 6) return QualityLevel.Medium;
+            return QualityLevel.Low;
         }
 
-        public static Quality CheckDevicePerformanceByVram()
+        public static bool IsiOSLowEnd()
         {
-            Quality deviceQuality;
+            var model = SystemInfo.deviceModel.ToLower();
 
-            var vramSize = SystemInfo.graphicsMemorySize;
-            Debug.Log("Device VRAM: " + vramSize + " MB");
+            // iPhone 6/6S/7/8/X/SE1 và các bản Plus
+            if (model.StartsWith("iphone5")     // iPhone 5/5C
+                || model.StartsWith("iphone6")  // iPhone 5S
+                || model.StartsWith("iphone7")  // iPhone 6/6+
+                || model.StartsWith("iphone8")  // iPhone 6S, SE1
+                || model.StartsWith("iphone9")  // iPhone 7/7+
+                || model.StartsWith("iphone10") // iPhone 8/8+/X
+            )
+                return true;
 
-            // Adjust the thresholds based on your desired categorization
-            var lowEndThreshold  = 512;  // In megabytes
-            var highEndThreshold = 2048; // In megabytes
+            // iPad 2/3/4/5/6/7, Mini 1-4, Air 1-2
+            if (model.StartsWith("ipad2")
+                || model.StartsWith("ipad3")
+                || model.StartsWith("ipad4")
+                || model.StartsWith("ipad5")
+                || model.StartsWith("ipad6")
+                || model.StartsWith("ipad7")
+            )
+                return true;
 
-            if (vramSize < lowEndThreshold)
-                deviceQuality = Quality.Low; // VRAM below the low-end threshold
-            else if (vramSize >= highEndThreshold)
-                deviceQuality = Quality.High; // VRAM equal to or above the high-end threshold
-            else
-                deviceQuality = Quality.Medium; // VRAM in between low-end and high-end
+            return false;
+        }
 
-            return deviceQuality;
+        public static bool IsiOSMediumEnd()
+        {
+            var model = SystemInfo.deviceModel.ToLower();
+
+            if (model.StartsWith("iphone11")
+                || model.StartsWith("iphone12")
+            )
+                return true;
+
+            if (model.StartsWith("ipad8")
+                || model.StartsWith("ipad9")
+            )
+                return true;
+
+            return false;
         }
     }
 }

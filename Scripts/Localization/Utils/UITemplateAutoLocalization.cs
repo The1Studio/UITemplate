@@ -1,18 +1,23 @@
 #if THEONE_LOCALIZATION
 namespace TheOneStudio.UITemplate.UITemplate
 {
-    using System;
     using Sirenix.OdinInspector;
     using TMPro;
+    #if UNITY_EDITOR
+    using UnityEditor;
     using UnityEditor.Events;
+    #endif
     using UnityEngine;
     using UnityEngine.Localization.Components;
     using UnityEngine.Localization.Events;
-    using UnityEngine.Events;
 
-    [RequireComponent(typeof(LocalizeStringEvent))] [DisallowMultipleComponent] public class UITemplateAutoLocalization : MonoBehaviour
+    [RequireComponent(typeof(LocalizeStringEvent))]
+    [DisallowMultipleComponent]
+    public class UITemplateAutoLocalization : MonoBehaviour
     {
-        [Button] public void SetUpStringEvent(string tableName)
+        #if UNITY_EDITOR
+        [Button]
+        public void SetUpStringEvent(string tableName)
         {
             var localizeStringEvents = this.gameObject.GetComponents<LocalizeStringEvent>();
 
@@ -23,7 +28,6 @@ namespace TheOneStudio.UITemplate.UITemplate
                     DestroyImmediate(localizeStringEvents[i]);
                 }
             }
-
 
             var localizeStringEvent = this.gameObject.GetComponent<LocalizeStringEvent>();
             if (localizeStringEvent == null)
@@ -59,11 +63,10 @@ namespace TheOneStudio.UITemplate.UITemplate
                     this.SetText);
 
                 // Mark the object as dirty so Unity knows to save the changes
-                #if UNITY_EDITOR
-                UnityEditor.EditorUtility.SetDirty(localizeStringEvent);
-                #endif
+                EditorUtility.SetDirty(localizeStringEvent);
             }
         }
+        #endif
 
         public void SetText(string text)
         {

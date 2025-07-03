@@ -4,11 +4,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
     using Cysharp.Threading.Tasks;
     using GameFoundation.DI;
     using GameFoundation.Signals;
-    using TheOneStudio.UITemplate.UITemplate.Localization.Signals;
     using TheOneStudio.UITemplate.UITemplate.Utils;
-    using UnityEngine;
-    using UnityEngine.Localization;
-    using UnityEngine.Localization.Settings;
     using UnityEngine.Scripting;
 
     /// <summary>
@@ -41,16 +37,16 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         }
 
         #if THEONE_LOCALIZATION
-        public void ChangeLanguage(Locale obj)
+        public void ChangeLanguage(UnityEngine.Localization.Locale obj)
         {
             this.uiTemplateLocalizeBlueprint.LocalizeAllBlueprintFields();
         }
 
-        public Locale GetLocalizationLocale(string languageCode)
+        public UnityEngine.Localization.Locale GetLocalizationLocale(string languageCode)
         {
-            if (LocalizationSettings.AvailableLocales?.Locales == null) return null;
+            if (UnityEngine.Localization.Settings.LocalizationSettings.AvailableLocales?.Locales == null) return null;
 
-            foreach (var locale in LocalizationSettings.AvailableLocales.Locales)
+            foreach (var locale in UnityEngine.Localization.Settings.LocalizationSettings.AvailableLocales.Locales)
             {
                 if (locale.Identifier.CultureInfo?.TwoLetterISOLanguageName == languageCode || locale.Identifier.Code == languageCode) return locale;
             }
@@ -68,14 +64,14 @@ namespace TheOneStudio.UITemplate.UITemplate.Localization
         public void Initialize()
         {
             #if THEONE_LOCALIZATION
-            LocalizationSettings.SelectedLocaleChanged += this.ChangeLanguage;
+            UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += this.ChangeLanguage;
             #endif
         }
 
         public void Dispose()
         {
             #if THEONE_LOCALIZATION
-            LocalizationSettings.SelectedLocaleChanged -= this.ChangeLanguage;
+            UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= this.ChangeLanguage;
             #endif
         }
     }

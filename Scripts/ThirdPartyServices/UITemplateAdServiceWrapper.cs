@@ -480,7 +480,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 || this.adServicesConfig.InterstitialAdActivePlacements.Contains(placement);
         }
 
-        public bool CanShowInterstitialAd(string place, bool force = false)
+        public virtual bool CanShowInterstitialAd(string place, bool force = false)
         {
             var isInterstitialAdEnable = this.IsInterstitialAdEnable(place);
             this.logger.Info($"ShowInterstitialAd1 {place} force {force} EnableInterstitialAd {isInterstitialAdEnable} CurrentLevel {this.levelDataController.CurrentLevel} InterstitialAdStartLevel {this.adServicesConfig.InterstitialAdStartLevel}");

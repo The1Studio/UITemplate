@@ -39,6 +39,8 @@ namespace TheOneStudio.UITemplate
             builder.DeclareSignal<OnRemoveAdsSucceedSignal>();
             builder.DeclareSignal<UITemplateOnUpdateBannerStateSignal>();
             builder.DeclareSignal<UITemplateOnUpdateCollapMrecStateSignal>();
+            builder.DeclareSignal<UITemplateAdFreeTrialStartedSignal>();
+            builder.DeclareSignal<UITemplateAdFreeTrialExpiredSignal>();
 
             //State machine
             builder.DeclareSignal<OnStateEnterSignal>();

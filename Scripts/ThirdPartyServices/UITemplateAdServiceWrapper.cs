@@ -91,7 +91,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     IsResumedFromAnotherServices { get; set; } // after Ads, IAP, permission, login, etc.
         private bool     IsCheckedShowFirstOpen       { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen         { get; private set; }
-        private bool     IsShowingAOA                 { get; set; } //Free Trial Ads
+        private bool     IsShowingAOA                 { get; set; }
         private bool     WasAdFreeTrialActive         { get; set; }
 
         [Preserve] public UITemplateAdServiceWrapper(
@@ -179,7 +179,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 this.preloadAdService.LoadAdsInterval().Forget();
             }
 
-            // Initialize Free Trial Ads
+            //Free Trial Ads
             this.InitializeAdFreeTrial();
         }
 
@@ -471,7 +471,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             return this.adServices.Any(adService => adService.IsInterstitialAdReady(place));
         }
 
-        private int FirstInterstitialAdsDelayTime => this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
+        private int FirstInterstitialAdsDelayTime =>
+            this.gameSessionDataController.OpenTime > 1 ? this.adServicesConfig.DelayFirstInterNewSession : this.adServicesConfig.DelayFirstInterstitialAdInterval;
 
         private bool IsInterstitialAdEnable(string placement)
         {
@@ -510,12 +511,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.adServicesConfig.ShowNativeInterAfterInter)
             {
-                this.InternalShowInterstitialAd(place,
-                    _ =>
-                    {
-                        this.signalBus.Fire(new ShowNativeInterAdsSignal(onShowInterstitialFinished));
-                    },
-                    force);
+                this.InternalShowInterstitialAd(place,_ =>
+                {
+                    this.signalBus.Fire(new ShowNativeInterAdsSignal(onShowInterstitialFinished));
+                },
+                force);
             }
             else
             {
@@ -576,7 +576,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 adService.ShowInterstitialAd(place);
             }
         }
-        
+
         public int TotalInterstitialAdShownThisSession => this.totalInterstitialAdsShowedInSession;
 
         #endregion

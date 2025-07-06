@@ -94,7 +94,8 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     IsShowingAOA                 { get; set; }
         private bool     WasAdFreeTrialActive         { get; set; }
 
-        [Preserve] public UITemplateAdServiceWrapper(
+        [Preserve]
+        public UITemplateAdServiceWrapper(
             ILoggerManager                      loggerManager,
             AdServicesConfig                    adServicesConfig,
             SignalBus                           signalBus,
@@ -173,7 +174,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             //Permission
             this.signalBus.Subscribe<OnRequestPermissionStartSignal>(this.ShownAdInDifferentProcessHandler);
-            this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler); //Preload ads service
+            this.signalBus.Subscribe<OnRequestPermissionCompleteSignal>(this.CloseAdInDifferentProcessHandler);
+
+            //Preload ads service
             if (!this.IsRemovedAds)
             {
                 this.preloadAdService.LoadAdsInterval().Forget();

@@ -92,6 +92,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
         private bool     IsCheckedShowFirstOpen       { get; set; } = false;
         public  bool     IsOpenedAOAFirstOpen         { get; private set; }
         private bool     IsShowingAOA                 { get; set; }
+        private bool     WasAdFreeTrialActive         { get; set; }
 
         [Preserve]
         public UITemplateAdServiceWrapper(
@@ -180,6 +181,9 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             {
                 this.preloadAdService.LoadAdsInterval().Forget();
             }
+
+            //Free Trial Ads
+            this.InitializeAdFreeTrial();
         }
 
         private void OnOpenAOA(AppOpenFullScreenContentOpenedSignal obj)
@@ -510,10 +514,11 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
 
             if (this.adServicesConfig.ShowNativeInterAfterInter)
             {
-                this.InternalShowInterstitialAd(place, _ =>
+                this.InternalShowInterstitialAd(place,_ =>
                 {
                     this.signalBus.Fire(new ShowNativeInterAdsSignal(onShowInterstitialFinished));
-                }, force);
+                },
+                force);
             }
             else
             {
@@ -574,7 +579,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
                 adService.ShowInterstitialAd(place);
             }
         }
-        
+
         public int TotalInterstitialAdShownThisSession => this.totalInterstitialAdsShowedInSession;
 
         #endregion
@@ -852,13 +857,98 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             this.bannerAdService.DestroyBannerAd();
         }
 
-        public bool IsRemovedAds => PlayerPrefs.HasKey(REMOVE_ADS_KEY);
+        public bool IsRemovedAds => PlayerPrefs.HasKey(REMOVE_ADS_KEY) || this.uiTemplateAdsController.IsAdFreeTrialActive();
+
+        #region Free Trial Ads
+
+        private void InitializeAdFreeTrial()
+
+        {
+            this.WasAdFreeTrialActive = this.uiTemplateAdsController.IsAdFreeTrialActive();
+
+            this.logger.Info($"InitializeAdFreeTrial: IsActive={this.WasAdFreeTrialActive}, ExpirationTime={this.uiTemplateAdsController.AdFreeTrialExpirationTime}");
+        }
+
+        private void CheckAdFreeTrialStatus()
+        {
+            var isCurrentlyActive = this.uiTemplateAdsController.IsAdFreeTrialActive();
+
+            if (this.WasAdFreeTrialActive && !isCurrentlyActive)
+            {
+                this.OnAdFreeTrialExpired();
+                this.WasAdFreeTrialActive = false;
+                this.logger.Info("Ad Free Trial expired - restoring ads");
+            }
+            else if (!this.WasAdFreeTrialActive && isCurrentlyActive)
+            {
+                this.OnAdFreeTrialStarted();
+                this.WasAdFreeTrialActive = true;
+                this.logger.Info("Ad Free Trial started - disabling ads");
+            }
+        }
+
+        private void OnAdFreeTrialStarted()
+        {
+            this.HideAllAdsForFreeTrial();
+            this.signalBus.Fire(new UITemplateAdFreeTrialStartedSignal());
+        }
+
+        private void OnAdFreeTrialExpired()
+        {
+            this.RestoreAllAdsAfterFreeTrial();
+            this.signalBus.Fire(new UITemplateAdFreeTrialExpiredSignal());
+        }
+
+        private void HideAllAdsForFreeTrial()
+        {
+            if (this.IsShowBannerAd)
+            {
+                this.HideBannerAd();
+            }
+
+            if (this.IsShowMRECAd)
+            {
+                this.HideMREC(this.mrecPlacement, this.mrecPosition);
+            }
+
+            #if THEONE_COLLAPSIBLE_MREC
+                // Hide collapsible MREC
+                if (this.IsShowMRECAd && !string.IsNullOrEmpty(this.mrecPlacement))
+                {
+                    this.HideCollapsibleMREC(this.mrecPlacement);
+                }
+            #endif
+
+            this.nativeOverlayService.DestroyAll();
+
+            #if ADMOB_NATIVE_ADS
+                // Hide native collapse ads
+                this.HideNativeCollapse();
+            #endif
+
+            this.logger.Info("oneLog: HideAllAdsForFreeTrial completed");
+        }
+
+        private void RestoreAllAdsAfterFreeTrial()
+        {
+            if (PlayerPrefs.HasKey(REMOVE_ADS_KEY)) return;
+
+            if (this.ShouldShowBannerAds())
+            {
+                this.ShowBannerAd();
+            }
+            this.logger.Info("oneLog: RestoreAllAdsAfterFreeTrial completed");
+        }
+
+        #endregion
 
         public void Tick()
         {
             if (Time.unscaledDeltaTime < 1) this.totalNoAdsPlayingTime += Time.unscaledDeltaTime;
 
             if (!this.IsCheckedShowFirstOpen && this.gameSessionDataController.OpenTime >= this.adServicesConfig.AOAStartSession) this.CheckShowFirstOpen();
+
+            this.CheckAdFreeTrialStatus();
         }
 
         public void RemoveAds()

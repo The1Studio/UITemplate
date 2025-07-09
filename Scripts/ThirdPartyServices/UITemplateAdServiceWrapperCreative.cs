@@ -63,7 +63,7 @@ namespace TheOneStudio.UITemplate.UITemplate.Scripts.ThirdPartyServices
             return false;
         }
 
-        public override void ShowRewardedAd(string place, Action onComplete, Action onFail = null)
+        public override void ShowRewardedAd(string place, Action onComplete, Action onFail = null, Dictionary<string,object> metadata = null)
         {
             onComplete.Invoke();
         }
